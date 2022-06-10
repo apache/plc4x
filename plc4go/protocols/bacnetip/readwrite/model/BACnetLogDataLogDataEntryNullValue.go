@@ -128,14 +128,14 @@ func BACnetLogDataLogDataEntryNullValueParse(readBuffer utils.ReadBuffer) (*BACn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryNullValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryNullValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (nullValue)
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
 	_nullValue, _nullValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_NULL))
 	if _nullValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetLogDataLogDataEntryNullValueParse(readBuffer utils.ReadBuffer) (*BACn
 	}
 	nullValue := CastBACnetContextTagNull(_nullValue)
 	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryNullValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryNullValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetLogDataLogDataEntryNullValue) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogDataLogDataEntryNullValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryNullValue")
 		}
 
 		// Simple Field (nullValue)
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
 		_nullValueErr := m.NullValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
 		if _nullValueErr != nil {
 			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryNullValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogDataLogDataEntryNullValue")
 		}
 		return nil
 	}

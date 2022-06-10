@@ -127,7 +127,7 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRejectReasonTagged"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRejectReasonTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -152,7 +152,7 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	proprietaryValue := _proprietaryValue.(uint32)
 
 	if closeErr := readBuffer.CloseContext("BACnetRejectReasonTagged"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetRejectReasonTagged")
 	}
 
 	// Create the instance
@@ -163,7 +163,7 @@ func (m *BACnetRejectReasonTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRejectReasonTagged"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetRejectReasonTagged")
 	}
 
 	// Manual Field (value)
@@ -183,7 +183,7 @@ func (m *BACnetRejectReasonTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetRejectReasonTagged"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetRejectReasonTagged")
 	}
 	return nil
 }

@@ -162,7 +162,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -196,7 +196,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 
 	// Array field (senderContext)
 	if pullErr := readBuffer.PullContext("senderContext", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for senderContext")
 	}
 	// Count array
 	senderContext := make([]uint8, uint16(8))
@@ -210,7 +210,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 		}
 	}
 	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for senderContext")
 	}
 
 	// Simple Field (options)
@@ -259,7 +259,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationPacket"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CIPEncapsulationPacket")
 	}
 
 	// Finish initializing
@@ -275,7 +275,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CIPEncapsulationPacket"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationPacket")
 	}
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
@@ -310,7 +310,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	// Array Field (senderContext)
 	if m.SenderContext != nil {
 		if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for senderContext")
 		}
 		for _, _element := range m.SenderContext {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -319,7 +319,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 			}
 		}
 		if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for senderContext")
 		}
 	}
 
@@ -344,7 +344,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 
 	if popErr := writeBuffer.PopContext("CIPEncapsulationPacket"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CIPEncapsulationPacket")
 	}
 	return nil
 }

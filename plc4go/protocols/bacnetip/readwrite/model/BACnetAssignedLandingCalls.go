@@ -97,14 +97,14 @@ func BACnetAssignedLandingCallsParse(readBuffer utils.ReadBuffer) (*BACnetAssign
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedLandingCalls"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAssignedLandingCalls")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (landingCalls)
 	if pullErr := readBuffer.PullContext("landingCalls"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for landingCalls")
 	}
 	_landingCalls, _landingCallsErr := BACnetAssignedLandingCallsLandingCallsListParse(readBuffer, uint8(uint8(0)))
 	if _landingCallsErr != nil {
@@ -112,11 +112,11 @@ func BACnetAssignedLandingCallsParse(readBuffer utils.ReadBuffer) (*BACnetAssign
 	}
 	landingCalls := CastBACnetAssignedLandingCallsLandingCallsList(_landingCalls)
 	if closeErr := readBuffer.CloseContext("landingCalls"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for landingCalls")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAssignedLandingCalls"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetAssignedLandingCalls")
 	}
 
 	// Create the instance
@@ -127,23 +127,23 @@ func (m *BACnetAssignedLandingCalls) Serialize(writeBuffer utils.WriteBuffer) er
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAssignedLandingCalls"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetAssignedLandingCalls")
 	}
 
 	// Simple Field (landingCalls)
 	if pushErr := writeBuffer.PushContext("landingCalls"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for landingCalls")
 	}
 	_landingCallsErr := m.LandingCalls.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("landingCalls"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for landingCalls")
 	}
 	if _landingCallsErr != nil {
 		return errors.Wrap(_landingCallsErr, "Error serializing 'landingCalls' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAssignedLandingCalls"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetAssignedLandingCalls")
 	}
 	return nil
 }

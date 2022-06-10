@@ -128,14 +128,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryIntegerParse(readBuffer uti
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryInteger"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (integerValue)
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
 	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
 	if _integerValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetFaultParameterFaultExtendedParametersEntryIntegerParse(readBuffer uti
 	}
 	integerValue := CastBACnetApplicationTagSignedInteger(_integerValue)
 	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryInteger"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryInteger")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetFaultParameterFaultExtendedParametersEntryInteger) Serialize(writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultExtendedParametersEntryInteger"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryInteger")
 		}
 
 		// Simple Field (integerValue)
 		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
 		_integerValueErr := m.IntegerValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
 		if _integerValueErr != nil {
 			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryInteger"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParametersEntryInteger")
 		}
 		return nil
 	}

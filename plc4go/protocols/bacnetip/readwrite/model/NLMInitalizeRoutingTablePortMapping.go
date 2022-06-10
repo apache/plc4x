@@ -129,7 +129,7 @@ func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (*NLM
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTablePortMapping"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLMInitalizeRoutingTablePortMapping")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -162,7 +162,7 @@ func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (*NLM
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMInitalizeRoutingTablePortMapping"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLMInitalizeRoutingTablePortMapping")
 	}
 
 	// Create the instance
@@ -173,7 +173,7 @@ func (m *NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NLMInitalizeRoutingTablePortMapping"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for NLMInitalizeRoutingTablePortMapping")
 	}
 
 	// Simple Field (destinationNetworkAddress)
@@ -207,7 +207,7 @@ func (m *NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.WriteB
 	}
 
 	if popErr := writeBuffer.PopContext("NLMInitalizeRoutingTablePortMapping"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for NLMInitalizeRoutingTablePortMapping")
 	}
 	return nil
 }

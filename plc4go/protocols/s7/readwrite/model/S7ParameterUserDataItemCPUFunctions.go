@@ -216,7 +216,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7P
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterUserDataItemCPUFunctions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -294,7 +294,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7P
 	}
 
 	if closeErr := readBuffer.CloseContext("S7ParameterUserDataItemCPUFunctions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterUserDataItemCPUFunctions")
 	}
 
 	// Create a partially initialized instance
@@ -318,7 +318,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterUserDataItemCPUFunctions"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7ParameterUserDataItemCPUFunctions")
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -394,7 +394,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteB
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterUserDataItemCPUFunctions"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7ParameterUserDataItemCPUFunctions")
 		}
 		return nil
 	}

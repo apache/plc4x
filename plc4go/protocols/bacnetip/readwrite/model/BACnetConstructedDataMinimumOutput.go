@@ -142,14 +142,14 @@ func BACnetConstructedDataMinimumOutputParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOutput"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMinimumOutput")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (minimumOutput)
 	if pullErr := readBuffer.PullContext("minimumOutput"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for minimumOutput")
 	}
 	_minimumOutput, _minimumOutputErr := BACnetApplicationTagParse(readBuffer)
 	if _minimumOutputErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMinimumOutputParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	minimumOutput := CastBACnetApplicationTagReal(_minimumOutput)
 	if closeErr := readBuffer.CloseContext("minimumOutput"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for minimumOutput")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumOutput"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumOutput")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMinimumOutput) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMinimumOutput"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumOutput")
 		}
 
 		// Simple Field (minimumOutput)
 		if pushErr := writeBuffer.PushContext("minimumOutput"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for minimumOutput")
 		}
 		_minimumOutputErr := m.MinimumOutput.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("minimumOutput"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for minimumOutput")
 		}
 		if _minimumOutputErr != nil {
 			return errors.Wrap(_minimumOutputErr, "Error serializing 'minimumOutput' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMinimumOutput"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMinimumOutput")
 		}
 		return nil
 	}

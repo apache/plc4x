@@ -142,14 +142,14 @@ func BACnetConstructedDataFaultParametersParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultParameters"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFaultParameters")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (faultParameters)
 	if pullErr := readBuffer.PullContext("faultParameters"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for faultParameters")
 	}
 	_faultParameters, _faultParametersErr := BACnetFaultParameterParse(readBuffer)
 	if _faultParametersErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFaultParametersParse(readBuffer utils.ReadBuffer, tagN
 	}
 	faultParameters := CastBACnetFaultParameter(_faultParameters)
 	if closeErr := readBuffer.CloseContext("faultParameters"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for faultParameters")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultParameters"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFaultParameters")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFaultParameters) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFaultParameters"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFaultParameters")
 		}
 
 		// Simple Field (faultParameters)
 		if pushErr := writeBuffer.PushContext("faultParameters"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for faultParameters")
 		}
 		_faultParametersErr := m.FaultParameters.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("faultParameters"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for faultParameters")
 		}
 		if _faultParametersErr != nil {
 			return errors.Wrap(_faultParametersErr, "Error serializing 'faultParameters' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFaultParameters"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFaultParameters")
 		}
 		return nil
 	}

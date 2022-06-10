@@ -142,14 +142,14 @@ func BACnetConstructedDataProgramStateParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProgramState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (programState)
 	if pullErr := readBuffer.PullContext("programState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for programState")
 	}
 	_programState, _programStateErr := BACnetProgramStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _programStateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProgramStateParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	programState := CastBACnetProgramStateTagged(_programState)
 	if closeErr := readBuffer.CloseContext("programState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for programState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProgramState")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProgramState) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProgramState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProgramState")
 		}
 
 		// Simple Field (programState)
 		if pushErr := writeBuffer.PushContext("programState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for programState")
 		}
 		_programStateErr := m.ProgramState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("programState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for programState")
 		}
 		if _programStateErr != nil {
 			return errors.Wrap(_programStateErr, "Error serializing 'programState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProgramState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProgramState")
 		}
 		return nil
 	}

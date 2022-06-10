@@ -142,14 +142,14 @@ func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRequestedUpdateInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRequestedUpdateInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (requestedUpdateInterval)
 	if pullErr := readBuffer.PullContext("requestedUpdateInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for requestedUpdateInterval")
 	}
 	_requestedUpdateInterval, _requestedUpdateIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _requestedUpdateIntervalErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuff
 	}
 	requestedUpdateInterval := CastBACnetApplicationTagUnsignedInteger(_requestedUpdateInterval)
 	if closeErr := readBuffer.CloseContext("requestedUpdateInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for requestedUpdateInterval")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRequestedUpdateInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRequestedUpdateInterval")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRequestedUpdateInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRequestedUpdateInterval")
 		}
 
 		// Simple Field (requestedUpdateInterval)
 		if pushErr := writeBuffer.PushContext("requestedUpdateInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for requestedUpdateInterval")
 		}
 		_requestedUpdateIntervalErr := m.RequestedUpdateInterval.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("requestedUpdateInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for requestedUpdateInterval")
 		}
 		if _requestedUpdateIntervalErr != nil {
 			return errors.Wrap(_requestedUpdateIntervalErr, "Error serializing 'requestedUpdateInterval' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRequestedUpdateInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRequestedUpdateInterval")
 		}
 		return nil
 	}

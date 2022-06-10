@@ -142,14 +142,14 @@ func BACnetConstructedDataDaylightSavingsStatusParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDaylightSavingsStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDaylightSavingsStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (daylightSavingsStatus)
 	if pullErr := readBuffer.PullContext("daylightSavingsStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for daylightSavingsStatus")
 	}
 	_daylightSavingsStatus, _daylightSavingsStatusErr := BACnetApplicationTagParse(readBuffer)
 	if _daylightSavingsStatusErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDaylightSavingsStatusParse(readBuffer utils.ReadBuffer
 	}
 	daylightSavingsStatus := CastBACnetApplicationTagBoolean(_daylightSavingsStatus)
 	if closeErr := readBuffer.CloseContext("daylightSavingsStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for daylightSavingsStatus")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDaylightSavingsStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDaylightSavingsStatus")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDaylightSavingsStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDaylightSavingsStatus")
 		}
 
 		// Simple Field (daylightSavingsStatus)
 		if pushErr := writeBuffer.PushContext("daylightSavingsStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for daylightSavingsStatus")
 		}
 		_daylightSavingsStatusErr := m.DaylightSavingsStatus.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("daylightSavingsStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for daylightSavingsStatus")
 		}
 		if _daylightSavingsStatusErr != nil {
 			return errors.Wrap(_daylightSavingsStatusErr, "Error serializing 'daylightSavingsStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDaylightSavingsStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDaylightSavingsStatus")
 		}
 		return nil
 	}

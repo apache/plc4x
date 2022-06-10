@@ -142,14 +142,14 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfDeviceRestart"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeOfDeviceRestart")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeOfDeviceRestart)
 	if pullErr := readBuffer.PullContext("timeOfDeviceRestart"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeOfDeviceRestart")
 	}
 	_timeOfDeviceRestart, _timeOfDeviceRestartErr := BACnetTimeStampParse(readBuffer)
 	if _timeOfDeviceRestartErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, 
 	}
 	timeOfDeviceRestart := CastBACnetTimeStamp(_timeOfDeviceRestart)
 	if closeErr := readBuffer.CloseContext("timeOfDeviceRestart"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeOfDeviceRestart")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfDeviceRestart"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeOfDeviceRestart")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTimeOfDeviceRestart"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeOfDeviceRestart")
 		}
 
 		// Simple Field (timeOfDeviceRestart)
 		if pushErr := writeBuffer.PushContext("timeOfDeviceRestart"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeOfDeviceRestart")
 		}
 		_timeOfDeviceRestartErr := m.TimeOfDeviceRestart.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeOfDeviceRestart"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeOfDeviceRestart")
 		}
 		if _timeOfDeviceRestartErr != nil {
 			return errors.Wrap(_timeOfDeviceRestartErr, "Error serializing 'timeOfDeviceRestart' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeOfDeviceRestart"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTimeOfDeviceRestart")
 		}
 		return nil
 	}

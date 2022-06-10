@@ -142,14 +142,14 @@ func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSchedulePresentValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSchedulePresentValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (presentValue)
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
 	_presentValue, _presentValueErr := BACnetConstructedDataElementParse(readBuffer, BACnetObjectType(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _presentValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer,
 	}
 	presentValue := CastBACnetConstructedDataElement(_presentValue)
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSchedulePresentValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSchedulePresentValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSchedulePresentValue) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSchedulePresentValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSchedulePresentValue")
 		}
 
 		// Simple Field (presentValue)
 		if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for presentValue")
 		}
 		_presentValueErr := m.PresentValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for presentValue")
 		}
 		if _presentValueErr != nil {
 			return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSchedulePresentValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSchedulePresentValue")
 		}
 		return nil
 	}

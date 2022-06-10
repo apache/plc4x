@@ -142,14 +142,14 @@ func BACnetConstructedDataGlobalIdentifierParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataGlobalIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (globalIdentifier)
 	if pullErr := readBuffer.PullContext("globalIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for globalIdentifier")
 	}
 	_globalIdentifier, _globalIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _globalIdentifierErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataGlobalIdentifierParse(readBuffer utils.ReadBuffer, tag
 	}
 	globalIdentifier := CastBACnetApplicationTagUnsignedInteger(_globalIdentifier)
 	if closeErr := readBuffer.CloseContext("globalIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for globalIdentifier")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGlobalIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGlobalIdentifier")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataGlobalIdentifier) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataGlobalIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGlobalIdentifier")
 		}
 
 		// Simple Field (globalIdentifier)
 		if pushErr := writeBuffer.PushContext("globalIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for globalIdentifier")
 		}
 		_globalIdentifierErr := m.GlobalIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("globalIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for globalIdentifier")
 		}
 		if _globalIdentifierErr != nil {
 			return errors.Wrap(_globalIdentifierErr, "Error serializing 'globalIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGlobalIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataGlobalIdentifier")
 		}
 		return nil
 	}

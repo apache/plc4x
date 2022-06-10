@@ -19,7 +19,15 @@
 
 version: 2
 updates:
-  - package-ecosystem: "maven" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "daily"
+- package-ecosystem: maven
+  directory: /
+  schedule:
+    interval: daily
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: daily
+- package-ecosystem: gomod
+  directory: plc4go
+  schedule:
+    interval: daily

@@ -142,14 +142,14 @@ func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerRunning"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimerRunning")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timerRunning)
 	if pullErr := readBuffer.PullContext("timerRunning"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timerRunning")
 	}
 	_timerRunning, _timerRunningErr := BACnetApplicationTagParse(readBuffer)
 	if _timerRunningErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	timerRunning := CastBACnetApplicationTagBoolean(_timerRunning)
 	if closeErr := readBuffer.CloseContext("timerRunning"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timerRunning")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerRunning"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimerRunning")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTimerRunning) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTimerRunning"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimerRunning")
 		}
 
 		// Simple Field (timerRunning)
 		if pushErr := writeBuffer.PushContext("timerRunning"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timerRunning")
 		}
 		_timerRunningErr := m.TimerRunning.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timerRunning"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timerRunning")
 		}
 		if _timerRunningErr != nil {
 			return errors.Wrap(_timerRunningErr, "Error serializing 'timerRunning' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimerRunning"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTimerRunning")
 		}
 		return nil
 	}

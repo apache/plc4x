@@ -142,14 +142,14 @@ func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventParameters"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEventParameters")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (eventParameter)
 	if pullErr := readBuffer.PullContext("eventParameter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventParameter")
 	}
 	_eventParameter, _eventParameterErr := BACnetEventParameterParse(readBuffer)
 	if _eventParameterErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagN
 	}
 	eventParameter := CastBACnetEventParameter(_eventParameter)
 	if closeErr := readBuffer.CloseContext("eventParameter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventParameter")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventParameters"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventParameters")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEventParameters) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEventParameters"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventParameters")
 		}
 
 		// Simple Field (eventParameter)
 		if pushErr := writeBuffer.PushContext("eventParameter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for eventParameter")
 		}
 		_eventParameterErr := m.EventParameter.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("eventParameter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for eventParameter")
 		}
 		if _eventParameterErr != nil {
 			return errors.Wrap(_eventParameterErr, "Error serializing 'eventParameter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventParameters"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEventParameters")
 		}
 		return nil
 	}

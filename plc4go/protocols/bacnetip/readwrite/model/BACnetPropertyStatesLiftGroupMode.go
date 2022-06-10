@@ -128,14 +128,14 @@ func BACnetPropertyStatesLiftGroupModeParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftGroupMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftGroupMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (liftGroupMode)
 	if pullErr := readBuffer.PullContext("liftGroupMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for liftGroupMode")
 	}
 	_liftGroupMode, _liftGroupModeErr := BACnetLiftGroupModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftGroupModeErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLiftGroupModeParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	liftGroupMode := CastBACnetLiftGroupModeTagged(_liftGroupMode)
 	if closeErr := readBuffer.CloseContext("liftGroupMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for liftGroupMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftGroupMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftGroupMode")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLiftGroupMode) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLiftGroupMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftGroupMode")
 		}
 
 		// Simple Field (liftGroupMode)
 		if pushErr := writeBuffer.PushContext("liftGroupMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for liftGroupMode")
 		}
 		_liftGroupModeErr := m.LiftGroupMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("liftGroupMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for liftGroupMode")
 		}
 		if _liftGroupModeErr != nil {
 			return errors.Wrap(_liftGroupModeErr, "Error serializing 'liftGroupMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftGroupMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLiftGroupMode")
 		}
 		return nil
 	}

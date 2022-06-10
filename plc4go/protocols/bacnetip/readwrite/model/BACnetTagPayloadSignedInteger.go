@@ -423,7 +423,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadSignedInteger"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadSignedInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -550,7 +550,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 
 	// Validation
 	if !(bool(bool(bool(bool(bool(bool(bool(isInt8) || bool(isInt16)) || bool(isInt24)) || bool(isInt32)) || bool(isInt40)) || bool(isInt48)) || bool(isInt56)) || bool(isInt64)) {
-		return nil, utils.ParseValidationError{"unmapped integer length"}
+		return nil, errors.WithStack(utils.ParseValidationError{"unmapped integer length"})
 	}
 
 	// Virtual field
@@ -571,7 +571,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadSignedInteger"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadSignedInteger")
 	}
 
 	// Create the instance
@@ -582,7 +582,7 @@ func (m *BACnetTagPayloadSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadSignedInteger"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadSignedInteger")
 	}
 	// Virtual field
 	if _isInt8Err := writeBuffer.WriteVirtual("isInt8", m.GetIsInt8()); _isInt8Err != nil {
@@ -702,7 +702,7 @@ func (m *BACnetTagPayloadSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadSignedInteger"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadSignedInteger")
 	}
 	return nil
 }

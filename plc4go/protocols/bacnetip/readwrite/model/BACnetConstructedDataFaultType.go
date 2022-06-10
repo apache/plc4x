@@ -142,14 +142,14 @@ func BACnetConstructedDataFaultTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFaultType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (faultType)
 	if pullErr := readBuffer.PullContext("faultType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for faultType")
 	}
 	_faultType, _faultTypeErr := BACnetFaultTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _faultTypeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFaultTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	faultType := CastBACnetFaultTypeTagged(_faultType)
 	if closeErr := readBuffer.CloseContext("faultType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for faultType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFaultType")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFaultType) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFaultType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFaultType")
 		}
 
 		// Simple Field (faultType)
 		if pushErr := writeBuffer.PushContext("faultType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for faultType")
 		}
 		_faultTypeErr := m.FaultType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("faultType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for faultType")
 		}
 		if _faultTypeErr != nil {
 			return errors.Wrap(_faultTypeErr, "Error serializing 'faultType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFaultType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFaultType")
 		}
 		return nil
 	}

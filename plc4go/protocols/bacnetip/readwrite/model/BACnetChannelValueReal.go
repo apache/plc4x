@@ -128,14 +128,14 @@ func BACnetChannelValueRealParse(readBuffer utils.ReadBuffer) (*BACnetChannelVal
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueReal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueReal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (realValue)
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
 	_realValue, _realValueErr := BACnetApplicationTagParse(readBuffer)
 	if _realValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetChannelValueRealParse(readBuffer utils.ReadBuffer) (*BACnetChannelVal
 	}
 	realValue := CastBACnetApplicationTagReal(_realValue)
 	if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for realValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueReal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueReal")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetChannelValueReal) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetChannelValueReal"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueReal")
 		}
 
 		// Simple Field (realValue)
 		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
 		_realValueErr := m.RealValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for realValue")
 		}
 		if _realValueErr != nil {
 			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueReal"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetChannelValueReal")
 		}
 		return nil
 	}

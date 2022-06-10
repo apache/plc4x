@@ -128,14 +128,14 @@ func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (*BACnetCalen
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryWeekNDay"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCalendarEntryWeekNDay")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (weekNDay)
 	if pullErr := readBuffer.PullContext("weekNDay"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for weekNDay")
 	}
 	_weekNDay, _weekNDayErr := BACnetWeekNDayTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _weekNDayErr != nil {
@@ -143,11 +143,11 @@ func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (*BACnetCalen
 	}
 	weekNDay := CastBACnetWeekNDayTagged(_weekNDay)
 	if closeErr := readBuffer.CloseContext("weekNDay"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for weekNDay")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntryWeekNDay"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetCalendarEntryWeekNDay")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetCalendarEntryWeekNDay) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetCalendarEntryWeekNDay"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntryWeekNDay")
 		}
 
 		// Simple Field (weekNDay)
 		if pushErr := writeBuffer.PushContext("weekNDay"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for weekNDay")
 		}
 		_weekNDayErr := m.WeekNDay.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("weekNDay"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for weekNDay")
 		}
 		if _weekNDayErr != nil {
 			return errors.Wrap(_weekNDayErr, "Error serializing 'weekNDay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetCalendarEntryWeekNDay"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetCalendarEntryWeekNDay")
 		}
 		return nil
 	}

@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -188,7 +189,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetActionCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetActionCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -198,25 +199,26 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceIdentifier' field")
 		default:
 			deviceIdentifier = CastBACnetContextTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
 			}
 		}
 	}
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -224,12 +226,12 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
@@ -237,7 +239,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	}
 	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
@@ -245,18 +247,19 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
 		default:
 			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
 			}
 		}
 	}
@@ -266,18 +269,19 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((*arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
 		default:
 			propertyValue = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
 			}
 		}
 	}
@@ -287,18 +291,19 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for priority")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
 		default:
 			priority = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for priority")
 			}
 		}
 	}
@@ -308,25 +313,26 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("postDelay"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for postDelay")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(6), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'postDelay' field")
 		default:
 			postDelay = CastBACnetContextTagBoolean(_val)
 			if closeErr := readBuffer.CloseContext("postDelay"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for postDelay")
 			}
 		}
 	}
 
 	// Simple Field (quitOnFailure)
 	if pullErr := readBuffer.PullContext("quitOnFailure"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for quitOnFailure")
 	}
 	_quitOnFailure, _quitOnFailureErr := BACnetContextTagParse(readBuffer, uint8(uint8(7)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _quitOnFailureErr != nil {
@@ -334,12 +340,12 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	}
 	quitOnFailure := CastBACnetContextTagBoolean(_quitOnFailure)
 	if closeErr := readBuffer.CloseContext("quitOnFailure"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for quitOnFailure")
 	}
 
 	// Simple Field (writeSuccessful)
 	if pullErr := readBuffer.PullContext("writeSuccessful"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for writeSuccessful")
 	}
 	_writeSuccessful, _writeSuccessfulErr := BACnetContextTagParse(readBuffer, uint8(uint8(8)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _writeSuccessfulErr != nil {
@@ -347,11 +353,11 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	}
 	writeSuccessful := CastBACnetContextTagBoolean(_writeSuccessful)
 	if closeErr := readBuffer.CloseContext("writeSuccessful"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for writeSuccessful")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetActionCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetActionCommand")
 	}
 
 	// Create the instance
@@ -362,19 +368,19 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetActionCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetActionCommand")
 	}
 
 	// Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
 	var deviceIdentifier *BACnetContextTagObjectIdentifier = nil
 	if m.DeviceIdentifier != nil {
 		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
 		deviceIdentifier = m.DeviceIdentifier
 		_deviceIdentifierErr := deviceIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
 		if _deviceIdentifierErr != nil {
 			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
@@ -383,11 +389,11 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (objectIdentifier)
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
 	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
 	if _objectIdentifierErr != nil {
 		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -395,11 +401,11 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (propertyIdentifier)
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
 	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
 	if _propertyIdentifierErr != nil {
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
@@ -409,12 +415,12 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	if m.ArrayIndex != nil {
 		if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
 		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
 		if _arrayIndexErr != nil {
 			return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
@@ -425,12 +431,12 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var propertyValue *BACnetConstructedData = nil
 	if m.PropertyValue != nil {
 		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		propertyValue = m.PropertyValue
 		_propertyValueErr := propertyValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
 		if _propertyValueErr != nil {
 			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
@@ -441,12 +447,12 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var priority *BACnetContextTagUnsignedInteger = nil
 	if m.Priority != nil {
 		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.Priority
 		_priorityErr := priority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for priority")
 		}
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
@@ -457,12 +463,12 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	var postDelay *BACnetContextTagBoolean = nil
 	if m.PostDelay != nil {
 		if pushErr := writeBuffer.PushContext("postDelay"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for postDelay")
 		}
 		postDelay = m.PostDelay
 		_postDelayErr := postDelay.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("postDelay"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for postDelay")
 		}
 		if _postDelayErr != nil {
 			return errors.Wrap(_postDelayErr, "Error serializing 'postDelay' field")
@@ -471,11 +477,11 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (quitOnFailure)
 	if pushErr := writeBuffer.PushContext("quitOnFailure"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for quitOnFailure")
 	}
 	_quitOnFailureErr := m.QuitOnFailure.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("quitOnFailure"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for quitOnFailure")
 	}
 	if _quitOnFailureErr != nil {
 		return errors.Wrap(_quitOnFailureErr, "Error serializing 'quitOnFailure' field")
@@ -483,18 +489,18 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (writeSuccessful)
 	if pushErr := writeBuffer.PushContext("writeSuccessful"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for writeSuccessful")
 	}
 	_writeSuccessfulErr := m.WriteSuccessful.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("writeSuccessful"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for writeSuccessful")
 	}
 	if _writeSuccessfulErr != nil {
 		return errors.Wrap(_writeSuccessfulErr, "Error serializing 'writeSuccessful' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetActionCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetActionCommand")
 	}
 	return nil
 }

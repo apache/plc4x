@@ -128,14 +128,14 @@ func BACnetHostAddressIpAddressParse(readBuffer utils.ReadBuffer) (*BACnetHostAd
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressIpAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetHostAddressIpAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipAddress)
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
 	}
 	_ipAddress, _ipAddressErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _ipAddressErr != nil {
@@ -143,11 +143,11 @@ func BACnetHostAddressIpAddressParse(readBuffer utils.ReadBuffer) (*BACnetHostAd
 	}
 	ipAddress := CastBACnetContextTagOctetString(_ipAddress)
 	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetHostAddressIpAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetHostAddressIpAddress")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetHostAddressIpAddress) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetHostAddressIpAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetHostAddressIpAddress")
 		}
 
 		// Simple Field (ipAddress)
 		if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipAddress")
 		}
 		_ipAddressErr := m.IpAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipAddress")
 		}
 		if _ipAddressErr != nil {
 			return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetHostAddressIpAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetHostAddressIpAddress")
 		}
 		return nil
 	}

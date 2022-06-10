@@ -139,7 +139,7 @@ func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (*SALDataRampToLevel, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataRampToLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SALDataRampToLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -159,7 +159,7 @@ func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (*SALDataRampToLevel, 
 	level := _level
 
 	if closeErr := readBuffer.CloseContext("SALDataRampToLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SALDataRampToLevel")
 	}
 
 	// Create a partially initialized instance
@@ -177,7 +177,7 @@ func (m *SALDataRampToLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataRampToLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SALDataRampToLevel")
 		}
 
 		// Simple Field (group)
@@ -195,7 +195,7 @@ func (m *SALDataRampToLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataRampToLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SALDataRampToLevel")
 		}
 		return nil
 	}

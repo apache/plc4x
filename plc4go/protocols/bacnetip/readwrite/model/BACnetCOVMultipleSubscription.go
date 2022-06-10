@@ -137,14 +137,14 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOV
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCOVMultipleSubscription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCOVMultipleSubscription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (recipient)
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
 	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
@@ -152,12 +152,12 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOV
 	}
 	recipient := CastBACnetRecipientProcessEnclosed(_recipient)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recipient")
 	}
 
 	// Simple Field (issueConfirmedNotifications)
 	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 	}
 	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _issueConfirmedNotificationsErr != nil {
@@ -165,12 +165,12 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOV
 	}
 	issueConfirmedNotifications := CastBACnetContextTagBoolean(_issueConfirmedNotifications)
 	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
 	}
 
 	// Simple Field (timeRemaining)
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
 	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
@@ -178,12 +178,12 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOV
 	}
 	timeRemaining := CastBACnetContextTagUnsignedInteger(_timeRemaining)
 	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeRemaining")
 	}
 
 	// Simple Field (maxNotificationDelay)
 	if pullErr := readBuffer.PullContext("maxNotificationDelay"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxNotificationDelay")
 	}
 	_maxNotificationDelay, _maxNotificationDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _maxNotificationDelayErr != nil {
@@ -191,12 +191,12 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOV
 	}
 	maxNotificationDelay := CastBACnetContextTagUnsignedInteger(_maxNotificationDelay)
 	if closeErr := readBuffer.CloseContext("maxNotificationDelay"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxNotificationDelay")
 	}
 
 	// Simple Field (listOfCovSubscriptionSpecification)
 	if pullErr := readBuffer.PullContext("listOfCovSubscriptionSpecification"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovSubscriptionSpecification")
 	}
 	_listOfCovSubscriptionSpecification, _listOfCovSubscriptionSpecificationErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBuffer, uint8(uint8(4)))
 	if _listOfCovSubscriptionSpecificationErr != nil {
@@ -204,11 +204,11 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOV
 	}
 	listOfCovSubscriptionSpecification := CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(_listOfCovSubscriptionSpecification)
 	if closeErr := readBuffer.CloseContext("listOfCovSubscriptionSpecification"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfCovSubscriptionSpecification")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCOVMultipleSubscription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetCOVMultipleSubscription")
 	}
 
 	// Create the instance
@@ -219,16 +219,16 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCOVMultipleSubscription"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetCOVMultipleSubscription")
 	}
 
 	// Simple Field (recipient)
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
 	_recipientErr := m.Recipient.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for recipient")
 	}
 	if _recipientErr != nil {
 		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
@@ -236,11 +236,11 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (issueConfirmedNotifications)
 	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 	}
 	_issueConfirmedNotificationsErr := m.IssueConfirmedNotifications.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 	}
 	if _issueConfirmedNotificationsErr != nil {
 		return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
@@ -248,11 +248,11 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (timeRemaining)
 	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
 	}
 	_timeRemainingErr := m.TimeRemaining.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timeRemaining")
 	}
 	if _timeRemainingErr != nil {
 		return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
@@ -260,11 +260,11 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (maxNotificationDelay)
 	if pushErr := writeBuffer.PushContext("maxNotificationDelay"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for maxNotificationDelay")
 	}
 	_maxNotificationDelayErr := m.MaxNotificationDelay.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("maxNotificationDelay"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for maxNotificationDelay")
 	}
 	if _maxNotificationDelayErr != nil {
 		return errors.Wrap(_maxNotificationDelayErr, "Error serializing 'maxNotificationDelay' field")
@@ -272,18 +272,18 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (listOfCovSubscriptionSpecification)
 	if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecification"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecification")
 	}
 	_listOfCovSubscriptionSpecificationErr := m.ListOfCovSubscriptionSpecification.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecification"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecification")
 	}
 	if _listOfCovSubscriptionSpecificationErr != nil {
 		return errors.Wrap(_listOfCovSubscriptionSpecificationErr, "Error serializing 'listOfCovSubscriptionSpecification' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCOVMultipleSubscription"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetCOVMultipleSubscription")
 	}
 	return nil
 }

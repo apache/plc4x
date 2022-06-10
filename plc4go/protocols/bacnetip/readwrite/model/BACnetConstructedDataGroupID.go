@@ -142,14 +142,14 @@ func BACnetConstructedDataGroupIDParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupID"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataGroupID")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (groupId)
 	if pullErr := readBuffer.PullContext("groupId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for groupId")
 	}
 	_groupId, _groupIdErr := BACnetApplicationTagParse(readBuffer)
 	if _groupIdErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataGroupIDParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	groupId := CastBACnetApplicationTagUnsignedInteger(_groupId)
 	if closeErr := readBuffer.CloseContext("groupId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for groupId")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGroupID"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGroupID")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataGroupID) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataGroupID"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGroupID")
 		}
 
 		// Simple Field (groupId)
 		if pushErr := writeBuffer.PushContext("groupId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for groupId")
 		}
 		_groupIdErr := m.GroupId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("groupId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for groupId")
 		}
 		if _groupIdErr != nil {
 			return errors.Wrap(_groupIdErr, "Error serializing 'groupId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGroupID"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataGroupID")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserInformationReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUserInformationReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (userInformationReference)
 	if pullErr := readBuffer.PullContext("userInformationReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for userInformationReference")
 	}
 	_userInformationReference, _userInformationReferenceErr := BACnetApplicationTagParse(readBuffer)
 	if _userInformationReferenceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 	}
 	userInformationReference := CastBACnetApplicationTagCharacterString(_userInformationReference)
 	if closeErr := readBuffer.CloseContext("userInformationReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for userInformationReference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserInformationReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserInformationReference")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUserInformationReference) Serialize(writeBuffer ut
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUserInformationReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUserInformationReference")
 		}
 
 		// Simple Field (userInformationReference)
 		if pushErr := writeBuffer.PushContext("userInformationReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for userInformationReference")
 		}
 		_userInformationReferenceErr := m.UserInformationReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("userInformationReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for userInformationReference")
 		}
 		if _userInformationReferenceErr != nil {
 			return errors.Wrap(_userInformationReferenceErr, "Error serializing 'userInformationReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUserInformationReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUserInformationReference")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataStrikeCountParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStrikeCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStrikeCount")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (strikeCount)
 	if pullErr := readBuffer.PullContext("strikeCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for strikeCount")
 	}
 	_strikeCount, _strikeCountErr := BACnetApplicationTagParse(readBuffer)
 	if _strikeCountErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataStrikeCountParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	strikeCount := CastBACnetApplicationTagUnsignedInteger(_strikeCount)
 	if closeErr := readBuffer.CloseContext("strikeCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for strikeCount")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStrikeCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStrikeCount")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataStrikeCount) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataStrikeCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStrikeCount")
 		}
 
 		// Simple Field (strikeCount)
 		if pushErr := writeBuffer.PushContext("strikeCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for strikeCount")
 		}
 		_strikeCountErr := m.StrikeCount.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("strikeCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for strikeCount")
 		}
 		if _strikeCountErr != nil {
 			return errors.Wrap(_strikeCountErr, "Error serializing 'strikeCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStrikeCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataStrikeCount")
 		}
 		return nil
 	}

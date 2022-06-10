@@ -217,7 +217,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtPropertyDescriptionResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -266,7 +266,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 
 	// Simple Field (propertyDataType)
 	if pullErr := readBuffer.PullContext("propertyDataType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyDataType")
 	}
 	_propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(readBuffer)
 	if _propertyDataTypeErr != nil {
@@ -274,7 +274,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	}
 	propertyDataType := _propertyDataType
 	if closeErr := readBuffer.CloseContext("propertyDataType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyDataType")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -300,7 +300,7 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 
 	// Simple Field (readLevel)
 	if pullErr := readBuffer.PullContext("readLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for readLevel")
 	}
 	_readLevel, _readLevelErr := AccessLevelParse(readBuffer)
 	if _readLevelErr != nil {
@@ -308,12 +308,12 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	}
 	readLevel := _readLevel
 	if closeErr := readBuffer.CloseContext("readLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for readLevel")
 	}
 
 	// Simple Field (writeLevel)
 	if pullErr := readBuffer.PullContext("writeLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for writeLevel")
 	}
 	_writeLevel, _writeLevelErr := AccessLevelParse(readBuffer)
 	if _writeLevelErr != nil {
@@ -321,11 +321,11 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 	}
 	writeLevel := _writeLevel
 	if closeErr := readBuffer.CloseContext("writeLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for writeLevel")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyDescriptionResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtPropertyDescriptionResponse")
 	}
 
 	// Create a partially initialized instance
@@ -349,7 +349,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtPropertyDescriptionResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataExtPropertyDescriptionResponse")
 		}
 
 		// Simple Field (objectIndex)
@@ -390,11 +390,11 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (propertyDataType)
 		if pushErr := writeBuffer.PushContext("propertyDataType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyDataType")
 		}
 		_propertyDataTypeErr := m.PropertyDataType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyDataType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyDataType")
 		}
 		if _propertyDataTypeErr != nil {
 			return errors.Wrap(_propertyDataTypeErr, "Error serializing 'propertyDataType' field")
@@ -417,11 +417,11 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (readLevel)
 		if pushErr := writeBuffer.PushContext("readLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for readLevel")
 		}
 		_readLevelErr := m.ReadLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("readLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for readLevel")
 		}
 		if _readLevelErr != nil {
 			return errors.Wrap(_readLevelErr, "Error serializing 'readLevel' field")
@@ -429,18 +429,18 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 
 		// Simple Field (writeLevel)
 		if pushErr := writeBuffer.PushContext("writeLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for writeLevel")
 		}
 		_writeLevelErr := m.WriteLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("writeLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for writeLevel")
 		}
 		if _writeLevelErr != nil {
 			return errors.Wrap(_writeLevelErr, "Error serializing 'writeLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtPropertyDescriptionResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataExtPropertyDescriptionResponse")
 		}
 		return nil
 	}

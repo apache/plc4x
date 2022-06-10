@@ -142,14 +142,14 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (mode)
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
 	_mode, _modeErr := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _modeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 	mode := CastBACnetLifeSafetyModeTagged(_mode)
 	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for mode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMode) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMode")
 		}
 
 		// Simple Field (mode)
 		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for mode")
 		}
 		_modeErr := m.Mode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for mode")
 		}
 		if _modeErr != nil {
 			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMode")
 		}
 		return nil
 	}

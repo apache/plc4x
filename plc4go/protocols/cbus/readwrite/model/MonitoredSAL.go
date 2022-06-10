@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -157,7 +158,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSAL"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSAL")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -196,18 +197,19 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for salData")
 		}
 		_val, _err := SALDataParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'salData' field")
 		default:
 			salData = CastSALData(_val)
 			if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for salData")
 			}
 		}
 	}
@@ -231,7 +233,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredSAL"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MonitoredSAL")
 	}
 
 	// Finish initializing
@@ -247,7 +249,7 @@ func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMon
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MonitoredSAL"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for MonitoredSAL")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -259,12 +261,12 @@ func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMon
 	var salData *SALData = nil
 	if m.SalData != nil {
 		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for salData")
 		}
 		salData = m.SalData
 		_salDataErr := salData.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for salData")
 		}
 		if _salDataErr != nil {
 			return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
@@ -284,7 +286,7 @@ func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMon
 	}
 
 	if popErr := writeBuffer.PopContext("MonitoredSAL"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for MonitoredSAL")
 	}
 	return nil
 }

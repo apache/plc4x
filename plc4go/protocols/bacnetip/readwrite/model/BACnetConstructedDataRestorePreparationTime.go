@@ -142,14 +142,14 @@ func BACnetConstructedDataRestorePreparationTimeParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestorePreparationTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRestorePreparationTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (restorePreparationTime)
 	if pullErr := readBuffer.PullContext("restorePreparationTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for restorePreparationTime")
 	}
 	_restorePreparationTime, _restorePreparationTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _restorePreparationTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataRestorePreparationTimeParse(readBuffer utils.ReadBuffe
 	}
 	restorePreparationTime := CastBACnetApplicationTagUnsignedInteger(_restorePreparationTime)
 	if closeErr := readBuffer.CloseContext("restorePreparationTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for restorePreparationTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestorePreparationTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestorePreparationTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataRestorePreparationTime) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRestorePreparationTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestorePreparationTime")
 		}
 
 		// Simple Field (restorePreparationTime)
 		if pushErr := writeBuffer.PushContext("restorePreparationTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for restorePreparationTime")
 		}
 		_restorePreparationTimeErr := m.RestorePreparationTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("restorePreparationTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for restorePreparationTime")
 		}
 		if _restorePreparationTimeErr != nil {
 			return errors.Wrap(_restorePreparationTimeErr, "Error serializing 'restorePreparationTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRestorePreparationTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRestorePreparationTime")
 		}
 		return nil
 	}

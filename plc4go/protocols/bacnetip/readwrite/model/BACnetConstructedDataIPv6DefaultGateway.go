@@ -142,14 +142,14 @@ func BACnetConstructedDataIPv6DefaultGatewayParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DefaultGateway"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6DefaultGateway")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipv6DefaultGateway)
 	if pullErr := readBuffer.PullContext("ipv6DefaultGateway"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DefaultGateway")
 	}
 	_ipv6DefaultGateway, _ipv6DefaultGatewayErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6DefaultGatewayErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPv6DefaultGatewayParse(readBuffer utils.ReadBuffer, t
 	}
 	ipv6DefaultGateway := CastBACnetApplicationTagOctetString(_ipv6DefaultGateway)
 	if closeErr := readBuffer.CloseContext("ipv6DefaultGateway"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipv6DefaultGateway")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DefaultGateway"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6DefaultGateway")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPv6DefaultGateway) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPv6DefaultGateway"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6DefaultGateway")
 		}
 
 		// Simple Field (ipv6DefaultGateway)
 		if pushErr := writeBuffer.PushContext("ipv6DefaultGateway"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipv6DefaultGateway")
 		}
 		_ipv6DefaultGatewayErr := m.Ipv6DefaultGateway.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipv6DefaultGateway"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipv6DefaultGateway")
 		}
 		if _ipv6DefaultGatewayErr != nil {
 			return errors.Wrap(_ipv6DefaultGatewayErr, "Error serializing 'ipv6DefaultGateway' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6DefaultGateway"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPv6DefaultGateway")
 		}
 		return nil
 	}

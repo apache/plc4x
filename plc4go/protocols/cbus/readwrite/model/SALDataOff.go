@@ -128,7 +128,7 @@ func SALDataOffParse(readBuffer utils.ReadBuffer) (*SALDataOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataOff"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SALDataOff")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func SALDataOffParse(readBuffer utils.ReadBuffer) (*SALDataOff, error) {
 	group := _group
 
 	if closeErr := readBuffer.CloseContext("SALDataOff"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SALDataOff")
 	}
 
 	// Create a partially initialized instance
@@ -158,7 +158,7 @@ func (m *SALDataOff) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SALDataOff"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SALDataOff")
 		}
 
 		// Simple Field (group)
@@ -169,7 +169,7 @@ func (m *SALDataOff) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataOff"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SALDataOff")
 		}
 		return nil
 	}

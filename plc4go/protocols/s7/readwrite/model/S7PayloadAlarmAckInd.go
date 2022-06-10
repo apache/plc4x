@@ -141,14 +141,14 @@ func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmAckInd"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadAlarmAckInd")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (alarmMessage)
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for alarmMessage")
 	}
 	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParse(readBuffer)
 	if _alarmMessageErr != nil {
@@ -156,11 +156,11 @@ func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint
 	}
 	alarmMessage := CastAlarmMessageAckPushType(_alarmMessage)
 	if closeErr := readBuffer.CloseContext("alarmMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for alarmMessage")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadAlarmAckInd"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadAlarmAckInd")
 	}
 
 	// Create a partially initialized instance
@@ -177,23 +177,23 @@ func (m *S7PayloadAlarmAckInd) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadAlarmAckInd"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7PayloadAlarmAckInd")
 		}
 
 		// Simple Field (alarmMessage)
 		if pushErr := writeBuffer.PushContext("alarmMessage"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for alarmMessage")
 		}
 		_alarmMessageErr := m.AlarmMessage.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("alarmMessage"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for alarmMessage")
 		}
 		if _alarmMessageErr != nil {
 			return errors.Wrap(_alarmMessageErr, "Error serializing 'alarmMessage' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadAlarmAckInd"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7PayloadAlarmAckInd")
 		}
 		return nil
 	}

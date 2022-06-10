@@ -142,14 +142,14 @@ func BACnetConstructedDataPulseRateParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPulseRate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPulseRate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (pulseRate)
 	if pullErr := readBuffer.PullContext("pulseRate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for pulseRate")
 	}
 	_pulseRate, _pulseRateErr := BACnetApplicationTagParse(readBuffer)
 	if _pulseRateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPulseRateParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	pulseRate := CastBACnetApplicationTagUnsignedInteger(_pulseRate)
 	if closeErr := readBuffer.CloseContext("pulseRate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for pulseRate")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPulseRate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPulseRate")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPulseRate) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPulseRate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPulseRate")
 		}
 
 		// Simple Field (pulseRate)
 		if pushErr := writeBuffer.PushContext("pulseRate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for pulseRate")
 		}
 		_pulseRateErr := m.PulseRate.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("pulseRate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for pulseRate")
 		}
 		if _pulseRateErr != nil {
 			return errors.Wrap(_pulseRateErr, "Error serializing 'pulseRate' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPulseRate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPulseRate")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataStartTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStartTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStartTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (startTime)
 	if pullErr := readBuffer.PullContext("startTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for startTime")
 	}
 	_startTime, _startTimeErr := BACnetDateTimeParse(readBuffer)
 	if _startTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataStartTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	startTime := CastBACnetDateTime(_startTime)
 	if closeErr := readBuffer.CloseContext("startTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for startTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStartTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStartTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataStartTime) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataStartTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStartTime")
 		}
 
 		// Simple Field (startTime)
 		if pushErr := writeBuffer.PushContext("startTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for startTime")
 		}
 		_startTimeErr := m.StartTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("startTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for startTime")
 		}
 		if _startTimeErr != nil {
 			return errors.Wrap(_startTimeErr, "Error serializing 'startTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStartTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataStartTime")
 		}
 		return nil
 	}

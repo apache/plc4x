@@ -142,14 +142,14 @@ func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (carMode)
 	if pullErr := readBuffer.PullContext("carMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for carMode")
 	}
 	_carMode, _carModeErr := BACnetLiftCarModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carModeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	carMode := CastBACnetLiftCarModeTagged(_carMode)
 	if closeErr := readBuffer.CloseContext("carMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for carMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarMode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCarMode) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCarMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarMode")
 		}
 
 		// Simple Field (carMode)
 		if pushErr := writeBuffer.PushContext("carMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for carMode")
 		}
 		_carModeErr := m.CarMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("carMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for carMode")
 		}
 		if _carModeErr != nil {
 			return errors.Wrap(_carModeErr, "Error serializing 'carMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCarMode")
 		}
 		return nil
 	}

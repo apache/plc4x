@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -135,14 +136,14 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ListOfCovNotificationsValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ListOfCovNotificationsValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
 	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
@@ -150,7 +151,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}
 	propertyIdentifier := CastBACnetPropertyIdentifierTagged(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
@@ -158,25 +159,26 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
 		default:
 			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
 			}
 		}
 	}
 
 	// Simple Field (propertyValue)
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 	}
 	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), CastBACnetTagPayloadUnsignedInteger(CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((*arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _propertyValueErr != nil {
@@ -184,7 +186,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}
 	propertyValue := CastBACnetConstructedData(_propertyValue)
 	if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
 	}
 
 	// Optional Field (timeOfChange) (Can be skipped, if a given expression evaluates to false)
@@ -192,24 +194,25 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("timeOfChange"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for timeOfChange")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_TIME)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'timeOfChange' field")
 		default:
 			timeOfChange = CastBACnetContextTagTime(_val)
 			if closeErr := readBuffer.CloseContext("timeOfChange"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for timeOfChange")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("ListOfCovNotificationsValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ListOfCovNotificationsValue")
 	}
 
 	// Create the instance
@@ -220,16 +223,16 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ListOfCovNotificationsValue"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ListOfCovNotificationsValue")
 	}
 
 	// Simple Field (propertyIdentifier)
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
 	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
 	if _propertyIdentifierErr != nil {
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
@@ -239,12 +242,12 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	if m.ArrayIndex != nil {
 		if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
 		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
 		if _arrayIndexErr != nil {
 			return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
@@ -253,11 +256,11 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (propertyValue)
 	if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for propertyValue")
 	}
 	_propertyValueErr := m.PropertyValue.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for propertyValue")
 	}
 	if _propertyValueErr != nil {
 		return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
@@ -267,12 +270,12 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 	var timeOfChange *BACnetContextTagTime = nil
 	if m.TimeOfChange != nil {
 		if pushErr := writeBuffer.PushContext("timeOfChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeOfChange")
 		}
 		timeOfChange = m.TimeOfChange
 		_timeOfChangeErr := timeOfChange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeOfChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeOfChange")
 		}
 		if _timeOfChangeErr != nil {
 			return errors.Wrap(_timeOfChangeErr, "Error serializing 'timeOfChange' field")
@@ -280,7 +283,7 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	if popErr := writeBuffer.PopContext("ListOfCovNotificationsValue"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ListOfCovNotificationsValue")
 	}
 	return nil
 }

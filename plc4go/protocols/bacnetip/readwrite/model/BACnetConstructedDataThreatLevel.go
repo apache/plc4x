@@ -142,14 +142,14 @@ func BACnetConstructedDataThreatLevelParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataThreatLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataThreatLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (threatLevel)
 	if pullErr := readBuffer.PullContext("threatLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for threatLevel")
 	}
 	_threatLevel, _threatLevelErr := BACnetAccessThreatLevelParse(readBuffer)
 	if _threatLevelErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataThreatLevelParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	threatLevel := CastBACnetAccessThreatLevel(_threatLevel)
 	if closeErr := readBuffer.CloseContext("threatLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for threatLevel")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataThreatLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataThreatLevel")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataThreatLevel) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataThreatLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataThreatLevel")
 		}
 
 		// Simple Field (threatLevel)
 		if pushErr := writeBuffer.PushContext("threatLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for threatLevel")
 		}
 		_threatLevelErr := m.ThreatLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("threatLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for threatLevel")
 		}
 		if _threatLevelErr != nil {
 			return errors.Wrap(_threatLevelErr, "Error serializing 'threatLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataThreatLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataThreatLevel")
 		}
 		return nil
 	}

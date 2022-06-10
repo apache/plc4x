@@ -107,7 +107,7 @@ func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectIn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ProjectInstallationIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ProjectInstallationIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -127,7 +127,7 @@ func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectIn
 	installationNumber := _installationNumber
 
 	if closeErr := readBuffer.CloseContext("ProjectInstallationIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ProjectInstallationIdentifier")
 	}
 
 	// Create the instance
@@ -138,7 +138,7 @@ func (m *ProjectInstallationIdentifier) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ProjectInstallationIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ProjectInstallationIdentifier")
 	}
 
 	// Simple Field (projectNumber)
@@ -156,7 +156,7 @@ func (m *ProjectInstallationIdentifier) Serialize(writeBuffer utils.WriteBuffer)
 	}
 
 	if popErr := writeBuffer.PopContext("ProjectInstallationIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ProjectInstallationIdentifier")
 	}
 	return nil
 }

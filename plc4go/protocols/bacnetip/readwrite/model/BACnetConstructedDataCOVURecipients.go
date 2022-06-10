@@ -146,14 +146,14 @@ func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVURecipients"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCOVURecipients")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (covuRecipients)
 	if pullErr := readBuffer.PullContext("covuRecipients", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for covuRecipients")
 	}
 	// Terminated array
 	covuRecipients := make([]*BACnetRecipient, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNu
 		}
 	}
 	if closeErr := readBuffer.CloseContext("covuRecipients", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for covuRecipients")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVURecipients"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCOVURecipients")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataCOVURecipients) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCOVURecipients"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVURecipients")
 		}
 
 		// Array Field (covuRecipients)
 		if m.CovuRecipients != nil {
 			if pushErr := writeBuffer.PushContext("covuRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for covuRecipients")
 			}
 			for _, _element := range m.CovuRecipients {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataCOVURecipients) Serialize(writeBuffer utils.WriteB
 				}
 			}
 			if popErr := writeBuffer.PopContext("covuRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for covuRecipients")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCOVURecipients"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCOVURecipients")
 		}
 		return nil
 	}

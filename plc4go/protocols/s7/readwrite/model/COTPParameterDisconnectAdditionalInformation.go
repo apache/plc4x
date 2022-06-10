@@ -135,7 +135,7 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterDisconnectAdditionalInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPParameterDisconnectAdditionalInformation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterDisconnectAdditionalInformation")
 	}
 
 	// Create a partially initialized instance
@@ -164,7 +164,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPParameterDisconnectAdditionalInformation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for COTPParameterDisconnectAdditionalInformation")
 		}
 
 		// Array Field (data)
@@ -177,7 +177,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer uti
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterDisconnectAdditionalInformation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for COTPParameterDisconnectAdditionalInformation")
 		}
 		return nil
 	}

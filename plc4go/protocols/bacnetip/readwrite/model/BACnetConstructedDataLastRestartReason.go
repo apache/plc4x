@@ -142,14 +142,14 @@ func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastRestartReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastRestartReason")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastRestartReason)
 	if pullErr := readBuffer.PullContext("lastRestartReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastRestartReason")
 	}
 	_lastRestartReason, _lastRestartReasonErr := BACnetRestartReasonTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastRestartReasonErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, ta
 	}
 	lastRestartReason := CastBACnetRestartReasonTagged(_lastRestartReason)
 	if closeErr := readBuffer.CloseContext("lastRestartReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastRestartReason")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastRestartReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastRestartReason")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastRestartReason) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastRestartReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastRestartReason")
 		}
 
 		// Simple Field (lastRestartReason)
 		if pushErr := writeBuffer.PushContext("lastRestartReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastRestartReason")
 		}
 		_lastRestartReasonErr := m.LastRestartReason.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastRestartReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastRestartReason")
 		}
 		if _lastRestartReasonErr != nil {
 			return errors.Wrap(_lastRestartReasonErr, "Error serializing 'lastRestartReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastRestartReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastRestartReason")
 		}
 		return nil
 	}

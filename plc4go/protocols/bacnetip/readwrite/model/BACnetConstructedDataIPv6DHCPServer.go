@@ -142,14 +142,14 @@ func BACnetConstructedDataIPv6DHCPServerParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPServer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6DHCPServer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dhcpServer)
 	if pullErr := readBuffer.PullContext("dhcpServer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dhcpServer")
 	}
 	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParse(readBuffer)
 	if _dhcpServerErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPv6DHCPServerParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	dhcpServer := CastBACnetApplicationTagOctetString(_dhcpServer)
 	if closeErr := readBuffer.CloseContext("dhcpServer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dhcpServer")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DHCPServer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6DHCPServer")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPv6DHCPServer) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPv6DHCPServer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6DHCPServer")
 		}
 
 		// Simple Field (dhcpServer)
 		if pushErr := writeBuffer.PushContext("dhcpServer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dhcpServer")
 		}
 		_dhcpServerErr := m.DhcpServer.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dhcpServer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dhcpServer")
 		}
 		if _dhcpServerErr != nil {
 			return errors.Wrap(_dhcpServerErr, "Error serializing 'dhcpServer' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6DHCPServer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPv6DHCPServer")
 		}
 		return nil
 	}

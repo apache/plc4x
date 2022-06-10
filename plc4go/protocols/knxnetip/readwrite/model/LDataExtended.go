@@ -200,7 +200,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for LDataExtended")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -228,7 +228,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 
 	// Simple Field (sourceAddress)
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
 	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
 	if _sourceAddressErr != nil {
@@ -236,7 +236,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 	}
 	sourceAddress := CastKnxAddress(_sourceAddress)
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
 	}
 	// Byte Array field (destinationAddress)
 	numberOfBytesdestinationAddress := int(uint16(2))
@@ -254,7 +254,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 
 	// Simple Field (apdu)
 	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for apdu")
 	}
 	_apdu, _apduErr := ApduParse(readBuffer, uint8(dataLength))
 	if _apduErr != nil {
@@ -262,11 +262,11 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 	}
 	apdu := CastApdu(_apdu)
 	if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for apdu")
 	}
 
 	if closeErr := readBuffer.CloseContext("LDataExtended"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for LDataExtended")
 	}
 
 	// Create a partially initialized instance
@@ -288,7 +288,7 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LDataExtended"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for LDataExtended")
 		}
 
 		// Simple Field (groupAddress)
@@ -314,11 +314,11 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (sourceAddress)
 		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 		}
 		_sourceAddressErr := m.SourceAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for sourceAddress")
 		}
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
@@ -342,18 +342,18 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (apdu)
 		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for apdu")
 		}
 		_apduErr := m.Apdu.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for apdu")
 		}
 		if _apduErr != nil {
 			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LDataExtended"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for LDataExtended")
 		}
 		return nil
 	}

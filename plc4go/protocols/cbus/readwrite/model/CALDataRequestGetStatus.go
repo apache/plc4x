@@ -139,7 +139,7 @@ func CALDataRequestGetStatusParse(readBuffer utils.ReadBuffer) (*CALDataRequestG
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataRequestGetStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALDataRequestGetStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -159,7 +159,7 @@ func CALDataRequestGetStatusParse(readBuffer utils.ReadBuffer) (*CALDataRequestG
 	count := _count
 
 	if closeErr := readBuffer.CloseContext("CALDataRequestGetStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALDataRequestGetStatus")
 	}
 
 	// Create a partially initialized instance
@@ -177,7 +177,7 @@ func (m *CALDataRequestGetStatus) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALDataRequestGetStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CALDataRequestGetStatus")
 		}
 
 		// Simple Field (paramNo)
@@ -195,7 +195,7 @@ func (m *CALDataRequestGetStatus) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataRequestGetStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CALDataRequestGetStatus")
 		}
 		return nil
 	}

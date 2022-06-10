@@ -145,14 +145,14 @@ func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandI
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsAddDeviceNotificationResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
@@ -160,7 +160,7 @@ func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandI
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for result")
 	}
 
 	// Simple Field (notificationHandle)
@@ -171,7 +171,7 @@ func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandI
 	notificationHandle := _notificationHandle
 
 	if closeErr := readBuffer.CloseContext("AdsAddDeviceNotificationResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsAddDeviceNotificationResponse")
 	}
 
 	// Create a partially initialized instance
@@ -189,16 +189,16 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsAddDeviceNotificationResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsAddDeviceNotificationResponse")
 		}
 
 		// Simple Field (result)
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for result")
 		}
 		_resultErr := m.Result.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for result")
 		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
@@ -212,7 +212,7 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		if popErr := writeBuffer.PopContext("AdsAddDeviceNotificationResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsAddDeviceNotificationResponse")
 		}
 		return nil
 	}

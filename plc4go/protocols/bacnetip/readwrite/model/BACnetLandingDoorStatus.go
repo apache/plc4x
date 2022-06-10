@@ -97,14 +97,14 @@ func BACnetLandingDoorStatusParse(readBuffer utils.ReadBuffer) (*BACnetLandingDo
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingDoorStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingDoorStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (landingDoors)
 	if pullErr := readBuffer.PullContext("landingDoors"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for landingDoors")
 	}
 	_landingDoors, _landingDoorsErr := BACnetLandingDoorStatusLandingDoorsListParse(readBuffer, uint8(uint8(0)))
 	if _landingDoorsErr != nil {
@@ -112,11 +112,11 @@ func BACnetLandingDoorStatusParse(readBuffer utils.ReadBuffer) (*BACnetLandingDo
 	}
 	landingDoors := CastBACnetLandingDoorStatusLandingDoorsList(_landingDoors)
 	if closeErr := readBuffer.CloseContext("landingDoors"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for landingDoors")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingDoorStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingDoorStatus")
 	}
 
 	// Create the instance
@@ -127,23 +127,23 @@ func (m *BACnetLandingDoorStatus) Serialize(writeBuffer utils.WriteBuffer) error
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLandingDoorStatus"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetLandingDoorStatus")
 	}
 
 	// Simple Field (landingDoors)
 	if pushErr := writeBuffer.PushContext("landingDoors"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for landingDoors")
 	}
 	_landingDoorsErr := m.LandingDoors.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("landingDoors"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for landingDoors")
 	}
 	if _landingDoorsErr != nil {
 		return errors.Wrap(_landingDoorsErr, "Error serializing 'landingDoors' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLandingDoorStatus"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetLandingDoorStatus")
 	}
 	return nil
 }

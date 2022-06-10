@@ -162,7 +162,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageQueryType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageQueryType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -183,7 +183,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
@@ -191,12 +191,12 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
 	}
 
 	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
@@ -204,7 +204,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
 	// Const Field (DataLength)
@@ -218,7 +218,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 
 	// Array field (messageObjects)
 	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
 	messageObjects := make([]*AlarmMessageObjectQueryType, numberOfObjects)
@@ -232,11 +232,11 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageQueryType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageQueryType")
 	}
 
 	// Create the instance
@@ -247,7 +247,7 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageQueryType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AlarmMessageQueryType")
 	}
 
 	// Simple Field (functionId)
@@ -266,11 +266,11 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
 	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
@@ -278,11 +278,11 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (transportSize)
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for transportSize")
 	}
 	_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for transportSize")
 	}
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
@@ -297,7 +297,7 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (messageObjects)
 	if m.MessageObjects != nil {
 		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for messageObjects")
 		}
 		for _, _element := range m.MessageObjects {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -306,12 +306,12 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for messageObjects")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageQueryType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AlarmMessageQueryType")
 	}
 	return nil
 }

@@ -167,7 +167,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrame"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for LDataFrame")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -200,7 +200,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 
 	// Simple Field (priority)
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
 	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
@@ -208,7 +208,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 	priority := _priority
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for priority")
 	}
 
 	// Simple Field (acknowledgeRequested)
@@ -248,7 +248,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("LDataFrame"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for LDataFrame")
 	}
 
 	// Finish initializing
@@ -264,7 +264,7 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("LDataFrame"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for LDataFrame")
 	}
 
 	// Simple Field (frameType)
@@ -299,11 +299,11 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 
 	// Simple Field (priority)
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for priority")
 	}
 	_priorityErr := m.Priority.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for priority")
 	}
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
@@ -329,7 +329,7 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	}
 
 	if popErr := writeBuffer.PopContext("LDataFrame"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for LDataFrame")
 	}
 	return nil
 }

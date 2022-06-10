@@ -144,7 +144,7 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandSetPinMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -158,7 +158,7 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 
 	// Simple Field (mode)
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
 	_mode, _modeErr := PinModeParse(readBuffer)
 	if _modeErr != nil {
@@ -166,11 +166,11 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 	}
 	mode := _mode
 	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for mode")
 	}
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetPinMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandSetPinMode")
 	}
 
 	// Create a partially initialized instance
@@ -188,7 +188,7 @@ func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandSetPinMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for FirmataCommandSetPinMode")
 		}
 
 		// Simple Field (pin)
@@ -200,18 +200,18 @@ func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) erro
 
 		// Simple Field (mode)
 		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for mode")
 		}
 		_modeErr := m.Mode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for mode")
 		}
 		if _modeErr != nil {
 			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetPinMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for FirmataCommandSetPinMode")
 		}
 		return nil
 	}

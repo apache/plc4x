@@ -142,14 +142,14 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOperationExpected"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOperationExpected")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lifeSafetyOperations)
 	if pullErr := readBuffer.PullContext("lifeSafetyOperations"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyOperations")
 	}
 	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lifeSafetyOperationsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 	}
 	lifeSafetyOperations := CastBACnetLifeSafetyOperationTagged(_lifeSafetyOperations)
 	if closeErr := readBuffer.CloseContext("lifeSafetyOperations"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lifeSafetyOperations")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationExpected"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOperationExpected")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOperationExpected) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOperationExpected"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOperationExpected")
 		}
 
 		// Simple Field (lifeSafetyOperations)
 		if pushErr := writeBuffer.PushContext("lifeSafetyOperations"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lifeSafetyOperations")
 		}
 		_lifeSafetyOperationsErr := m.LifeSafetyOperations.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lifeSafetyOperations"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lifeSafetyOperations")
 		}
 		if _lifeSafetyOperationsErr != nil {
 			return errors.Wrap(_lifeSafetyOperationsErr, "Error serializing 'lifeSafetyOperations' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOperationExpected"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOperationExpected")
 		}
 		return nil
 	}

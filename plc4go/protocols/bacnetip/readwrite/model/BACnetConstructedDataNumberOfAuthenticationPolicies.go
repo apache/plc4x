@@ -142,14 +142,14 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNumberOfAuthenticationPolicies")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (numberOfAuthenticationPolicies)
 	if pullErr := readBuffer.PullContext("numberOfAuthenticationPolicies"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for numberOfAuthenticationPolicies")
 	}
 	_numberOfAuthenticationPolicies, _numberOfAuthenticationPoliciesErr := BACnetApplicationTagParse(readBuffer)
 	if _numberOfAuthenticationPoliciesErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.R
 	}
 	numberOfAuthenticationPolicies := CastBACnetApplicationTagUnsignedInteger(_numberOfAuthenticationPolicies)
 	if closeErr := readBuffer.CloseContext("numberOfAuthenticationPolicies"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for numberOfAuthenticationPolicies")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfAuthenticationPolicies")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNumberOfAuthenticationPolicies) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNumberOfAuthenticationPolicies")
 		}
 
 		// Simple Field (numberOfAuthenticationPolicies)
 		if pushErr := writeBuffer.PushContext("numberOfAuthenticationPolicies"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for numberOfAuthenticationPolicies")
 		}
 		_numberOfAuthenticationPoliciesErr := m.NumberOfAuthenticationPolicies.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("numberOfAuthenticationPolicies"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for numberOfAuthenticationPolicies")
 		}
 		if _numberOfAuthenticationPoliciesErr != nil {
 			return errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error serializing 'numberOfAuthenticationPolicies' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNumberOfAuthenticationPolicies")
 		}
 		return nil
 	}

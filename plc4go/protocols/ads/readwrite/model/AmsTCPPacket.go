@@ -104,7 +104,7 @@ func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (*AmsTCPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsTCPPacket"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AmsTCPPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -132,7 +132,7 @@ func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (*AmsTCPPacket, error) {
 
 	// Simple Field (userdata)
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
 	_userdata, _userdataErr := AmsPacketParse(readBuffer)
 	if _userdataErr != nil {
@@ -140,11 +140,11 @@ func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (*AmsTCPPacket, error) {
 	}
 	userdata := CastAmsPacket(_userdata)
 	if closeErr := readBuffer.CloseContext("userdata"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for userdata")
 	}
 
 	if closeErr := readBuffer.CloseContext("AmsTCPPacket"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AmsTCPPacket")
 	}
 
 	// Create the instance
@@ -155,7 +155,7 @@ func (m *AmsTCPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsTCPPacket"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AmsTCPPacket")
 	}
 
 	// Reserved Field (reserved)
@@ -175,18 +175,18 @@ func (m *AmsTCPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (userdata)
 	if pushErr := writeBuffer.PushContext("userdata"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for userdata")
 	}
 	_userdataErr := m.Userdata.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("userdata"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for userdata")
 	}
 	if _userdataErr != nil {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AmsTCPPacket"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AmsTCPPacket")
 	}
 	return nil
 }

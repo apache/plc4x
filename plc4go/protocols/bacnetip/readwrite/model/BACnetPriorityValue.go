@@ -144,7 +144,7 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -152,7 +152,7 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -169,7 +169,7 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 
 	// Validation
 	if !(bool(bool(!(peekedIsContextTag))) || bool(bool(bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
-		return nil, utils.ParseValidationError{"unexpected opening or closing tag"}
+		return nil, errors.WithStack(utils.ParseValidationError{"unexpected opening or closing tag"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -219,7 +219,7 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValue")
 	}
 
 	// Finish initializing
@@ -235,7 +235,7 @@ func (m *BACnetPriorityValue) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPriorityValue"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValue")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -252,7 +252,7 @@ func (m *BACnetPriorityValue) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPriorityValue"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetPriorityValue")
 	}
 	return nil
 }

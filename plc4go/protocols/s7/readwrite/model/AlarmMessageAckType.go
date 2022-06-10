@@ -122,7 +122,7 @@ func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckType
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageAckType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckType
 
 	// Array field (messageObjects)
 	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
 	messageObjects := make([]*AlarmMessageObjectAckType, numberOfObjects)
@@ -157,11 +157,11 @@ func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckType
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageAckType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageAckType")
 	}
 
 	// Create the instance
@@ -172,7 +172,7 @@ func (m *AlarmMessageAckType) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageAckType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AlarmMessageAckType")
 	}
 
 	// Simple Field (functionId)
@@ -192,7 +192,7 @@ func (m *AlarmMessageAckType) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (messageObjects)
 	if m.MessageObjects != nil {
 		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for messageObjects")
 		}
 		for _, _element := range m.MessageObjects {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -201,12 +201,12 @@ func (m *AlarmMessageAckType) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for messageObjects")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageAckType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AlarmMessageAckType")
 	}
 	return nil
 }

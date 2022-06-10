@@ -102,7 +102,7 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadOctetString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -114,7 +114,7 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadOctetString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadOctetString")
 	}
 
 	// Create the instance
@@ -125,7 +125,7 @@ func (m *BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadOctetString"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadOctetString")
 	}
 
 	// Array Field (octets)
@@ -138,7 +138,7 @@ func (m *BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadOctetString"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadOctetString")
 	}
 	return nil
 }

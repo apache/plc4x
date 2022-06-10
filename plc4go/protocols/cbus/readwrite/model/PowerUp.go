@@ -114,7 +114,7 @@ func PowerUpParse(readBuffer utils.ReadBuffer) (*PowerUp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for PowerUp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func PowerUpParse(readBuffer utils.ReadBuffer) (*PowerUp, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("PowerUp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for PowerUp")
 	}
 
 	// Create the instance
@@ -158,7 +158,7 @@ func (m *PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("PowerUp"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for PowerUp")
 	}
 
 	// Const Field (plus)
@@ -180,7 +180,7 @@ func (m *PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("PowerUp"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for PowerUp")
 	}
 	return nil
 }

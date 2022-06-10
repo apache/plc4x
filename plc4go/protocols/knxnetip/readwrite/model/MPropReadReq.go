@@ -177,7 +177,7 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MPropReadReq,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropReadReq"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MPropReadReq")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -218,7 +218,7 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MPropReadReq,
 	startIndex := _startIndex
 
 	if closeErr := readBuffer.CloseContext("MPropReadReq"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MPropReadReq")
 	}
 
 	// Create a partially initialized instance
@@ -239,7 +239,7 @@ func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MPropReadReq"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for MPropReadReq")
 		}
 
 		// Simple Field (interfaceObjectType)
@@ -278,7 +278,7 @@ func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("MPropReadReq"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for MPropReadReq")
 		}
 		return nil
 	}

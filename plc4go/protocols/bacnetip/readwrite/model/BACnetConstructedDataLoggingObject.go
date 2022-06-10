@@ -142,14 +142,14 @@ func BACnetConstructedDataLoggingObjectParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingObject"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLoggingObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (loggingObject)
 	if pullErr := readBuffer.PullContext("loggingObject"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for loggingObject")
 	}
 	_loggingObject, _loggingObjectErr := BACnetApplicationTagParse(readBuffer)
 	if _loggingObjectErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLoggingObjectParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	loggingObject := CastBACnetApplicationTagObjectIdentifier(_loggingObject)
 	if closeErr := readBuffer.CloseContext("loggingObject"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for loggingObject")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingObject"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingObject")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLoggingObject) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLoggingObject"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLoggingObject")
 		}
 
 		// Simple Field (loggingObject)
 		if pushErr := writeBuffer.PushContext("loggingObject"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for loggingObject")
 		}
 		_loggingObjectErr := m.LoggingObject.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("loggingObject"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for loggingObject")
 		}
 		if _loggingObjectErr != nil {
 			return errors.Wrap(_loggingObjectErr, "Error serializing 'loggingObject' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoggingObject"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLoggingObject")
 		}
 		return nil
 	}

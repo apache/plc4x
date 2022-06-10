@@ -142,14 +142,14 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccompanimentTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccompanimentTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (accompanimentTime)
 	if pullErr := readBuffer.PullContext("accompanimentTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accompanimentTime")
 	}
 	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _accompanimentTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	accompanimentTime := CastBACnetApplicationTagUnsignedInteger(_accompanimentTime)
 	if closeErr := readBuffer.CloseContext("accompanimentTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accompanimentTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompanimentTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccompanimentTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAccompanimentTime) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAccompanimentTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccompanimentTime")
 		}
 
 		// Simple Field (accompanimentTime)
 		if pushErr := writeBuffer.PushContext("accompanimentTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accompanimentTime")
 		}
 		_accompanimentTimeErr := m.AccompanimentTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accompanimentTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accompanimentTime")
 		}
 		if _accompanimentTimeErr != nil {
 			return errors.Wrap(_accompanimentTimeErr, "Error serializing 'accompanimentTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccompanimentTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAccompanimentTime")
 		}
 		return nil
 	}

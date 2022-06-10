@@ -120,7 +120,7 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRes
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponseDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for TunnelingResponseDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -148,7 +148,7 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRes
 
 	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
 	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
@@ -156,11 +156,11 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRes
 	}
 	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for status")
 	}
 
 	if closeErr := readBuffer.CloseContext("TunnelingResponseDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for TunnelingResponseDataBlock")
 	}
 
 	// Create the instance
@@ -171,7 +171,7 @@ func (m *TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) er
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TunnelingResponseDataBlock"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for TunnelingResponseDataBlock")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -197,18 +197,18 @@ func (m *TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) er
 
 	// Simple Field (status)
 	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for status")
 	}
 	_statusErr := m.Status.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("status"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for status")
 	}
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TunnelingResponseDataBlock"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for TunnelingResponseDataBlock")
 	}
 	return nil
 }

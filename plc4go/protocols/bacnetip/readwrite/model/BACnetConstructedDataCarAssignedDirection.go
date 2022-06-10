@@ -142,14 +142,14 @@ func BACnetConstructedDataCarAssignedDirectionParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarAssignedDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarAssignedDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (assignedDirection)
 	if pullErr := readBuffer.PullContext("assignedDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for assignedDirection")
 	}
 	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _assignedDirectionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCarAssignedDirectionParse(readBuffer utils.ReadBuffer,
 	}
 	assignedDirection := CastBACnetLiftCarDirectionTagged(_assignedDirection)
 	if closeErr := readBuffer.CloseContext("assignedDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for assignedDirection")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarAssignedDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarAssignedDirection")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCarAssignedDirection) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCarAssignedDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarAssignedDirection")
 		}
 
 		// Simple Field (assignedDirection)
 		if pushErr := writeBuffer.PushContext("assignedDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for assignedDirection")
 		}
 		_assignedDirectionErr := m.AssignedDirection.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("assignedDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for assignedDirection")
 		}
 		if _assignedDirectionErr != nil {
 			return errors.Wrap(_assignedDirectionErr, "Error serializing 'assignedDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarAssignedDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCarAssignedDirection")
 		}
 		return nil
 	}

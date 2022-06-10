@@ -142,14 +142,14 @@ func BACnetConstructedDataUserNameParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUserName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (userName)
 	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for userName")
 	}
 	_userName, _userNameErr := BACnetApplicationTagParse(readBuffer)
 	if _userNameErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUserNameParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	userName := CastBACnetApplicationTagCharacterString(_userName)
 	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for userName")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserName")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUserName) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUserName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUserName")
 		}
 
 		// Simple Field (userName)
 		if pushErr := writeBuffer.PushContext("userName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for userName")
 		}
 		_userNameErr := m.UserName.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("userName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for userName")
 		}
 		if _userNameErr != nil {
 			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUserName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUserName")
 		}
 		return nil
 	}

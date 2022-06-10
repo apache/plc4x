@@ -142,14 +142,14 @@ func BACnetConstructedDataSecuredStatusParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecuredStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSecuredStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (securedStatus)
 	if pullErr := readBuffer.PullContext("securedStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for securedStatus")
 	}
 	_securedStatus, _securedStatusErr := BACnetDoorSecuredStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _securedStatusErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSecuredStatusParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	securedStatus := CastBACnetDoorSecuredStatusTagged(_securedStatus)
 	if closeErr := readBuffer.CloseContext("securedStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for securedStatus")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecuredStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSecuredStatus")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSecuredStatus) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSecuredStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSecuredStatus")
 		}
 
 		// Simple Field (securedStatus)
 		if pushErr := writeBuffer.PushContext("securedStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for securedStatus")
 		}
 		_securedStatusErr := m.SecuredStatus.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("securedStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for securedStatus")
 		}
 		if _securedStatusErr != nil {
 			return errors.Wrap(_securedStatusErr, "Error serializing 'securedStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSecuredStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSecuredStatus")
 		}
 		return nil
 	}

@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dateTimeValue)
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
 	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _dateTimeValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(read
 	}
 	dateTimeValue := CastBACnetDateTimeEnclosed(_dateTimeValue)
 	if closeErr := readBuffer.CloseContext("dateTimeValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dateTimeValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Seri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 		}
 
 		// Simple Field (dateTimeValue)
 		if pushErr := writeBuffer.PushContext("dateTimeValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dateTimeValue")
 		}
 		_dateTimeValueErr := m.DateTimeValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dateTimeValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dateTimeValue")
 		}
 		if _dateTimeValueErr != nil {
 			return errors.Wrap(_dateTimeValueErr, "Error serializing 'dateTimeValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataTimeDelayNormalParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeDelayNormal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeDelayNormal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeDelayNormal)
 	if pullErr := readBuffer.PullContext("timeDelayNormal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeDelayNormal")
 	}
 	_timeDelayNormal, _timeDelayNormalErr := BACnetApplicationTagParse(readBuffer)
 	if _timeDelayNormalErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTimeDelayNormalParse(readBuffer utils.ReadBuffer, tagN
 	}
 	timeDelayNormal := CastBACnetApplicationTagUnsignedInteger(_timeDelayNormal)
 	if closeErr := readBuffer.CloseContext("timeDelayNormal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeDelayNormal")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeDelayNormal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeDelayNormal")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTimeDelayNormal) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTimeDelayNormal"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeDelayNormal")
 		}
 
 		// Simple Field (timeDelayNormal)
 		if pushErr := writeBuffer.PushContext("timeDelayNormal"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeDelayNormal")
 		}
 		_timeDelayNormalErr := m.TimeDelayNormal.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeDelayNormal"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeDelayNormal")
 		}
 		if _timeDelayNormalErr != nil {
 			return errors.Wrap(_timeDelayNormalErr, "Error serializing 'timeDelayNormal' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeDelayNormal"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTimeDelayNormal")
 		}
 		return nil
 	}

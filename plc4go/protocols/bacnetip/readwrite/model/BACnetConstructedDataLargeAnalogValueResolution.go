@@ -142,14 +142,14 @@ func BACnetConstructedDataLargeAnalogValueResolutionParse(readBuffer utils.ReadB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueResolution"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLargeAnalogValueResolution")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (resolution)
 	if pullErr := readBuffer.PullContext("resolution"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for resolution")
 	}
 	_resolution, _resolutionErr := BACnetApplicationTagParse(readBuffer)
 	if _resolutionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLargeAnalogValueResolutionParse(readBuffer utils.ReadB
 	}
 	resolution := CastBACnetApplicationTagDouble(_resolution)
 	if closeErr := readBuffer.CloseContext("resolution"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for resolution")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueResolution"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueResolution")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLargeAnalogValueResolution) Serialize(writeBuffer 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLargeAnalogValueResolution"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueResolution")
 		}
 
 		// Simple Field (resolution)
 		if pushErr := writeBuffer.PushContext("resolution"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for resolution")
 		}
 		_resolutionErr := m.Resolution.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("resolution"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for resolution")
 		}
 		if _resolutionErr != nil {
 			return errors.Wrap(_resolutionErr, "Error serializing 'resolution' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLargeAnalogValueResolution"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLargeAnalogValueResolution")
 		}
 		return nil
 	}

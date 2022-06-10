@@ -142,14 +142,14 @@ func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAckRequired"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAckRequired")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ackRequired)
 	if pullErr := readBuffer.PullContext("ackRequired"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ackRequired")
 	}
 	_ackRequired, _ackRequiredErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackRequiredErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	ackRequired := CastBACnetEventTransitionBitsTagged(_ackRequired)
 	if closeErr := readBuffer.CloseContext("ackRequired"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ackRequired")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAckRequired"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAckRequired")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAckRequired) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAckRequired"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAckRequired")
 		}
 
 		// Simple Field (ackRequired)
 		if pushErr := writeBuffer.PushContext("ackRequired"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ackRequired")
 		}
 		_ackRequiredErr := m.AckRequired.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ackRequired"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ackRequired")
 		}
 		if _ackRequiredErr != nil {
 			return errors.Wrap(_ackRequiredErr, "Error serializing 'ackRequired' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAckRequired"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAckRequired")
 		}
 		return nil
 	}

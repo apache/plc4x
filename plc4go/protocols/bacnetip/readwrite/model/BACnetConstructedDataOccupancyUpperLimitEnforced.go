@@ -142,14 +142,14 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOccupancyUpperLimitEnforced")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (occupancyUpperLimitEnforced)
 	if pullErr := readBuffer.PullContext("occupancyUpperLimitEnforced"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for occupancyUpperLimitEnforced")
 	}
 	_occupancyUpperLimitEnforced, _occupancyUpperLimitEnforcedErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyUpperLimitEnforcedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer utils.Read
 	}
 	occupancyUpperLimitEnforced := CastBACnetApplicationTagBoolean(_occupancyUpperLimitEnforced)
 	if closeErr := readBuffer.CloseContext("occupancyUpperLimitEnforced"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for occupancyUpperLimitEnforced")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyUpperLimitEnforced")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyUpperLimitEnforced")
 		}
 
 		// Simple Field (occupancyUpperLimitEnforced)
 		if pushErr := writeBuffer.PushContext("occupancyUpperLimitEnforced"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for occupancyUpperLimitEnforced")
 		}
 		_occupancyUpperLimitEnforcedErr := m.OccupancyUpperLimitEnforced.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("occupancyUpperLimitEnforced"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for occupancyUpperLimitEnforced")
 		}
 		if _occupancyUpperLimitEnforcedErr != nil {
 			return errors.Wrap(_occupancyUpperLimitEnforcedErr, "Error serializing 'occupancyUpperLimitEnforced' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOccupancyUpperLimitEnforced")
 		}
 		return nil
 	}

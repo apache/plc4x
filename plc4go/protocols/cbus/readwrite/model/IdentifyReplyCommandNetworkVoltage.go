@@ -169,7 +169,7 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkVoltage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandNetworkVoltage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -207,7 +207,7 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandNetworkVoltage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandNetworkVoltage")
 	}
 
 	// Create a partially initialized instance
@@ -225,7 +225,7 @@ func (m *IdentifyReplyCommandNetworkVoltage) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("IdentifyReplyCommandNetworkVoltage"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandNetworkVoltage")
 		}
 
 		// Simple Field (volts)
@@ -255,7 +255,7 @@ func (m *IdentifyReplyCommandNetworkVoltage) Serialize(writeBuffer utils.WriteBu
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandNetworkVoltage"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for IdentifyReplyCommandNetworkVoltage")
 		}
 		return nil
 	}

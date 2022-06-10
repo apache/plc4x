@@ -142,14 +142,14 @@ func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangesPending"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataChangesPending")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (changesPending)
 	if pullErr := readBuffer.PullContext("changesPending"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for changesPending")
 	}
 	_changesPending, _changesPendingErr := BACnetApplicationTagParse(readBuffer)
 	if _changesPendingErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	changesPending := CastBACnetApplicationTagBoolean(_changesPending)
 	if closeErr := readBuffer.CloseContext("changesPending"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for changesPending")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangesPending"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangesPending")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataChangesPending) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataChangesPending"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangesPending")
 		}
 
 		// Simple Field (changesPending)
 		if pushErr := writeBuffer.PushContext("changesPending"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for changesPending")
 		}
 		_changesPendingErr := m.ChangesPending.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("changesPending"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for changesPending")
 		}
 		if _changesPendingErr != nil {
 			return errors.Wrap(_changesPendingErr, "Error serializing 'changesPending' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChangesPending"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataChangesPending")
 		}
 		return nil
 	}

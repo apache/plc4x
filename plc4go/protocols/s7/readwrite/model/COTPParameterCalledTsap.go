@@ -133,7 +133,7 @@ func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterCalledTsap")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -146,7 +146,7 @@ func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COT
 	tsapId := _tsapId
 
 	if closeErr := readBuffer.CloseContext("COTPParameterCalledTsap"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterCalledTsap")
 	}
 
 	// Create a partially initialized instance
@@ -163,7 +163,7 @@ func (m *COTPParameterCalledTsap) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPParameterCalledTsap"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for COTPParameterCalledTsap")
 		}
 
 		// Simple Field (tsapId)
@@ -174,7 +174,7 @@ func (m *COTPParameterCalledTsap) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterCalledTsap"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for COTPParameterCalledTsap")
 		}
 		return nil
 	}

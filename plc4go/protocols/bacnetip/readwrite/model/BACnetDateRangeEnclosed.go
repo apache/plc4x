@@ -120,14 +120,14 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDateRangeEnclosed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDateRangeEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -135,12 +135,12 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (dateRange)
 	if pullErr := readBuffer.PullContext("dateRange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dateRange")
 	}
 	_dateRange, _dateRangeErr := BACnetDateRangeParse(readBuffer)
 	if _dateRangeErr != nil {
@@ -148,12 +148,12 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 	dateRange := CastBACnetDateRange(_dateRange)
 	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dateRange")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -161,11 +161,11 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDateRangeEnclosed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetDateRangeEnclosed")
 	}
 
 	// Create the instance
@@ -176,16 +176,16 @@ func (m *BACnetDateRangeEnclosed) Serialize(writeBuffer utils.WriteBuffer) error
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDateRangeEnclosed"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetDateRangeEnclosed")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -193,11 +193,11 @@ func (m *BACnetDateRangeEnclosed) Serialize(writeBuffer utils.WriteBuffer) error
 
 	// Simple Field (dateRange)
 	if pushErr := writeBuffer.PushContext("dateRange"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for dateRange")
 	}
 	_dateRangeErr := m.DateRange.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("dateRange"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for dateRange")
 	}
 	if _dateRangeErr != nil {
 		return errors.Wrap(_dateRangeErr, "Error serializing 'dateRange' field")
@@ -205,18 +205,18 @@ func (m *BACnetDateRangeEnclosed) Serialize(writeBuffer utils.WriteBuffer) error
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDateRangeEnclosed"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetDateRangeEnclosed")
 	}
 	return nil
 }

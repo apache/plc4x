@@ -142,14 +142,14 @@ func BACnetConstructedDataDeviceMaxMasterParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceMaxMaster"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeviceMaxMaster")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maxMaster)
 	if pullErr := readBuffer.PullContext("maxMaster"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxMaster")
 	}
 	_maxMaster, _maxMasterErr := BACnetApplicationTagParse(readBuffer)
 	if _maxMasterErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDeviceMaxMasterParse(readBuffer utils.ReadBuffer, tagN
 	}
 	maxMaster := CastBACnetApplicationTagUnsignedInteger(_maxMaster)
 	if closeErr := readBuffer.CloseContext("maxMaster"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxMaster")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceMaxMaster"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceMaxMaster")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDeviceMaxMaster) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDeviceMaxMaster"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeviceMaxMaster")
 		}
 
 		// Simple Field (maxMaster)
 		if pushErr := writeBuffer.PushContext("maxMaster"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maxMaster")
 		}
 		_maxMasterErr := m.MaxMaster.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maxMaster"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maxMaster")
 		}
 		if _maxMasterErr != nil {
 			return errors.Wrap(_maxMasterErr, "Error serializing 'maxMaster' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceMaxMaster"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDeviceMaxMaster")
 		}
 		return nil
 	}

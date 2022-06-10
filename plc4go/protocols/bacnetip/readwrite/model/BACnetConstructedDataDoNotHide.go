@@ -142,14 +142,14 @@ func BACnetConstructedDataDoNotHideParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoNotHide"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoNotHide")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (doNotHide)
 	if pullErr := readBuffer.PullContext("doNotHide"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doNotHide")
 	}
 	_doNotHide, _doNotHideErr := BACnetApplicationTagParse(readBuffer)
 	if _doNotHideErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDoNotHideParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	doNotHide := CastBACnetApplicationTagBoolean(_doNotHide)
 	if closeErr := readBuffer.CloseContext("doNotHide"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doNotHide")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoNotHide"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoNotHide")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDoNotHide) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDoNotHide"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoNotHide")
 		}
 
 		// Simple Field (doNotHide)
 		if pushErr := writeBuffer.PushContext("doNotHide"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doNotHide")
 		}
 		_doNotHideErr := m.DoNotHide.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doNotHide"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doNotHide")
 		}
 		if _doNotHideErr != nil {
 			return errors.Wrap(_doNotHideErr, "Error serializing 'doNotHide' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoNotHide"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDoNotHide")
 		}
 		return nil
 	}

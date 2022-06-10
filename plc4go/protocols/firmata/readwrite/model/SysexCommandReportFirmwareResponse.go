@@ -156,7 +156,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandReportFirmwareResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -175,7 +175,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	}
 	minorVersion := _minorVersion
 	if pullErr := readBuffer.PullContext("fileName", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileName")
 	}
 	// Manual Array Field (fileName)
 	// Terminated array
@@ -190,11 +190,11 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	}
 	fileName := _fileNameList
 	if closeErr := readBuffer.CloseContext("fileName", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileName")
 	}
 
 	if closeErr := readBuffer.CloseContext("SysexCommandReportFirmwareResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandReportFirmwareResponse")
 	}
 
 	// Create a partially initialized instance
@@ -213,7 +213,7 @@ func (m *SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandReportFirmwareResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SysexCommandReportFirmwareResponse")
 		}
 
 		// Simple Field (majorVersion)
@@ -233,18 +233,18 @@ func (m *SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteBu
 		// Manual Array Field (fileName)
 		if m.FileName != nil {
 			if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for fileName")
 			}
 			for _, m := range m.FileName {
 				SerializeSysexString(writeBuffer, m)
 			}
 			if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for fileName")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandReportFirmwareResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SysexCommandReportFirmwareResponse")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFileType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fileType)
 	if pullErr := readBuffer.PullContext("fileType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileType")
 	}
 	_fileType, _fileTypeErr := BACnetApplicationTagParse(readBuffer)
 	if _fileTypeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	fileType := CastBACnetApplicationTagCharacterString(_fileType)
 	if closeErr := readBuffer.CloseContext("fileType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileType")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFileType) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFileType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFileType")
 		}
 
 		// Simple Field (fileType)
 		if pushErr := writeBuffer.PushContext("fileType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fileType")
 		}
 		_fileTypeErr := m.FileType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fileType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fileType")
 		}
 		if _fileTypeErr != nil {
 			return errors.Wrap(_fileTypeErr, "Error serializing 'fileType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFileType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFileType")
 		}
 		return nil
 	}

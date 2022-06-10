@@ -142,14 +142,14 @@ func BACnetConstructedDataTimeOfStateCountResetParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfStateCountReset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeOfStateCountReset")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeOfStateCountReset)
 	if pullErr := readBuffer.PullContext("timeOfStateCountReset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeOfStateCountReset")
 	}
 	_timeOfStateCountReset, _timeOfStateCountResetErr := BACnetDateTimeParse(readBuffer)
 	if _timeOfStateCountResetErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTimeOfStateCountResetParse(readBuffer utils.ReadBuffer
 	}
 	timeOfStateCountReset := CastBACnetDateTime(_timeOfStateCountReset)
 	if closeErr := readBuffer.CloseContext("timeOfStateCountReset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeOfStateCountReset")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfStateCountReset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeOfStateCountReset")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTimeOfStateCountReset) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTimeOfStateCountReset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeOfStateCountReset")
 		}
 
 		// Simple Field (timeOfStateCountReset)
 		if pushErr := writeBuffer.PushContext("timeOfStateCountReset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeOfStateCountReset")
 		}
 		_timeOfStateCountResetErr := m.TimeOfStateCountReset.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeOfStateCountReset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeOfStateCountReset")
 		}
 		if _timeOfStateCountResetErr != nil {
 			return errors.Wrap(_timeOfStateCountResetErr, "Error serializing 'timeOfStateCountReset' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeOfStateCountReset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTimeOfStateCountReset")
 		}
 		return nil
 	}

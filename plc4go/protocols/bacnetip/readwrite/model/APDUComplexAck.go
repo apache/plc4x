@@ -266,7 +266,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDUComplexAck")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -336,25 +336,26 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 	if !(segmentedMessage) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for serviceAck")
 		}
 		_val, _err := BACnetServiceAckParse(readBuffer, uint16(apduLength)-uint16(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'serviceAck' field")
 		default:
 			serviceAck = CastBACnetServiceAck(_val)
 			if closeErr := readBuffer.CloseContext("serviceAck"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for serviceAck")
 			}
 		}
 	}
 
 	// Validation
 	if !(bool(bool(bool(!(segmentedMessage)) && bool(bool((serviceAck) != (nil))))) || bool(segmentedMessage)) {
-		return nil, utils.ParseValidationError{"service ack should be set"}
+		return nil, errors.WithStack(utils.ParseValidationError{"service ack should be set"})
 	}
 
 	// Optional Field (segmentServiceChoice) (Can be skipped, if a given expression evaluates to false)
@@ -381,7 +382,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUC
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUComplexAck"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDUComplexAck")
 	}
 
 	// Create a partially initialized instance
@@ -405,7 +406,7 @@ func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUComplexAck"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for APDUComplexAck")
 		}
 
 		// Simple Field (segmentedMessage)
@@ -465,12 +466,12 @@ func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		var serviceAck *BACnetServiceAck = nil
 		if m.ServiceAck != nil {
 			if pushErr := writeBuffer.PushContext("serviceAck"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for serviceAck")
 			}
 			serviceAck = m.ServiceAck
 			_serviceAckErr := serviceAck.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("serviceAck"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for serviceAck")
 			}
 			if _serviceAckErr != nil {
 				return errors.Wrap(_serviceAckErr, "Error serializing 'serviceAck' field")
@@ -501,7 +502,7 @@ func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("APDUComplexAck"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for APDUComplexAck")
 		}
 		return nil
 	}

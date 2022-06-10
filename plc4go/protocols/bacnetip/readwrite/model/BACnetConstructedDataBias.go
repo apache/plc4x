@@ -142,14 +142,14 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBias"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBias")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bias)
 	if pullErr := readBuffer.PullContext("bias"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bias")
 	}
 	_bias, _biasErr := BACnetApplicationTagParse(readBuffer)
 	if _biasErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}
 	bias := CastBACnetApplicationTagReal(_bias)
 	if closeErr := readBuffer.CloseContext("bias"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bias")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBias"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBias")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBias) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBias"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBias")
 		}
 
 		// Simple Field (bias)
 		if pushErr := writeBuffer.PushContext("bias"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bias")
 		}
 		_biasErr := m.Bias.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bias"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bias")
 		}
 		if _biasErr != nil {
 			return errors.Wrap(_biasErr, "Error serializing 'bias' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBias"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBias")
 		}
 		return nil
 	}

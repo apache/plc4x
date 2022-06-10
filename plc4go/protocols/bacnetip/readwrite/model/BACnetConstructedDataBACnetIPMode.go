@@ -142,14 +142,14 @@ func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bacnetIpMode)
 	if pullErr := readBuffer.PullContext("bacnetIpMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpMode")
 	}
 	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _bacnetIpModeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	bacnetIpMode := CastBACnetIPModeTagged(_bacnetIpMode)
 	if closeErr := readBuffer.CloseContext("bacnetIpMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPMode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBACnetIPMode) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBACnetIPMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPMode")
 		}
 
 		// Simple Field (bacnetIpMode)
 		if pushErr := writeBuffer.PushContext("bacnetIpMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bacnetIpMode")
 		}
 		_bacnetIpModeErr := m.BacnetIpMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bacnetIpMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bacnetIpMode")
 		}
 		if _bacnetIpModeErr != nil {
 			return errors.Wrap(_bacnetIpModeErr, "Error serializing 'bacnetIpMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBACnetIPMode")
 		}
 		return nil
 	}

@@ -133,14 +133,14 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterTpduSize")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (tpduSize)
 	if pullErr := readBuffer.PullContext("tpduSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for tpduSize")
 	}
 	_tpduSize, _tpduSizeErr := COTPTpduSizeParse(readBuffer)
 	if _tpduSizeErr != nil {
@@ -148,11 +148,11 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 	}
 	tpduSize := _tpduSize
 	if closeErr := readBuffer.CloseContext("tpduSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for tpduSize")
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPParameterTpduSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterTpduSize")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPParameterTpduSize"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for COTPParameterTpduSize")
 		}
 
 		// Simple Field (tpduSize)
 		if pushErr := writeBuffer.PushContext("tpduSize"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for tpduSize")
 		}
 		_tpduSizeErr := m.TpduSize.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("tpduSize"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for tpduSize")
 		}
 		if _tpduSizeErr != nil {
 			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterTpduSize"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for COTPParameterTpduSize")
 		}
 		return nil
 	}

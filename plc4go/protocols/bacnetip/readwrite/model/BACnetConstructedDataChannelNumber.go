@@ -142,14 +142,14 @@ func BACnetConstructedDataChannelNumberParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChannelNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataChannelNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (channelNumber)
 	if pullErr := readBuffer.PullContext("channelNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelNumber")
 	}
 	_channelNumber, _channelNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _channelNumberErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataChannelNumberParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	channelNumber := CastBACnetApplicationTagUnsignedInteger(_channelNumber)
 	if closeErr := readBuffer.CloseContext("channelNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelNumber")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChannelNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChannelNumber")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataChannelNumber) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataChannelNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChannelNumber")
 		}
 
 		// Simple Field (channelNumber)
 		if pushErr := writeBuffer.PushContext("channelNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for channelNumber")
 		}
 		_channelNumberErr := m.ChannelNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("channelNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for channelNumber")
 		}
 		if _channelNumberErr != nil {
 			return errors.Wrap(_channelNumberErr, "Error serializing 'channelNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChannelNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataChannelNumber")
 		}
 		return nil
 	}

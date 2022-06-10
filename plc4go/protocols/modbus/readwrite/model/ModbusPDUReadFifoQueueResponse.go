@@ -146,7 +146,7 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadFifoQueueResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -167,7 +167,7 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 
 	// Array field (fifoValue)
 	if pullErr := readBuffer.PullContext("fifoValue", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fifoValue")
 	}
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
@@ -181,11 +181,11 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 		}
 	}
 	if closeErr := readBuffer.CloseContext("fifoValue", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fifoValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFifoQueueResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadFifoQueueResponse")
 	}
 
 	// Create a partially initialized instance
@@ -202,7 +202,7 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUReadFifoQueueResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadFifoQueueResponse")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -222,7 +222,7 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffer
 		// Array Field (fifoValue)
 		if m.FifoValue != nil {
 			if pushErr := writeBuffer.PushContext("fifoValue", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for fifoValue")
 			}
 			for _, _element := range m.FifoValue {
 				_elementErr := writeBuffer.WriteUint16("", 16, _element)
@@ -231,12 +231,12 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffer
 				}
 			}
 			if popErr := writeBuffer.PopContext("fifoValue", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for fifoValue")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadFifoQueueResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUReadFifoQueueResponse")
 		}
 		return nil
 	}

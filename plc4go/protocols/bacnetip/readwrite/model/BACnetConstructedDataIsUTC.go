@@ -142,14 +142,14 @@ func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIsUTC"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIsUTC")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (isUtc)
 	if pullErr := readBuffer.PullContext("isUtc"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for isUtc")
 	}
 	_isUtc, _isUtcErr := BACnetApplicationTagParse(readBuffer)
 	if _isUtcErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint
 	}
 	isUtc := CastBACnetApplicationTagBoolean(_isUtc)
 	if closeErr := readBuffer.CloseContext("isUtc"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for isUtc")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIsUTC"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIsUTC")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIsUTC) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIsUTC"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIsUTC")
 		}
 
 		// Simple Field (isUtc)
 		if pushErr := writeBuffer.PushContext("isUtc"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for isUtc")
 		}
 		_isUtcErr := m.IsUtc.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("isUtc"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for isUtc")
 		}
 		if _isUtcErr != nil {
 			return errors.Wrap(_isUtcErr, "Error serializing 'isUtc' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIsUTC"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIsUTC")
 		}
 		return nil
 	}

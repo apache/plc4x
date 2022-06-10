@@ -146,14 +146,14 @@ func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReasonForDisable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataReasonForDisable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (reasonForDisable)
 	if pullErr := readBuffer.PullContext("reasonForDisable", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for reasonForDisable")
 	}
 	// Terminated array
 	reasonForDisable := make([]*BACnetAccessCredentialDisableReasonTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tag
 		}
 	}
 	if closeErr := readBuffer.CloseContext("reasonForDisable", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for reasonForDisable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReasonForDisable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReasonForDisable")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataReasonForDisable) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataReasonForDisable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReasonForDisable")
 		}
 
 		// Array Field (reasonForDisable)
 		if m.ReasonForDisable != nil {
 			if pushErr := writeBuffer.PushContext("reasonForDisable", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for reasonForDisable")
 			}
 			for _, _element := range m.ReasonForDisable {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataReasonForDisable) Serialize(writeBuffer utils.Writ
 				}
 			}
 			if popErr := writeBuffer.PopContext("reasonForDisable", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for reasonForDisable")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReasonForDisable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataReasonForDisable")
 		}
 		return nil
 	}

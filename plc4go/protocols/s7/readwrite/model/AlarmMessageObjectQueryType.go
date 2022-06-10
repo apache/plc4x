@@ -191,7 +191,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectQueryType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageObjectQueryType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -228,7 +228,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 
 	// Simple Field (eventState)
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
 	_eventState, _eventStateErr := StateParse(readBuffer)
 	if _eventStateErr != nil {
@@ -236,12 +236,12 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 	eventState := CastState(_eventState)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventState")
 	}
 
 	// Simple Field (ackStateGoing)
 	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ackStateGoing")
 	}
 	_ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
 	if _ackStateGoingErr != nil {
@@ -249,12 +249,12 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 	ackStateGoing := CastState(_ackStateGoing)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ackStateGoing")
 	}
 
 	// Simple Field (ackStateComing)
 	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ackStateComing")
 	}
 	_ackStateComing, _ackStateComingErr := StateParse(readBuffer)
 	if _ackStateComingErr != nil {
@@ -262,12 +262,12 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 	ackStateComing := CastState(_ackStateComing)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
 	}
 
 	// Simple Field (timeComing)
 	if pullErr := readBuffer.PullContext("timeComing"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeComing")
 	}
 	_timeComing, _timeComingErr := DateAndTimeParse(readBuffer)
 	if _timeComingErr != nil {
@@ -275,12 +275,12 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 	timeComing := CastDateAndTime(_timeComing)
 	if closeErr := readBuffer.CloseContext("timeComing"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeComing")
 	}
 
 	// Simple Field (valueComing)
 	if pullErr := readBuffer.PullContext("valueComing"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for valueComing")
 	}
 	_valueComing, _valueComingErr := AssociatedValueTypeParse(readBuffer)
 	if _valueComingErr != nil {
@@ -288,12 +288,12 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 	valueComing := CastAssociatedValueType(_valueComing)
 	if closeErr := readBuffer.CloseContext("valueComing"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for valueComing")
 	}
 
 	// Simple Field (timeGoing)
 	if pullErr := readBuffer.PullContext("timeGoing"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeGoing")
 	}
 	_timeGoing, _timeGoingErr := DateAndTimeParse(readBuffer)
 	if _timeGoingErr != nil {
@@ -301,12 +301,12 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 	timeGoing := CastDateAndTime(_timeGoing)
 	if closeErr := readBuffer.CloseContext("timeGoing"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeGoing")
 	}
 
 	// Simple Field (valueGoing)
 	if pullErr := readBuffer.PullContext("valueGoing"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for valueGoing")
 	}
 	_valueGoing, _valueGoingErr := AssociatedValueTypeParse(readBuffer)
 	if _valueGoingErr != nil {
@@ -314,11 +314,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 	valueGoing := CastAssociatedValueType(_valueGoing)
 	if closeErr := readBuffer.CloseContext("valueGoing"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for valueGoing")
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageObjectQueryType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageObjectQueryType")
 	}
 
 	// Create the instance
@@ -329,7 +329,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageObjectQueryType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AlarmMessageObjectQueryType")
 	}
 
 	// Simple Field (lengthDataset)
@@ -355,11 +355,11 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (eventState)
 	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for eventState")
 	}
 	_eventStateErr := m.EventState.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for eventState")
 	}
 	if _eventStateErr != nil {
 		return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
@@ -367,11 +367,11 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (ackStateGoing)
 	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
 	}
 	_ackStateGoingErr := m.AckStateGoing.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ackStateGoing")
 	}
 	if _ackStateGoingErr != nil {
 		return errors.Wrap(_ackStateGoingErr, "Error serializing 'ackStateGoing' field")
@@ -379,11 +379,11 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (ackStateComing)
 	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
 	}
 	_ackStateComingErr := m.AckStateComing.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ackStateComing")
 	}
 	if _ackStateComingErr != nil {
 		return errors.Wrap(_ackStateComingErr, "Error serializing 'ackStateComing' field")
@@ -391,11 +391,11 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (timeComing)
 	if pushErr := writeBuffer.PushContext("timeComing"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timeComing")
 	}
 	_timeComingErr := m.TimeComing.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timeComing"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timeComing")
 	}
 	if _timeComingErr != nil {
 		return errors.Wrap(_timeComingErr, "Error serializing 'timeComing' field")
@@ -403,11 +403,11 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (valueComing)
 	if pushErr := writeBuffer.PushContext("valueComing"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for valueComing")
 	}
 	_valueComingErr := m.ValueComing.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("valueComing"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for valueComing")
 	}
 	if _valueComingErr != nil {
 		return errors.Wrap(_valueComingErr, "Error serializing 'valueComing' field")
@@ -415,11 +415,11 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (timeGoing)
 	if pushErr := writeBuffer.PushContext("timeGoing"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timeGoing")
 	}
 	_timeGoingErr := m.TimeGoing.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timeGoing"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timeGoing")
 	}
 	if _timeGoingErr != nil {
 		return errors.Wrap(_timeGoingErr, "Error serializing 'timeGoing' field")
@@ -427,18 +427,18 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 
 	// Simple Field (valueGoing)
 	if pushErr := writeBuffer.PushContext("valueGoing"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for valueGoing")
 	}
 	_valueGoingErr := m.ValueGoing.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("valueGoing"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for valueGoing")
 	}
 	if _valueGoingErr != nil {
 		return errors.Wrap(_valueGoingErr, "Error serializing 'valueGoing' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageObjectQueryType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AlarmMessageObjectQueryType")
 	}
 	return nil
 }

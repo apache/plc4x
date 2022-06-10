@@ -142,14 +142,14 @@ func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInProcess"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInProcess")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (inProcess)
 	if pullErr := readBuffer.PullContext("inProcess"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for inProcess")
 	}
 	_inProcess, _inProcessErr := BACnetApplicationTagParse(readBuffer)
 	if _inProcessErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	inProcess := CastBACnetApplicationTagBoolean(_inProcess)
 	if closeErr := readBuffer.CloseContext("inProcess"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for inProcess")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInProcess"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInProcess")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInProcess) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInProcess"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInProcess")
 		}
 
 		// Simple Field (inProcess)
 		if pushErr := writeBuffer.PushContext("inProcess"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for inProcess")
 		}
 		_inProcessErr := m.InProcess.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("inProcess"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for inProcess")
 		}
 		if _inProcessErr != nil {
 			return errors.Wrap(_inProcessErr, "Error serializing 'inProcess' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInProcess"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInProcess")
 		}
 		return nil
 	}

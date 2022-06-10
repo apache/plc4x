@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -179,7 +180,7 @@ func BACnetConstructedDataSubordinateRelationshipsParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateRelationships"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSubordinateRelationships")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -194,25 +195,26 @@ func BACnetConstructedDataSubordinateRelationshipsParse(readBuffer utils.ReadBuf
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (subordinateRelationships)
 	if pullErr := readBuffer.PullContext("subordinateRelationships", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for subordinateRelationships")
 	}
 	// Terminated array
 	subordinateRelationships := make([]*BACnetRelationshipTagged, 0)
@@ -227,11 +229,11 @@ func BACnetConstructedDataSubordinateRelationshipsParse(readBuffer utils.ReadBuf
 		}
 	}
 	if closeErr := readBuffer.CloseContext("subordinateRelationships", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for subordinateRelationships")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSubordinateRelationships"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSubordinateRelationships")
 	}
 
 	// Create a partially initialized instance
@@ -249,7 +251,7 @@ func (m *BACnetConstructedDataSubordinateRelationships) Serialize(writeBuffer ut
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSubordinateRelationships"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSubordinateRelationships")
 		}
 		// Virtual field
 		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -260,12 +262,12 @@ func (m *BACnetConstructedDataSubordinateRelationships) Serialize(writeBuffer ut
 		var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 		if m.NumberOfDataElements != nil {
 			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
 			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
 			if _numberOfDataElementsErr != nil {
 				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -275,7 +277,7 @@ func (m *BACnetConstructedDataSubordinateRelationships) Serialize(writeBuffer ut
 		// Array Field (subordinateRelationships)
 		if m.SubordinateRelationships != nil {
 			if pushErr := writeBuffer.PushContext("subordinateRelationships", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for subordinateRelationships")
 			}
 			for _, _element := range m.SubordinateRelationships {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -284,12 +286,12 @@ func (m *BACnetConstructedDataSubordinateRelationships) Serialize(writeBuffer ut
 				}
 			}
 			if popErr := writeBuffer.PopContext("subordinateRelationships", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for subordinateRelationships")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateRelationships"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSubordinateRelationships")
 		}
 		return nil
 	}

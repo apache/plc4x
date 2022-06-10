@@ -142,14 +142,14 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorOpenTooLongTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDoorOpenTooLongTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (doorOpenTooLongTime)
 	if pullErr := readBuffer.PullContext("doorOpenTooLongTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for doorOpenTooLongTime")
 	}
 	_doorOpenTooLongTime, _doorOpenTooLongTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _doorOpenTooLongTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 	}
 	doorOpenTooLongTime := CastBACnetApplicationTagUnsignedInteger(_doorOpenTooLongTime)
 	if closeErr := readBuffer.CloseContext("doorOpenTooLongTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for doorOpenTooLongTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorOpenTooLongTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorOpenTooLongTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDoorOpenTooLongTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorOpenTooLongTime")
 		}
 
 		// Simple Field (doorOpenTooLongTime)
 		if pushErr := writeBuffer.PushContext("doorOpenTooLongTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for doorOpenTooLongTime")
 		}
 		_doorOpenTooLongTimeErr := m.DoorOpenTooLongTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("doorOpenTooLongTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for doorOpenTooLongTime")
 		}
 		if _doorOpenTooLongTimeErr != nil {
 			return errors.Wrap(_doorOpenTooLongTimeErr, "Error serializing 'doorOpenTooLongTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorOpenTooLongTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDoorOpenTooLongTime")
 		}
 		return nil
 	}

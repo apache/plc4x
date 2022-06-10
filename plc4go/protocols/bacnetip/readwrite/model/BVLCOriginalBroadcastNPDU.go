@@ -133,14 +133,14 @@ func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLeng
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCOriginalBroadcastNPDU"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLCOriginalBroadcastNPDU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (npdu)
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
 	}
 	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcPayloadLength))
 	if _npduErr != nil {
@@ -148,11 +148,11 @@ func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLeng
 	}
 	npdu := CastNPDU(_npdu)
 	if closeErr := readBuffer.CloseContext("npdu"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for npdu")
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCOriginalBroadcastNPDU"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLCOriginalBroadcastNPDU")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BVLCOriginalBroadcastNPDU) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCOriginalBroadcastNPDU"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BVLCOriginalBroadcastNPDU")
 		}
 
 		// Simple Field (npdu)
 		if pushErr := writeBuffer.PushContext("npdu"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for npdu")
 		}
 		_npduErr := m.Npdu.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("npdu"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for npdu")
 		}
 		if _npduErr != nil {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCOriginalBroadcastNPDU"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BVLCOriginalBroadcastNPDU")
 		}
 		return nil
 	}

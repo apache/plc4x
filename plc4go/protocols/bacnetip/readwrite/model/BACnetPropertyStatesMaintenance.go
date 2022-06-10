@@ -128,14 +128,14 @@ func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesMaintenance"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesMaintenance")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maintenance)
 	if pullErr := readBuffer.PullContext("maintenance"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maintenance")
 	}
 	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _maintenanceErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	maintenance := CastBACnetMaintenanceTagged(_maintenance)
 	if closeErr := readBuffer.CloseContext("maintenance"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maintenance")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesMaintenance"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesMaintenance")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesMaintenance) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesMaintenance"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesMaintenance")
 		}
 
 		// Simple Field (maintenance)
 		if pushErr := writeBuffer.PushContext("maintenance"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maintenance")
 		}
 		_maintenanceErr := m.Maintenance.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maintenance"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maintenance")
 		}
 		if _maintenanceErr != nil {
 			return errors.Wrap(_maintenanceErr, "Error serializing 'maintenance' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesMaintenance"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesMaintenance")
 		}
 		return nil
 	}

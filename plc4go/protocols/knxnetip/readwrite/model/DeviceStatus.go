@@ -101,7 +101,7 @@ func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DeviceStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -128,7 +128,7 @@ func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {
 	programMode := _programMode
 
 	if closeErr := readBuffer.CloseContext("DeviceStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DeviceStatus")
 	}
 
 	// Create the instance
@@ -139,7 +139,7 @@ func (m *DeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceStatus"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DeviceStatus")
 	}
 
 	// Reserved Field (reserved)
@@ -158,7 +158,7 @@ func (m *DeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceStatus"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DeviceStatus")
 	}
 	return nil
 }

@@ -142,7 +142,7 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterReadVarRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -156,7 +156,7 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 
 	// Array field (items)
 	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
 	items := make([]*S7VarRequestParameterItem, numItems)
@@ -170,11 +170,11 @@ func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uin
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for items")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7ParameterReadVarRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterReadVarRequest")
 	}
 
 	// Create a partially initialized instance
@@ -191,7 +191,7 @@ func (m *S7ParameterReadVarRequest) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterReadVarRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7ParameterReadVarRequest")
 		}
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -204,7 +204,7 @@ func (m *S7ParameterReadVarRequest) Serialize(writeBuffer utils.WriteBuffer) err
 		// Array Field (items)
 		if m.Items != nil {
 			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for items")
 			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -213,12 +213,12 @@ func (m *S7ParameterReadVarRequest) Serialize(writeBuffer utils.WriteBuffer) err
 				}
 			}
 			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for items")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterReadVarRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7ParameterReadVarRequest")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataOccupancyCountEnableParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyCountEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOccupancyCountEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (occupancyCountEnable)
 	if pullErr := readBuffer.PullContext("occupancyCountEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for occupancyCountEnable")
 	}
 	_occupancyCountEnable, _occupancyCountEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _occupancyCountEnableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOccupancyCountEnableParse(readBuffer utils.ReadBuffer,
 	}
 	occupancyCountEnable := CastBACnetApplicationTagBoolean(_occupancyCountEnable)
 	if closeErr := readBuffer.CloseContext("occupancyCountEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for occupancyCountEnable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyCountEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyCountEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOccupancyCountEnable) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOccupancyCountEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyCountEnable")
 		}
 
 		// Simple Field (occupancyCountEnable)
 		if pushErr := writeBuffer.PushContext("occupancyCountEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for occupancyCountEnable")
 		}
 		_occupancyCountEnableErr := m.OccupancyCountEnable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("occupancyCountEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for occupancyCountEnable")
 		}
 		if _occupancyCountEnableErr != nil {
 			return errors.Wrap(_occupancyCountEnableErr, "Error serializing 'occupancyCountEnable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOccupancyCountEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOccupancyCountEnable")
 		}
 		return nil
 	}

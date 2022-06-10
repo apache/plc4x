@@ -128,14 +128,14 @@ func BACnetPropertyStatesNetworkTypeParse(readBuffer utils.ReadBuffer, peekedTag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesNetworkType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (networkType)
 	if pullErr := readBuffer.PullContext("networkType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for networkType")
 	}
 	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkTypeErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesNetworkTypeParse(readBuffer utils.ReadBuffer, peekedTag
 	}
 	networkType := CastBACnetNetworkTypeTagged(_networkType)
 	if closeErr := readBuffer.CloseContext("networkType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for networkType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNetworkType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesNetworkType")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesNetworkType) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesNetworkType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNetworkType")
 		}
 
 		// Simple Field (networkType)
 		if pushErr := writeBuffer.PushContext("networkType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for networkType")
 		}
 		_networkTypeErr := m.NetworkType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("networkType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for networkType")
 		}
 		if _networkTypeErr != nil {
 			return errors.Wrap(_networkTypeErr, "Error serializing 'networkType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNetworkType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesNetworkType")
 		}
 		return nil
 	}

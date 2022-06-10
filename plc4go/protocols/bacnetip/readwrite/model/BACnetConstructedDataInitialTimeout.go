@@ -142,14 +142,14 @@ func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInitialTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInitialTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (initialTimeout)
 	if pullErr := readBuffer.PullContext("initialTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for initialTimeout")
 	}
 	_initialTimeout, _initialTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _initialTimeoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	initialTimeout := CastBACnetApplicationTagUnsignedInteger(_initialTimeout)
 	if closeErr := readBuffer.CloseContext("initialTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for initialTimeout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInitialTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInitialTimeout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInitialTimeout) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInitialTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInitialTimeout")
 		}
 
 		// Simple Field (initialTimeout)
 		if pushErr := writeBuffer.PushContext("initialTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for initialTimeout")
 		}
 		_initialTimeoutErr := m.InitialTimeout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for initialTimeout")
 		}
 		if _initialTimeoutErr != nil {
 			return errors.Wrap(_initialTimeoutErr, "Error serializing 'initialTimeout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInitialTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInitialTimeout")
 		}
 		return nil
 	}

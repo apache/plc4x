@@ -142,14 +142,14 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPLeaseTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6DHCPLeaseTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipv6DhcpLeaseTime)
 	if pullErr := readBuffer.PullContext("ipv6DhcpLeaseTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DhcpLeaseTime")
 	}
 	_ipv6DhcpLeaseTime, _ipv6DhcpLeaseTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6DhcpLeaseTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	ipv6DhcpLeaseTime := CastBACnetApplicationTagUnsignedInteger(_ipv6DhcpLeaseTime)
 	if closeErr := readBuffer.CloseContext("ipv6DhcpLeaseTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipv6DhcpLeaseTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DHCPLeaseTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6DHCPLeaseTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPv6DHCPLeaseTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6DHCPLeaseTime")
 		}
 
 		// Simple Field (ipv6DhcpLeaseTime)
 		if pushErr := writeBuffer.PushContext("ipv6DhcpLeaseTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipv6DhcpLeaseTime")
 		}
 		_ipv6DhcpLeaseTimeErr := m.Ipv6DhcpLeaseTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipv6DhcpLeaseTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipv6DhcpLeaseTime")
 		}
 		if _ipv6DhcpLeaseTimeErr != nil {
 			return errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error serializing 'ipv6DhcpLeaseTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6DHCPLeaseTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPv6DHCPLeaseTime")
 		}
 		return nil
 	}

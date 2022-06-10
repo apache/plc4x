@@ -109,7 +109,7 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, err
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDU"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -221,7 +221,7 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, err
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDU"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDU")
 	}
 
 	// Finish initializing
@@ -237,7 +237,7 @@ func (m *ModbusPDU) SerializeParent(writeBuffer utils.WriteBuffer, child IModbus
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDU"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ModbusPDU")
 	}
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
@@ -262,7 +262,7 @@ func (m *ModbusPDU) SerializeParent(writeBuffer utils.WriteBuffer, child IModbus
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusPDU"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ModbusPDU")
 	}
 	return nil
 }

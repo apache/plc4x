@@ -155,14 +155,14 @@ func BACnetEventLogRecordLogDatumNotificationParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecordLogDatumNotification"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventLogRecordLogDatumNotification")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
 	if _innerOpeningTagErr != nil {
@@ -170,12 +170,12 @@ func BACnetEventLogRecordLogDatumNotificationParse(readBuffer utils.ReadBuffer, 
 	}
 	innerOpeningTag := CastBACnetOpeningTag(_innerOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
 	// Simple Field (notification)
 	if pullErr := readBuffer.PullContext("notification"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for notification")
 	}
 	_notification, _notificationErr := ConfirmedEventNotificationRequestParse(readBuffer)
 	if _notificationErr != nil {
@@ -183,12 +183,12 @@ func BACnetEventLogRecordLogDatumNotificationParse(readBuffer utils.ReadBuffer, 
 	}
 	notification := CastConfirmedEventNotificationRequest(_notification)
 	if closeErr := readBuffer.CloseContext("notification"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for notification")
 	}
 
 	// Simple Field (innerClosingTag)
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _innerClosingTagErr != nil {
@@ -196,11 +196,11 @@ func BACnetEventLogRecordLogDatumNotificationParse(readBuffer utils.ReadBuffer, 
 	}
 	innerClosingTag := CastBACnetClosingTag(_innerClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerClosingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventLogRecordLogDatumNotification"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventLogRecordLogDatumNotification")
 	}
 
 	// Create a partially initialized instance
@@ -219,16 +219,16 @@ func (m *BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventLogRecordLogDatumNotification"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventLogRecordLogDatumNotification")
 		}
 
 		// Simple Field (innerOpeningTag)
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
 		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
 		if _innerOpeningTagErr != nil {
 			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
@@ -236,11 +236,11 @@ func (m *BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.W
 
 		// Simple Field (notification)
 		if pushErr := writeBuffer.PushContext("notification"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for notification")
 		}
 		_notificationErr := m.Notification.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("notification"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for notification")
 		}
 		if _notificationErr != nil {
 			return errors.Wrap(_notificationErr, "Error serializing 'notification' field")
@@ -248,18 +248,18 @@ func (m *BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.W
 
 		// Simple Field (innerClosingTag)
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
 		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
 		if _innerClosingTagErr != nil {
 			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventLogRecordLogDatumNotification"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventLogRecordLogDatumNotification")
 		}
 		return nil
 	}

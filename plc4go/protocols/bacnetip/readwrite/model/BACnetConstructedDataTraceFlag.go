@@ -142,14 +142,14 @@ func BACnetConstructedDataTraceFlagParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTraceFlag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTraceFlag")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (traceFlag)
 	if pullErr := readBuffer.PullContext("traceFlag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for traceFlag")
 	}
 	_traceFlag, _traceFlagErr := BACnetApplicationTagParse(readBuffer)
 	if _traceFlagErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTraceFlagParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	traceFlag := CastBACnetApplicationTagBoolean(_traceFlag)
 	if closeErr := readBuffer.CloseContext("traceFlag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for traceFlag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTraceFlag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTraceFlag")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTraceFlag) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTraceFlag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTraceFlag")
 		}
 
 		// Simple Field (traceFlag)
 		if pushErr := writeBuffer.PushContext("traceFlag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for traceFlag")
 		}
 		_traceFlagErr := m.TraceFlag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("traceFlag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for traceFlag")
 		}
 		if _traceFlagErr != nil {
 			return errors.Wrap(_traceFlagErr, "Error serializing 'traceFlag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTraceFlag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTraceFlag")
 		}
 		return nil
 	}

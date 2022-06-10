@@ -157,7 +157,7 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipRe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipReadRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipReadRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -183,7 +183,7 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipRe
 	elementNb := _elementNb
 
 	if closeErr := readBuffer.CloseContext("CipReadRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipReadRequest")
 	}
 
 	// Create a partially initialized instance
@@ -202,7 +202,7 @@ func (m *CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipReadRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CipReadRequest")
 		}
 
 		// Simple Field (requestPathSize)
@@ -229,7 +229,7 @@ func (m *CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CipReadRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CipReadRequest")
 		}
 		return nil
 	}

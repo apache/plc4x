@@ -101,7 +101,7 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ComObjectTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -129,7 +129,7 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	}
 
 	if closeErr := readBuffer.CloseContext("ComObjectTable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ComObjectTable")
 	}
 
 	// Finish initializing
@@ -145,7 +145,7 @@ func (m *ComObjectTable) SerializeParent(writeBuffer utils.WriteBuffer, child IC
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ComObjectTable"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ComObjectTable")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -154,7 +154,7 @@ func (m *ComObjectTable) SerializeParent(writeBuffer utils.WriteBuffer, child IC
 	}
 
 	if popErr := writeBuffer.PopContext("ComObjectTable"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ComObjectTable")
 	}
 	return nil
 }

@@ -142,14 +142,14 @@ func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkInterfaceName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNetworkInterfaceName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (networkInterfaceName)
 	if pullErr := readBuffer.PullContext("networkInterfaceName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for networkInterfaceName")
 	}
 	_networkInterfaceName, _networkInterfaceNameErr := BACnetApplicationTagParse(readBuffer)
 	if _networkInterfaceNameErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer,
 	}
 	networkInterfaceName := CastBACnetApplicationTagCharacterString(_networkInterfaceName)
 	if closeErr := readBuffer.CloseContext("networkInterfaceName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for networkInterfaceName")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkInterfaceName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkInterfaceName")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNetworkInterfaceName) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNetworkInterfaceName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNetworkInterfaceName")
 		}
 
 		// Simple Field (networkInterfaceName)
 		if pushErr := writeBuffer.PushContext("networkInterfaceName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for networkInterfaceName")
 		}
 		_networkInterfaceNameErr := m.NetworkInterfaceName.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("networkInterfaceName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for networkInterfaceName")
 		}
 		if _networkInterfaceNameErr != nil {
 			return errors.Wrap(_networkInterfaceNameErr, "Error serializing 'networkInterfaceName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkInterfaceName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNetworkInterfaceName")
 		}
 		return nil
 	}

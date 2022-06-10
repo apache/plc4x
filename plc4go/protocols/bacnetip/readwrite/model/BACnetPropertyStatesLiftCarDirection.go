@@ -128,14 +128,14 @@ func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peek
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftCarDirection")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (liftCarDirection)
 	if pullErr := readBuffer.PullContext("liftCarDirection"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDirection")
 	}
 	_liftCarDirection, _liftCarDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDirectionErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peek
 	}
 	liftCarDirection := CastBACnetLiftCarDirectionTagged(_liftCarDirection)
 	if closeErr := readBuffer.CloseContext("liftCarDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for liftCarDirection")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDirection"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftCarDirection")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLiftCarDirection) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLiftCarDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarDirection")
 		}
 
 		// Simple Field (liftCarDirection)
 		if pushErr := writeBuffer.PushContext("liftCarDirection"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for liftCarDirection")
 		}
 		_liftCarDirectionErr := m.LiftCarDirection.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("liftCarDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for liftCarDirection")
 		}
 		if _liftCarDirectionErr != nil {
 			return errors.Wrap(_liftCarDirectionErr, "Error serializing 'liftCarDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarDirection"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLiftCarDirection")
 		}
 		return nil
 	}

@@ -120,7 +120,7 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HPAIControlEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for HPAIControlEndpoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -134,7 +134,7 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 
 	// Simple Field (hostProtocolCode)
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hostProtocolCode")
 	}
 	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(readBuffer)
 	if _hostProtocolCodeErr != nil {
@@ -142,12 +142,12 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 	}
 	hostProtocolCode := _hostProtocolCode
 	if closeErr := readBuffer.CloseContext("hostProtocolCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hostProtocolCode")
 	}
 
 	// Simple Field (ipAddress)
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
 	}
 	_ipAddress, _ipAddressErr := IPAddressParse(readBuffer)
 	if _ipAddressErr != nil {
@@ -155,7 +155,7 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 	}
 	ipAddress := CastIPAddress(_ipAddress)
 	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
 	}
 
 	// Simple Field (ipPort)
@@ -166,7 +166,7 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 	ipPort := _ipPort
 
 	if closeErr := readBuffer.CloseContext("HPAIControlEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for HPAIControlEndpoint")
 	}
 
 	// Create the instance
@@ -177,7 +177,7 @@ func (m *HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HPAIControlEndpoint"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for HPAIControlEndpoint")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -189,11 +189,11 @@ func (m *HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (hostProtocolCode)
 	if pushErr := writeBuffer.PushContext("hostProtocolCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for hostProtocolCode")
 	}
 	_hostProtocolCodeErr := m.HostProtocolCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("hostProtocolCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for hostProtocolCode")
 	}
 	if _hostProtocolCodeErr != nil {
 		return errors.Wrap(_hostProtocolCodeErr, "Error serializing 'hostProtocolCode' field")
@@ -201,11 +201,11 @@ func (m *HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (ipAddress)
 	if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ipAddress")
 	}
 	_ipAddressErr := m.IpAddress.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ipAddress")
 	}
 	if _ipAddressErr != nil {
 		return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
@@ -219,7 +219,7 @@ func (m *HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("HPAIControlEndpoint"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for HPAIControlEndpoint")
 	}
 	return nil
 }

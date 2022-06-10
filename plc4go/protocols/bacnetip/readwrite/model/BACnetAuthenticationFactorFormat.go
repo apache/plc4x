@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -122,14 +123,14 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (*BACnet
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactorFormat"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationFactorFormat")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (formatType)
 	if pullErr := readBuffer.PullContext("formatType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for formatType")
 	}
 	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _formatTypeErr != nil {
@@ -137,7 +138,7 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (*BACnet
 	}
 	formatType := CastBACnetAuthenticationFactorTypeTagged(_formatType)
 	if closeErr := readBuffer.CloseContext("formatType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for formatType")
 	}
 
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
@@ -145,18 +146,19 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (*BACnet
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 		}
 		_val, _err := BACnetVendorIdTaggedParse(readBuffer, uint8(1), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field")
 		default:
 			vendorId = CastBACnetVendorIdTagged(_val)
 			if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for vendorId")
 			}
 		}
 	}
@@ -166,24 +168,25 @@ func BACnetAuthenticationFactorFormatParse(readBuffer utils.ReadBuffer) (*BACnet
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("vendorFormat"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for vendorFormat")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'vendorFormat' field")
 		default:
 			vendorFormat = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("vendorFormat"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for vendorFormat")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationFactorFormat"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationFactorFormat")
 	}
 
 	// Create the instance
@@ -194,16 +197,16 @@ func (m *BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuff
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationFactorFormat"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationFactorFormat")
 	}
 
 	// Simple Field (formatType)
 	if pushErr := writeBuffer.PushContext("formatType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for formatType")
 	}
 	_formatTypeErr := m.FormatType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("formatType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for formatType")
 	}
 	if _formatTypeErr != nil {
 		return errors.Wrap(_formatTypeErr, "Error serializing 'formatType' field")
@@ -213,12 +216,12 @@ func (m *BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuff
 	var vendorId *BACnetVendorIdTagged = nil
 	if m.VendorId != nil {
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
 		vendorId = m.VendorId
 		_vendorIdErr := vendorId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
@@ -229,12 +232,12 @@ func (m *BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuff
 	var vendorFormat *BACnetContextTagUnsignedInteger = nil
 	if m.VendorFormat != nil {
 		if pushErr := writeBuffer.PushContext("vendorFormat"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorFormat")
 		}
 		vendorFormat = m.VendorFormat
 		_vendorFormatErr := vendorFormat.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorFormat"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorFormat")
 		}
 		if _vendorFormatErr != nil {
 			return errors.Wrap(_vendorFormatErr, "Error serializing 'vendorFormat' field")
@@ -242,7 +245,7 @@ func (m *BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuff
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationFactorFormat"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationFactorFormat")
 	}
 	return nil
 }

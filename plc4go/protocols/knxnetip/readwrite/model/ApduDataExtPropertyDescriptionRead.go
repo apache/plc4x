@@ -155,7 +155,7 @@ func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionRead"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtPropertyDescriptionRead")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -182,7 +182,7 @@ func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length
 	index := _index
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyDescriptionRead"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtPropertyDescriptionRead")
 	}
 
 	// Create a partially initialized instance
@@ -201,7 +201,7 @@ func (m *ApduDataExtPropertyDescriptionRead) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtPropertyDescriptionRead"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataExtPropertyDescriptionRead")
 		}
 
 		// Simple Field (objectIndex)
@@ -226,7 +226,7 @@ func (m *ApduDataExtPropertyDescriptionRead) Serialize(writeBuffer utils.WriteBu
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtPropertyDescriptionRead"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataExtPropertyDescriptionRead")
 		}
 		return nil
 	}

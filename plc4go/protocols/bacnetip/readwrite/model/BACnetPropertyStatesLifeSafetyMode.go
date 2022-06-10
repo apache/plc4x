@@ -128,14 +128,14 @@ func BACnetPropertyStatesLifeSafetyModeParse(readBuffer utils.ReadBuffer, peeked
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLifeSafetyMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lifeSafetyMode)
 	if pullErr := readBuffer.PullContext("lifeSafetyMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyMode")
 	}
 	_lifeSafetyMode, _lifeSafetyModeErr := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyModeErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLifeSafetyModeParse(readBuffer utils.ReadBuffer, peeked
 	}
 	lifeSafetyMode := CastBACnetLifeSafetyModeTagged(_lifeSafetyMode)
 	if closeErr := readBuffer.CloseContext("lifeSafetyMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lifeSafetyMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLifeSafetyMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLifeSafetyMode")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLifeSafetyMode) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLifeSafetyMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLifeSafetyMode")
 		}
 
 		// Simple Field (lifeSafetyMode)
 		if pushErr := writeBuffer.PushContext("lifeSafetyMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lifeSafetyMode")
 		}
 		_lifeSafetyModeErr := m.LifeSafetyMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lifeSafetyMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lifeSafetyMode")
 		}
 		if _lifeSafetyModeErr != nil {
 			return errors.Wrap(_lifeSafetyModeErr, "Error serializing 'lifeSafetyMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLifeSafetyMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLifeSafetyMode")
 		}
 		return nil
 	}

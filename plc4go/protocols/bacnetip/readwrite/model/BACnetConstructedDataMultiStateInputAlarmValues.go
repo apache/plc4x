@@ -146,14 +146,14 @@ func BACnetConstructedDataMultiStateInputAlarmValuesParse(readBuffer utils.ReadB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateInputAlarmValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMultiStateInputAlarmValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (alarmValues)
 	if pullErr := readBuffer.PullContext("alarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
 	// Terminated array
 	alarmValues := make([]*BACnetApplicationTagUnsignedInteger, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataMultiStateInputAlarmValuesParse(readBuffer utils.ReadB
 		}
 	}
 	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for alarmValues")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateInputAlarmValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMultiStateInputAlarmValues")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataMultiStateInputAlarmValues) Serialize(writeBuffer 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMultiStateInputAlarmValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMultiStateInputAlarmValues")
 		}
 
 		// Array Field (alarmValues)
 		if m.AlarmValues != nil {
 			if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for alarmValues")
 			}
 			for _, _element := range m.AlarmValues {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataMultiStateInputAlarmValues) Serialize(writeBuffer 
 				}
 			}
 			if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for alarmValues")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMultiStateInputAlarmValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMultiStateInputAlarmValues")
 		}
 		return nil
 	}

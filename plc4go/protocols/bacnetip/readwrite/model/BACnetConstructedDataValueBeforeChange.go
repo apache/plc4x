@@ -142,14 +142,14 @@ func BACnetConstructedDataValueBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueBeforeChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueBeforeChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (valuesBeforeChange)
 	if pullErr := readBuffer.PullContext("valuesBeforeChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for valuesBeforeChange")
 	}
 	_valuesBeforeChange, _valuesBeforeChangeErr := BACnetApplicationTagParse(readBuffer)
 	if _valuesBeforeChangeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataValueBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	valuesBeforeChange := CastBACnetApplicationTagUnsignedInteger(_valuesBeforeChange)
 	if closeErr := readBuffer.CloseContext("valuesBeforeChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for valuesBeforeChange")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueBeforeChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueBeforeChange")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataValueBeforeChange) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataValueBeforeChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueBeforeChange")
 		}
 
 		// Simple Field (valuesBeforeChange)
 		if pushErr := writeBuffer.PushContext("valuesBeforeChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for valuesBeforeChange")
 		}
 		_valuesBeforeChangeErr := m.ValuesBeforeChange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("valuesBeforeChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for valuesBeforeChange")
 		}
 		if _valuesBeforeChangeErr != nil {
 			return errors.Wrap(_valuesBeforeChangeErr, "Error serializing 'valuesBeforeChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueBeforeChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataValueBeforeChange")
 		}
 		return nil
 	}

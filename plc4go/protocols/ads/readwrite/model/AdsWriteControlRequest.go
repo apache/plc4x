@@ -161,7 +161,7 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsWriteControlRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -194,7 +194,7 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsWriteControlRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsWriteControlRequest")
 	}
 
 	// Create a partially initialized instance
@@ -213,7 +213,7 @@ func (m *AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsWriteControlRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsWriteControlRequest")
 		}
 
 		// Simple Field (adsState)
@@ -247,7 +247,7 @@ func (m *AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		if popErr := writeBuffer.PopContext("AdsWriteControlRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsWriteControlRequest")
 		}
 		return nil
 	}

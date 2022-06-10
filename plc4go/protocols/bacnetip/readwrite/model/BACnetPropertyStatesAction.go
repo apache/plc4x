@@ -128,14 +128,14 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, peekedTagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAction"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesAction")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (action)
 	if pullErr := readBuffer.PullContext("action"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for action")
 	}
 	_action, _actionErr := BACnetActionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _actionErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, peekedTagNumbe
 	}
 	action := CastBACnetActionTagged(_action)
 	if closeErr := readBuffer.CloseContext("action"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for action")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAction"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesAction")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesAction) Serialize(writeBuffer utils.WriteBuffer) er
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesAction"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAction")
 		}
 
 		// Simple Field (action)
 		if pushErr := writeBuffer.PushContext("action"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for action")
 		}
 		_actionErr := m.Action.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("action"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for action")
 		}
 		if _actionErr != nil {
 			return errors.Wrap(_actionErr, "Error serializing 'action' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAction"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesAction")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNextStoppingFloor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNextStoppingFloor")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (nextStoppingFloor)
 	if pullErr := readBuffer.PullContext("nextStoppingFloor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for nextStoppingFloor")
 	}
 	_nextStoppingFloor, _nextStoppingFloorErr := BACnetApplicationTagParse(readBuffer)
 	if _nextStoppingFloorErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 	}
 	nextStoppingFloor := CastBACnetApplicationTagUnsignedInteger(_nextStoppingFloor)
 	if closeErr := readBuffer.CloseContext("nextStoppingFloor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for nextStoppingFloor")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNextStoppingFloor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNextStoppingFloor")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNextStoppingFloor) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNextStoppingFloor"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNextStoppingFloor")
 		}
 
 		// Simple Field (nextStoppingFloor)
 		if pushErr := writeBuffer.PushContext("nextStoppingFloor"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nextStoppingFloor")
 		}
 		_nextStoppingFloorErr := m.NextStoppingFloor.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nextStoppingFloor"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nextStoppingFloor")
 		}
 		if _nextStoppingFloorErr != nil {
 			return errors.Wrap(_nextStoppingFloorErr, "Error serializing 'nextStoppingFloor' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNextStoppingFloor"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNextStoppingFloor")
 		}
 		return nil
 	}

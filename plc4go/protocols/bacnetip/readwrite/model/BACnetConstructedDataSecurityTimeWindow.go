@@ -142,14 +142,14 @@ func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityTimeWindow"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSecurityTimeWindow")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (securityTimeWindow)
 	if pullErr := readBuffer.PullContext("securityTimeWindow"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for securityTimeWindow")
 	}
 	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParse(readBuffer)
 	if _securityTimeWindowErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, t
 	}
 	securityTimeWindow := CastBACnetApplicationTagUnsignedInteger(_securityTimeWindow)
 	if closeErr := readBuffer.CloseContext("securityTimeWindow"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for securityTimeWindow")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecurityTimeWindow"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSecurityTimeWindow")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSecurityTimeWindow) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSecurityTimeWindow"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSecurityTimeWindow")
 		}
 
 		// Simple Field (securityTimeWindow)
 		if pushErr := writeBuffer.PushContext("securityTimeWindow"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for securityTimeWindow")
 		}
 		_securityTimeWindowErr := m.SecurityTimeWindow.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("securityTimeWindow"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for securityTimeWindow")
 		}
 		if _securityTimeWindowErr != nil {
 			return errors.Wrap(_securityTimeWindowErr, "Error serializing 'securityTimeWindow' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSecurityTimeWindow"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSecurityTimeWindow")
 		}
 		return nil
 	}

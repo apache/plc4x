@@ -128,14 +128,14 @@ func BACnetPropertyStatesBinaryLightningValueParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryLightningValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesBinaryLightningValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (binaryLightningValue)
 	if pullErr := readBuffer.PullContext("binaryLightningValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for binaryLightningValue")
 	}
 	_binaryLightningValue, _binaryLightningValueErr := BACnetBinaryLightingPVTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryLightningValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesBinaryLightningValueParse(readBuffer utils.ReadBuffer, 
 	}
 	binaryLightningValue := CastBACnetBinaryLightingPVTagged(_binaryLightningValue)
 	if closeErr := readBuffer.CloseContext("binaryLightningValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for binaryLightningValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBinaryLightningValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesBinaryLightningValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesBinaryLightningValue) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesBinaryLightningValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBinaryLightningValue")
 		}
 
 		// Simple Field (binaryLightningValue)
 		if pushErr := writeBuffer.PushContext("binaryLightningValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for binaryLightningValue")
 		}
 		_binaryLightningValueErr := m.BinaryLightningValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("binaryLightningValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for binaryLightningValue")
 		}
 		if _binaryLightningValueErr != nil {
 			return errors.Wrap(_binaryLightningValueErr, "Error serializing 'binaryLightningValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBinaryLightningValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesBinaryLightningValue")
 		}
 		return nil
 	}

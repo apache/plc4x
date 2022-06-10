@@ -101,7 +101,7 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetError"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -139,7 +139,7 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetError"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetError")
 	}
 
 	// Finish initializing
@@ -155,7 +155,7 @@ func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACn
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetError"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetError")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -164,7 +164,7 @@ func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACn
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetError"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetError")
 	}
 	return nil
 }

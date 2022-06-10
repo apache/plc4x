@@ -224,7 +224,7 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadDa
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -313,7 +313,7 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadDa
 	_ = dayOfWeekIsWildcard
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadDate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadDate")
 	}
 
 	// Create the instance
@@ -324,7 +324,7 @@ func (m *BACnetTagPayloadDate) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadDate"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadDate")
 	}
 	// Virtual field
 	if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.GetWildcard()); _wildcardErr != nil {
@@ -400,7 +400,7 @@ func (m *BACnetTagPayloadDate) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadDate"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadDate")
 	}
 	return nil
 }

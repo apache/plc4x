@@ -142,14 +142,14 @@ func BACnetConstructedDataArchiveParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataArchive"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataArchive")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (archive)
 	if pullErr := readBuffer.PullContext("archive"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for archive")
 	}
 	_archive, _archiveErr := BACnetApplicationTagParse(readBuffer)
 	if _archiveErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataArchiveParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	archive := CastBACnetApplicationTagBoolean(_archive)
 	if closeErr := readBuffer.CloseContext("archive"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for archive")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataArchive"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataArchive")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataArchive) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataArchive"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataArchive")
 		}
 
 		// Simple Field (archive)
 		if pushErr := writeBuffer.PushContext("archive"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for archive")
 		}
 		_archiveErr := m.Archive.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("archive"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for archive")
 		}
 		if _archiveErr != nil {
 			return errors.Wrap(_archiveErr, "Error serializing 'archive' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataArchive"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataArchive")
 		}
 		return nil
 	}

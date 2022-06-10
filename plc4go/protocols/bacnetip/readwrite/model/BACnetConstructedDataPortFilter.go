@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -179,7 +180,7 @@ func BACnetConstructedDataPortFilterParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPortFilter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPortFilter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -194,25 +195,26 @@ func BACnetConstructedDataPortFilterParse(readBuffer utils.ReadBuffer, tagNumber
 	if bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'numberOfDataElements' field")
 		default:
 			numberOfDataElements = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("numberOfDataElements"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for numberOfDataElements")
 			}
 		}
 	}
 
 	// Array field (portFilter)
 	if pullErr := readBuffer.PullContext("portFilter", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for portFilter")
 	}
 	// Terminated array
 	portFilter := make([]*BACnetPortPermission, 0)
@@ -227,11 +229,11 @@ func BACnetConstructedDataPortFilterParse(readBuffer utils.ReadBuffer, tagNumber
 		}
 	}
 	if closeErr := readBuffer.CloseContext("portFilter", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for portFilter")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPortFilter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPortFilter")
 	}
 
 	// Create a partially initialized instance
@@ -249,7 +251,7 @@ func (m *BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPortFilter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPortFilter")
 		}
 		// Virtual field
 		if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
@@ -260,12 +262,12 @@ func (m *BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuffe
 		var numberOfDataElements *BACnetApplicationTagUnsignedInteger = nil
 		if m.NumberOfDataElements != nil {
 			if pushErr := writeBuffer.PushContext("numberOfDataElements"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
 			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
 			if _numberOfDataElementsErr != nil {
 				return errors.Wrap(_numberOfDataElementsErr, "Error serializing 'numberOfDataElements' field")
@@ -275,7 +277,7 @@ func (m *BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuffe
 		// Array Field (portFilter)
 		if m.PortFilter != nil {
 			if pushErr := writeBuffer.PushContext("portFilter", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for portFilter")
 			}
 			for _, _element := range m.PortFilter {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -284,12 +286,12 @@ func (m *BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuffe
 				}
 			}
 			if popErr := writeBuffer.PopContext("portFilter", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for portFilter")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPortFilter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPortFilter")
 		}
 		return nil
 	}

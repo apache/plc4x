@@ -146,14 +146,14 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVSubscriptions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataActiveCOVSubscriptions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (activeCOVSubscriptions)
 	if pullErr := readBuffer.PullContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for activeCOVSubscriptions")
 	}
 	// Terminated array
 	activeCOVSubscriptions := make([]*BACnetCOVSubscription, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 		}
 	}
 	if closeErr := readBuffer.CloseContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for activeCOVSubscriptions")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveCOVSubscriptions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActiveCOVSubscriptions")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataActiveCOVSubscriptions) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataActiveCOVSubscriptions"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveCOVSubscriptions")
 		}
 
 		// Array Field (activeCOVSubscriptions)
 		if m.ActiveCOVSubscriptions != nil {
 			if pushErr := writeBuffer.PushContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for activeCOVSubscriptions")
 			}
 			for _, _element := range m.ActiveCOVSubscriptions {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataActiveCOVSubscriptions) Serialize(writeBuffer util
 				}
 			}
 			if popErr := writeBuffer.PopContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for activeCOVSubscriptions")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveCOVSubscriptions"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataActiveCOVSubscriptions")
 		}
 		return nil
 	}

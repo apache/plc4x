@@ -152,14 +152,14 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*ConnectionRequest, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDiscoveryEndpoint")
 	}
 	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiDiscoveryEndpointErr != nil {
@@ -167,12 +167,12 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*ConnectionRequest, er
 	}
 	hpaiDiscoveryEndpoint := CastHPAIDiscoveryEndpoint(_hpaiDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDiscoveryEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hpaiDiscoveryEndpoint")
 	}
 
 	// Simple Field (hpaiDataEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
 	}
 	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(readBuffer)
 	if _hpaiDataEndpointErr != nil {
@@ -180,12 +180,12 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*ConnectionRequest, er
 	}
 	hpaiDataEndpoint := CastHPAIDataEndpoint(_hpaiDataEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for hpaiDataEndpoint")
 	}
 
 	// Simple Field (connectionRequestInformation)
 	if pullErr := readBuffer.PullContext("connectionRequestInformation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for connectionRequestInformation")
 	}
 	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(readBuffer)
 	if _connectionRequestInformationErr != nil {
@@ -193,11 +193,11 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*ConnectionRequest, er
 	}
 	connectionRequestInformation := CastConnectionRequestInformation(_connectionRequestInformation)
 	if closeErr := readBuffer.CloseContext("connectionRequestInformation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for connectionRequestInformation")
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConnectionRequest")
 	}
 
 	// Create a partially initialized instance
@@ -216,16 +216,16 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ConnectionRequest")
 		}
 
 		// Simple Field (hpaiDiscoveryEndpoint)
 		if pushErr := writeBuffer.PushContext("hpaiDiscoveryEndpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for hpaiDiscoveryEndpoint")
 		}
 		_hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("hpaiDiscoveryEndpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for hpaiDiscoveryEndpoint")
 		}
 		if _hpaiDiscoveryEndpointErr != nil {
 			return errors.Wrap(_hpaiDiscoveryEndpointErr, "Error serializing 'hpaiDiscoveryEndpoint' field")
@@ -233,11 +233,11 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (hpaiDataEndpoint)
 		if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
 		}
 		_hpaiDataEndpointErr := m.HpaiDataEndpoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
 		}
 		if _hpaiDataEndpointErr != nil {
 			return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
@@ -245,18 +245,18 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (connectionRequestInformation)
 		if pushErr := writeBuffer.PushContext("connectionRequestInformation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for connectionRequestInformation")
 		}
 		_connectionRequestInformationErr := m.ConnectionRequestInformation.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("connectionRequestInformation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for connectionRequestInformation")
 		}
 		if _connectionRequestInformationErr != nil {
 			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ConnectionRequest")
 		}
 		return nil
 	}

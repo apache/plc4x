@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierPa
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectidentifierValue)
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
 	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
 	if _objectidentifierValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierPa
 	}
 	objectidentifierValue := CastBACnetApplicationTagObjectIdentifier(_objectidentifierValue)
 	if closeErr := readBuffer.CloseContext("objectidentifierValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectidentifierValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifi
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier")
 		}
 
 		// Simple Field (objectidentifierValue)
 		if pushErr := writeBuffer.PushContext("objectidentifierValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectidentifierValue")
 		}
 		_objectidentifierValueErr := m.ObjectidentifierValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectidentifierValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectidentifierValue")
 		}
 		if _objectidentifierValueErr != nil {
 			return errors.Wrap(_objectidentifierValueErr, "Error serializing 'objectidentifierValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier")
 		}
 		return nil
 	}

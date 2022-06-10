@@ -142,14 +142,14 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfAPDURetries"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNumberOfAPDURetries")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (numberOfApduRetries)
 	if pullErr := readBuffer.PullContext("numberOfApduRetries"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for numberOfApduRetries")
 	}
 	_numberOfApduRetries, _numberOfApduRetriesErr := BACnetApplicationTagParse(readBuffer)
 	if _numberOfApduRetriesErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, 
 	}
 	numberOfApduRetries := CastBACnetApplicationTagUnsignedInteger(_numberOfApduRetries)
 	if closeErr := readBuffer.CloseContext("numberOfApduRetries"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for numberOfApduRetries")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfAPDURetries"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfAPDURetries")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNumberOfAPDURetries"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNumberOfAPDURetries")
 		}
 
 		// Simple Field (numberOfApduRetries)
 		if pushErr := writeBuffer.PushContext("numberOfApduRetries"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for numberOfApduRetries")
 		}
 		_numberOfApduRetriesErr := m.NumberOfApduRetries.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("numberOfApduRetries"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for numberOfApduRetries")
 		}
 		if _numberOfApduRetriesErr != nil {
 			return errors.Wrap(_numberOfApduRetriesErr, "Error serializing 'numberOfApduRetries' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNumberOfAPDURetries"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNumberOfAPDURetries")
 		}
 		return nil
 	}

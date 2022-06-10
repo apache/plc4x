@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -148,14 +149,14 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReinitializeDevice")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (reinitializedStateOfDevice)
 	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for reinitializedStateOfDevice")
 	}
 	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reinitializedStateOfDeviceErr != nil {
@@ -163,7 +164,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	}
 	reinitializedStateOfDevice := CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(_reinitializedStateOfDevice)
 	if closeErr := readBuffer.CloseContext("reinitializedStateOfDevice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for reinitializedStateOfDevice")
 	}
 
 	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
@@ -171,24 +172,25 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for password")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'password' field")
 		default:
 			password = CastBACnetContextTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for password")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReinitializeDevice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReinitializeDevice")
 	}
 
 	// Create a partially initialized instance
@@ -206,16 +208,16 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReinitializeDevice"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReinitializeDevice")
 		}
 
 		// Simple Field (reinitializedStateOfDevice)
 		if pushErr := writeBuffer.PushContext("reinitializedStateOfDevice"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for reinitializedStateOfDevice")
 		}
 		_reinitializedStateOfDeviceErr := m.ReinitializedStateOfDevice.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("reinitializedStateOfDevice"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for reinitializedStateOfDevice")
 		}
 		if _reinitializedStateOfDeviceErr != nil {
 			return errors.Wrap(_reinitializedStateOfDeviceErr, "Error serializing 'reinitializedStateOfDevice' field")
@@ -225,12 +227,12 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer 
 		var password *BACnetContextTagCharacterString = nil
 		if m.Password != nil {
 			if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for password")
 			}
 			password = m.Password
 			_passwordErr := password.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("password"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for password")
 			}
 			if _passwordErr != nil {
 				return errors.Wrap(_passwordErr, "Error serializing 'password' field")
@@ -238,7 +240,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer 
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReinitializeDevice"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestReinitializeDevice")
 		}
 		return nil
 	}

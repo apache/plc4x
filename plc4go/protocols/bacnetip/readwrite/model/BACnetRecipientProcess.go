@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -110,14 +111,14 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (*BACnetRecipientP
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientProcess"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientProcess")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (recipient)
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
 	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
@@ -125,7 +126,7 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (*BACnetRecipientP
 	}
 	recipient := CastBACnetRecipientEnclosed(_recipient)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recipient")
 	}
 
 	// Optional Field (processIdentifier) (Can be skipped, if a given expression evaluates to false)
@@ -133,24 +134,25 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (*BACnetRecipientP
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'processIdentifier' field")
 		default:
 			processIdentifier = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientProcess"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetRecipientProcess")
 	}
 
 	// Create the instance
@@ -161,16 +163,16 @@ func (m *BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error 
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRecipientProcess"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetRecipientProcess")
 	}
 
 	// Simple Field (recipient)
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
 	_recipientErr := m.Recipient.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for recipient")
 	}
 	if _recipientErr != nil {
 		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
@@ -180,12 +182,12 @@ func (m *BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error 
 	var processIdentifier *BACnetContextTagUnsignedInteger = nil
 	if m.ProcessIdentifier != nil {
 		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 		}
 		processIdentifier = m.ProcessIdentifier
 		_processIdentifierErr := processIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for processIdentifier")
 		}
 		if _processIdentifierErr != nil {
 			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
@@ -193,7 +195,7 @@ func (m *BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetRecipientProcess"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetRecipientProcess")
 	}
 	return nil
 }

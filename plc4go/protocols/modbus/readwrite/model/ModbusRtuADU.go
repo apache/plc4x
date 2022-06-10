@@ -147,7 +147,7 @@ func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusRtuADU"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusRtuADU")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -161,7 +161,7 @@ func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 
 	// Simple Field (pdu)
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for pdu")
 	}
 	_pdu, _pduErr := ModbusPDUParse(readBuffer, bool(response))
 	if _pduErr != nil {
@@ -169,7 +169,7 @@ func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	}
 	pdu := CastModbusPDU(_pdu)
 	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for pdu")
 	}
 
 	// Checksum Field (checksum)
@@ -188,7 +188,7 @@ func ModbusRtuADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusRtuADU"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusRtuADU")
 	}
 
 	// Create a partially initialized instance
@@ -206,7 +206,7 @@ func (m *ModbusRtuADU) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusRtuADU"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusRtuADU")
 		}
 
 		// Simple Field (address)
@@ -218,11 +218,11 @@ func (m *ModbusRtuADU) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (pdu)
 		if pushErr := writeBuffer.PushContext("pdu"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for pdu")
 		}
 		_pduErr := m.Pdu.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("pdu"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for pdu")
 		}
 		if _pduErr != nil {
 			return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
@@ -241,7 +241,7 @@ func (m *ModbusRtuADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusRtuADU"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusRtuADU")
 		}
 		return nil
 	}

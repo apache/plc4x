@@ -105,7 +105,7 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parame
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Parameter"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7Parameter")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parame
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Parameter"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7Parameter")
 	}
 
 	// Finish initializing
@@ -163,7 +163,7 @@ func (m *S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Pa
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Parameter"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7Parameter")
 	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
@@ -180,7 +180,7 @@ func (m *S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Pa
 	}
 
 	if popErr := writeBuffer.PopContext("S7Parameter"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7Parameter")
 	}
 	return nil
 }

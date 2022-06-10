@@ -128,14 +128,14 @@ func BACnetLogDataLogDataEntryIntegerValueParse(readBuffer utils.ReadBuffer) (*B
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryIntegerValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryIntegerValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (integerValue)
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
 	_integerValue, _integerValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetLogDataLogDataEntryIntegerValueParse(readBuffer utils.ReadBuffer) (*B
 	}
 	integerValue := CastBACnetContextTagSignedInteger(_integerValue)
 	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryIntegerValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntryIntegerValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetLogDataLogDataEntryIntegerValue) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogDataLogDataEntryIntegerValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryIntegerValue")
 		}
 
 		// Simple Field (integerValue)
 		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
 		_integerValueErr := m.IntegerValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
 		if _integerValueErr != nil {
 			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryIntegerValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogDataLogDataEntryIntegerValue")
 		}
 		return nil
 	}

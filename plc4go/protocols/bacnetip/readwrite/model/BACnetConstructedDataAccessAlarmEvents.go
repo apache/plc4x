@@ -146,14 +146,14 @@ func BACnetConstructedDataAccessAlarmEventsParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessAlarmEvents"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessAlarmEvents")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (accessAlarmEvents)
 	if pullErr := readBuffer.PullContext("accessAlarmEvents", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessAlarmEvents")
 	}
 	// Terminated array
 	accessAlarmEvents := make([]*BACnetAccessEventTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataAccessAlarmEventsParse(readBuffer utils.ReadBuffer, ta
 		}
 	}
 	if closeErr := readBuffer.CloseContext("accessAlarmEvents", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessAlarmEvents")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessAlarmEvents"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessAlarmEvents")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataAccessAlarmEvents) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAccessAlarmEvents"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessAlarmEvents")
 		}
 
 		// Array Field (accessAlarmEvents)
 		if m.AccessAlarmEvents != nil {
 			if pushErr := writeBuffer.PushContext("accessAlarmEvents", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for accessAlarmEvents")
 			}
 			for _, _element := range m.AccessAlarmEvents {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataAccessAlarmEvents) Serialize(writeBuffer utils.Wri
 				}
 			}
 			if popErr := writeBuffer.PopContext("accessAlarmEvents", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for accessAlarmEvents")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessAlarmEvents"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAccessAlarmEvents")
 		}
 		return nil
 	}

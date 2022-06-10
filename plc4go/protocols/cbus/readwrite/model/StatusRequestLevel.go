@@ -146,7 +146,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (*StatusRequestLevel, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for StatusRequestLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,11 +195,11 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (*StatusRequestLevel, 
 
 	// Validation
 	if !(bool(bool(bool(bool(bool(bool(bool(bool((startingGroupAddressLabel) == (0x00))) || bool(bool((startingGroupAddressLabel) == (0x20)))) || bool(bool((startingGroupAddressLabel) == (0x40)))) || bool(bool((startingGroupAddressLabel) == (0x60)))) || bool(bool((startingGroupAddressLabel) == (0x80)))) || bool(bool((startingGroupAddressLabel) == (0xA0)))) || bool(bool((startingGroupAddressLabel) == (0xC0)))) || bool(bool((startingGroupAddressLabel) == (0xE0)))) {
-		return nil, utils.ParseValidationError{"invalid label"}
+		return nil, errors.WithStack(utils.ParseValidationError{"invalid label"})
 	}
 
 	if closeErr := readBuffer.CloseContext("StatusRequestLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for StatusRequestLevel")
 	}
 
 	// Create a partially initialized instance
@@ -217,7 +217,7 @@ func (m *StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("StatusRequestLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for StatusRequestLevel")
 		}
 
 		// Reserved Field (reserved)
@@ -251,7 +251,7 @@ func (m *StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("StatusRequestLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for StatusRequestLevel")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPrescale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPrescale")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (prescale)
 	if pullErr := readBuffer.PullContext("prescale"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for prescale")
 	}
 	_prescale, _prescaleErr := BACnetPrescaleParse(readBuffer)
 	if _prescaleErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	prescale := CastBACnetPrescale(_prescale)
 	if closeErr := readBuffer.CloseContext("prescale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for prescale")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPrescale"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPrescale")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPrescale) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPrescale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPrescale")
 		}
 
 		// Simple Field (prescale)
 		if pushErr := writeBuffer.PushContext("prescale"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for prescale")
 		}
 		_prescaleErr := m.Prescale.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("prescale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for prescale")
 		}
 		if _prescaleErr != nil {
 			return errors.Wrap(_prescaleErr, "Error serializing 'prescale' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPrescale"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPrescale")
 		}
 		return nil
 	}

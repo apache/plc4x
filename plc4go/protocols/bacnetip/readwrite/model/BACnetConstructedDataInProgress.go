@@ -142,14 +142,14 @@ func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInProgress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInProgress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (inProgress)
 	if pullErr := readBuffer.PullContext("inProgress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for inProgress")
 	}
 	_inProgress, _inProgressErr := BACnetLightingInProgressTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _inProgressErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	inProgress := CastBACnetLightingInProgressTagged(_inProgress)
 	if closeErr := readBuffer.CloseContext("inProgress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for inProgress")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInProgress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInProgress")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInProgress) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInProgress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInProgress")
 		}
 
 		// Simple Field (inProgress)
 		if pushErr := writeBuffer.PushContext("inProgress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for inProgress")
 		}
 		_inProgressErr := m.InProgress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("inProgress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for inProgress")
 		}
 		if _inProgressErr != nil {
 			return errors.Wrap(_inProgressErr, "Error serializing 'inProgress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInProgress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInProgress")
 		}
 		return nil
 	}

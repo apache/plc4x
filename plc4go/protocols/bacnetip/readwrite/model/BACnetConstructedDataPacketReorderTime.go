@@ -142,14 +142,14 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPacketReorderTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPacketReorderTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (packetReorderTime)
 	if pullErr := readBuffer.PullContext("packetReorderTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for packetReorderTime")
 	}
 	_packetReorderTime, _packetReorderTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _packetReorderTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	packetReorderTime := CastBACnetApplicationTagUnsignedInteger(_packetReorderTime)
 	if closeErr := readBuffer.CloseContext("packetReorderTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for packetReorderTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPacketReorderTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPacketReorderTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPacketReorderTime) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPacketReorderTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPacketReorderTime")
 		}
 
 		// Simple Field (packetReorderTime)
 		if pushErr := writeBuffer.PushContext("packetReorderTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for packetReorderTime")
 		}
 		_packetReorderTimeErr := m.PacketReorderTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("packetReorderTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for packetReorderTime")
 		}
 		if _packetReorderTimeErr != nil {
 			return errors.Wrap(_packetReorderTimeErr, "Error serializing 'packetReorderTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPacketReorderTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPacketReorderTime")
 		}
 		return nil
 	}

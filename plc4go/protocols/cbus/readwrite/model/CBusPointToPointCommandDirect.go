@@ -139,14 +139,14 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, srchk bool)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandDirect"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointCommandDirect")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unitAddress)
 	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 	}
 	_unitAddress, _unitAddressErr := UnitAddressParse(readBuffer)
 	if _unitAddressErr != nil {
@@ -154,7 +154,7 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, srchk bool)
 	}
 	unitAddress := CastUnitAddress(_unitAddress)
 	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -172,7 +172,7 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, srchk bool)
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommandDirect"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointCommandDirect")
 	}
 
 	// Create a partially initialized instance
@@ -189,16 +189,16 @@ func (m *CBusPointToPointCommandDirect) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusPointToPointCommandDirect"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointCommandDirect")
 		}
 
 		// Simple Field (unitAddress)
 		if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unitAddress")
 		}
 		_unitAddressErr := m.UnitAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unitAddress")
 		}
 		if _unitAddressErr != nil {
 			return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
@@ -213,7 +213,7 @@ func (m *CBusPointToPointCommandDirect) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToPointCommandDirect"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CBusPointToPointCommandDirect")
 		}
 		return nil
 	}

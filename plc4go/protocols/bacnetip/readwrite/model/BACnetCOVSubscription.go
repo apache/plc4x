@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -140,14 +141,14 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOVSubscrip
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCOVSubscription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCOVSubscription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (recipient)
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
 	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
@@ -155,12 +156,12 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOVSubscrip
 	}
 	recipient := CastBACnetRecipientProcessEnclosed(_recipient)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recipient")
 	}
 
 	// Simple Field (monitoredPropertyReference)
 	if pullErr := readBuffer.PullContext("monitoredPropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for monitoredPropertyReference")
 	}
 	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _monitoredPropertyReferenceErr != nil {
@@ -168,12 +169,12 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOVSubscrip
 	}
 	monitoredPropertyReference := CastBACnetObjectPropertyReferenceEnclosed(_monitoredPropertyReference)
 	if closeErr := readBuffer.CloseContext("monitoredPropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for monitoredPropertyReference")
 	}
 
 	// Simple Field (issueConfirmedNotifications)
 	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 	}
 	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _issueConfirmedNotificationsErr != nil {
@@ -181,12 +182,12 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOVSubscrip
 	}
 	issueConfirmedNotifications := CastBACnetContextTagBoolean(_issueConfirmedNotifications)
 	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
 	}
 
 	// Simple Field (timeRemaining)
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
 	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
@@ -194,7 +195,7 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOVSubscrip
 	}
 	timeRemaining := CastBACnetContextTagUnsignedInteger(_timeRemaining)
 	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeRemaining")
 	}
 
 	// Optional Field (covIncrement) (Can be skipped, if a given expression evaluates to false)
@@ -202,24 +203,25 @@ func BACnetCOVSubscriptionParse(readBuffer utils.ReadBuffer) (*BACnetCOVSubscrip
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field")
 		default:
 			covIncrement = CastBACnetContextTagReal(_val)
 			if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCOVSubscription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetCOVSubscription")
 	}
 
 	// Create the instance
@@ -230,16 +232,16 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCOVSubscription"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetCOVSubscription")
 	}
 
 	// Simple Field (recipient)
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
 	_recipientErr := m.Recipient.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for recipient")
 	}
 	if _recipientErr != nil {
 		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
@@ -247,11 +249,11 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (monitoredPropertyReference)
 	if pushErr := writeBuffer.PushContext("monitoredPropertyReference"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for monitoredPropertyReference")
 	}
 	_monitoredPropertyReferenceErr := m.MonitoredPropertyReference.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("monitoredPropertyReference"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for monitoredPropertyReference")
 	}
 	if _monitoredPropertyReferenceErr != nil {
 		return errors.Wrap(_monitoredPropertyReferenceErr, "Error serializing 'monitoredPropertyReference' field")
@@ -259,11 +261,11 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (issueConfirmedNotifications)
 	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 	}
 	_issueConfirmedNotificationsErr := m.IssueConfirmedNotifications.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 	}
 	if _issueConfirmedNotificationsErr != nil {
 		return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
@@ -271,11 +273,11 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (timeRemaining)
 	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
 	}
 	_timeRemainingErr := m.TimeRemaining.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timeRemaining")
 	}
 	if _timeRemainingErr != nil {
 		return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
@@ -285,12 +287,12 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 	var covIncrement *BACnetContextTagReal = nil
 	if m.CovIncrement != nil {
 		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
 		covIncrement = m.CovIncrement
 		_covIncrementErr := covIncrement.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
 		if _covIncrementErr != nil {
 			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
@@ -298,7 +300,7 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCOVSubscription"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetCOVSubscription")
 	}
 	return nil
 }

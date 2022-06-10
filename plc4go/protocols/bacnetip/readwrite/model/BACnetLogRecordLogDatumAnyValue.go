@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -136,7 +137,7 @@ func BACnetLogRecordLogDatumAnyValueParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumAnyValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumAnyValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -146,24 +147,25 @@ func BACnetLogRecordLogDatumAnyValueParse(readBuffer utils.ReadBuffer, tagNumber
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("anyValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for anyValue")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(10), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'anyValue' field")
 		default:
 			anyValue = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("anyValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for anyValue")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumAnyValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumAnyValue")
 	}
 
 	// Create a partially initialized instance
@@ -180,19 +182,19 @@ func (m *BACnetLogRecordLogDatumAnyValue) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogRecordLogDatumAnyValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumAnyValue")
 		}
 
 		// Optional Field (anyValue) (Can be skipped, if the value is null)
 		var anyValue *BACnetConstructedData = nil
 		if m.AnyValue != nil {
 			if pushErr := writeBuffer.PushContext("anyValue"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for anyValue")
 			}
 			anyValue = m.AnyValue
 			_anyValueErr := anyValue.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("anyValue"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for anyValue")
 			}
 			if _anyValueErr != nil {
 				return errors.Wrap(_anyValueErr, "Error serializing 'anyValue' field")
@@ -200,7 +202,7 @@ func (m *BACnetLogRecordLogDatumAnyValue) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumAnyValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogRecordLogDatumAnyValue")
 		}
 		return nil
 	}

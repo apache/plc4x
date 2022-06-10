@@ -219,7 +219,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyLong"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALReplyLong")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -257,18 +257,19 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	if isUnitAddress {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 		}
 		_val, _err := UnitAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field")
 		default:
 			unitAddress = CastUnitAddress(_val)
 			if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
 			}
 		}
 	}
@@ -278,25 +279,26 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	if !(isUnitAddress) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 		}
 		_val, _err := BridgeAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field")
 		default:
 			bridgeAddress = CastBridgeAddress(_val)
 			if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for bridgeAddress")
 			}
 		}
 	}
 
 	// Simple Field (serialInterfaceAddress)
 	if pullErr := readBuffer.PullContext("serialInterfaceAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serialInterfaceAddress")
 	}
 	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParse(readBuffer)
 	if _serialInterfaceAddressErr != nil {
@@ -304,7 +306,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	}
 	serialInterfaceAddress := CastSerialInterfaceAddress(_serialInterfaceAddress)
 	if closeErr := readBuffer.CloseContext("serialInterfaceAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serialInterfaceAddress")
 	}
 
 	// Optional Field (reservedByte) (Can be skipped, if a given expression evaluates to false)
@@ -319,7 +321,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 
 	// Validation
 	if !(bool(bool(isUnitAddress) && bool(bool((*reservedByte) == (0x00)))) || bool(!(isUnitAddress))) {
-		return nil, utils.ParseValidationError{"wrong reservedByte"}
+		return nil, errors.WithStack(utils.ParseValidationError{"wrong reservedByte"})
 	}
 
 	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)
@@ -327,24 +329,25 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	if !(isUnitAddress) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("replyNetwork"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for replyNetwork")
 		}
 		_val, _err := ReplyNetworkParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field")
 		default:
 			replyNetwork = CastReplyNetwork(_val)
 			if closeErr := readBuffer.CloseContext("replyNetwork"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for replyNetwork")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("CALReplyLong"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALReplyLong")
 	}
 
 	// Create a partially initialized instance
@@ -366,7 +369,7 @@ func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALReplyLong"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CALReplyLong")
 		}
 
 		// Reserved Field (reserved)
@@ -385,12 +388,12 @@ func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		var unitAddress *UnitAddress = nil
 		if m.UnitAddress != nil {
 			if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for unitAddress")
 			}
 			unitAddress = m.UnitAddress
 			_unitAddressErr := unitAddress.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for unitAddress")
 			}
 			if _unitAddressErr != nil {
 				return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
@@ -401,12 +404,12 @@ func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		var bridgeAddress *BridgeAddress = nil
 		if m.BridgeAddress != nil {
 			if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 			}
 			bridgeAddress = m.BridgeAddress
 			_bridgeAddressErr := bridgeAddress.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for bridgeAddress")
 			}
 			if _bridgeAddressErr != nil {
 				return errors.Wrap(_bridgeAddressErr, "Error serializing 'bridgeAddress' field")
@@ -415,11 +418,11 @@ func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (serialInterfaceAddress)
 		if pushErr := writeBuffer.PushContext("serialInterfaceAddress"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for serialInterfaceAddress")
 		}
 		_serialInterfaceAddressErr := m.SerialInterfaceAddress.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("serialInterfaceAddress"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for serialInterfaceAddress")
 		}
 		if _serialInterfaceAddressErr != nil {
 			return errors.Wrap(_serialInterfaceAddressErr, "Error serializing 'serialInterfaceAddress' field")
@@ -439,12 +442,12 @@ func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		var replyNetwork *ReplyNetwork = nil
 		if m.ReplyNetwork != nil {
 			if pushErr := writeBuffer.PushContext("replyNetwork"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for replyNetwork")
 			}
 			replyNetwork = m.ReplyNetwork
 			_replyNetworkErr := replyNetwork.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("replyNetwork"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for replyNetwork")
 			}
 			if _replyNetworkErr != nil {
 				return errors.Wrap(_replyNetworkErr, "Error serializing 'replyNetwork' field")
@@ -452,7 +455,7 @@ func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CALReplyLong"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CALReplyLong")
 		}
 		return nil
 	}

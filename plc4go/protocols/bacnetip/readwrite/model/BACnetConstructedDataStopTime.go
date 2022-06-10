@@ -142,14 +142,14 @@ func BACnetConstructedDataStopTimeParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStopTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (stopTime)
 	if pullErr := readBuffer.PullContext("stopTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for stopTime")
 	}
 	_stopTime, _stopTimeErr := BACnetDateTimeParse(readBuffer)
 	if _stopTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataStopTimeParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	stopTime := CastBACnetDateTime(_stopTime)
 	if closeErr := readBuffer.CloseContext("stopTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for stopTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStopTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStopTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataStopTime) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataStopTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStopTime")
 		}
 
 		// Simple Field (stopTime)
 		if pushErr := writeBuffer.PushContext("stopTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for stopTime")
 		}
 		_stopTimeErr := m.StopTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("stopTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for stopTime")
 		}
 		if _stopTimeErr != nil {
 			return errors.Wrap(_stopTimeErr, "Error serializing 'stopTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStopTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataStopTime")
 		}
 		return nil
 	}

@@ -131,14 +131,14 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetWr
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetWriteAccessSpecification"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetWriteAccessSpecification")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
@@ -146,12 +146,12 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetWr
 	}
 	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
@@ -159,12 +159,12 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetWr
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Array field (listOfPropertyWriteDefinition)
 	if pullErr := readBuffer.PullContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfPropertyWriteDefinition")
 	}
 	// Terminated array
 	listOfPropertyWriteDefinition := make([]*BACnetPropertyWriteDefinition, 0)
@@ -179,12 +179,12 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetWr
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfPropertyWriteDefinition")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
@@ -192,11 +192,11 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetWr
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetWriteAccessSpecification"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetWriteAccessSpecification")
 	}
 
 	// Create the instance
@@ -207,16 +207,16 @@ func (m *BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffer
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetWriteAccessSpecification"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetWriteAccessSpecification")
 	}
 
 	// Simple Field (objectIdentifier)
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
 	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
 	if _objectIdentifierErr != nil {
 		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -224,11 +224,11 @@ func (m *BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffer
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -237,7 +237,7 @@ func (m *BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffer
 	// Array Field (listOfPropertyWriteDefinition)
 	if m.ListOfPropertyWriteDefinition != nil {
 		if pushErr := writeBuffer.PushContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for listOfPropertyWriteDefinition")
 		}
 		for _, _element := range m.ListOfPropertyWriteDefinition {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -246,24 +246,24 @@ func (m *BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffer
 			}
 		}
 		if popErr := writeBuffer.PopContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for listOfPropertyWriteDefinition")
 		}
 	}
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetWriteAccessSpecification"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetWriteAccessSpecification")
 	}
 	return nil
 }

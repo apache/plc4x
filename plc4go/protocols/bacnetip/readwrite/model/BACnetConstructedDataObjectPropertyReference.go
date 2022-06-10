@@ -142,14 +142,14 @@ func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectPropertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataObjectPropertyReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (propertyReference)
 	if pullErr := readBuffer.PullContext("propertyReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyReference")
 	}
 	_propertyReference, _propertyReferenceErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
 	if _propertyReferenceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuff
 	}
 	propertyReference := CastBACnetDeviceObjectPropertyReference(_propertyReference)
 	if closeErr := readBuffer.CloseContext("propertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyReference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataObjectPropertyReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataObjectPropertyReference")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataObjectPropertyReference) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataObjectPropertyReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataObjectPropertyReference")
 		}
 
 		// Simple Field (propertyReference)
 		if pushErr := writeBuffer.PushContext("propertyReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyReference")
 		}
 		_propertyReferenceErr := m.PropertyReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyReference")
 		}
 		if _propertyReferenceErr != nil {
 			return errors.Wrap(_propertyReferenceErr, "Error serializing 'propertyReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataObjectPropertyReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataObjectPropertyReference")
 		}
 		return nil
 	}

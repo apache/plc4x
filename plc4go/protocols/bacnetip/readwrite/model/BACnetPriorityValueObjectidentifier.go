@@ -131,14 +131,14 @@ func BACnetPriorityValueObjectidentifierParse(readBuffer utils.ReadBuffer, objec
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueObjectidentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueObjectidentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectidentifierValue)
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
 	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
 	if _objectidentifierValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueObjectidentifierParse(readBuffer utils.ReadBuffer, objec
 	}
 	objectidentifierValue := CastBACnetApplicationTagObjectIdentifier(_objectidentifierValue)
 	if closeErr := readBuffer.CloseContext("objectidentifierValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectidentifierValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueObjectidentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueObjectidentifier")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueObjectidentifier) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueObjectidentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueObjectidentifier")
 		}
 
 		// Simple Field (objectidentifierValue)
 		if pushErr := writeBuffer.PushContext("objectidentifierValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectidentifierValue")
 		}
 		_objectidentifierValueErr := m.ObjectidentifierValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectidentifierValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectidentifierValue")
 		}
 		if _objectidentifierValueErr != nil {
 			return errors.Wrap(_objectidentifierValueErr, "Error serializing 'objectidentifierValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueObjectidentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueObjectidentifier")
 		}
 		return nil
 	}

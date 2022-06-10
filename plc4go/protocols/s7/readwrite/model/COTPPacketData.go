@@ -147,7 +147,7 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPack
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacketData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -167,7 +167,7 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPack
 	tpduRef := _tpduRef
 
 	if closeErr := readBuffer.CloseContext("COTPPacketData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPPacketData")
 	}
 
 	// Create a partially initialized instance
@@ -185,7 +185,7 @@ func (m *COTPPacketData) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPPacketData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for COTPPacketData")
 		}
 
 		// Simple Field (eot)
@@ -203,7 +203,7 @@ func (m *COTPPacketData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for COTPPacketData")
 		}
 		return nil
 	}

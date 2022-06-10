@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -158,14 +159,14 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedPrivateTransfer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckConfirmedPrivateTransfer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (vendorId)
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 	}
 	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
@@ -173,12 +174,12 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	}
 	vendorId := CastBACnetVendorIdTagged(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
 	}
 
 	// Simple Field (serviceNumber)
 	if pullErr := readBuffer.PullContext("serviceNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serviceNumber")
 	}
 	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _serviceNumberErr != nil {
@@ -186,7 +187,7 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	}
 	serviceNumber := CastBACnetContextTagUnsignedInteger(_serviceNumber)
 	if closeErr := readBuffer.CloseContext("serviceNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serviceNumber")
 	}
 
 	// Optional Field (resultBlock) (Can be skipped, if a given expression evaluates to false)
@@ -194,24 +195,25 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("resultBlock"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for resultBlock")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'resultBlock' field")
 		default:
 			resultBlock = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("resultBlock"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for resultBlock")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckConfirmedPrivateTransfer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckConfirmedPrivateTransfer")
 	}
 
 	// Create a partially initialized instance
@@ -230,16 +232,16 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckConfirmedPrivateTransfer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckConfirmedPrivateTransfer")
 		}
 
 		// Simple Field (vendorId)
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
 		_vendorIdErr := m.VendorId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
@@ -247,11 +249,11 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 
 		// Simple Field (serviceNumber)
 		if pushErr := writeBuffer.PushContext("serviceNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for serviceNumber")
 		}
 		_serviceNumberErr := m.ServiceNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("serviceNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for serviceNumber")
 		}
 		if _serviceNumberErr != nil {
 			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
@@ -261,12 +263,12 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 		var resultBlock *BACnetConstructedData = nil
 		if m.ResultBlock != nil {
 			if pushErr := writeBuffer.PushContext("resultBlock"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for resultBlock")
 			}
 			resultBlock = m.ResultBlock
 			_resultBlockErr := resultBlock.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("resultBlock"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for resultBlock")
 			}
 			if _resultBlockErr != nil {
 				return errors.Wrap(_resultBlockErr, "Error serializing 'resultBlock' field")
@@ -274,7 +276,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckConfirmedPrivateTransfer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckConfirmedPrivateTransfer")
 		}
 		return nil
 	}

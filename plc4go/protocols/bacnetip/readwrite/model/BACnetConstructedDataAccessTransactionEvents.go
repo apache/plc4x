@@ -146,14 +146,14 @@ func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessTransactionEvents"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessTransactionEvents")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (accessTransactionEvents)
 	if pullErr := readBuffer.PullContext("accessTransactionEvents", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessTransactionEvents")
 	}
 	// Terminated array
 	accessTransactionEvents := make([]*BACnetAccessEventTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuff
 		}
 	}
 	if closeErr := readBuffer.CloseContext("accessTransactionEvents", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessTransactionEvents")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessTransactionEvents"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessTransactionEvents")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataAccessTransactionEvents) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAccessTransactionEvents"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessTransactionEvents")
 		}
 
 		// Array Field (accessTransactionEvents)
 		if m.AccessTransactionEvents != nil {
 			if pushErr := writeBuffer.PushContext("accessTransactionEvents", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for accessTransactionEvents")
 			}
 			for _, _element := range m.AccessTransactionEvents {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataAccessTransactionEvents) Serialize(writeBuffer uti
 				}
 			}
 			if popErr := writeBuffer.PopContext("accessTransactionEvents", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for accessTransactionEvents")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessTransactionEvents"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAccessTransactionEvents")
 		}
 		return nil
 	}

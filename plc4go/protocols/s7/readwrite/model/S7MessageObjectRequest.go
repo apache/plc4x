@@ -187,7 +187,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageObjectRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7MessageObjectRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -212,7 +212,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 
 	// Simple Field (syntaxId)
 	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for syntaxId")
 	}
 	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
 	if _syntaxIdErr != nil {
@@ -220,7 +220,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	}
 	syntaxId := _syntaxId
 	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for syntaxId")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -239,7 +239,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 
 	// Simple Field (queryType)
 	if pullErr := readBuffer.PullContext("queryType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for queryType")
 	}
 	_queryType, _queryTypeErr := QueryTypeParse(readBuffer)
 	if _queryTypeErr != nil {
@@ -247,7 +247,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	}
 	queryType := _queryType
 	if closeErr := readBuffer.CloseContext("queryType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for queryType")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -266,7 +266,7 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 
 	// Simple Field (alarmType)
 	if pullErr := readBuffer.PullContext("alarmType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for alarmType")
 	}
 	_alarmType, _alarmTypeErr := AlarmTypeParse(readBuffer)
 	if _alarmTypeErr != nil {
@@ -274,11 +274,11 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	}
 	alarmType := _alarmType
 	if closeErr := readBuffer.CloseContext("alarmType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for alarmType")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7MessageObjectRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7MessageObjectRequest")
 	}
 
 	// Create a partially initialized instance
@@ -297,7 +297,7 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7MessageObjectRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7MessageObjectRequest")
 		}
 
 		// Const Field (variableSpec)
@@ -314,11 +314,11 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Simple Field (syntaxId)
 		if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for syntaxId")
 		}
 		_syntaxIdErr := m.SyntaxId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for syntaxId")
 		}
 		if _syntaxIdErr != nil {
 			return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
@@ -334,11 +334,11 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Simple Field (queryType)
 		if pushErr := writeBuffer.PushContext("queryType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for queryType")
 		}
 		_queryTypeErr := m.QueryType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("queryType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for queryType")
 		}
 		if _queryTypeErr != nil {
 			return errors.Wrap(_queryTypeErr, "Error serializing 'queryType' field")
@@ -354,18 +354,18 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Simple Field (alarmType)
 		if pushErr := writeBuffer.PushContext("alarmType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for alarmType")
 		}
 		_alarmTypeErr := m.AlarmType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("alarmType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for alarmType")
 		}
 		if _alarmTypeErr != nil {
 			return errors.Wrap(_alarmTypeErr, "Error serializing 'alarmType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7MessageObjectRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7MessageObjectRequest")
 		}
 		return nil
 	}

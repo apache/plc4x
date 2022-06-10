@@ -142,14 +142,14 @@ func BACnetConstructedDataLargeAnalogValueFaultHighLimitParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLargeAnalogValueFaultHighLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (faultHighLimit)
 	if pullErr := readBuffer.PullContext("faultHighLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for faultHighLimit")
 	}
 	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _faultHighLimitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLargeAnalogValueFaultHighLimitParse(readBuffer utils.R
 	}
 	faultHighLimit := CastBACnetApplicationTagDouble(_faultHighLimit)
 	if closeErr := readBuffer.CloseContext("faultHighLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for faultHighLimit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueFaultHighLimit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLargeAnalogValueFaultHighLimit) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueFaultHighLimit")
 		}
 
 		// Simple Field (faultHighLimit)
 		if pushErr := writeBuffer.PushContext("faultHighLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for faultHighLimit")
 		}
 		_faultHighLimitErr := m.FaultHighLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("faultHighLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for faultHighLimit")
 		}
 		if _faultHighLimitErr != nil {
 			return errors.Wrap(_faultHighLimitErr, "Error serializing 'faultHighLimit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLargeAnalogValueFaultHighLimit")
 		}
 		return nil
 	}

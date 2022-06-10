@@ -142,14 +142,14 @@ func BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataManipulatedVariableReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataManipulatedVariableReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (manipulatedVariableReference)
 	if pullErr := readBuffer.PullContext("manipulatedVariableReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for manipulatedVariableReference")
 	}
 	_manipulatedVariableReference, _manipulatedVariableReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
 	if _manipulatedVariableReferenceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer utils.Rea
 	}
 	manipulatedVariableReference := CastBACnetObjectPropertyReference(_manipulatedVariableReference)
 	if closeErr := readBuffer.CloseContext("manipulatedVariableReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for manipulatedVariableReference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataManipulatedVariableReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataManipulatedVariableReference")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataManipulatedVariableReference) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataManipulatedVariableReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataManipulatedVariableReference")
 		}
 
 		// Simple Field (manipulatedVariableReference)
 		if pushErr := writeBuffer.PushContext("manipulatedVariableReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for manipulatedVariableReference")
 		}
 		_manipulatedVariableReferenceErr := m.ManipulatedVariableReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("manipulatedVariableReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for manipulatedVariableReference")
 		}
 		if _manipulatedVariableReferenceErr != nil {
 			return errors.Wrap(_manipulatedVariableReferenceErr, "Error serializing 'manipulatedVariableReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataManipulatedVariableReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataManipulatedVariableReference")
 		}
 		return nil
 	}

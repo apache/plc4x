@@ -97,7 +97,7 @@ func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Dummy"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for Dummy")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {
 	dummy := _dummy
 
 	if closeErr := readBuffer.CloseContext("Dummy"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for Dummy")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *Dummy) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Dummy"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for Dummy")
 	}
 
 	// Simple Field (dummy)
@@ -132,7 +132,7 @@ func (m *Dummy) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("Dummy"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for Dummy")
 	}
 	return nil
 }

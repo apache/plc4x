@@ -142,14 +142,14 @@ func BACnetConstructedDataProtocolVersionParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolVersion"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolVersion")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (protocolVersion)
 	if pullErr := readBuffer.PullContext("protocolVersion"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for protocolVersion")
 	}
 	_protocolVersion, _protocolVersionErr := BACnetApplicationTagParse(readBuffer)
 	if _protocolVersionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProtocolVersionParse(readBuffer utils.ReadBuffer, tagN
 	}
 	protocolVersion := CastBACnetApplicationTagUnsignedInteger(_protocolVersion)
 	if closeErr := readBuffer.CloseContext("protocolVersion"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for protocolVersion")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolVersion"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolVersion")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProtocolVersion) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProtocolVersion"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolVersion")
 		}
 
 		// Simple Field (protocolVersion)
 		if pushErr := writeBuffer.PushContext("protocolVersion"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for protocolVersion")
 		}
 		_protocolVersionErr := m.ProtocolVersion.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolVersion"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for protocolVersion")
 		}
 		if _protocolVersionErr != nil {
 			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolVersion"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProtocolVersion")
 		}
 		return nil
 	}

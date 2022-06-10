@@ -172,7 +172,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, err
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LBusmonInd"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for LBusmonInd")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -186,7 +186,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, err
 
 	// Array field (additionalInformation)
 	if pullErr := readBuffer.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for additionalInformation")
 	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
@@ -202,12 +202,12 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, err
 		}
 	}
 	if closeErr := readBuffer.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for additionalInformation")
 	}
 
 	// Simple Field (dataFrame)
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
 	}
 	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
 	if _dataFrameErr != nil {
@@ -215,7 +215,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, err
 	}
 	dataFrame := CastLDataFrame(_dataFrame)
 	if closeErr := readBuffer.CloseContext("dataFrame"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dataFrame")
 	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
@@ -229,7 +229,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, err
 	}
 
 	if closeErr := readBuffer.CloseContext("LBusmonInd"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for LBusmonInd")
 	}
 
 	// Create a partially initialized instance
@@ -249,7 +249,7 @@ func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LBusmonInd"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for LBusmonInd")
 		}
 
 		// Simple Field (additionalInformationLength)
@@ -262,7 +262,7 @@ func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
 			if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for additionalInformation")
 			}
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -271,17 +271,17 @@ func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 				}
 			}
 			if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for additionalInformation")
 			}
 		}
 
 		// Simple Field (dataFrame)
 		if pushErr := writeBuffer.PushContext("dataFrame"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dataFrame")
 		}
 		_dataFrameErr := m.DataFrame.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dataFrame"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dataFrame")
 		}
 		if _dataFrameErr != nil {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
@@ -298,7 +298,7 @@ func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("LBusmonInd"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for LBusmonInd")
 		}
 		return nil
 	}

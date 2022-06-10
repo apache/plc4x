@@ -133,7 +133,7 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterChecksum")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -146,7 +146,7 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("COTPParameterChecksum"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterChecksum")
 	}
 
 	// Create a partially initialized instance
@@ -163,7 +163,7 @@ func (m *COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPParameterChecksum"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for COTPParameterChecksum")
 		}
 
 		// Simple Field (crc)
@@ -174,7 +174,7 @@ func (m *COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterChecksum"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for COTPParameterChecksum")
 		}
 		return nil
 	}

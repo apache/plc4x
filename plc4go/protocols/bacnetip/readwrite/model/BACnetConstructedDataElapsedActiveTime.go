@@ -142,14 +142,14 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElapsedActiveTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataElapsedActiveTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (elapsedActiveTime)
 	if pullErr := readBuffer.PullContext("elapsedActiveTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for elapsedActiveTime")
 	}
 	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _elapsedActiveTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 	}
 	elapsedActiveTime := CastBACnetApplicationTagUnsignedInteger(_elapsedActiveTime)
 	if closeErr := readBuffer.CloseContext("elapsedActiveTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for elapsedActiveTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElapsedActiveTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataElapsedActiveTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataElapsedActiveTime) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataElapsedActiveTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataElapsedActiveTime")
 		}
 
 		// Simple Field (elapsedActiveTime)
 		if pushErr := writeBuffer.PushContext("elapsedActiveTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for elapsedActiveTime")
 		}
 		_elapsedActiveTimeErr := m.ElapsedActiveTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("elapsedActiveTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for elapsedActiveTime")
 		}
 		if _elapsedActiveTimeErr != nil {
 			return errors.Wrap(_elapsedActiveTimeErr, "Error serializing 'elapsedActiveTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataElapsedActiveTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataElapsedActiveTime")
 		}
 		return nil
 	}

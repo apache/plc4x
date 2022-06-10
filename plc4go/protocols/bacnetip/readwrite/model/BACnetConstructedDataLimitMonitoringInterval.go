@@ -142,14 +142,14 @@ func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLimitMonitoringInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLimitMonitoringInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (limitMonitoringInterval)
 	if pullErr := readBuffer.PullContext("limitMonitoringInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for limitMonitoringInterval")
 	}
 	_limitMonitoringInterval, _limitMonitoringIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _limitMonitoringIntervalErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuff
 	}
 	limitMonitoringInterval := CastBACnetApplicationTagUnsignedInteger(_limitMonitoringInterval)
 	if closeErr := readBuffer.CloseContext("limitMonitoringInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for limitMonitoringInterval")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLimitMonitoringInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLimitMonitoringInterval")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLimitMonitoringInterval) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLimitMonitoringInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLimitMonitoringInterval")
 		}
 
 		// Simple Field (limitMonitoringInterval)
 		if pushErr := writeBuffer.PushContext("limitMonitoringInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for limitMonitoringInterval")
 		}
 		_limitMonitoringIntervalErr := m.LimitMonitoringInterval.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("limitMonitoringInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for limitMonitoringInterval")
 		}
 		if _limitMonitoringIntervalErr != nil {
 			return errors.Wrap(_limitMonitoringIntervalErr, "Error serializing 'limitMonitoringInterval' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLimitMonitoringInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLimitMonitoringInterval")
 		}
 		return nil
 	}

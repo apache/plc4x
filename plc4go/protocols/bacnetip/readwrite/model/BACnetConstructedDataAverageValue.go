@@ -142,14 +142,14 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAverageValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAverageValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (averageValue)
 	if pullErr := readBuffer.PullContext("averageValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for averageValue")
 	}
 	_averageValue, _averageValueErr := BACnetApplicationTagParse(readBuffer)
 	if _averageValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	averageValue := CastBACnetApplicationTagReal(_averageValue)
 	if closeErr := readBuffer.CloseContext("averageValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for averageValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAverageValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAverageValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAverageValue) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAverageValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAverageValue")
 		}
 
 		// Simple Field (averageValue)
 		if pushErr := writeBuffer.PushContext("averageValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for averageValue")
 		}
 		_averageValueErr := m.AverageValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("averageValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for averageValue")
 		}
 		if _averageValueErr != nil {
 			return errors.Wrap(_averageValueErr, "Error serializing 'averageValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAverageValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAverageValue")
 		}
 		return nil
 	}

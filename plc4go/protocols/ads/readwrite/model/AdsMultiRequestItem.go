@@ -101,7 +101,7 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsMultiRequestItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -129,7 +129,7 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItem"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsMultiRequestItem")
 	}
 
 	// Finish initializing
@@ -145,7 +145,7 @@ func (m *AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsMultiRequestItem"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AdsMultiRequestItem")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -154,7 +154,7 @@ func (m *AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	}
 
 	if popErr := writeBuffer.PopContext("AdsMultiRequestItem"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AdsMultiRequestItem")
 	}
 	return nil
 }

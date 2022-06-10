@@ -131,14 +131,14 @@ func BACnetTimerStateChangeValueOctetStringParse(readBuffer utils.ReadBuffer, ob
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueOctetString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueOctetString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (octetStringValue)
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
 	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _octetStringValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetTimerStateChangeValueOctetStringParse(readBuffer utils.ReadBuffer, ob
 	}
 	octetStringValue := CastBACnetApplicationTagOctetString(_octetStringValue)
 	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueOctetString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueOctetString")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetTimerStateChangeValueOctetString) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimerStateChangeValueOctetString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueOctetString")
 		}
 
 		// Simple Field (octetStringValue)
 		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
 		}
 		_octetStringValueErr := m.OctetStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for octetStringValue")
 		}
 		if _octetStringValueErr != nil {
 			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueOctetString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetTimerStateChangeValueOctetString")
 		}
 		return nil
 	}

@@ -131,14 +131,14 @@ func BACnetTimerStateChangeValueObjectidentifierParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueObjectidentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueObjectidentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectidentifierValue)
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
 	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
 	if _objectidentifierValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetTimerStateChangeValueObjectidentifierParse(readBuffer utils.ReadBuffe
 	}
 	objectidentifierValue := CastBACnetApplicationTagObjectIdentifier(_objectidentifierValue)
 	if closeErr := readBuffer.CloseContext("objectidentifierValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectidentifierValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueObjectidentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueObjectidentifier")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetTimerStateChangeValueObjectidentifier) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimerStateChangeValueObjectidentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueObjectidentifier")
 		}
 
 		// Simple Field (objectidentifierValue)
 		if pushErr := writeBuffer.PushContext("objectidentifierValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectidentifierValue")
 		}
 		_objectidentifierValueErr := m.ObjectidentifierValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectidentifierValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectidentifierValue")
 		}
 		if _objectidentifierValueErr != nil {
 			return errors.Wrap(_objectidentifierValueErr, "Error serializing 'objectidentifierValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueObjectidentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetTimerStateChangeValueObjectidentifier")
 		}
 		return nil
 	}

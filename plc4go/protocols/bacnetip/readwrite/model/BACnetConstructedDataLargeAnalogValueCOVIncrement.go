@@ -142,14 +142,14 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueCOVIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLargeAnalogValueCOVIncrement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (covIncrement)
 	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 	}
 	_covIncrement, _covIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _covIncrementErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.Rea
 	}
 	covIncrement := CastBACnetApplicationTagDouble(_covIncrement)
 	if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueCOVIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueCOVIncrement")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLargeAnalogValueCOVIncrement) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLargeAnalogValueCOVIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueCOVIncrement")
 		}
 
 		// Simple Field (covIncrement)
 		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
 		_covIncrementErr := m.CovIncrement.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
 		if _covIncrementErr != nil {
 			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLargeAnalogValueCOVIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLargeAnalogValueCOVIncrement")
 		}
 		return nil
 	}

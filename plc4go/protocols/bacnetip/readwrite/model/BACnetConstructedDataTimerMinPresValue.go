@@ -142,14 +142,14 @@ func BACnetConstructedDataTimerMinPresValueParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerMinPresValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimerMinPresValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (minPresValue)
 	if pullErr := readBuffer.PullContext("minPresValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for minPresValue")
 	}
 	_minPresValue, _minPresValueErr := BACnetApplicationTagParse(readBuffer)
 	if _minPresValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTimerMinPresValueParse(readBuffer utils.ReadBuffer, ta
 	}
 	minPresValue := CastBACnetApplicationTagUnsignedInteger(_minPresValue)
 	if closeErr := readBuffer.CloseContext("minPresValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for minPresValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerMinPresValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimerMinPresValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTimerMinPresValue) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTimerMinPresValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimerMinPresValue")
 		}
 
 		// Simple Field (minPresValue)
 		if pushErr := writeBuffer.PushContext("minPresValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for minPresValue")
 		}
 		_minPresValueErr := m.MinPresValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("minPresValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for minPresValue")
 		}
 		if _minPresValueErr != nil {
 			return errors.Wrap(_minPresValueErr, "Error serializing 'minPresValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimerMinPresValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTimerMinPresValue")
 		}
 		return nil
 	}

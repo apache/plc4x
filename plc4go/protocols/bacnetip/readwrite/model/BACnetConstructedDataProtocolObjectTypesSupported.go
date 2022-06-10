@@ -142,14 +142,14 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolObjectTypesSupported"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolObjectTypesSupported")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (protocolObjectTypesSupported)
 	if pullErr := readBuffer.PullContext("protocolObjectTypesSupported"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for protocolObjectTypesSupported")
 	}
 	_protocolObjectTypesSupported, _protocolObjectTypesSupportedErr := BACnetObjectTypesSupportedTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _protocolObjectTypesSupportedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.Rea
 	}
 	protocolObjectTypesSupported := CastBACnetObjectTypesSupportedTagged(_protocolObjectTypesSupported)
 	if closeErr := readBuffer.CloseContext("protocolObjectTypesSupported"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for protocolObjectTypesSupported")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolObjectTypesSupported"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolObjectTypesSupported")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProtocolObjectTypesSupported"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolObjectTypesSupported")
 		}
 
 		// Simple Field (protocolObjectTypesSupported)
 		if pushErr := writeBuffer.PushContext("protocolObjectTypesSupported"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for protocolObjectTypesSupported")
 		}
 		_protocolObjectTypesSupportedErr := m.ProtocolObjectTypesSupported.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolObjectTypesSupported"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for protocolObjectTypesSupported")
 		}
 		if _protocolObjectTypesSupportedErr != nil {
 			return errors.Wrap(_protocolObjectTypesSupportedErr, "Error serializing 'protocolObjectTypesSupported' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolObjectTypesSupported"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProtocolObjectTypesSupported")
 		}
 		return nil
 	}

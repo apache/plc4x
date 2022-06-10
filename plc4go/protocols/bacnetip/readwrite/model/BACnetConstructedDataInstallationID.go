@@ -142,14 +142,14 @@ func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInstallationID"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataInstallationID")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (installationId)
 	if pullErr := readBuffer.PullContext("installationId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for installationId")
 	}
 	_installationId, _installationIdErr := BACnetApplicationTagParse(readBuffer)
 	if _installationIdErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	installationId := CastBACnetApplicationTagUnsignedInteger(_installationId)
 	if closeErr := readBuffer.CloseContext("installationId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for installationId")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstallationID"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstallationID")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataInstallationID) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataInstallationID"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInstallationID")
 		}
 
 		// Simple Field (installationId)
 		if pushErr := writeBuffer.PushContext("installationId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for installationId")
 		}
 		_installationIdErr := m.InstallationId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("installationId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for installationId")
 		}
 		if _installationIdErr != nil {
 			return errors.Wrap(_installationIdErr, "Error serializing 'installationId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInstallationID"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataInstallationID")
 		}
 		return nil
 	}

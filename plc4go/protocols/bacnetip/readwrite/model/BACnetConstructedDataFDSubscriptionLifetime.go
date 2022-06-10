@@ -142,14 +142,14 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDSubscriptionLifetime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFDSubscriptionLifetime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fdSubscriptionLifetime)
 	if pullErr := readBuffer.PullContext("fdSubscriptionLifetime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fdSubscriptionLifetime")
 	}
 	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParse(readBuffer)
 	if _fdSubscriptionLifetimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	}
 	fdSubscriptionLifetime := CastBACnetApplicationTagUnsignedInteger(_fdSubscriptionLifetime)
 	if closeErr := readBuffer.CloseContext("fdSubscriptionLifetime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fdSubscriptionLifetime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDSubscriptionLifetime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDSubscriptionLifetime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFDSubscriptionLifetime) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFDSubscriptionLifetime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFDSubscriptionLifetime")
 		}
 
 		// Simple Field (fdSubscriptionLifetime)
 		if pushErr := writeBuffer.PushContext("fdSubscriptionLifetime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fdSubscriptionLifetime")
 		}
 		_fdSubscriptionLifetimeErr := m.FdSubscriptionLifetime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fdSubscriptionLifetime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fdSubscriptionLifetime")
 		}
 		if _fdSubscriptionLifetimeErr != nil {
 			return errors.Wrap(_fdSubscriptionLifetimeErr, "Error serializing 'fdSubscriptionLifetime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFDSubscriptionLifetime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFDSubscriptionLifetime")
 		}
 		return nil
 	}

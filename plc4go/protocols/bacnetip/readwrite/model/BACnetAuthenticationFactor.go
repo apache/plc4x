@@ -117,14 +117,14 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (*BACnetAuthen
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationFactor")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (formatType)
 	if pullErr := readBuffer.PullContext("formatType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for formatType")
 	}
 	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _formatTypeErr != nil {
@@ -132,12 +132,12 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (*BACnetAuthen
 	}
 	formatType := CastBACnetAuthenticationFactorTypeTagged(_formatType)
 	if closeErr := readBuffer.CloseContext("formatType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for formatType")
 	}
 
 	// Simple Field (formatClass)
 	if pullErr := readBuffer.PullContext("formatClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for formatClass")
 	}
 	_formatClass, _formatClassErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _formatClassErr != nil {
@@ -145,12 +145,12 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (*BACnetAuthen
 	}
 	formatClass := CastBACnetContextTagUnsignedInteger(_formatClass)
 	if closeErr := readBuffer.CloseContext("formatClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for formatClass")
 	}
 
 	// Simple Field (value)
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
 	_value, _valueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _valueErr != nil {
@@ -158,11 +158,11 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (*BACnetAuthen
 	}
 	value := CastBACnetContextTagOctetString(_value)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for value")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetAuthenticationFactor")
 	}
 
 	// Create the instance
@@ -173,16 +173,16 @@ func (m *BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) er
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationFactor"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationFactor")
 	}
 
 	// Simple Field (formatType)
 	if pushErr := writeBuffer.PushContext("formatType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for formatType")
 	}
 	_formatTypeErr := m.FormatType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("formatType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for formatType")
 	}
 	if _formatTypeErr != nil {
 		return errors.Wrap(_formatTypeErr, "Error serializing 'formatType' field")
@@ -190,11 +190,11 @@ func (m *BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) er
 
 	// Simple Field (formatClass)
 	if pushErr := writeBuffer.PushContext("formatClass"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for formatClass")
 	}
 	_formatClassErr := m.FormatClass.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("formatClass"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for formatClass")
 	}
 	if _formatClassErr != nil {
 		return errors.Wrap(_formatClassErr, "Error serializing 'formatClass' field")
@@ -202,18 +202,18 @@ func (m *BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) er
 
 	// Simple Field (value)
 	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for value")
 	}
 	_valueErr := m.Value.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("value"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for value")
 	}
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationFactor"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationFactor")
 	}
 	return nil
 }

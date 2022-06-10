@@ -133,14 +133,14 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (referencedPropertyIncrement)
 	if pullErr := readBuffer.PullContext("referencedPropertyIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for referencedPropertyIncrement")
 	}
 	_referencedPropertyIncrement, _referencedPropertyIncrementErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _referencedPropertyIncrementErr != nil {
@@ -148,11 +148,11 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 	}
 	referencedPropertyIncrement := CastBACnetContextTagReal(_referencedPropertyIncrement)
 	if closeErr := readBuffer.CloseContext("referencedPropertyIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for referencedPropertyIncrement")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement")
 		}
 
 		// Simple Field (referencedPropertyIncrement)
 		if pushErr := writeBuffer.PushContext("referencedPropertyIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for referencedPropertyIncrement")
 		}
 		_referencedPropertyIncrementErr := m.ReferencedPropertyIncrement.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("referencedPropertyIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for referencedPropertyIncrement")
 		}
 		if _referencedPropertyIncrementErr != nil {
 			return errors.Wrap(_referencedPropertyIncrementErr, "Error serializing 'referencedPropertyIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement")
 		}
 		return nil
 	}

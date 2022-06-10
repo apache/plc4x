@@ -149,7 +149,7 @@ func ModbusPDUDiagnosticResponseParse(readBuffer utils.ReadBuffer, response bool
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUDiagnosticResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUDiagnosticResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -169,7 +169,7 @@ func ModbusPDUDiagnosticResponseParse(readBuffer utils.ReadBuffer, response bool
 	data := _data
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUDiagnosticResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUDiagnosticResponse")
 	}
 
 	// Create a partially initialized instance
@@ -187,7 +187,7 @@ func (m *ModbusPDUDiagnosticResponse) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUDiagnosticResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUDiagnosticResponse")
 		}
 
 		// Simple Field (subFunction)
@@ -205,7 +205,7 @@ func (m *ModbusPDUDiagnosticResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUDiagnosticResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUDiagnosticResponse")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateKeySetTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUpdateKeySetTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (updateKeySetTimeout)
 	if pullErr := readBuffer.PullContext("updateKeySetTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for updateKeySetTimeout")
 	}
 	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _updateKeySetTimeoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 	}
 	updateKeySetTimeout := CastBACnetApplicationTagUnsignedInteger(_updateKeySetTimeout)
 	if closeErr := readBuffer.CloseContext("updateKeySetTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for updateKeySetTimeout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUpdateKeySetTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUpdateKeySetTimeout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUpdateKeySetTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUpdateKeySetTimeout")
 		}
 
 		// Simple Field (updateKeySetTimeout)
 		if pushErr := writeBuffer.PushContext("updateKeySetTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for updateKeySetTimeout")
 		}
 		_updateKeySetTimeoutErr := m.UpdateKeySetTimeout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("updateKeySetTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for updateKeySetTimeout")
 		}
 		if _updateKeySetTimeoutErr != nil {
 			return errors.Wrap(_updateKeySetTimeoutErr, "Error serializing 'updateKeySetTimeout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUpdateKeySetTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUpdateKeySetTimeout")
 		}
 		return nil
 	}

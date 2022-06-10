@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -218,14 +219,14 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfTimer"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfTimer")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
 	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
@@ -233,12 +234,12 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	innerOpeningTag := CastBACnetOpeningTag(_innerOpeningTag)
 	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
 	// Simple Field (newValue)
 	if pullErr := readBuffer.PullContext("newValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for newValue")
 	}
 	_newValue, _newValueErr := BACnetTimerStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _newValueErr != nil {
@@ -246,12 +247,12 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	newValue := CastBACnetTimerStateTagged(_newValue)
 	if closeErr := readBuffer.CloseContext("newValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for newValue")
 	}
 
 	// Simple Field (statusFlags)
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
 	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
@@ -259,12 +260,12 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	statusFlags := CastBACnetStatusFlagsTagged(_statusFlags)
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for statusFlags")
 	}
 
 	// Simple Field (updateTime)
 	if pullErr := readBuffer.PullContext("updateTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for updateTime")
 	}
 	_updateTime, _updateTimeErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(2)))
 	if _updateTimeErr != nil {
@@ -272,7 +273,7 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	updateTime := CastBACnetDateTimeEnclosed(_updateTime)
 	if closeErr := readBuffer.CloseContext("updateTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for updateTime")
 	}
 
 	// Optional Field (lastStateChange) (Can be skipped, if a given expression evaluates to false)
@@ -280,18 +281,19 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("lastStateChange"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for lastStateChange")
 		}
 		_val, _err := BACnetTimerTransitionTaggedParse(readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'lastStateChange' field")
 		default:
 			lastStateChange = CastBACnetTimerTransitionTagged(_val)
 			if closeErr := readBuffer.CloseContext("lastStateChange"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for lastStateChange")
 			}
 		}
 	}
@@ -301,18 +303,19 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("initialTimeout"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for initialTimeout")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'initialTimeout' field")
 		default:
 			initialTimeout = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("initialTimeout"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for initialTimeout")
 			}
 		}
 	}
@@ -322,25 +325,26 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
 		}
 		_val, _err := BACnetDateTimeEnclosedParse(readBuffer, uint8(5))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'expirationTime' field")
 		default:
 			expirationTime = CastBACnetDateTimeEnclosed(_val)
 			if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for expirationTime")
 			}
 		}
 	}
 
 	// Simple Field (innerClosingTag)
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
 	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
@@ -348,11 +352,11 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 	}
 	innerClosingTag := CastBACnetClosingTag(_innerClosingTag)
 	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for innerClosingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfTimer"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfTimer")
 	}
 
 	// Create a partially initialized instance
@@ -376,16 +380,16 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfTimer"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfTimer")
 		}
 
 		// Simple Field (innerOpeningTag)
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
 		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
 		if _innerOpeningTagErr != nil {
 			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
@@ -393,11 +397,11 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 
 		// Simple Field (newValue)
 		if pushErr := writeBuffer.PushContext("newValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for newValue")
 		}
 		_newValueErr := m.NewValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("newValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for newValue")
 		}
 		if _newValueErr != nil {
 			return errors.Wrap(_newValueErr, "Error serializing 'newValue' field")
@@ -405,11 +409,11 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 
 		// Simple Field (statusFlags)
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
 		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
 		if _statusFlagsErr != nil {
 			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
@@ -417,11 +421,11 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 
 		// Simple Field (updateTime)
 		if pushErr := writeBuffer.PushContext("updateTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for updateTime")
 		}
 		_updateTimeErr := m.UpdateTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("updateTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for updateTime")
 		}
 		if _updateTimeErr != nil {
 			return errors.Wrap(_updateTimeErr, "Error serializing 'updateTime' field")
@@ -431,12 +435,12 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		var lastStateChange *BACnetTimerTransitionTagged = nil
 		if m.LastStateChange != nil {
 			if pushErr := writeBuffer.PushContext("lastStateChange"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for lastStateChange")
 			}
 			lastStateChange = m.LastStateChange
 			_lastStateChangeErr := lastStateChange.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("lastStateChange"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for lastStateChange")
 			}
 			if _lastStateChangeErr != nil {
 				return errors.Wrap(_lastStateChangeErr, "Error serializing 'lastStateChange' field")
@@ -447,12 +451,12 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		var initialTimeout *BACnetContextTagUnsignedInteger = nil
 		if m.InitialTimeout != nil {
 			if pushErr := writeBuffer.PushContext("initialTimeout"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for initialTimeout")
 			}
 			initialTimeout = m.InitialTimeout
 			_initialTimeoutErr := initialTimeout.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for initialTimeout")
 			}
 			if _initialTimeoutErr != nil {
 				return errors.Wrap(_initialTimeoutErr, "Error serializing 'initialTimeout' field")
@@ -463,12 +467,12 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		var expirationTime *BACnetDateTimeEnclosed = nil
 		if m.ExpirationTime != nil {
 			if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for expirationTime")
 			}
 			expirationTime = m.ExpirationTime
 			_expirationTimeErr := expirationTime.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for expirationTime")
 			}
 			if _expirationTimeErr != nil {
 				return errors.Wrap(_expirationTimeErr, "Error serializing 'expirationTime' field")
@@ -477,18 +481,18 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 
 		// Simple Field (innerClosingTag)
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
 		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
 		if _innerClosingTagErr != nil {
 			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfTimer"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfTimer")
 		}
 		return nil
 	}

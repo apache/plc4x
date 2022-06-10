@@ -146,14 +146,14 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAcceptedModes"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAcceptedModes")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (acceptedModes)
 	if pullErr := readBuffer.PullContext("acceptedModes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for acceptedModes")
 	}
 	// Terminated array
 	acceptedModes := make([]*BACnetLifeSafetyModeTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 		}
 	}
 	if closeErr := readBuffer.CloseContext("acceptedModes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for acceptedModes")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAcceptedModes"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAcceptedModes")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataAcceptedModes) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAcceptedModes"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAcceptedModes")
 		}
 
 		// Array Field (acceptedModes)
 		if m.AcceptedModes != nil {
 			if pushErr := writeBuffer.PushContext("acceptedModes", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for acceptedModes")
 			}
 			for _, _element := range m.AcceptedModes {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataAcceptedModes) Serialize(writeBuffer utils.WriteBu
 				}
 			}
 			if popErr := writeBuffer.PopContext("acceptedModes", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for acceptedModes")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAcceptedModes"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAcceptedModes")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDerivativeConstant"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDerivativeConstant")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (derivativeConstant)
 	if pullErr := readBuffer.PullContext("derivativeConstant"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for derivativeConstant")
 	}
 	_derivativeConstant, _derivativeConstantErr := BACnetApplicationTagParse(readBuffer)
 	if _derivativeConstantErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 	}
 	derivativeConstant := CastBACnetApplicationTagReal(_derivativeConstant)
 	if closeErr := readBuffer.CloseContext("derivativeConstant"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for derivativeConstant")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDerivativeConstant"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDerivativeConstant")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDerivativeConstant) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDerivativeConstant"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDerivativeConstant")
 		}
 
 		// Simple Field (derivativeConstant)
 		if pushErr := writeBuffer.PushContext("derivativeConstant"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for derivativeConstant")
 		}
 		_derivativeConstantErr := m.DerivativeConstant.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("derivativeConstant"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for derivativeConstant")
 		}
 		if _derivativeConstantErr != nil {
 			return errors.Wrap(_derivativeConstantErr, "Error serializing 'derivativeConstant' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDerivativeConstant"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDerivativeConstant")
 		}
 		return nil
 	}

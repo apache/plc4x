@@ -142,14 +142,14 @@ func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProportionalConstant"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProportionalConstant")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (proportionalConstant)
 	if pullErr := readBuffer.PullContext("proportionalConstant"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for proportionalConstant")
 	}
 	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParse(readBuffer)
 	if _proportionalConstantErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer,
 	}
 	proportionalConstant := CastBACnetApplicationTagReal(_proportionalConstant)
 	if closeErr := readBuffer.CloseContext("proportionalConstant"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for proportionalConstant")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProportionalConstant"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProportionalConstant")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProportionalConstant) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProportionalConstant"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProportionalConstant")
 		}
 
 		// Simple Field (proportionalConstant)
 		if pushErr := writeBuffer.PushContext("proportionalConstant"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for proportionalConstant")
 		}
 		_proportionalConstantErr := m.ProportionalConstant.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("proportionalConstant"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for proportionalConstant")
 		}
 		if _proportionalConstantErr != nil {
 			return errors.Wrap(_proportionalConstantErr, "Error serializing 'proportionalConstant' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProportionalConstant"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProportionalConstant")
 		}
 		return nil
 	}

@@ -146,14 +146,14 @@ func BACnetConstructedDataAuthorizationExemptionsParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationExemptions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthorizationExemptions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (authorizationExemption)
 	if pullErr := readBuffer.PullContext("authorizationExemption", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for authorizationExemption")
 	}
 	// Terminated array
 	authorizationExemption := make([]*BACnetAuthorizationExemptionTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataAuthorizationExemptionsParse(readBuffer utils.ReadBuff
 		}
 	}
 	if closeErr := readBuffer.CloseContext("authorizationExemption", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for authorizationExemption")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationExemptions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthorizationExemptions")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataAuthorizationExemptions) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAuthorizationExemptions"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAuthorizationExemptions")
 		}
 
 		// Array Field (authorizationExemption)
 		if m.AuthorizationExemption != nil {
 			if pushErr := writeBuffer.PushContext("authorizationExemption", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for authorizationExemption")
 			}
 			for _, _element := range m.AuthorizationExemption {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataAuthorizationExemptions) Serialize(writeBuffer uti
 				}
 			}
 			if popErr := writeBuffer.PopContext("authorizationExemption", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for authorizationExemption")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthorizationExemptions"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAuthorizationExemptions")
 		}
 		return nil
 	}

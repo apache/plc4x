@@ -142,14 +142,14 @@ func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadReadVarResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadReadVarResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (items)
 	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
 	items := make([]*S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).GetNumItems())
@@ -163,11 +163,11 @@ func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for items")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadReadVarResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadReadVarResponse")
 	}
 
 	// Create a partially initialized instance
@@ -184,13 +184,13 @@ func (m *S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadReadVarResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7PayloadReadVarResponse")
 		}
 
 		// Array Field (items)
 		if m.Items != nil {
 			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for items")
 			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -199,12 +199,12 @@ func (m *S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) erro
 				}
 			}
 			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for items")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadReadVarResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7PayloadReadVarResponse")
 		}
 		return nil
 	}

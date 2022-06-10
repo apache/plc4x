@@ -117,14 +117,14 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SzlId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SzlId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (typeClass)
 	if pullErr := readBuffer.PullContext("typeClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for typeClass")
 	}
 	_typeClass, _typeClassErr := SzlModuleTypeClassParse(readBuffer)
 	if _typeClassErr != nil {
@@ -132,7 +132,7 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
 	}
 	typeClass := _typeClass
 	if closeErr := readBuffer.CloseContext("typeClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for typeClass")
 	}
 
 	// Simple Field (sublistExtract)
@@ -144,7 +144,7 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
 
 	// Simple Field (sublistList)
 	if pullErr := readBuffer.PullContext("sublistList"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for sublistList")
 	}
 	_sublistList, _sublistListErr := SzlSublistParse(readBuffer)
 	if _sublistListErr != nil {
@@ -152,11 +152,11 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
 	}
 	sublistList := _sublistList
 	if closeErr := readBuffer.CloseContext("sublistList"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for sublistList")
 	}
 
 	if closeErr := readBuffer.CloseContext("SzlId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SzlId")
 	}
 
 	// Create the instance
@@ -167,16 +167,16 @@ func (m *SzlId) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SzlId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for SzlId")
 	}
 
 	// Simple Field (typeClass)
 	if pushErr := writeBuffer.PushContext("typeClass"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for typeClass")
 	}
 	_typeClassErr := m.TypeClass.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("typeClass"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for typeClass")
 	}
 	if _typeClassErr != nil {
 		return errors.Wrap(_typeClassErr, "Error serializing 'typeClass' field")
@@ -191,18 +191,18 @@ func (m *SzlId) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (sublistList)
 	if pushErr := writeBuffer.PushContext("sublistList"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for sublistList")
 	}
 	_sublistListErr := m.SublistList.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("sublistList"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for sublistList")
 	}
 	if _sublistListErr != nil {
 		return errors.Wrap(_sublistListErr, "Error serializing 'sublistList' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SzlId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for SzlId")
 	}
 	return nil
 }

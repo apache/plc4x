@@ -142,14 +142,14 @@ func BACnetConstructedDataExpirationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExpirationTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExpirationTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (expirationTime)
 	if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
 	}
 	_expirationTime, _expirationTimeErr := BACnetDateTimeParse(readBuffer)
 	if _expirationTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataExpirationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	expirationTime := CastBACnetDateTime(_expirationTime)
 	if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for expirationTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExpirationTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExpirationTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataExpirationTime) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataExpirationTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExpirationTime")
 		}
 
 		// Simple Field (expirationTime)
 		if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for expirationTime")
 		}
 		_expirationTimeErr := m.ExpirationTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for expirationTime")
 		}
 		if _expirationTimeErr != nil {
 			return errors.Wrap(_expirationTimeErr, "Error serializing 'expirationTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExpirationTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataExpirationTime")
 		}
 		return nil
 	}

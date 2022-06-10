@@ -142,14 +142,14 @@ func BACnetConstructedDataPassengerAlarmParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassengerAlarm"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPassengerAlarm")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (passengerAlarm)
 	if pullErr := readBuffer.PullContext("passengerAlarm"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for passengerAlarm")
 	}
 	_passengerAlarm, _passengerAlarmErr := BACnetApplicationTagParse(readBuffer)
 	if _passengerAlarmErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPassengerAlarmParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	passengerAlarm := CastBACnetApplicationTagBoolean(_passengerAlarm)
 	if closeErr := readBuffer.CloseContext("passengerAlarm"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for passengerAlarm")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassengerAlarm"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassengerAlarm")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPassengerAlarm) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPassengerAlarm"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPassengerAlarm")
 		}
 
 		// Simple Field (passengerAlarm)
 		if pushErr := writeBuffer.PushContext("passengerAlarm"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for passengerAlarm")
 		}
 		_passengerAlarmErr := m.PassengerAlarm.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("passengerAlarm"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for passengerAlarm")
 		}
 		if _passengerAlarmErr != nil {
 			return errors.Wrap(_passengerAlarmErr, "Error serializing 'passengerAlarm' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPassengerAlarm"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPassengerAlarm")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(readBuffer 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (enumeratedValue)
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
 	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
 	if _enumeratedValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(readBuffer 
 	}
 	enumeratedValue := CastBACnetApplicationTagEnumerated(_enumeratedValue)
 	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for enumeratedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetFaultParameterFaultExtendedParametersEntryEnumerated) Serialize(w
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 		}
 
 		// Simple Field (enumeratedValue)
 		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
 		}
 		_enumeratedValueErr := m.EnumeratedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for enumeratedValue")
 		}
 		if _enumeratedValueErr != nil {
 			return errors.Wrap(_enumeratedValueErr, "Error serializing 'enumeratedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 		}
 		return nil
 	}

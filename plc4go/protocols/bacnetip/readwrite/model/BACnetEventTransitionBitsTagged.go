@@ -144,14 +144,14 @@ func BACnetEventTransitionBitsTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTransitionBitsTagged"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventTransitionBitsTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
@@ -159,22 +159,22 @@ func BACnetEventTransitionBitsTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	header := CastBACnetTagHeader(_header)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, utils.ParseValidationError{"tag class doesn't match"}
+		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
+		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
 	_payload, _payloadErr := BACnetTagPayloadBitStringParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
@@ -182,7 +182,7 @@ func BACnetEventTransitionBitsTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	payload := CastBACnetTagPayloadBitString(_payload)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
 
 	// Virtual field
@@ -201,7 +201,7 @@ func BACnetEventTransitionBitsTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	_ = toNormal
 
 	if closeErr := readBuffer.CloseContext("BACnetEventTransitionBitsTagged"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventTransitionBitsTagged")
 	}
 
 	// Create the instance
@@ -212,16 +212,16 @@ func (m *BACnetEventTransitionBitsTagged) Serialize(writeBuffer utils.WriteBuffe
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTransitionBitsTagged"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetEventTransitionBitsTagged")
 	}
 
 	// Simple Field (header)
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for header")
 	}
 	_headerErr := m.Header.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for header")
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
@@ -229,11 +229,11 @@ func (m *BACnetEventTransitionBitsTagged) Serialize(writeBuffer utils.WriteBuffe
 
 	// Simple Field (payload)
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
 	_payloadErr := m.Payload.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for payload")
 	}
 	if _payloadErr != nil {
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
@@ -252,7 +252,7 @@ func (m *BACnetEventTransitionBitsTagged) Serialize(writeBuffer utils.WriteBuffe
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventTransitionBitsTagged"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetEventTransitionBitsTagged")
 	}
 	return nil
 }

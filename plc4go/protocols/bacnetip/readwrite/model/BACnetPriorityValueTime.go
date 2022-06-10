@@ -131,14 +131,14 @@ func BACnetPriorityValueTimeParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeValue)
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
 	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
 	if _timeValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueTimeParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	}
 	timeValue := CastBACnetApplicationTagTime(_timeValue)
 	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueTime")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueTime) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueTime")
 		}
 
 		// Simple Field (timeValue)
 		if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeValue")
 		}
 		_timeValueErr := m.TimeValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeValue")
 		}
 		if _timeValueErr != nil {
 			return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueTime")
 		}
 		return nil
 	}

@@ -146,14 +146,14 @@ func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVTClassesSupported"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVTClassesSupported")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (vtClassesSupported)
 	if pullErr := readBuffer.PullContext("vtClassesSupported", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vtClassesSupported")
 	}
 	// Terminated array
 	vtClassesSupported := make([]*BACnetVTClassTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, t
 		}
 	}
 	if closeErr := readBuffer.CloseContext("vtClassesSupported", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vtClassesSupported")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVTClassesSupported"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVTClassesSupported")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataVTClassesSupported) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataVTClassesSupported"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVTClassesSupported")
 		}
 
 		// Array Field (vtClassesSupported)
 		if m.VtClassesSupported != nil {
 			if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
 			}
 			for _, _element := range m.VtClassesSupported {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataVTClassesSupported) Serialize(writeBuffer utils.Wr
 				}
 			}
 			if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for vtClassesSupported")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVTClassesSupported"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataVTClassesSupported")
 		}
 		return nil
 	}

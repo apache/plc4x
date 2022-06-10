@@ -181,7 +181,7 @@ func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for State")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -264,7 +264,7 @@ func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("State"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for State")
 	}
 
 	// Create the instance
@@ -275,7 +275,7 @@ func (m *State) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("State"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for State")
 	}
 
 	// Simple Field (initCommand)
@@ -350,7 +350,7 @@ func (m *State) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("State"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for State")
 	}
 	return nil
 }

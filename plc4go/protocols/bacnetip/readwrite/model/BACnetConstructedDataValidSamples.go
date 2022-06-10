@@ -142,14 +142,14 @@ func BACnetConstructedDataValidSamplesParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValidSamples"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValidSamples")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (validSamples)
 	if pullErr := readBuffer.PullContext("validSamples"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for validSamples")
 	}
 	_validSamples, _validSamplesErr := BACnetApplicationTagParse(readBuffer)
 	if _validSamplesErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataValidSamplesParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	validSamples := CastBACnetApplicationTagUnsignedInteger(_validSamples)
 	if closeErr := readBuffer.CloseContext("validSamples"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for validSamples")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValidSamples"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValidSamples")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataValidSamples) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataValidSamples"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValidSamples")
 		}
 
 		// Simple Field (validSamples)
 		if pushErr := writeBuffer.PushContext("validSamples"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for validSamples")
 		}
 		_validSamplesErr := m.ValidSamples.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("validSamples"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for validSamples")
 		}
 		if _validSamplesErr != nil {
 			return errors.Wrap(_validSamplesErr, "Error serializing 'validSamples' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValidSamples"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataValidSamples")
 		}
 		return nil
 	}

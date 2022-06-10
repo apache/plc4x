@@ -128,14 +128,14 @@ func BACnetCalendarEntryDateRangeParse(readBuffer utils.ReadBuffer) (*BACnetCale
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryDateRange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCalendarEntryDateRange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dateRange)
 	if pullErr := readBuffer.PullContext("dateRange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dateRange")
 	}
 	_dateRange, _dateRangeErr := BACnetDateRangeEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _dateRangeErr != nil {
@@ -143,11 +143,11 @@ func BACnetCalendarEntryDateRangeParse(readBuffer utils.ReadBuffer) (*BACnetCale
 	}
 	dateRange := CastBACnetDateRangeEnclosed(_dateRange)
 	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dateRange")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntryDateRange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetCalendarEntryDateRange")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetCalendarEntryDateRange) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetCalendarEntryDateRange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntryDateRange")
 		}
 
 		// Simple Field (dateRange)
 		if pushErr := writeBuffer.PushContext("dateRange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dateRange")
 		}
 		_dateRangeErr := m.DateRange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dateRange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dateRange")
 		}
 		if _dateRangeErr != nil {
 			return errors.Wrap(_dateRangeErr, "Error serializing 'dateRange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetCalendarEntryDateRange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetCalendarEntryDateRange")
 		}
 		return nil
 	}

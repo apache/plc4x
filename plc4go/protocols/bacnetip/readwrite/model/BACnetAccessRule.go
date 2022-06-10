@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -142,14 +143,14 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (*BACnetAccessRule, erro
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessRule"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccessRule")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (timeRangeSpecifier)
 	if pullErr := readBuffer.PullContext("timeRangeSpecifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for timeRangeSpecifier")
 	}
 	_timeRangeSpecifier, _timeRangeSpecifierErr := BACnetAccessRuleTimeRangeSpecifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _timeRangeSpecifierErr != nil {
@@ -157,7 +158,7 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (*BACnetAccessRule, erro
 	}
 	timeRangeSpecifier := CastBACnetAccessRuleTimeRangeSpecifierTagged(_timeRangeSpecifier)
 	if closeErr := readBuffer.CloseContext("timeRangeSpecifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for timeRangeSpecifier")
 	}
 
 	// Optional Field (timeRange) (Can be skipped, if a given expression evaluates to false)
@@ -165,25 +166,26 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (*BACnetAccessRule, erro
 	if bool((timeRangeSpecifier) != (nil)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("timeRange"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for timeRange")
 		}
 		_val, _err := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'timeRange' field")
 		default:
 			timeRange = CastBACnetDeviceObjectPropertyReferenceEnclosed(_val)
 			if closeErr := readBuffer.CloseContext("timeRange"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for timeRange")
 			}
 		}
 	}
 
 	// Simple Field (locationSpecifier)
 	if pullErr := readBuffer.PullContext("locationSpecifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for locationSpecifier")
 	}
 	_locationSpecifier, _locationSpecifierErr := BACnetAccessRuleLocationSpecifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _locationSpecifierErr != nil {
@@ -191,7 +193,7 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (*BACnetAccessRule, erro
 	}
 	locationSpecifier := CastBACnetAccessRuleLocationSpecifierTagged(_locationSpecifier)
 	if closeErr := readBuffer.CloseContext("locationSpecifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for locationSpecifier")
 	}
 
 	// Optional Field (location) (Can be skipped, if a given expression evaluates to false)
@@ -199,25 +201,26 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (*BACnetAccessRule, erro
 	if bool((locationSpecifier) != (nil)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("location"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for location")
 		}
 		_val, _err := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(3))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'location' field")
 		default:
 			location = CastBACnetDeviceObjectReferenceEnclosed(_val)
 			if closeErr := readBuffer.CloseContext("location"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for location")
 			}
 		}
 	}
 
 	// Simple Field (enable)
 	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for enable")
 	}
 	_enable, _enableErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _enableErr != nil {
@@ -225,11 +228,11 @@ func BACnetAccessRuleParse(readBuffer utils.ReadBuffer) (*BACnetAccessRule, erro
 	}
 	enable := CastBACnetContextTagBoolean(_enable)
 	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for enable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessRule"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetAccessRule")
 	}
 
 	// Create the instance
@@ -240,16 +243,16 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAccessRule"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetAccessRule")
 	}
 
 	// Simple Field (timeRangeSpecifier)
 	if pushErr := writeBuffer.PushContext("timeRangeSpecifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for timeRangeSpecifier")
 	}
 	_timeRangeSpecifierErr := m.TimeRangeSpecifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("timeRangeSpecifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for timeRangeSpecifier")
 	}
 	if _timeRangeSpecifierErr != nil {
 		return errors.Wrap(_timeRangeSpecifierErr, "Error serializing 'timeRangeSpecifier' field")
@@ -259,12 +262,12 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 	var timeRange *BACnetDeviceObjectPropertyReferenceEnclosed = nil
 	if m.TimeRange != nil {
 		if pushErr := writeBuffer.PushContext("timeRange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for timeRange")
 		}
 		timeRange = m.TimeRange
 		_timeRangeErr := timeRange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("timeRange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for timeRange")
 		}
 		if _timeRangeErr != nil {
 			return errors.Wrap(_timeRangeErr, "Error serializing 'timeRange' field")
@@ -273,11 +276,11 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (locationSpecifier)
 	if pushErr := writeBuffer.PushContext("locationSpecifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for locationSpecifier")
 	}
 	_locationSpecifierErr := m.LocationSpecifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("locationSpecifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for locationSpecifier")
 	}
 	if _locationSpecifierErr != nil {
 		return errors.Wrap(_locationSpecifierErr, "Error serializing 'locationSpecifier' field")
@@ -287,12 +290,12 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 	var location *BACnetDeviceObjectReferenceEnclosed = nil
 	if m.Location != nil {
 		if pushErr := writeBuffer.PushContext("location"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for location")
 		}
 		location = m.Location
 		_locationErr := location.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("location"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for location")
 		}
 		if _locationErr != nil {
 			return errors.Wrap(_locationErr, "Error serializing 'location' field")
@@ -301,18 +304,18 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (enable)
 	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for enable")
 	}
 	_enableErr := m.Enable.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for enable")
 	}
 	if _enableErr != nil {
 		return errors.Wrap(_enableErr, "Error serializing 'enable' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAccessRule"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetAccessRule")
 	}
 	return nil
 }

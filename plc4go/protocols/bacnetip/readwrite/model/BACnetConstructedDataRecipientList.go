@@ -146,14 +146,14 @@ func BACnetConstructedDataRecipientListParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRecipientList"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRecipientList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (recipientList)
 	if pullErr := readBuffer.PullContext("recipientList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recipientList")
 	}
 	// Terminated array
 	recipientList := make([]*BACnetDestination, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataRecipientListParse(readBuffer utils.ReadBuffer, tagNum
 		}
 	}
 	if closeErr := readBuffer.CloseContext("recipientList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recipientList")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRecipientList"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRecipientList")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataRecipientList) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRecipientList"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRecipientList")
 		}
 
 		// Array Field (recipientList)
 		if m.RecipientList != nil {
 			if pushErr := writeBuffer.PushContext("recipientList", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for recipientList")
 			}
 			for _, _element := range m.RecipientList {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataRecipientList) Serialize(writeBuffer utils.WriteBu
 				}
 			}
 			if popErr := writeBuffer.PopContext("recipientList", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for recipientList")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRecipientList"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRecipientList")
 		}
 		return nil
 	}

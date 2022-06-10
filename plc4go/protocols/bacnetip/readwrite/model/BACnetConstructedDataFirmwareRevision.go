@@ -142,14 +142,14 @@ func BACnetConstructedDataFirmwareRevisionParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFirmwareRevision"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFirmwareRevision")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (firmwareRevision)
 	if pullErr := readBuffer.PullContext("firmwareRevision"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for firmwareRevision")
 	}
 	_firmwareRevision, _firmwareRevisionErr := BACnetApplicationTagParse(readBuffer)
 	if _firmwareRevisionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataFirmwareRevisionParse(readBuffer utils.ReadBuffer, tag
 	}
 	firmwareRevision := CastBACnetApplicationTagCharacterString(_firmwareRevision)
 	if closeErr := readBuffer.CloseContext("firmwareRevision"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for firmwareRevision")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFirmwareRevision"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFirmwareRevision")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataFirmwareRevision) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFirmwareRevision"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFirmwareRevision")
 		}
 
 		// Simple Field (firmwareRevision)
 		if pushErr := writeBuffer.PushContext("firmwareRevision"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for firmwareRevision")
 		}
 		_firmwareRevisionErr := m.FirmwareRevision.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("firmwareRevision"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for firmwareRevision")
 		}
 		if _firmwareRevisionErr != nil {
 			return errors.Wrap(_firmwareRevisionErr, "Error serializing 'firmwareRevision' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFirmwareRevision"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFirmwareRevision")
 		}
 		return nil
 	}

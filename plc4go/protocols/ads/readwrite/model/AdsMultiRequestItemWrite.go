@@ -152,7 +152,7 @@ func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint3
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItemWrite"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsMultiRequestItemWrite")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -179,7 +179,7 @@ func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint3
 	itemWriteLength := _itemWriteLength
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItemWrite"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsMultiRequestItemWrite")
 	}
 
 	// Create a partially initialized instance
@@ -198,7 +198,7 @@ func (m *AdsMultiRequestItemWrite) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsMultiRequestItemWrite"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsMultiRequestItemWrite")
 		}
 
 		// Simple Field (itemIndexGroup)
@@ -223,7 +223,7 @@ func (m *AdsMultiRequestItemWrite) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		if popErr := writeBuffer.PopContext("AdsMultiRequestItemWrite"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsMultiRequestItemWrite")
 		}
 		return nil
 	}

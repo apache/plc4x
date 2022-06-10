@@ -142,14 +142,14 @@ func BACnetConstructedDataAnalogValueRelinquishDefaultParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogValueRelinquishDefault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAnalogValueRelinquishDefault")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (relinquishDefault)
 	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
 	}
 	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParse(readBuffer)
 	if _relinquishDefaultErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAnalogValueRelinquishDefaultParse(readBuffer utils.Rea
 	}
 	relinquishDefault := CastBACnetApplicationTagReal(_relinquishDefault)
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAnalogValueRelinquishDefault"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAnalogValueRelinquishDefault")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAnalogValueRelinquishDefault) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAnalogValueRelinquishDefault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAnalogValueRelinquishDefault")
 		}
 
 		// Simple Field (relinquishDefault)
 		if pushErr := writeBuffer.PushContext("relinquishDefault"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for relinquishDefault")
 		}
 		_relinquishDefaultErr := m.RelinquishDefault.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("relinquishDefault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for relinquishDefault")
 		}
 		if _relinquishDefaultErr != nil {
 			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAnalogValueRelinquishDefault"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAnalogValueRelinquishDefault")
 		}
 		return nil
 	}

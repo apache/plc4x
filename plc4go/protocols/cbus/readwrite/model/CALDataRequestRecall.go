@@ -139,7 +139,7 @@ func CALDataRequestRecallParse(readBuffer utils.ReadBuffer) (*CALDataRequestReca
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataRequestRecall"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALDataRequestRecall")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -159,7 +159,7 @@ func CALDataRequestRecallParse(readBuffer utils.ReadBuffer) (*CALDataRequestReca
 	count := _count
 
 	if closeErr := readBuffer.CloseContext("CALDataRequestRecall"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALDataRequestRecall")
 	}
 
 	// Create a partially initialized instance
@@ -177,7 +177,7 @@ func (m *CALDataRequestRecall) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALDataRequestRecall"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CALDataRequestRecall")
 		}
 
 		// Simple Field (paramNo)
@@ -195,7 +195,7 @@ func (m *CALDataRequestRecall) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataRequestRecall"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CALDataRequestRecall")
 		}
 		return nil
 	}

@@ -146,7 +146,7 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtAuthorizeRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -165,7 +165,7 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8)
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtAuthorizeRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtAuthorizeRequest")
 	}
 
 	// Create a partially initialized instance
@@ -183,7 +183,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataExtAuthorizeRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataExtAuthorizeRequest")
 		}
 
 		// Simple Field (level)
@@ -203,7 +203,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtAuthorizeRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataExtAuthorizeRequest")
 		}
 		return nil
 	}

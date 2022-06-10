@@ -142,14 +142,14 @@ func BACnetConstructedDataModelNameParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataModelName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataModelName")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (modelName)
 	if pullErr := readBuffer.PullContext("modelName"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for modelName")
 	}
 	_modelName, _modelNameErr := BACnetApplicationTagParse(readBuffer)
 	if _modelNameErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataModelNameParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	modelName := CastBACnetApplicationTagCharacterString(_modelName)
 	if closeErr := readBuffer.CloseContext("modelName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for modelName")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataModelName"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataModelName")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataModelName) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataModelName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataModelName")
 		}
 
 		// Simple Field (modelName)
 		if pushErr := writeBuffer.PushContext("modelName"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for modelName")
 		}
 		_modelNameErr := m.ModelName.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("modelName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for modelName")
 		}
 		if _modelNameErr != nil {
 			return errors.Wrap(_modelNameErr, "Error serializing 'modelName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataModelName"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataModelName")
 		}
 		return nil
 	}

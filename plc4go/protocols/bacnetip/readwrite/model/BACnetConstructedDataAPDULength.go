@@ -142,14 +142,14 @@ func BACnetConstructedDataAPDULengthParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAPDULength"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAPDULength")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (apduLength)
 	if pullErr := readBuffer.PullContext("apduLength"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for apduLength")
 	}
 	_apduLength, _apduLengthErr := BACnetApplicationTagParse(readBuffer)
 	if _apduLengthErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAPDULengthParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	apduLength := CastBACnetApplicationTagUnsignedInteger(_apduLength)
 	if closeErr := readBuffer.CloseContext("apduLength"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for apduLength")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDULength"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAPDULength")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAPDULength) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAPDULength"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAPDULength")
 		}
 
 		// Simple Field (apduLength)
 		if pushErr := writeBuffer.PushContext("apduLength"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for apduLength")
 		}
 		_apduLengthErr := m.ApduLength.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("apduLength"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for apduLength")
 		}
 		if _apduLengthErr != nil {
 			return errors.Wrap(_apduLengthErr, "Error serializing 'apduLength' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAPDULength"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAPDULength")
 		}
 		return nil
 	}

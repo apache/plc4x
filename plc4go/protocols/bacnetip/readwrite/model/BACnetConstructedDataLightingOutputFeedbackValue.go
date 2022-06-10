@@ -142,14 +142,14 @@ func BACnetConstructedDataLightingOutputFeedbackValueParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputFeedbackValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingOutputFeedbackValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (feedbackValue)
 	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for feedbackValue")
 	}
 	_feedbackValue, _feedbackValueErr := BACnetApplicationTagParse(readBuffer)
 	if _feedbackValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLightingOutputFeedbackValueParse(readBuffer utils.Read
 	}
 	feedbackValue := CastBACnetApplicationTagReal(_feedbackValue)
 	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for feedbackValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingOutputFeedbackValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingOutputFeedbackValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLightingOutputFeedbackValue) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLightingOutputFeedbackValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingOutputFeedbackValue")
 		}
 
 		// Simple Field (feedbackValue)
 		if pushErr := writeBuffer.PushContext("feedbackValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for feedbackValue")
 		}
 		_feedbackValueErr := m.FeedbackValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("feedbackValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for feedbackValue")
 		}
 		if _feedbackValueErr != nil {
 			return errors.Wrap(_feedbackValueErr, "Error serializing 'feedbackValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLightingOutputFeedbackValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLightingOutputFeedbackValue")
 		}
 		return nil
 	}

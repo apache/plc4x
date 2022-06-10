@@ -142,14 +142,14 @@ func BACnetConstructedDataLastAccessPointParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastAccessPoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastAccessPoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastAccessPoint)
 	if pullErr := readBuffer.PullContext("lastAccessPoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastAccessPoint")
 	}
 	_lastAccessPoint, _lastAccessPointErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _lastAccessPointErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastAccessPointParse(readBuffer utils.ReadBuffer, tagN
 	}
 	lastAccessPoint := CastBACnetDeviceObjectReference(_lastAccessPoint)
 	if closeErr := readBuffer.CloseContext("lastAccessPoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastAccessPoint")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastAccessPoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastAccessPoint")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastAccessPoint) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastAccessPoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastAccessPoint")
 		}
 
 		// Simple Field (lastAccessPoint)
 		if pushErr := writeBuffer.PushContext("lastAccessPoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastAccessPoint")
 		}
 		_lastAccessPointErr := m.LastAccessPoint.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastAccessPoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastAccessPoint")
 		}
 		if _lastAccessPointErr != nil {
 			return errors.Wrap(_lastAccessPointErr, "Error serializing 'lastAccessPoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastAccessPoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastAccessPoint")
 		}
 		return nil
 	}

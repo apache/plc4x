@@ -151,7 +151,7 @@ func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint1
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLMInitalizeRoutingTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -165,7 +165,7 @@ func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint1
 
 	// Array field (portMappings)
 	if pullErr := readBuffer.PullContext("portMappings", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for portMappings")
 	}
 	// Count array
 	portMappings := make([]*NLMInitalizeRoutingTablePortMapping, numberOfPorts)
@@ -179,11 +179,11 @@ func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint1
 		}
 	}
 	if closeErr := readBuffer.CloseContext("portMappings", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for portMappings")
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMInitalizeRoutingTable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLMInitalizeRoutingTable")
 	}
 
 	// Create a partially initialized instance
@@ -201,7 +201,7 @@ func (m *NLMInitalizeRoutingTable) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMInitalizeRoutingTable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for NLMInitalizeRoutingTable")
 		}
 
 		// Simple Field (numberOfPorts)
@@ -214,7 +214,7 @@ func (m *NLMInitalizeRoutingTable) Serialize(writeBuffer utils.WriteBuffer) erro
 		// Array Field (portMappings)
 		if m.PortMappings != nil {
 			if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for portMappings")
 			}
 			for _, _element := range m.PortMappings {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -223,12 +223,12 @@ func (m *NLMInitalizeRoutingTable) Serialize(writeBuffer utils.WriteBuffer) erro
 				}
 			}
 			if popErr := writeBuffer.PopContext("portMappings", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for portMappings")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("NLMInitalizeRoutingTable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for NLMInitalizeRoutingTable")
 		}
 		return nil
 	}

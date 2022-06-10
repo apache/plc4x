@@ -142,14 +142,14 @@ func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCountBeforeChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCountBeforeChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (countBeforeChange)
 	if pullErr := readBuffer.PullContext("countBeforeChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for countBeforeChange")
 	}
 	_countBeforeChange, _countBeforeChangeErr := BACnetApplicationTagParse(readBuffer)
 	if _countBeforeChangeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	}
 	countBeforeChange := CastBACnetApplicationTagUnsignedInteger(_countBeforeChange)
 	if closeErr := readBuffer.CloseContext("countBeforeChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for countBeforeChange")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCountBeforeChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCountBeforeChange")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCountBeforeChange) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCountBeforeChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCountBeforeChange")
 		}
 
 		// Simple Field (countBeforeChange)
 		if pushErr := writeBuffer.PushContext("countBeforeChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for countBeforeChange")
 		}
 		_countBeforeChangeErr := m.CountBeforeChange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("countBeforeChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for countBeforeChange")
 		}
 		if _countBeforeChangeErr != nil {
 			return errors.Wrap(_countBeforeChangeErr, "Error serializing 'countBeforeChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCountBeforeChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCountBeforeChange")
 		}
 		return nil
 	}

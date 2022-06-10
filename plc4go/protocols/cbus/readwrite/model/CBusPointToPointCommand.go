@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -202,7 +203,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -243,7 +244,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 
 	// Simple Field (calData)
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for calData")
 	}
 	_calData, _calDataErr := CALDataParse(readBuffer)
 	if _calDataErr != nil {
@@ -251,7 +252,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	}
 	calData := CastCALData(_calData)
 	if closeErr := readBuffer.CloseContext("calData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for calData")
 	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
@@ -259,18 +260,19 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	if srchk {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for crc")
 		}
 		_val, _err := ChecksumParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
 		default:
 			crc = CastChecksum(_val)
 			if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for crc")
 			}
 		}
 	}
@@ -289,18 +291,19 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	if bool(bool(bool((peekAlpha) >= (0x67)))) && bool(bool(bool((peekAlpha) <= (0x7A)))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
 		_val, _err := AlphaParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field")
 		default:
 			alpha = CastAlpha(_val)
 			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for alpha")
 			}
 		}
 	}
@@ -315,7 +318,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointCommand")
 	}
 
 	// Finish initializing
@@ -331,7 +334,7 @@ func (m *CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffer,
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusPointToPointCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CBusPointToPointCommand")
 	}
 	// Virtual field
 	if _isDirectErr := writeBuffer.WriteVirtual("isDirect", m.GetIsDirect()); _isDirectErr != nil {
@@ -345,11 +348,11 @@ func (m *CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffer,
 
 	// Simple Field (calData)
 	if pushErr := writeBuffer.PushContext("calData"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for calData")
 	}
 	_calDataErr := m.CalData.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("calData"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for calData")
 	}
 	if _calDataErr != nil {
 		return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
@@ -359,12 +362,12 @@ func (m *CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffer,
 	var crc *Checksum = nil
 	if m.Crc != nil {
 		if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for crc")
 		}
 		crc = m.Crc
 		_crcErr := crc.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("crc"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for crc")
 		}
 		if _crcErr != nil {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
@@ -375,12 +378,12 @@ func (m *CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffer,
 	var alpha *Alpha = nil
 	if m.Alpha != nil {
 		if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for alpha")
 		}
 		alpha = m.Alpha
 		_alphaErr := alpha.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for alpha")
 		}
 		if _alphaErr != nil {
 			return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
@@ -394,7 +397,7 @@ func (m *CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffer,
 	}
 
 	if popErr := writeBuffer.PopContext("CBusPointToPointCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CBusPointToPointCommand")
 	}
 	return nil
 }

@@ -141,14 +141,14 @@ func ChangeListAddErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChangeListAddError"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ChangeListAddError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorType)
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
@@ -156,12 +156,12 @@ func ChangeListAddErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	}
 	errorType := CastErrorEnclosed(_errorType)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for errorType")
 	}
 
 	// Simple Field (firstFailedElementNumber)
 	if pullErr := readBuffer.PullContext("firstFailedElementNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedElementNumber")
 	}
 	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _firstFailedElementNumberErr != nil {
@@ -169,11 +169,11 @@ func ChangeListAddErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	}
 	firstFailedElementNumber := CastBACnetContextTagUnsignedInteger(_firstFailedElementNumber)
 	if closeErr := readBuffer.CloseContext("firstFailedElementNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for firstFailedElementNumber")
 	}
 
 	if closeErr := readBuffer.CloseContext("ChangeListAddError"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ChangeListAddError")
 	}
 
 	// Create a partially initialized instance
@@ -191,16 +191,16 @@ func (m *ChangeListAddError) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ChangeListAddError"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ChangeListAddError")
 		}
 
 		// Simple Field (errorType)
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
 		_errorTypeErr := m.ErrorType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for errorType")
 		}
 		if _errorTypeErr != nil {
 			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
@@ -208,18 +208,18 @@ func (m *ChangeListAddError) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (firstFailedElementNumber)
 		if pushErr := writeBuffer.PushContext("firstFailedElementNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for firstFailedElementNumber")
 		}
 		_firstFailedElementNumberErr := m.FirstFailedElementNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("firstFailedElementNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for firstFailedElementNumber")
 		}
 		if _firstFailedElementNumberErr != nil {
 			return errors.Wrap(_firstFailedElementNumberErr, "Error serializing 'firstFailedElementNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ChangeListAddError"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ChangeListAddError")
 		}
 		return nil
 	}

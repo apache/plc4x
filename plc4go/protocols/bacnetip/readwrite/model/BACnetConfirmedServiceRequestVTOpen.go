@@ -145,14 +145,14 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestVTOpen")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (vtClass)
 	if pullErr := readBuffer.PullContext("vtClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for vtClass")
 	}
 	_vtClass, _vtClassErr := BACnetVTClassTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vtClassErr != nil {
@@ -160,12 +160,12 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	}
 	vtClass := CastBACnetVTClassTagged(_vtClass)
 	if closeErr := readBuffer.CloseContext("vtClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for vtClass")
 	}
 
 	// Simple Field (localVtSessionIdentifier)
 	if pullErr := readBuffer.PullContext("localVtSessionIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionIdentifier")
 	}
 	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _localVtSessionIdentifierErr != nil {
@@ -173,11 +173,11 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	}
 	localVtSessionIdentifier := CastBACnetApplicationTagUnsignedInteger(_localVtSessionIdentifier)
 	if closeErr := readBuffer.CloseContext("localVtSessionIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for localVtSessionIdentifier")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestVTOpen"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestVTOpen")
 	}
 
 	// Create a partially initialized instance
@@ -195,16 +195,16 @@ func (m *BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestVTOpen"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestVTOpen")
 		}
 
 		// Simple Field (vtClass)
 		if pushErr := writeBuffer.PushContext("vtClass"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vtClass")
 		}
 		_vtClassErr := m.VtClass.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vtClass"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vtClass")
 		}
 		if _vtClassErr != nil {
 			return errors.Wrap(_vtClassErr, "Error serializing 'vtClass' field")
@@ -212,18 +212,18 @@ func (m *BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteB
 
 		// Simple Field (localVtSessionIdentifier)
 		if pushErr := writeBuffer.PushContext("localVtSessionIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for localVtSessionIdentifier")
 		}
 		_localVtSessionIdentifierErr := m.LocalVtSessionIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("localVtSessionIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for localVtSessionIdentifier")
 		}
 		if _localVtSessionIdentifierErr != nil {
 			return errors.Wrap(_localVtSessionIdentifierErr, "Error serializing 'localVtSessionIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestVTOpen"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestVTOpen")
 		}
 		return nil
 	}

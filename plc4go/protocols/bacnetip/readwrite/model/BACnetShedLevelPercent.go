@@ -128,14 +128,14 @@ func BACnetShedLevelPercentParse(readBuffer utils.ReadBuffer) (*BACnetShedLevelP
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevelPercent"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetShedLevelPercent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (percent)
 	if pullErr := readBuffer.PullContext("percent"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for percent")
 	}
 	_percent, _percentErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _percentErr != nil {
@@ -143,11 +143,11 @@ func BACnetShedLevelPercentParse(readBuffer utils.ReadBuffer) (*BACnetShedLevelP
 	}
 	percent := CastBACnetContextTagUnsignedInteger(_percent)
 	if closeErr := readBuffer.CloseContext("percent"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for percent")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevelPercent"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetShedLevelPercent")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetShedLevelPercent) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetShedLevelPercent"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetShedLevelPercent")
 		}
 
 		// Simple Field (percent)
 		if pushErr := writeBuffer.PushContext("percent"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for percent")
 		}
 		_percentErr := m.Percent.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("percent"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for percent")
 		}
 		if _percentErr != nil {
 			return errors.Wrap(_percentErr, "Error serializing 'percent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetShedLevelPercent"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetShedLevelPercent")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassbackTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPassbackTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (passbackTimeout)
 	if pullErr := readBuffer.PullContext("passbackTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for passbackTimeout")
 	}
 	_passbackTimeout, _passbackTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _passbackTimeoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagN
 	}
 	passbackTimeout := CastBACnetApplicationTagUnsignedInteger(_passbackTimeout)
 	if closeErr := readBuffer.CloseContext("passbackTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for passbackTimeout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassbackTimeout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPassbackTimeout) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPassbackTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPassbackTimeout")
 		}
 
 		// Simple Field (passbackTimeout)
 		if pushErr := writeBuffer.PushContext("passbackTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for passbackTimeout")
 		}
 		_passbackTimeoutErr := m.PassbackTimeout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("passbackTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for passbackTimeout")
 		}
 		if _passbackTimeoutErr != nil {
 			return errors.Wrap(_passbackTimeoutErr, "Error serializing 'passbackTimeout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPassbackTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPassbackTimeout")
 		}
 		return nil
 	}

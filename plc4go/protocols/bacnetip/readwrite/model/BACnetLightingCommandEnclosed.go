@@ -120,14 +120,14 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLightingCommandEnclosed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLightingCommandEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -135,12 +135,12 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (lightingCommand)
 	if pullErr := readBuffer.PullContext("lightingCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommand")
 	}
 	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParse(readBuffer)
 	if _lightingCommandErr != nil {
@@ -148,12 +148,12 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	lightingCommand := CastBACnetLightingCommand(_lightingCommand)
 	if closeErr := readBuffer.CloseContext("lightingCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lightingCommand")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -161,11 +161,11 @@ func BACnetLightingCommandEnclosedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLightingCommandEnclosed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLightingCommandEnclosed")
 	}
 
 	// Create the instance
@@ -176,16 +176,16 @@ func (m *BACnetLightingCommandEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLightingCommandEnclosed"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetLightingCommandEnclosed")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -193,11 +193,11 @@ func (m *BACnetLightingCommandEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (lightingCommand)
 	if pushErr := writeBuffer.PushContext("lightingCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for lightingCommand")
 	}
 	_lightingCommandErr := m.LightingCommand.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("lightingCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for lightingCommand")
 	}
 	if _lightingCommandErr != nil {
 		return errors.Wrap(_lightingCommandErr, "Error serializing 'lightingCommand' field")
@@ -205,18 +205,18 @@ func (m *BACnetLightingCommandEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLightingCommandEnclosed"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetLightingCommandEnclosed")
 	}
 	return nil
 }

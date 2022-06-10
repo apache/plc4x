@@ -142,14 +142,14 @@ func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDefaultGateway"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPDefaultGateway")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipDefaultGateway)
 	if pullErr := readBuffer.PullContext("ipDefaultGateway"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipDefaultGateway")
 	}
 	_ipDefaultGateway, _ipDefaultGatewayErr := BACnetApplicationTagParse(readBuffer)
 	if _ipDefaultGatewayErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tag
 	}
 	ipDefaultGateway := CastBACnetApplicationTagOctetString(_ipDefaultGateway)
 	if closeErr := readBuffer.CloseContext("ipDefaultGateway"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipDefaultGateway")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDefaultGateway"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDefaultGateway")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPDefaultGateway) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPDefaultGateway"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPDefaultGateway")
 		}
 
 		// Simple Field (ipDefaultGateway)
 		if pushErr := writeBuffer.PushContext("ipDefaultGateway"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipDefaultGateway")
 		}
 		_ipDefaultGatewayErr := m.IpDefaultGateway.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipDefaultGateway"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipDefaultGateway")
 		}
 		if _ipDefaultGatewayErr != nil {
 			return errors.Wrap(_ipDefaultGatewayErr, "Error serializing 'ipDefaultGateway' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPDefaultGateway"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPDefaultGateway")
 		}
 		return nil
 	}

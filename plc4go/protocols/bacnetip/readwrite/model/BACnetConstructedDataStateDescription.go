@@ -142,14 +142,14 @@ func BACnetConstructedDataStateDescriptionParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStateDescription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStateDescription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (stateDescription)
 	if pullErr := readBuffer.PullContext("stateDescription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for stateDescription")
 	}
 	_stateDescription, _stateDescriptionErr := BACnetApplicationTagParse(readBuffer)
 	if _stateDescriptionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataStateDescriptionParse(readBuffer utils.ReadBuffer, tag
 	}
 	stateDescription := CastBACnetApplicationTagCharacterString(_stateDescription)
 	if closeErr := readBuffer.CloseContext("stateDescription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for stateDescription")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStateDescription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStateDescription")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataStateDescription) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataStateDescription"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStateDescription")
 		}
 
 		// Simple Field (stateDescription)
 		if pushErr := writeBuffer.PushContext("stateDescription"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for stateDescription")
 		}
 		_stateDescriptionErr := m.StateDescription.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("stateDescription"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for stateDescription")
 		}
 		if _stateDescriptionErr != nil {
 			return errors.Wrap(_stateDescriptionErr, "Error serializing 'stateDescription' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStateDescription"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataStateDescription")
 		}
 		return nil
 	}

@@ -134,7 +134,7 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnet
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadObjectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadObjectIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -166,7 +166,7 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnet
 	instanceNumber := _instanceNumber
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadObjectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadObjectIdentifier")
 	}
 
 	// Create the instance
@@ -177,7 +177,7 @@ func (m *BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuff
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadObjectIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadObjectIdentifier")
 	}
 
 	// Manual Field (objectType)
@@ -204,7 +204,7 @@ func (m *BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuff
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadObjectIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadObjectIdentifier")
 	}
 	return nil
 }

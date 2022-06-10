@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -146,7 +147,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -196,7 +197,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 
 	// Array field (parameters)
 	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
 	}
 	curPos = positionAware.GetPos() - startPos
 	// Length array
@@ -214,7 +215,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for parameters")
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
@@ -223,24 +224,25 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	if bool((curPos) < (cotpLen)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for payload")
 		}
 		_val, _err := S7MessageParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		default:
 			payload = CastS7Message(_val)
 			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for payload")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPPacket"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPPacket")
 	}
 
 	// Finish initializing
@@ -256,7 +258,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("COTPPacket"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for COTPPacket")
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -282,7 +284,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	// Array Field (parameters)
 	if m.Parameters != nil {
 		if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for parameters")
 		}
 		for _, _element := range m.Parameters {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -291,7 +293,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 			}
 		}
 		if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for parameters")
 		}
 	}
 
@@ -299,12 +301,12 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	var payload *S7Message = nil
 	if m.Payload != nil {
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		payload = m.Payload
 		_payloadErr := payload.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for payload")
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
@@ -312,7 +314,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	}
 
 	if popErr := writeBuffer.PopContext("COTPPacket"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for COTPPacket")
 	}
 	return nil
 }

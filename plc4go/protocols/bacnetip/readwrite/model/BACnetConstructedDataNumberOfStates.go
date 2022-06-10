@@ -142,14 +142,14 @@ func BACnetConstructedDataNumberOfStatesParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNumberOfStates"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNumberOfStates")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (numberOfState)
 	if pullErr := readBuffer.PullContext("numberOfState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for numberOfState")
 	}
 	_numberOfState, _numberOfStateErr := BACnetApplicationTagParse(readBuffer)
 	if _numberOfStateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNumberOfStatesParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	numberOfState := CastBACnetApplicationTagUnsignedInteger(_numberOfState)
 	if closeErr := readBuffer.CloseContext("numberOfState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for numberOfState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfStates"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfStates")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNumberOfStates) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNumberOfStates"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNumberOfStates")
 		}
 
 		// Simple Field (numberOfState)
 		if pushErr := writeBuffer.PushContext("numberOfState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for numberOfState")
 		}
 		_numberOfStateErr := m.NumberOfState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("numberOfState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for numberOfState")
 		}
 		if _numberOfStateErr != nil {
 			return errors.Wrap(_numberOfStateErr, "Error serializing 'numberOfState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNumberOfStates"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNumberOfStates")
 		}
 		return nil
 	}

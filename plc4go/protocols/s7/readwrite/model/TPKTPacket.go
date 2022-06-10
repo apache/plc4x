@@ -124,7 +124,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for TPKTPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -161,7 +161,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
 	_payload, _payloadErr := COTPPacketParse(readBuffer, uint16(uint16(len)-uint16(uint16(4))))
 	if _payloadErr != nil {
@@ -169,11 +169,11 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	}
 	payload := CastCOTPPacket(_payload)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
 
 	if closeErr := readBuffer.CloseContext("TPKTPacket"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for TPKTPacket")
 	}
 
 	// Create the instance
@@ -184,7 +184,7 @@ func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TPKTPacket"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for TPKTPacket")
 	}
 
 	// Const Field (protocolId)
@@ -210,18 +210,18 @@ func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (payload)
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
 	_payloadErr := m.Payload.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for payload")
 	}
 	if _payloadErr != nil {
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TPKTPacket"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for TPKTPacket")
 	}
 	return nil
 }

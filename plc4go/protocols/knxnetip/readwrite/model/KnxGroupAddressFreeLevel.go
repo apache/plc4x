@@ -130,7 +130,7 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for KnxGroupAddressFreeLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddressFreeLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for KnxGroupAddressFreeLevel")
 	}
 
 	// Create a partially initialized instance
@@ -160,7 +160,7 @@ func (m *KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxGroupAddressFreeLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for KnxGroupAddressFreeLevel")
 		}
 
 		// Simple Field (subGroup)
@@ -171,7 +171,7 @@ func (m *KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		if popErr := writeBuffer.PopContext("KnxGroupAddressFreeLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for KnxGroupAddressFreeLevel")
 		}
 		return nil
 	}

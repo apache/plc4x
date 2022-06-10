@@ -142,14 +142,14 @@ func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthorizationMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (authorizationMode)
 	if pullErr := readBuffer.PullContext("authorizationMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for authorizationMode")
 	}
 	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authorizationModeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, ta
 	}
 	authorizationMode := CastBACnetAuthorizationModeTagged(_authorizationMode)
 	if closeErr := readBuffer.CloseContext("authorizationMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for authorizationMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthorizationMode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAuthorizationMode) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAuthorizationMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAuthorizationMode")
 		}
 
 		// Simple Field (authorizationMode)
 		if pushErr := writeBuffer.PushContext("authorizationMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for authorizationMode")
 		}
 		_authorizationModeErr := m.AuthorizationMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("authorizationMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for authorizationMode")
 		}
 		if _authorizationModeErr != nil {
 			return errors.Wrap(_authorizationModeErr, "Error serializing 'authorizationMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthorizationMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAuthorizationMode")
 		}
 		return nil
 	}

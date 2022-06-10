@@ -142,14 +142,14 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputTrackingValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingOutputTrackingValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (trackingValue)
 	if pullErr := readBuffer.PullContext("trackingValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for trackingValue")
 	}
 	_trackingValue, _trackingValueErr := BACnetApplicationTagParse(readBuffer)
 	if _trackingValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 	}
 	trackingValue := CastBACnetApplicationTagReal(_trackingValue)
 	if closeErr := readBuffer.CloseContext("trackingValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for trackingValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingOutputTrackingValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingOutputTrackingValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLightingOutputTrackingValue) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLightingOutputTrackingValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingOutputTrackingValue")
 		}
 
 		// Simple Field (trackingValue)
 		if pushErr := writeBuffer.PushContext("trackingValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for trackingValue")
 		}
 		_trackingValueErr := m.TrackingValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("trackingValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for trackingValue")
 		}
 		if _trackingValueErr != nil {
 			return errors.Wrap(_trackingValueErr, "Error serializing 'trackingValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLightingOutputTrackingValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLightingOutputTrackingValue")
 		}
 		return nil
 	}

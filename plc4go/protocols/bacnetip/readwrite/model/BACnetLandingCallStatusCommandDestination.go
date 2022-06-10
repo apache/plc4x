@@ -128,14 +128,14 @@ func BACnetLandingCallStatusCommandDestinationParse(readBuffer utils.ReadBuffer)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDestination"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatusCommandDestination")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (destination)
 	if pullErr := readBuffer.PullContext("destination"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for destination")
 	}
 	_destination, _destinationErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _destinationErr != nil {
@@ -143,11 +143,11 @@ func BACnetLandingCallStatusCommandDestinationParse(readBuffer utils.ReadBuffer)
 	}
 	destination := CastBACnetContextTagUnsignedInteger(_destination)
 	if closeErr := readBuffer.CloseContext("destination"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for destination")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommandDestination"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingCallStatusCommandDestination")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetLandingCallStatusCommandDestination) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLandingCallStatusCommandDestination"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatusCommandDestination")
 		}
 
 		// Simple Field (destination)
 		if pushErr := writeBuffer.PushContext("destination"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for destination")
 		}
 		_destinationErr := m.Destination.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("destination"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for destination")
 		}
 		if _destinationErr != nil {
 			return errors.Wrap(_destinationErr, "Error serializing 'destination' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLandingCallStatusCommandDestination"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLandingCallStatusCommandDestination")
 		}
 		return nil
 	}

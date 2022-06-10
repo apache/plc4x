@@ -119,7 +119,7 @@ func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckResponseType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageAckResponseType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -140,7 +140,7 @@ func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 
 	// Array field (messageObjects)
 	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
 	messageObjects := make([]uint8, numberOfObjects)
@@ -154,11 +154,11 @@ func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageAckResponseType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageAckResponseType")
 	}
 
 	// Create the instance
@@ -169,7 +169,7 @@ func (m *AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) e
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageAckResponseType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AlarmMessageAckResponseType")
 	}
 
 	// Simple Field (functionId)
@@ -189,7 +189,7 @@ func (m *AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) e
 	// Array Field (messageObjects)
 	if m.MessageObjects != nil {
 		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for messageObjects")
 		}
 		for _, _element := range m.MessageObjects {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -198,12 +198,12 @@ func (m *AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) e
 			}
 		}
 		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for messageObjects")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageAckResponseType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AlarmMessageAckResponseType")
 	}
 	return nil
 }

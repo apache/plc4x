@@ -141,14 +141,14 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*DescriptionResponse
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DescriptionResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dibDeviceInfo)
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dibDeviceInfo")
 	}
 	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
 	if _dibDeviceInfoErr != nil {
@@ -156,12 +156,12 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*DescriptionResponse
 	}
 	dibDeviceInfo := CastDIBDeviceInfo(_dibDeviceInfo)
 	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dibDeviceInfo")
 	}
 
 	// Simple Field (dibSuppSvcFamilies)
 	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dibSuppSvcFamilies")
 	}
 	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
@@ -169,11 +169,11 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*DescriptionResponse
 	}
 	dibSuppSvcFamilies := CastDIBSuppSvcFamilies(_dibSuppSvcFamilies)
 	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dibSuppSvcFamilies")
 	}
 
 	if closeErr := readBuffer.CloseContext("DescriptionResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DescriptionResponse")
 	}
 
 	// Create a partially initialized instance
@@ -191,16 +191,16 @@ func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DescriptionResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DescriptionResponse")
 		}
 
 		// Simple Field (dibDeviceInfo)
 		if pushErr := writeBuffer.PushContext("dibDeviceInfo"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dibDeviceInfo")
 		}
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dibDeviceInfo"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dibDeviceInfo")
 		}
 		if _dibDeviceInfoErr != nil {
 			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
@@ -208,18 +208,18 @@ func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (dibSuppSvcFamilies)
 		if pushErr := writeBuffer.PushContext("dibSuppSvcFamilies"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dibSuppSvcFamilies")
 		}
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dibSuppSvcFamilies"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dibSuppSvcFamilies")
 		}
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DescriptionResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DescriptionResponse")
 		}
 		return nil
 	}

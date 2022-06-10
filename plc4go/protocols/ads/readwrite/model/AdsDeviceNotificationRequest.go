@@ -161,7 +161,7 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsDeviceNotificationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -182,7 +182,7 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 
 	// Array field (adsStampHeaders)
 	if pullErr := readBuffer.PullContext("adsStampHeaders", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for adsStampHeaders")
 	}
 	// Count array
 	adsStampHeaders := make([]*AdsStampHeader, stamps)
@@ -196,11 +196,11 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 		}
 	}
 	if closeErr := readBuffer.CloseContext("adsStampHeaders", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for adsStampHeaders")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDeviceNotificationRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsDeviceNotificationRequest")
 	}
 
 	// Create a partially initialized instance
@@ -219,7 +219,7 @@ func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsDeviceNotificationRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsDeviceNotificationRequest")
 		}
 
 		// Simple Field (length)
@@ -239,7 +239,7 @@ func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		// Array Field (adsStampHeaders)
 		if m.AdsStampHeaders != nil {
 			if pushErr := writeBuffer.PushContext("adsStampHeaders", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for adsStampHeaders")
 			}
 			for _, _element := range m.AdsStampHeaders {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -248,12 +248,12 @@ func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) 
 				}
 			}
 			if popErr := writeBuffer.PopContext("adsStampHeaders", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for adsStampHeaders")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDeviceNotificationRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsDeviceNotificationRequest")
 		}
 		return nil
 	}

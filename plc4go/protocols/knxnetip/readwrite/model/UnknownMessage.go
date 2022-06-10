@@ -135,7 +135,7 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Unkn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for UnknownMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +147,7 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Unkn
 	}
 
 	if closeErr := readBuffer.CloseContext("UnknownMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for UnknownMessage")
 	}
 
 	// Create a partially initialized instance
@@ -164,7 +164,7 @@ func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("UnknownMessage"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for UnknownMessage")
 		}
 
 		// Array Field (unknownData)
@@ -177,7 +177,7 @@ func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("UnknownMessage"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for UnknownMessage")
 		}
 		return nil
 	}

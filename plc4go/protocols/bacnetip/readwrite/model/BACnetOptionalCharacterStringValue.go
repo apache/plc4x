@@ -128,14 +128,14 @@ func BACnetOptionalCharacterStringValueParse(readBuffer utils.ReadBuffer) (*BACn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalCharacterStringValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (characterstring)
 	if pullErr := readBuffer.PullContext("characterstring"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for characterstring")
 	}
 	_characterstring, _characterstringErr := BACnetApplicationTagParse(readBuffer)
 	if _characterstringErr != nil {
@@ -143,11 +143,11 @@ func BACnetOptionalCharacterStringValueParse(readBuffer utils.ReadBuffer) (*BACn
 	}
 	characterstring := CastBACnetApplicationTagCharacterString(_characterstring)
 	if closeErr := readBuffer.CloseContext("characterstring"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for characterstring")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalCharacterStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalCharacterStringValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetOptionalCharacterStringValue) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetOptionalCharacterStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalCharacterStringValue")
 		}
 
 		// Simple Field (characterstring)
 		if pushErr := writeBuffer.PushContext("characterstring"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for characterstring")
 		}
 		_characterstringErr := m.Characterstring.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("characterstring"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for characterstring")
 		}
 		if _characterstringErr != nil {
 			return errors.Wrap(_characterstringErr, "Error serializing 'characterstring' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalCharacterStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetOptionalCharacterStringValue")
 		}
 		return nil
 	}

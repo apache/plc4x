@@ -128,14 +128,14 @@ func BACnetPropertyStatesPolarityParse(readBuffer utils.ReadBuffer, peekedTagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesPolarity"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesPolarity")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (polarity)
 	if pullErr := readBuffer.PullContext("polarity"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for polarity")
 	}
 	_polarity, _polarityErr := BACnetPolarityTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _polarityErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesPolarityParse(readBuffer utils.ReadBuffer, peekedTagNum
 	}
 	polarity := CastBACnetPolarityTagged(_polarity)
 	if closeErr := readBuffer.CloseContext("polarity"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for polarity")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesPolarity"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesPolarity")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesPolarity) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesPolarity"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesPolarity")
 		}
 
 		// Simple Field (polarity)
 		if pushErr := writeBuffer.PushContext("polarity"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for polarity")
 		}
 		_polarityErr := m.Polarity.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("polarity"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for polarity")
 		}
 		if _polarityErr != nil {
 			return errors.Wrap(_polarityErr, "Error serializing 'polarity' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesPolarity"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesPolarity")
 		}
 		return nil
 	}

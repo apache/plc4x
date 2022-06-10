@@ -147,7 +147,7 @@ func AmsNetIdParse(readBuffer utils.ReadBuffer) (*AmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AmsNetId")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -195,7 +195,7 @@ func AmsNetIdParse(readBuffer utils.ReadBuffer) (*AmsNetId, error) {
 	octet6 := _octet6
 
 	if closeErr := readBuffer.CloseContext("AmsNetId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AmsNetId")
 	}
 
 	// Create the instance
@@ -206,7 +206,7 @@ func (m *AmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsNetId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AmsNetId")
 	}
 
 	// Simple Field (octet1)
@@ -252,7 +252,7 @@ func (m *AmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("AmsNetId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AmsNetId")
 	}
 	return nil
 }

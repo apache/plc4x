@@ -142,14 +142,14 @@ func BACnetConstructedDataValueSetParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValueSet"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataValueSet")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (valueSet)
 	if pullErr := readBuffer.PullContext("valueSet"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for valueSet")
 	}
 	_valueSet, _valueSetErr := BACnetApplicationTagParse(readBuffer)
 	if _valueSetErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataValueSetParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	valueSet := CastBACnetApplicationTagUnsignedInteger(_valueSet)
 	if closeErr := readBuffer.CloseContext("valueSet"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for valueSet")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSet"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSet")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataValueSet) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataValueSet"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueSet")
 		}
 
 		// Simple Field (valueSet)
 		if pushErr := writeBuffer.PushContext("valueSet"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for valueSet")
 		}
 		_valueSetErr := m.ValueSet.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("valueSet"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for valueSet")
 		}
 		if _valueSetErr != nil {
 			return errors.Wrap(_valueSetErr, "Error serializing 'valueSet' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueSet"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataValueSet")
 		}
 		return nil
 	}

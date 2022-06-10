@@ -128,14 +128,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(readBuffer u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (reference)
 	if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for reference")
 	}
 	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _referenceErr != nil {
@@ -143,11 +143,11 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(readBuffer u
 	}
 	reference := CastBACnetDeviceObjectPropertyReferenceEnclosed(_reference)
 	if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for reference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetFaultParameterFaultExtendedParametersEntryReference) Serialize(wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryReference")
 		}
 
 		// Simple Field (reference)
 		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for reference")
 		}
 		_referenceErr := m.Reference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for reference")
 		}
 		if _referenceErr != nil {
 			return errors.Wrap(_referenceErr, "Error serializing 'reference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParametersEntryReference")
 		}
 		return nil
 	}

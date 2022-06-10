@@ -128,14 +128,14 @@ func BACnetPropertyStatesNetworkNumberQualityParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkNumberQuality"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesNetworkNumberQuality")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (networkNumberQuality)
 	if pullErr := readBuffer.PullContext("networkNumberQuality"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for networkNumberQuality")
 	}
 	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _networkNumberQualityErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesNetworkNumberQualityParse(readBuffer utils.ReadBuffer, 
 	}
 	networkNumberQuality := CastBACnetNetworkNumberQualityTagged(_networkNumberQuality)
 	if closeErr := readBuffer.CloseContext("networkNumberQuality"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for networkNumberQuality")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNetworkNumberQuality"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesNetworkNumberQuality")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesNetworkNumberQuality) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesNetworkNumberQuality"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNetworkNumberQuality")
 		}
 
 		// Simple Field (networkNumberQuality)
 		if pushErr := writeBuffer.PushContext("networkNumberQuality"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for networkNumberQuality")
 		}
 		_networkNumberQualityErr := m.NetworkNumberQuality.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("networkNumberQuality"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for networkNumberQuality")
 		}
 		if _networkNumberQualityErr != nil {
 			return errors.Wrap(_networkNumberQualityErr, "Error serializing 'networkNumberQuality' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNetworkNumberQuality"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesNetworkNumberQuality")
 		}
 		return nil
 	}

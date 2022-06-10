@@ -142,14 +142,14 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNotificationClass")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (notificationClass)
 	if pullErr := readBuffer.PullContext("notificationClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for notificationClass")
 	}
 	_notificationClass, _notificationClassErr := BACnetApplicationTagParse(readBuffer)
 	if _notificationClassErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 	}
 	notificationClass := CastBACnetApplicationTagUnsignedInteger(_notificationClass)
 	if closeErr := readBuffer.CloseContext("notificationClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for notificationClass")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotificationClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNotificationClass")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataNotificationClass) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataNotificationClass"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNotificationClass")
 		}
 
 		// Simple Field (notificationClass)
 		if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for notificationClass")
 		}
 		_notificationClassErr := m.NotificationClass.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for notificationClass")
 		}
 		if _notificationClassErr != nil {
 			return errors.Wrap(_notificationClassErr, "Error serializing 'notificationClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNotificationClass"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataNotificationClass")
 		}
 		return nil
 	}

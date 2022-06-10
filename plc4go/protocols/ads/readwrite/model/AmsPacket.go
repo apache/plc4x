@@ -180,14 +180,14 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsPacket"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AmsPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (targetAmsNetId)
 	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for targetAmsNetId")
 	}
 	_targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _targetAmsNetIdErr != nil {
@@ -195,7 +195,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	}
 	targetAmsNetId := CastAmsNetId(_targetAmsNetId)
 	if closeErr := readBuffer.CloseContext("targetAmsNetId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for targetAmsNetId")
 	}
 
 	// Simple Field (targetAmsPort)
@@ -207,7 +207,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 
 	// Simple Field (sourceAmsNetId)
 	if pullErr := readBuffer.PullContext("sourceAmsNetId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for sourceAmsNetId")
 	}
 	_sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _sourceAmsNetIdErr != nil {
@@ -215,7 +215,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	}
 	sourceAmsNetId := CastAmsNetId(_sourceAmsNetId)
 	if closeErr := readBuffer.CloseContext("sourceAmsNetId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for sourceAmsNetId")
 	}
 
 	// Simple Field (sourceAmsPort)
@@ -227,7 +227,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 
 	// Simple Field (commandId)
 	if pullErr := readBuffer.PullContext("commandId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for commandId")
 	}
 	_commandId, _commandIdErr := CommandIdParse(readBuffer)
 	if _commandIdErr != nil {
@@ -235,12 +235,12 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	}
 	commandId := _commandId
 	if closeErr := readBuffer.CloseContext("commandId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for commandId")
 	}
 
 	// Simple Field (state)
 	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for state")
 	}
 	_state, _stateErr := StateParse(readBuffer)
 	if _stateErr != nil {
@@ -248,7 +248,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	}
 	state := CastState(_state)
 	if closeErr := readBuffer.CloseContext("state"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for state")
 	}
 
 	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -274,7 +274,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 
 	// Simple Field (data)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	_data, _dataErr := AdsDataParse(readBuffer, CommandId(commandId), bool(state.GetResponse()))
 	if _dataErr != nil {
@@ -282,11 +282,11 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	}
 	data := CastAdsData(_data)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("AmsPacket"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AmsPacket")
 	}
 
 	// Create the instance
@@ -297,16 +297,16 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsPacket"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AmsPacket")
 	}
 
 	// Simple Field (targetAmsNetId)
 	if pushErr := writeBuffer.PushContext("targetAmsNetId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for targetAmsNetId")
 	}
 	_targetAmsNetIdErr := m.TargetAmsNetId.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("targetAmsNetId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for targetAmsNetId")
 	}
 	if _targetAmsNetIdErr != nil {
 		return errors.Wrap(_targetAmsNetIdErr, "Error serializing 'targetAmsNetId' field")
@@ -321,11 +321,11 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (sourceAmsNetId)
 	if pushErr := writeBuffer.PushContext("sourceAmsNetId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for sourceAmsNetId")
 	}
 	_sourceAmsNetIdErr := m.SourceAmsNetId.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("sourceAmsNetId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for sourceAmsNetId")
 	}
 	if _sourceAmsNetIdErr != nil {
 		return errors.Wrap(_sourceAmsNetIdErr, "Error serializing 'sourceAmsNetId' field")
@@ -340,11 +340,11 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (commandId)
 	if pushErr := writeBuffer.PushContext("commandId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for commandId")
 	}
 	_commandIdErr := m.CommandId.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("commandId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for commandId")
 	}
 	if _commandIdErr != nil {
 		return errors.Wrap(_commandIdErr, "Error serializing 'commandId' field")
@@ -352,11 +352,11 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (state)
 	if pushErr := writeBuffer.PushContext("state"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for state")
 	}
 	_stateErr := m.State.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("state"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for state")
 	}
 	if _stateErr != nil {
 		return errors.Wrap(_stateErr, "Error serializing 'state' field")
@@ -385,18 +385,18 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (data)
 	if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for data")
 	}
 	_dataErr := m.Data.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("data"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for data")
 	}
 	if _dataErr != nil {
 		return errors.Wrap(_dataErr, "Error serializing 'data' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AmsPacket"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AmsPacket")
 	}
 	return nil
 }

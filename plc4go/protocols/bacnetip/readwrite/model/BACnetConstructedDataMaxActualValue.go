@@ -142,14 +142,14 @@ func BACnetConstructedDataMaxActualValueParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxActualValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaxActualValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maxActualValue)
 	if pullErr := readBuffer.PullContext("maxActualValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxActualValue")
 	}
 	_maxActualValue, _maxActualValueErr := BACnetApplicationTagParse(readBuffer)
 	if _maxActualValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMaxActualValueParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	maxActualValue := CastBACnetApplicationTagReal(_maxActualValue)
 	if closeErr := readBuffer.CloseContext("maxActualValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxActualValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxActualValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxActualValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMaxActualValue) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMaxActualValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxActualValue")
 		}
 
 		// Simple Field (maxActualValue)
 		if pushErr := writeBuffer.PushContext("maxActualValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maxActualValue")
 		}
 		_maxActualValueErr := m.MaxActualValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maxActualValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maxActualValue")
 		}
 		if _maxActualValueErr != nil {
 			return errors.Wrap(_maxActualValueErr, "Error serializing 'maxActualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaxActualValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMaxActualValue")
 		}
 		return nil
 	}

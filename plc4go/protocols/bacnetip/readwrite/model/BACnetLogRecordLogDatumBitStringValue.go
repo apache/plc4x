@@ -133,14 +133,14 @@ func BACnetLogRecordLogDatumBitStringValueParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumBitStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumBitStringValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bitStringValue)
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
 	_bitStringValue, _bitStringValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitStringValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetLogRecordLogDatumBitStringValueParse(readBuffer utils.ReadBuffer, tag
 	}
 	bitStringValue := CastBACnetContextTagBitString(_bitStringValue)
 	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumBitStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogRecordLogDatumBitStringValue")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetLogRecordLogDatumBitStringValue) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetLogRecordLogDatumBitStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumBitStringValue")
 		}
 
 		// Simple Field (bitStringValue)
 		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
 		}
 		_bitStringValueErr := m.BitStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bitStringValue")
 		}
 		if _bitStringValueErr != nil {
 			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumBitStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetLogRecordLogDatumBitStringValue")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEventPeriodCalendarReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (calendarReference)
 	if pullErr := readBuffer.PullContext("calendarReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for calendarReference")
 	}
 	_calendarReference, _calendarReferenceErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _calendarReferenceErr != nil {
@@ -143,11 +143,11 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer)
 	}
 	calendarReference := CastBACnetContextTagObjectIdentifier(_calendarReference)
 	if closeErr := readBuffer.CloseContext("calendarReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for calendarReference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEventPeriodCalendarReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetSpecialEventPeriodCalendarReference")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetSpecialEventPeriodCalendarReference) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetSpecialEventPeriodCalendarReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventPeriodCalendarReference")
 		}
 
 		// Simple Field (calendarReference)
 		if pushErr := writeBuffer.PushContext("calendarReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for calendarReference")
 		}
 		_calendarReferenceErr := m.CalendarReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("calendarReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for calendarReference")
 		}
 		if _calendarReferenceErr != nil {
 			return errors.Wrap(_calendarReferenceErr, "Error serializing 'calendarReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetSpecialEventPeriodCalendarReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetSpecialEventPeriodCalendarReference")
 		}
 		return nil
 	}

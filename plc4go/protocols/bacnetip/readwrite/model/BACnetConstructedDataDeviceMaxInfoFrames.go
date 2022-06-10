@@ -142,14 +142,14 @@ func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceMaxInfoFrames"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDeviceMaxInfoFrames")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maxInfoFrames)
 	if pullErr := readBuffer.PullContext("maxInfoFrames"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maxInfoFrames")
 	}
 	_maxInfoFrames, _maxInfoFramesErr := BACnetApplicationTagParse(readBuffer)
 	if _maxInfoFramesErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, 
 	}
 	maxInfoFrames := CastBACnetApplicationTagUnsignedInteger(_maxInfoFrames)
 	if closeErr := readBuffer.CloseContext("maxInfoFrames"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maxInfoFrames")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceMaxInfoFrames"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceMaxInfoFrames")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDeviceMaxInfoFrames) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDeviceMaxInfoFrames"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeviceMaxInfoFrames")
 		}
 
 		// Simple Field (maxInfoFrames)
 		if pushErr := writeBuffer.PushContext("maxInfoFrames"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maxInfoFrames")
 		}
 		_maxInfoFramesErr := m.MaxInfoFrames.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maxInfoFrames"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maxInfoFrames")
 		}
 		if _maxInfoFramesErr != nil {
 			return errors.Wrap(_maxInfoFramesErr, "Error serializing 'maxInfoFrames' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceMaxInfoFrames"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDeviceMaxInfoFrames")
 		}
 		return nil
 	}

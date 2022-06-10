@@ -130,7 +130,7 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7DataAlarmMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7DataAlarmMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -174,7 +174,7 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	}
 
 	if closeErr := readBuffer.CloseContext("S7DataAlarmMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7DataAlarmMessage")
 	}
 
 	// Finish initializing
@@ -190,7 +190,7 @@ func (m *S7DataAlarmMessage) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7DataAlarmMessage"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7DataAlarmMessage")
 	}
 
 	// Const Field (functionId)
@@ -211,7 +211,7 @@ func (m *S7DataAlarmMessage) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	}
 
 	if popErr := writeBuffer.PopContext("S7DataAlarmMessage"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7DataAlarmMessage")
 	}
 	return nil
 }

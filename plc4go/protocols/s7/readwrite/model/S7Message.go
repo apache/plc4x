@@ -178,7 +178,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Message"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7Message")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -262,18 +262,19 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	if bool((parameterLength) > (0)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for parameter")
 		}
 		_val, _err := S7ParameterParse(readBuffer, messageType)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
 		default:
 			parameter = CastS7Parameter(_val)
 			if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for parameter")
 			}
 		}
 	}
@@ -283,24 +284,25 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	if bool((payloadLength) > (0)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for payload")
 		}
 		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		default:
 			payload = CastS7Payload(_val)
 			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for payload")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Message"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7Message")
 	}
 
 	// Finish initializing
@@ -316,7 +318,7 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Message"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7Message")
 	}
 
 	// Const Field (protocolId)
@@ -371,12 +373,12 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	var parameter *S7Parameter = nil
 	if m.Parameter != nil {
 		if pushErr := writeBuffer.PushContext("parameter"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for parameter")
 		}
 		parameter = m.Parameter
 		_parameterErr := parameter.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("parameter"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for parameter")
 		}
 		if _parameterErr != nil {
 			return errors.Wrap(_parameterErr, "Error serializing 'parameter' field")
@@ -387,12 +389,12 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	var payload *S7Payload = nil
 	if m.Payload != nil {
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		payload = m.Payload
 		_payloadErr := payload.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for payload")
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
@@ -400,7 +402,7 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	}
 
 	if popErr := writeBuffer.PopContext("S7Message"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7Message")
 	}
 	return nil
 }

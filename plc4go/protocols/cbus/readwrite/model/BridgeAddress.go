@@ -97,7 +97,7 @@ func BridgeAddressParse(readBuffer utils.ReadBuffer) (*BridgeAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BridgeAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BridgeAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func BridgeAddressParse(readBuffer utils.ReadBuffer) (*BridgeAddress, error) {
 	address := _address
 
 	if closeErr := readBuffer.CloseContext("BridgeAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BridgeAddress")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *BridgeAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BridgeAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BridgeAddress")
 	}
 
 	// Simple Field (address)
@@ -132,7 +132,7 @@ func (m *BridgeAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BridgeAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BridgeAddress")
 	}
 	return nil
 }

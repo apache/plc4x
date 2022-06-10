@@ -142,14 +142,14 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultStepIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDefaultStepIncrement")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (defaultStepIncrement)
 	if pullErr := readBuffer.PullContext("defaultStepIncrement"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for defaultStepIncrement")
 	}
 	_defaultStepIncrement, _defaultStepIncrementErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultStepIncrementErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 	}
 	defaultStepIncrement := CastBACnetApplicationTagReal(_defaultStepIncrement)
 	if closeErr := readBuffer.CloseContext("defaultStepIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for defaultStepIncrement")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultStepIncrement"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultStepIncrement")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDefaultStepIncrement) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDefaultStepIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultStepIncrement")
 		}
 
 		// Simple Field (defaultStepIncrement)
 		if pushErr := writeBuffer.PushContext("defaultStepIncrement"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for defaultStepIncrement")
 		}
 		_defaultStepIncrementErr := m.DefaultStepIncrement.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("defaultStepIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for defaultStepIncrement")
 		}
 		if _defaultStepIncrementErr != nil {
 			return errors.Wrap(_defaultStepIncrementErr, "Error serializing 'defaultStepIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultStepIncrement"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDefaultStepIncrement")
 		}
 		return nil
 	}

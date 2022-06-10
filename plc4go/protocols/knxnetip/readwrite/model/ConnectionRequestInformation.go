@@ -106,7 +106,7 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (*Connection
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionRequestInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -145,7 +145,7 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (*Connection
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionRequestInformation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConnectionRequestInformation")
 	}
 
 	// Finish initializing
@@ -161,7 +161,7 @@ func (m *ConnectionRequestInformation) SerializeParent(writeBuffer utils.WriteBu
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ConnectionRequestInformation"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ConnectionRequestInformation")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -185,7 +185,7 @@ func (m *ConnectionRequestInformation) SerializeParent(writeBuffer utils.WriteBu
 	}
 
 	if popErr := writeBuffer.PopContext("ConnectionRequestInformation"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ConnectionRequestInformation")
 	}
 	return nil
 }

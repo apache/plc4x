@@ -146,14 +146,14 @@ func BACnetConstructedDataMembersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMembers"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMembers")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (members)
 	if pullErr := readBuffer.PullContext("members", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for members")
 	}
 	// Terminated array
 	members := make([]*BACnetDeviceObjectReference, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataMembersParse(readBuffer utils.ReadBuffer, tagNumber ui
 		}
 	}
 	if closeErr := readBuffer.CloseContext("members", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for members")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMembers"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMembers")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataMembers) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMembers"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMembers")
 		}
 
 		// Array Field (members)
 		if m.Members != nil {
 			if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for members")
 			}
 			for _, _element := range m.Members {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataMembers) Serialize(writeBuffer utils.WriteBuffer) 
 				}
 			}
 			if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for members")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMembers"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMembers")
 		}
 		return nil
 	}

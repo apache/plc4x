@@ -142,14 +142,14 @@ func BACnetConstructedDataIntervalOffsetParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntervalOffset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIntervalOffset")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (intervalOffset)
 	if pullErr := readBuffer.PullContext("intervalOffset"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for intervalOffset")
 	}
 	_intervalOffset, _intervalOffsetErr := BACnetApplicationTagParse(readBuffer)
 	if _intervalOffsetErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIntervalOffsetParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	intervalOffset := CastBACnetApplicationTagUnsignedInteger(_intervalOffset)
 	if closeErr := readBuffer.CloseContext("intervalOffset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for intervalOffset")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntervalOffset"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntervalOffset")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIntervalOffset) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIntervalOffset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIntervalOffset")
 		}
 
 		// Simple Field (intervalOffset)
 		if pushErr := writeBuffer.PushContext("intervalOffset"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for intervalOffset")
 		}
 		_intervalOffsetErr := m.IntervalOffset.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("intervalOffset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for intervalOffset")
 		}
 		if _intervalOffsetErr != nil {
 			return errors.Wrap(_intervalOffsetErr, "Error serializing 'intervalOffset' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIntervalOffset"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIntervalOffset")
 		}
 		return nil
 	}

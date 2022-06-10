@@ -142,14 +142,14 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthenticationStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (authenticationStatus)
 	if pullErr := readBuffer.PullContext("authenticationStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for authenticationStatus")
 	}
 	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authenticationStatusErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 	}
 	authenticationStatus := CastBACnetAuthenticationStatusTagged(_authenticationStatus)
 	if closeErr := readBuffer.CloseContext("authenticationStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for authenticationStatus")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthenticationStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthenticationStatus")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAuthenticationStatus) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAuthenticationStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAuthenticationStatus")
 		}
 
 		// Simple Field (authenticationStatus)
 		if pushErr := writeBuffer.PushContext("authenticationStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for authenticationStatus")
 		}
 		_authenticationStatusErr := m.AuthenticationStatus.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("authenticationStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for authenticationStatus")
 		}
 		if _authenticationStatusErr != nil {
 			return errors.Wrap(_authenticationStatusErr, "Error serializing 'authenticationStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAuthenticationStatus")
 		}
 		return nil
 	}

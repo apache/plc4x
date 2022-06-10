@@ -119,7 +119,7 @@ func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadEnumerated"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadEnumerated")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -136,7 +136,7 @@ func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength u
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadEnumerated"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadEnumerated")
 	}
 
 	// Create the instance
@@ -147,7 +147,7 @@ func (m *BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) er
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadEnumerated"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadEnumerated")
 	}
 
 	// Array Field (data)
@@ -164,7 +164,7 @@ func (m *BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadEnumerated"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadEnumerated")
 	}
 	return nil
 }

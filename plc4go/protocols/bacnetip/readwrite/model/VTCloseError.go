@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -144,14 +145,14 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VTCloseError"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for VTCloseError")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorType)
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
 	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
@@ -159,7 +160,7 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	}
 	errorType := CastErrorEnclosed(_errorType)
 	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for errorType")
 	}
 
 	// Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if a given expression evaluates to false)
@@ -167,24 +168,25 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
 		}
 		_val, _err := VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field")
 		default:
 			listOfVtSessionIdentifiers = CastVTCloseErrorListOfVTSessionIdentifiers(_val)
 			if closeErr := readBuffer.CloseContext("listOfVtSessionIdentifiers"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for listOfVtSessionIdentifiers")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("VTCloseError"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for VTCloseError")
 	}
 
 	// Create a partially initialized instance
@@ -202,16 +204,16 @@ func (m *VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("VTCloseError"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for VTCloseError")
 		}
 
 		// Simple Field (errorType)
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
 		_errorTypeErr := m.ErrorType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for errorType")
 		}
 		if _errorTypeErr != nil {
 			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
@@ -221,12 +223,12 @@ func (m *VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
 		var listOfVtSessionIdentifiers *VTCloseErrorListOfVTSessionIdentifiers = nil
 		if m.ListOfVtSessionIdentifiers != nil {
 			if pushErr := writeBuffer.PushContext("listOfVtSessionIdentifiers"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for listOfVtSessionIdentifiers")
 			}
 			listOfVtSessionIdentifiers = m.ListOfVtSessionIdentifiers
 			_listOfVtSessionIdentifiersErr := listOfVtSessionIdentifiers.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("listOfVtSessionIdentifiers"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for listOfVtSessionIdentifiers")
 			}
 			if _listOfVtSessionIdentifiersErr != nil {
 				return errors.Wrap(_listOfVtSessionIdentifiersErr, "Error serializing 'listOfVtSessionIdentifiers' field")
@@ -234,7 +236,7 @@ func (m *VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("VTCloseError"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for VTCloseError")
 		}
 		return nil
 	}

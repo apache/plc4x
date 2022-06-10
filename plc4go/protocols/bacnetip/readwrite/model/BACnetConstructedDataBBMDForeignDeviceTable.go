@@ -146,14 +146,14 @@ func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDForeignDeviceTable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBBMDForeignDeviceTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (bbmdForeignDeviceTable)
 	if pullErr := readBuffer.PullContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bbmdForeignDeviceTable")
 	}
 	// Terminated array
 	bbmdForeignDeviceTable := make([]*BACnetBDTEntry, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffe
 		}
 	}
 	if closeErr := readBuffer.CloseContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bbmdForeignDeviceTable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDForeignDeviceTable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBBMDForeignDeviceTable")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataBBMDForeignDeviceTable) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBBMDForeignDeviceTable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBBMDForeignDeviceTable")
 		}
 
 		// Array Field (bbmdForeignDeviceTable)
 		if m.BbmdForeignDeviceTable != nil {
 			if pushErr := writeBuffer.PushContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for bbmdForeignDeviceTable")
 			}
 			for _, _element := range m.BbmdForeignDeviceTable {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataBBMDForeignDeviceTable) Serialize(writeBuffer util
 				}
 			}
 			if popErr := writeBuffer.PopContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for bbmdForeignDeviceTable")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDForeignDeviceTable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBBMDForeignDeviceTable")
 		}
 		return nil
 	}

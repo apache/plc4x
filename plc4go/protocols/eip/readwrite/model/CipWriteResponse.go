@@ -148,7 +148,7 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*Cip
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipWriteResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -182,7 +182,7 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*Cip
 	extStatus := _extStatus
 
 	if closeErr := readBuffer.CloseContext("CipWriteResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipWriteResponse")
 	}
 
 	// Create a partially initialized instance
@@ -200,7 +200,7 @@ func (m *CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CipWriteResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CipWriteResponse")
 		}
 
 		// Reserved Field (reserved)
@@ -226,7 +226,7 @@ func (m *CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("CipWriteResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CipWriteResponse")
 		}
 		return nil
 	}

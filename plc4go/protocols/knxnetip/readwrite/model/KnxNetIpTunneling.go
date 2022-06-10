@@ -130,7 +130,7 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*KnxNetIpTunneling, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpTunneling"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpTunneling")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*KnxNetIpTunneling, er
 	version := _version
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpTunneling"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for KnxNetIpTunneling")
 	}
 
 	// Create a partially initialized instance
@@ -160,7 +160,7 @@ func (m *KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("KnxNetIpTunneling"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for KnxNetIpTunneling")
 		}
 
 		// Simple Field (version)
@@ -171,7 +171,7 @@ func (m *KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("KnxNetIpTunneling"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for KnxNetIpTunneling")
 		}
 		return nil
 	}

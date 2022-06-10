@@ -112,7 +112,7 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (*ModbusDev
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusDeviceInformationObject"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusDeviceInformationObject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -138,7 +138,7 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (*ModbusDev
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusDeviceInformationObject"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusDeviceInformationObject")
 	}
 
 	// Create the instance
@@ -149,7 +149,7 @@ func (m *ModbusDeviceInformationObject) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusDeviceInformationObject"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ModbusDeviceInformationObject")
 	}
 
 	// Simple Field (objectId)
@@ -176,7 +176,7 @@ func (m *ModbusDeviceInformationObject) Serialize(writeBuffer utils.WriteBuffer)
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusDeviceInformationObject"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ModbusDeviceInformationObject")
 	}
 	return nil
 }

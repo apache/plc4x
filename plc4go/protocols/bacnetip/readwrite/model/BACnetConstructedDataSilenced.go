@@ -142,14 +142,14 @@ func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSilenced"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSilenced")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (silenced)
 	if pullErr := readBuffer.PullContext("silenced"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for silenced")
 	}
 	_silenced, _silencedErr := BACnetSilencedStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _silencedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	silenced := CastBACnetSilencedStateTagged(_silenced)
 	if closeErr := readBuffer.CloseContext("silenced"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for silenced")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSilenced"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSilenced")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSilenced) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSilenced"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSilenced")
 		}
 
 		// Simple Field (silenced)
 		if pushErr := writeBuffer.PushContext("silenced"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for silenced")
 		}
 		_silencedErr := m.Silenced.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("silenced"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for silenced")
 		}
 		if _silencedErr != nil {
 			return errors.Wrap(_silencedErr, "Error serializing 'silenced' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSilenced"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSilenced")
 		}
 		return nil
 	}

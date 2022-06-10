@@ -142,14 +142,14 @@ func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestoreCompletionTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRestoreCompletionTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (completionTime)
 	if pullErr := readBuffer.PullContext("completionTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for completionTime")
 	}
 	_completionTime, _completionTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _completionTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer
 	}
 	completionTime := CastBACnetApplicationTagUnsignedInteger(_completionTime)
 	if closeErr := readBuffer.CloseContext("completionTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for completionTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestoreCompletionTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestoreCompletionTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataRestoreCompletionTime) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRestoreCompletionTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestoreCompletionTime")
 		}
 
 		// Simple Field (completionTime)
 		if pushErr := writeBuffer.PushContext("completionTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for completionTime")
 		}
 		_completionTimeErr := m.CompletionTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("completionTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for completionTime")
 		}
 		if _completionTimeErr != nil {
 			return errors.Wrap(_completionTimeErr, "Error serializing 'completionTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRestoreCompletionTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRestoreCompletionTime")
 		}
 		return nil
 	}

@@ -128,14 +128,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryBitString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryBitString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bitStringValue)
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
 	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _bitStringValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer u
 	}
 	bitStringValue := CastBACnetApplicationTagBitString(_bitStringValue)
 	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryBitString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntryBitString")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetFaultParameterFaultExtendedParametersEntryBitString) Serialize(wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultExtendedParametersEntryBitString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryBitString")
 		}
 
 		// Simple Field (bitStringValue)
 		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
 		}
 		_bitStringValueErr := m.BitStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bitStringValue")
 		}
 		if _bitStringValueErr != nil {
 			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryBitString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParametersEntryBitString")
 		}
 		return nil
 	}

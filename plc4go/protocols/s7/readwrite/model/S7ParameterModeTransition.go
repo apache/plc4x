@@ -185,7 +185,7 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterModeTransition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -247,7 +247,7 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 	sequenceNumber := _sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("S7ParameterModeTransition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterModeTransition")
 	}
 
 	// Create a partially initialized instance
@@ -268,7 +268,7 @@ func (m *S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7ParameterModeTransition"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7ParameterModeTransition")
 		}
 
 		// Reserved Field (reserved)
@@ -322,7 +322,7 @@ func (m *S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterModeTransition"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7ParameterModeTransition")
 		}
 		return nil
 	}

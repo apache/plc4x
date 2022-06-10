@@ -128,14 +128,14 @@ func BACnetOptionalBinaryPVValueParse(readBuffer utils.ReadBuffer) (*BACnetOptio
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalBinaryPVValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalBinaryPVValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (binaryPv)
 	if pullErr := readBuffer.PullContext("binaryPv"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for binaryPv")
 	}
 	_binaryPv, _binaryPvErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _binaryPvErr != nil {
@@ -143,11 +143,11 @@ func BACnetOptionalBinaryPVValueParse(readBuffer utils.ReadBuffer) (*BACnetOptio
 	}
 	binaryPv := CastBACnetBinaryPVTagged(_binaryPv)
 	if closeErr := readBuffer.CloseContext("binaryPv"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for binaryPv")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalBinaryPVValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalBinaryPVValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetOptionalBinaryPVValue) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetOptionalBinaryPVValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalBinaryPVValue")
 		}
 
 		// Simple Field (binaryPv)
 		if pushErr := writeBuffer.PushContext("binaryPv"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for binaryPv")
 		}
 		_binaryPvErr := m.BinaryPv.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("binaryPv"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for binaryPv")
 		}
 		if _binaryPvErr != nil {
 			return errors.Wrap(_binaryPvErr, "Error serializing 'binaryPv' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalBinaryPVValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetOptionalBinaryPVValue")
 		}
 		return nil
 	}

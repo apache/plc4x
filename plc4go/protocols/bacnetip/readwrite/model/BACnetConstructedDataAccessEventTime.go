@@ -142,14 +142,14 @@ func BACnetConstructedDataAccessEventTimeParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessEventTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (accessEventTime)
 	if pullErr := readBuffer.PullContext("accessEventTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessEventTime")
 	}
 	_accessEventTime, _accessEventTimeErr := BACnetTimeStampParse(readBuffer)
 	if _accessEventTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAccessEventTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	accessEventTime := CastBACnetTimeStamp(_accessEventTime)
 	if closeErr := readBuffer.CloseContext("accessEventTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessEventTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAccessEventTime) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAccessEventTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventTime")
 		}
 
 		// Simple Field (accessEventTime)
 		if pushErr := writeBuffer.PushContext("accessEventTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accessEventTime")
 		}
 		_accessEventTimeErr := m.AccessEventTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accessEventTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accessEventTime")
 		}
 		if _accessEventTimeErr != nil {
 			return errors.Wrap(_accessEventTimeErr, "Error serializing 'accessEventTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAccessEventTime")
 		}
 		return nil
 	}

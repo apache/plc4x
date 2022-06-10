@@ -142,14 +142,14 @@ func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpointReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSetpointReference")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (setpointReference)
 	if pullErr := readBuffer.PullContext("setpointReference"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for setpointReference")
 	}
 	_setpointReference, _setpointReferenceErr := BACnetSetpointReferenceParse(readBuffer)
 	if _setpointReferenceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, ta
 	}
 	setpointReference := CastBACnetSetpointReference(_setpointReference)
 	if closeErr := readBuffer.CloseContext("setpointReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for setpointReference")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetpointReference"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSetpointReference")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSetpointReference) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSetpointReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSetpointReference")
 		}
 
 		// Simple Field (setpointReference)
 		if pushErr := writeBuffer.PushContext("setpointReference"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for setpointReference")
 		}
 		_setpointReferenceErr := m.SetpointReference.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("setpointReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for setpointReference")
 		}
 		if _setpointReferenceErr != nil {
 			return errors.Wrap(_setpointReferenceErr, "Error serializing 'setpointReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSetpointReference"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSetpointReference")
 		}
 		return nil
 	}

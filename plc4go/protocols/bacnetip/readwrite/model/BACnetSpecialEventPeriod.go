@@ -133,7 +133,7 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (*BACnetSpecialE
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriod"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEventPeriod")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (*BACnetSpecialE
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -153,7 +153,7 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (*BACnetSpecialE
 
 	// Validation
 	if !(bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, utils.ParseValidationError{"Validation failed"}
+		return nil, errors.WithStack(utils.ParseValidationError{"Validation failed"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -177,7 +177,7 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (*BACnetSpecialE
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEventPeriod"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetSpecialEventPeriod")
 	}
 
 	// Finish initializing
@@ -193,7 +193,7 @@ func (m *BACnetSpecialEventPeriod) SerializeParent(writeBuffer utils.WriteBuffer
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetSpecialEventPeriod"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventPeriod")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -206,7 +206,7 @@ func (m *BACnetSpecialEventPeriod) SerializeParent(writeBuffer utils.WriteBuffer
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSpecialEventPeriod"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetSpecialEventPeriod")
 	}
 	return nil
 }

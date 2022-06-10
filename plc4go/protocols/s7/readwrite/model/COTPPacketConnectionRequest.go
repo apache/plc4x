@@ -158,7 +158,7 @@ func COTPPacketConnectionRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacketConnectionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -179,7 +179,7 @@ func COTPPacketConnectionRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 
 	// Simple Field (protocolClass)
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for protocolClass")
 	}
 	_protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
 	if _protocolClassErr != nil {
@@ -187,11 +187,11 @@ func COTPPacketConnectionRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 	}
 	protocolClass := _protocolClass
 	if closeErr := readBuffer.CloseContext("protocolClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for protocolClass")
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPPacketConnectionRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for COTPPacketConnectionRequest")
 	}
 
 	// Create a partially initialized instance
@@ -210,7 +210,7 @@ func (m *COTPPacketConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("COTPPacketConnectionRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for COTPPacketConnectionRequest")
 		}
 
 		// Simple Field (destinationReference)
@@ -229,18 +229,18 @@ func (m *COTPPacketConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) e
 
 		// Simple Field (protocolClass)
 		if pushErr := writeBuffer.PushContext("protocolClass"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for protocolClass")
 		}
 		_protocolClassErr := m.ProtocolClass.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolClass"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for protocolClass")
 		}
 		if _protocolClassErr != nil {
 			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketConnectionRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for COTPPacketConnectionRequest")
 		}
 		return nil
 	}

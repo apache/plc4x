@@ -106,19 +106,19 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
 	}
 	serviceChoice_temp, _serviceChoiceErr := BACnetUnconfirmedServiceChoiceParse(readBuffer)
 	var serviceChoice BACnetUnconfirmedServiceChoice = serviceChoice_temp
 	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
 	}
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
@@ -167,7 +167,7 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequest")
 	}
 
 	// Finish initializing
@@ -183,17 +183,17 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequest"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequest")
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := BACnetUnconfirmedServiceChoice(child.GetServiceChoice())
 	if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for serviceChoice")
 	}
 	_serviceChoiceErr := serviceChoice.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for serviceChoice")
 	}
 
 	if _serviceChoiceErr != nil {
@@ -206,7 +206,7 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequest"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequest")
 	}
 	return nil
 }

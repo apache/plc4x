@@ -149,7 +149,7 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataMemoryResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -175,7 +175,7 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduDataMemoryResponse")
 	}
 
 	// Create a partially initialized instance
@@ -193,7 +193,7 @@ func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ApduDataMemoryResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ApduDataMemoryResponse")
 		}
 
 		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -220,7 +220,7 @@ func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataMemoryResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ApduDataMemoryResponse")
 		}
 		return nil
 	}

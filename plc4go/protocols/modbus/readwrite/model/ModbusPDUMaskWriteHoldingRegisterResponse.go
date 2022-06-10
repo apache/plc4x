@@ -160,7 +160,7 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUMaskWriteHoldingRegisterResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -187,7 +187,7 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer,
 	orMask := _orMask
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUMaskWriteHoldingRegisterResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUMaskWriteHoldingRegisterResponse")
 	}
 
 	// Create a partially initialized instance
@@ -206,7 +206,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUMaskWriteHoldingRegisterResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUMaskWriteHoldingRegisterResponse")
 		}
 
 		// Simple Field (referenceAddress)
@@ -231,7 +231,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(writeBuffer utils.
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUMaskWriteHoldingRegisterResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUMaskWriteHoldingRegisterResponse")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6PrefixLength"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6PrefixLength")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipv6PrefixLength)
 	if pullErr := readBuffer.PullContext("ipv6PrefixLength"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipv6PrefixLength")
 	}
 	_ipv6PrefixLength, _ipv6PrefixLengthErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6PrefixLengthErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 	}
 	ipv6PrefixLength := CastBACnetApplicationTagUnsignedInteger(_ipv6PrefixLength)
 	if closeErr := readBuffer.CloseContext("ipv6PrefixLength"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipv6PrefixLength")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6PrefixLength"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6PrefixLength")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPv6PrefixLength) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPv6PrefixLength"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6PrefixLength")
 		}
 
 		// Simple Field (ipv6PrefixLength)
 		if pushErr := writeBuffer.PushContext("ipv6PrefixLength"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipv6PrefixLength")
 		}
 		_ipv6PrefixLengthErr := m.Ipv6PrefixLength.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipv6PrefixLength"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipv6PrefixLength")
 		}
 		if _ipv6PrefixLengthErr != nil {
 			return errors.Wrap(_ipv6PrefixLengthErr, "Error serializing 'ipv6PrefixLength' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6PrefixLength"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPv6PrefixLength")
 		}
 		return nil
 	}

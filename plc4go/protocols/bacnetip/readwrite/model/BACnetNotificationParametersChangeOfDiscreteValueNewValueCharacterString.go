@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringPar
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (characterStringValue)
 	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
 	}
 	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParse(readBuffer)
 	if _characterStringValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringPar
 	}
 	characterStringValue := CastBACnetApplicationTagCharacterString(_characterStringValue)
 	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStrin
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
 		}
 
 		// Simple Field (characterStringValue)
 		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
 		}
 		_characterStringValueErr := m.CharacterStringValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for characterStringValue")
 		}
 		if _characterStringValueErr != nil {
 			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
 		}
 		return nil
 	}

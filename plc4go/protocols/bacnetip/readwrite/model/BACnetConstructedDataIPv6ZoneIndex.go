@@ -142,14 +142,14 @@ func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6ZoneIndex"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6ZoneIndex")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ipv6ZoneIndex)
 	if pullErr := readBuffer.PullContext("ipv6ZoneIndex"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ipv6ZoneIndex")
 	}
 	_ipv6ZoneIndex, _ipv6ZoneIndexErr := BACnetApplicationTagParse(readBuffer)
 	if _ipv6ZoneIndexErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	ipv6ZoneIndex := CastBACnetApplicationTagCharacterString(_ipv6ZoneIndex)
 	if closeErr := readBuffer.CloseContext("ipv6ZoneIndex"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ipv6ZoneIndex")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6ZoneIndex"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6ZoneIndex")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIPv6ZoneIndex) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIPv6ZoneIndex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6ZoneIndex")
 		}
 
 		// Simple Field (ipv6ZoneIndex)
 		if pushErr := writeBuffer.PushContext("ipv6ZoneIndex"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ipv6ZoneIndex")
 		}
 		_ipv6ZoneIndexErr := m.Ipv6ZoneIndex.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ipv6ZoneIndex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ipv6ZoneIndex")
 		}
 		if _ipv6ZoneIndexErr != nil {
 			return errors.Wrap(_ipv6ZoneIndexErr, "Error serializing 'ipv6ZoneIndex' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6ZoneIndex"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIPv6ZoneIndex")
 		}
 		return nil
 	}

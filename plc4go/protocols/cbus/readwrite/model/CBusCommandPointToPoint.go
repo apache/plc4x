@@ -131,14 +131,14 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPoint"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusCommandPointToPoint")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
 	_command, _commandErr := CBusPointToPointCommandParse(readBuffer, bool(srchk))
 	if _commandErr != nil {
@@ -146,11 +146,11 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	}
 	command := CastCBusPointToPointCommand(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusCommandPointToPoint"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusCommandPointToPoint")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *CBusCommandPointToPoint) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusCommandPointToPoint"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CBusCommandPointToPoint")
 		}
 
 		// Simple Field (command)
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for command")
 		}
 		_commandErr := m.Command.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for command")
 		}
 		if _commandErr != nil {
 			return errors.Wrap(_commandErr, "Error serializing 'command' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusCommandPointToPoint"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CBusCommandPointToPoint")
 		}
 		return nil
 	}

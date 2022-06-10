@@ -101,7 +101,7 @@ func StatusHeaderParse(readBuffer utils.ReadBuffer) (*StatusHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for StatusHeader")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -128,7 +128,7 @@ func StatusHeaderParse(readBuffer utils.ReadBuffer) (*StatusHeader, error) {
 	numberOfCharacterPairs := _numberOfCharacterPairs
 
 	if closeErr := readBuffer.CloseContext("StatusHeader"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for StatusHeader")
 	}
 
 	// Create the instance
@@ -139,7 +139,7 @@ func (m *StatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StatusHeader"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for StatusHeader")
 	}
 
 	// Reserved Field (reserved)
@@ -158,7 +158,7 @@ func (m *StatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("StatusHeader"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for StatusHeader")
 	}
 	return nil
 }

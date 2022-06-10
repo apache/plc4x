@@ -142,14 +142,14 @@ func BACnetConstructedDataTransitionParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTransition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTransition")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (transition)
 	if pullErr := readBuffer.PullContext("transition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transition")
 	}
 	_transition, _transitionErr := BACnetLightingTransitionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _transitionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataTransitionParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	transition := CastBACnetLightingTransitionTagged(_transition)
 	if closeErr := readBuffer.CloseContext("transition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transition")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTransition")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataTransition) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataTransition"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTransition")
 		}
 
 		// Simple Field (transition)
 		if pushErr := writeBuffer.PushContext("transition"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for transition")
 		}
 		_transitionErr := m.Transition.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("transition"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for transition")
 		}
 		if _transitionErr != nil {
 			return errors.Wrap(_transitionErr, "Error serializing 'transition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTransition"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataTransition")
 		}
 		return nil
 	}

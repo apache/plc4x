@@ -107,14 +107,14 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (*BA
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCredentialAuthenticationFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCredentialAuthenticationFactor")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (disable)
 	if pullErr := readBuffer.PullContext("disable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for disable")
 	}
 	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _disableErr != nil {
@@ -122,12 +122,12 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (*BA
 	}
 	disable := CastBACnetAccessAuthenticationFactorDisableTagged(_disable)
 	if closeErr := readBuffer.CloseContext("disable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for disable")
 	}
 
 	// Simple Field (authenticationFactor)
 	if pullErr := readBuffer.PullContext("authenticationFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactor")
 	}
 	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParse(readBuffer, uint8(uint8(1)))
 	if _authenticationFactorErr != nil {
@@ -135,11 +135,11 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (*BA
 	}
 	authenticationFactor := CastBACnetAuthenticationFactorEnclosed(_authenticationFactor)
 	if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for authenticationFactor")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCredentialAuthenticationFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetCredentialAuthenticationFactor")
 	}
 
 	// Create the instance
@@ -150,16 +150,16 @@ func (m *BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.Write
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCredentialAuthenticationFactor"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetCredentialAuthenticationFactor")
 	}
 
 	// Simple Field (disable)
 	if pushErr := writeBuffer.PushContext("disable"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for disable")
 	}
 	_disableErr := m.Disable.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("disable"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for disable")
 	}
 	if _disableErr != nil {
 		return errors.Wrap(_disableErr, "Error serializing 'disable' field")
@@ -167,18 +167,18 @@ func (m *BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.Write
 
 	// Simple Field (authenticationFactor)
 	if pushErr := writeBuffer.PushContext("authenticationFactor"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
 	}
 	_authenticationFactorErr := m.AuthenticationFactor.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for authenticationFactor")
 	}
 	if _authenticationFactorErr != nil {
 		return errors.Wrap(_authenticationFactorErr, "Error serializing 'authenticationFactor' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCredentialAuthenticationFactor"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetCredentialAuthenticationFactor")
 	}
 	return nil
 }

@@ -142,14 +142,14 @@ func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastStateChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastStateChange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastStateChange)
 	if pullErr := readBuffer.PullContext("lastStateChange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastStateChange")
 	}
 	_lastStateChange, _lastStateChangeErr := BACnetTimerTransitionTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastStateChangeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	lastStateChange := CastBACnetTimerTransitionTagged(_lastStateChange)
 	if closeErr := readBuffer.CloseContext("lastStateChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastStateChange")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastStateChange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastStateChange")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastStateChange) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastStateChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastStateChange")
 		}
 
 		// Simple Field (lastStateChange)
 		if pushErr := writeBuffer.PushContext("lastStateChange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastStateChange")
 		}
 		_lastStateChangeErr := m.LastStateChange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastStateChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastStateChange")
 		}
 		if _lastStateChangeErr != nil {
 			return errors.Wrap(_lastStateChangeErr, "Error serializing 'lastStateChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastStateChange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastStateChange")
 		}
 		return nil
 	}

@@ -103,7 +103,7 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestP
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItem"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7VarRequestParameterItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -133,7 +133,7 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestP
 	}
 
 	if closeErr := readBuffer.CloseContext("S7VarRequestParameterItem"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7VarRequestParameterItem")
 	}
 
 	// Finish initializing
@@ -149,7 +149,7 @@ func (m *S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffe
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7VarRequestParameterItem"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7VarRequestParameterItem")
 	}
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
@@ -166,7 +166,7 @@ func (m *S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 
 	if popErr := writeBuffer.PopContext("S7VarRequestParameterItem"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7VarRequestParameterItem")
 	}
 	return nil
 }

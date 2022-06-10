@@ -142,14 +142,14 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEffectivePeriod"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEffectivePeriod")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (dateRange)
 	if pullErr := readBuffer.PullContext("dateRange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dateRange")
 	}
 	_dateRange, _dateRangeErr := BACnetDateRangeParse(readBuffer)
 	if _dateRangeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 	}
 	dateRange := CastBACnetDateRange(_dateRange)
 	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dateRange")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEffectivePeriod"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEffectivePeriod")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEffectivePeriod) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEffectivePeriod"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEffectivePeriod")
 		}
 
 		// Simple Field (dateRange)
 		if pushErr := writeBuffer.PushContext("dateRange"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dateRange")
 		}
 		_dateRangeErr := m.DateRange.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dateRange"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dateRange")
 		}
 		if _dateRangeErr != nil {
 			return errors.Wrap(_dateRangeErr, "Error serializing 'dateRange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEffectivePeriod"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEffectivePeriod")
 		}
 		return nil
 	}

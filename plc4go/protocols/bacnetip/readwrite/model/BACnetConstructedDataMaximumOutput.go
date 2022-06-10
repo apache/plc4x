@@ -142,14 +142,14 @@ func BACnetConstructedDataMaximumOutputParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaximumOutput"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaximumOutput")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maximumOutput)
 	if pullErr := readBuffer.PullContext("maximumOutput"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maximumOutput")
 	}
 	_maximumOutput, _maximumOutputErr := BACnetApplicationTagParse(readBuffer)
 	if _maximumOutputErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMaximumOutputParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	maximumOutput := CastBACnetApplicationTagReal(_maximumOutput)
 	if closeErr := readBuffer.CloseContext("maximumOutput"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maximumOutput")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaximumOutput"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaximumOutput")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMaximumOutput) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMaximumOutput"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaximumOutput")
 		}
 
 		// Simple Field (maximumOutput)
 		if pushErr := writeBuffer.PushContext("maximumOutput"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maximumOutput")
 		}
 		_maximumOutputErr := m.MaximumOutput.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maximumOutput"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maximumOutput")
 		}
 		if _maximumOutputErr != nil {
 			return errors.Wrap(_maximumOutputErr, "Error serializing 'maximumOutput' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaximumOutput"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMaximumOutput")
 		}
 		return nil
 	}

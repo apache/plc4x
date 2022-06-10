@@ -142,14 +142,14 @@ func BACnetConstructedDataLastCommandTimeParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCommandTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastCommandTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastCommandTime)
 	if pullErr := readBuffer.PullContext("lastCommandTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastCommandTime")
 	}
 	_lastCommandTime, _lastCommandTimeErr := BACnetTimeStampParse(readBuffer)
 	if _lastCommandTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastCommandTimeParse(readBuffer utils.ReadBuffer, tagN
 	}
 	lastCommandTime := CastBACnetTimeStamp(_lastCommandTime)
 	if closeErr := readBuffer.CloseContext("lastCommandTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastCommandTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCommandTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCommandTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastCommandTime) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastCommandTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastCommandTime")
 		}
 
 		// Simple Field (lastCommandTime)
 		if pushErr := writeBuffer.PushContext("lastCommandTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastCommandTime")
 		}
 		_lastCommandTimeErr := m.LastCommandTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastCommandTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastCommandTime")
 		}
 		if _lastCommandTimeErr != nil {
 			return errors.Wrap(_lastCommandTimeErr, "Error serializing 'lastCommandTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastCommandTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastCommandTime")
 		}
 		return nil
 	}

@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -180,14 +181,14 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckGetEnrollmentSummary")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
 	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _objectIdentifierErr != nil {
@@ -195,12 +196,12 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	objectIdentifier := CastBACnetApplicationTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
 	// Simple Field (eventType)
 	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
 	}
 	_eventType, _eventTypeErr := BACnetEventTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventTypeErr != nil {
@@ -208,12 +209,12 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	eventType := CastBACnetEventTypeTagged(_eventType)
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventType")
 	}
 
 	// Simple Field (eventState)
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
 	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventStateErr != nil {
@@ -221,12 +222,12 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	eventState := CastBACnetEventStateTagged(_eventState)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventState")
 	}
 
 	// Simple Field (priority)
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
 	_priority, _priorityErr := BACnetApplicationTagParse(readBuffer)
 	if _priorityErr != nil {
@@ -234,7 +235,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	}
 	priority := CastBACnetApplicationTagUnsignedInteger(_priority)
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for priority")
 	}
 
 	// Optional Field (notificationClass) (Can be skipped, if a given expression evaluates to false)
@@ -242,24 +243,25 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("notificationClass"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for notificationClass")
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'notificationClass' field")
 		default:
 			notificationClass = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("notificationClass"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for notificationClass")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetEnrollmentSummary"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckGetEnrollmentSummary")
 	}
 
 	// Create a partially initialized instance
@@ -280,16 +282,16 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckGetEnrollmentSummary"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckGetEnrollmentSummary")
 		}
 
 		// Simple Field (objectIdentifier)
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
 		if _objectIdentifierErr != nil {
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -297,11 +299,11 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 
 		// Simple Field (eventType)
 		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for eventType")
 		}
 		_eventTypeErr := m.EventType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for eventType")
 		}
 		if _eventTypeErr != nil {
 			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
@@ -309,11 +311,11 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 
 		// Simple Field (eventState)
 		if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for eventState")
 		}
 		_eventStateErr := m.EventState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for eventState")
 		}
 		if _eventStateErr != nil {
 			return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
@@ -321,11 +323,11 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 
 		// Simple Field (priority)
 		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		_priorityErr := m.Priority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for priority")
 		}
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
@@ -335,12 +337,12 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 		var notificationClass *BACnetApplicationTagUnsignedInteger = nil
 		if m.NotificationClass != nil {
 			if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for notificationClass")
 			}
 			notificationClass = m.NotificationClass
 			_notificationClassErr := notificationClass.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for notificationClass")
 			}
 			if _notificationClassErr != nil {
 				return errors.Wrap(_notificationClassErr, "Error serializing 'notificationClass' field")
@@ -348,7 +350,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckGetEnrollmentSummary"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckGetEnrollmentSummary")
 		}
 		return nil
 	}

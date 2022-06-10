@@ -133,14 +133,14 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckVTOpen")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (remoteVtSessionIdentifier)
 	if pullErr := readBuffer.PullContext("remoteVtSessionIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtSessionIdentifier")
 	}
 	_remoteVtSessionIdentifier, _remoteVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _remoteVtSessionIdentifierErr != nil {
@@ -148,11 +148,11 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	}
 	remoteVtSessionIdentifier := CastBACnetApplicationTagUnsignedInteger(_remoteVtSessionIdentifier)
 	if closeErr := readBuffer.CloseContext("remoteVtSessionIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for remoteVtSessionIdentifier")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckVTOpen"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServiceAckVTOpen")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetServiceAckVTOpen) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetServiceAckVTOpen"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckVTOpen")
 		}
 
 		// Simple Field (remoteVtSessionIdentifier)
 		if pushErr := writeBuffer.PushContext("remoteVtSessionIdentifier"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for remoteVtSessionIdentifier")
 		}
 		_remoteVtSessionIdentifierErr := m.RemoteVtSessionIdentifier.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("remoteVtSessionIdentifier"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for remoteVtSessionIdentifier")
 		}
 		if _remoteVtSessionIdentifierErr != nil {
 			return errors.Wrap(_remoteVtSessionIdentifierErr, "Error serializing 'remoteVtSessionIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckVTOpen"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetServiceAckVTOpen")
 		}
 		return nil
 	}

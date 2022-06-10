@@ -142,14 +142,14 @@ func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLimitEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLimitEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (limitEnable)
 	if pullErr := readBuffer.PullContext("limitEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for limitEnable")
 	}
 	_limitEnable, _limitEnableErr := BACnetLimitEnableTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _limitEnableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	limitEnable := CastBACnetLimitEnableTagged(_limitEnable)
 	if closeErr := readBuffer.CloseContext("limitEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for limitEnable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLimitEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLimitEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLimitEnable) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLimitEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLimitEnable")
 		}
 
 		// Simple Field (limitEnable)
 		if pushErr := writeBuffer.PushContext("limitEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for limitEnable")
 		}
 		_limitEnableErr := m.LimitEnable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("limitEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for limitEnable")
 		}
 		if _limitEnableErr != nil {
 			return errors.Wrap(_limitEnableErr, "Error serializing 'limitEnable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLimitEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLimitEnable")
 		}
 		return nil
 	}

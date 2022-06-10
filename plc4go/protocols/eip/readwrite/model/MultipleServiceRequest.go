@@ -161,7 +161,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MultipleServiceRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -186,7 +186,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 
 	// Simple Field (data)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	_data, _dataErr := ServicesParse(readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
 	if _dataErr != nil {
@@ -194,11 +194,11 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	}
 	data := CastServices(_data)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("MultipleServiceRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MultipleServiceRequest")
 	}
 
 	// Create a partially initialized instance
@@ -215,7 +215,7 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("MultipleServiceRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for MultipleServiceRequest")
 		}
 
 		// Const Field (requestPathSize)
@@ -232,18 +232,18 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Simple Field (data)
 		if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for data")
 		}
 		_dataErr := m.Data.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("data"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 		if _dataErr != nil {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MultipleServiceRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for MultipleServiceRequest")
 		}
 		return nil
 	}

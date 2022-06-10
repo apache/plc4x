@@ -159,7 +159,7 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*LDataInd, error) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataInd"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for LDataInd")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -173,7 +173,7 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*LDataInd, error) 
 
 	// Array field (additionalInformation)
 	if pullErr := readBuffer.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for additionalInformation")
 	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
@@ -189,12 +189,12 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*LDataInd, error) 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for additionalInformation")
 	}
 
 	// Simple Field (dataFrame)
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
 	}
 	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
 	if _dataFrameErr != nil {
@@ -202,11 +202,11 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*LDataInd, error) 
 	}
 	dataFrame := CastLDataFrame(_dataFrame)
 	if closeErr := readBuffer.CloseContext("dataFrame"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dataFrame")
 	}
 
 	if closeErr := readBuffer.CloseContext("LDataInd"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for LDataInd")
 	}
 
 	// Create a partially initialized instance
@@ -225,7 +225,7 @@ func (m *LDataInd) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("LDataInd"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for LDataInd")
 		}
 
 		// Simple Field (additionalInformationLength)
@@ -238,7 +238,7 @@ func (m *LDataInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
 			if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for additionalInformation")
 			}
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -247,24 +247,24 @@ func (m *LDataInd) Serialize(writeBuffer utils.WriteBuffer) error {
 				}
 			}
 			if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for additionalInformation")
 			}
 		}
 
 		// Simple Field (dataFrame)
 		if pushErr := writeBuffer.PushContext("dataFrame"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for dataFrame")
 		}
 		_dataFrameErr := m.DataFrame.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dataFrame"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for dataFrame")
 		}
 		if _dataFrameErr != nil {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LDataInd"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for LDataInd")
 		}
 		return nil
 	}

@@ -159,7 +159,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDUAbort")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -194,7 +194,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 
 	// Simple Field (abortReason)
 	if pullErr := readBuffer.PullContext("abortReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for abortReason")
 	}
 	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParse(readBuffer, uint32(uint32(1)))
 	if _abortReasonErr != nil {
@@ -202,11 +202,11 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort,
 	}
 	abortReason := CastBACnetAbortReasonTagged(_abortReason)
 	if closeErr := readBuffer.CloseContext("abortReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for abortReason")
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUAbort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDUAbort")
 	}
 
 	// Create a partially initialized instance
@@ -225,7 +225,7 @@ func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUAbort"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for APDUAbort")
 		}
 
 		// Reserved Field (reserved)
@@ -252,18 +252,18 @@ func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (abortReason)
 		if pushErr := writeBuffer.PushContext("abortReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for abortReason")
 		}
 		_abortReasonErr := m.AbortReason.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("abortReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for abortReason")
 		}
 		if _abortReasonErr != nil {
 			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUAbort"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for APDUAbort")
 		}
 		return nil
 	}

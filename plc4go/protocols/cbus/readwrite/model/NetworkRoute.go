@@ -112,14 +112,14 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (*NetworkRoute, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkRoute"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NetworkRoute")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (routeType)
 	if pullErr := readBuffer.PullContext("routeType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for routeType")
 	}
 	_routeType, _routeTypeErr := RouteTypeParse(readBuffer)
 	if _routeTypeErr != nil {
@@ -127,12 +127,12 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (*NetworkRoute, error) {
 	}
 	routeType := _routeType
 	if closeErr := readBuffer.CloseContext("routeType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for routeType")
 	}
 
 	// Array field (additionalBridgeAddresses)
 	if pullErr := readBuffer.PullContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for additionalBridgeAddresses")
 	}
 	// Count array
 	additionalBridgeAddresses := make([]*BridgeAddress, routeType.AdditionalBridges())
@@ -146,11 +146,11 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (*NetworkRoute, error) {
 		}
 	}
 	if closeErr := readBuffer.CloseContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for additionalBridgeAddresses")
 	}
 
 	if closeErr := readBuffer.CloseContext("NetworkRoute"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NetworkRoute")
 	}
 
 	// Create the instance
@@ -161,16 +161,16 @@ func (m *NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkRoute"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for NetworkRoute")
 	}
 
 	// Simple Field (routeType)
 	if pushErr := writeBuffer.PushContext("routeType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for routeType")
 	}
 	_routeTypeErr := m.RouteType.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("routeType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for routeType")
 	}
 	if _routeTypeErr != nil {
 		return errors.Wrap(_routeTypeErr, "Error serializing 'routeType' field")
@@ -179,7 +179,7 @@ func (m *NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Array Field (additionalBridgeAddresses)
 	if m.AdditionalBridgeAddresses != nil {
 		if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
 		}
 		for _, _element := range m.AdditionalBridgeAddresses {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -188,12 +188,12 @@ func (m *NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("NetworkRoute"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for NetworkRoute")
 	}
 	return nil
 }

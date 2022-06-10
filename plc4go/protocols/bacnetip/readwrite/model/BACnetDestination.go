@@ -157,14 +157,14 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDestination"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDestination")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (validDays)
 	if pullErr := readBuffer.PullContext("validDays"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for validDays")
 	}
 	_validDays, _validDaysErr := BACnetDaysOfWeekTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _validDaysErr != nil {
@@ -172,12 +172,12 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	}
 	validDays := CastBACnetDaysOfWeekTagged(_validDays)
 	if closeErr := readBuffer.CloseContext("validDays"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for validDays")
 	}
 
 	// Simple Field (fromTime)
 	if pullErr := readBuffer.PullContext("fromTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fromTime")
 	}
 	_fromTime, _fromTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _fromTimeErr != nil {
@@ -185,12 +185,12 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	}
 	fromTime := CastBACnetApplicationTagTime(_fromTime)
 	if closeErr := readBuffer.CloseContext("fromTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fromTime")
 	}
 
 	// Simple Field (toTime)
 	if pullErr := readBuffer.PullContext("toTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for toTime")
 	}
 	_toTime, _toTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _toTimeErr != nil {
@@ -198,12 +198,12 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	}
 	toTime := CastBACnetApplicationTagTime(_toTime)
 	if closeErr := readBuffer.CloseContext("toTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for toTime")
 	}
 
 	// Simple Field (recipient)
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
 	_recipient, _recipientErr := BACnetRecipientParse(readBuffer)
 	if _recipientErr != nil {
@@ -211,12 +211,12 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	}
 	recipient := CastBACnetRecipient(_recipient)
 	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recipient")
 	}
 
 	// Simple Field (processIdentifier)
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
 	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _processIdentifierErr != nil {
@@ -224,12 +224,12 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	}
 	processIdentifier := CastBACnetApplicationTagUnsignedInteger(_processIdentifier)
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
 	}
 
 	// Simple Field (issueConfirmedNotifications)
 	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 	}
 	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetApplicationTagParse(readBuffer)
 	if _issueConfirmedNotificationsErr != nil {
@@ -237,12 +237,12 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	}
 	issueConfirmedNotifications := CastBACnetApplicationTagBoolean(_issueConfirmedNotifications)
 	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
 	}
 
 	// Simple Field (transitions)
 	if pullErr := readBuffer.PullContext("transitions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transitions")
 	}
 	_transitions, _transitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _transitionsErr != nil {
@@ -250,11 +250,11 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (*BACnetDestination, er
 	}
 	transitions := CastBACnetEventTransitionBitsTagged(_transitions)
 	if closeErr := readBuffer.CloseContext("transitions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transitions")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDestination"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetDestination")
 	}
 
 	// Create the instance
@@ -265,16 +265,16 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDestination"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetDestination")
 	}
 
 	// Simple Field (validDays)
 	if pushErr := writeBuffer.PushContext("validDays"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for validDays")
 	}
 	_validDaysErr := m.ValidDays.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("validDays"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for validDays")
 	}
 	if _validDaysErr != nil {
 		return errors.Wrap(_validDaysErr, "Error serializing 'validDays' field")
@@ -282,11 +282,11 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (fromTime)
 	if pushErr := writeBuffer.PushContext("fromTime"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for fromTime")
 	}
 	_fromTimeErr := m.FromTime.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("fromTime"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for fromTime")
 	}
 	if _fromTimeErr != nil {
 		return errors.Wrap(_fromTimeErr, "Error serializing 'fromTime' field")
@@ -294,11 +294,11 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (toTime)
 	if pushErr := writeBuffer.PushContext("toTime"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for toTime")
 	}
 	_toTimeErr := m.ToTime.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("toTime"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for toTime")
 	}
 	if _toTimeErr != nil {
 		return errors.Wrap(_toTimeErr, "Error serializing 'toTime' field")
@@ -306,11 +306,11 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (recipient)
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
 	_recipientErr := m.Recipient.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for recipient")
 	}
 	if _recipientErr != nil {
 		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
@@ -318,11 +318,11 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (processIdentifier)
 	if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 	}
 	_processIdentifierErr := m.ProcessIdentifier.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for processIdentifier")
 	}
 	if _processIdentifierErr != nil {
 		return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
@@ -330,11 +330,11 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (issueConfirmedNotifications)
 	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 	}
 	_issueConfirmedNotificationsErr := m.IssueConfirmedNotifications.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 	}
 	if _issueConfirmedNotificationsErr != nil {
 		return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
@@ -342,18 +342,18 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (transitions)
 	if pushErr := writeBuffer.PushContext("transitions"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for transitions")
 	}
 	_transitionsErr := m.Transitions.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("transitions"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for transitions")
 	}
 	if _transitionsErr != nil {
 		return errors.Wrap(_transitionsErr, "Error serializing 'transitions' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDestination"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetDestination")
 	}
 	return nil
 }

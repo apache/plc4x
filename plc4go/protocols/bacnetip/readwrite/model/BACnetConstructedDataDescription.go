@@ -142,14 +142,14 @@ func BACnetConstructedDataDescriptionParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDescription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDescription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (description)
 	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for description")
 	}
 	_description, _descriptionErr := BACnetApplicationTagParse(readBuffer)
 	if _descriptionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDescriptionParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	description := CastBACnetApplicationTagCharacterString(_description)
 	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for description")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDescription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDescription")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDescription) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDescription"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDescription")
 		}
 
 		// Simple Field (description)
 		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for description")
 		}
 		_descriptionErr := m.Description.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for description")
 		}
 		if _descriptionErr != nil {
 			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDescription"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDescription")
 		}
 		return nil
 	}

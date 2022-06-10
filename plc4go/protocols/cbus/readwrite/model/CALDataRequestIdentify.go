@@ -128,14 +128,14 @@ func CALDataRequestIdentifyParse(readBuffer utils.ReadBuffer) (*CALDataRequestId
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataRequestIdentify"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALDataRequestIdentify")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (attribute)
 	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
 	}
 	_attribute, _attributeErr := AttributeParse(readBuffer)
 	if _attributeErr != nil {
@@ -143,11 +143,11 @@ func CALDataRequestIdentifyParse(readBuffer utils.ReadBuffer) (*CALDataRequestId
 	}
 	attribute := _attribute
 	if closeErr := readBuffer.CloseContext("attribute"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for attribute")
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataRequestIdentify"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALDataRequestIdentify")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *CALDataRequestIdentify) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALDataRequestIdentify"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CALDataRequestIdentify")
 		}
 
 		// Simple Field (attribute)
 		if pushErr := writeBuffer.PushContext("attribute"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for attribute")
 		}
 		_attributeErr := m.Attribute.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("attribute"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for attribute")
 		}
 		if _attributeErr != nil {
 			return errors.Wrap(_attributeErr, "Error serializing 'attribute' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataRequestIdentify"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CALDataRequestIdentify")
 		}
 		return nil
 	}

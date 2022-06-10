@@ -142,14 +142,14 @@ func BACnetConstructedDataAdjustValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAdjustValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAdjustValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (adjustValue)
 	if pullErr := readBuffer.PullContext("adjustValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for adjustValue")
 	}
 	_adjustValue, _adjustValueErr := BACnetApplicationTagParse(readBuffer)
 	if _adjustValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAdjustValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	adjustValue := CastBACnetApplicationTagSignedInteger(_adjustValue)
 	if closeErr := readBuffer.CloseContext("adjustValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for adjustValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAdjustValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAdjustValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAdjustValue) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAdjustValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAdjustValue")
 		}
 
 		// Simple Field (adjustValue)
 		if pushErr := writeBuffer.PushContext("adjustValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for adjustValue")
 		}
 		_adjustValueErr := m.AdjustValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("adjustValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for adjustValue")
 		}
 		if _adjustValueErr != nil {
 			return errors.Wrap(_adjustValueErr, "Error serializing 'adjustValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAdjustValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAdjustValue")
 		}
 		return nil
 	}

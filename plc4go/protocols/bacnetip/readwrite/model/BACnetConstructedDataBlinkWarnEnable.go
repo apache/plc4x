@@ -142,14 +142,14 @@ func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBlinkWarnEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBlinkWarnEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (blinkWarnEnable)
 	if pullErr := readBuffer.PullContext("blinkWarnEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for blinkWarnEnable")
 	}
 	_blinkWarnEnable, _blinkWarnEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _blinkWarnEnableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagN
 	}
 	blinkWarnEnable := CastBACnetApplicationTagBoolean(_blinkWarnEnable)
 	if closeErr := readBuffer.CloseContext("blinkWarnEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for blinkWarnEnable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBlinkWarnEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBlinkWarnEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataBlinkWarnEnable) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBlinkWarnEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBlinkWarnEnable")
 		}
 
 		// Simple Field (blinkWarnEnable)
 		if pushErr := writeBuffer.PushContext("blinkWarnEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for blinkWarnEnable")
 		}
 		_blinkWarnEnableErr := m.BlinkWarnEnable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("blinkWarnEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for blinkWarnEnable")
 		}
 		if _blinkWarnEnableErr != nil {
 			return errors.Wrap(_blinkWarnEnableErr, "Error serializing 'blinkWarnEnable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBlinkWarnEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBlinkWarnEnable")
 		}
 		return nil
 	}

@@ -97,7 +97,7 @@ func RelativeTimestampParse(readBuffer utils.ReadBuffer) (*RelativeTimestamp, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RelativeTimestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for RelativeTimestamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func RelativeTimestampParse(readBuffer utils.ReadBuffer) (*RelativeTimestamp, er
 	timestamp := _timestamp
 
 	if closeErr := readBuffer.CloseContext("RelativeTimestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for RelativeTimestamp")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *RelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("RelativeTimestamp"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for RelativeTimestamp")
 	}
 
 	// Simple Field (timestamp)
@@ -132,7 +132,7 @@ func (m *RelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("RelativeTimestamp"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for RelativeTimestamp")
 	}
 	return nil
 }

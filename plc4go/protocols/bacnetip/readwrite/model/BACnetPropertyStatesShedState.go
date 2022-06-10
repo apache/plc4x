@@ -128,14 +128,14 @@ func BACnetPropertyStatesShedStateParse(readBuffer utils.ReadBuffer, peekedTagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesShedState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesShedState")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (shedState)
 	if pullErr := readBuffer.PullContext("shedState"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for shedState")
 	}
 	_shedState, _shedStateErr := BACnetShedStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _shedStateErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesShedStateParse(readBuffer utils.ReadBuffer, peekedTagNu
 	}
 	shedState := CastBACnetShedStateTagged(_shedState)
 	if closeErr := readBuffer.CloseContext("shedState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for shedState")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesShedState"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesShedState")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesShedState) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesShedState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesShedState")
 		}
 
 		// Simple Field (shedState)
 		if pushErr := writeBuffer.PushContext("shedState"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for shedState")
 		}
 		_shedStateErr := m.ShedState.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("shedState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for shedState")
 		}
 		if _shedStateErr != nil {
 			return errors.Wrap(_shedStateErr, "Error serializing 'shedState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesShedState"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesShedState")
 		}
 		return nil
 	}

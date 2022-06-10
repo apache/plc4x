@@ -128,14 +128,14 @@ func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (*B
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEventPeriodCalendarEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (calendarEntry)
 	if pullErr := readBuffer.PullContext("calendarEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for calendarEntry")
 	}
 	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _calendarEntryErr != nil {
@@ -143,11 +143,11 @@ func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (*B
 	}
 	calendarEntry := CastBACnetCalendarEntryEnclosed(_calendarEntry)
 	if closeErr := readBuffer.CloseContext("calendarEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for calendarEntry")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEventPeriodCalendarEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetSpecialEventPeriodCalendarEntry")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetSpecialEventPeriodCalendarEntry) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetSpecialEventPeriodCalendarEntry"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventPeriodCalendarEntry")
 		}
 
 		// Simple Field (calendarEntry)
 		if pushErr := writeBuffer.PushContext("calendarEntry"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for calendarEntry")
 		}
 		_calendarEntryErr := m.CalendarEntry.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("calendarEntry"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for calendarEntry")
 		}
 		if _calendarEntryErr != nil {
 			return errors.Wrap(_calendarEntryErr, "Error serializing 'calendarEntry' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetSpecialEventPeriodCalendarEntry"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetSpecialEventPeriodCalendarEntry")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLogInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLogInterval")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (logInterval)
 	if pullErr := readBuffer.PullContext("logInterval"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for logInterval")
 	}
 	_logInterval, _logIntervalErr := BACnetApplicationTagParse(readBuffer)
 	if _logIntervalErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	logInterval := CastBACnetApplicationTagUnsignedInteger(_logInterval)
 	if closeErr := readBuffer.CloseContext("logInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for logInterval")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLogInterval"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLogInterval")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLogInterval) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLogInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLogInterval")
 		}
 
 		// Simple Field (logInterval)
 		if pushErr := writeBuffer.PushContext("logInterval"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for logInterval")
 		}
 		_logIntervalErr := m.LogInterval.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("logInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for logInterval")
 		}
 		if _logIntervalErr != nil {
 			return errors.Wrap(_logIntervalErr, "Error serializing 'logInterval' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLogInterval"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLogInterval")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastAccessEvent"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLastAccessEvent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lastAccessEvent)
 	if pullErr := readBuffer.PullContext("lastAccessEvent"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lastAccessEvent")
 	}
 	_lastAccessEvent, _lastAccessEventErr := BACnetAccessEventTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastAccessEventErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagN
 	}
 	lastAccessEvent := CastBACnetAccessEventTagged(_lastAccessEvent)
 	if closeErr := readBuffer.CloseContext("lastAccessEvent"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lastAccessEvent")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastAccessEvent"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastAccessEvent")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLastAccessEvent) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLastAccessEvent"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastAccessEvent")
 		}
 
 		// Simple Field (lastAccessEvent)
 		if pushErr := writeBuffer.PushContext("lastAccessEvent"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lastAccessEvent")
 		}
 		_lastAccessEventErr := m.LastAccessEvent.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lastAccessEvent"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lastAccessEvent")
 		}
 		if _lastAccessEventErr != nil {
 			return errors.Wrap(_lastAccessEventErr, "Error serializing 'lastAccessEvent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastAccessEvent"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLastAccessEvent")
 		}
 		return nil
 	}

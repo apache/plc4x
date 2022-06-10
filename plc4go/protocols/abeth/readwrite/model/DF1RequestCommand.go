@@ -103,7 +103,7 @@ func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1RequestCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -133,7 +133,7 @@ func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, er
 	}
 
 	if closeErr := readBuffer.CloseContext("DF1RequestCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1RequestCommand")
 	}
 
 	// Finish initializing
@@ -149,7 +149,7 @@ func (m *DF1RequestCommand) SerializeParent(writeBuffer utils.WriteBuffer, child
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1RequestCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DF1RequestCommand")
 	}
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
@@ -166,7 +166,7 @@ func (m *DF1RequestCommand) SerializeParent(writeBuffer utils.WriteBuffer, child
 	}
 
 	if popErr := writeBuffer.PopContext("DF1RequestCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DF1RequestCommand")
 	}
 	return nil
 }

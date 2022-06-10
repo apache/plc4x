@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParse(readB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (integerValue)
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
 	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
 	if _integerValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParse(readB
 	}
 	integerValue := CastBACnetApplicationTagSignedInteger(_integerValue)
 	if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for integerValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) Seria
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 		}
 
 		// Simple Field (integerValue)
 		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
 		_integerValueErr := m.IntegerValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
 		if _integerValueErr != nil {
 			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 		}
 		return nil
 	}

@@ -146,14 +146,14 @@ func BACnetConstructedDataRoutingTableParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRoutingTable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRoutingTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (routingTable)
 	if pullErr := readBuffer.PullContext("routingTable", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for routingTable")
 	}
 	// Terminated array
 	routingTable := make([]*BACnetRouterEntry, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataRoutingTableParse(readBuffer utils.ReadBuffer, tagNumb
 		}
 	}
 	if closeErr := readBuffer.CloseContext("routingTable", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for routingTable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRoutingTable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRoutingTable")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataRoutingTable) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRoutingTable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRoutingTable")
 		}
 
 		// Array Field (routingTable)
 		if m.RoutingTable != nil {
 			if pushErr := writeBuffer.PushContext("routingTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for routingTable")
 			}
 			for _, _element := range m.RoutingTable {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataRoutingTable) Serialize(writeBuffer utils.WriteBuf
 				}
 			}
 			if popErr := writeBuffer.PopContext("routingTable", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for routingTable")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRoutingTable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRoutingTable")
 		}
 		return nil
 	}

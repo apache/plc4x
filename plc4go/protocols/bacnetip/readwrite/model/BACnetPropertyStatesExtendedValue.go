@@ -128,14 +128,14 @@ func BACnetPropertyStatesExtendedValueParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesExtendedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesExtendedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (extendedValue)
 	if pullErr := readBuffer.PullContext("extendedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for extendedValue")
 	}
 	_extendedValue, _extendedValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _extendedValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesExtendedValueParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	extendedValue := CastBACnetContextTagUnsignedInteger(_extendedValue)
 	if closeErr := readBuffer.CloseContext("extendedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for extendedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesExtendedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesExtendedValue")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesExtendedValue) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesExtendedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesExtendedValue")
 		}
 
 		// Simple Field (extendedValue)
 		if pushErr := writeBuffer.PushContext("extendedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for extendedValue")
 		}
 		_extendedValueErr := m.ExtendedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("extendedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for extendedValue")
 		}
 		if _extendedValueErr != nil {
 			return errors.Wrap(_extendedValueErr, "Error serializing 'extendedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesExtendedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesExtendedValue")
 		}
 		return nil
 	}

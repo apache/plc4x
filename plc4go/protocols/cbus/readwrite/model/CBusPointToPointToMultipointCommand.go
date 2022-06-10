@@ -139,14 +139,14 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultipointCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointToMultipointCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bridgeAddress)
 	if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 	}
 	_bridgeAddress, _bridgeAddressErr := BridgeAddressParse(readBuffer)
 	if _bridgeAddressErr != nil {
@@ -154,12 +154,12 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 	bridgeAddress := CastBridgeAddress(_bridgeAddress)
 	if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bridgeAddress")
 	}
 
 	// Simple Field (networkRoute)
 	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
 	}
 	_networkRoute, _networkRouteErr := NetworkRouteParse(readBuffer)
 	if _networkRouteErr != nil {
@@ -167,7 +167,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 	networkRoute := CastNetworkRoute(_networkRoute)
 	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for networkRoute")
 	}
 
 	// Peek Field (peekedApplication)
@@ -200,7 +200,7 @@ func CBusPointToPointToMultipointCommandParse(readBuffer utils.ReadBuffer, srchk
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointToMultipointCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToPointToMultipointCommand")
 	}
 
 	// Finish initializing
@@ -216,16 +216,16 @@ func (m *CBusPointToPointToMultipointCommand) SerializeParent(writeBuffer utils.
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusPointToPointToMultipointCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CBusPointToPointToMultipointCommand")
 	}
 
 	// Simple Field (bridgeAddress)
 	if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 	}
 	_bridgeAddressErr := m.BridgeAddress.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for bridgeAddress")
 	}
 	if _bridgeAddressErr != nil {
 		return errors.Wrap(_bridgeAddressErr, "Error serializing 'bridgeAddress' field")
@@ -233,11 +233,11 @@ func (m *CBusPointToPointToMultipointCommand) SerializeParent(writeBuffer utils.
 
 	// Simple Field (networkRoute)
 	if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for networkRoute")
 	}
 	_networkRouteErr := m.NetworkRoute.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for networkRoute")
 	}
 	if _networkRouteErr != nil {
 		return errors.Wrap(_networkRouteErr, "Error serializing 'networkRoute' field")
@@ -249,7 +249,7 @@ func (m *CBusPointToPointToMultipointCommand) SerializeParent(writeBuffer utils.
 	}
 
 	if popErr := writeBuffer.PopContext("CBusPointToPointToMultipointCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CBusPointToPointToMultipointCommand")
 	}
 	return nil
 }

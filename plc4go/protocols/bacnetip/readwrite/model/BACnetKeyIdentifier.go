@@ -107,14 +107,14 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetKeyIdentifier
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetKeyIdentifier"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetKeyIdentifier")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (algorithm)
 	if pullErr := readBuffer.PullContext("algorithm"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for algorithm")
 	}
 	_algorithm, _algorithmErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _algorithmErr != nil {
@@ -122,12 +122,12 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetKeyIdentifier
 	}
 	algorithm := CastBACnetContextTagUnsignedInteger(_algorithm)
 	if closeErr := readBuffer.CloseContext("algorithm"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for algorithm")
 	}
 
 	// Simple Field (keyId)
 	if pullErr := readBuffer.PullContext("keyId"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for keyId")
 	}
 	_keyId, _keyIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _keyIdErr != nil {
@@ -135,11 +135,11 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetKeyIdentifier
 	}
 	keyId := CastBACnetContextTagUnsignedInteger(_keyId)
 	if closeErr := readBuffer.CloseContext("keyId"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for keyId")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetKeyIdentifier"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetKeyIdentifier")
 	}
 
 	// Create the instance
@@ -150,16 +150,16 @@ func (m *BACnetKeyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetKeyIdentifier"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetKeyIdentifier")
 	}
 
 	// Simple Field (algorithm)
 	if pushErr := writeBuffer.PushContext("algorithm"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for algorithm")
 	}
 	_algorithmErr := m.Algorithm.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("algorithm"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for algorithm")
 	}
 	if _algorithmErr != nil {
 		return errors.Wrap(_algorithmErr, "Error serializing 'algorithm' field")
@@ -167,18 +167,18 @@ func (m *BACnetKeyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (keyId)
 	if pushErr := writeBuffer.PushContext("keyId"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for keyId")
 	}
 	_keyIdErr := m.KeyId.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("keyId"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for keyId")
 	}
 	if _keyIdErr != nil {
 		return errors.Wrap(_keyIdErr, "Error serializing 'keyId' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetKeyIdentifier"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetKeyIdentifier")
 	}
 	return nil
 }

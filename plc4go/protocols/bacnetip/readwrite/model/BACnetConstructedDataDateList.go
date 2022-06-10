@@ -146,14 +146,14 @@ func BACnetConstructedDataDateListParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDateList"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDateList")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (dateList)
 	if pullErr := readBuffer.PullContext("dateList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for dateList")
 	}
 	// Terminated array
 	dateList := make([]*BACnetCalendarEntry, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataDateListParse(readBuffer utils.ReadBuffer, tagNumber u
 		}
 	}
 	if closeErr := readBuffer.CloseContext("dateList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for dateList")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDateList"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDateList")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataDateList) Serialize(writeBuffer utils.WriteBuffer)
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDateList"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDateList")
 		}
 
 		// Array Field (dateList)
 		if m.DateList != nil {
 			if pushErr := writeBuffer.PushContext("dateList", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for dateList")
 			}
 			for _, _element := range m.DateList {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataDateList) Serialize(writeBuffer utils.WriteBuffer)
 				}
 			}
 			if popErr := writeBuffer.PopContext("dateList", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for dateList")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDateList"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDateList")
 		}
 		return nil
 	}

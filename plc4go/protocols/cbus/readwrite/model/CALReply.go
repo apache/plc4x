@@ -154,7 +154,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReply"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CALReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -190,7 +190,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 
 	// Simple Field (calData)
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for calData")
 	}
 	_calData, _calDataErr := CALDataParse(readBuffer)
 	if _calDataErr != nil {
@@ -198,7 +198,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 	}
 	calData := CastCALData(_calData)
 	if closeErr := readBuffer.CloseContext("calData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for calData")
 	}
 
 	// Const Field (cr)
@@ -220,7 +220,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("CALReply"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CALReply")
 	}
 
 	// Finish initializing
@@ -236,7 +236,7 @@ func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALRepl
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CALReply"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CALReply")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -246,11 +246,11 @@ func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALRepl
 
 	// Simple Field (calData)
 	if pushErr := writeBuffer.PushContext("calData"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for calData")
 	}
 	_calDataErr := m.CalData.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("calData"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for calData")
 	}
 	if _calDataErr != nil {
 		return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
@@ -269,7 +269,7 @@ func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALRepl
 	}
 
 	if popErr := writeBuffer.PopContext("CALReply"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CALReply")
 	}
 	return nil
 }

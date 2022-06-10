@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -145,7 +146,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessPropertyReadResult"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetReadAccessPropertyReadResult")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -153,7 +154,7 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -168,25 +169,26 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	if bool((peekedTagNumber) == (4)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
 		default:
 			propertyValue = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
 			}
 		}
 	}
 
 	// Validation
 	if !(bool(bool(bool(bool((peekedTagNumber) == (4))) && bool(bool((propertyValue) != (nil))))) || bool(bool((peekedTagNumber) != (4)))) {
-		return nil, utils.ParseValidationError{"failure parsing field 4"}
+		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 4"})
 	}
 
 	// Optional Field (propertyAccessError) (Can be skipped, if a given expression evaluates to false)
@@ -194,34 +196,35 @@ func BACnetReadAccessPropertyReadResultParse(readBuffer utils.ReadBuffer, object
 	if bool((peekedTagNumber) == (5)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("propertyAccessError"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for propertyAccessError")
 		}
 		_val, _err := ErrorEnclosedParse(readBuffer, uint8(5))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyAccessError' field")
 		default:
 			propertyAccessError = CastErrorEnclosed(_val)
 			if closeErr := readBuffer.CloseContext("propertyAccessError"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for propertyAccessError")
 			}
 		}
 	}
 
 	// Validation
 	if !(bool(bool(bool(bool((peekedTagNumber) == (5))) && bool(bool((propertyAccessError) != (nil))))) || bool(bool((peekedTagNumber) != (5)))) {
-		return nil, utils.ParseValidationError{"failure parsing field 5"}
+		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 5"})
 	}
 
 	// Validation
 	if !(bool(bool((peekedTagNumber) == (4))) || bool(bool((peekedTagNumber) == (5)))) {
-		return nil, utils.ParseAssertError{"should be either 4 or 5"}
+		return nil, errors.WithStack(utils.ParseAssertError{"should be either 4 or 5"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetReadAccessPropertyReadResult"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetReadAccessPropertyReadResult")
 	}
 
 	// Create the instance
@@ -232,7 +235,7 @@ func (m *BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBu
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessPropertyReadResult"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetReadAccessPropertyReadResult")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -243,12 +246,12 @@ func (m *BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBu
 	var propertyValue *BACnetConstructedData = nil
 	if m.PropertyValue != nil {
 		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		propertyValue = m.PropertyValue
 		_propertyValueErr := propertyValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
 		if _propertyValueErr != nil {
 			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
@@ -259,12 +262,12 @@ func (m *BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBu
 	var propertyAccessError *ErrorEnclosed = nil
 	if m.PropertyAccessError != nil {
 		if pushErr := writeBuffer.PushContext("propertyAccessError"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyAccessError")
 		}
 		propertyAccessError = m.PropertyAccessError
 		_propertyAccessErrorErr := propertyAccessError.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyAccessError"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyAccessError")
 		}
 		if _propertyAccessErrorErr != nil {
 			return errors.Wrap(_propertyAccessErrorErr, "Error serializing 'propertyAccessError' field")
@@ -272,7 +275,7 @@ func (m *BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBu
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetReadAccessPropertyReadResult"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetReadAccessPropertyReadResult")
 	}
 	return nil
 }

@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -176,7 +177,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHas"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestWhoHas")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -186,18 +187,19 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for deviceInstanceRangeLowLimit")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
 		default:
 			deviceInstanceRangeLowLimit = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeLowLimit"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for deviceInstanceRangeLowLimit")
 			}
 		}
 	}
@@ -207,18 +209,19 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	if bool((deviceInstanceRangeLowLimit) != (nil)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for deviceInstanceRangeHighLimit")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
 		default:
 			deviceInstanceRangeHighLimit = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeHighLimit"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for deviceInstanceRangeHighLimit")
 			}
 		}
 	}
@@ -228,18 +231,19 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
 		default:
 			objectIdentifier = CastBACnetContextTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 			}
 		}
 	}
@@ -249,24 +253,25 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	if bool((objectIdentifier) == (nil)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for objectName")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'objectName' field")
 		default:
 			objectName = CastBACnetContextTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for objectName")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWhoHas"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequestWhoHas")
 	}
 
 	// Create a partially initialized instance
@@ -286,19 +291,19 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestWhoHas"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWhoHas")
 		}
 
 		// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if the value is null)
 		var deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger = nil
 		if m.DeviceInstanceRangeLowLimit != nil {
 			if pushErr := writeBuffer.PushContext("deviceInstanceRangeLowLimit"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeLowLimit")
 			}
 			deviceInstanceRangeLowLimit = m.DeviceInstanceRangeLowLimit
 			_deviceInstanceRangeLowLimitErr := deviceInstanceRangeLowLimit.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("deviceInstanceRangeLowLimit"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeLowLimit")
 			}
 			if _deviceInstanceRangeLowLimitErr != nil {
 				return errors.Wrap(_deviceInstanceRangeLowLimitErr, "Error serializing 'deviceInstanceRangeLowLimit' field")
@@ -309,12 +314,12 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 		var deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger = nil
 		if m.DeviceInstanceRangeHighLimit != nil {
 			if pushErr := writeBuffer.PushContext("deviceInstanceRangeHighLimit"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeHighLimit")
 			}
 			deviceInstanceRangeHighLimit = m.DeviceInstanceRangeHighLimit
 			_deviceInstanceRangeHighLimitErr := deviceInstanceRangeHighLimit.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("deviceInstanceRangeHighLimit"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeHighLimit")
 			}
 			if _deviceInstanceRangeHighLimitErr != nil {
 				return errors.Wrap(_deviceInstanceRangeHighLimitErr, "Error serializing 'deviceInstanceRangeHighLimit' field")
@@ -325,12 +330,12 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 		var objectIdentifier *BACnetContextTagObjectIdentifier = nil
 		if m.ObjectIdentifier != nil {
 			if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 			}
 			objectIdentifier = m.ObjectIdentifier
 			_objectIdentifierErr := objectIdentifier.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for objectIdentifier")
 			}
 			if _objectIdentifierErr != nil {
 				return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
@@ -341,12 +346,12 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 		var objectName *BACnetContextTagCharacterString = nil
 		if m.ObjectName != nil {
 			if pushErr := writeBuffer.PushContext("objectName"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for objectName")
 			}
 			objectName = m.ObjectName
 			_objectNameErr := objectName.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for objectName")
 			}
 			if _objectNameErr != nil {
 				return errors.Wrap(_objectNameErr, "Error serializing 'objectName' field")
@@ -354,7 +359,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWhoHas"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequestWhoHas")
 		}
 		return nil
 	}

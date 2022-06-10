@@ -105,7 +105,7 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexComman
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -163,7 +163,7 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexComman
 	}
 
 	if closeErr := readBuffer.CloseContext("SysexCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SysexCommand")
 	}
 
 	// Finish initializing
@@ -179,7 +179,7 @@ func (m *SysexCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ISys
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SysexCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for SysexCommand")
 	}
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
@@ -196,7 +196,7 @@ func (m *SysexCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ISys
 	}
 
 	if popErr := writeBuffer.PopContext("SysexCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for SysexCommand")
 	}
 	return nil
 }

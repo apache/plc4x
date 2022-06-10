@@ -142,14 +142,14 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllWritesSuccessful"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAllWritesSuccessful")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (allWritesSuccessful)
 	if pullErr := readBuffer.PullContext("allWritesSuccessful"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for allWritesSuccessful")
 	}
 	_allWritesSuccessful, _allWritesSuccessfulErr := BACnetApplicationTagParse(readBuffer)
 	if _allWritesSuccessfulErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 	}
 	allWritesSuccessful := CastBACnetApplicationTagBoolean(_allWritesSuccessful)
 	if closeErr := readBuffer.CloseContext("allWritesSuccessful"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for allWritesSuccessful")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAllWritesSuccessful"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAllWritesSuccessful")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAllWritesSuccessful) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAllWritesSuccessful"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAllWritesSuccessful")
 		}
 
 		// Simple Field (allWritesSuccessful)
 		if pushErr := writeBuffer.PushContext("allWritesSuccessful"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for allWritesSuccessful")
 		}
 		_allWritesSuccessfulErr := m.AllWritesSuccessful.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("allWritesSuccessful"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for allWritesSuccessful")
 		}
 		if _allWritesSuccessfulErr != nil {
 			return errors.Wrap(_allWritesSuccessfulErr, "Error serializing 'allWritesSuccessful' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAllWritesSuccessful"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAllWritesSuccessful")
 		}
 		return nil
 	}

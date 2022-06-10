@@ -120,14 +120,14 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*ErrorEnc
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorEnclosed"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ErrorEnclosed")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
 	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
@@ -135,12 +135,12 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*ErrorEnc
 	}
 	openingTag := CastBACnetOpeningTag(_openingTag)
 	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
 	// Simple Field (error)
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
 	_error, _errorErr := ErrorParse(readBuffer)
 	if _errorErr != nil {
@@ -148,12 +148,12 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*ErrorEnc
 	}
 	error := CastError(_error)
 	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for error")
 	}
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
 	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
@@ -161,11 +161,11 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*ErrorEnc
 	}
 	closingTag := CastBACnetClosingTag(_closingTag)
 	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
 	}
 
 	if closeErr := readBuffer.CloseContext("ErrorEnclosed"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ErrorEnclosed")
 	}
 
 	// Create the instance
@@ -176,16 +176,16 @@ func (m *ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ErrorEnclosed"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ErrorEnclosed")
 	}
 
 	// Simple Field (openingTag)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
 	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
@@ -193,11 +193,11 @@ func (m *ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (error)
 	if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for error")
 	}
 	_errorErr := m.Error.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("error"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for error")
 	}
 	if _errorErr != nil {
 		return errors.Wrap(_errorErr, "Error serializing 'error' field")
@@ -205,18 +205,18 @@ func (m *ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (closingTag)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
 	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ErrorEnclosed"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ErrorEnclosed")
 	}
 	return nil
 }

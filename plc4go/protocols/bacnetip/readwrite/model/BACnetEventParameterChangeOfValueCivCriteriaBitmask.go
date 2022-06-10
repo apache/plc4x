@@ -133,14 +133,14 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (bitmask)
 	if pullErr := readBuffer.PullContext("bitmask"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bitmask")
 	}
 	_bitmask, _bitmaskErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitmaskErr != nil {
@@ -148,11 +148,11 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer utils.R
 	}
 	bitmask := CastBACnetContextTagBitString(_bitmask)
 	if closeErr := readBuffer.CloseContext("bitmask"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bitmask")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetEventParameterChangeOfValueCivCriteriaBitmask) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 		}
 
 		// Simple Field (bitmask)
 		if pushErr := writeBuffer.PushContext("bitmask"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for bitmask")
 		}
 		_bitmaskErr := m.Bitmask.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("bitmask"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for bitmask")
 		}
 		if _bitmaskErr != nil {
 			return errors.Wrap(_bitmaskErr, "Error serializing 'bitmask' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 		}
 		return nil
 	}

@@ -157,7 +157,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -178,7 +178,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 
 	// Array field (messageObjects)
 	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
 	messageObjects := make([]uint8, numberOfObjects)
@@ -192,11 +192,11 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
 	}
 
 	// Create a partially initialized instance
@@ -214,7 +214,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
 		}
 
 		// Simple Field (functionId)
@@ -234,7 +234,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer
 		// Array Field (messageObjects)
 		if m.MessageObjects != nil {
 			if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for messageObjects")
 			}
 			for _, _element := range m.MessageObjects {
 				_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -243,12 +243,12 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer
 				}
 			}
 			if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for messageObjects")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
 		}
 		return nil
 	}

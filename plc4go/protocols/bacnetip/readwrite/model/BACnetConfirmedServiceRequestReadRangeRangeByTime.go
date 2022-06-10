@@ -141,14 +141,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (referenceTime)
 	if pullErr := readBuffer.PullContext("referenceTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for referenceTime")
 	}
 	_referenceTime, _referenceTimeErr := BACnetDateTimeParse(readBuffer)
 	if _referenceTimeErr != nil {
@@ -156,12 +156,12 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	}
 	referenceTime := CastBACnetDateTime(_referenceTime)
 	if closeErr := readBuffer.CloseContext("referenceTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for referenceTime")
 	}
 
 	// Simple Field (count)
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
 	_count, _countErr := BACnetApplicationTagParse(readBuffer)
 	if _countErr != nil {
@@ -169,11 +169,11 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	}
 	count := CastBACnetApplicationTagSignedInteger(_count)
 	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for count")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
 
 	// Create a partially initialized instance
@@ -191,16 +191,16 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadRangeRangeByTime")
 		}
 
 		// Simple Field (referenceTime)
 		if pushErr := writeBuffer.PushContext("referenceTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for referenceTime")
 		}
 		_referenceTimeErr := m.ReferenceTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("referenceTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for referenceTime")
 		}
 		if _referenceTimeErr != nil {
 			return errors.Wrap(_referenceTimeErr, "Error serializing 'referenceTime' field")
@@ -208,18 +208,18 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize(writeBuffe
 
 		// Simple Field (count)
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for count")
 		}
 		_countErr := m.Count.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for count")
 		}
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestReadRangeRangeByTime")
 		}
 		return nil
 	}

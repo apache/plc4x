@@ -145,14 +145,14 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7MessageObjectResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
@@ -160,12 +160,12 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
 	}
 
 	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
@@ -173,7 +173,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -191,7 +191,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	}
 
 	if closeErr := readBuffer.CloseContext("S7MessageObjectResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7MessageObjectResponse")
 	}
 
 	// Create a partially initialized instance
@@ -209,16 +209,16 @@ func (m *S7MessageObjectResponse) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7MessageObjectResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7MessageObjectResponse")
 		}
 
 		// Simple Field (returnCode)
 		if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for returnCode")
 		}
 		_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for returnCode")
 		}
 		if _returnCodeErr != nil {
 			return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
@@ -226,11 +226,11 @@ func (m *S7MessageObjectResponse) Serialize(writeBuffer utils.WriteBuffer) error
 
 		// Simple Field (transportSize)
 		if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for transportSize")
 		}
 		_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for transportSize")
 		}
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
@@ -245,7 +245,7 @@ func (m *S7MessageObjectResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		if popErr := writeBuffer.PopContext("S7MessageObjectResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7MessageObjectResponse")
 		}
 		return nil
 	}

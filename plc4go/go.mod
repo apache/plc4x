@@ -38,6 +38,6 @@ require (
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/tebeka/go2xunit v1.4.10 // indirect
 	github.com/viney-shih/go-lock v1.1.1
-	golang.org/x/tools v0.1.10 // indirect
+	golang.org/x/tools v0.1.11 // indirect
 	gotest.tools/gotestsum v1.8.1 // indirect
 )

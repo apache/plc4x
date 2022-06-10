@@ -142,14 +142,14 @@ func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDistributionKeyRevision"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDistributionKeyRevision")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (distributionKeyRevision)
 	if pullErr := readBuffer.PullContext("distributionKeyRevision"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for distributionKeyRevision")
 	}
 	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParse(readBuffer)
 	if _distributionKeyRevisionErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuff
 	}
 	distributionKeyRevision := CastBACnetApplicationTagUnsignedInteger(_distributionKeyRevision)
 	if closeErr := readBuffer.CloseContext("distributionKeyRevision"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for distributionKeyRevision")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDistributionKeyRevision"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDistributionKeyRevision")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDistributionKeyRevision) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDistributionKeyRevision"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDistributionKeyRevision")
 		}
 
 		// Simple Field (distributionKeyRevision)
 		if pushErr := writeBuffer.PushContext("distributionKeyRevision"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for distributionKeyRevision")
 		}
 		_distributionKeyRevisionErr := m.DistributionKeyRevision.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("distributionKeyRevision"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for distributionKeyRevision")
 		}
 		if _distributionKeyRevisionErr != nil {
 			return errors.Wrap(_distributionKeyRevisionErr, "Error serializing 'distributionKeyRevision' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDistributionKeyRevision"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDistributionKeyRevision")
 		}
 		return nil
 	}

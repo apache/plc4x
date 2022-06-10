@@ -146,14 +146,14 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRejectRouterToNetwork"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLMRejectRouterToNetwork")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (rejectReason)
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
 	}
 	_rejectReason, _rejectReasonErr := NLMRejectRouterToNetworkRejectReasonParse(readBuffer)
 	if _rejectReasonErr != nil {
@@ -161,7 +161,7 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	}
 	rejectReason := _rejectReason
 	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for rejectReason")
 	}
 
 	// Simple Field (destinationNetworkAddress)
@@ -172,7 +172,7 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	destinationNetworkAddress := _destinationNetworkAddress
 
 	if closeErr := readBuffer.CloseContext("NLMRejectRouterToNetwork"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLMRejectRouterToNetwork")
 	}
 
 	// Create a partially initialized instance
@@ -190,16 +190,16 @@ func (m *NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) erro
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("NLMRejectRouterToNetwork"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for NLMRejectRouterToNetwork")
 		}
 
 		// Simple Field (rejectReason)
 		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for rejectReason")
 		}
 		_rejectReasonErr := m.RejectReason.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for rejectReason")
 		}
 		if _rejectReasonErr != nil {
 			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
@@ -213,7 +213,7 @@ func (m *NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		if popErr := writeBuffer.PopContext("NLMRejectRouterToNetwork"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for NLMRejectRouterToNetwork")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataIntegralConstantParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegralConstant"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIntegralConstant")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (integralConstant)
 	if pullErr := readBuffer.PullContext("integralConstant"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for integralConstant")
 	}
 	_integralConstant, _integralConstantErr := BACnetApplicationTagParse(readBuffer)
 	if _integralConstantErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataIntegralConstantParse(readBuffer utils.ReadBuffer, tag
 	}
 	integralConstant := CastBACnetApplicationTagReal(_integralConstant)
 	if closeErr := readBuffer.CloseContext("integralConstant"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for integralConstant")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegralConstant"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntegralConstant")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataIntegralConstant) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataIntegralConstant"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIntegralConstant")
 		}
 
 		// Simple Field (integralConstant)
 		if pushErr := writeBuffer.PushContext("integralConstant"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for integralConstant")
 		}
 		_integralConstantErr := m.IntegralConstant.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("integralConstant"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for integralConstant")
 		}
 		if _integralConstantErr != nil {
 			return errors.Wrap(_integralConstantErr, "Error serializing 'integralConstant' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIntegralConstant"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataIntegralConstant")
 		}
 		return nil
 	}

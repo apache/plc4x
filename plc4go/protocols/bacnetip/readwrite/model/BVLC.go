@@ -144,7 +144,7 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLC"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLC")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -219,7 +219,7 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLC"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLC")
 	}
 
 	// Finish initializing
@@ -235,7 +235,7 @@ func (m *BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child IBVLC, seria
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLC"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BVLC")
 	}
 
 	// Const Field (bacnetType)
@@ -269,7 +269,7 @@ func (m *BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child IBVLC, seria
 	}
 
 	if popErr := writeBuffer.PopContext("BVLC"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BVLC")
 	}
 	return nil
 }

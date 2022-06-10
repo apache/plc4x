@@ -142,14 +142,14 @@ func BACnetConstructedDataDescriptionOfHaltParse(readBuffer utils.ReadBuffer, ta
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDescriptionOfHalt"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDescriptionOfHalt")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (descriptionForHalt)
 	if pullErr := readBuffer.PullContext("descriptionForHalt"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for descriptionForHalt")
 	}
 	_descriptionForHalt, _descriptionForHaltErr := BACnetApplicationTagParse(readBuffer)
 	if _descriptionForHaltErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDescriptionOfHaltParse(readBuffer utils.ReadBuffer, ta
 	}
 	descriptionForHalt := CastBACnetApplicationTagCharacterString(_descriptionForHalt)
 	if closeErr := readBuffer.CloseContext("descriptionForHalt"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for descriptionForHalt")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDescriptionOfHalt"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDescriptionOfHalt")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDescriptionOfHalt) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDescriptionOfHalt"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDescriptionOfHalt")
 		}
 
 		// Simple Field (descriptionForHalt)
 		if pushErr := writeBuffer.PushContext("descriptionForHalt"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for descriptionForHalt")
 		}
 		_descriptionForHaltErr := m.DescriptionForHalt.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("descriptionForHalt"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for descriptionForHalt")
 		}
 		if _descriptionForHaltErr != nil {
 			return errors.Wrap(_descriptionForHaltErr, "Error serializing 'descriptionForHalt' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDescriptionOfHalt"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDescriptionOfHalt")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataDaysRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDaysRemaining"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDaysRemaining")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (daysRemaining)
 	if pullErr := readBuffer.PullContext("daysRemaining"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for daysRemaining")
 	}
 	_daysRemaining, _daysRemainingErr := BACnetApplicationTagParse(readBuffer)
 	if _daysRemainingErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDaysRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	}
 	daysRemaining := CastBACnetApplicationTagSignedInteger(_daysRemaining)
 	if closeErr := readBuffer.CloseContext("daysRemaining"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for daysRemaining")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDaysRemaining"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDaysRemaining")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDaysRemaining) Serialize(writeBuffer utils.WriteBu
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDaysRemaining"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDaysRemaining")
 		}
 
 		// Simple Field (daysRemaining)
 		if pushErr := writeBuffer.PushContext("daysRemaining"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for daysRemaining")
 		}
 		_daysRemainingErr := m.DaysRemaining.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("daysRemaining"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for daysRemaining")
 		}
 		if _daysRemainingErr != nil {
 			return errors.Wrap(_daysRemainingErr, "Error serializing 'daysRemaining' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDaysRemaining"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDaysRemaining")
 		}
 		return nil
 	}

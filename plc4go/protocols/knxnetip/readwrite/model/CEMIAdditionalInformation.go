@@ -103,7 +103,7 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditiona
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CEMIAdditionalInformation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -135,7 +135,7 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditiona
 	}
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CEMIAdditionalInformation")
 	}
 
 	// Finish initializing
@@ -151,7 +151,7 @@ func (m *CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffe
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CEMIAdditionalInformation"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CEMIAdditionalInformation")
 	}
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
@@ -168,7 +168,7 @@ func (m *CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 
 	if popErr := writeBuffer.PopContext("CEMIAdditionalInformation"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CEMIAdditionalInformation")
 	}
 	return nil
 }

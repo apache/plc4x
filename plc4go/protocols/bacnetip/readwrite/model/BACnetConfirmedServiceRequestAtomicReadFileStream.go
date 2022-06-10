@@ -141,14 +141,14 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (fileStartPosition)
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
 	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParse(readBuffer)
 	if _fileStartPositionErr != nil {
@@ -156,12 +156,12 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	}
 	fileStartPosition := CastBACnetApplicationTagSignedInteger(_fileStartPosition)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for fileStartPosition")
 	}
 
 	// Simple Field (requestOctetCount)
 	if pullErr := readBuffer.PullContext("requestOctetCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for requestOctetCount")
 	}
 	_requestOctetCount, _requestOctetCountErr := BACnetApplicationTagParse(readBuffer)
 	if _requestOctetCountErr != nil {
@@ -169,11 +169,11 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	}
 	requestOctetCount := CastBACnetApplicationTagUnsignedInteger(_requestOctetCount)
 	if closeErr := readBuffer.CloseContext("requestOctetCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for requestOctetCount")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
 
 	// Create a partially initialized instance
@@ -191,16 +191,16 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize(writeBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicReadFileStream")
 		}
 
 		// Simple Field (fileStartPosition)
 		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
 		}
 		_fileStartPositionErr := m.FileStartPosition.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for fileStartPosition")
 		}
 		if _fileStartPositionErr != nil {
 			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
@@ -208,18 +208,18 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize(writeBuffe
 
 		// Simple Field (requestOctetCount)
 		if pushErr := writeBuffer.PushContext("requestOctetCount"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for requestOctetCount")
 		}
 		_requestOctetCountErr := m.RequestOctetCount.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("requestOctetCount"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for requestOctetCount")
 		}
 		if _requestOctetCountErr != nil {
 			return errors.Wrap(_requestOctetCountErr, "Error serializing 'requestOctetCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestAtomicReadFileStream")
 		}
 		return nil
 	}

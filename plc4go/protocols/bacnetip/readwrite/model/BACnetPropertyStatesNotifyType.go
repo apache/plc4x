@@ -128,14 +128,14 @@ func BACnetPropertyStatesNotifyTypeParse(readBuffer utils.ReadBuffer, peekedTagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNotifyType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesNotifyType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (notifyType)
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
 	}
 	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesNotifyTypeParse(readBuffer utils.ReadBuffer, peekedTagN
 	}
 	notifyType := CastBACnetNotifyTypeTagged(_notifyType)
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNotifyType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesNotifyType")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesNotifyType) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesNotifyType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNotifyType")
 		}
 
 		// Simple Field (notifyType)
 		if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for notifyType")
 		}
 		_notifyTypeErr := m.NotifyType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for notifyType")
 		}
 		if _notifyTypeErr != nil {
 			return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNotifyType"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesNotifyType")
 		}
 		return nil
 	}

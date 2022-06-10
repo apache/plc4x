@@ -196,7 +196,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsAddDeviceNotificationRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -272,7 +272,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsAddDeviceNotificationRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsAddDeviceNotificationRequest")
 	}
 
 	// Create a partially initialized instance
@@ -294,7 +294,7 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsAddDeviceNotificationRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsAddDeviceNotificationRequest")
 		}
 
 		// Simple Field (indexGroup)
@@ -356,7 +356,7 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		if popErr := writeBuffer.PopContext("AdsAddDeviceNotificationRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsAddDeviceNotificationRequest")
 		}
 		return nil
 	}

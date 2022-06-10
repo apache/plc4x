@@ -146,14 +146,14 @@ func BACnetConstructedDataLandingCallsParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingCalls"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLandingCalls")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (landingCallStatus)
 	if pullErr := readBuffer.PullContext("landingCallStatus", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for landingCallStatus")
 	}
 	// Terminated array
 	landingCallStatus := make([]*BACnetLandingCallStatus, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataLandingCallsParse(readBuffer utils.ReadBuffer, tagNumb
 		}
 	}
 	if closeErr := readBuffer.CloseContext("landingCallStatus", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for landingCallStatus")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLandingCalls"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLandingCalls")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataLandingCalls) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLandingCalls"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLandingCalls")
 		}
 
 		// Array Field (landingCallStatus)
 		if m.LandingCallStatus != nil {
 			if pushErr := writeBuffer.PushContext("landingCallStatus", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for landingCallStatus")
 			}
 			for _, _element := range m.LandingCallStatus {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataLandingCalls) Serialize(writeBuffer utils.WriteBuf
 				}
 			}
 			if popErr := writeBuffer.PopContext("landingCallStatus", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for landingCallStatus")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLandingCalls"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLandingCalls")
 		}
 		return nil
 	}

@@ -138,7 +138,7 @@ func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnknown"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagUnknown")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -150,7 +150,7 @@ func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagUnknown"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTagUnknown")
 	}
 
 	// Create a partially initialized instance
@@ -167,7 +167,7 @@ func (m *BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetContextTagUnknown"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetContextTagUnknown")
 		}
 
 		// Array Field (unknownData)
@@ -180,7 +180,7 @@ func (m *BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagUnknown"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetContextTagUnknown")
 		}
 		return nil
 	}

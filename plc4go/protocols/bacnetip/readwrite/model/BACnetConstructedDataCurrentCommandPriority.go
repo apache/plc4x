@@ -142,14 +142,14 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCurrentCommandPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCurrentCommandPriority")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (currentCommandPriority)
 	if pullErr := readBuffer.PullContext("currentCommandPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for currentCommandPriority")
 	}
 	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParse(readBuffer)
 	if _currentCommandPriorityErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 	}
 	currentCommandPriority := CastBACnetOptionalUnsigned(_currentCommandPriority)
 	if closeErr := readBuffer.CloseContext("currentCommandPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for currentCommandPriority")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCurrentCommandPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCurrentCommandPriority")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataCurrentCommandPriority) Serialize(writeBuffer util
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataCurrentCommandPriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCurrentCommandPriority")
 		}
 
 		// Simple Field (currentCommandPriority)
 		if pushErr := writeBuffer.PushContext("currentCommandPriority"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for currentCommandPriority")
 		}
 		_currentCommandPriorityErr := m.CurrentCommandPriority.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("currentCommandPriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for currentCommandPriority")
 		}
 		if _currentCommandPriorityErr != nil {
 			return errors.Wrap(_currentCommandPriorityErr, "Error serializing 'currentCommandPriority' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCurrentCommandPriority"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataCurrentCommandPriority")
 		}
 		return nil
 	}

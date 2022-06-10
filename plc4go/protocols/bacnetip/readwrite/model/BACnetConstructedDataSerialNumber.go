@@ -142,14 +142,14 @@ func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSerialNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSerialNumber")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (serialNumber)
 	if pullErr := readBuffer.PullContext("serialNumber"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for serialNumber")
 	}
 	_serialNumber, _serialNumberErr := BACnetApplicationTagParse(readBuffer)
 	if _serialNumberErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	serialNumber := CastBACnetApplicationTagCharacterString(_serialNumber)
 	if closeErr := readBuffer.CloseContext("serialNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for serialNumber")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSerialNumber"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSerialNumber")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSerialNumber) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSerialNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSerialNumber")
 		}
 
 		// Simple Field (serialNumber)
 		if pushErr := writeBuffer.PushContext("serialNumber"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for serialNumber")
 		}
 		_serialNumberErr := m.SerialNumber.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("serialNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for serialNumber")
 		}
 		if _serialNumberErr != nil {
 			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSerialNumber"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSerialNumber")
 		}
 		return nil
 	}

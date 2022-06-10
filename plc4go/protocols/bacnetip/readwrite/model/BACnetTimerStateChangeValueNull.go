@@ -131,14 +131,14 @@ func BACnetTimerStateChangeValueNullParse(readBuffer utils.ReadBuffer, objectTyp
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueNull"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueNull")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (nullValue)
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
 	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
 	if _nullValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetTimerStateChangeValueNullParse(readBuffer utils.ReadBuffer, objectTyp
 	}
 	nullValue := CastBACnetApplicationTagNull(_nullValue)
 	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueNull"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimerStateChangeValueNull")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetTimerStateChangeValueNull) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetTimerStateChangeValueNull"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueNull")
 		}
 
 		// Simple Field (nullValue)
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
 		_nullValueErr := m.NullValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
 		if _nullValueErr != nil {
 			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueNull"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetTimerStateChangeValueNull")
 		}
 		return nil
 	}

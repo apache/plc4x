@@ -142,14 +142,14 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAPDUSegmentTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAPDUSegmentTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (apduSegmentTimeout)
 	if pullErr := readBuffer.PullContext("apduSegmentTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for apduSegmentTimeout")
 	}
 	_apduSegmentTimeout, _apduSegmentTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _apduSegmentTimeoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, t
 	}
 	apduSegmentTimeout := CastBACnetApplicationTagUnsignedInteger(_apduSegmentTimeout)
 	if closeErr := readBuffer.CloseContext("apduSegmentTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for apduSegmentTimeout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDUSegmentTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAPDUSegmentTimeout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAPDUSegmentTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAPDUSegmentTimeout")
 		}
 
 		// Simple Field (apduSegmentTimeout)
 		if pushErr := writeBuffer.PushContext("apduSegmentTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for apduSegmentTimeout")
 		}
 		_apduSegmentTimeoutErr := m.ApduSegmentTimeout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("apduSegmentTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for apduSegmentTimeout")
 		}
 		if _apduSegmentTimeoutErr != nil {
 			return errors.Wrap(_apduSegmentTimeoutErr, "Error serializing 'apduSegmentTimeout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAPDUSegmentTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAPDUSegmentTimeout")
 		}
 		return nil
 	}

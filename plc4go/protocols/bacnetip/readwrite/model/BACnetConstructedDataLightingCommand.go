@@ -142,14 +142,14 @@ func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagN
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLightingCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lightingCommand)
 	if pullErr := readBuffer.PullContext("lightingCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommand")
 	}
 	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParse(readBuffer)
 	if _lightingCommandErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagN
 	}
 	lightingCommand := CastBACnetLightingCommand(_lightingCommand)
 	if closeErr := readBuffer.CloseContext("lightingCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lightingCommand")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommand")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLightingCommand) Serialize(writeBuffer utils.Write
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLightingCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingCommand")
 		}
 
 		// Simple Field (lightingCommand)
 		if pushErr := writeBuffer.PushContext("lightingCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lightingCommand")
 		}
 		_lightingCommandErr := m.LightingCommand.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lightingCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lightingCommand")
 		}
 		if _lightingCommandErr != nil {
 			return errors.Wrap(_lightingCommandErr, "Error serializing 'lightingCommand' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLightingCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLightingCommand")
 		}
 		return nil
 	}

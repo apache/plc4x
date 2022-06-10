@@ -187,7 +187,7 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceDescriptorType2"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DeviceDescriptorType2")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -236,7 +236,7 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 
 	// Simple Field (channelInfo1)
 	if pullErr := readBuffer.PullContext("channelInfo1"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo1")
 	}
 	_channelInfo1, _channelInfo1Err := ChannelInformationParse(readBuffer)
 	if _channelInfo1Err != nil {
@@ -244,12 +244,12 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	}
 	channelInfo1 := CastChannelInformation(_channelInfo1)
 	if closeErr := readBuffer.CloseContext("channelInfo1"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelInfo1")
 	}
 
 	// Simple Field (channelInfo2)
 	if pullErr := readBuffer.PullContext("channelInfo2"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo2")
 	}
 	_channelInfo2, _channelInfo2Err := ChannelInformationParse(readBuffer)
 	if _channelInfo2Err != nil {
@@ -257,12 +257,12 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	}
 	channelInfo2 := CastChannelInformation(_channelInfo2)
 	if closeErr := readBuffer.CloseContext("channelInfo2"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelInfo2")
 	}
 
 	// Simple Field (channelInfo3)
 	if pullErr := readBuffer.PullContext("channelInfo3"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo3")
 	}
 	_channelInfo3, _channelInfo3Err := ChannelInformationParse(readBuffer)
 	if _channelInfo3Err != nil {
@@ -270,12 +270,12 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	}
 	channelInfo3 := CastChannelInformation(_channelInfo3)
 	if closeErr := readBuffer.CloseContext("channelInfo3"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelInfo3")
 	}
 
 	// Simple Field (channelInfo4)
 	if pullErr := readBuffer.PullContext("channelInfo4"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo4")
 	}
 	_channelInfo4, _channelInfo4Err := ChannelInformationParse(readBuffer)
 	if _channelInfo4Err != nil {
@@ -283,11 +283,11 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	}
 	channelInfo4 := CastChannelInformation(_channelInfo4)
 	if closeErr := readBuffer.CloseContext("channelInfo4"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for channelInfo4")
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceDescriptorType2"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DeviceDescriptorType2")
 	}
 
 	// Create the instance
@@ -298,7 +298,7 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceDescriptorType2"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DeviceDescriptorType2")
 	}
 
 	// Simple Field (manufacturerId)
@@ -345,11 +345,11 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (channelInfo1)
 	if pushErr := writeBuffer.PushContext("channelInfo1"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for channelInfo1")
 	}
 	_channelInfo1Err := m.ChannelInfo1.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("channelInfo1"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for channelInfo1")
 	}
 	if _channelInfo1Err != nil {
 		return errors.Wrap(_channelInfo1Err, "Error serializing 'channelInfo1' field")
@@ -357,11 +357,11 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (channelInfo2)
 	if pushErr := writeBuffer.PushContext("channelInfo2"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for channelInfo2")
 	}
 	_channelInfo2Err := m.ChannelInfo2.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("channelInfo2"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for channelInfo2")
 	}
 	if _channelInfo2Err != nil {
 		return errors.Wrap(_channelInfo2Err, "Error serializing 'channelInfo2' field")
@@ -369,11 +369,11 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (channelInfo3)
 	if pushErr := writeBuffer.PushContext("channelInfo3"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for channelInfo3")
 	}
 	_channelInfo3Err := m.ChannelInfo3.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("channelInfo3"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for channelInfo3")
 	}
 	if _channelInfo3Err != nil {
 		return errors.Wrap(_channelInfo3Err, "Error serializing 'channelInfo3' field")
@@ -381,18 +381,18 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (channelInfo4)
 	if pushErr := writeBuffer.PushContext("channelInfo4"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for channelInfo4")
 	}
 	_channelInfo4Err := m.ChannelInfo4.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("channelInfo4"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for channelInfo4")
 	}
 	if _channelInfo4Err != nil {
 		return errors.Wrap(_channelInfo4Err, "Error serializing 'channelInfo4' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceDescriptorType2"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DeviceDescriptorType2")
 	}
 	return nil
 }

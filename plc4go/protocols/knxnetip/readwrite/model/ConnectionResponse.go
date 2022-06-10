@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -168,7 +169,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -182,7 +183,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 
 	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
 	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
@@ -190,7 +191,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 	}
 	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for status")
 	}
 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
@@ -198,18 +199,19 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 	if bool((status) == (Status_NO_ERROR)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
 		}
 		_val, _err := HPAIDataEndpointParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
 		default:
 			hpaiDataEndpoint = CastHPAIDataEndpoint(_val)
 			if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for hpaiDataEndpoint")
 			}
 		}
 	}
@@ -219,24 +221,25 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 	if bool((status) == (Status_NO_ERROR)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for connectionResponseDataBlock")
 		}
 		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
 		default:
 			connectionResponseDataBlock = CastConnectionResponseDataBlock(_val)
 			if closeErr := readBuffer.CloseContext("connectionResponseDataBlock"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for connectionResponseDataBlock")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ConnectionResponse")
 	}
 
 	// Create a partially initialized instance
@@ -256,7 +259,7 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ConnectionResponse")
 		}
 
 		// Simple Field (communicationChannelId)
@@ -268,11 +271,11 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (status)
 		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for status")
 		}
 		_statusErr := m.Status.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("status"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for status")
 		}
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
@@ -282,12 +285,12 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		var hpaiDataEndpoint *HPAIDataEndpoint = nil
 		if m.HpaiDataEndpoint != nil {
 			if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
 			}
 			hpaiDataEndpoint = m.HpaiDataEndpoint
 			_hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
 			}
 			if _hpaiDataEndpointErr != nil {
 				return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
@@ -298,12 +301,12 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 		if m.ConnectionResponseDataBlock != nil {
 			if pushErr := writeBuffer.PushContext("connectionResponseDataBlock"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for connectionResponseDataBlock")
 			}
 			connectionResponseDataBlock = m.ConnectionResponseDataBlock
 			_connectionResponseDataBlockErr := connectionResponseDataBlock.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("connectionResponseDataBlock"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for connectionResponseDataBlock")
 			}
 			if _connectionResponseDataBlockErr != nil {
 				return errors.Wrap(_connectionResponseDataBlockErr, "Error serializing 'connectionResponseDataBlock' field")
@@ -311,7 +314,7 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ConnectionResponse")
 		}
 		return nil
 	}

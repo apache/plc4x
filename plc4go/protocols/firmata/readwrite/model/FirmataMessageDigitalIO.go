@@ -146,7 +146,7 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageDigitalIO"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessageDigitalIO")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -160,7 +160,7 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
 	data := make([]int8, uint16(2))
@@ -174,11 +174,11 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageDigitalIO"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessageDigitalIO")
 	}
 
 	// Create a partially initialized instance
@@ -196,7 +196,7 @@ func (m *FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) error
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataMessageDigitalIO"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for FirmataMessageDigitalIO")
 		}
 
 		// Simple Field (pinBlock)
@@ -209,7 +209,7 @@ func (m *FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) error
 		// Array Field (data)
 		if m.Data != nil {
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for data")
 			}
 			for _, _element := range m.Data {
 				_elementErr := writeBuffer.WriteInt8("", 8, _element)
@@ -218,12 +218,12 @@ func (m *FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) error
 				}
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for data")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageDigitalIO"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for FirmataMessageDigitalIO")
 		}
 		return nil
 	}

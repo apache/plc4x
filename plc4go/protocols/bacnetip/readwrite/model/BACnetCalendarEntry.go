@@ -133,7 +133,7 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (*BACnetCalendarEntry
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCalendarEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -141,7 +141,7 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (*BACnetCalendarEntry
 	// Peek Field (peekedTagHeader)
 	currentPos = positionAware.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
 	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
@@ -153,7 +153,7 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (*BACnetCalendarEntry
 
 	// Validation
 	if !(bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, utils.ParseValidationError{"Validation failed"}
+		return nil, errors.WithStack(utils.ParseValidationError{"Validation failed"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -179,7 +179,7 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (*BACnetCalendarEntry
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetCalendarEntry")
 	}
 
 	// Finish initializing
@@ -195,7 +195,7 @@ func (m *BACnetCalendarEntry) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCalendarEntry"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntry")
 	}
 	// Virtual field
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
@@ -208,7 +208,7 @@ func (m *BACnetCalendarEntry) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCalendarEntry"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetCalendarEntry")
 	}
 	return nil
 }

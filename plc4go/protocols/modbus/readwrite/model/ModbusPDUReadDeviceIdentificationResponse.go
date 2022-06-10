@@ -221,7 +221,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadDeviceIdentificationResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -237,7 +237,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 
 	// Simple Field (level)
 	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for level")
 	}
 	_level, _levelErr := ModbusDeviceInformationLevelParse(readBuffer)
 	if _levelErr != nil {
@@ -245,7 +245,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	level := _level
 	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for level")
 	}
 
 	// Simple Field (individualAccess)
@@ -257,7 +257,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 
 	// Simple Field (conformityLevel)
 	if pullErr := readBuffer.PullContext("conformityLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for conformityLevel")
 	}
 	_conformityLevel, _conformityLevelErr := ModbusDeviceInformationConformityLevelParse(readBuffer)
 	if _conformityLevelErr != nil {
@@ -265,12 +265,12 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	conformityLevel := _conformityLevel
 	if closeErr := readBuffer.CloseContext("conformityLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for conformityLevel")
 	}
 
 	// Simple Field (moreFollows)
 	if pullErr := readBuffer.PullContext("moreFollows"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for moreFollows")
 	}
 	_moreFollows, _moreFollowsErr := ModbusDeviceInformationMoreFollowsParse(readBuffer)
 	if _moreFollowsErr != nil {
@@ -278,7 +278,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	moreFollows := _moreFollows
 	if closeErr := readBuffer.CloseContext("moreFollows"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for moreFollows")
 	}
 
 	// Simple Field (nextObjectId)
@@ -297,7 +297,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 
 	// Array field (objects)
 	if pullErr := readBuffer.PullContext("objects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objects")
 	}
 	// Count array
 	objects := make([]*ModbusDeviceInformationObject, numberOfObjects)
@@ -311,11 +311,11 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 		}
 	}
 	if closeErr := readBuffer.CloseContext("objects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objects")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadDeviceIdentificationResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadDeviceIdentificationResponse")
 	}
 
 	// Create a partially initialized instance
@@ -337,7 +337,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUReadDeviceIdentificationResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadDeviceIdentificationResponse")
 		}
 
 		// Const Field (meiType)
@@ -348,11 +348,11 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 
 		// Simple Field (level)
 		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for level")
 		}
 		_levelErr := m.Level.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for level")
 		}
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
@@ -367,11 +367,11 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 
 		// Simple Field (conformityLevel)
 		if pushErr := writeBuffer.PushContext("conformityLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for conformityLevel")
 		}
 		_conformityLevelErr := m.ConformityLevel.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("conformityLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for conformityLevel")
 		}
 		if _conformityLevelErr != nil {
 			return errors.Wrap(_conformityLevelErr, "Error serializing 'conformityLevel' field")
@@ -379,11 +379,11 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 
 		// Simple Field (moreFollows)
 		if pushErr := writeBuffer.PushContext("moreFollows"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for moreFollows")
 		}
 		_moreFollowsErr := m.MoreFollows.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("moreFollows"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for moreFollows")
 		}
 		if _moreFollowsErr != nil {
 			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
@@ -406,7 +406,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 		// Array Field (objects)
 		if m.Objects != nil {
 			if pushErr := writeBuffer.PushContext("objects", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for objects")
 			}
 			for _, _element := range m.Objects {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -415,12 +415,12 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 				}
 			}
 			if popErr := writeBuffer.PopContext("objects", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for objects")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDeviceIdentificationResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUReadDeviceIdentificationResponse")
 		}
 		return nil
 	}

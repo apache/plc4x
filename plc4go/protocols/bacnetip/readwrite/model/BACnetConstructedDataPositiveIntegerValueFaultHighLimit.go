@@ -142,14 +142,14 @@ func BACnetConstructedDataPositiveIntegerValueFaultHighLimitParse(readBuffer uti
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueFaultHighLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPositiveIntegerValueFaultHighLimit")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (faultHighLimit)
 	if pullErr := readBuffer.PullContext("faultHighLimit"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for faultHighLimit")
 	}
 	_faultHighLimit, _faultHighLimitErr := BACnetApplicationTagParse(readBuffer)
 	if _faultHighLimitErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPositiveIntegerValueFaultHighLimitParse(readBuffer uti
 	}
 	faultHighLimit := CastBACnetApplicationTagUnsignedInteger(_faultHighLimit)
 	if closeErr := readBuffer.CloseContext("faultHighLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for faultHighLimit")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueFaultHighLimit"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueFaultHighLimit")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPositiveIntegerValueFaultHighLimit) Serialize(writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPositiveIntegerValueFaultHighLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPositiveIntegerValueFaultHighLimit")
 		}
 
 		// Simple Field (faultHighLimit)
 		if pushErr := writeBuffer.PushContext("faultHighLimit"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for faultHighLimit")
 		}
 		_faultHighLimitErr := m.FaultHighLimit.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("faultHighLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for faultHighLimit")
 		}
 		if _faultHighLimitErr != nil {
 			return errors.Wrap(_faultHighLimitErr, "Error serializing 'faultHighLimit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPositiveIntegerValueFaultHighLimit"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPositiveIntegerValueFaultHighLimit")
 		}
 		return nil
 	}

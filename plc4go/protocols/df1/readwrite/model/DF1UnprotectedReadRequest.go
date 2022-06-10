@@ -144,7 +144,7 @@ func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (*DF1Unprotecte
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1UnprotectedReadRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -164,7 +164,7 @@ func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (*DF1Unprotecte
 	size := _size
 
 	if closeErr := readBuffer.CloseContext("DF1UnprotectedReadRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1UnprotectedReadRequest")
 	}
 
 	// Create a partially initialized instance
@@ -182,7 +182,7 @@ func (m *DF1UnprotectedReadRequest) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1UnprotectedReadRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DF1UnprotectedReadRequest")
 		}
 
 		// Simple Field (address)
@@ -200,7 +200,7 @@ func (m *DF1UnprotectedReadRequest) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		if popErr := writeBuffer.PopContext("DF1UnprotectedReadRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DF1UnprotectedReadRequest")
 		}
 		return nil
 	}

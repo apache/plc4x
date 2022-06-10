@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -199,14 +200,14 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPointToMultiPointNormal"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusCommandPointToPointToMultiPointNormal")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (application)
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
@@ -214,12 +215,12 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
 	// Simple Field (salData)
 	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for salData")
 	}
 	_salData, _salDataErr := SALDataParse(readBuffer)
 	if _salDataErr != nil {
@@ -227,7 +228,7 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 	}
 	salData := CastSALData(_salData)
 	if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for salData")
 	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
@@ -235,18 +236,19 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 	if srchk {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for crc")
 		}
 		_val, _err := ChecksumParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
 		default:
 			crc = CastChecksum(_val)
 			if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for crc")
 			}
 		}
 	}
@@ -265,18 +267,19 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 	if bool(bool(bool((peekAlpha) >= (0x67)))) && bool(bool(bool((peekAlpha) <= (0x7A)))) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
 		_val, _err := AlphaParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field")
 		default:
 			alpha = CastAlpha(_val)
 			if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for alpha")
 			}
 		}
 	}
@@ -291,7 +294,7 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusCommandPointToPointToMultiPointNormal"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusCommandPointToPointToMultiPointNormal")
 	}
 
 	// Create a partially initialized instance
@@ -312,16 +315,16 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CBusCommandPointToPointToMultiPointNormal"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CBusCommandPointToPointToMultiPointNormal")
 		}
 
 		// Simple Field (application)
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for application")
 		}
 		_applicationErr := m.Application.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for application")
 		}
 		if _applicationErr != nil {
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
@@ -329,11 +332,11 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 
 		// Simple Field (salData)
 		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for salData")
 		}
 		_salDataErr := m.SalData.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for salData")
 		}
 		if _salDataErr != nil {
 			return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
@@ -343,12 +346,12 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 		var crc *Checksum = nil
 		if m.Crc != nil {
 			if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for crc")
 			}
 			crc = m.Crc
 			_crcErr := crc.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("crc"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for crc")
 			}
 			if _crcErr != nil {
 				return errors.Wrap(_crcErr, "Error serializing 'crc' field")
@@ -359,12 +362,12 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 		var alpha *Alpha = nil
 		if m.Alpha != nil {
 			if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for alpha")
 			}
 			alpha = m.Alpha
 			_alphaErr := alpha.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for alpha")
 			}
 			if _alphaErr != nil {
 				return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
@@ -378,7 +381,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 		}
 
 		if popErr := writeBuffer.PopContext("CBusCommandPointToPointToMultiPointNormal"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CBusCommandPointToPointToMultiPointNormal")
 		}
 		return nil
 	}

@@ -133,14 +133,14 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfValueNewValueChangedValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (changedValue)
 	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for changedValue")
 	}
 	_changedValue, _changedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _changedValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuff
 	}
 	changedValue := CastBACnetContextTagReal(_changedValue)
 	if closeErr := readBuffer.CloseContext("changedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for changedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetNotificationParametersChangeOfValueNewValueChangedValue")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) Serializ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfValueNewValueChangedValue")
 		}
 
 		// Simple Field (changedValue)
 		if pushErr := writeBuffer.PushContext("changedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for changedValue")
 		}
 		_changedValueErr := m.ChangedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("changedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for changedValue")
 		}
 		if _changedValueErr != nil {
 			return errors.Wrap(_changedValueErr, "Error serializing 'changedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfValueNewValueChangedValue")
 		}
 		return nil
 	}

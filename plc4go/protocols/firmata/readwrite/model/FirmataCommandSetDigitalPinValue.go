@@ -148,7 +148,7 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandSetDigitalPinValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -182,7 +182,7 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 	on := _on
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetDigitalPinValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandSetDigitalPinValue")
 	}
 
 	// Create a partially initialized instance
@@ -200,7 +200,7 @@ func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataCommandSetDigitalPinValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for FirmataCommandSetDigitalPinValue")
 		}
 
 		// Simple Field (pin)
@@ -226,7 +226,7 @@ func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetDigitalPinValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for FirmataCommandSetDigitalPinValue")
 		}
 		return nil
 	}

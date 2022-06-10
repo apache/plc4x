@@ -146,14 +146,14 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataListOfObjectPropertyReferences"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataListOfObjectPropertyReferences")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (references)
 	if pullErr := readBuffer.PullContext("references", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for references")
 	}
 	// Terminated array
 	references := make([]*BACnetDeviceObjectPropertyReference, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 		}
 	}
 	if closeErr := readBuffer.CloseContext("references", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for references")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataListOfObjectPropertyReferences"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataListOfObjectPropertyReferences")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataListOfObjectPropertyReferences) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataListOfObjectPropertyReferences"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataListOfObjectPropertyReferences")
 		}
 
 		// Array Field (references)
 		if m.References != nil {
 			if pushErr := writeBuffer.PushContext("references", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for references")
 			}
 			for _, _element := range m.References {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataListOfObjectPropertyReferences) Serialize(writeBuf
 				}
 			}
 			if popErr := writeBuffer.PopContext("references", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for references")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataListOfObjectPropertyReferences"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataListOfObjectPropertyReferences")
 		}
 		return nil
 	}

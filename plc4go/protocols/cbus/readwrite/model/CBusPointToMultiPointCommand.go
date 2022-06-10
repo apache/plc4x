@@ -119,7 +119,7 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToMultiPointCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -154,7 +154,7 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToMultiPointCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusPointToMultiPointCommand")
 	}
 
 	// Finish initializing
@@ -170,7 +170,7 @@ func (m *CBusPointToMultiPointCommand) SerializeParent(writeBuffer utils.WriteBu
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusPointToMultiPointCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CBusPointToMultiPointCommand")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -179,7 +179,7 @@ func (m *CBusPointToMultiPointCommand) SerializeParent(writeBuffer utils.WriteBu
 	}
 
 	if popErr := writeBuffer.PopContext("CBusPointToMultiPointCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CBusPointToMultiPointCommand")
 	}
 	return nil
 }

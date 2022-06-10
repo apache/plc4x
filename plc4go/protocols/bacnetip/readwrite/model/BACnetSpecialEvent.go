@@ -117,14 +117,14 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (*BACnetSpecialEvent, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEvent"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEvent")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (period)
 	if pullErr := readBuffer.PullContext("period"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for period")
 	}
 	_period, _periodErr := BACnetSpecialEventPeriodParse(readBuffer)
 	if _periodErr != nil {
@@ -132,12 +132,12 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (*BACnetSpecialEvent, 
 	}
 	period := CastBACnetSpecialEventPeriod(_period)
 	if closeErr := readBuffer.CloseContext("period"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for period")
 	}
 
 	// Simple Field (listOfTimeValues)
 	if pullErr := readBuffer.PullContext("listOfTimeValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfTimeValues")
 	}
 	_listOfTimeValues, _listOfTimeValuesErr := BACnetSpecialEventListOfTimeValuesParse(readBuffer, uint8(uint8(2)))
 	if _listOfTimeValuesErr != nil {
@@ -145,12 +145,12 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (*BACnetSpecialEvent, 
 	}
 	listOfTimeValues := CastBACnetSpecialEventListOfTimeValues(_listOfTimeValues)
 	if closeErr := readBuffer.CloseContext("listOfTimeValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfTimeValues")
 	}
 
 	// Simple Field (eventPriority)
 	if pullErr := readBuffer.PullContext("eventPriority"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventPriority")
 	}
 	_eventPriority, _eventPriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _eventPriorityErr != nil {
@@ -158,11 +158,11 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (*BACnetSpecialEvent, 
 	}
 	eventPriority := CastBACnetContextTagUnsignedInteger(_eventPriority)
 	if closeErr := readBuffer.CloseContext("eventPriority"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventPriority")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEvent"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetSpecialEvent")
 	}
 
 	// Create the instance
@@ -173,16 +173,16 @@ func (m *BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetSpecialEvent"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEvent")
 	}
 
 	// Simple Field (period)
 	if pushErr := writeBuffer.PushContext("period"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for period")
 	}
 	_periodErr := m.Period.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("period"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for period")
 	}
 	if _periodErr != nil {
 		return errors.Wrap(_periodErr, "Error serializing 'period' field")
@@ -190,11 +190,11 @@ func (m *BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (listOfTimeValues)
 	if pushErr := writeBuffer.PushContext("listOfTimeValues"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for listOfTimeValues")
 	}
 	_listOfTimeValuesErr := m.ListOfTimeValues.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("listOfTimeValues"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for listOfTimeValues")
 	}
 	if _listOfTimeValuesErr != nil {
 		return errors.Wrap(_listOfTimeValuesErr, "Error serializing 'listOfTimeValues' field")
@@ -202,18 +202,18 @@ func (m *BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (eventPriority)
 	if pushErr := writeBuffer.PushContext("eventPriority"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for eventPriority")
 	}
 	_eventPriorityErr := m.EventPriority.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("eventPriority"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for eventPriority")
 	}
 	if _eventPriorityErr != nil {
 		return errors.Wrap(_eventPriorityErr, "Error serializing 'eventPriority' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSpecialEvent"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetSpecialEvent")
 	}
 	return nil
 }

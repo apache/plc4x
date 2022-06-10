@@ -123,14 +123,14 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Confirmation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for Confirmation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (alpha)
 	if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 	}
 	_alpha, _alphaErr := AlphaParse(readBuffer)
 	if _alphaErr != nil {
@@ -138,7 +138,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
 	}
 	alpha := CastAlpha(_alpha)
 	if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for alpha")
 	}
 
 	// Discriminator Field (confirmationType) (Used as input to a switch field)
@@ -174,7 +174,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("Confirmation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for Confirmation")
 	}
 
 	// Finish initializing
@@ -190,16 +190,16 @@ func (m *Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child ICon
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Confirmation"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for Confirmation")
 	}
 
 	// Simple Field (alpha)
 	if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for alpha")
 	}
 	_alphaErr := m.Alpha.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for alpha")
 	}
 	if _alphaErr != nil {
 		return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
@@ -219,7 +219,7 @@ func (m *Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child ICon
 	}
 
 	if popErr := writeBuffer.PopContext("Confirmation"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for Confirmation")
 	}
 	return nil
 }

@@ -128,14 +128,14 @@ func BACnetPropertyStatesReasonForHaltParse(readBuffer utils.ReadBuffer, peekedT
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesReasonForHalt"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesReasonForHalt")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (reasonForHalt)
 	if pullErr := readBuffer.PullContext("reasonForHalt"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for reasonForHalt")
 	}
 	_reasonForHalt, _reasonForHaltErr := BACnetProgramErrorTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reasonForHaltErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesReasonForHaltParse(readBuffer utils.ReadBuffer, peekedT
 	}
 	reasonForHalt := CastBACnetProgramErrorTagged(_reasonForHalt)
 	if closeErr := readBuffer.CloseContext("reasonForHalt"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for reasonForHalt")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesReasonForHalt"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesReasonForHalt")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesReasonForHalt) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesReasonForHalt"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesReasonForHalt")
 		}
 
 		// Simple Field (reasonForHalt)
 		if pushErr := writeBuffer.PushContext("reasonForHalt"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for reasonForHalt")
 		}
 		_reasonForHaltErr := m.ReasonForHalt.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("reasonForHalt"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for reasonForHalt")
 		}
 		if _reasonForHaltErr != nil {
 			return errors.Wrap(_reasonForHaltErr, "Error serializing 'reasonForHalt' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesReasonForHalt"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesReasonForHalt")
 		}
 		return nil
 	}

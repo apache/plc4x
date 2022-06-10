@@ -145,14 +145,14 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestTimeSynchronization")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (synchronizedDate)
 	if pullErr := readBuffer.PullContext("synchronizedDate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedDate")
 	}
 	_synchronizedDate, _synchronizedDateErr := BACnetApplicationTagParse(readBuffer)
 	if _synchronizedDateErr != nil {
@@ -160,12 +160,12 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	}
 	synchronizedDate := CastBACnetApplicationTagDate(_synchronizedDate)
 	if closeErr := readBuffer.CloseContext("synchronizedDate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for synchronizedDate")
 	}
 
 	// Simple Field (synchronizedTime)
 	if pullErr := readBuffer.PullContext("synchronizedTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedTime")
 	}
 	_synchronizedTime, _synchronizedTimeErr := BACnetApplicationTagParse(readBuffer)
 	if _synchronizedTimeErr != nil {
@@ -173,11 +173,11 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	}
 	synchronizedTime := CastBACnetApplicationTagTime(_synchronizedTime)
 	if closeErr := readBuffer.CloseContext("synchronizedTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for synchronizedTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequestTimeSynchronization")
 	}
 
 	// Create a partially initialized instance
@@ -195,16 +195,16 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(writeBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestTimeSynchronization")
 		}
 
 		// Simple Field (synchronizedDate)
 		if pushErr := writeBuffer.PushContext("synchronizedDate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for synchronizedDate")
 		}
 		_synchronizedDateErr := m.SynchronizedDate.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("synchronizedDate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for synchronizedDate")
 		}
 		if _synchronizedDateErr != nil {
 			return errors.Wrap(_synchronizedDateErr, "Error serializing 'synchronizedDate' field")
@@ -212,18 +212,18 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(writeBuff
 
 		// Simple Field (synchronizedTime)
 		if pushErr := writeBuffer.PushContext("synchronizedTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for synchronizedTime")
 		}
 		_synchronizedTimeErr := m.SynchronizedTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("synchronizedTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for synchronizedTime")
 		}
 		if _synchronizedTimeErr != nil {
 			return errors.Wrap(_synchronizedTimeErr, "Error serializing 'synchronizedTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequestTimeSynchronization")
 		}
 		return nil
 	}

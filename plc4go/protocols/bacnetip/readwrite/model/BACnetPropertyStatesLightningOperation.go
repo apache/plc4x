@@ -128,14 +128,14 @@ func BACnetPropertyStatesLightningOperationParse(readBuffer utils.ReadBuffer, pe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningOperation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLightningOperation")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (lightningOperation)
 	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
 	}
 	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLightningOperationParse(readBuffer utils.ReadBuffer, pe
 	}
 	lightningOperation := CastBACnetLightingOperationTagged(_lightningOperation)
 	if closeErr := readBuffer.CloseContext("lightningOperation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for lightningOperation")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLightningOperation"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLightningOperation")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLightningOperation) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLightningOperation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLightningOperation")
 		}
 
 		// Simple Field (lightningOperation)
 		if pushErr := writeBuffer.PushContext("lightningOperation"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for lightningOperation")
 		}
 		_lightningOperationErr := m.LightningOperation.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("lightningOperation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for lightningOperation")
 		}
 		if _lightningOperationErr != nil {
 			return errors.Wrap(_lightningOperationErr, "Error serializing 'lightningOperation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLightningOperation"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLightningOperation")
 		}
 		return nil
 	}

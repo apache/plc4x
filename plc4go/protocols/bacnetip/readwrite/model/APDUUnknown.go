@@ -146,7 +146,7 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnkn
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUUnknown"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDUUnknown")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -165,7 +165,7 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnkn
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUUnknown"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDUUnknown")
 	}
 
 	// Create a partially initialized instance
@@ -183,7 +183,7 @@ func (m *APDUUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUUnknown"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for APDUUnknown")
 		}
 
 		// Simple Field (unknownTypeRest)
@@ -203,7 +203,7 @@ func (m *APDUUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("APDUUnknown"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for APDUUnknown")
 		}
 		return nil
 	}

@@ -131,14 +131,14 @@ func BACnetPriorityValueUnsignedParse(readBuffer utils.ReadBuffer, objectTypeArg
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueUnsigned"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueUnsigned")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (unsignedValue)
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
 	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
 	if _unsignedValueErr != nil {
@@ -146,11 +146,11 @@ func BACnetPriorityValueUnsignedParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}
 	unsignedValue := CastBACnetApplicationTagUnsignedInteger(_unsignedValue)
 	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueUnsigned"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValueUnsigned")
 	}
 
 	// Create a partially initialized instance
@@ -167,23 +167,23 @@ func (m *BACnetPriorityValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) e
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPriorityValueUnsigned"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueUnsigned")
 		}
 
 		// Simple Field (unsignedValue)
 		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
 		_unsignedValueErr := m.UnsignedValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
 		if _unsignedValueErr != nil {
 			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueUnsigned"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPriorityValueUnsigned")
 		}
 		return nil
 	}

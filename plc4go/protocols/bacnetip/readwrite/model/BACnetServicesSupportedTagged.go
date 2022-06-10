@@ -200,14 +200,14 @@ func BACnetServicesSupportedTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServicesSupportedTagged"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServicesSupportedTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
@@ -215,22 +215,22 @@ func BACnetServicesSupportedTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	header := CastBACnetTagHeader(_header)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, utils.ParseValidationError{"tag class doesn't match"}
+		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
+		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
 	_payload, _payloadErr := BACnetTagPayloadBitStringParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
@@ -238,7 +238,7 @@ func BACnetServicesSupportedTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	payload := CastBACnetTagPayloadBitString(_payload)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
 
 	// Virtual field
@@ -292,7 +292,7 @@ func BACnetServicesSupportedTaggedParse(readBuffer utils.ReadBuffer, tagNumber u
 	_ = getEventInformation
 
 	if closeErr := readBuffer.CloseContext("BACnetServicesSupportedTagged"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetServicesSupportedTagged")
 	}
 
 	// Create the instance
@@ -303,16 +303,16 @@ func (m *BACnetServicesSupportedTagged) Serialize(writeBuffer utils.WriteBuffer)
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetServicesSupportedTagged"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetServicesSupportedTagged")
 	}
 
 	// Simple Field (header)
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for header")
 	}
 	_headerErr := m.Header.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for header")
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
@@ -320,11 +320,11 @@ func (m *BACnetServicesSupportedTagged) Serialize(writeBuffer utils.WriteBuffer)
 
 	// Simple Field (payload)
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
 	_payloadErr := m.Payload.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for payload")
 	}
 	if _payloadErr != nil {
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
@@ -371,7 +371,7 @@ func (m *BACnetServicesSupportedTagged) Serialize(writeBuffer utils.WriteBuffer)
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetServicesSupportedTagged"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetServicesSupportedTagged")
 	}
 	return nil
 }

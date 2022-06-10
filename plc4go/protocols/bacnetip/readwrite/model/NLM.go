@@ -128,7 +128,7 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLM"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for NLM")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	var vendorId *BACnetVendorId = nil
 	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
 		if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 		}
 		_val, _err := BACnetVendorIdParse(readBuffer)
 		if _err != nil {
@@ -151,7 +151,7 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 		}
 		vendorId = &_val
 		if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-			return nil, closeErr
+			return nil, errors.Wrap(closeErr, "Error closing for vendorId")
 		}
 	}
 
@@ -192,7 +192,7 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("NLM"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for NLM")
 	}
 
 	// Finish initializing
@@ -208,7 +208,7 @@ func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, seriali
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NLM"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for NLM")
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
@@ -223,12 +223,12 @@ func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, seriali
 	var vendorId *BACnetVendorId = nil
 	if m.VendorId != nil {
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
 		vendorId = m.VendorId
 		_vendorIdErr := vendorId.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
@@ -241,7 +241,7 @@ func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, seriali
 	}
 
 	if popErr := writeBuffer.PopContext("NLM"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for NLM")
 	}
 	return nil
 }

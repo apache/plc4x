@@ -142,14 +142,14 @@ func BACnetConstructedDataScaleFactorParse(readBuffer utils.ReadBuffer, tagNumbe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScaleFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataScaleFactor")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (scaleFactor)
 	if pullErr := readBuffer.PullContext("scaleFactor"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for scaleFactor")
 	}
 	_scaleFactor, _scaleFactorErr := BACnetApplicationTagParse(readBuffer)
 	if _scaleFactorErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataScaleFactorParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 	scaleFactor := CastBACnetApplicationTagReal(_scaleFactor)
 	if closeErr := readBuffer.CloseContext("scaleFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for scaleFactor")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScaleFactor"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScaleFactor")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataScaleFactor) Serialize(writeBuffer utils.WriteBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataScaleFactor"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataScaleFactor")
 		}
 
 		// Simple Field (scaleFactor)
 		if pushErr := writeBuffer.PushContext("scaleFactor"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for scaleFactor")
 		}
 		_scaleFactorErr := m.ScaleFactor.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("scaleFactor"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for scaleFactor")
 		}
 		if _scaleFactorErr != nil {
 			return errors.Wrap(_scaleFactorErr, "Error serializing 'scaleFactor' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataScaleFactor"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataScaleFactor")
 		}
 		return nil
 	}

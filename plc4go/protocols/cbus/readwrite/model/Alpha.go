@@ -97,7 +97,7 @@ func AlphaParse(readBuffer utils.ReadBuffer) (*Alpha, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Alpha"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for Alpha")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func AlphaParse(readBuffer utils.ReadBuffer) (*Alpha, error) {
 	character := _character
 
 	if closeErr := readBuffer.CloseContext("Alpha"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for Alpha")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *Alpha) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Alpha"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for Alpha")
 	}
 
 	// Simple Field (character)
@@ -132,7 +132,7 @@ func (m *Alpha) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("Alpha"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for Alpha")
 	}
 	return nil
 }

@@ -142,14 +142,14 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataControlledVariableValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataControlledVariableValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (controlledVariableValue)
 	if pullErr := readBuffer.PullContext("controlledVariableValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for controlledVariableValue")
 	}
 	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParse(readBuffer)
 	if _controlledVariableValueErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 	}
 	controlledVariableValue := CastBACnetApplicationTagReal(_controlledVariableValue)
 	if closeErr := readBuffer.CloseContext("controlledVariableValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for controlledVariableValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataControlledVariableValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataControlledVariableValue")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataControlledVariableValue) Serialize(writeBuffer uti
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataControlledVariableValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataControlledVariableValue")
 		}
 
 		// Simple Field (controlledVariableValue)
 		if pushErr := writeBuffer.PushContext("controlledVariableValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for controlledVariableValue")
 		}
 		_controlledVariableValueErr := m.ControlledVariableValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("controlledVariableValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for controlledVariableValue")
 		}
 		if _controlledVariableValueErr != nil {
 			return errors.Wrap(_controlledVariableValueErr, "Error serializing 'controlledVariableValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataControlledVariableValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataControlledVariableValue")
 		}
 		return nil
 	}

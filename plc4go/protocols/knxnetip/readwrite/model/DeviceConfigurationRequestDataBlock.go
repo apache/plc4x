@@ -114,7 +114,7 @@ func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (*Dev
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequestDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationRequestDataBlock")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -155,7 +155,7 @@ func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (*Dev
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationRequestDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DeviceConfigurationRequestDataBlock")
 	}
 
 	// Create the instance
@@ -166,7 +166,7 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationRequestDataBlock"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationRequestDataBlock")
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -199,7 +199,7 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.WriteB
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceConfigurationRequestDataBlock"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for DeviceConfigurationRequestDataBlock")
 	}
 	return nil
 }

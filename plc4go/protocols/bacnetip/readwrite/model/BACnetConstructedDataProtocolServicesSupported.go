@@ -142,14 +142,14 @@ func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProtocolServicesSupported"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProtocolServicesSupported")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (protocolServicesSupported)
 	if pullErr := readBuffer.PullContext("protocolServicesSupported"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for protocolServicesSupported")
 	}
 	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _protocolServicesSupportedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBu
 	}
 	protocolServicesSupported := CastBACnetServicesSupportedTagged(_protocolServicesSupported)
 	if closeErr := readBuffer.CloseContext("protocolServicesSupported"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for protocolServicesSupported")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolServicesSupported"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolServicesSupported")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataProtocolServicesSupported) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataProtocolServicesSupported"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolServicesSupported")
 		}
 
 		// Simple Field (protocolServicesSupported)
 		if pushErr := writeBuffer.PushContext("protocolServicesSupported"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for protocolServicesSupported")
 		}
 		_protocolServicesSupportedErr := m.ProtocolServicesSupported.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolServicesSupported"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for protocolServicesSupported")
 		}
 		if _protocolServicesSupportedErr != nil {
 			return errors.Wrap(_protocolServicesSupportedErr, "Error serializing 'protocolServicesSupported' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolServicesSupported"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataProtocolServicesSupported")
 		}
 		return nil
 	}

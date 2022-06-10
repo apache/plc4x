@@ -142,14 +142,14 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventCredential"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessEventCredential")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (accessEventCredential)
 	if pullErr := readBuffer.PullContext("accessEventCredential"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for accessEventCredential")
 	}
 	_accessEventCredential, _accessEventCredentialErr := BACnetDeviceObjectReferenceParse(readBuffer)
 	if _accessEventCredentialErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 	}
 	accessEventCredential := CastBACnetDeviceObjectReference(_accessEventCredential)
 	if closeErr := readBuffer.CloseContext("accessEventCredential"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for accessEventCredential")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventCredential"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventCredential")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataAccessEventCredential) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataAccessEventCredential"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventCredential")
 		}
 
 		// Simple Field (accessEventCredential)
 		if pushErr := writeBuffer.PushContext("accessEventCredential"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for accessEventCredential")
 		}
 		_accessEventCredentialErr := m.AccessEventCredential.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("accessEventCredential"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for accessEventCredential")
 		}
 		if _accessEventCredentialErr != nil {
 			return errors.Wrap(_accessEventCredentialErr, "Error serializing 'accessEventCredential' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventCredential"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataAccessEventCredential")
 		}
 		return nil
 	}

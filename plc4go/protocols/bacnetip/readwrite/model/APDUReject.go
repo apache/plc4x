@@ -148,7 +148,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for APDUReject")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -176,7 +176,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 
 	// Simple Field (rejectReason)
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
 	}
 	_rejectReason, _rejectReasonErr := BACnetRejectReasonTaggedParse(readBuffer, uint32(uint32(1)))
 	if _rejectReasonErr != nil {
@@ -184,11 +184,11 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDURejec
 	}
 	rejectReason := CastBACnetRejectReasonTagged(_rejectReason)
 	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for rejectReason")
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUReject"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for APDUReject")
 	}
 
 	// Create a partially initialized instance
@@ -206,7 +206,7 @@ func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("APDUReject"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for APDUReject")
 		}
 
 		// Reserved Field (reserved)
@@ -226,18 +226,18 @@ func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (rejectReason)
 		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for rejectReason")
 		}
 		_rejectReasonErr := m.RejectReason.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for rejectReason")
 		}
 		if _rejectReasonErr != nil {
 			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUReject"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for APDUReject")
 		}
 		return nil
 	}

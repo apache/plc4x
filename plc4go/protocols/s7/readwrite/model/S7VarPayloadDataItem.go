@@ -129,14 +129,14 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarPayloadDataItem"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7VarPayloadDataItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
@@ -144,12 +144,12 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
 	}
 
 	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
@@ -157,7 +157,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -176,7 +176,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 	// Padding Field (padding)
 	{
 		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for padding")
 		}
 		_timesPadding := (int32(int32(len(data))) % int32(int32(2)))
 		for ; (readBuffer.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
@@ -187,12 +187,12 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 			}
 		}
 		if closeErr := readBuffer.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {
-			return nil, closeErr
+			return nil, errors.Wrap(closeErr, "Error closing for padding")
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("S7VarPayloadDataItem"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7VarPayloadDataItem")
 	}
 
 	// Create the instance
@@ -203,16 +203,16 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7VarPayloadDataItem"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7VarPayloadDataItem")
 	}
 
 	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
 	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
@@ -220,11 +220,11 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (transportSize)
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for transportSize")
 	}
 	_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for transportSize")
 	}
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
@@ -251,7 +251,7 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Padding Field (padding)
 	{
 		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for padding")
 		}
 		_timesPadding := uint8(int32(int32(len(m.GetData()))) % int32(int32(2)))
 		for ; _timesPadding > 0; _timesPadding-- {
@@ -262,12 +262,12 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		if popErr := writeBuffer.PopContext("padding", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for padding")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("S7VarPayloadDataItem"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7VarPayloadDataItem")
 	}
 	return nil
 }

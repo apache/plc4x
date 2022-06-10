@@ -167,7 +167,7 @@ func CBusOptionsParse(readBuffer utils.ReadBuffer) (*CBusOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusOptions"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusOptions")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -229,7 +229,7 @@ func CBusOptionsParse(readBuffer utils.ReadBuffer) (*CBusOptions, error) {
 	pcn := _pcn
 
 	if closeErr := readBuffer.CloseContext("CBusOptions"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusOptions")
 	}
 
 	// Create the instance
@@ -240,7 +240,7 @@ func (m *CBusOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusOptions"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CBusOptions")
 	}
 
 	// Simple Field (connect)
@@ -300,7 +300,7 @@ func (m *CBusOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("CBusOptions"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CBusOptions")
 	}
 	return nil
 }

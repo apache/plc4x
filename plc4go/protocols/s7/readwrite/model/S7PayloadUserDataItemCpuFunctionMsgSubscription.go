@@ -182,7 +182,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionMsgSubscription")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -219,7 +219,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	var Alarmtype *AlarmStateType = nil
 	if bool((Subscription) >= (128)) {
 		if pullErr := readBuffer.PullContext("Alarmtype"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for Alarmtype")
 		}
 		_val, _err := AlarmStateTypeParse(readBuffer)
 		if _err != nil {
@@ -227,7 +227,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 		}
 		Alarmtype = &_val
 		if closeErr := readBuffer.CloseContext("Alarmtype"); closeErr != nil {
-			return nil, closeErr
+			return nil, errors.Wrap(closeErr, "Error closing for Alarmtype")
 		}
 	}
 
@@ -242,7 +242,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionMsgSubscription")
 	}
 
 	// Create a partially initialized instance
@@ -262,7 +262,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
 
 		// Simple Field (Subscription)
@@ -291,12 +291,12 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer 
 		var Alarmtype *AlarmStateType = nil
 		if m.Alarmtype != nil {
 			if pushErr := writeBuffer.PushContext("Alarmtype"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for Alarmtype")
 			}
 			Alarmtype = m.Alarmtype
 			_AlarmtypeErr := Alarmtype.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("Alarmtype"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for Alarmtype")
 			}
 			if _AlarmtypeErr != nil {
 				return errors.Wrap(_AlarmtypeErr, "Error serializing 'Alarmtype' field")
@@ -314,7 +314,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer 
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
 		return nil
 	}

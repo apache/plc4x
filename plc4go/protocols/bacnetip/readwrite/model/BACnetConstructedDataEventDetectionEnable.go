@@ -142,14 +142,14 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventDetectionEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEventDetectionEnable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (eventDetectionEnable)
 	if pullErr := readBuffer.PullContext("eventDetectionEnable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for eventDetectionEnable")
 	}
 	_eventDetectionEnable, _eventDetectionEnableErr := BACnetApplicationTagParse(readBuffer)
 	if _eventDetectionEnableErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 	}
 	eventDetectionEnable := CastBACnetApplicationTagBoolean(_eventDetectionEnable)
 	if closeErr := readBuffer.CloseContext("eventDetectionEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for eventDetectionEnable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventDetectionEnable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventDetectionEnable")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataEventDetectionEnable) Serialize(writeBuffer utils.
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataEventDetectionEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventDetectionEnable")
 		}
 
 		// Simple Field (eventDetectionEnable)
 		if pushErr := writeBuffer.PushContext("eventDetectionEnable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for eventDetectionEnable")
 		}
 		_eventDetectionEnableErr := m.EventDetectionEnable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("eventDetectionEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for eventDetectionEnable")
 		}
 		if _eventDetectionEnableErr != nil {
 			return errors.Wrap(_eventDetectionEnableErr, "Error serializing 'eventDetectionEnable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventDetectionEnable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataEventDetectionEnable")
 		}
 		return nil
 	}

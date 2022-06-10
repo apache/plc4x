@@ -101,7 +101,7 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGro
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddress"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for KnxGroupAddress")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -129,7 +129,7 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGro
 	}
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddress"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for KnxGroupAddress")
 	}
 
 	// Finish initializing
@@ -145,7 +145,7 @@ func (m *KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxGroupAddress"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for KnxGroupAddress")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
@@ -154,7 +154,7 @@ func (m *KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	if popErr := writeBuffer.PopContext("KnxGroupAddress"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for KnxGroupAddress")
 	}
 	return nil
 }

@@ -133,14 +133,14 @@ func BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResultPropertyValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyAccessResultAccessResultPropertyValue")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (propertyValue)
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 	}
 	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(4)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), propertyArrayIndexArgument)
 	if _propertyValueErr != nil {
@@ -148,11 +148,11 @@ func BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer utils.R
 	}
 	propertyValue := CastBACnetConstructedData(_propertyValue)
 	if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyAccessResultAccessResultPropertyValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyAccessResultAccessResultPropertyValue")
 	}
 
 	// Create a partially initialized instance
@@ -169,23 +169,23 @@ func (m *BACnetPropertyAccessResultAccessResultPropertyValue) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyAccessResultAccessResultPropertyValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyAccessResultAccessResultPropertyValue")
 		}
 
 		// Simple Field (propertyValue)
 		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		_propertyValueErr := m.PropertyValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
 		if _propertyValueErr != nil {
 			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyAccessResultAccessResultPropertyValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyAccessResultAccessResultPropertyValue")
 		}
 		return nil
 	}

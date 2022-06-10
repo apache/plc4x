@@ -138,14 +138,14 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItem"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItem")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
 	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
@@ -153,12 +153,12 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
 	}
 
 	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
 	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
@@ -166,7 +166,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -229,7 +229,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItem"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItem")
 	}
 
 	// Finish initializing
@@ -245,16 +245,16 @@ func (m *S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, c
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7PayloadUserDataItem"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItem")
 	}
 
 	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
 	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
@@ -262,11 +262,11 @@ func (m *S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, c
 
 	// Simple Field (transportSize)
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for transportSize")
 	}
 	_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for transportSize")
 	}
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
@@ -285,7 +285,7 @@ func (m *S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, c
 	}
 
 	if popErr := writeBuffer.PopContext("S7PayloadUserDataItem"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for S7PayloadUserDataItem")
 	}
 	return nil
 }

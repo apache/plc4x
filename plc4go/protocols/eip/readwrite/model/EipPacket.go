@@ -158,7 +158,7 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for EipPacket")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -192,7 +192,7 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 
 	// Array field (senderContext)
 	if pullErr := readBuffer.PullContext("senderContext", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for senderContext")
 	}
 	// Count array
 	senderContext := make([]uint8, uint16(8))
@@ -206,7 +206,7 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 		}
 	}
 	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for senderContext")
 	}
 
 	// Simple Field (options)
@@ -239,7 +239,7 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	}
 
 	if closeErr := readBuffer.CloseContext("EipPacket"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for EipPacket")
 	}
 
 	// Finish initializing
@@ -255,7 +255,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("EipPacket"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for EipPacket")
 	}
 
 	// Discriminator Field (command) (Used as input to a switch field)
@@ -290,7 +290,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	// Array Field (senderContext)
 	if m.SenderContext != nil {
 		if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for senderContext")
 		}
 		for _, _element := range m.SenderContext {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -299,7 +299,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 			}
 		}
 		if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for senderContext")
 		}
 	}
 
@@ -316,7 +316,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 
 	if popErr := writeBuffer.PopContext("EipPacket"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for EipPacket")
 	}
 	return nil
 }

@@ -106,7 +106,7 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduData"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ApduData")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -166,7 +166,7 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, er
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduData"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ApduData")
 	}
 
 	// Finish initializing
@@ -182,7 +182,7 @@ func (m *ApduData) SerializeParent(writeBuffer utils.WriteBuffer, child IApduDat
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApduData"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ApduData")
 	}
 
 	// Discriminator Field (apciType) (Used as input to a switch field)
@@ -199,7 +199,7 @@ func (m *ApduData) SerializeParent(writeBuffer utils.WriteBuffer, child IApduDat
 	}
 
 	if popErr := writeBuffer.PopContext("ApduData"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ApduData")
 	}
 	return nil
 }

@@ -156,7 +156,7 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandPinStateResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -183,7 +183,7 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 	pinState := _pinState
 
 	if closeErr := readBuffer.CloseContext("SysexCommandPinStateResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandPinStateResponse")
 	}
 
 	// Create a partially initialized instance
@@ -202,7 +202,7 @@ func (m *SysexCommandPinStateResponse) Serialize(writeBuffer utils.WriteBuffer) 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("SysexCommandPinStateResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for SysexCommandPinStateResponse")
 		}
 
 		// Simple Field (pin)
@@ -227,7 +227,7 @@ func (m *SysexCommandPinStateResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandPinStateResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for SysexCommandPinStateResponse")
 		}
 		return nil
 	}

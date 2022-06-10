@@ -107,14 +107,14 @@ func BACnetHostNPortParse(readBuffer utils.ReadBuffer) (*BACnetHostNPort, error)
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostNPort"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetHostNPort")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (host)
 	if pullErr := readBuffer.PullContext("host"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for host")
 	}
 	_host, _hostErr := BACnetHostAddressEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _hostErr != nil {
@@ -122,12 +122,12 @@ func BACnetHostNPortParse(readBuffer utils.ReadBuffer) (*BACnetHostNPort, error)
 	}
 	host := CastBACnetHostAddressEnclosed(_host)
 	if closeErr := readBuffer.CloseContext("host"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for host")
 	}
 
 	// Simple Field (port)
 	if pullErr := readBuffer.PullContext("port"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for port")
 	}
 	_port, _portErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portErr != nil {
@@ -135,11 +135,11 @@ func BACnetHostNPortParse(readBuffer utils.ReadBuffer) (*BACnetHostNPort, error)
 	}
 	port := CastBACnetContextTagUnsignedInteger(_port)
 	if closeErr := readBuffer.CloseContext("port"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for port")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetHostNPort"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetHostNPort")
 	}
 
 	// Create the instance
@@ -150,16 +150,16 @@ func (m *BACnetHostNPort) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetHostNPort"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BACnetHostNPort")
 	}
 
 	// Simple Field (host)
 	if pushErr := writeBuffer.PushContext("host"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for host")
 	}
 	_hostErr := m.Host.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("host"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for host")
 	}
 	if _hostErr != nil {
 		return errors.Wrap(_hostErr, "Error serializing 'host' field")
@@ -167,18 +167,18 @@ func (m *BACnetHostNPort) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (port)
 	if pushErr := writeBuffer.PushContext("port"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for port")
 	}
 	_portErr := m.Port.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("port"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for port")
 	}
 	if _portErr != nil {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetHostNPort"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BACnetHostNPort")
 	}
 	return nil
 }

@@ -146,14 +146,14 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBBMDBroadcastDistributionTable")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (bbmdBroadcastDistributionTable)
 	if pullErr := readBuffer.PullContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for bbmdBroadcastDistributionTable")
 	}
 	// Terminated array
 	bbmdBroadcastDistributionTable := make([]*BACnetBDTEntry, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 		}
 	}
 	if closeErr := readBuffer.CloseContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for bbmdBroadcastDistributionTable")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBBMDBroadcastDistributionTable")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize(writeBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBBMDBroadcastDistributionTable")
 		}
 
 		// Array Field (bbmdBroadcastDistributionTable)
 		if m.BbmdBroadcastDistributionTable != nil {
 			if pushErr := writeBuffer.PushContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for bbmdBroadcastDistributionTable")
 			}
 			for _, _element := range m.BbmdBroadcastDistributionTable {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize(writeBuf
 				}
 			}
 			if popErr := writeBuffer.PopContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for bbmdBroadcastDistributionTable")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataBBMDBroadcastDistributionTable")
 		}
 		return nil
 	}

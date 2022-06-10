@@ -142,14 +142,14 @@ func BACnetConstructedDataUpdateTimeParse(readBuffer utils.ReadBuffer, tagNumber
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataUpdateTime")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (updateTime)
 	if pullErr := readBuffer.PullContext("updateTime"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for updateTime")
 	}
 	_updateTime, _updateTimeErr := BACnetDateTimeParse(readBuffer)
 	if _updateTimeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataUpdateTimeParse(readBuffer utils.ReadBuffer, tagNumber
 	}
 	updateTime := CastBACnetDateTime(_updateTime)
 	if closeErr := readBuffer.CloseContext("updateTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for updateTime")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUpdateTime"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUpdateTime")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataUpdateTime) Serialize(writeBuffer utils.WriteBuffe
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataUpdateTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUpdateTime")
 		}
 
 		// Simple Field (updateTime)
 		if pushErr := writeBuffer.PushContext("updateTime"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for updateTime")
 		}
 		_updateTimeErr := m.UpdateTime.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("updateTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for updateTime")
 		}
 		if _updateTimeErr != nil {
 			return errors.Wrap(_updateTimeErr, "Error serializing 'updateTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUpdateTime"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataUpdateTime")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRecordsSinceNotification"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataRecordsSinceNotification")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (recordsSinceNotifications)
 	if pullErr := readBuffer.PullContext("recordsSinceNotifications"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for recordsSinceNotifications")
 	}
 	_recordsSinceNotifications, _recordsSinceNotificationsErr := BACnetApplicationTagParse(readBuffer)
 	if _recordsSinceNotificationsErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 	}
 	recordsSinceNotifications := CastBACnetApplicationTagUnsignedInteger(_recordsSinceNotifications)
 	if closeErr := readBuffer.CloseContext("recordsSinceNotifications"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for recordsSinceNotifications")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRecordsSinceNotification"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRecordsSinceNotification")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataRecordsSinceNotification) Serialize(writeBuffer ut
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataRecordsSinceNotification"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRecordsSinceNotification")
 		}
 
 		// Simple Field (recordsSinceNotifications)
 		if pushErr := writeBuffer.PushContext("recordsSinceNotifications"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for recordsSinceNotifications")
 		}
 		_recordsSinceNotificationsErr := m.RecordsSinceNotifications.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("recordsSinceNotifications"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for recordsSinceNotifications")
 		}
 		if _recordsSinceNotificationsErr != nil {
 			return errors.Wrap(_recordsSinceNotificationsErr, "Error serializing 'recordsSinceNotifications' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRecordsSinceNotification"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataRecordsSinceNotification")
 		}
 		return nil
 	}

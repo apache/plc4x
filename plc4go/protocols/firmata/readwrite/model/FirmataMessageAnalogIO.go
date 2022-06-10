@@ -146,7 +146,7 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*F
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageAnalogIO"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessageAnalogIO")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -160,7 +160,7 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*F
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
 	data := make([]int8, uint16(2))
@@ -174,11 +174,11 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*F
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageAnalogIO"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessageAnalogIO")
 	}
 
 	// Create a partially initialized instance
@@ -196,7 +196,7 @@ func (m *FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error 
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("FirmataMessageAnalogIO"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for FirmataMessageAnalogIO")
 		}
 
 		// Simple Field (pin)
@@ -209,7 +209,7 @@ func (m *FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error 
 		// Array Field (data)
 		if m.Data != nil {
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for data")
 			}
 			for _, _element := range m.Data {
 				_elementErr := writeBuffer.WriteInt8("", 8, _element)
@@ -218,12 +218,12 @@ func (m *FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error 
 				}
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for data")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageAnalogIO"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for FirmataMessageAnalogIO")
 		}
 		return nil
 	}

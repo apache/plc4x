@@ -142,14 +142,14 @@ func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassbackMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPassbackMode")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (passbackMode)
 	if pullErr := readBuffer.PullContext("passbackMode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for passbackMode")
 	}
 	_passbackMode, _passbackModeErr := BACnetAccessPassbackModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _passbackModeErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	passbackMode := CastBACnetAccessPassbackModeTagged(_passbackMode)
 	if closeErr := readBuffer.CloseContext("passbackMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for passbackMode")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackMode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassbackMode")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataPassbackMode) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataPassbackMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPassbackMode")
 		}
 
 		// Simple Field (passbackMode)
 		if pushErr := writeBuffer.PushContext("passbackMode"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for passbackMode")
 		}
 		_passbackModeErr := m.PassbackMode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("passbackMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for passbackMode")
 		}
 		if _passbackModeErr != nil {
 			return errors.Wrap(_passbackModeErr, "Error serializing 'passbackMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPassbackMode"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataPassbackMode")
 		}
 		return nil
 	}

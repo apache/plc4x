@@ -156,14 +156,14 @@ func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadStateResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AdsReadStateResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
 	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
@@ -171,7 +171,7 @@ func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 	}
 	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for result")
 	}
 
 	// Simple Field (adsState)
@@ -189,7 +189,7 @@ func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 	deviceState := _deviceState
 
 	if closeErr := readBuffer.CloseContext("AdsReadStateResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AdsReadStateResponse")
 	}
 
 	// Create a partially initialized instance
@@ -208,16 +208,16 @@ func (m *AdsReadStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AdsReadStateResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for AdsReadStateResponse")
 		}
 
 		// Simple Field (result)
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for result")
 		}
 		_resultErr := m.Result.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for result")
 		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
@@ -238,7 +238,7 @@ func (m *AdsReadStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("AdsReadStateResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for AdsReadStateResponse")
 		}
 		return nil
 	}

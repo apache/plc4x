@@ -128,14 +128,14 @@ func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (*BACne
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueLightingCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueLightingCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (ligthingCommandValue)
 	if pullErr := readBuffer.PullContext("ligthingCommandValue"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ligthingCommandValue")
 	}
 	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParse(readBuffer, uint8(uint8(0)))
 	if _ligthingCommandValueErr != nil {
@@ -143,11 +143,11 @@ func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (*BACne
 	}
 	ligthingCommandValue := CastBACnetLightingCommandEnclosed(_ligthingCommandValue)
 	if closeErr := readBuffer.CloseContext("ligthingCommandValue"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ligthingCommandValue")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueLightingCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValueLightingCommand")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetChannelValueLightingCommand) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetChannelValueLightingCommand"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueLightingCommand")
 		}
 
 		// Simple Field (ligthingCommandValue)
 		if pushErr := writeBuffer.PushContext("ligthingCommandValue"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ligthingCommandValue")
 		}
 		_ligthingCommandValueErr := m.LigthingCommandValue.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("ligthingCommandValue"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ligthingCommandValue")
 		}
 		if _ligthingCommandValueErr != nil {
 			return errors.Wrap(_ligthingCommandValueErr, "Error serializing 'ligthingCommandValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueLightingCommand"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetChannelValueLightingCommand")
 		}
 		return nil
 	}

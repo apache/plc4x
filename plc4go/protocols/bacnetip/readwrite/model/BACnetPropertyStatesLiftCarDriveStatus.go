@@ -128,14 +128,14 @@ func BACnetPropertyStatesLiftCarDriveStatusParse(readBuffer utils.ReadBuffer, pe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDriveStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftCarDriveStatus")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (liftCarDriveStatus)
 	if pullErr := readBuffer.PullContext("liftCarDriveStatus"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDriveStatus")
 	}
 	_liftCarDriveStatus, _liftCarDriveStatusErr := BACnetLiftCarDriveStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDriveStatusErr != nil {
@@ -143,11 +143,11 @@ func BACnetPropertyStatesLiftCarDriveStatusParse(readBuffer utils.ReadBuffer, pe
 	}
 	liftCarDriveStatus := CastBACnetLiftCarDriveStatusTagged(_liftCarDriveStatus)
 	if closeErr := readBuffer.CloseContext("liftCarDriveStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for liftCarDriveStatus")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDriveStatus"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyStatesLiftCarDriveStatus")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetPropertyStatesLiftCarDriveStatus) Serialize(writeBuffer utils.Wri
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetPropertyStatesLiftCarDriveStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarDriveStatus")
 		}
 
 		// Simple Field (liftCarDriveStatus)
 		if pushErr := writeBuffer.PushContext("liftCarDriveStatus"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for liftCarDriveStatus")
 		}
 		_liftCarDriveStatusErr := m.LiftCarDriveStatus.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("liftCarDriveStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for liftCarDriveStatus")
 		}
 		if _liftCarDriveStatusErr != nil {
 			return errors.Wrap(_liftCarDriveStatusErr, "Error serializing 'liftCarDriveStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarDriveStatus"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesLiftCarDriveStatus")
 		}
 		return nil
 	}

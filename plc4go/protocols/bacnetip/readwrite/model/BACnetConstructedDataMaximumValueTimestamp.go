@@ -142,14 +142,14 @@ func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaximumValueTimestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaximumValueTimestamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (maximumValueTimestamp)
 	if pullErr := readBuffer.PullContext("maximumValueTimestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for maximumValueTimestamp")
 	}
 	_maximumValueTimestamp, _maximumValueTimestampErr := BACnetDateTimeParse(readBuffer)
 	if _maximumValueTimestampErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer
 	}
 	maximumValueTimestamp := CastBACnetDateTime(_maximumValueTimestamp)
 	if closeErr := readBuffer.CloseContext("maximumValueTimestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for maximumValueTimestamp")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaximumValueTimestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaximumValueTimestamp")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataMaximumValueTimestamp) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataMaximumValueTimestamp"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaximumValueTimestamp")
 		}
 
 		// Simple Field (maximumValueTimestamp)
 		if pushErr := writeBuffer.PushContext("maximumValueTimestamp"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for maximumValueTimestamp")
 		}
 		_maximumValueTimestampErr := m.MaximumValueTimestamp.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("maximumValueTimestamp"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for maximumValueTimestamp")
 		}
 		if _maximumValueTimestampErr != nil {
 			return errors.Wrap(_maximumValueTimestampErr, "Error serializing 'maximumValueTimestamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaximumValueTimestamp"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataMaximumValueTimestamp")
 		}
 		return nil
 	}

@@ -142,14 +142,14 @@ func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalDate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLocalDate")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (localDate)
 	if pullErr := readBuffer.PullContext("localDate"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for localDate")
 	}
 	_localDate, _localDateErr := BACnetApplicationTagParse(readBuffer)
 	if _localDateErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber 
 	}
 	localDate := CastBACnetApplicationTagDate(_localDate)
 	if closeErr := readBuffer.CloseContext("localDate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for localDate")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalDate"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocalDate")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataLocalDate) Serialize(writeBuffer utils.WriteBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLocalDate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalDate")
 		}
 
 		// Simple Field (localDate)
 		if pushErr := writeBuffer.PushContext("localDate"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for localDate")
 		}
 		_localDateErr := m.LocalDate.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("localDate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for localDate")
 		}
 		if _localDateErr != nil {
 			return errors.Wrap(_localDateErr, "Error serializing 'localDate' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLocalDate"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLocalDate")
 		}
 		return nil
 	}

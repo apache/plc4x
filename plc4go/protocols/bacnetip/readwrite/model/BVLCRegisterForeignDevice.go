@@ -130,7 +130,7 @@ func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (*BVLCRegisterF
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLCRegisterForeignDevice")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -143,7 +143,7 @@ func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (*BVLCRegisterF
 	ttl := _ttl
 
 	if closeErr := readBuffer.CloseContext("BVLCRegisterForeignDevice"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLCRegisterForeignDevice")
 	}
 
 	// Create a partially initialized instance
@@ -160,7 +160,7 @@ func (m *BVLCRegisterForeignDevice) Serialize(writeBuffer utils.WriteBuffer) err
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BVLCRegisterForeignDevice"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BVLCRegisterForeignDevice")
 		}
 
 		// Simple Field (ttl)
@@ -171,7 +171,7 @@ func (m *BVLCRegisterForeignDevice) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCRegisterForeignDevice"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BVLCRegisterForeignDevice")
 		}
 		return nil
 	}

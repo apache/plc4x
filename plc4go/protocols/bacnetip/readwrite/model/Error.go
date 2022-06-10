@@ -107,14 +107,14 @@ func ErrorParse(readBuffer utils.ReadBuffer) (*Error, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Error"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for Error")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (errorClass)
 	if pullErr := readBuffer.PullContext("errorClass"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for errorClass")
 	}
 	_errorClass, _errorClassErr := ErrorClassTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorClassErr != nil {
@@ -122,12 +122,12 @@ func ErrorParse(readBuffer utils.ReadBuffer) (*Error, error) {
 	}
 	errorClass := CastErrorClassTagged(_errorClass)
 	if closeErr := readBuffer.CloseContext("errorClass"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for errorClass")
 	}
 
 	// Simple Field (errorCode)
 	if pullErr := readBuffer.PullContext("errorCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for errorCode")
 	}
 	_errorCode, _errorCodeErr := ErrorCodeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorCodeErr != nil {
@@ -135,11 +135,11 @@ func ErrorParse(readBuffer utils.ReadBuffer) (*Error, error) {
 	}
 	errorCode := CastErrorCodeTagged(_errorCode)
 	if closeErr := readBuffer.CloseContext("errorCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for errorCode")
 	}
 
 	if closeErr := readBuffer.CloseContext("Error"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for Error")
 	}
 
 	// Create the instance
@@ -150,16 +150,16 @@ func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Error"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for Error")
 	}
 
 	// Simple Field (errorClass)
 	if pushErr := writeBuffer.PushContext("errorClass"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for errorClass")
 	}
 	_errorClassErr := m.ErrorClass.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("errorClass"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for errorClass")
 	}
 	if _errorClassErr != nil {
 		return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
@@ -167,18 +167,18 @@ func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (errorCode)
 	if pushErr := writeBuffer.PushContext("errorCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for errorCode")
 	}
 	_errorCodeErr := m.ErrorCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("errorCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for errorCode")
 	}
 	if _errorCodeErr != nil {
 		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Error"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for Error")
 	}
 	return nil
 }

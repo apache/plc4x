@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -161,7 +162,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -171,25 +172,26 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("timeDuration"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for timeDuration")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'timeDuration' field")
 		default:
 			timeDuration = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("timeDuration"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for timeDuration")
 			}
 		}
 	}
 
 	// Simple Field (enableDisable)
 	if pullErr := readBuffer.PullContext("enableDisable"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for enableDisable")
 	}
 	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _enableDisableErr != nil {
@@ -197,7 +199,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	}
 	enableDisable := CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(_enableDisable)
 	if closeErr := readBuffer.CloseContext("enableDisable"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for enableDisable")
 	}
 
 	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
@@ -205,24 +207,25 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
-			return nil, pullErr
+			return nil, errors.Wrap(pullErr, "Error pulling for password")
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'password' field")
 		default:
 			password = CastBACnetContextTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
-				return nil, closeErr
+				return nil, errors.Wrap(closeErr, "Error closing for password")
 			}
 		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 	}
 
 	// Create a partially initialized instance
@@ -241,19 +244,19 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 		}
 
 		// Optional Field (timeDuration) (Can be skipped, if the value is null)
 		var timeDuration *BACnetContextTagUnsignedInteger = nil
 		if m.TimeDuration != nil {
 			if pushErr := writeBuffer.PushContext("timeDuration"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for timeDuration")
 			}
 			timeDuration = m.TimeDuration
 			_timeDurationErr := timeDuration.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("timeDuration"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for timeDuration")
 			}
 			if _timeDurationErr != nil {
 				return errors.Wrap(_timeDurationErr, "Error serializing 'timeDuration' field")
@@ -262,11 +265,11 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 
 		// Simple Field (enableDisable)
 		if pushErr := writeBuffer.PushContext("enableDisable"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for enableDisable")
 		}
 		_enableDisableErr := m.EnableDisable.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("enableDisable"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for enableDisable")
 		}
 		if _enableDisableErr != nil {
 			return errors.Wrap(_enableDisableErr, "Error serializing 'enableDisable' field")
@@ -276,12 +279,12 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 		var password *BACnetContextTagCharacterString = nil
 		if m.Password != nil {
 			if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for password")
 			}
 			password = m.Password
 			_passwordErr := password.Serialize(writeBuffer)
 			if popErr := writeBuffer.PopContext("password"); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for password")
 			}
 			if _passwordErr != nil {
 				return errors.Wrap(_passwordErr, "Error serializing 'password' field")
@@ -289,7 +292,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 		}
 		return nil
 	}

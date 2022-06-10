@@ -146,14 +146,14 @@ func BACnetConstructedDataLifeSafetyZoneFaultValuesParse(readBuffer utils.ReadBu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZoneFaultValues"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLifeSafetyZoneFaultValues")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (faultValues)
 	if pullErr := readBuffer.PullContext("faultValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for faultValues")
 	}
 	// Terminated array
 	faultValues := make([]*BACnetLifeSafetyStateTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataLifeSafetyZoneFaultValuesParse(readBuffer utils.ReadBu
 		}
 	}
 	if closeErr := readBuffer.CloseContext("faultValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for faultValues")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLifeSafetyZoneFaultValues"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLifeSafetyZoneFaultValues")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataLifeSafetyZoneFaultValues) Serialize(writeBuffer u
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLifeSafetyZoneFaultValues"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLifeSafetyZoneFaultValues")
 		}
 
 		// Array Field (faultValues)
 		if m.FaultValues != nil {
 			if pushErr := writeBuffer.PushContext("faultValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for faultValues")
 			}
 			for _, _element := range m.FaultValues {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataLifeSafetyZoneFaultValues) Serialize(writeBuffer u
 				}
 			}
 			if popErr := writeBuffer.PopContext("faultValues", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for faultValues")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLifeSafetyZoneFaultValues"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLifeSafetyZoneFaultValues")
 		}
 		return nil
 	}

@@ -121,14 +121,14 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVL
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCBroadcastDistributionTableEntry"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BVLCBroadcastDistributionTableEntry")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (ip)
 	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ip")
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
@@ -142,7 +142,7 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVL
 		}
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ip")
 	}
 
 	// Simple Field (port)
@@ -154,7 +154,7 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVL
 
 	// Array field (broadcastDistributionMap)
 	if pullErr := readBuffer.PullContext("broadcastDistributionMap", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for broadcastDistributionMap")
 	}
 	// Count array
 	broadcastDistributionMap := make([]uint8, uint16(4))
@@ -168,11 +168,11 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVL
 		}
 	}
 	if closeErr := readBuffer.CloseContext("broadcastDistributionMap", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for broadcastDistributionMap")
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCBroadcastDistributionTableEntry"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BVLCBroadcastDistributionTableEntry")
 	}
 
 	// Create the instance
@@ -183,13 +183,13 @@ func (m *BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.WriteB
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLCBroadcastDistributionTableEntry"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BVLCBroadcastDistributionTableEntry")
 	}
 
 	// Array Field (ip)
 	if m.Ip != nil {
 		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ip")
 		}
 		for _, _element := range m.Ip {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -198,7 +198,7 @@ func (m *BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.WriteB
 			}
 		}
 		if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ip")
 		}
 	}
 
@@ -212,7 +212,7 @@ func (m *BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.WriteB
 	// Array Field (broadcastDistributionMap)
 	if m.BroadcastDistributionMap != nil {
 		if pushErr := writeBuffer.PushContext("broadcastDistributionMap", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for broadcastDistributionMap")
 		}
 		for _, _element := range m.BroadcastDistributionMap {
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -221,12 +221,12 @@ func (m *BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.WriteB
 			}
 		}
 		if popErr := writeBuffer.PopContext("broadcastDistributionMap", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for broadcastDistributionMap")
 		}
 	}
 
 	if popErr := writeBuffer.PopContext("BVLCBroadcastDistributionTableEntry"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BVLCBroadcastDistributionTableEntry")
 	}
 	return nil
 }

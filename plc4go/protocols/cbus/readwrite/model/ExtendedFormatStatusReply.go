@@ -180,14 +180,14 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtendedFormatStatusReply"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ExtendedFormatStatusReply")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (statusHeader)
 	if pullErr := readBuffer.PullContext("statusHeader"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for statusHeader")
 	}
 	_statusHeader, _statusHeaderErr := ExtendedStatusHeaderParse(readBuffer)
 	if _statusHeaderErr != nil {
@@ -195,12 +195,12 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	}
 	statusHeader := CastExtendedStatusHeader(_statusHeader)
 	if closeErr := readBuffer.CloseContext("statusHeader"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for statusHeader")
 	}
 
 	// Simple Field (coding)
 	if pullErr := readBuffer.PullContext("coding"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for coding")
 	}
 	_coding, _codingErr := StatusCodingParse(readBuffer)
 	if _codingErr != nil {
@@ -208,12 +208,12 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	}
 	coding := _coding
 	if closeErr := readBuffer.CloseContext("coding"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for coding")
 	}
 
 	// Simple Field (application)
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
@@ -221,7 +221,7 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
 	// Simple Field (blockStart)
@@ -233,7 +233,7 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 
 	// Array field (statusBytes)
 	if pullErr := readBuffer.PullContext("statusBytes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
 	}
 	// Count array
 	statusBytes := make([]*StatusByte, uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(3)))
@@ -247,12 +247,12 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 		}
 	}
 	if closeErr := readBuffer.CloseContext("statusBytes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for statusBytes")
 	}
 
 	// Simple Field (crc)
 	if pullErr := readBuffer.PullContext("crc"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for crc")
 	}
 	_crc, _crcErr := ChecksumParse(readBuffer)
 	if _crcErr != nil {
@@ -260,7 +260,7 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	}
 	crc := CastChecksum(_crc)
 	if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for crc")
 	}
 
 	// Const Field (cr)
@@ -282,7 +282,7 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	}
 
 	if closeErr := readBuffer.CloseContext("ExtendedFormatStatusReply"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ExtendedFormatStatusReply")
 	}
 
 	// Create the instance
@@ -293,16 +293,16 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ExtendedFormatStatusReply"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ExtendedFormatStatusReply")
 	}
 
 	// Simple Field (statusHeader)
 	if pushErr := writeBuffer.PushContext("statusHeader"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for statusHeader")
 	}
 	_statusHeaderErr := m.StatusHeader.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("statusHeader"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for statusHeader")
 	}
 	if _statusHeaderErr != nil {
 		return errors.Wrap(_statusHeaderErr, "Error serializing 'statusHeader' field")
@@ -310,11 +310,11 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 
 	// Simple Field (coding)
 	if pushErr := writeBuffer.PushContext("coding"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for coding")
 	}
 	_codingErr := m.Coding.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("coding"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for coding")
 	}
 	if _codingErr != nil {
 		return errors.Wrap(_codingErr, "Error serializing 'coding' field")
@@ -322,11 +322,11 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 
 	// Simple Field (application)
 	if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for application")
 	}
 	_applicationErr := m.Application.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("application"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for application")
 	}
 	if _applicationErr != nil {
 		return errors.Wrap(_applicationErr, "Error serializing 'application' field")
@@ -342,7 +342,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	// Array Field (statusBytes)
 	if m.StatusBytes != nil {
 		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for statusBytes")
 		}
 		for _, _element := range m.StatusBytes {
 			_elementErr := _element.Serialize(writeBuffer)
@@ -351,17 +351,17 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 			}
 		}
 		if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for statusBytes")
 		}
 	}
 
 	// Simple Field (crc)
 	if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for crc")
 	}
 	_crcErr := m.Crc.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("crc"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for crc")
 	}
 	if _crcErr != nil {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
@@ -380,7 +380,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	if popErr := writeBuffer.PopContext("ExtendedFormatStatusReply"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ExtendedFormatStatusReply")
 	}
 	return nil
 }

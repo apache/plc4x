@@ -140,14 +140,14 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for DF1CommandResponseMessageProtectedTypedLogicalRead")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
 	data := make([]uint8, 0)
@@ -163,11 +163,11 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
 
 	if closeErr := readBuffer.CloseContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for DF1CommandResponseMessageProtectedTypedLogicalRead")
 	}
 
 	// Create a partially initialized instance
@@ -184,13 +184,13 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuff
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for DF1CommandResponseMessageProtectedTypedLogicalRead")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for data")
 			}
 			for _, _element := range m.Data {
 				_elementErr := writeBuffer.WriteUint8("", 8, _element)
@@ -199,12 +199,12 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuff
 				}
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for data")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for DF1CommandResponseMessageProtectedTypedLogicalRead")
 		}
 		return nil
 	}

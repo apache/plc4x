@@ -159,7 +159,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommand"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CBusCommand")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -175,7 +175,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
 	_header, _headerErr := CBusHeaderParse(readBuffer)
 	if _headerErr != nil {
@@ -183,7 +183,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 	}
 	header := CastCBusHeader(_header)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
 
 	// Virtual field
@@ -214,7 +214,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusCommand"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CBusCommand")
 	}
 
 	// Finish initializing
@@ -230,7 +230,7 @@ func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBus
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusCommand"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CBusCommand")
 	}
 
 	// Const Field (initiator)
@@ -241,11 +241,11 @@ func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBus
 
 	// Simple Field (header)
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for header")
 	}
 	_headerErr := m.Header.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for header")
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
@@ -261,7 +261,7 @@ func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBus
 	}
 
 	if popErr := writeBuffer.PopContext("CBusCommand"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CBusCommand")
 	}
 	return nil
 }

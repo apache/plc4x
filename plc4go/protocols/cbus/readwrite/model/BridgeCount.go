@@ -97,7 +97,7 @@ func BridgeCountParse(readBuffer utils.ReadBuffer) (*BridgeCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BridgeCount"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BridgeCount")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -110,7 +110,7 @@ func BridgeCountParse(readBuffer utils.ReadBuffer) (*BridgeCount, error) {
 	count := _count
 
 	if closeErr := readBuffer.CloseContext("BridgeCount"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BridgeCount")
 	}
 
 	// Create the instance
@@ -121,7 +121,7 @@ func (m *BridgeCount) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BridgeCount"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for BridgeCount")
 	}
 
 	// Simple Field (count)
@@ -132,7 +132,7 @@ func (m *BridgeCount) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("BridgeCount"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for BridgeCount")
 	}
 	return nil
 }

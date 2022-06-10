@@ -146,14 +146,14 @@ func BACnetConstructedDataListOfGroupMembersParse(readBuffer utils.ReadBuffer, t
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataListOfGroupMembers"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataListOfGroupMembers")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (listOfGroupMembers)
 	if pullErr := readBuffer.PullContext("listOfGroupMembers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for listOfGroupMembers")
 	}
 	// Terminated array
 	listOfGroupMembers := make([]*BACnetReadAccessSpecification, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataListOfGroupMembersParse(readBuffer utils.ReadBuffer, t
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfGroupMembers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for listOfGroupMembers")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataListOfGroupMembers"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataListOfGroupMembers")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataListOfGroupMembers) Serialize(writeBuffer utils.Wr
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataListOfGroupMembers"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataListOfGroupMembers")
 		}
 
 		// Array Field (listOfGroupMembers)
 		if m.ListOfGroupMembers != nil {
 			if pushErr := writeBuffer.PushContext("listOfGroupMembers", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for listOfGroupMembers")
 			}
 			for _, _element := range m.ListOfGroupMembers {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataListOfGroupMembers) Serialize(writeBuffer utils.Wr
 				}
 			}
 			if popErr := writeBuffer.PopContext("listOfGroupMembers", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for listOfGroupMembers")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataListOfGroupMembers"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataListOfGroupMembers")
 		}
 		return nil
 	}

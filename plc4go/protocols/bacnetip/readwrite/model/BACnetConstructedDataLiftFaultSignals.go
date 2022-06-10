@@ -146,14 +146,14 @@ func BACnetConstructedDataLiftFaultSignalsParse(readBuffer utils.ReadBuffer, tag
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLiftFaultSignals"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLiftFaultSignals")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (faultSignals)
 	if pullErr := readBuffer.PullContext("faultSignals", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for faultSignals")
 	}
 	// Terminated array
 	faultSignals := make([]*BACnetLiftFaultTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataLiftFaultSignalsParse(readBuffer utils.ReadBuffer, tag
 		}
 	}
 	if closeErr := readBuffer.CloseContext("faultSignals", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for faultSignals")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLiftFaultSignals"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLiftFaultSignals")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataLiftFaultSignals) Serialize(writeBuffer utils.Writ
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataLiftFaultSignals"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLiftFaultSignals")
 		}
 
 		// Array Field (faultSignals)
 		if m.FaultSignals != nil {
 			if pushErr := writeBuffer.PushContext("faultSignals", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for faultSignals")
 			}
 			for _, _element := range m.FaultSignals {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataLiftFaultSignals) Serialize(writeBuffer utils.Writ
 				}
 			}
 			if popErr := writeBuffer.PopContext("faultSignals", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for faultSignals")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLiftFaultSignals"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataLiftFaultSignals")
 		}
 		return nil
 	}

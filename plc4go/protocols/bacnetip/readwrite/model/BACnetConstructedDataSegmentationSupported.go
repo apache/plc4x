@@ -142,14 +142,14 @@ func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSegmentationSupported"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSegmentationSupported")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (segmentationSupported)
 	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for segmentationSupported")
 	}
 	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _segmentationSupportedErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer
 	}
 	segmentationSupported := CastBACnetSegmentationTagged(_segmentationSupported)
 	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for segmentationSupported")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSegmentationSupported"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSegmentationSupported")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataSegmentationSupported) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataSegmentationSupported"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSegmentationSupported")
 		}
 
 		// Simple Field (segmentationSupported)
 		if pushErr := writeBuffer.PushContext("segmentationSupported"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for segmentationSupported")
 		}
 		_segmentationSupportedErr := m.SegmentationSupported.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("segmentationSupported"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for segmentationSupported")
 		}
 		if _segmentationSupportedErr != nil {
 			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSegmentationSupported"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataSegmentationSupported")
 		}
 		return nil
 	}

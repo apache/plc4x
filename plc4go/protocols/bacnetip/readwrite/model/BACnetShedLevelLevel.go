@@ -128,14 +128,14 @@ func BACnetShedLevelLevelParse(readBuffer utils.ReadBuffer) (*BACnetShedLevelLev
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevelLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetShedLevelLevel")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (level)
 	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for level")
 	}
 	_level, _levelErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _levelErr != nil {
@@ -143,11 +143,11 @@ func BACnetShedLevelLevelParse(readBuffer utils.ReadBuffer) (*BACnetShedLevelLev
 	}
 	level := CastBACnetContextTagUnsignedInteger(_level)
 	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for level")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevelLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetShedLevelLevel")
 	}
 
 	// Create a partially initialized instance
@@ -164,23 +164,23 @@ func (m *BACnetShedLevelLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetShedLevelLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetShedLevelLevel")
 		}
 
 		// Simple Field (level)
 		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for level")
 		}
 		_levelErr := m.Level.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for level")
 		}
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetShedLevelLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetShedLevelLevel")
 		}
 		return nil
 	}

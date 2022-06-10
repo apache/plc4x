@@ -144,14 +144,14 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Tu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for TunnelingRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (tunnelingRequestDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingRequestDataBlock")
 	}
 	_tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(readBuffer)
 	if _tunnelingRequestDataBlockErr != nil {
@@ -159,12 +159,12 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Tu
 	}
 	tunnelingRequestDataBlock := CastTunnelingRequestDataBlock(_tunnelingRequestDataBlock)
 	if closeErr := readBuffer.CloseContext("tunnelingRequestDataBlock"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for tunnelingRequestDataBlock")
 	}
 
 	// Simple Field (cemi)
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
 	}
 	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
@@ -172,11 +172,11 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Tu
 	}
 	cemi := CastCEMI(_cemi)
 	if closeErr := readBuffer.CloseContext("cemi"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for cemi")
 	}
 
 	if closeErr := readBuffer.CloseContext("TunnelingRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for TunnelingRequest")
 	}
 
 	// Create a partially initialized instance
@@ -194,16 +194,16 @@ func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("TunnelingRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for TunnelingRequest")
 		}
 
 		// Simple Field (tunnelingRequestDataBlock)
 		if pushErr := writeBuffer.PushContext("tunnelingRequestDataBlock"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for tunnelingRequestDataBlock")
 		}
 		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("tunnelingRequestDataBlock"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for tunnelingRequestDataBlock")
 		}
 		if _tunnelingRequestDataBlockErr != nil {
 			return errors.Wrap(_tunnelingRequestDataBlockErr, "Error serializing 'tunnelingRequestDataBlock' field")
@@ -211,18 +211,18 @@ func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Simple Field (cemi)
 		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for cemi")
 		}
 		_cemiErr := m.Cemi.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for cemi")
 		}
 		if _cemiErr != nil {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TunnelingRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for TunnelingRequest")
 		}
 		return nil
 	}

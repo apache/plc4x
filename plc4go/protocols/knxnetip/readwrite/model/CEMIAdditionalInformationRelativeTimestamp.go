@@ -151,7 +151,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CEMIAdditionalInformationRelativeTimestamp")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -167,7 +167,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 
 	// Simple Field (relativeTimestamp)
 	if pullErr := readBuffer.PullContext("relativeTimestamp"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for relativeTimestamp")
 	}
 	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(readBuffer)
 	if _relativeTimestampErr != nil {
@@ -175,11 +175,11 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	}
 	relativeTimestamp := CastRelativeTimestamp(_relativeTimestamp)
 	if closeErr := readBuffer.CloseContext("relativeTimestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for relativeTimestamp")
 	}
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformationRelativeTimestamp"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CEMIAdditionalInformationRelativeTimestamp")
 	}
 
 	// Create a partially initialized instance
@@ -196,7 +196,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CEMIAdditionalInformationRelativeTimestamp"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for CEMIAdditionalInformationRelativeTimestamp")
 		}
 
 		// Const Field (len)
@@ -207,18 +207,18 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils
 
 		// Simple Field (relativeTimestamp)
 		if pushErr := writeBuffer.PushContext("relativeTimestamp"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for relativeTimestamp")
 		}
 		_relativeTimestampErr := m.RelativeTimestamp.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("relativeTimestamp"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for relativeTimestamp")
 		}
 		if _relativeTimestampErr != nil {
 			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CEMIAdditionalInformationRelativeTimestamp"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for CEMIAdditionalInformationRelativeTimestamp")
 		}
 		return nil
 	}

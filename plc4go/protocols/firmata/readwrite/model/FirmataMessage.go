@@ -106,7 +106,7 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMe
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -144,7 +144,7 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMe
 	}
 
 	if closeErr := readBuffer.CloseContext("FirmataMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessage")
 	}
 
 	// Finish initializing
@@ -160,7 +160,7 @@ func (m *FirmataMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IF
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("FirmataMessage"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for FirmataMessage")
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
@@ -177,7 +177,7 @@ func (m *FirmataMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IF
 	}
 
 	if popErr := writeBuffer.PopContext("FirmataMessage"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for FirmataMessage")
 	}
 	return nil
 }

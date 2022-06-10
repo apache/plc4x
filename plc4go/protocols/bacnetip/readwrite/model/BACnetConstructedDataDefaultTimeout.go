@@ -142,14 +142,14 @@ func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataDefaultTimeout")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (defaultTimeout)
 	if pullErr := readBuffer.PullContext("defaultTimeout"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for defaultTimeout")
 	}
 	_defaultTimeout, _defaultTimeoutErr := BACnetApplicationTagParse(readBuffer)
 	if _defaultTimeoutErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	}
 	defaultTimeout := CastBACnetApplicationTagUnsignedInteger(_defaultTimeout)
 	if closeErr := readBuffer.CloseContext("defaultTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for defaultTimeout")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultTimeout"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultTimeout")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataDefaultTimeout) Serialize(writeBuffer utils.WriteB
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataDefaultTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultTimeout")
 		}
 
 		// Simple Field (defaultTimeout)
 		if pushErr := writeBuffer.PushContext("defaultTimeout"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for defaultTimeout")
 		}
 		_defaultTimeoutErr := m.DefaultTimeout.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("defaultTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for defaultTimeout")
 		}
 		if _defaultTimeoutErr != nil {
 			return errors.Wrap(_defaultTimeoutErr, "Error serializing 'defaultTimeout' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultTimeout"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataDefaultTimeout")
 		}
 		return nil
 	}

@@ -146,14 +146,14 @@ func BACnetConstructedDataFailedAttemptEventsParse(readBuffer utils.ReadBuffer, 
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFailedAttemptEvents"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFailedAttemptEvents")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Array field (failedAttemptEvents)
 	if pullErr := readBuffer.PullContext("failedAttemptEvents", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for failedAttemptEvents")
 	}
 	// Terminated array
 	failedAttemptEvents := make([]*BACnetAccessEventTagged, 0)
@@ -168,11 +168,11 @@ func BACnetConstructedDataFailedAttemptEventsParse(readBuffer utils.ReadBuffer, 
 		}
 	}
 	if closeErr := readBuffer.CloseContext("failedAttemptEvents", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for failedAttemptEvents")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFailedAttemptEvents"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFailedAttemptEvents")
 	}
 
 	// Create a partially initialized instance
@@ -189,13 +189,13 @@ func (m *BACnetConstructedDataFailedAttemptEvents) Serialize(writeBuffer utils.W
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataFailedAttemptEvents"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFailedAttemptEvents")
 		}
 
 		// Array Field (failedAttemptEvents)
 		if m.FailedAttemptEvents != nil {
 			if pushErr := writeBuffer.PushContext("failedAttemptEvents", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+				return errors.Wrap(pushErr, "Error pushing for failedAttemptEvents")
 			}
 			for _, _element := range m.FailedAttemptEvents {
 				_elementErr := _element.Serialize(writeBuffer)
@@ -204,12 +204,12 @@ func (m *BACnetConstructedDataFailedAttemptEvents) Serialize(writeBuffer utils.W
 				}
 			}
 			if popErr := writeBuffer.PopContext("failedAttemptEvents", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+				return errors.Wrap(popErr, "Error popping for failedAttemptEvents")
 			}
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFailedAttemptEvents"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataFailedAttemptEvents")
 		}
 		return nil
 	}

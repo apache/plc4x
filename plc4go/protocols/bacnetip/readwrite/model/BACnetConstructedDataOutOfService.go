@@ -142,14 +142,14 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOutOfService"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataOutOfService")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (outOfService)
 	if pullErr := readBuffer.PullContext("outOfService"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for outOfService")
 	}
 	_outOfService, _outOfServiceErr := BACnetApplicationTagParse(readBuffer)
 	if _outOfServiceErr != nil {
@@ -157,11 +157,11 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 	}
 	outOfService := CastBACnetApplicationTagBoolean(_outOfService)
 	if closeErr := readBuffer.CloseContext("outOfService"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for outOfService")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOutOfService"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOutOfService")
 	}
 
 	// Create a partially initialized instance
@@ -178,23 +178,23 @@ func (m *BACnetConstructedDataOutOfService) Serialize(writeBuffer utils.WriteBuf
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConstructedDataOutOfService"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOutOfService")
 		}
 
 		// Simple Field (outOfService)
 		if pushErr := writeBuffer.PushContext("outOfService"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for outOfService")
 		}
 		_outOfServiceErr := m.OutOfService.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("outOfService"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for outOfService")
 		}
 		if _outOfServiceErr != nil {
 			return errors.Wrap(_outOfServiceErr, "Error serializing 'outOfService' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOutOfService"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for BACnetConstructedDataOutOfService")
 		}
 		return nil
 	}

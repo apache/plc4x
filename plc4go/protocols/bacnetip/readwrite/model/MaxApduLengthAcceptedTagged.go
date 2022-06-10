@@ -111,14 +111,14 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MaxApduLengthAcceptedTagged"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for MaxApduLengthAcceptedTagged")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
 	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
 	if _headerErr != nil {
@@ -126,17 +126,17 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}
 	header := CastBACnetTagHeader(_header)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, utils.ParseValidationError{"tag class doesn't match"}
+		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool(bool(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool(bool(bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
+		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
 	}
 
 	// Manual Field (value)
@@ -147,7 +147,7 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	value := _value.(MaxApduLengthAccepted)
 
 	if closeErr := readBuffer.CloseContext("MaxApduLengthAcceptedTagged"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for MaxApduLengthAcceptedTagged")
 	}
 
 	// Create the instance
@@ -158,16 +158,16 @@ func (m *MaxApduLengthAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) e
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MaxApduLengthAcceptedTagged"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for MaxApduLengthAcceptedTagged")
 	}
 
 	// Simple Field (header)
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for header")
 	}
 	_headerErr := m.Header.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for header")
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
@@ -180,7 +180,7 @@ func (m *MaxApduLengthAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	if popErr := writeBuffer.PopContext("MaxApduLengthAcceptedTagged"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for MaxApduLengthAcceptedTagged")
 	}
 	return nil
 }
