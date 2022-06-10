@@ -407,6 +407,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		_val, _err := BACnetConfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'serviceRequest' field")

@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -264,6 +265,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 		_val, _err := ChecksumParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
@@ -294,6 +296,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 		_val, _err := AlphaParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field")

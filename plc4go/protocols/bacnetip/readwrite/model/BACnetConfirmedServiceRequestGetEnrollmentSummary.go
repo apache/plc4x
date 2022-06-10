@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -228,6 +229,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		_val, _err := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'enrollmentFilter' field")
@@ -249,6 +251,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParse(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'eventStateFilter' field")
@@ -270,6 +273,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		_val, _err := BACnetEventTypeTaggedParse(readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'eventTypeFilter' field")
@@ -291,6 +295,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBuffer, uint8(4))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'priorityFilter' field")
@@ -312,6 +317,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'notificationClassFilter' field")

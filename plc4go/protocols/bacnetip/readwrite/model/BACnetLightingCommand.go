@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -186,6 +187,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'targetLevel' field")
@@ -207,6 +209,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'rampRate' field")
@@ -228,6 +231,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'stepIncrement' field")
@@ -249,6 +253,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'fadeTime' field")
@@ -270,6 +275,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (*BACnetLightingCom
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")

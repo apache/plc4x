@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -432,6 +433,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
@@ -453,6 +455,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")

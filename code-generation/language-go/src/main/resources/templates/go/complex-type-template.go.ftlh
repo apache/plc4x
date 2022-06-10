@@ -1162,6 +1162,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")<@emitImport import="github.com/rs/zerolog/log" />
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />

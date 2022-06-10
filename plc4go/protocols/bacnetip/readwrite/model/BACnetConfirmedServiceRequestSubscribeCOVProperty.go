@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -237,6 +238,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field")
@@ -258,6 +260,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field")
@@ -292,6 +295,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field")

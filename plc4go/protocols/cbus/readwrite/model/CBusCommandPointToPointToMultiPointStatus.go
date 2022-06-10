@@ -234,6 +234,7 @@ func CBusCommandPointToPointToMultiPointStatusParse(readBuffer utils.ReadBuffer,
 		_val, _err := ChecksumParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
@@ -264,6 +265,7 @@ func CBusCommandPointToPointToMultiPointStatusParse(readBuffer utils.ReadBuffer,
 		_val, _err := AlphaParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field")

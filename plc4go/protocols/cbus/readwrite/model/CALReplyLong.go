@@ -262,6 +262,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 		_val, _err := UnitAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field")
@@ -283,6 +284,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 		_val, _err := BridgeAddressParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field")
@@ -332,6 +334,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 		_val, _err := ReplyNetworkParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field")

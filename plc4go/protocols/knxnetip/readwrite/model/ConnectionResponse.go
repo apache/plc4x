@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"io"
 )
 
@@ -203,6 +204,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 		_val, _err := HPAIDataEndpointParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
@@ -224,6 +226,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, 
 		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
