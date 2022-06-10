@@ -24,10 +24,10 @@ updates:
   schedule:
     interval: daily
 - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: daily
+  directory: /
+  schedule:
+    interval: daily
 - package-ecosystem: gomod
-    directory: /
-    schedule:
-      interval: daily
+  directory: /
+  schedule:
+    interval: daily
