@@ -336,6 +336,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     }
 
     private PlcValue parsePlcValue(EipField field, ByteBuf data, CIPDataTypeCode type) {
+        final int STRING_LEN_OFFSET = 2, STRING_DATA_OFFSET = 6;
         int nb = field.getElementNb();
         if (nb > 1) {
             int index = 0;
@@ -358,9 +359,29 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         list.add(new PlcLREAL(swap(data.getFloat(index))));
                         index += type.getSize();
                         break;
+                    case LINT:
+                        list.add(new PlcLINT(Long.reverseBytes(data.getLong(index))));
+                        index += type.getSize();
+                        break;							  
                     case BOOL:
                         list.add(new PlcBOOL(data.getBoolean(index)));
                         index += type.getSize();
+                        break;
+                    case STRUCTURED: {
+                        Short structuredType = Short.reverseBytes(data.getShort(0));
+                        Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
+                        if (structuredType == CIPStructTypeCode.STRING.getValue()) {
+                            // Length offset is 2, data offset is 6
+                            list.add(new PlcSTRING(StandardCharsets
+                                .UTF_8.decode(data.nioBuffer(STRING_DATA_OFFSET, structuredLen)).toString()));
+                            index += type.getSize();
+                        }
+                        else {
+                            // This is a different type of STRUCTURED data
+                            // TODO: return as type STRUCT with structuredType to let user
+                            // apps/progs handle it.
+                        }
+                    }
                     default:
                         return null;
                 }
@@ -374,10 +395,26 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     return new PlcINT(Short.reverseBytes(data.getShort(0)));
                 case DINT:
                     return new PlcDINT(Integer.reverseBytes(data.getInt(0)));
+                case LINT:
+                    return new PlcLINT(Long.reverseBytes(data.getLong(0)));
                 case REAL:
                     return new PlcREAL(swap(data.getFloat(0)));
                 case BOOL:
                     return new PlcBOOL(data.getBoolean(0));
+                case STRING36:
+                case STRING:
+                case STRUCTURED: {
+                    Short structuredType = Short.reverseBytes(data.getShort(0));
+                    Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
+                    if (structuredType == CIPStructTypeCode.STRING.getValue()) {
+                        // Length offset is 2, data offset is 6
+                        return new PlcSTRING(StandardCharsets
+                            .UTF_8.decode(data.nioBuffer(STRING_DATA_OFFSET, structuredLen)).toString());
+                    }
+                    else {
+                        // This is a different type of STRUCTURED data
+                    }
+                }							  
                 default:
                     return null;
             }
@@ -386,11 +423,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     public float swap(float value) {
         int bytes = Float.floatToIntBits(value);
-        int b1 = (bytes >> 0) & 0xff;
+        int b1 = (bytes) & 0xff;
         int b2 = (bytes >> 8) & 0xff;
         int b3 = (bytes >> 16) & 0xff;
         int b4 = (bytes >> 24) & 0xff;
-        return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0);
+        return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4);
     }
 
     @Override
@@ -563,6 +600,17 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 break;
             case REAL:
                 buffer.putDouble(value.getDouble());
+                break;
+            case LINT:
+                buffer.putLong(value.getLong());
+                break;
+            case STRING:
+            case STRING36:
+                buffer.putInt(value.getString().length());
+                buffer.put(value.getString().getBytes(), 0, value.getString().length());
+                break;
+            case STRUCTURED:
+                // Need to handle
                 break;
             default:
                 break;
