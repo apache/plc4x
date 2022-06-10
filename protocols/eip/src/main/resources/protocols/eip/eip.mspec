@@ -128,6 +128,10 @@
     //['-1'       UNKNOWN         ['-1']]
 ]
 
+[enum uint 16 'CIPStructTypeCode'
+    ['0x0FCE'   STRING]
+]
+
 [enum   uint    16  EiPCommand
     ['0x0065'   RegisterSession ]
     ['0x0066'   UnregisterSession ]
