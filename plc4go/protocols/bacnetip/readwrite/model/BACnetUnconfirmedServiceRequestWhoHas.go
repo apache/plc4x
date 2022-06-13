@@ -301,7 +301,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeLowLimit")
 			}
 			deviceInstanceRangeLowLimit = m.DeviceInstanceRangeLowLimit
-			_deviceInstanceRangeLowLimitErr := deviceInstanceRangeLowLimit.Serialize(writeBuffer)
+			_deviceInstanceRangeLowLimitErr := writeBuffer.WriteSerializable(deviceInstanceRangeLowLimit)
 			if popErr := writeBuffer.PopContext("deviceInstanceRangeLowLimit"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeLowLimit")
 			}
@@ -317,7 +317,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeHighLimit")
 			}
 			deviceInstanceRangeHighLimit = m.DeviceInstanceRangeHighLimit
-			_deviceInstanceRangeHighLimitErr := deviceInstanceRangeHighLimit.Serialize(writeBuffer)
+			_deviceInstanceRangeHighLimitErr := writeBuffer.WriteSerializable(deviceInstanceRangeHighLimit)
 			if popErr := writeBuffer.PopContext("deviceInstanceRangeHighLimit"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeHighLimit")
 			}
@@ -333,7 +333,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 				return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 			}
 			objectIdentifier = m.ObjectIdentifier
-			_objectIdentifierErr := objectIdentifier.Serialize(writeBuffer)
+			_objectIdentifierErr := writeBuffer.WriteSerializable(objectIdentifier)
 			if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for objectIdentifier")
 			}
@@ -349,7 +349,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 				return errors.Wrap(pushErr, "Error pushing for objectName")
 			}
 			objectName = m.ObjectName
-			_objectNameErr := objectName.Serialize(writeBuffer)
+			_objectNameErr := writeBuffer.WriteSerializable(objectName)
 			if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for objectName")
 			}
@@ -370,9 +370,9 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -250,7 +250,7 @@ func (m *BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+	_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -262,7 +262,7 @@ func (m *BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.PropertyIdentifier)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -277,7 +277,7 @@ func (m *BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) er
 			return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
 		}
 		propertyArrayIndex = m.PropertyArrayIndex
-		_propertyArrayIndexErr := propertyArrayIndex.Serialize(writeBuffer)
+		_propertyArrayIndexErr := writeBuffer.WriteSerializable(propertyArrayIndex)
 		if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
 		}
@@ -293,7 +293,7 @@ func (m *BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) er
 			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
 		deviceIdentifier = m.DeviceIdentifier
-		_deviceIdentifierErr := deviceIdentifier.Serialize(writeBuffer)
+		_deviceIdentifierErr := writeBuffer.WriteSerializable(deviceIdentifier)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
@@ -306,7 +306,7 @@ func (m *BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("accessResult"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for accessResult")
 	}
-	_accessResultErr := m.AccessResult.Serialize(writeBuffer)
+	_accessResultErr := writeBuffer.WriteSerializable(m.AccessResult)
 	if popErr := writeBuffer.PopContext("accessResult"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for accessResult")
 	}
@@ -324,9 +324,9 @@ func (m *BACnetPropertyAccessResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -290,7 +290,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Seri
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
-		_subscriberProcessIdentifierErr := m.SubscriberProcessIdentifier.Serialize(writeBuffer)
+		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(m.SubscriberProcessIdentifier)
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
@@ -302,7 +302,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Seri
 		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
 		}
-		_initiatingDeviceIdentifierErr := m.InitiatingDeviceIdentifier.Serialize(writeBuffer)
+		_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(m.InitiatingDeviceIdentifier)
 		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
 		}
@@ -314,7 +314,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Seri
 		if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeRemaining")
 		}
-		_timeRemainingErr := m.TimeRemaining.Serialize(writeBuffer)
+		_timeRemainingErr := writeBuffer.WriteSerializable(m.TimeRemaining)
 		if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeRemaining")
 		}
@@ -329,7 +329,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Seri
 				return errors.Wrap(pushErr, "Error pushing for timestamp")
 			}
 			timestamp = m.Timestamp
-			_timestampErr := timestamp.Serialize(writeBuffer)
+			_timestampErr := writeBuffer.WriteSerializable(timestamp)
 			if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for timestamp")
 			}
@@ -342,7 +342,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Seri
 		if pushErr := writeBuffer.PushContext("listOfCovNotifications"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfCovNotifications")
 		}
-		_listOfCovNotificationsErr := m.ListOfCovNotifications.Serialize(writeBuffer)
+		_listOfCovNotificationsErr := writeBuffer.WriteSerializable(m.ListOfCovNotifications)
 		if popErr := writeBuffer.PopContext("listOfCovNotifications"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfCovNotifications")
 		}
@@ -362,9 +362,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Stri
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

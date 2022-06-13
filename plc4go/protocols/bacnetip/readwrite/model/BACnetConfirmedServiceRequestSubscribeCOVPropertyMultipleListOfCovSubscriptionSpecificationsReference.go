@@ -193,7 +193,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 	if pushErr := writeBuffer.PushContext("monitoredProperty"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for monitoredProperty")
 	}
-	_monitoredPropertyErr := m.MonitoredProperty.Serialize(writeBuffer)
+	_monitoredPropertyErr := writeBuffer.WriteSerializable(m.MonitoredProperty)
 	if popErr := writeBuffer.PopContext("monitoredProperty"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for monitoredProperty")
 	}
@@ -208,7 +208,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
 		covIncrement = m.CovIncrement
-		_covIncrementErr := covIncrement.Serialize(writeBuffer)
+		_covIncrementErr := writeBuffer.WriteSerializable(covIncrement)
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
@@ -221,7 +221,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 	if pushErr := writeBuffer.PushContext("timestamped"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamped")
 	}
-	_timestampedErr := m.Timestamped.Serialize(writeBuffer)
+	_timestampedErr := writeBuffer.WriteSerializable(m.Timestamped)
 	if popErr := writeBuffer.PopContext("timestamped"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamped")
 	}
@@ -239,9 +239,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

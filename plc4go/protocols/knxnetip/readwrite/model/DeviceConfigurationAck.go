@@ -173,7 +173,7 @@ func (m *DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("deviceConfigurationAckDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationAckDataBlock")
 		}
-		_deviceConfigurationAckDataBlockErr := m.DeviceConfigurationAckDataBlock.Serialize(writeBuffer)
+		_deviceConfigurationAckDataBlockErr := writeBuffer.WriteSerializable(m.DeviceConfigurationAckDataBlock)
 		if popErr := writeBuffer.PopContext("deviceConfigurationAckDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceConfigurationAckDataBlock")
 		}
@@ -193,9 +193,9 @@ func (m *DeviceConfigurationAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

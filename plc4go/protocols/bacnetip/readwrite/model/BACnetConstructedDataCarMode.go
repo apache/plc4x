@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataCarMode) Serialize(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("carMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for carMode")
 		}
-		_carModeErr := m.CarMode.Serialize(writeBuffer)
+		_carModeErr := writeBuffer.WriteSerializable(m.CarMode)
 		if popErr := writeBuffer.PopContext("carMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for carMode")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataCarMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataVarianceValue) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("varianceValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for varianceValue")
 		}
-		_varianceValueErr := m.VarianceValue.Serialize(writeBuffer)
+		_varianceValueErr := writeBuffer.WriteSerializable(m.VarianceValue)
 		if popErr := writeBuffer.PopContext("varianceValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for varianceValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataVarianceValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

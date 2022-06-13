@@ -295,7 +295,7 @@ func (m *BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) Serialize(wri
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+	_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -310,7 +310,7 @@ func (m *BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) Serialize(wri
 			return errors.Wrap(pushErr, "Error pushing for rawObjectType")
 		}
 		rawObjectType = m.RawObjectType
-		_rawObjectTypeErr := rawObjectType.Serialize(writeBuffer)
+		_rawObjectTypeErr := writeBuffer.WriteSerializable(rawObjectType)
 		if popErr := writeBuffer.PopContext("rawObjectType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for rawObjectType")
 		}
@@ -334,7 +334,7 @@ func (m *BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) Serialize(wri
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		objectIdentifier = m.ObjectIdentifier
-		_objectIdentifierErr := objectIdentifier.Serialize(writeBuffer)
+		_objectIdentifierErr := writeBuffer.WriteSerializable(objectIdentifier)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -351,7 +351,7 @@ func (m *BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) Serialize(wri
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+	_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -369,9 +369,9 @@ func (m *BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) String() stri
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

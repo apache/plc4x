@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAuthenticationStatus) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("authenticationStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for authenticationStatus")
 		}
-		_authenticationStatusErr := m.AuthenticationStatus.Serialize(writeBuffer)
+		_authenticationStatusErr := writeBuffer.WriteSerializable(m.AuthenticationStatus)
 		if popErr := writeBuffer.PopContext("authenticationStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for authenticationStatus")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAuthenticationStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

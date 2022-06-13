@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAccompanimentTime) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("accompanimentTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accompanimentTime")
 		}
-		_accompanimentTimeErr := m.AccompanimentTime.Serialize(writeBuffer)
+		_accompanimentTimeErr := writeBuffer.WriteSerializable(m.AccompanimentTime)
 		if popErr := writeBuffer.PopContext("accompanimentTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accompanimentTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAccompanimentTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

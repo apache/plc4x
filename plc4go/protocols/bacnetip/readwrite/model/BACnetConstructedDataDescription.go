@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDescription) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for description")
 		}
-		_descriptionErr := m.Description.Serialize(writeBuffer)
+		_descriptionErr := writeBuffer.WriteSerializable(m.Description)
 		if popErr := writeBuffer.PopContext("description"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for description")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDescription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

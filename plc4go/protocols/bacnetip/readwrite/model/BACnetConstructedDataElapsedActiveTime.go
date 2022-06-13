@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataElapsedActiveTime) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("elapsedActiveTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for elapsedActiveTime")
 		}
-		_elapsedActiveTimeErr := m.ElapsedActiveTime.Serialize(writeBuffer)
+		_elapsedActiveTimeErr := writeBuffer.WriteSerializable(m.ElapsedActiveTime)
 		if popErr := writeBuffer.PopContext("elapsedActiveTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for elapsedActiveTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataElapsedActiveTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

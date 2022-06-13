@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesEscalatorMode) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("escalatorMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for escalatorMode")
 		}
-		_escalatorModeErr := m.EscalatorMode.Serialize(writeBuffer)
+		_escalatorModeErr := writeBuffer.WriteSerializable(m.EscalatorMode)
 		if popErr := writeBuffer.PopContext("escalatorMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for escalatorMode")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesEscalatorMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

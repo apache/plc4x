@@ -326,7 +326,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("knxMedium"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for knxMedium")
 	}
-	_knxMediumErr := m.KnxMedium.Serialize(writeBuffer)
+	_knxMediumErr := writeBuffer.WriteSerializable(m.KnxMedium)
 	if popErr := writeBuffer.PopContext("knxMedium"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for knxMedium")
 	}
@@ -338,7 +338,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("deviceStatus"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for deviceStatus")
 	}
-	_deviceStatusErr := m.DeviceStatus.Serialize(writeBuffer)
+	_deviceStatusErr := writeBuffer.WriteSerializable(m.DeviceStatus)
 	if popErr := writeBuffer.PopContext("deviceStatus"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for deviceStatus")
 	}
@@ -350,7 +350,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("knxAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for knxAddress")
 	}
-	_knxAddressErr := m.KnxAddress.Serialize(writeBuffer)
+	_knxAddressErr := writeBuffer.WriteSerializable(m.KnxAddress)
 	if popErr := writeBuffer.PopContext("knxAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for knxAddress")
 	}
@@ -362,7 +362,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("projectInstallationIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for projectInstallationIdentifier")
 	}
-	_projectInstallationIdentifierErr := m.ProjectInstallationIdentifier.Serialize(writeBuffer)
+	_projectInstallationIdentifierErr := writeBuffer.WriteSerializable(m.ProjectInstallationIdentifier)
 	if popErr := writeBuffer.PopContext("projectInstallationIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for projectInstallationIdentifier")
 	}
@@ -383,7 +383,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("knxNetIpDeviceMulticastAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for knxNetIpDeviceMulticastAddress")
 	}
-	_knxNetIpDeviceMulticastAddressErr := m.KnxNetIpDeviceMulticastAddress.Serialize(writeBuffer)
+	_knxNetIpDeviceMulticastAddressErr := writeBuffer.WriteSerializable(m.KnxNetIpDeviceMulticastAddress)
 	if popErr := writeBuffer.PopContext("knxNetIpDeviceMulticastAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for knxNetIpDeviceMulticastAddress")
 	}
@@ -395,7 +395,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("knxNetIpDeviceMacAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for knxNetIpDeviceMacAddress")
 	}
-	_knxNetIpDeviceMacAddressErr := m.KnxNetIpDeviceMacAddress.Serialize(writeBuffer)
+	_knxNetIpDeviceMacAddressErr := writeBuffer.WriteSerializable(m.KnxNetIpDeviceMacAddress)
 	if popErr := writeBuffer.PopContext("knxNetIpDeviceMacAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for knxNetIpDeviceMacAddress")
 	}
@@ -422,9 +422,9 @@ func (m *DIBDeviceInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

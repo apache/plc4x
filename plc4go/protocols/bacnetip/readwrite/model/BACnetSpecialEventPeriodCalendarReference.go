@@ -171,7 +171,7 @@ func (m *BACnetSpecialEventPeriodCalendarReference) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("calendarReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for calendarReference")
 		}
-		_calendarReferenceErr := m.CalendarReference.Serialize(writeBuffer)
+		_calendarReferenceErr := writeBuffer.WriteSerializable(m.CalendarReference)
 		if popErr := writeBuffer.PopContext("calendarReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for calendarReference")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetSpecialEventPeriodCalendarReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

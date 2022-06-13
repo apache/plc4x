@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLastStateChange) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("lastStateChange"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastStateChange")
 		}
-		_lastStateChangeErr := m.LastStateChange.Serialize(writeBuffer)
+		_lastStateChangeErr := writeBuffer.WriteSerializable(m.LastStateChange)
 		if popErr := writeBuffer.PopContext("lastStateChange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastStateChange")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLastStateChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

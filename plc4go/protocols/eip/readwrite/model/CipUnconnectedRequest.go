@@ -411,7 +411,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("unconnectedService"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unconnectedService")
 		}
-		_unconnectedServiceErr := m.UnconnectedService.Serialize(writeBuffer)
+		_unconnectedServiceErr := writeBuffer.WriteSerializable(m.UnconnectedService)
 		if popErr := writeBuffer.PopContext("unconnectedService"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unconnectedService")
 		}
@@ -451,9 +451,9 @@ func (m *CipUnconnectedRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

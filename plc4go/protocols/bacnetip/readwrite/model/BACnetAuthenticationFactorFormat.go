@@ -204,7 +204,7 @@ func (m *BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("formatType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for formatType")
 	}
-	_formatTypeErr := m.FormatType.Serialize(writeBuffer)
+	_formatTypeErr := writeBuffer.WriteSerializable(m.FormatType)
 	if popErr := writeBuffer.PopContext("formatType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for formatType")
 	}
@@ -219,7 +219,7 @@ func (m *BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuff
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
 		vendorId = m.VendorId
-		_vendorIdErr := vendorId.Serialize(writeBuffer)
+		_vendorIdErr := writeBuffer.WriteSerializable(vendorId)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -235,7 +235,7 @@ func (m *BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuff
 			return errors.Wrap(pushErr, "Error pushing for vendorFormat")
 		}
 		vendorFormat = m.VendorFormat
-		_vendorFormatErr := vendorFormat.Serialize(writeBuffer)
+		_vendorFormatErr := writeBuffer.WriteSerializable(vendorFormat)
 		if popErr := writeBuffer.PopContext("vendorFormat"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorFormat")
 		}
@@ -254,9 +254,9 @@ func (m *BACnetAuthenticationFactorFormat) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

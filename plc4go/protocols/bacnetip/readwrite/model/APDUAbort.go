@@ -254,7 +254,7 @@ func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("abortReason"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for abortReason")
 		}
-		_abortReasonErr := m.AbortReason.Serialize(writeBuffer)
+		_abortReasonErr := writeBuffer.WriteSerializable(m.AbortReason)
 		if popErr := writeBuffer.PopContext("abortReason"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for abortReason")
 		}
@@ -274,9 +274,9 @@ func (m *APDUAbort) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

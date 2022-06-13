@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataCountChangeTime) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("countChangeTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for countChangeTime")
 		}
-		_countChangeTimeErr := m.CountChangeTime.Serialize(writeBuffer)
+		_countChangeTimeErr := writeBuffer.WriteSerializable(m.CountChangeTime)
 		if popErr := writeBuffer.PopContext("countChangeTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for countChangeTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataCountChangeTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

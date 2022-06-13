@@ -214,7 +214,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 	if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifierErr := m.MonitoredObjectIdentifier.Serialize(writeBuffer)
+	_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(m.MonitoredObjectIdentifier)
 	if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 	}
@@ -226,7 +226,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+	_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -240,7 +240,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 			return errors.Wrap(pushErr, "Error pushing for listOfCovReferences")
 		}
 		for _, _element := range m.ListOfCovReferences {
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'listOfCovReferences' field")
 			}
@@ -254,7 +254,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+	_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -272,9 +272,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubsc
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -176,7 +176,7 @@ func (m *BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) Serialize(writeB
 		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
-		_realValueErr := m.RealValue.Serialize(writeBuffer)
+		_realValueErr := writeBuffer.WriteSerializable(m.RealValue)
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for realValue")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -171,7 +171,7 @@ func (m *BACnetChannelValueInteger) Serialize(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
-		_integerValueErr := m.IntegerValue.Serialize(writeBuffer)
+		_integerValueErr := writeBuffer.WriteSerializable(m.IntegerValue)
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetChannelValueInteger) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

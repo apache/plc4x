@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesTimerTransition) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("timerTransition"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timerTransition")
 		}
-		_timerTransitionErr := m.TimerTransition.Serialize(writeBuffer)
+		_timerTransitionErr := writeBuffer.WriteSerializable(m.TimerTransition)
 		if popErr := writeBuffer.PopContext("timerTransition"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timerTransition")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesTimerTransition) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

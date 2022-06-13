@@ -157,7 +157,7 @@ func (m *BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("disable"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for disable")
 	}
-	_disableErr := m.Disable.Serialize(writeBuffer)
+	_disableErr := writeBuffer.WriteSerializable(m.Disable)
 	if popErr := writeBuffer.PopContext("disable"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for disable")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("authenticationFactor"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
 	}
-	_authenticationFactorErr := m.AuthenticationFactor.Serialize(writeBuffer)
+	_authenticationFactorErr := writeBuffer.WriteSerializable(m.AuthenticationFactor)
 	if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for authenticationFactor")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetCredentialAuthenticationFactor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

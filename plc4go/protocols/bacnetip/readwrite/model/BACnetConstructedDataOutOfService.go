@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataOutOfService) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("outOfService"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for outOfService")
 		}
-		_outOfServiceErr := m.OutOfService.Serialize(writeBuffer)
+		_outOfServiceErr := writeBuffer.WriteSerializable(m.OutOfService)
 		if popErr := writeBuffer.PopContext("outOfService"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for outOfService")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataOutOfService) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

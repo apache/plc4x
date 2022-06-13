@@ -174,7 +174,7 @@ func (m *BACnetPriorityValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) e
 		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
-		_unsignedValueErr := m.UnsignedValue.Serialize(writeBuffer)
+		_unsignedValueErr := writeBuffer.WriteSerializable(m.UnsignedValue)
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
@@ -194,9 +194,9 @@ func (m *BACnetPriorityValueUnsigned) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

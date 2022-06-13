@@ -174,7 +174,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("knxAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for knxAddress")
 		}
-		_knxAddressErr := m.KnxAddress.Serialize(writeBuffer)
+		_knxAddressErr := writeBuffer.WriteSerializable(m.KnxAddress)
 		if popErr := writeBuffer.PopContext("knxAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for knxAddress")
 		}
@@ -194,9 +194,9 @@ func (m *ConnectionResponseDataBlockTunnelConnection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

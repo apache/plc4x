@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDefaultTimeout) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("defaultTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for defaultTimeout")
 		}
-		_defaultTimeoutErr := m.DefaultTimeout.Serialize(writeBuffer)
+		_defaultTimeoutErr := writeBuffer.WriteSerializable(m.DefaultTimeout)
 		if popErr := writeBuffer.PopContext("defaultTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for defaultTimeout")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDefaultTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

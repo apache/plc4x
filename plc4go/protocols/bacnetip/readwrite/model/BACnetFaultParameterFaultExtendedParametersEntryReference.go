@@ -171,7 +171,7 @@ func (m *BACnetFaultParameterFaultExtendedParametersEntryReference) Serialize(wr
 		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reference")
 		}
-		_referenceErr := m.Reference.Serialize(writeBuffer)
+		_referenceErr := writeBuffer.WriteSerializable(m.Reference)
 		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reference")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetFaultParameterFaultExtendedParametersEntryReference) String() str
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

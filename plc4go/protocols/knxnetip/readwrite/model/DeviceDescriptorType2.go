@@ -347,7 +347,7 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("channelInfo1"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo1")
 	}
-	_channelInfo1Err := m.ChannelInfo1.Serialize(writeBuffer)
+	_channelInfo1Err := writeBuffer.WriteSerializable(m.ChannelInfo1)
 	if popErr := writeBuffer.PopContext("channelInfo1"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo1")
 	}
@@ -359,7 +359,7 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("channelInfo2"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo2")
 	}
-	_channelInfo2Err := m.ChannelInfo2.Serialize(writeBuffer)
+	_channelInfo2Err := writeBuffer.WriteSerializable(m.ChannelInfo2)
 	if popErr := writeBuffer.PopContext("channelInfo2"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo2")
 	}
@@ -371,7 +371,7 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("channelInfo3"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo3")
 	}
-	_channelInfo3Err := m.ChannelInfo3.Serialize(writeBuffer)
+	_channelInfo3Err := writeBuffer.WriteSerializable(m.ChannelInfo3)
 	if popErr := writeBuffer.PopContext("channelInfo3"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo3")
 	}
@@ -383,7 +383,7 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("channelInfo4"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channelInfo4")
 	}
-	_channelInfo4Err := m.ChannelInfo4.Serialize(writeBuffer)
+	_channelInfo4Err := writeBuffer.WriteSerializable(m.ChannelInfo4)
 	if popErr := writeBuffer.PopContext("channelInfo4"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channelInfo4")
 	}
@@ -401,9 +401,9 @@ func (m *DeviceDescriptorType2) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -322,7 +322,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_applicationErr := m.Application.Serialize(writeBuffer)
+		_applicationErr := writeBuffer.WriteSerializable(m.Application)
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for application")
 		}
@@ -334,7 +334,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for salData")
 		}
-		_salDataErr := m.SalData.Serialize(writeBuffer)
+		_salDataErr := writeBuffer.WriteSerializable(m.SalData)
 		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for salData")
 		}
@@ -349,7 +349,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for crc")
 			}
 			crc = m.Crc
-			_crcErr := crc.Serialize(writeBuffer)
+			_crcErr := writeBuffer.WriteSerializable(crc)
 			if popErr := writeBuffer.PopContext("crc"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for crc")
 			}
@@ -365,7 +365,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for alpha")
 			}
 			alpha = m.Alpha
-			_alphaErr := alpha.Serialize(writeBuffer)
+			_alphaErr := writeBuffer.WriteSerializable(alpha)
 			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for alpha")
 			}
@@ -392,9 +392,9 @@ func (m *CBusCommandPointToPointToMultiPointNormal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

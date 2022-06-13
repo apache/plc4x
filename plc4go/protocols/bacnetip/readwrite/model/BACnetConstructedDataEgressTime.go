@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataEgressTime) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("egressTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for egressTime")
 		}
-		_egressTimeErr := m.EgressTime.Serialize(writeBuffer)
+		_egressTimeErr := writeBuffer.WriteSerializable(m.EgressTime)
 		if popErr := writeBuffer.PopContext("egressTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for egressTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataEgressTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

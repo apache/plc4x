@@ -316,7 +316,7 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for syntaxId")
 		}
-		_syntaxIdErr := m.SyntaxId.Serialize(writeBuffer)
+		_syntaxIdErr := writeBuffer.WriteSerializable(m.SyntaxId)
 		if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for syntaxId")
 		}
@@ -336,7 +336,7 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("queryType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for queryType")
 		}
-		_queryTypeErr := m.QueryType.Serialize(writeBuffer)
+		_queryTypeErr := writeBuffer.WriteSerializable(m.QueryType)
 		if popErr := writeBuffer.PopContext("queryType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for queryType")
 		}
@@ -356,7 +356,7 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("alarmType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmType")
 		}
-		_alarmTypeErr := m.AlarmType.Serialize(writeBuffer)
+		_alarmTypeErr := writeBuffer.WriteSerializable(m.AlarmType)
 		if popErr := writeBuffer.PopContext("alarmType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmType")
 		}
@@ -376,9 +376,9 @@ func (m *S7MessageObjectRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

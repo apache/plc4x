@@ -306,7 +306,7 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("lightningOperation"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for lightningOperation")
 	}
-	_lightningOperationErr := m.LightningOperation.Serialize(writeBuffer)
+	_lightningOperationErr := writeBuffer.WriteSerializable(m.LightningOperation)
 	if popErr := writeBuffer.PopContext("lightningOperation"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for lightningOperation")
 	}
@@ -321,7 +321,7 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for targetLevel")
 		}
 		targetLevel = m.TargetLevel
-		_targetLevelErr := targetLevel.Serialize(writeBuffer)
+		_targetLevelErr := writeBuffer.WriteSerializable(targetLevel)
 		if popErr := writeBuffer.PopContext("targetLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for targetLevel")
 		}
@@ -337,7 +337,7 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for rampRate")
 		}
 		rampRate = m.RampRate
-		_rampRateErr := rampRate.Serialize(writeBuffer)
+		_rampRateErr := writeBuffer.WriteSerializable(rampRate)
 		if popErr := writeBuffer.PopContext("rampRate"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for rampRate")
 		}
@@ -353,7 +353,7 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for stepIncrement")
 		}
 		stepIncrement = m.StepIncrement
-		_stepIncrementErr := stepIncrement.Serialize(writeBuffer)
+		_stepIncrementErr := writeBuffer.WriteSerializable(stepIncrement)
 		if popErr := writeBuffer.PopContext("stepIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for stepIncrement")
 		}
@@ -369,7 +369,7 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for fadeTime")
 		}
 		fadeTime = m.FadeTime
-		_fadeTimeErr := fadeTime.Serialize(writeBuffer)
+		_fadeTimeErr := writeBuffer.WriteSerializable(fadeTime)
 		if popErr := writeBuffer.PopContext("fadeTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fadeTime")
 		}
@@ -385,7 +385,7 @@ func (m *BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.Priority
-		_priorityErr := priority.Serialize(writeBuffer)
+		_priorityErr := writeBuffer.WriteSerializable(priority)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for priority")
 		}
@@ -404,9 +404,9 @@ func (m *BACnetLightingCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

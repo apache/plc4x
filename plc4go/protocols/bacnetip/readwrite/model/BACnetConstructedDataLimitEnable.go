@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLimitEnable) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("limitEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for limitEnable")
 		}
-		_limitEnableErr := m.LimitEnable.Serialize(writeBuffer)
+		_limitEnableErr := writeBuffer.WriteSerializable(m.LimitEnable)
 		if popErr := writeBuffer.PopContext("limitEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for limitEnable")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLimitEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

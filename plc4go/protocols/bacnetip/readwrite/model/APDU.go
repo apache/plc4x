@@ -183,7 +183,7 @@ func (m *APDU) SerializeParent(writeBuffer utils.WriteBuffer, child IAPDU, seria
 	if pushErr := writeBuffer.PushContext("apduType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for apduType")
 	}
-	_apduTypeErr := apduType.Serialize(writeBuffer)
+	_apduTypeErr := writeBuffer.WriteSerializable(apduType)
 	if popErr := writeBuffer.PopContext("apduType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for apduType")
 	}
@@ -207,9 +207,9 @@ func (m *APDU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

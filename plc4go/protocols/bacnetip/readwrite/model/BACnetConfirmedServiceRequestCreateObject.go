@@ -215,7 +215,7 @@ func (m *BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("objectSpecifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectSpecifier")
 		}
-		_objectSpecifierErr := m.ObjectSpecifier.Serialize(writeBuffer)
+		_objectSpecifierErr := writeBuffer.WriteSerializable(m.ObjectSpecifier)
 		if popErr := writeBuffer.PopContext("objectSpecifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectSpecifier")
 		}
@@ -230,7 +230,7 @@ func (m *BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for listOfValues")
 			}
 			listOfValues = m.ListOfValues
-			_listOfValuesErr := listOfValues.Serialize(writeBuffer)
+			_listOfValuesErr := writeBuffer.WriteSerializable(listOfValues)
 			if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for listOfValues")
 			}
@@ -251,9 +251,9 @@ func (m *BACnetConfirmedServiceRequestCreateObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -202,7 +202,7 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("synchronizedDate"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for synchronizedDate")
 		}
-		_synchronizedDateErr := m.SynchronizedDate.Serialize(writeBuffer)
+		_synchronizedDateErr := writeBuffer.WriteSerializable(m.SynchronizedDate)
 		if popErr := writeBuffer.PopContext("synchronizedDate"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for synchronizedDate")
 		}
@@ -214,7 +214,7 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("synchronizedTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for synchronizedTime")
 		}
-		_synchronizedTimeErr := m.SynchronizedTime.Serialize(writeBuffer)
+		_synchronizedTimeErr := writeBuffer.WriteSerializable(m.SynchronizedTime)
 		if popErr := writeBuffer.PopContext("synchronizedTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for synchronizedTime")
 		}
@@ -234,9 +234,9 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

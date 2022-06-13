@@ -165,7 +165,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := m.Header.Serialize(writeBuffer)
+	_headerErr := writeBuffer.WriteSerializable(m.Header)
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -189,9 +189,9 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesLifeSafetyState) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("lifeSafetyState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lifeSafetyState")
 		}
-		_lifeSafetyStateErr := m.LifeSafetyState.Serialize(writeBuffer)
+		_lifeSafetyStateErr := writeBuffer.WriteSerializable(m.LifeSafetyState)
 		if popErr := writeBuffer.PopContext("lifeSafetyState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lifeSafetyState")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesLifeSafetyState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

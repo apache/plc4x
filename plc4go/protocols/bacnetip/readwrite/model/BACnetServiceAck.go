@@ -218,7 +218,7 @@ func (m *BACnetServiceAck) SerializeParent(writeBuffer utils.WriteBuffer, child 
 	if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for serviceChoice")
 	}
-	_serviceChoiceErr := serviceChoice.Serialize(writeBuffer)
+	_serviceChoiceErr := writeBuffer.WriteSerializable(serviceChoice)
 	if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for serviceChoice")
 	}
@@ -246,9 +246,9 @@ func (m *BACnetServiceAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

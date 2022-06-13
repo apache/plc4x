@@ -174,7 +174,7 @@ func (m *BACnetTimerStateChangeValueBoolean) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
-		_booleanValueErr := m.BooleanValue.Serialize(writeBuffer)
+		_booleanValueErr := writeBuffer.WriteSerializable(m.BooleanValue)
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
@@ -194,9 +194,9 @@ func (m *BACnetTimerStateChangeValueBoolean) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -302,7 +302,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("acknowledgingProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for acknowledgingProcessIdentifier")
 		}
-		_acknowledgingProcessIdentifierErr := m.AcknowledgingProcessIdentifier.Serialize(writeBuffer)
+		_acknowledgingProcessIdentifierErr := writeBuffer.WriteSerializable(m.AcknowledgingProcessIdentifier)
 		if popErr := writeBuffer.PopContext("acknowledgingProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for acknowledgingProcessIdentifier")
 		}
@@ -314,7 +314,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("eventObjectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventObjectIdentifier")
 		}
-		_eventObjectIdentifierErr := m.EventObjectIdentifier.Serialize(writeBuffer)
+		_eventObjectIdentifierErr := writeBuffer.WriteSerializable(m.EventObjectIdentifier)
 		if popErr := writeBuffer.PopContext("eventObjectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventObjectIdentifier")
 		}
@@ -326,7 +326,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("eventStateAcknowledged"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventStateAcknowledged")
 		}
-		_eventStateAcknowledgedErr := m.EventStateAcknowledged.Serialize(writeBuffer)
+		_eventStateAcknowledgedErr := writeBuffer.WriteSerializable(m.EventStateAcknowledged)
 		if popErr := writeBuffer.PopContext("eventStateAcknowledged"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventStateAcknowledged")
 		}
@@ -338,7 +338,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timestamp")
 		}
-		_timestampErr := m.Timestamp.Serialize(writeBuffer)
+		_timestampErr := writeBuffer.WriteSerializable(m.Timestamp)
 		if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timestamp")
 		}
@@ -350,7 +350,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("acknowledgmentSource"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for acknowledgmentSource")
 		}
-		_acknowledgmentSourceErr := m.AcknowledgmentSource.Serialize(writeBuffer)
+		_acknowledgmentSourceErr := writeBuffer.WriteSerializable(m.AcknowledgmentSource)
 		if popErr := writeBuffer.PopContext("acknowledgmentSource"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for acknowledgmentSource")
 		}
@@ -362,7 +362,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("timeOfAcknowledgment"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeOfAcknowledgment")
 		}
-		_timeOfAcknowledgmentErr := m.TimeOfAcknowledgment.Serialize(writeBuffer)
+		_timeOfAcknowledgmentErr := writeBuffer.WriteSerializable(m.TimeOfAcknowledgment)
 		if popErr := writeBuffer.PopContext("timeOfAcknowledgment"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeOfAcknowledgment")
 		}
@@ -382,9 +382,9 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -387,7 +387,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -399,7 +399,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("newValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for newValue")
 		}
-		_newValueErr := m.NewValue.Serialize(writeBuffer)
+		_newValueErr := writeBuffer.WriteSerializable(m.NewValue)
 		if popErr := writeBuffer.PopContext("newValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for newValue")
 		}
@@ -411,7 +411,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
+		_statusFlagsErr := writeBuffer.WriteSerializable(m.StatusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -423,7 +423,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("updateTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for updateTime")
 		}
-		_updateTimeErr := m.UpdateTime.Serialize(writeBuffer)
+		_updateTimeErr := writeBuffer.WriteSerializable(m.UpdateTime)
 		if popErr := writeBuffer.PopContext("updateTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for updateTime")
 		}
@@ -438,7 +438,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for lastStateChange")
 			}
 			lastStateChange = m.LastStateChange
-			_lastStateChangeErr := lastStateChange.Serialize(writeBuffer)
+			_lastStateChangeErr := writeBuffer.WriteSerializable(lastStateChange)
 			if popErr := writeBuffer.PopContext("lastStateChange"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lastStateChange")
 			}
@@ -454,7 +454,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for initialTimeout")
 			}
 			initialTimeout = m.InitialTimeout
-			_initialTimeoutErr := initialTimeout.Serialize(writeBuffer)
+			_initialTimeoutErr := writeBuffer.WriteSerializable(initialTimeout)
 			if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for initialTimeout")
 			}
@@ -470,7 +470,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for expirationTime")
 			}
 			expirationTime = m.ExpirationTime
-			_expirationTimeErr := expirationTime.Serialize(writeBuffer)
+			_expirationTimeErr := writeBuffer.WriteSerializable(expirationTime)
 			if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for expirationTime")
 			}
@@ -483,7 +483,7 @@ func (m *BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -503,9 +503,9 @@ func (m *BACnetNotificationParametersChangeOfTimer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

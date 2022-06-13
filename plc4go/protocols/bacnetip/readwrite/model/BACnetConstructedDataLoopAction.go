@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLoopAction) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("action"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for action")
 		}
-		_actionErr := m.Action.Serialize(writeBuffer)
+		_actionErr := writeBuffer.WriteSerializable(m.Action)
 		if popErr := writeBuffer.PopContext("action"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for action")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLoopAction) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

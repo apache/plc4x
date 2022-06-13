@@ -142,7 +142,7 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuff
 	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changedValue")
 	}
-	_changedValue, _changedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
+	_changedValue, _changedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _changedValueErr != nil {
 		return nil, errors.Wrap(_changedValueErr, "Error parsing 'changedValue' field")
 	}
@@ -176,7 +176,7 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) Serializ
 		if pushErr := writeBuffer.PushContext("changedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changedValue")
 		}
-		_changedValueErr := m.ChangedValue.Serialize(writeBuffer)
+		_changedValueErr := writeBuffer.WriteSerializable(m.ChangedValue)
 		if popErr := writeBuffer.PopContext("changedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changedValue")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) String()
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

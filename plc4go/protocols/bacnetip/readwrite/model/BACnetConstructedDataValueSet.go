@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataValueSet) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("valueSet"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for valueSet")
 		}
-		_valueSetErr := m.ValueSet.Serialize(writeBuffer)
+		_valueSetErr := writeBuffer.WriteSerializable(m.ValueSet)
 		if popErr := writeBuffer.PopContext("valueSet"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for valueSet")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataValueSet) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

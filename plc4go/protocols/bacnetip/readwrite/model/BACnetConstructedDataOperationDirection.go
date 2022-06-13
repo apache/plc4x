@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataOperationDirection) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("operationDirection"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for operationDirection")
 		}
-		_operationDirectionErr := m.OperationDirection.Serialize(writeBuffer)
+		_operationDirectionErr := writeBuffer.WriteSerializable(m.OperationDirection)
 		if popErr := writeBuffer.PopContext("operationDirection"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for operationDirection")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataOperationDirection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLastCredentialAdded) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("lastCredentialAdded"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastCredentialAdded")
 		}
-		_lastCredentialAddedErr := m.LastCredentialAdded.Serialize(writeBuffer)
+		_lastCredentialAddedErr := writeBuffer.WriteSerializable(m.LastCredentialAdded)
 		if popErr := writeBuffer.PopContext("lastCredentialAdded"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastCredentialAdded")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLastCredentialAdded) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

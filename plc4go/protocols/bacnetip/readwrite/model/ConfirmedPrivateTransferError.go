@@ -261,7 +261,7 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
-		_errorTypeErr := m.ErrorType.Serialize(writeBuffer)
+		_errorTypeErr := writeBuffer.WriteSerializable(m.ErrorType)
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorType")
 		}
@@ -273,7 +273,7 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
-		_vendorIdErr := m.VendorId.Serialize(writeBuffer)
+		_vendorIdErr := writeBuffer.WriteSerializable(m.VendorId)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -285,7 +285,7 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("serviceNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serviceNumber")
 		}
-		_serviceNumberErr := m.ServiceNumber.Serialize(writeBuffer)
+		_serviceNumberErr := writeBuffer.WriteSerializable(m.ServiceNumber)
 		if popErr := writeBuffer.PopContext("serviceNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serviceNumber")
 		}
@@ -300,7 +300,7 @@ func (m *ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(pushErr, "Error pushing for errorParameters")
 			}
 			errorParameters = m.ErrorParameters
-			_errorParametersErr := errorParameters.Serialize(writeBuffer)
+			_errorParametersErr := writeBuffer.WriteSerializable(errorParameters)
 			if popErr := writeBuffer.PopContext("errorParameters"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for errorParameters")
 			}
@@ -321,9 +321,9 @@ func (m *ConfirmedPrivateTransferError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

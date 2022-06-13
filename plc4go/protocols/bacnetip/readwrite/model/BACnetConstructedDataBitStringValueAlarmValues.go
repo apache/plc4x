@@ -265,7 +265,7 @@ func (m *BACnetConstructedDataBitStringValueAlarmValues) Serialize(writeBuffer u
 				return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 			}
 			numberOfDataElements = m.NumberOfDataElements
-			_numberOfDataElementsErr := numberOfDataElements.Serialize(writeBuffer)
+			_numberOfDataElementsErr := writeBuffer.WriteSerializable(numberOfDataElements)
 			if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 			}
@@ -280,7 +280,7 @@ func (m *BACnetConstructedDataBitStringValueAlarmValues) Serialize(writeBuffer u
 				return errors.Wrap(pushErr, "Error pushing for alarmValues")
 			}
 			for _, _element := range m.AlarmValues {
-				_elementErr := _element.Serialize(writeBuffer)
+				_elementErr := writeBuffer.WriteSerializable(_element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
 				}
@@ -302,9 +302,9 @@ func (m *BACnetConstructedDataBitStringValueAlarmValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

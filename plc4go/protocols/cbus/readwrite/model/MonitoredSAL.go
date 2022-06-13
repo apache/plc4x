@@ -264,7 +264,7 @@ func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMon
 			return errors.Wrap(pushErr, "Error pushing for salData")
 		}
 		salData = m.SalData
-		_salDataErr := salData.Serialize(writeBuffer)
+		_salDataErr := writeBuffer.WriteSerializable(salData)
 		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for salData")
 		}
@@ -295,9 +295,9 @@ func (m *MonitoredSAL) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

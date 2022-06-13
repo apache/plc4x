@@ -176,7 +176,7 @@ func (m *BACnetLogDataLogDataTimeChange) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("timeChange"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeChange")
 		}
-		_timeChangeErr := m.TimeChange.Serialize(writeBuffer)
+		_timeChangeErr := writeBuffer.WriteSerializable(m.TimeChange)
 		if popErr := writeBuffer.PopContext("timeChange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeChange")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetLogDataLogDataTimeChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

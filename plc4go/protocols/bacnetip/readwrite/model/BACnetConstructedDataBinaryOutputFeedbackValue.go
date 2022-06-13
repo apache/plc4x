@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBinaryOutputFeedbackValue) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("feedbackValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for feedbackValue")
 		}
-		_feedbackValueErr := m.FeedbackValue.Serialize(writeBuffer)
+		_feedbackValueErr := writeBuffer.WriteSerializable(m.FeedbackValue)
 		if popErr := writeBuffer.PopContext("feedbackValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for feedbackValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBinaryOutputFeedbackValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

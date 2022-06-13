@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("ipv6DhcpLeaseTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6DhcpLeaseTime")
 		}
-		_ipv6DhcpLeaseTimeErr := m.Ipv6DhcpLeaseTime.Serialize(writeBuffer)
+		_ipv6DhcpLeaseTimeErr := writeBuffer.WriteSerializable(m.Ipv6DhcpLeaseTime)
 		if popErr := writeBuffer.PopContext("ipv6DhcpLeaseTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6DhcpLeaseTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

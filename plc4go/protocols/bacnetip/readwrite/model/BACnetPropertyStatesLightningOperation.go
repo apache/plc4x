@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesLightningOperation) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("lightningOperation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lightningOperation")
 		}
-		_lightningOperationErr := m.LightningOperation.Serialize(writeBuffer)
+		_lightningOperationErr := writeBuffer.WriteSerializable(m.LightningOperation)
 		if popErr := writeBuffer.PopContext("lightningOperation"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lightningOperation")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesLightningOperation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -181,7 +181,7 @@ func (m *CIPEncapsulationReadResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("response"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for response")
 		}
-		_responseErr := m.Response.Serialize(writeBuffer)
+		_responseErr := writeBuffer.WriteSerializable(m.Response)
 		if popErr := writeBuffer.PopContext("response"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for response")
 		}
@@ -201,9 +201,9 @@ func (m *CIPEncapsulationReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

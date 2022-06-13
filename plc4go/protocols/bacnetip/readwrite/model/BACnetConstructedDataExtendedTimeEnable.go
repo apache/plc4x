@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataExtendedTimeEnable) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("extendedTimeEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for extendedTimeEnable")
 		}
-		_extendedTimeEnableErr := m.ExtendedTimeEnable.Serialize(writeBuffer)
+		_extendedTimeEnableErr := writeBuffer.WriteSerializable(m.ExtendedTimeEnable)
 		if popErr := writeBuffer.PopContext("extendedTimeEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for extendedTimeEnable")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataExtendedTimeEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

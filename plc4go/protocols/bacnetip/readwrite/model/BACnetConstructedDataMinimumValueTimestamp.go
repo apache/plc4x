@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataMinimumValueTimestamp) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("minimumValueTimestamp"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minimumValueTimestamp")
 		}
-		_minimumValueTimestampErr := m.MinimumValueTimestamp.Serialize(writeBuffer)
+		_minimumValueTimestampErr := writeBuffer.WriteSerializable(m.MinimumValueTimestamp)
 		if popErr := writeBuffer.PopContext("minimumValueTimestamp"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minimumValueTimestamp")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataMinimumValueTimestamp) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

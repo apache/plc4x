@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataSecurityPDUTimeout) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("securityPduTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for securityPduTimeout")
 		}
-		_securityPduTimeoutErr := m.SecurityPduTimeout.Serialize(writeBuffer)
+		_securityPduTimeoutErr := writeBuffer.WriteSerializable(m.SecurityPduTimeout)
 		if popErr := writeBuffer.PopContext("securityPduTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for securityPduTimeout")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataSecurityPDUTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

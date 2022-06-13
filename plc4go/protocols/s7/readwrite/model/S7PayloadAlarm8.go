@@ -184,7 +184,7 @@ func (m *S7PayloadAlarm8) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("alarmMessage"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmMessage")
 		}
-		_alarmMessageErr := m.AlarmMessage.Serialize(writeBuffer)
+		_alarmMessageErr := writeBuffer.WriteSerializable(m.AlarmMessage)
 		if popErr := writeBuffer.PopContext("alarmMessage"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmMessage")
 		}
@@ -204,9 +204,9 @@ func (m *S7PayloadAlarm8) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

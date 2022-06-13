@@ -199,7 +199,7 @@ func (m *ConnectionStateResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for status")
 		}
-		_statusErr := m.Status.Serialize(writeBuffer)
+		_statusErr := writeBuffer.WriteSerializable(m.Status)
 		if popErr := writeBuffer.PopContext("status"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for status")
 		}
@@ -219,9 +219,9 @@ func (m *ConnectionStateResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

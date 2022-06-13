@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) Serialize(write
 		if pushErr := writeBuffer.PushContext("maintenanceRequired"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maintenanceRequired")
 		}
-		_maintenanceRequiredErr := m.MaintenanceRequired.Serialize(writeBuffer)
+		_maintenanceRequiredErr := writeBuffer.WriteSerializable(m.MaintenanceRequired)
 		if popErr := writeBuffer.PopContext("maintenanceRequired"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maintenanceRequired")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) String() string
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

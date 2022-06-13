@@ -575,6 +575,19 @@ func ReadObjectType(readBuffer utils.ReadBuffer) (interface{}, error) {
 }
 
 // Deprecated: use generic above
+func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (interface{}, error) {
+	if value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
+		return uint16(0), nil
+	}
+	// We need to reset our reader to the position we read before
+	// TODO: maybe we reset to much here because pos is byte based
+	// we consume the leftover bits before we reset to avoid trouble // TODO: we really need bit precision on resetting
+	readBuffer.ReadUint8("", 6)
+	readBuffer.Reset(readBuffer.GetPos() - 2)
+	return readBuffer.ReadUint16("proprietaryObjectType", 10)
+}
+
+// Deprecated: use generic above
 func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) error {
 	if value == BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
@@ -588,16 +601,6 @@ func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType 
 		return nil
 	}
 	return writeBuffer.WriteUint16("proprietaryObjectType", 10, value, utils.WithAdditionalStringRepresentation(BACnetObjectType_VENDOR_PROPRIETARY_VALUE.name()))
-}
-
-// Deprecated: use generic above
-func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (interface{}, error) {
-	if value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
-		return uint16(0), nil
-	}
-	// We need to reset our reader to the position we read before
-	readBuffer.Reset(readBuffer.GetPos() - 2)
-	return readBuffer.ReadUint16("proprietaryObjectType", 10)
 }
 
 // Deprecated: use generic above

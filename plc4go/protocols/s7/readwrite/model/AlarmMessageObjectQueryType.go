@@ -357,7 +357,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventState")
 	}
-	_eventStateErr := m.EventState.Serialize(writeBuffer)
+	_eventStateErr := writeBuffer.WriteSerializable(m.EventState)
 	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventState")
 	}
@@ -369,7 +369,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
 	}
-	_ackStateGoingErr := m.AckStateGoing.Serialize(writeBuffer)
+	_ackStateGoingErr := writeBuffer.WriteSerializable(m.AckStateGoing)
 	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateGoing")
 	}
@@ -381,7 +381,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
 	}
-	_ackStateComingErr := m.AckStateComing.Serialize(writeBuffer)
+	_ackStateComingErr := writeBuffer.WriteSerializable(m.AckStateComing)
 	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateComing")
 	}
@@ -393,7 +393,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("timeComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeComing")
 	}
-	_timeComingErr := m.TimeComing.Serialize(writeBuffer)
+	_timeComingErr := writeBuffer.WriteSerializable(m.TimeComing)
 	if popErr := writeBuffer.PopContext("timeComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeComing")
 	}
@@ -405,7 +405,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("valueComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for valueComing")
 	}
-	_valueComingErr := m.ValueComing.Serialize(writeBuffer)
+	_valueComingErr := writeBuffer.WriteSerializable(m.ValueComing)
 	if popErr := writeBuffer.PopContext("valueComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for valueComing")
 	}
@@ -417,7 +417,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("timeGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeGoing")
 	}
-	_timeGoingErr := m.TimeGoing.Serialize(writeBuffer)
+	_timeGoingErr := writeBuffer.WriteSerializable(m.TimeGoing)
 	if popErr := writeBuffer.PopContext("timeGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeGoing")
 	}
@@ -429,7 +429,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("valueGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for valueGoing")
 	}
-	_valueGoingErr := m.ValueGoing.Serialize(writeBuffer)
+	_valueGoingErr := writeBuffer.WriteSerializable(m.ValueGoing)
 	if popErr := writeBuffer.PopContext("valueGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for valueGoing")
 	}
@@ -447,9 +447,9 @@ func (m *AlarmMessageObjectQueryType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -229,7 +229,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.Write
 				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeLowLimit")
 			}
 			deviceInstanceRangeLowLimit = m.DeviceInstanceRangeLowLimit
-			_deviceInstanceRangeLowLimitErr := deviceInstanceRangeLowLimit.Serialize(writeBuffer)
+			_deviceInstanceRangeLowLimitErr := writeBuffer.WriteSerializable(deviceInstanceRangeLowLimit)
 			if popErr := writeBuffer.PopContext("deviceInstanceRangeLowLimit"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeLowLimit")
 			}
@@ -245,7 +245,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.Write
 				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeHighLimit")
 			}
 			deviceInstanceRangeHighLimit = m.DeviceInstanceRangeHighLimit
-			_deviceInstanceRangeHighLimitErr := deviceInstanceRangeHighLimit.Serialize(writeBuffer)
+			_deviceInstanceRangeHighLimitErr := writeBuffer.WriteSerializable(deviceInstanceRangeHighLimit)
 			if popErr := writeBuffer.PopContext("deviceInstanceRangeHighLimit"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeHighLimit")
 			}
@@ -266,9 +266,9 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

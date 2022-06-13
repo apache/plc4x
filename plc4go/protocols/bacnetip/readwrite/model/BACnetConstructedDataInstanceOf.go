@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataInstanceOf) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("instanceOf"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for instanceOf")
 		}
-		_instanceOfErr := m.InstanceOf.Serialize(writeBuffer)
+		_instanceOfErr := writeBuffer.WriteSerializable(m.InstanceOf)
 		if popErr := writeBuffer.PopContext("instanceOf"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for instanceOf")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataInstanceOf) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

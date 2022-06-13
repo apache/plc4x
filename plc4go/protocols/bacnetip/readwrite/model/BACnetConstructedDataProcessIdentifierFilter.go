@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("processIdentifierFilter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for processIdentifierFilter")
 		}
-		_processIdentifierFilterErr := m.ProcessIdentifierFilter.Serialize(writeBuffer)
+		_processIdentifierFilterErr := writeBuffer.WriteSerializable(m.ProcessIdentifierFilter)
 		if popErr := writeBuffer.PopContext("processIdentifierFilter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for processIdentifierFilter")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

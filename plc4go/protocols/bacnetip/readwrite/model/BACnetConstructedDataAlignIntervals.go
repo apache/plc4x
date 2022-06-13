@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAlignIntervals) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("alignIntervals"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alignIntervals")
 		}
-		_alignIntervalsErr := m.AlignIntervals.Serialize(writeBuffer)
+		_alignIntervalsErr := writeBuffer.WriteSerializable(m.AlignIntervals)
 		if popErr := writeBuffer.PopContext("alignIntervals"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alignIntervals")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAlignIntervals) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

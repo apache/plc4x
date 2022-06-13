@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataSetpointReference) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("setpointReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setpointReference")
 		}
-		_setpointReferenceErr := m.SetpointReference.Serialize(writeBuffer)
+		_setpointReferenceErr := writeBuffer.WriteSerializable(m.SetpointReference)
 		if popErr := writeBuffer.PopContext("setpointReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setpointReference")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataSetpointReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

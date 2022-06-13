@@ -198,7 +198,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
 		}
-		_fileStartPositionErr := m.FileStartPosition.Serialize(writeBuffer)
+		_fileStartPositionErr := writeBuffer.WriteSerializable(m.FileStartPosition)
 		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileStartPosition")
 		}
@@ -210,7 +210,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("requestOctetCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for requestOctetCount")
 		}
-		_requestOctetCountErr := m.RequestOctetCount.Serialize(writeBuffer)
+		_requestOctetCountErr := writeBuffer.WriteSerializable(m.RequestOctetCount)
 		if popErr := writeBuffer.PopContext("requestOctetCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for requestOctetCount")
 		}
@@ -230,9 +230,9 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

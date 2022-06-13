@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("doorOpenTooLongTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorOpenTooLongTime")
 		}
-		_doorOpenTooLongTimeErr := m.DoorOpenTooLongTime.Serialize(writeBuffer)
+		_doorOpenTooLongTimeErr := writeBuffer.WriteSerializable(m.DoorOpenTooLongTime)
 		if popErr := writeBuffer.PopContext("doorOpenTooLongTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorOpenTooLongTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

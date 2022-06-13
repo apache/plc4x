@@ -134,7 +134,7 @@ func (m *BACnetLiftCarCallList) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("floorNumbers"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for floorNumbers")
 	}
-	_floorNumbersErr := m.FloorNumbers.Serialize(writeBuffer)
+	_floorNumbersErr := writeBuffer.WriteSerializable(m.FloorNumbers)
 	if popErr := writeBuffer.PopContext("floorNumbers"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for floorNumbers")
 	}
@@ -152,9 +152,9 @@ func (m *BACnetLiftCarCallList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -230,7 +230,7 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.PropertyIdentifier)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -245,7 +245,7 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
-		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
+		_arrayIndexErr := writeBuffer.WriteSerializable(arrayIndex)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
@@ -258,7 +258,7 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyValue")
 	}
-	_propertyValueErr := m.PropertyValue.Serialize(writeBuffer)
+	_propertyValueErr := writeBuffer.WriteSerializable(m.PropertyValue)
 	if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyValue")
 	}
@@ -273,7 +273,7 @@ func (m *ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) e
 			return errors.Wrap(pushErr, "Error pushing for timeOfChange")
 		}
 		timeOfChange = m.TimeOfChange
-		_timeOfChangeErr := timeOfChange.Serialize(writeBuffer)
+		_timeOfChangeErr := writeBuffer.WriteSerializable(timeOfChange)
 		if popErr := writeBuffer.PopContext("timeOfChange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeOfChange")
 		}
@@ -292,9 +292,9 @@ func (m *ListOfCovNotificationsValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

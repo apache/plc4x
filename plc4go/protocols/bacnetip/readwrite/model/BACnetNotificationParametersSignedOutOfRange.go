@@ -302,7 +302,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -314,7 +314,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("exceedingValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for exceedingValue")
 		}
-		_exceedingValueErr := m.ExceedingValue.Serialize(writeBuffer)
+		_exceedingValueErr := writeBuffer.WriteSerializable(m.ExceedingValue)
 		if popErr := writeBuffer.PopContext("exceedingValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for exceedingValue")
 		}
@@ -326,7 +326,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
+		_statusFlagsErr := writeBuffer.WriteSerializable(m.StatusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -338,7 +338,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deadband")
 		}
-		_deadbandErr := m.Deadband.Serialize(writeBuffer)
+		_deadbandErr := writeBuffer.WriteSerializable(m.Deadband)
 		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deadband")
 		}
@@ -350,7 +350,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("exceededLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for exceededLimit")
 		}
-		_exceededLimitErr := m.ExceededLimit.Serialize(writeBuffer)
+		_exceededLimitErr := writeBuffer.WriteSerializable(m.ExceededLimit)
 		if popErr := writeBuffer.PopContext("exceededLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for exceededLimit")
 		}
@@ -362,7 +362,7 @@ func (m *BACnetNotificationParametersSignedOutOfRange) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -382,9 +382,9 @@ func (m *BACnetNotificationParametersSignedOutOfRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

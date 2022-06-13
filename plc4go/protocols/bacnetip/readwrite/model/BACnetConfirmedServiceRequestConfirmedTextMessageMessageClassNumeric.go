@@ -176,7 +176,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) S
 		if pushErr := writeBuffer.PushContext("numericValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for numericValue")
 		}
-		_numericValueErr := m.NumericValue.Serialize(writeBuffer)
+		_numericValueErr := writeBuffer.WriteSerializable(m.NumericValue)
 		if popErr := writeBuffer.PopContext("numericValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for numericValue")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) S
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

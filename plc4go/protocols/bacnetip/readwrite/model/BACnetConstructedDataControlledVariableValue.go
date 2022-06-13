@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataControlledVariableValue) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("controlledVariableValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for controlledVariableValue")
 		}
-		_controlledVariableValueErr := m.ControlledVariableValue.Serialize(writeBuffer)
+		_controlledVariableValueErr := writeBuffer.WriteSerializable(m.ControlledVariableValue)
 		if popErr := writeBuffer.PopContext("controlledVariableValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for controlledVariableValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataControlledVariableValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

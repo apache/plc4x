@@ -173,7 +173,7 @@ func (m *SearchRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("hpaiIDiscoveryEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiIDiscoveryEndpoint")
 		}
-		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(writeBuffer)
+		_hpaiIDiscoveryEndpointErr := writeBuffer.WriteSerializable(m.HpaiIDiscoveryEndpoint)
 		if popErr := writeBuffer.PopContext("hpaiIDiscoveryEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiIDiscoveryEndpoint")
 		}
@@ -193,9 +193,9 @@ func (m *SearchRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

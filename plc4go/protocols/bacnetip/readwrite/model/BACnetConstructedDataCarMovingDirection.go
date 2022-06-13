@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataCarMovingDirection) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("carMovingDirection"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for carMovingDirection")
 		}
-		_carMovingDirectionErr := m.CarMovingDirection.Serialize(writeBuffer)
+		_carMovingDirectionErr := writeBuffer.WriteSerializable(m.CarMovingDirection)
 		if popErr := writeBuffer.PopContext("carMovingDirection"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for carMovingDirection")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataCarMovingDirection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

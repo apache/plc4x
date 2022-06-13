@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataUserExternalIdentifier) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("userExternalIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for userExternalIdentifier")
 		}
-		_userExternalIdentifierErr := m.UserExternalIdentifier.Serialize(writeBuffer)
+		_userExternalIdentifierErr := writeBuffer.WriteSerializable(m.UserExternalIdentifier)
 		if popErr := writeBuffer.PopContext("userExternalIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for userExternalIdentifier")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataUserExternalIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

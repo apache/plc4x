@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataUserType) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("userType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for userType")
 		}
-		_userTypeErr := m.UserType.Serialize(writeBuffer)
+		_userTypeErr := writeBuffer.WriteSerializable(m.UserType)
 		if popErr := writeBuffer.PopContext("userType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for userType")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataUserType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

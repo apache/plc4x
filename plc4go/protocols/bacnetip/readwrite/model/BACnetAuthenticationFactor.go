@@ -180,7 +180,7 @@ func (m *BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("formatType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for formatType")
 	}
-	_formatTypeErr := m.FormatType.Serialize(writeBuffer)
+	_formatTypeErr := writeBuffer.WriteSerializable(m.FormatType)
 	if popErr := writeBuffer.PopContext("formatType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for formatType")
 	}
@@ -192,7 +192,7 @@ func (m *BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("formatClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for formatClass")
 	}
-	_formatClassErr := m.FormatClass.Serialize(writeBuffer)
+	_formatClassErr := writeBuffer.WriteSerializable(m.FormatClass)
 	if popErr := writeBuffer.PopContext("formatClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for formatClass")
 	}
@@ -204,7 +204,7 @@ func (m *BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for value")
 	}
-	_valueErr := m.Value.Serialize(writeBuffer)
+	_valueErr := writeBuffer.WriteSerializable(m.Value)
 	if popErr := writeBuffer.PopContext("value"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for value")
 	}
@@ -222,9 +222,9 @@ func (m *BACnetAuthenticationFactor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

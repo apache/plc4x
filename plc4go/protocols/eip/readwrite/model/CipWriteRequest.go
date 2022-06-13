@@ -270,7 +270,7 @@ func (m *CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dataType")
 		}
-		_dataTypeErr := m.DataType.Serialize(writeBuffer)
+		_dataTypeErr := writeBuffer.WriteSerializable(m.DataType)
 		if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dataType")
 		}
@@ -306,9 +306,9 @@ func (m *CipWriteRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

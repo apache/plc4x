@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataPolarity) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("polarity"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for polarity")
 		}
-		_polarityErr := m.Polarity.Serialize(writeBuffer)
+		_polarityErr := writeBuffer.WriteSerializable(m.Polarity)
 		if popErr := writeBuffer.PopContext("polarity"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for polarity")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataPolarity) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

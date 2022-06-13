@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataPassbackTimeout) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("passbackTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for passbackTimeout")
 		}
-		_passbackTimeoutErr := m.PassbackTimeout.Serialize(writeBuffer)
+		_passbackTimeoutErr := writeBuffer.WriteSerializable(m.PassbackTimeout)
 		if popErr := writeBuffer.PopContext("passbackTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for passbackTimeout")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataPassbackTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -206,7 +206,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serial
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+	_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -218,7 +218,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serial
 	if pushErr := writeBuffer.PushContext("minPriority"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for minPriority")
 	}
-	_minPriorityErr := m.MinPriority.Serialize(writeBuffer)
+	_minPriorityErr := writeBuffer.WriteSerializable(m.MinPriority)
 	if popErr := writeBuffer.PopContext("minPriority"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for minPriority")
 	}
@@ -230,7 +230,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serial
 	if pushErr := writeBuffer.PushContext("maxPriority"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for maxPriority")
 	}
-	_maxPriorityErr := m.MaxPriority.Serialize(writeBuffer)
+	_maxPriorityErr := writeBuffer.WriteSerializable(m.MaxPriority)
 	if popErr := writeBuffer.PopContext("maxPriority"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for maxPriority")
 	}
@@ -242,7 +242,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serial
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+	_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -260,9 +260,9 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) String
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

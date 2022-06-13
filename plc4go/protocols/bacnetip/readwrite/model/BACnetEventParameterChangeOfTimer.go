@@ -271,7 +271,7 @@ func (m *BACnetEventParameterChangeOfTimer) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+		_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -283,7 +283,7 @@ func (m *BACnetEventParameterChangeOfTimer) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
+		_timeDelayErr := writeBuffer.WriteSerializable(m.TimeDelay)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -295,7 +295,7 @@ func (m *BACnetEventParameterChangeOfTimer) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("alarmValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmValues")
 		}
-		_alarmValuesErr := m.AlarmValues.Serialize(writeBuffer)
+		_alarmValuesErr := writeBuffer.WriteSerializable(m.AlarmValues)
 		if popErr := writeBuffer.PopContext("alarmValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmValues")
 		}
@@ -307,7 +307,7 @@ func (m *BACnetEventParameterChangeOfTimer) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("updateTimeReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for updateTimeReference")
 		}
-		_updateTimeReferenceErr := m.UpdateTimeReference.Serialize(writeBuffer)
+		_updateTimeReferenceErr := writeBuffer.WriteSerializable(m.UpdateTimeReference)
 		if popErr := writeBuffer.PopContext("updateTimeReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for updateTimeReference")
 		}
@@ -319,7 +319,7 @@ func (m *BACnetEventParameterChangeOfTimer) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+		_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -339,9 +339,9 @@ func (m *BACnetEventParameterChangeOfTimer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

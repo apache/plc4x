@@ -198,7 +198,7 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeByPosition) Serialize(writeB
 		if pushErr := writeBuffer.PushContext("referenceIndex"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referenceIndex")
 		}
-		_referenceIndexErr := m.ReferenceIndex.Serialize(writeBuffer)
+		_referenceIndexErr := writeBuffer.WriteSerializable(m.ReferenceIndex)
 		if popErr := writeBuffer.PopContext("referenceIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referenceIndex")
 		}
@@ -210,7 +210,7 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeByPosition) Serialize(writeB
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for count")
 		}
-		_countErr := m.Count.Serialize(writeBuffer)
+		_countErr := writeBuffer.WriteSerializable(m.Count)
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for count")
 		}
@@ -230,9 +230,9 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeByPosition) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

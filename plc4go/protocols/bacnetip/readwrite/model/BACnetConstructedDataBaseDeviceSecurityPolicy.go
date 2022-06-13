@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("baseDeviceSecurityPolicy"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for baseDeviceSecurityPolicy")
 		}
-		_baseDeviceSecurityPolicyErr := m.BaseDeviceSecurityPolicy.Serialize(writeBuffer)
+		_baseDeviceSecurityPolicyErr := writeBuffer.WriteSerializable(m.BaseDeviceSecurityPolicy)
 		if popErr := writeBuffer.PopContext("baseDeviceSecurityPolicy"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for baseDeviceSecurityPolicy")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -241,7 +241,7 @@ func (m *BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.PropertyIdentifier)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -256,7 +256,7 @@ func (m *BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
 		}
 		propertyArrayIndex = m.PropertyArrayIndex
-		_propertyArrayIndexErr := propertyArrayIndex.Serialize(writeBuffer)
+		_propertyArrayIndexErr := writeBuffer.WriteSerializable(propertyArrayIndex)
 		if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
 		}
@@ -272,7 +272,7 @@ func (m *BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		propertyValue = m.PropertyValue
-		_propertyValueErr := propertyValue.Serialize(writeBuffer)
+		_propertyValueErr := writeBuffer.WriteSerializable(propertyValue)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
@@ -288,7 +288,7 @@ func (m *BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.Priority
-		_priorityErr := priority.Serialize(writeBuffer)
+		_priorityErr := writeBuffer.WriteSerializable(priority)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for priority")
 		}
@@ -307,9 +307,9 @@ func (m *BACnetPropertyValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

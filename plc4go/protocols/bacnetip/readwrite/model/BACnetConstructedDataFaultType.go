@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataFaultType) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("faultType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for faultType")
 		}
-		_faultTypeErr := m.FaultType.Serialize(writeBuffer)
+		_faultTypeErr := writeBuffer.WriteSerializable(m.FaultType)
 		if popErr := writeBuffer.PopContext("faultType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for faultType")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataFaultType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

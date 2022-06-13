@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesBinaryValue) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("binaryValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for binaryValue")
 		}
-		_binaryValueErr := m.BinaryValue.Serialize(writeBuffer)
+		_binaryValueErr := writeBuffer.WriteSerializable(m.BinaryValue)
 		if popErr := writeBuffer.PopContext("binaryValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for binaryValue")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesBinaryValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

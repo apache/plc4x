@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataTimeOfStrikeCountReset) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("timeOfStrikeCountReset"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeOfStrikeCountReset")
 		}
-		_timeOfStrikeCountResetErr := m.TimeOfStrikeCountReset.Serialize(writeBuffer)
+		_timeOfStrikeCountResetErr := writeBuffer.WriteSerializable(m.TimeOfStrikeCountReset)
 		if popErr := writeBuffer.PopContext("timeOfStrikeCountReset"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeOfStrikeCountReset")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataTimeOfStrikeCountReset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

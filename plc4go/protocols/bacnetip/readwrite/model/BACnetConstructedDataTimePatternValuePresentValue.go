@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataTimePatternValuePresentValue) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for presentValue")
 		}
-		_presentValueErr := m.PresentValue.Serialize(writeBuffer)
+		_presentValueErr := writeBuffer.WriteSerializable(m.PresentValue)
 		if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for presentValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataTimePatternValuePresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

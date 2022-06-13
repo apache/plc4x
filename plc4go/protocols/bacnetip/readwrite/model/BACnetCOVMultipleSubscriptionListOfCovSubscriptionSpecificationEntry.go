@@ -157,7 +157,7 @@ func (m *BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) S
 	if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifierErr := m.MonitoredObjectIdentifier.Serialize(writeBuffer)
+	_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(m.MonitoredObjectIdentifier)
 	if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) S
 	if pushErr := writeBuffer.PushContext("listOfCovReferences"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for listOfCovReferences")
 	}
-	_listOfCovReferencesErr := m.ListOfCovReferences.Serialize(writeBuffer)
+	_listOfCovReferencesErr := writeBuffer.WriteSerializable(m.ListOfCovReferences)
 	if popErr := writeBuffer.PopContext("listOfCovReferences"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for listOfCovReferences")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) S
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

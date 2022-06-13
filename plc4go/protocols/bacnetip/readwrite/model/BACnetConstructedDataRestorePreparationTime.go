@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataRestorePreparationTime) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("restorePreparationTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for restorePreparationTime")
 		}
-		_restorePreparationTimeErr := m.RestorePreparationTime.Serialize(writeBuffer)
+		_restorePreparationTimeErr := writeBuffer.WriteSerializable(m.RestorePreparationTime)
 		if popErr := writeBuffer.PopContext("restorePreparationTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for restorePreparationTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataRestorePreparationTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -226,7 +226,7 @@ func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
-		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+		_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -238,7 +238,7 @@ func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventState")
 		}
-		_eventStateErr := m.EventState.Serialize(writeBuffer)
+		_eventStateErr := writeBuffer.WriteSerializable(m.EventState)
 		if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventState")
 		}
@@ -250,7 +250,7 @@ func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("acknowledgedTransitions"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for acknowledgedTransitions")
 		}
-		_acknowledgedTransitionsErr := m.AcknowledgedTransitions.Serialize(writeBuffer)
+		_acknowledgedTransitionsErr := writeBuffer.WriteSerializable(m.AcknowledgedTransitions)
 		if popErr := writeBuffer.PopContext("acknowledgedTransitions"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for acknowledgedTransitions")
 		}
@@ -270,9 +270,9 @@ func (m *BACnetServiceAckGetAlarmSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

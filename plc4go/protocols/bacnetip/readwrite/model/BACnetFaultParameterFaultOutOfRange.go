@@ -246,7 +246,7 @@ func (m *BACnetFaultParameterFaultOutOfRange) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+		_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -258,7 +258,7 @@ func (m *BACnetFaultParameterFaultOutOfRange) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("minNormalValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minNormalValue")
 		}
-		_minNormalValueErr := m.MinNormalValue.Serialize(writeBuffer)
+		_minNormalValueErr := writeBuffer.WriteSerializable(m.MinNormalValue)
 		if popErr := writeBuffer.PopContext("minNormalValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minNormalValue")
 		}
@@ -270,7 +270,7 @@ func (m *BACnetFaultParameterFaultOutOfRange) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("maxNormalValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxNormalValue")
 		}
-		_maxNormalValueErr := m.MaxNormalValue.Serialize(writeBuffer)
+		_maxNormalValueErr := writeBuffer.WriteSerializable(m.MaxNormalValue)
 		if popErr := writeBuffer.PopContext("maxNormalValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxNormalValue")
 		}
@@ -282,7 +282,7 @@ func (m *BACnetFaultParameterFaultOutOfRange) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+		_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -302,9 +302,9 @@ func (m *BACnetFaultParameterFaultOutOfRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

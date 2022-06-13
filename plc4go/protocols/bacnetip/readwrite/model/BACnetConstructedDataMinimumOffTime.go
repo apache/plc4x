@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataMinimumOffTime) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("minimumOffTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minimumOffTime")
 		}
-		_minimumOffTimeErr := m.MinimumOffTime.Serialize(writeBuffer)
+		_minimumOffTimeErr := writeBuffer.WriteSerializable(m.MinimumOffTime)
 		if popErr := writeBuffer.PopContext("minimumOffTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minimumOffTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataMinimumOffTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

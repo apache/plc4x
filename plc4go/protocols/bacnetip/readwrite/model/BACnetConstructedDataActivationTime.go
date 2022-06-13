@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataActivationTime) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("activationTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for activationTime")
 		}
-		_activationTimeErr := m.ActivationTime.Serialize(writeBuffer)
+		_activationTimeErr := writeBuffer.WriteSerializable(m.ActivationTime)
 		if popErr := writeBuffer.PopContext("activationTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for activationTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataActivationTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

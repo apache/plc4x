@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataNumberOfStates) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("numberOfState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for numberOfState")
 		}
-		_numberOfStateErr := m.NumberOfState.Serialize(writeBuffer)
+		_numberOfStateErr := writeBuffer.WriteSerializable(m.NumberOfState)
 		if popErr := writeBuffer.PopContext("numberOfState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for numberOfState")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataNumberOfStates) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

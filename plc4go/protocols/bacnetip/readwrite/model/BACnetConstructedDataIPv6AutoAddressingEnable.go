@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("autoAddressingEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for autoAddressingEnable")
 		}
-		_autoAddressingEnableErr := m.AutoAddressingEnable.Serialize(writeBuffer)
+		_autoAddressingEnableErr := writeBuffer.WriteSerializable(m.AutoAddressingEnable)
 		if popErr := writeBuffer.PopContext("autoAddressingEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for autoAddressingEnable")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

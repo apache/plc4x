@@ -192,7 +192,7 @@ func (m *BACnetLogRecordLogDatumAnyValue) Serialize(writeBuffer utils.WriteBuffe
 				return errors.Wrap(pushErr, "Error pushing for anyValue")
 			}
 			anyValue = m.AnyValue
-			_anyValueErr := anyValue.Serialize(writeBuffer)
+			_anyValueErr := writeBuffer.WriteSerializable(anyValue)
 			if popErr := writeBuffer.PopContext("anyValue"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for anyValue")
 			}
@@ -213,9 +213,9 @@ func (m *BACnetLogRecordLogDatumAnyValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

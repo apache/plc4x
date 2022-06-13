@@ -226,7 +226,7 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
-	_recipientErr := m.Recipient.Serialize(writeBuffer)
+	_recipientErr := writeBuffer.WriteSerializable(m.Recipient)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for recipient")
 	}
@@ -238,7 +238,7 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 	}
-	_issueConfirmedNotificationsErr := m.IssueConfirmedNotifications.Serialize(writeBuffer)
+	_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(m.IssueConfirmedNotifications)
 	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 	}
@@ -250,7 +250,7 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
 	}
-	_timeRemainingErr := m.TimeRemaining.Serialize(writeBuffer)
+	_timeRemainingErr := writeBuffer.WriteSerializable(m.TimeRemaining)
 	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeRemaining")
 	}
@@ -262,7 +262,7 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("maxNotificationDelay"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for maxNotificationDelay")
 	}
-	_maxNotificationDelayErr := m.MaxNotificationDelay.Serialize(writeBuffer)
+	_maxNotificationDelayErr := writeBuffer.WriteSerializable(m.MaxNotificationDelay)
 	if popErr := writeBuffer.PopContext("maxNotificationDelay"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for maxNotificationDelay")
 	}
@@ -274,7 +274,7 @@ func (m *BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecification"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecification")
 	}
-	_listOfCovSubscriptionSpecificationErr := m.ListOfCovSubscriptionSpecification.Serialize(writeBuffer)
+	_listOfCovSubscriptionSpecificationErr := writeBuffer.WriteSerializable(m.ListOfCovSubscriptionSpecification)
 	if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecification"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecification")
 	}
@@ -292,9 +292,9 @@ func (m *BACnetCOVMultipleSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

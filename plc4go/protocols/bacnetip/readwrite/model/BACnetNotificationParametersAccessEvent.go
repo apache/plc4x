@@ -365,7 +365,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -377,7 +377,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("accessEvent"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessEvent")
 		}
-		_accessEventErr := m.AccessEvent.Serialize(writeBuffer)
+		_accessEventErr := writeBuffer.WriteSerializable(m.AccessEvent)
 		if popErr := writeBuffer.PopContext("accessEvent"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessEvent")
 		}
@@ -389,7 +389,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
+		_statusFlagsErr := writeBuffer.WriteSerializable(m.StatusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -401,7 +401,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("accessEventTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessEventTag")
 		}
-		_accessEventTagErr := m.AccessEventTag.Serialize(writeBuffer)
+		_accessEventTagErr := writeBuffer.WriteSerializable(m.AccessEventTag)
 		if popErr := writeBuffer.PopContext("accessEventTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessEventTag")
 		}
@@ -413,7 +413,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("accessEventTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessEventTime")
 		}
-		_accessEventTimeErr := m.AccessEventTime.Serialize(writeBuffer)
+		_accessEventTimeErr := writeBuffer.WriteSerializable(m.AccessEventTime)
 		if popErr := writeBuffer.PopContext("accessEventTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessEventTime")
 		}
@@ -425,7 +425,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("accessCredential"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessCredential")
 		}
-		_accessCredentialErr := m.AccessCredential.Serialize(writeBuffer)
+		_accessCredentialErr := writeBuffer.WriteSerializable(m.AccessCredential)
 		if popErr := writeBuffer.PopContext("accessCredential"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessCredential")
 		}
@@ -440,7 +440,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 				return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
 			}
 			authenticationFactor = m.AuthenticationFactor
-			_authenticationFactorErr := authenticationFactor.Serialize(writeBuffer)
+			_authenticationFactorErr := writeBuffer.WriteSerializable(authenticationFactor)
 			if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for authenticationFactor")
 			}
@@ -453,7 +453,7 @@ func (m *BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -473,9 +473,9 @@ func (m *BACnetNotificationParametersAccessEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBufferSize) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("bufferSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bufferSize")
 		}
-		_bufferSizeErr := m.BufferSize.Serialize(writeBuffer)
+		_bufferSizeErr := writeBuffer.WriteSerializable(m.BufferSize)
 		if popErr := writeBuffer.PopContext("bufferSize"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bufferSize")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBufferSize) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

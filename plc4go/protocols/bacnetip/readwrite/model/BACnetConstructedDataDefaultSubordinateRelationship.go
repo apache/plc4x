@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("defaultSubordinateRelationship"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for defaultSubordinateRelationship")
 		}
-		_defaultSubordinateRelationshipErr := m.DefaultSubordinateRelationship.Serialize(writeBuffer)
+		_defaultSubordinateRelationshipErr := writeBuffer.WriteSerializable(m.DefaultSubordinateRelationship)
 		if popErr := writeBuffer.PopContext("defaultSubordinateRelationship"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for defaultSubordinateRelationship")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

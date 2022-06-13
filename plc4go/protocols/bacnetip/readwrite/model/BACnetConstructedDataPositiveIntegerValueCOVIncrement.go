@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataPositiveIntegerValueCOVIncrement) Serialize(writeB
 		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
-		_covIncrementErr := m.CovIncrement.Serialize(writeBuffer)
+		_covIncrementErr := writeBuffer.WriteSerializable(m.CovIncrement)
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataPositiveIntegerValueCOVIncrement) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -265,7 +265,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 		if pushErr := writeBuffer.PushContext("textMessageSourceDevice"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for textMessageSourceDevice")
 		}
-		_textMessageSourceDeviceErr := m.TextMessageSourceDevice.Serialize(writeBuffer)
+		_textMessageSourceDeviceErr := writeBuffer.WriteSerializable(m.TextMessageSourceDevice)
 		if popErr := writeBuffer.PopContext("textMessageSourceDevice"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for textMessageSourceDevice")
 		}
@@ -280,7 +280,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 				return errors.Wrap(pushErr, "Error pushing for messageClass")
 			}
 			messageClass = m.MessageClass
-			_messageClassErr := messageClass.Serialize(writeBuffer)
+			_messageClassErr := writeBuffer.WriteSerializable(messageClass)
 			if popErr := writeBuffer.PopContext("messageClass"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for messageClass")
 			}
@@ -293,7 +293,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 		if pushErr := writeBuffer.PushContext("messagePriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for messagePriority")
 		}
-		_messagePriorityErr := m.MessagePriority.Serialize(writeBuffer)
+		_messagePriorityErr := writeBuffer.WriteSerializable(m.MessagePriority)
 		if popErr := writeBuffer.PopContext("messagePriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for messagePriority")
 		}
@@ -305,7 +305,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeB
 		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for message")
 		}
-		_messageErr := m.Message.Serialize(writeBuffer)
+		_messageErr := writeBuffer.WriteSerializable(m.Message)
 		if popErr := writeBuffer.PopContext("message"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for message")
 		}
@@ -325,9 +325,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

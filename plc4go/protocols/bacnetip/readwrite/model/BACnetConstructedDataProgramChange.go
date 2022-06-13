@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataProgramChange) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("programChange"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for programChange")
 		}
-		_programChangeErr := m.ProgramChange.Serialize(writeBuffer)
+		_programChangeErr := writeBuffer.WriteSerializable(m.ProgramChange)
 		if popErr := writeBuffer.PopContext("programChange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for programChange")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataProgramChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

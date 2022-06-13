@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLowDiffLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("lowDiffLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lowDiffLimit")
 		}
-		_lowDiffLimitErr := m.LowDiffLimit.Serialize(writeBuffer)
+		_lowDiffLimitErr := writeBuffer.WriteSerializable(m.LowDiffLimit)
 		if popErr := writeBuffer.PopContext("lowDiffLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lowDiffLimit")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLowDiffLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

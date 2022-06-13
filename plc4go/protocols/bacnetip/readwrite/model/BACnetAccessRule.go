@@ -250,7 +250,7 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("timeRangeSpecifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeRangeSpecifier")
 	}
-	_timeRangeSpecifierErr := m.TimeRangeSpecifier.Serialize(writeBuffer)
+	_timeRangeSpecifierErr := writeBuffer.WriteSerializable(m.TimeRangeSpecifier)
 	if popErr := writeBuffer.PopContext("timeRangeSpecifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeRangeSpecifier")
 	}
@@ -265,7 +265,7 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for timeRange")
 		}
 		timeRange = m.TimeRange
-		_timeRangeErr := timeRange.Serialize(writeBuffer)
+		_timeRangeErr := writeBuffer.WriteSerializable(timeRange)
 		if popErr := writeBuffer.PopContext("timeRange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeRange")
 		}
@@ -278,7 +278,7 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("locationSpecifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for locationSpecifier")
 	}
-	_locationSpecifierErr := m.LocationSpecifier.Serialize(writeBuffer)
+	_locationSpecifierErr := writeBuffer.WriteSerializable(m.LocationSpecifier)
 	if popErr := writeBuffer.PopContext("locationSpecifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for locationSpecifier")
 	}
@@ -293,7 +293,7 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for location")
 		}
 		location = m.Location
-		_locationErr := location.Serialize(writeBuffer)
+		_locationErr := writeBuffer.WriteSerializable(location)
 		if popErr := writeBuffer.PopContext("location"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for location")
 		}
@@ -306,7 +306,7 @@ func (m *BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for enable")
 	}
-	_enableErr := m.Enable.Serialize(writeBuffer)
+	_enableErr := writeBuffer.WriteSerializable(m.Enable)
 	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for enable")
 	}
@@ -324,9 +324,9 @@ func (m *BACnetAccessRule) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAuthorizationMode) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("authorizationMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for authorizationMode")
 		}
-		_authorizationModeErr := m.AuthorizationMode.Serialize(writeBuffer)
+		_authorizationModeErr := writeBuffer.WriteSerializable(m.AuthorizationMode)
 		if popErr := writeBuffer.PopContext("authorizationMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for authorizationMode")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAuthorizationMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

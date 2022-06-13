@@ -296,7 +296,7 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+		_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -308,7 +308,7 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
+		_timeDelayErr := writeBuffer.WriteSerializable(m.TimeDelay)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -320,7 +320,7 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
 		}
-		_listOfLifeSavetyAlarmValuesErr := m.ListOfLifeSavetyAlarmValues.Serialize(writeBuffer)
+		_listOfLifeSavetyAlarmValuesErr := writeBuffer.WriteSerializable(m.ListOfLifeSavetyAlarmValues)
 		if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
 		}
@@ -332,7 +332,7 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("listOfAlarmValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfAlarmValues")
 		}
-		_listOfAlarmValuesErr := m.ListOfAlarmValues.Serialize(writeBuffer)
+		_listOfAlarmValuesErr := writeBuffer.WriteSerializable(m.ListOfAlarmValues)
 		if popErr := writeBuffer.PopContext("listOfAlarmValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfAlarmValues")
 		}
@@ -344,7 +344,7 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("modePropertyReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for modePropertyReference")
 		}
-		_modePropertyReferenceErr := m.ModePropertyReference.Serialize(writeBuffer)
+		_modePropertyReferenceErr := writeBuffer.WriteSerializable(m.ModePropertyReference)
 		if popErr := writeBuffer.PopContext("modePropertyReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for modePropertyReference")
 		}
@@ -356,7 +356,7 @@ func (m *BACnetEventParameterChangeOfLifeSavety) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+		_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -376,9 +376,9 @@ func (m *BACnetEventParameterChangeOfLifeSavety) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataVendorIdentifier) Serialize(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("vendorIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorIdentifier")
 		}
-		_vendorIdentifierErr := m.VendorIdentifier.Serialize(writeBuffer)
+		_vendorIdentifierErr := writeBuffer.WriteSerializable(m.VendorIdentifier)
 		if popErr := writeBuffer.PopContext("vendorIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorIdentifier")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataVendorIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

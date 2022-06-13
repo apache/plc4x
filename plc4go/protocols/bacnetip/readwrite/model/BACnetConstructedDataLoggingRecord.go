@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLoggingRecord) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("loggingRecord"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for loggingRecord")
 		}
-		_loggingRecordErr := m.LoggingRecord.Serialize(writeBuffer)
+		_loggingRecordErr := writeBuffer.WriteSerializable(m.LoggingRecord)
 		if popErr := writeBuffer.PopContext("loggingRecord"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for loggingRecord")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLoggingRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

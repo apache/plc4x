@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLandingCallControl) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("landingCallControl"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for landingCallControl")
 		}
-		_landingCallControlErr := m.LandingCallControl.Serialize(writeBuffer)
+		_landingCallControlErr := writeBuffer.WriteSerializable(m.LandingCallControl)
 		if popErr := writeBuffer.PopContext("landingCallControl"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for landingCallControl")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLandingCallControl) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

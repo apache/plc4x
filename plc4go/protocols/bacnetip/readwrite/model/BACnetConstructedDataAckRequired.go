@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAckRequired) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("ackRequired"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ackRequired")
 		}
-		_ackRequiredErr := m.AckRequired.Serialize(writeBuffer)
+		_ackRequiredErr := writeBuffer.WriteSerializable(m.AckRequired)
 		if popErr := writeBuffer.PopContext("ackRequired"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ackRequired")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAckRequired) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

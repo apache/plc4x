@@ -203,7 +203,7 @@ func (m *BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("keyRevision"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for keyRevision")
 	}
-	_keyRevisionErr := m.KeyRevision.Serialize(writeBuffer)
+	_keyRevisionErr := writeBuffer.WriteSerializable(m.KeyRevision)
 	if popErr := writeBuffer.PopContext("keyRevision"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for keyRevision")
 	}
@@ -215,7 +215,7 @@ func (m *BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("activationTime"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for activationTime")
 	}
-	_activationTimeErr := m.ActivationTime.Serialize(writeBuffer)
+	_activationTimeErr := writeBuffer.WriteSerializable(m.ActivationTime)
 	if popErr := writeBuffer.PopContext("activationTime"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for activationTime")
 	}
@@ -227,7 +227,7 @@ func (m *BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for expirationTime")
 	}
-	_expirationTimeErr := m.ExpirationTime.Serialize(writeBuffer)
+	_expirationTimeErr := writeBuffer.WriteSerializable(m.ExpirationTime)
 	if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for expirationTime")
 	}
@@ -239,7 +239,7 @@ func (m *BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("keyIds"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for keyIds")
 	}
-	_keyIdsErr := m.KeyIds.Serialize(writeBuffer)
+	_keyIdsErr := writeBuffer.WriteSerializable(m.KeyIds)
 	if popErr := writeBuffer.PopContext("keyIds"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for keyIds")
 	}
@@ -257,9 +257,9 @@ func (m *BACnetSecurityKeySet) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

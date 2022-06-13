@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataChangesPending) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("changesPending"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changesPending")
 		}
-		_changesPendingErr := m.ChangesPending.Serialize(writeBuffer)
+		_changesPendingErr := writeBuffer.WriteSerializable(m.ChangesPending)
 		if popErr := writeBuffer.PopContext("changesPending"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changesPending")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataChangesPending) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataMinimumOutput) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("minimumOutput"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for minimumOutput")
 		}
-		_minimumOutputErr := m.MinimumOutput.Serialize(writeBuffer)
+		_minimumOutputErr := writeBuffer.WriteSerializable(m.MinimumOutput)
 		if popErr := writeBuffer.PopContext("minimumOutput"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for minimumOutput")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataMinimumOutput) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

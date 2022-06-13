@@ -498,7 +498,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("control"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for control")
 	}
-	_controlErr := m.Control.Serialize(writeBuffer)
+	_controlErr := writeBuffer.WriteSerializable(m.Control)
 	if popErr := writeBuffer.PopContext("control"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for control")
 	}
@@ -607,7 +607,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for nlm")
 		}
 		nlm = m.Nlm
-		_nlmErr := nlm.Serialize(writeBuffer)
+		_nlmErr := writeBuffer.WriteSerializable(nlm)
 		if popErr := writeBuffer.PopContext("nlm"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nlm")
 		}
@@ -623,7 +623,7 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for apdu")
 		}
 		apdu = m.Apdu
-		_apduErr := apdu.Serialize(writeBuffer)
+		_apduErr := writeBuffer.WriteSerializable(apdu)
 		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apdu")
 		}
@@ -642,9 +642,9 @@ func (m *NPDU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

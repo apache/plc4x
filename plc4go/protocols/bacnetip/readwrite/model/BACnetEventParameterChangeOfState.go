@@ -246,7 +246,7 @@ func (m *BACnetEventParameterChangeOfState) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+		_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -258,7 +258,7 @@ func (m *BACnetEventParameterChangeOfState) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
+		_timeDelayErr := writeBuffer.WriteSerializable(m.TimeDelay)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -270,7 +270,7 @@ func (m *BACnetEventParameterChangeOfState) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfValues")
 		}
-		_listOfValuesErr := m.ListOfValues.Serialize(writeBuffer)
+		_listOfValuesErr := writeBuffer.WriteSerializable(m.ListOfValues)
 		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfValues")
 		}
@@ -282,7 +282,7 @@ func (m *BACnetEventParameterChangeOfState) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+		_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -302,9 +302,9 @@ func (m *BACnetEventParameterChangeOfState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataInitialTimeout) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("initialTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for initialTimeout")
 		}
-		_initialTimeoutErr := m.InitialTimeout.Serialize(writeBuffer)
+		_initialTimeoutErr := writeBuffer.WriteSerializable(m.InitialTimeout)
 		if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for initialTimeout")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataInitialTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

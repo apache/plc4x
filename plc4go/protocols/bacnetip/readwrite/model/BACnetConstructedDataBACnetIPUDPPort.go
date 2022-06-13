@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBACnetIPUDPPort) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("ipUdpPort"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipUdpPort")
 		}
-		_ipUdpPortErr := m.IpUdpPort.Serialize(writeBuffer)
+		_ipUdpPortErr := writeBuffer.WriteSerializable(m.IpUdpPort)
 		if popErr := writeBuffer.PopContext("ipUdpPort"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipUdpPort")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBACnetIPUDPPort) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

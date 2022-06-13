@@ -350,7 +350,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for level")
 		}
-		_levelErr := m.Level.Serialize(writeBuffer)
+		_levelErr := writeBuffer.WriteSerializable(m.Level)
 		if popErr := writeBuffer.PopContext("level"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for level")
 		}
@@ -369,7 +369,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("conformityLevel"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for conformityLevel")
 		}
-		_conformityLevelErr := m.ConformityLevel.Serialize(writeBuffer)
+		_conformityLevelErr := writeBuffer.WriteSerializable(m.ConformityLevel)
 		if popErr := writeBuffer.PopContext("conformityLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for conformityLevel")
 		}
@@ -381,7 +381,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("moreFollows"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for moreFollows")
 		}
-		_moreFollowsErr := m.MoreFollows.Serialize(writeBuffer)
+		_moreFollowsErr := writeBuffer.WriteSerializable(m.MoreFollows)
 		if popErr := writeBuffer.PopContext("moreFollows"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for moreFollows")
 		}
@@ -409,7 +409,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for objects")
 			}
 			for _, _element := range m.Objects {
-				_elementErr := _element.Serialize(writeBuffer)
+				_elementErr := writeBuffer.WriteSerializable(_element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'objects' field")
 				}
@@ -431,9 +431,9 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

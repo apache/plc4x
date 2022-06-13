@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLastKeyServer) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("lastKeyServer"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastKeyServer")
 		}
-		_lastKeyServerErr := m.LastKeyServer.Serialize(writeBuffer)
+		_lastKeyServerErr := writeBuffer.WriteSerializable(m.LastKeyServer)
 		if popErr := writeBuffer.PopContext("lastKeyServer"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastKeyServer")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLastKeyServer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

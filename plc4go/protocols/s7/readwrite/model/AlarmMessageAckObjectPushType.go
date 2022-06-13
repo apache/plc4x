@@ -273,7 +273,7 @@ func (m *AlarmMessageAckObjectPushType) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for syntaxId")
 	}
-	_syntaxIdErr := m.SyntaxId.Serialize(writeBuffer)
+	_syntaxIdErr := writeBuffer.WriteSerializable(m.SyntaxId)
 	if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for syntaxId")
 	}
@@ -299,7 +299,7 @@ func (m *AlarmMessageAckObjectPushType) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
 	}
-	_ackStateGoingErr := m.AckStateGoing.Serialize(writeBuffer)
+	_ackStateGoingErr := writeBuffer.WriteSerializable(m.AckStateGoing)
 	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateGoing")
 	}
@@ -311,7 +311,7 @@ func (m *AlarmMessageAckObjectPushType) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
 	}
-	_ackStateComingErr := m.AckStateComing.Serialize(writeBuffer)
+	_ackStateComingErr := writeBuffer.WriteSerializable(m.AckStateComing)
 	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateComing")
 	}
@@ -329,9 +329,9 @@ func (m *AlarmMessageAckObjectPushType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("updateKeySetTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for updateKeySetTimeout")
 		}
-		_updateKeySetTimeoutErr := m.UpdateKeySetTimeout.Serialize(writeBuffer)
+		_updateKeySetTimeoutErr := writeBuffer.WriteSerializable(m.UpdateKeySetTimeout)
 		if popErr := writeBuffer.PopContext("updateKeySetTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for updateKeySetTimeout")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

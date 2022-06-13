@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataIPDHCPEnable) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("ipDhcpEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipDhcpEnable")
 		}
-		_ipDhcpEnableErr := m.IpDhcpEnable.Serialize(writeBuffer)
+		_ipDhcpEnableErr := writeBuffer.WriteSerializable(m.IpDhcpEnable)
 		if popErr := writeBuffer.PopContext("ipDhcpEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipDhcpEnable")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataIPDHCPEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

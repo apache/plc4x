@@ -223,7 +223,7 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("hpaiDiscoveryEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiDiscoveryEndpoint")
 		}
-		_hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(writeBuffer)
+		_hpaiDiscoveryEndpointErr := writeBuffer.WriteSerializable(m.HpaiDiscoveryEndpoint)
 		if popErr := writeBuffer.PopContext("hpaiDiscoveryEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiDiscoveryEndpoint")
 		}
@@ -235,7 +235,7 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
 		}
-		_hpaiDataEndpointErr := m.HpaiDataEndpoint.Serialize(writeBuffer)
+		_hpaiDataEndpointErr := writeBuffer.WriteSerializable(m.HpaiDataEndpoint)
 		if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
 		}
@@ -247,7 +247,7 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("connectionRequestInformation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for connectionRequestInformation")
 		}
-		_connectionRequestInformationErr := m.ConnectionRequestInformation.Serialize(writeBuffer)
+		_connectionRequestInformationErr := writeBuffer.WriteSerializable(m.ConnectionRequestInformation)
 		if popErr := writeBuffer.PopContext("connectionRequestInformation"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for connectionRequestInformation")
 		}
@@ -267,9 +267,9 @@ func (m *ConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

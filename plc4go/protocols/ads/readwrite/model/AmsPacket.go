@@ -304,7 +304,7 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("targetAmsNetId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for targetAmsNetId")
 	}
-	_targetAmsNetIdErr := m.TargetAmsNetId.Serialize(writeBuffer)
+	_targetAmsNetIdErr := writeBuffer.WriteSerializable(m.TargetAmsNetId)
 	if popErr := writeBuffer.PopContext("targetAmsNetId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for targetAmsNetId")
 	}
@@ -323,7 +323,7 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("sourceAmsNetId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for sourceAmsNetId")
 	}
-	_sourceAmsNetIdErr := m.SourceAmsNetId.Serialize(writeBuffer)
+	_sourceAmsNetIdErr := writeBuffer.WriteSerializable(m.SourceAmsNetId)
 	if popErr := writeBuffer.PopContext("sourceAmsNetId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for sourceAmsNetId")
 	}
@@ -342,7 +342,7 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("commandId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandId")
 	}
-	_commandIdErr := m.CommandId.Serialize(writeBuffer)
+	_commandIdErr := writeBuffer.WriteSerializable(m.CommandId)
 	if popErr := writeBuffer.PopContext("commandId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandId")
 	}
@@ -354,7 +354,7 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("state"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for state")
 	}
-	_stateErr := m.State.Serialize(writeBuffer)
+	_stateErr := writeBuffer.WriteSerializable(m.State)
 	if popErr := writeBuffer.PopContext("state"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for state")
 	}
@@ -387,7 +387,7 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for data")
 	}
-	_dataErr := m.Data.Serialize(writeBuffer)
+	_dataErr := writeBuffer.WriteSerializable(m.Data)
 	if popErr := writeBuffer.PopContext("data"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for data")
 	}
@@ -405,9 +405,9 @@ func (m *AmsPacket) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

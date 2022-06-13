@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataOccupancyCount) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("occupancyCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for occupancyCount")
 		}
-		_occupancyCountErr := m.OccupancyCount.Serialize(writeBuffer)
+		_occupancyCountErr := writeBuffer.WriteSerializable(m.OccupancyCount)
 		if popErr := writeBuffer.PopContext("occupancyCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for occupancyCount")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataOccupancyCount) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

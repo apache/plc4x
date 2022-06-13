@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataWindowSamples) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("windowSamples"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for windowSamples")
 		}
-		_windowSamplesErr := m.WindowSamples.Serialize(writeBuffer)
+		_windowSamplesErr := writeBuffer.WriteSerializable(m.WindowSamples)
 		if popErr := writeBuffer.PopContext("windowSamples"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for windowSamples")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataWindowSamples) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

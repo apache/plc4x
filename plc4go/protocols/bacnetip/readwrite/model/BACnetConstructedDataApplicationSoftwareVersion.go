@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataApplicationSoftwareVersion) Serialize(writeBuffer 
 		if pushErr := writeBuffer.PushContext("applicationSoftwareVersion"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for applicationSoftwareVersion")
 		}
-		_applicationSoftwareVersionErr := m.ApplicationSoftwareVersion.Serialize(writeBuffer)
+		_applicationSoftwareVersionErr := writeBuffer.WriteSerializable(m.ApplicationSoftwareVersion)
 		if popErr := writeBuffer.PopContext("applicationSoftwareVersion"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for applicationSoftwareVersion")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataApplicationSoftwareVersion) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

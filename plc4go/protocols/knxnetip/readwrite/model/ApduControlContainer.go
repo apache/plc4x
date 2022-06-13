@@ -179,7 +179,7 @@ func (m *ApduControlContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("controlApdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for controlApdu")
 		}
-		_controlApduErr := m.ControlApdu.Serialize(writeBuffer)
+		_controlApduErr := writeBuffer.WriteSerializable(m.ControlApdu)
 		if popErr := writeBuffer.PopContext("controlApdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for controlApdu")
 		}
@@ -199,9 +199,9 @@ func (m *ApduControlContainer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

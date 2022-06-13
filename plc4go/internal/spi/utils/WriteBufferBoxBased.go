@@ -232,6 +232,13 @@ func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 	return nil
 }
 
+func (b *boxedWriteBuffer) WriteSerializable(serializable Serializable) error {
+	if serializable == nil {
+		return nil
+	}
+	return serializable.Serialize(b)
+}
+
 func (b *boxedWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
 	b.currentWidth += boxLineOverheat
 	finalBoxes := make([]AsciiBox, 0)

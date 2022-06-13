@@ -456,7 +456,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 	}
-	_processIdentifierErr := m.ProcessIdentifier.Serialize(writeBuffer)
+	_processIdentifierErr := writeBuffer.WriteSerializable(m.ProcessIdentifier)
 	if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for processIdentifier")
 	}
@@ -468,7 +468,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
 	}
-	_initiatingDeviceIdentifierErr := m.InitiatingDeviceIdentifier.Serialize(writeBuffer)
+	_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(m.InitiatingDeviceIdentifier)
 	if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
 	}
@@ -480,7 +480,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("eventObjectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventObjectIdentifier")
 	}
-	_eventObjectIdentifierErr := m.EventObjectIdentifier.Serialize(writeBuffer)
+	_eventObjectIdentifierErr := writeBuffer.WriteSerializable(m.EventObjectIdentifier)
 	if popErr := writeBuffer.PopContext("eventObjectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventObjectIdentifier")
 	}
@@ -492,7 +492,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
-	_timestampErr := m.Timestamp.Serialize(writeBuffer)
+	_timestampErr := writeBuffer.WriteSerializable(m.Timestamp)
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
@@ -504,7 +504,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for notificationClass")
 	}
-	_notificationClassErr := m.NotificationClass.Serialize(writeBuffer)
+	_notificationClassErr := writeBuffer.WriteSerializable(m.NotificationClass)
 	if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for notificationClass")
 	}
@@ -516,7 +516,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for priority")
 	}
-	_priorityErr := m.Priority.Serialize(writeBuffer)
+	_priorityErr := writeBuffer.WriteSerializable(m.Priority)
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for priority")
 	}
@@ -528,7 +528,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventType")
 	}
-	_eventTypeErr := m.EventType.Serialize(writeBuffer)
+	_eventTypeErr := writeBuffer.WriteSerializable(m.EventType)
 	if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventType")
 	}
@@ -543,7 +543,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 			return errors.Wrap(pushErr, "Error pushing for messageText")
 		}
 		messageText = m.MessageText
-		_messageTextErr := messageText.Serialize(writeBuffer)
+		_messageTextErr := writeBuffer.WriteSerializable(messageText)
 		if popErr := writeBuffer.PopContext("messageText"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for messageText")
 		}
@@ -556,7 +556,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for notifyType")
 	}
-	_notifyTypeErr := m.NotifyType.Serialize(writeBuffer)
+	_notifyTypeErr := writeBuffer.WriteSerializable(m.NotifyType)
 	if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for notifyType")
 	}
@@ -571,7 +571,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 			return errors.Wrap(pushErr, "Error pushing for ackRequired")
 		}
 		ackRequired = m.AckRequired
-		_ackRequiredErr := ackRequired.Serialize(writeBuffer)
+		_ackRequiredErr := writeBuffer.WriteSerializable(ackRequired)
 		if popErr := writeBuffer.PopContext("ackRequired"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ackRequired")
 		}
@@ -587,7 +587,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 			return errors.Wrap(pushErr, "Error pushing for fromState")
 		}
 		fromState = m.FromState
-		_fromStateErr := fromState.Serialize(writeBuffer)
+		_fromStateErr := writeBuffer.WriteSerializable(fromState)
 		if popErr := writeBuffer.PopContext("fromState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fromState")
 		}
@@ -600,7 +600,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("toState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toState")
 	}
-	_toStateErr := m.ToState.Serialize(writeBuffer)
+	_toStateErr := writeBuffer.WriteSerializable(m.ToState)
 	if popErr := writeBuffer.PopContext("toState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toState")
 	}
@@ -615,7 +615,7 @@ func (m *ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBuf
 			return errors.Wrap(pushErr, "Error pushing for eventValues")
 		}
 		eventValues = m.EventValues
-		_eventValuesErr := eventValues.Serialize(writeBuffer)
+		_eventValuesErr := writeBuffer.WriteSerializable(eventValues)
 		if popErr := writeBuffer.PopContext("eventValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventValues")
 		}
@@ -634,9 +634,9 @@ func (m *ConfirmedEventNotificationRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

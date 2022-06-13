@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLightingOutputTrackingValue) Serialize(writeBuffer
 		if pushErr := writeBuffer.PushContext("trackingValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for trackingValue")
 		}
-		_trackingValueErr := m.TrackingValue.Serialize(writeBuffer)
+		_trackingValueErr := writeBuffer.WriteSerializable(m.TrackingValue)
 		if popErr := writeBuffer.PopContext("trackingValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for trackingValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLightingOutputTrackingValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

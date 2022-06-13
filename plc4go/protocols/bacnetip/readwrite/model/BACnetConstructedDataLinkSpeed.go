@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLinkSpeed) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("linkSpeed"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for linkSpeed")
 		}
-		_linkSpeedErr := m.LinkSpeed.Serialize(writeBuffer)
+		_linkSpeedErr := writeBuffer.WriteSerializable(m.LinkSpeed)
 		if popErr := writeBuffer.PopContext("linkSpeed"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for linkSpeed")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLinkSpeed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

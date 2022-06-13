@@ -179,7 +179,7 @@ func (m *ApduDataContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("dataApdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dataApdu")
 		}
-		_dataApduErr := m.DataApdu.Serialize(writeBuffer)
+		_dataApduErr := writeBuffer.WriteSerializable(m.DataApdu)
 		if popErr := writeBuffer.PopContext("dataApdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dataApdu")
 		}
@@ -199,9 +199,9 @@ func (m *ApduDataContainer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

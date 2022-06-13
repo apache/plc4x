@@ -184,7 +184,7 @@ func (m *BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for virtualMacAddress")
 		}
 		virtualMacAddress = m.VirtualMacAddress
-		_virtualMacAddressErr := virtualMacAddress.Serialize(writeBuffer)
+		_virtualMacAddressErr := writeBuffer.WriteSerializable(virtualMacAddress)
 		if popErr := writeBuffer.PopContext("virtualMacAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for virtualMacAddress")
 		}
@@ -200,7 +200,7 @@ func (m *BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for nativeMacAddress")
 		}
 		nativeMacAddress = m.NativeMacAddress
-		_nativeMacAddressErr := nativeMacAddress.Serialize(writeBuffer)
+		_nativeMacAddressErr := writeBuffer.WriteSerializable(nativeMacAddress)
 		if popErr := writeBuffer.PopContext("nativeMacAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nativeMacAddress")
 		}
@@ -219,9 +219,9 @@ func (m *BACnetVMACEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

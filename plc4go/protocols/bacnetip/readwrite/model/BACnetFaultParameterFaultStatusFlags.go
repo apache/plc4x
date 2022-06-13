@@ -221,7 +221,7 @@ func (m *BACnetFaultParameterFaultStatusFlags) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+		_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -233,7 +233,7 @@ func (m *BACnetFaultParameterFaultStatusFlags) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("statusFlagsReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlagsReference")
 		}
-		_statusFlagsReferenceErr := m.StatusFlagsReference.Serialize(writeBuffer)
+		_statusFlagsReferenceErr := writeBuffer.WriteSerializable(m.StatusFlagsReference)
 		if popErr := writeBuffer.PopContext("statusFlagsReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlagsReference")
 		}
@@ -245,7 +245,7 @@ func (m *BACnetFaultParameterFaultStatusFlags) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+		_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -265,9 +265,9 @@ func (m *BACnetFaultParameterFaultStatusFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -252,7 +252,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
-		_deviceIdentifierErr := m.DeviceIdentifier.Serialize(writeBuffer)
+		_deviceIdentifierErr := writeBuffer.WriteSerializable(m.DeviceIdentifier)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
@@ -264,7 +264,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("maximumApduLengthAcceptedLength"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maximumApduLengthAcceptedLength")
 		}
-		_maximumApduLengthAcceptedLengthErr := m.MaximumApduLengthAcceptedLength.Serialize(writeBuffer)
+		_maximumApduLengthAcceptedLengthErr := writeBuffer.WriteSerializable(m.MaximumApduLengthAcceptedLength)
 		if popErr := writeBuffer.PopContext("maximumApduLengthAcceptedLength"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maximumApduLengthAcceptedLength")
 		}
@@ -276,7 +276,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("segmentationSupported"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for segmentationSupported")
 		}
-		_segmentationSupportedErr := m.SegmentationSupported.Serialize(writeBuffer)
+		_segmentationSupportedErr := writeBuffer.WriteSerializable(m.SegmentationSupported)
 		if popErr := writeBuffer.PopContext("segmentationSupported"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for segmentationSupported")
 		}
@@ -288,7 +288,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
-		_vendorIdErr := m.VendorId.Serialize(writeBuffer)
+		_vendorIdErr := writeBuffer.WriteSerializable(m.VendorId)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -308,9 +308,9 @@ func (m *BACnetUnconfirmedServiceRequestIAm) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

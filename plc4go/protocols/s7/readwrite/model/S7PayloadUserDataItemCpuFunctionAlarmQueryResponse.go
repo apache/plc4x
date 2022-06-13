@@ -285,7 +285,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("pudicfReturnCode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pudicfReturnCode")
 		}
-		_pudicfReturnCodeErr := m.PudicfReturnCode.Serialize(writeBuffer)
+		_pudicfReturnCodeErr := writeBuffer.WriteSerializable(m.PudicfReturnCode)
 		if popErr := writeBuffer.PopContext("pudicfReturnCode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pudicfReturnCode")
 		}
@@ -297,7 +297,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("pudicftransportSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pudicftransportSize")
 		}
-		_pudicftransportSizeErr := m.PudicftransportSize.Serialize(writeBuffer)
+		_pudicftransportSizeErr := writeBuffer.WriteSerializable(m.PudicftransportSize)
 		if popErr := writeBuffer.PopContext("pudicftransportSize"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pudicftransportSize")
 		}
@@ -325,9 +325,9 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

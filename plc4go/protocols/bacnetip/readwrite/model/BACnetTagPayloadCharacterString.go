@@ -176,7 +176,7 @@ func (m *BACnetTagPayloadCharacterString) Serialize(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("encoding"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for encoding")
 	}
-	_encodingErr := m.Encoding.Serialize(writeBuffer)
+	_encodingErr := writeBuffer.WriteSerializable(m.Encoding)
 	if popErr := writeBuffer.PopContext("encoding"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for encoding")
 	}
@@ -205,9 +205,9 @@ func (m *BACnetTagPayloadCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

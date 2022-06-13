@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataInstallationID) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("installationId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for installationId")
 		}
-		_installationIdErr := m.InstallationId.Serialize(writeBuffer)
+		_installationIdErr := writeBuffer.WriteSerializable(m.InstallationId)
 		if popErr := writeBuffer.PopContext("installationId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for installationId")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataInstallationID) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

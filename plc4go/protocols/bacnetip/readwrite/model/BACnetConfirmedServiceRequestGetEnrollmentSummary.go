@@ -359,7 +359,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("acknowledgmentFilter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for acknowledgmentFilter")
 		}
-		_acknowledgmentFilterErr := m.AcknowledgmentFilter.Serialize(writeBuffer)
+		_acknowledgmentFilterErr := writeBuffer.WriteSerializable(m.AcknowledgmentFilter)
 		if popErr := writeBuffer.PopContext("acknowledgmentFilter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for acknowledgmentFilter")
 		}
@@ -374,7 +374,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for enrollmentFilter")
 			}
 			enrollmentFilter = m.EnrollmentFilter
-			_enrollmentFilterErr := enrollmentFilter.Serialize(writeBuffer)
+			_enrollmentFilterErr := writeBuffer.WriteSerializable(enrollmentFilter)
 			if popErr := writeBuffer.PopContext("enrollmentFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for enrollmentFilter")
 			}
@@ -390,7 +390,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for eventStateFilter")
 			}
 			eventStateFilter = m.EventStateFilter
-			_eventStateFilterErr := eventStateFilter.Serialize(writeBuffer)
+			_eventStateFilterErr := writeBuffer.WriteSerializable(eventStateFilter)
 			if popErr := writeBuffer.PopContext("eventStateFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for eventStateFilter")
 			}
@@ -406,7 +406,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for eventTypeFilter")
 			}
 			eventTypeFilter = m.EventTypeFilter
-			_eventTypeFilterErr := eventTypeFilter.Serialize(writeBuffer)
+			_eventTypeFilterErr := writeBuffer.WriteSerializable(eventTypeFilter)
 			if popErr := writeBuffer.PopContext("eventTypeFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for eventTypeFilter")
 			}
@@ -422,7 +422,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for priorityFilter")
 			}
 			priorityFilter = m.PriorityFilter
-			_priorityFilterErr := priorityFilter.Serialize(writeBuffer)
+			_priorityFilterErr := writeBuffer.WriteSerializable(priorityFilter)
 			if popErr := writeBuffer.PopContext("priorityFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for priorityFilter")
 			}
@@ -438,7 +438,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for notificationClassFilter")
 			}
 			notificationClassFilter = m.NotificationClassFilter
-			_notificationClassFilterErr := notificationClassFilter.Serialize(writeBuffer)
+			_notificationClassFilterErr := writeBuffer.WriteSerializable(notificationClassFilter)
 			if popErr := writeBuffer.PopContext("notificationClassFilter"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for notificationClassFilter")
 			}
@@ -459,9 +459,9 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

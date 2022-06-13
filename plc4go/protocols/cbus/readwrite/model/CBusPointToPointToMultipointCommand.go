@@ -223,7 +223,7 @@ func (m *CBusPointToPointToMultipointCommand) SerializeParent(writeBuffer utils.
 	if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 	}
-	_bridgeAddressErr := m.BridgeAddress.Serialize(writeBuffer)
+	_bridgeAddressErr := writeBuffer.WriteSerializable(m.BridgeAddress)
 	if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for bridgeAddress")
 	}
@@ -235,7 +235,7 @@ func (m *CBusPointToPointToMultipointCommand) SerializeParent(writeBuffer utils.
 	if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for networkRoute")
 	}
-	_networkRouteErr := m.NetworkRoute.Serialize(writeBuffer)
+	_networkRouteErr := writeBuffer.WriteSerializable(m.NetworkRoute)
 	if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for networkRoute")
 	}
@@ -258,9 +258,9 @@ func (m *CBusPointToPointToMultipointCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

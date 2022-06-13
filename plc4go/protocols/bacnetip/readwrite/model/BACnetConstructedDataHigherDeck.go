@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataHigherDeck) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("higherDeck"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for higherDeck")
 		}
-		_higherDeckErr := m.HigherDeck.Serialize(writeBuffer)
+		_higherDeckErr := writeBuffer.WriteSerializable(m.HigherDeck)
 		if popErr := writeBuffer.PopContext("higherDeck"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for higherDeck")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataHigherDeck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

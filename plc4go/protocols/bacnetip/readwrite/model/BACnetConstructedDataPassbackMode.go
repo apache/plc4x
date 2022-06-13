@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataPassbackMode) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("passbackMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for passbackMode")
 		}
-		_passbackModeErr := m.PassbackMode.Serialize(writeBuffer)
+		_passbackModeErr := writeBuffer.WriteSerializable(m.PassbackMode)
 		if popErr := writeBuffer.PopContext("passbackMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for passbackMode")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataPassbackMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

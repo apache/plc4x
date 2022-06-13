@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataPositiveIntegerValueFaultHighLimit) Serialize(writ
 		if pushErr := writeBuffer.PushContext("faultHighLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for faultHighLimit")
 		}
-		_faultHighLimitErr := m.FaultHighLimit.Serialize(writeBuffer)
+		_faultHighLimitErr := writeBuffer.WriteSerializable(m.FaultHighLimit)
 		if popErr := writeBuffer.PopContext("faultHighLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for faultHighLimit")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataPositiveIntegerValueFaultHighLimit) String() strin
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

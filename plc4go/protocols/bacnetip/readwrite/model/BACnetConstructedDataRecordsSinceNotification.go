@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataRecordsSinceNotification) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("recordsSinceNotifications"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for recordsSinceNotifications")
 		}
-		_recordsSinceNotificationsErr := m.RecordsSinceNotifications.Serialize(writeBuffer)
+		_recordsSinceNotificationsErr := writeBuffer.WriteSerializable(m.RecordsSinceNotifications)
 		if popErr := writeBuffer.PopContext("recordsSinceNotifications"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for recordsSinceNotifications")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataRecordsSinceNotification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

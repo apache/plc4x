@@ -157,7 +157,7 @@ func (m *BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
-	_timestampErr := m.Timestamp.Serialize(writeBuffer)
+	_timestampErr := writeBuffer.WriteSerializable(m.Timestamp)
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("logData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for logData")
 	}
-	_logDataErr := m.LogData.Serialize(writeBuffer)
+	_logDataErr := writeBuffer.WriteSerializable(m.LogData)
 	if popErr := writeBuffer.PopContext("logData"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for logData")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetLogMultipleRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

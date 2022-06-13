@@ -180,7 +180,7 @@ func (m *BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("toOffnormal"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toOffnormal")
 	}
-	_toOffnormalErr := m.ToOffnormal.Serialize(writeBuffer)
+	_toOffnormalErr := writeBuffer.WriteSerializable(m.ToOffnormal)
 	if popErr := writeBuffer.PopContext("toOffnormal"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toOffnormal")
 	}
@@ -192,7 +192,7 @@ func (m *BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("toFault"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toFault")
 	}
-	_toFaultErr := m.ToFault.Serialize(writeBuffer)
+	_toFaultErr := writeBuffer.WriteSerializable(m.ToFault)
 	if popErr := writeBuffer.PopContext("toFault"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toFault")
 	}
@@ -204,7 +204,7 @@ func (m *BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("toNormal"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toNormal")
 	}
-	_toNormalErr := m.ToNormal.Serialize(writeBuffer)
+	_toNormalErr := writeBuffer.WriteSerializable(m.ToNormal)
 	if popErr := writeBuffer.PopContext("toNormal"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toNormal")
 	}
@@ -222,9 +222,9 @@ func (m *BACnetEventTimestamps) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

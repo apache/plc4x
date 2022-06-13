@@ -511,7 +511,7 @@ func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("maxSegmentsAccepted"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxSegmentsAccepted")
 		}
-		_maxSegmentsAcceptedErr := m.MaxSegmentsAccepted.Serialize(writeBuffer)
+		_maxSegmentsAcceptedErr := writeBuffer.WriteSerializable(m.MaxSegmentsAccepted)
 		if popErr := writeBuffer.PopContext("maxSegmentsAccepted"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxSegmentsAccepted")
 		}
@@ -523,7 +523,7 @@ func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("maxApduLengthAccepted"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxApduLengthAccepted")
 		}
-		_maxApduLengthAcceptedErr := m.MaxApduLengthAccepted.Serialize(writeBuffer)
+		_maxApduLengthAcceptedErr := writeBuffer.WriteSerializable(m.MaxApduLengthAccepted)
 		if popErr := writeBuffer.PopContext("maxApduLengthAccepted"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxApduLengthAccepted")
 		}
@@ -569,7 +569,7 @@ func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for serviceRequest")
 			}
 			serviceRequest = m.ServiceRequest
-			_serviceRequestErr := serviceRequest.Serialize(writeBuffer)
+			_serviceRequestErr := writeBuffer.WriteSerializable(serviceRequest)
 			if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for serviceRequest")
 			}
@@ -613,9 +613,9 @@ func (m *APDUConfirmedRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

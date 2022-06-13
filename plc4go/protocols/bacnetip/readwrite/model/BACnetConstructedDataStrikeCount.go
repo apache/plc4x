@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataStrikeCount) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("strikeCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for strikeCount")
 		}
-		_strikeCountErr := m.StrikeCount.Serialize(writeBuffer)
+		_strikeCountErr := writeBuffer.WriteSerializable(m.StrikeCount)
 		if popErr := writeBuffer.PopContext("strikeCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for strikeCount")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataStrikeCount) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataFaultParameters) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("faultParameters"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for faultParameters")
 		}
-		_faultParametersErr := m.FaultParameters.Serialize(writeBuffer)
+		_faultParametersErr := writeBuffer.WriteSerializable(m.FaultParameters)
 		if popErr := writeBuffer.PopContext("faultParameters"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for faultParameters")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataFaultParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

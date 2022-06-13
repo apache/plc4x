@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataNetworkType) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("networkType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkType")
 		}
-		_networkTypeErr := m.NetworkType.Serialize(writeBuffer)
+		_networkTypeErr := writeBuffer.WriteSerializable(m.NetworkType)
 		if popErr := writeBuffer.PopContext("networkType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkType")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataNetworkType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

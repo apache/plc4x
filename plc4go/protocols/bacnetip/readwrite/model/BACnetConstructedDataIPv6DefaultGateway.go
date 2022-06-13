@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataIPv6DefaultGateway) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("ipv6DefaultGateway"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6DefaultGateway")
 		}
-		_ipv6DefaultGatewayErr := m.Ipv6DefaultGateway.Serialize(writeBuffer)
+		_ipv6DefaultGatewayErr := writeBuffer.WriteSerializable(m.Ipv6DefaultGateway)
 		if popErr := writeBuffer.PopContext("ipv6DefaultGateway"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6DefaultGateway")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataIPv6DefaultGateway) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -171,7 +171,7 @@ func (m *BACnetPropertyStateActionUnknown) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("unknownValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unknownValue")
 		}
-		_unknownValueErr := m.UnknownValue.Serialize(writeBuffer)
+		_unknownValueErr := writeBuffer.WriteSerializable(m.UnknownValue)
 		if popErr := writeBuffer.PopContext("unknownValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unknownValue")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStateActionUnknown) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

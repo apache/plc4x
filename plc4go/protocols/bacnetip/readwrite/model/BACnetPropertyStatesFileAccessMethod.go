@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesFileAccessMethod) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("fileAccessMethod"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileAccessMethod")
 		}
-		_fileAccessMethodErr := m.FileAccessMethod.Serialize(writeBuffer)
+		_fileAccessMethodErr := writeBuffer.WriteSerializable(m.FileAccessMethod)
 		if popErr := writeBuffer.PopContext("fileAccessMethod"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileAccessMethod")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesFileAccessMethod) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

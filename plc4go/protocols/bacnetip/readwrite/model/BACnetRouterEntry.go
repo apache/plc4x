@@ -216,7 +216,7 @@ func (m *BACnetRouterEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for networkNumber")
 	}
-	_networkNumberErr := m.NetworkNumber.Serialize(writeBuffer)
+	_networkNumberErr := writeBuffer.WriteSerializable(m.NetworkNumber)
 	if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for networkNumber")
 	}
@@ -228,7 +228,7 @@ func (m *BACnetRouterEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for macAddress")
 	}
-	_macAddressErr := m.MacAddress.Serialize(writeBuffer)
+	_macAddressErr := writeBuffer.WriteSerializable(m.MacAddress)
 	if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for macAddress")
 	}
@@ -240,7 +240,7 @@ func (m *BACnetRouterEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for status")
 	}
-	_statusErr := m.Status.Serialize(writeBuffer)
+	_statusErr := writeBuffer.WriteSerializable(m.Status)
 	if popErr := writeBuffer.PopContext("status"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for status")
 	}
@@ -255,7 +255,7 @@ func (m *BACnetRouterEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for performanceIndex")
 		}
 		performanceIndex = m.PerformanceIndex
-		_performanceIndexErr := performanceIndex.Serialize(writeBuffer)
+		_performanceIndexErr := writeBuffer.WriteSerializable(performanceIndex)
 		if popErr := writeBuffer.PopContext("performanceIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for performanceIndex")
 		}
@@ -274,9 +274,9 @@ func (m *BACnetRouterEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

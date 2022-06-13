@@ -207,7 +207,7 @@ func (m *BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) erro
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.PropertyIdentifier)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -222,7 +222,7 @@ func (m *BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) erro
 			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
-		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
+		_arrayIndexErr := writeBuffer.WriteSerializable(arrayIndex)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
@@ -238,7 +238,7 @@ func (m *BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) erro
 			return errors.Wrap(pushErr, "Error pushing for readResult")
 		}
 		readResult = m.ReadResult
-		_readResultErr := readResult.Serialize(writeBuffer)
+		_readResultErr := writeBuffer.WriteSerializable(readResult)
 		if popErr := writeBuffer.PopContext("readResult"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for readResult")
 		}
@@ -257,9 +257,9 @@ func (m *BACnetReadAccessProperty) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

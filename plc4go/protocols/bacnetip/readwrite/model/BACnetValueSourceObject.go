@@ -171,7 +171,7 @@ func (m *BACnetValueSourceObject) Serialize(writeBuffer utils.WriteBuffer) error
 		if pushErr := writeBuffer.PushContext("object"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for object")
 		}
-		_objectErr := m.Object.Serialize(writeBuffer)
+		_objectErr := writeBuffer.WriteSerializable(m.Object)
 		if popErr := writeBuffer.PopContext("object"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for object")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetValueSourceObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

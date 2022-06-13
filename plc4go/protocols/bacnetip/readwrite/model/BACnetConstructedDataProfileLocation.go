@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataProfileLocation) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("profileLocation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for profileLocation")
 		}
-		_profileLocationErr := m.ProfileLocation.Serialize(writeBuffer)
+		_profileLocationErr := writeBuffer.WriteSerializable(m.ProfileLocation)
 		if popErr := writeBuffer.PopContext("profileLocation"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for profileLocation")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataProfileLocation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

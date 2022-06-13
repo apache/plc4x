@@ -198,7 +198,7 @@ func (m *BACnetConstructedDataRecipientList) Serialize(writeBuffer utils.WriteBu
 				return errors.Wrap(pushErr, "Error pushing for recipientList")
 			}
 			for _, _element := range m.RecipientList {
-				_elementErr := _element.Serialize(writeBuffer)
+				_elementErr := writeBuffer.WriteSerializable(_element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'recipientList' field")
 				}
@@ -220,9 +220,9 @@ func (m *BACnetConstructedDataRecipientList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

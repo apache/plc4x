@@ -376,7 +376,7 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 			return errors.Wrap(pushErr, "Error pushing for parameter")
 		}
 		parameter = m.Parameter
-		_parameterErr := parameter.Serialize(writeBuffer)
+		_parameterErr := writeBuffer.WriteSerializable(parameter)
 		if popErr := writeBuffer.PopContext("parameter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameter")
 		}
@@ -392,7 +392,7 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		payload = m.Payload
-		_payloadErr := payload.Serialize(writeBuffer)
+		_payloadErr := writeBuffer.WriteSerializable(payload)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for payload")
 		}
@@ -411,9 +411,9 @@ func (m *S7Message) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

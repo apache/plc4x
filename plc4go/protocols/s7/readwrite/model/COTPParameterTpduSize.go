@@ -176,7 +176,7 @@ func (m *COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("tpduSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for tpduSize")
 		}
-		_tpduSizeErr := m.TpduSize.Serialize(writeBuffer)
+		_tpduSizeErr := writeBuffer.WriteSerializable(m.TpduSize)
 		if popErr := writeBuffer.PopContext("tpduSize"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for tpduSize")
 		}
@@ -196,9 +196,9 @@ func (m *COTPParameterTpduSize) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

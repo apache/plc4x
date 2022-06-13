@@ -236,7 +236,7 @@ func (m *CALDataReplyStatusExtended) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_applicationErr := m.Application.Serialize(writeBuffer)
+		_applicationErr := writeBuffer.WriteSerializable(m.Application)
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for application")
 		}
@@ -272,9 +272,9 @@ func (m *CALDataReplyStatusExtended) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

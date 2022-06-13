@@ -203,7 +203,7 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("gav3"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav3")
 	}
-	_gav3Err := m.Gav3.Serialize(writeBuffer)
+	_gav3Err := writeBuffer.WriteSerializable(m.Gav3)
 	if popErr := writeBuffer.PopContext("gav3"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav3")
 	}
@@ -215,7 +215,7 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("gav2"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav2")
 	}
-	_gav2Err := m.Gav2.Serialize(writeBuffer)
+	_gav2Err := writeBuffer.WriteSerializable(m.Gav2)
 	if popErr := writeBuffer.PopContext("gav2"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav2")
 	}
@@ -227,7 +227,7 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("gav1"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav1")
 	}
-	_gav1Err := m.Gav1.Serialize(writeBuffer)
+	_gav1Err := writeBuffer.WriteSerializable(m.Gav1)
 	if popErr := writeBuffer.PopContext("gav1"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav1")
 	}
@@ -239,7 +239,7 @@ func (m *StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("gav0"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for gav0")
 	}
-	_gav0Err := m.Gav0.Serialize(writeBuffer)
+	_gav0Err := writeBuffer.WriteSerializable(m.Gav0)
 	if popErr := writeBuffer.PopContext("gav0"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for gav0")
 	}
@@ -257,9 +257,9 @@ func (m *StatusByte) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

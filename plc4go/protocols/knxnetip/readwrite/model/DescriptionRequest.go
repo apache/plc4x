@@ -173,7 +173,7 @@ func (m *DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
 		}
-		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(writeBuffer)
+		_hpaiControlEndpointErr := writeBuffer.WriteSerializable(m.HpaiControlEndpoint)
 		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
 		}
@@ -193,9 +193,9 @@ func (m *DescriptionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

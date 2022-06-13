@@ -291,7 +291,7 @@ func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer
 				return errors.Wrap(pushErr, "Error pushing for bridgeCount")
 			}
 			bridgeCount = m.BridgeCount
-			_bridgeCountErr := bridgeCount.Serialize(writeBuffer)
+			_bridgeCountErr := writeBuffer.WriteSerializable(bridgeCount)
 			if popErr := writeBuffer.PopContext("bridgeCount"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for bridgeCount")
 			}
@@ -307,7 +307,7 @@ func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer
 				return errors.Wrap(pushErr, "Error pushing for networkNumber")
 			}
 			networkNumber = m.NetworkNumber
-			_networkNumberErr := networkNumber.Serialize(writeBuffer)
+			_networkNumberErr := writeBuffer.WriteSerializable(networkNumber)
 			if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for networkNumber")
 			}
@@ -330,7 +330,7 @@ func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_applicationErr := m.Application.Serialize(writeBuffer)
+		_applicationErr := writeBuffer.WriteSerializable(m.Application)
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for application")
 		}
@@ -350,9 +350,9 @@ func (m *MonitoredSALShortFormBasicMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

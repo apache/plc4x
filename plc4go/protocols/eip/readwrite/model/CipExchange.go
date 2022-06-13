@@ -235,7 +235,7 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for service")
 	}
-	_serviceErr := m.Service.Serialize(writeBuffer)
+	_serviceErr := writeBuffer.WriteSerializable(m.Service)
 	if popErr := writeBuffer.PopContext("service"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for service")
 	}
@@ -253,9 +253,9 @@ func (m *CipExchange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }
