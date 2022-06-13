@@ -60,11 +60,10 @@ public class DataWriterComplexDefault<T extends Message> implements DataWriterCo
         if (hasLogicalName) {
             writeBuffer.pushContext(logicalName);
         }
-        if (value != null) {
-            value.serialize(writeBuffer);
-        } else {
+        if (value == null) {
             LOGGER.warn("Trying to serialize null value for {}", logicalName);
         }
+        writeBuffer.writeSerializable(value);
         if (hasLogicalName) {
             writeBuffer.popContext(logicalName);
         }

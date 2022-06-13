@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.generation;
 
 import org.apache.plc4x.java.spi.codegen.io.ByteOrderAware;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -133,6 +134,19 @@ public interface WriteBuffer extends ByteOrderAware, PositionAware {
 
     default void writeString(int bitLength, String encoding, String value) throws SerializationException {
         writeString("", bitLength, encoding, value);
+    }
+
+    /**
+     * this method can be used to influence serializing (e.g. intercept whole types and render them in a simplified form)
+     *
+     * @param value the value to be serialized
+     * @throws SerializationException if something goes wrong
+     */
+    default void writeSerializable(Serializable value) throws SerializationException {
+        if (value == null) {
+            return;
+        }
+        value.serialize(this);
     }
 
     void popContext(String logicalName, WithWriterArgs... writerArgs);
