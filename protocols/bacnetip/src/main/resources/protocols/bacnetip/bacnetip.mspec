@@ -1667,7 +1667,7 @@
                         changedBits                                                 ]
         ]
         ['1' BACnetNotificationParametersChangeOfValueNewValueChangedValue(uint 8 peekedTagNumber)
-            [simple   BACnetContextTagReal('0', 'BACnetDataType.REAL')
+            [simple   BACnetContextTagReal('1', 'BACnetDataType.REAL')
                         changedValue                                                ]
         ]
     ]

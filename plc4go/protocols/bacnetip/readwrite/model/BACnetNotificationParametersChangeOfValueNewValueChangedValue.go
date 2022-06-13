@@ -142,7 +142,7 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuff
 	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changedValue")
 	}
-	_changedValue, _changedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
+	_changedValue, _changedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _changedValueErr != nil {
 		return nil, errors.Wrap(_changedValueErr, "Error parsing 'changedValue' field")
 	}
