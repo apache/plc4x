@@ -220,7 +220,7 @@ func (m *ModbusAsciiADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("pdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pdu")
 		}
-		_pduErr := m.Pdu.Serialize(writeBuffer)
+		_pduErr := writeBuffer.WriteSerializable(m.Pdu)
 		if popErr := writeBuffer.PopContext("pdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pdu")
 		}
@@ -252,9 +252,9 @@ func (m *ModbusAsciiADU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataFDBBMDAddress) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("fDBBMDAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fDBBMDAddress")
 		}
-		_fDBBMDAddressErr := m.FDBBMDAddress.Serialize(writeBuffer)
+		_fDBBMDAddressErr := writeBuffer.WriteSerializable(m.FDBBMDAddress)
 		if popErr := writeBuffer.PopContext("fDBBMDAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fDBBMDAddress")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataFDBBMDAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

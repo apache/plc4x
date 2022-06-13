@@ -191,7 +191,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Write
 				return errors.Wrap(pushErr, "Error pushing for data")
 			}
 			for _, _element := range m.Data {
-				_elementErr := _element.Serialize(writeBuffer)
+				_elementErr := writeBuffer.WriteSerializable(_element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
@@ -213,9 +213,9 @@ func (m *BACnetServiceAckReadPropertyMultiple) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

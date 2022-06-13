@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataNetworkInterfaceName) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("networkInterfaceName"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkInterfaceName")
 		}
-		_networkInterfaceNameErr := m.NetworkInterfaceName.Serialize(writeBuffer)
+		_networkInterfaceNameErr := writeBuffer.WriteSerializable(m.NetworkInterfaceName)
 		if popErr := writeBuffer.PopContext("networkInterfaceName"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkInterfaceName")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataNetworkInterfaceName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

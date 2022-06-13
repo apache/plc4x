@@ -215,7 +215,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer 
 		if pushErr := writeBuffer.PushContext("reinitializedStateOfDevice"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reinitializedStateOfDevice")
 		}
-		_reinitializedStateOfDeviceErr := m.ReinitializedStateOfDevice.Serialize(writeBuffer)
+		_reinitializedStateOfDeviceErr := writeBuffer.WriteSerializable(m.ReinitializedStateOfDevice)
 		if popErr := writeBuffer.PopContext("reinitializedStateOfDevice"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reinitializedStateOfDevice")
 		}
@@ -230,7 +230,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer 
 				return errors.Wrap(pushErr, "Error pushing for password")
 			}
 			password = m.Password
-			_passwordErr := password.Serialize(writeBuffer)
+			_passwordErr := writeBuffer.WriteSerializable(password)
 			if popErr := writeBuffer.PopContext("password"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for password")
 			}
@@ -251,9 +251,9 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

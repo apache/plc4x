@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBelongsTo) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("belongsTo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for belongsTo")
 		}
-		_belongsToErr := m.BelongsTo.Serialize(writeBuffer)
+		_belongsToErr := writeBuffer.WriteSerializable(m.BelongsTo)
 		if popErr := writeBuffer.PopContext("belongsTo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for belongsTo")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBelongsTo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

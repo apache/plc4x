@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataObjectPropertyReference) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("propertyReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for propertyReference")
 		}
-		_propertyReferenceErr := m.PropertyReference.Serialize(writeBuffer)
+		_propertyReferenceErr := writeBuffer.WriteSerializable(m.PropertyReference)
 		if popErr := writeBuffer.PopContext("propertyReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyReference")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataObjectPropertyReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

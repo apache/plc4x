@@ -174,7 +174,7 @@ func (m *SzlId) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("typeClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for typeClass")
 	}
-	_typeClassErr := m.TypeClass.Serialize(writeBuffer)
+	_typeClassErr := writeBuffer.WriteSerializable(m.TypeClass)
 	if popErr := writeBuffer.PopContext("typeClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for typeClass")
 	}
@@ -193,7 +193,7 @@ func (m *SzlId) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("sublistList"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for sublistList")
 	}
-	_sublistListErr := m.SublistList.Serialize(writeBuffer)
+	_sublistListErr := writeBuffer.WriteSerializable(m.SublistList)
 	if popErr := writeBuffer.PopContext("sublistList"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for sublistList")
 	}
@@ -211,9 +211,9 @@ func (m *SzlId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

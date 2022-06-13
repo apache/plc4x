@@ -235,7 +235,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for level")
 		}
-		_levelErr := m.Level.Serialize(writeBuffer)
+		_levelErr := writeBuffer.WriteSerializable(m.Level)
 		if popErr := writeBuffer.PopContext("level"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for level")
 		}
@@ -262,9 +262,9 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

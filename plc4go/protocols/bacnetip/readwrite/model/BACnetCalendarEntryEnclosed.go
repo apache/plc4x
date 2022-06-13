@@ -183,7 +183,7 @@ func (m *BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+	_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -195,7 +195,7 @@ func (m *BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("calendarEntry"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for calendarEntry")
 	}
-	_calendarEntryErr := m.CalendarEntry.Serialize(writeBuffer)
+	_calendarEntryErr := writeBuffer.WriteSerializable(m.CalendarEntry)
 	if popErr := writeBuffer.PopContext("calendarEntry"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for calendarEntry")
 	}
@@ -207,7 +207,7 @@ func (m *BACnetCalendarEntryEnclosed) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+	_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -225,9 +225,9 @@ func (m *BACnetCalendarEntryEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

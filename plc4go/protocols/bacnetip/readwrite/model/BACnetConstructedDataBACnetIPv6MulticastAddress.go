@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBACnetIPv6MulticastAddress) Serialize(writeBuffer 
 		if pushErr := writeBuffer.PushContext("ipv6MulticastAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6MulticastAddress")
 		}
-		_ipv6MulticastAddressErr := m.Ipv6MulticastAddress.Serialize(writeBuffer)
+		_ipv6MulticastAddressErr := writeBuffer.WriteSerializable(m.Ipv6MulticastAddress)
 		if popErr := writeBuffer.PopContext("ipv6MulticastAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6MulticastAddress")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBACnetIPv6MulticastAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataTimeOfActiveTimeReset) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("timeOfActiveTimeReset"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeOfActiveTimeReset")
 		}
-		_timeOfActiveTimeResetErr := m.TimeOfActiveTimeReset.Serialize(writeBuffer)
+		_timeOfActiveTimeResetErr := writeBuffer.WriteSerializable(m.TimeOfActiveTimeReset)
 		if popErr := writeBuffer.PopContext("timeOfActiveTimeReset"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeOfActiveTimeReset")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataTimeOfActiveTimeReset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -227,7 +227,7 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+	_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -239,7 +239,7 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.PropertyIdentifier)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -254,7 +254,7 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
-		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
+		_arrayIndexErr := writeBuffer.WriteSerializable(arrayIndex)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
@@ -270,7 +270,7 @@ func (m *BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteB
 			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
 		deviceIdentifier = m.DeviceIdentifier
-		_deviceIdentifierErr := deviceIdentifier.Serialize(writeBuffer)
+		_deviceIdentifierErr := writeBuffer.WriteSerializable(deviceIdentifier)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
@@ -289,9 +289,9 @@ func (m *BACnetDeviceObjectPropertyReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

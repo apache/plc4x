@@ -276,7 +276,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
-		_subscriberProcessIdentifierErr := m.SubscriberProcessIdentifier.Serialize(writeBuffer)
+		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(m.SubscriberProcessIdentifier)
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
@@ -288,7 +288,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 		}
-		_monitoredObjectIdentifierErr := m.MonitoredObjectIdentifier.Serialize(writeBuffer)
+		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(m.MonitoredObjectIdentifier)
 		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 		}
@@ -303,7 +303,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for issueConfirmed")
 			}
 			issueConfirmed = m.IssueConfirmed
-			_issueConfirmedErr := issueConfirmed.Serialize(writeBuffer)
+			_issueConfirmedErr := writeBuffer.WriteSerializable(issueConfirmed)
 			if popErr := writeBuffer.PopContext("issueConfirmed"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for issueConfirmed")
 			}
@@ -319,7 +319,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for lifetimeInSeconds")
 			}
 			lifetimeInSeconds = m.LifetimeInSeconds
-			_lifetimeInSecondsErr := lifetimeInSeconds.Serialize(writeBuffer)
+			_lifetimeInSecondsErr := writeBuffer.WriteSerializable(lifetimeInSeconds)
 			if popErr := writeBuffer.PopContext("lifetimeInSeconds"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lifetimeInSeconds")
 			}
@@ -340,9 +340,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

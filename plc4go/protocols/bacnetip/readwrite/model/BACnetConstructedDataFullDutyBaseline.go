@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataFullDutyBaseline) Serialize(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("fullDutyBaseLine"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fullDutyBaseLine")
 		}
-		_fullDutyBaseLineErr := m.FullDutyBaseLine.Serialize(writeBuffer)
+		_fullDutyBaseLineErr := writeBuffer.WriteSerializable(m.FullDutyBaseLine)
 		if popErr := writeBuffer.PopContext("fullDutyBaseLine"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fullDutyBaseLine")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataFullDutyBaseline) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

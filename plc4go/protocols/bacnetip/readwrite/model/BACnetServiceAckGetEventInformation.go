@@ -201,7 +201,7 @@ func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("listOfEventSummaries"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
 		}
-		_listOfEventSummariesErr := m.ListOfEventSummaries.Serialize(writeBuffer)
+		_listOfEventSummariesErr := writeBuffer.WriteSerializable(m.ListOfEventSummaries)
 		if popErr := writeBuffer.PopContext("listOfEventSummaries"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
 		}
@@ -213,7 +213,7 @@ func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("moreEvents"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for moreEvents")
 		}
-		_moreEventsErr := m.MoreEvents.Serialize(writeBuffer)
+		_moreEventsErr := writeBuffer.WriteSerializable(m.MoreEvents)
 		if popErr := writeBuffer.PopContext("moreEvents"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for moreEvents")
 		}
@@ -233,9 +233,9 @@ func (m *BACnetServiceAckGetEventInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

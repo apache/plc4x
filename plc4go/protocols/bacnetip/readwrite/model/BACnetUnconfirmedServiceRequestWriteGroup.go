@@ -265,7 +265,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("groupNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for groupNumber")
 		}
-		_groupNumberErr := m.GroupNumber.Serialize(writeBuffer)
+		_groupNumberErr := writeBuffer.WriteSerializable(m.GroupNumber)
 		if popErr := writeBuffer.PopContext("groupNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for groupNumber")
 		}
@@ -277,7 +277,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("writePriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for writePriority")
 		}
-		_writePriorityErr := m.WritePriority.Serialize(writeBuffer)
+		_writePriorityErr := writeBuffer.WriteSerializable(m.WritePriority)
 		if popErr := writeBuffer.PopContext("writePriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for writePriority")
 		}
@@ -289,7 +289,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("changeList"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changeList")
 		}
-		_changeListErr := m.ChangeList.Serialize(writeBuffer)
+		_changeListErr := writeBuffer.WriteSerializable(m.ChangeList)
 		if popErr := writeBuffer.PopContext("changeList"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changeList")
 		}
@@ -304,7 +304,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 				return errors.Wrap(pushErr, "Error pushing for inhibitDelay")
 			}
 			inhibitDelay = m.InhibitDelay
-			_inhibitDelayErr := inhibitDelay.Serialize(writeBuffer)
+			_inhibitDelayErr := writeBuffer.WriteSerializable(inhibitDelay)
 			if popErr := writeBuffer.PopContext("inhibitDelay"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for inhibitDelay")
 			}
@@ -325,9 +325,9 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

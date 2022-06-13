@@ -171,7 +171,7 @@ func (m *BACnetLandingCallStatusCommandDestination) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("destination"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for destination")
 		}
-		_destinationErr := m.Destination.Serialize(writeBuffer)
+		_destinationErr := writeBuffer.WriteSerializable(m.Destination)
 		if popErr := writeBuffer.PopContext("destination"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for destination")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetLandingCallStatusCommandDestination) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -168,7 +168,7 @@ func (m *NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("routeType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for routeType")
 	}
-	_routeTypeErr := m.RouteType.Serialize(writeBuffer)
+	_routeTypeErr := writeBuffer.WriteSerializable(m.RouteType)
 	if popErr := writeBuffer.PopContext("routeType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for routeType")
 	}
@@ -182,7 +182,7 @@ func (m *NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
 		}
 		for _, _element := range m.AdditionalBridgeAddresses {
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
 			}
@@ -202,9 +202,9 @@ func (m *NetworkRoute) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

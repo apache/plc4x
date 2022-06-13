@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLocalTime) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("localTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for localTime")
 		}
-		_localTimeErr := m.LocalTime.Serialize(writeBuffer)
+		_localTimeErr := writeBuffer.WriteSerializable(m.LocalTime)
 		if popErr := writeBuffer.PopContext("localTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for localTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLocalTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

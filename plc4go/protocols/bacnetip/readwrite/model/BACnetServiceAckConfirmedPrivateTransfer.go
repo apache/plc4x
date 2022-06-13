@@ -239,7 +239,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
-		_vendorIdErr := m.VendorId.Serialize(writeBuffer)
+		_vendorIdErr := writeBuffer.WriteSerializable(m.VendorId)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -251,7 +251,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("serviceNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serviceNumber")
 		}
-		_serviceNumberErr := m.ServiceNumber.Serialize(writeBuffer)
+		_serviceNumberErr := writeBuffer.WriteSerializable(m.ServiceNumber)
 		if popErr := writeBuffer.PopContext("serviceNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serviceNumber")
 		}
@@ -266,7 +266,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.W
 				return errors.Wrap(pushErr, "Error pushing for resultBlock")
 			}
 			resultBlock = m.ResultBlock
-			_resultBlockErr := resultBlock.Serialize(writeBuffer)
+			_resultBlockErr := writeBuffer.WriteSerializable(resultBlock)
 			if popErr := writeBuffer.PopContext("resultBlock"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for resultBlock")
 			}
@@ -287,9 +287,9 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

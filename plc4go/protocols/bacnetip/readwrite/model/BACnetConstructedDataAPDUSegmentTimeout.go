@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("apduSegmentTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for apduSegmentTimeout")
 		}
-		_apduSegmentTimeoutErr := m.ApduSegmentTimeout.Serialize(writeBuffer)
+		_apduSegmentTimeoutErr := writeBuffer.WriteSerializable(m.ApduSegmentTimeout)
 		if popErr := writeBuffer.PopContext("apduSegmentTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apduSegmentTimeout")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

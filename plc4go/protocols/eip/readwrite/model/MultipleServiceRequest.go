@@ -234,7 +234,7 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for data")
 		}
-		_dataErr := m.Data.Serialize(writeBuffer)
+		_dataErr := writeBuffer.WriteSerializable(m.Data)
 		if popErr := writeBuffer.PopContext("data"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for data")
 		}
@@ -254,9 +254,9 @@ func (m *MultipleServiceRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

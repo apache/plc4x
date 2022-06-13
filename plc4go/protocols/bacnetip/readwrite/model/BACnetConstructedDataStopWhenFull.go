@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataStopWhenFull) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("stopWhenFull"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for stopWhenFull")
 		}
-		_stopWhenFullErr := m.StopWhenFull.Serialize(writeBuffer)
+		_stopWhenFullErr := writeBuffer.WriteSerializable(m.StopWhenFull)
 		if popErr := writeBuffer.PopContext("stopWhenFull"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for stopWhenFull")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataStopWhenFull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

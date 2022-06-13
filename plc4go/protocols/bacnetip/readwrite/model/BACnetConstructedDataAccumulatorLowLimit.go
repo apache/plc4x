@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAccumulatorLowLimit) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("lowLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lowLimit")
 		}
-		_lowLimitErr := m.LowLimit.Serialize(writeBuffer)
+		_lowLimitErr := writeBuffer.WriteSerializable(m.LowLimit)
 		if popErr := writeBuffer.PopContext("lowLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lowLimit")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAccumulatorLowLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

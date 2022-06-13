@@ -265,7 +265,7 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(writeBuffer
 		if pushErr := writeBuffer.PushContext("requestingProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for requestingProcessIdentifier")
 		}
-		_requestingProcessIdentifierErr := m.RequestingProcessIdentifier.Serialize(writeBuffer)
+		_requestingProcessIdentifierErr := writeBuffer.WriteSerializable(m.RequestingProcessIdentifier)
 		if popErr := writeBuffer.PopContext("requestingProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for requestingProcessIdentifier")
 		}
@@ -277,7 +277,7 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(writeBuffer
 		if pushErr := writeBuffer.PushContext("requestingSource"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for requestingSource")
 		}
-		_requestingSourceErr := m.RequestingSource.Serialize(writeBuffer)
+		_requestingSourceErr := writeBuffer.WriteSerializable(m.RequestingSource)
 		if popErr := writeBuffer.PopContext("requestingSource"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for requestingSource")
 		}
@@ -289,7 +289,7 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(writeBuffer
 		if pushErr := writeBuffer.PushContext("request"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for request")
 		}
-		_requestErr := m.Request.Serialize(writeBuffer)
+		_requestErr := writeBuffer.WriteSerializable(m.Request)
 		if popErr := writeBuffer.PopContext("request"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for request")
 		}
@@ -304,7 +304,7 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(writeBuffer
 				return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 			}
 			objectIdentifier = m.ObjectIdentifier
-			_objectIdentifierErr := objectIdentifier.Serialize(writeBuffer)
+			_objectIdentifierErr := writeBuffer.WriteSerializable(objectIdentifier)
 			if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for objectIdentifier")
 			}
@@ -325,9 +325,9 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

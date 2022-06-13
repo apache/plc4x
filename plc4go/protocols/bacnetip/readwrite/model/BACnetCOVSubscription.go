@@ -239,7 +239,7 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
-	_recipientErr := m.Recipient.Serialize(writeBuffer)
+	_recipientErr := writeBuffer.WriteSerializable(m.Recipient)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for recipient")
 	}
@@ -251,7 +251,7 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("monitoredPropertyReference"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for monitoredPropertyReference")
 	}
-	_monitoredPropertyReferenceErr := m.MonitoredPropertyReference.Serialize(writeBuffer)
+	_monitoredPropertyReferenceErr := writeBuffer.WriteSerializable(m.MonitoredPropertyReference)
 	if popErr := writeBuffer.PopContext("monitoredPropertyReference"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for monitoredPropertyReference")
 	}
@@ -263,7 +263,7 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 	}
-	_issueConfirmedNotificationsErr := m.IssueConfirmedNotifications.Serialize(writeBuffer)
+	_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(m.IssueConfirmedNotifications)
 	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 	}
@@ -275,7 +275,7 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
 	}
-	_timeRemainingErr := m.TimeRemaining.Serialize(writeBuffer)
+	_timeRemainingErr := writeBuffer.WriteSerializable(m.TimeRemaining)
 	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeRemaining")
 	}
@@ -290,7 +290,7 @@ func (m *BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
 		covIncrement = m.CovIncrement
-		_covIncrementErr := covIncrement.Serialize(writeBuffer)
+		_covIncrementErr := writeBuffer.WriteSerializable(covIncrement)
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
@@ -309,9 +309,9 @@ func (m *BACnetCOVSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

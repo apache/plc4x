@@ -171,7 +171,7 @@ func (m *BACnetOptionalCharacterStringValue) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("characterstring"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for characterstring")
 		}
-		_characterstringErr := m.Characterstring.Serialize(writeBuffer)
+		_characterstringErr := writeBuffer.WriteSerializable(m.Characterstring)
 		if popErr := writeBuffer.PopContext("characterstring"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for characterstring")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetOptionalCharacterStringValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

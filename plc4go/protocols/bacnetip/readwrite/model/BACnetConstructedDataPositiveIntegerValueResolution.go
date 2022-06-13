@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataPositiveIntegerValueResolution) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("resolution"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for resolution")
 		}
-		_resolutionErr := m.Resolution.Serialize(writeBuffer)
+		_resolutionErr := writeBuffer.WriteSerializable(m.Resolution)
 		if popErr := writeBuffer.PopContext("resolution"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for resolution")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataPositiveIntegerValueResolution) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

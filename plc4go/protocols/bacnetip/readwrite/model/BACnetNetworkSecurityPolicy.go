@@ -157,7 +157,7 @@ func (m *BACnetNetworkSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("portId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for portId")
 	}
-	_portIdErr := m.PortId.Serialize(writeBuffer)
+	_portIdErr := writeBuffer.WriteSerializable(m.PortId)
 	if popErr := writeBuffer.PopContext("portId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for portId")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetNetworkSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("securityLevel"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for securityLevel")
 	}
-	_securityLevelErr := m.SecurityLevel.Serialize(writeBuffer)
+	_securityLevelErr := writeBuffer.WriteSerializable(m.SecurityLevel)
 	if popErr := writeBuffer.PopContext("securityLevel"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for securityLevel")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetNetworkSecurityPolicy) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

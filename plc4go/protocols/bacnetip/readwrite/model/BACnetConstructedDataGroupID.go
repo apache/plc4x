@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataGroupID) Serialize(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("groupId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for groupId")
 		}
-		_groupIdErr := m.GroupId.Serialize(writeBuffer)
+		_groupIdErr := writeBuffer.WriteSerializable(m.GroupId)
 		if popErr := writeBuffer.PopContext("groupId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for groupId")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataGroupID) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

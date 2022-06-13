@@ -171,7 +171,7 @@ func (m *BACnetChannelValueCharacterString) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
 		}
-		_characterStringValueErr := m.CharacterStringValue.Serialize(writeBuffer)
+		_characterStringValueErr := writeBuffer.WriteSerializable(m.CharacterStringValue)
 		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for characterStringValue")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetChannelValueCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

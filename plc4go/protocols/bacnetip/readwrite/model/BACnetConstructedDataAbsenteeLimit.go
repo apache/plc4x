@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAbsenteeLimit) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("absenteeLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for absenteeLimit")
 		}
-		_absenteeLimitErr := m.AbsenteeLimit.Serialize(writeBuffer)
+		_absenteeLimitErr := writeBuffer.WriteSerializable(m.AbsenteeLimit)
 		if popErr := writeBuffer.PopContext("absenteeLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for absenteeLimit")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAbsenteeLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -240,7 +240,7 @@ func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 		}
-		_sourceAddressErr := m.SourceAddress.Serialize(writeBuffer)
+		_sourceAddressErr := writeBuffer.WriteSerializable(m.SourceAddress)
 		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for sourceAddress")
 		}
@@ -284,9 +284,9 @@ func (m *LPollData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

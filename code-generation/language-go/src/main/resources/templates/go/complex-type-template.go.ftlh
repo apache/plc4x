@@ -1556,7 +1556,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 						<#if helper.needsVariable(arrayField, "lastItem", true)>
 			var lastItem bool = curItem == (itemCount - 1)
 						</#if>
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 					</#if>
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -1602,7 +1602,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
                         <#else>
 	// Const field (${constField.name})
 	${constField.name} := Cast${helper.getLanguageTypeNameForField(field)}(${type.name}_${constField.name?upper_case})
-	_${constField.name}Err := ${constField.name}.Serialize(writeBuffer)
+	_${constField.name}Err := writeBuffer.WriteSerializable(${constField.name})
 	if _${constField.name}Err != nil {
 		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1625,7 +1625,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("${namedField.name}"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-	_${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(writeBuffer)
+	_${discriminatorField.name}Err := writeBuffer.WriteSerializable(${discriminatorField.name})
 	if popErr := writeBuffer.PopContext("${namedField.name}"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1708,7 +1708,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = m.${optionalField.name?cap_first}
-		_${optionalField.name}Err := ${optionalField.name}.Serialize(writeBuffer)
+		_${optionalField.name}Err := writeBuffer.WriteSerializable(${optionalField.name})
 		if popErr := writeBuffer.PopContext("${optionalField.name}"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -1770,7 +1770,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-	_${simpleField.name}Err := m.${simpleField.name?cap_first}.Serialize(writeBuffer)
+	_${simpleField.name}Err := writeBuffer.WriteSerializable(m.${simpleField.name?cap_first})
 	if popErr := writeBuffer.PopContext("${simpleField.name}"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1819,11 +1819,11 @@ func (m *${type.name}) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }
 
 </@importSectionWithContentBelow>

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataEventAlgorithmInhibitRef) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("eventAlgorithmInhibitRef"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventAlgorithmInhibitRef")
 		}
-		_eventAlgorithmInhibitRefErr := m.EventAlgorithmInhibitRef.Serialize(writeBuffer)
+		_eventAlgorithmInhibitRefErr := writeBuffer.WriteSerializable(m.EventAlgorithmInhibitRef)
 		if popErr := writeBuffer.PopContext("eventAlgorithmInhibitRef"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventAlgorithmInhibitRef")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataEventAlgorithmInhibitRef) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

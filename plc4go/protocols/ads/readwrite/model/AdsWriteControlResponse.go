@@ -177,7 +177,7 @@ func (m *AdsWriteControlResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for result")
 		}
-		_resultErr := m.Result.Serialize(writeBuffer)
+		_resultErr := writeBuffer.WriteSerializable(m.Result)
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for result")
 		}
@@ -197,9 +197,9 @@ func (m *AdsWriteControlResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

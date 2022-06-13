@@ -215,7 +215,7 @@ func (m *CALData) SerializeParent(writeBuffer utils.WriteBuffer, child ICALData,
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := m.CommandTypeContainer.Serialize(writeBuffer)
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.CommandTypeContainer)
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -242,9 +242,9 @@ func (m *CALData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

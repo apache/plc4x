@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataOperationExpected) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("lifeSafetyOperations"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lifeSafetyOperations")
 		}
-		_lifeSafetyOperationsErr := m.LifeSafetyOperations.Serialize(writeBuffer)
+		_lifeSafetyOperationsErr := writeBuffer.WriteSerializable(m.LifeSafetyOperations)
 		if popErr := writeBuffer.PopContext("lifeSafetyOperations"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lifeSafetyOperations")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataOperationExpected) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

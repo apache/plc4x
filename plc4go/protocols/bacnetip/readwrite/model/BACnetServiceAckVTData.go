@@ -226,7 +226,7 @@ func (m *BACnetServiceAckVTData) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("vtSessionIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtSessionIdentifier")
 		}
-		_vtSessionIdentifierErr := m.VtSessionIdentifier.Serialize(writeBuffer)
+		_vtSessionIdentifierErr := writeBuffer.WriteSerializable(m.VtSessionIdentifier)
 		if popErr := writeBuffer.PopContext("vtSessionIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtSessionIdentifier")
 		}
@@ -238,7 +238,7 @@ func (m *BACnetServiceAckVTData) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("vtNewData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtNewData")
 		}
-		_vtNewDataErr := m.VtNewData.Serialize(writeBuffer)
+		_vtNewDataErr := writeBuffer.WriteSerializable(m.VtNewData)
 		if popErr := writeBuffer.PopContext("vtNewData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtNewData")
 		}
@@ -250,7 +250,7 @@ func (m *BACnetServiceAckVTData) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("vtDataFlag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtDataFlag")
 		}
-		_vtDataFlagErr := m.VtDataFlag.Serialize(writeBuffer)
+		_vtDataFlagErr := writeBuffer.WriteSerializable(m.VtDataFlag)
 		if popErr := writeBuffer.PopContext("vtDataFlag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtDataFlag")
 		}
@@ -270,9 +270,9 @@ func (m *BACnetServiceAckVTData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

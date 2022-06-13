@@ -171,7 +171,7 @@ func (m *BACnetHostAddressIpAddress) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipAddress")
 		}
-		_ipAddressErr := m.IpAddress.Serialize(writeBuffer)
+		_ipAddressErr := writeBuffer.WriteSerializable(m.IpAddress)
 		if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipAddress")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetHostAddressIpAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

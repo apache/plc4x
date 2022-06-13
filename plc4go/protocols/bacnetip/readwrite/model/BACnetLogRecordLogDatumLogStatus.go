@@ -176,7 +176,7 @@ func (m *BACnetLogRecordLogDatumLogStatus) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("logStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for logStatus")
 		}
-		_logStatusErr := m.LogStatus.Serialize(writeBuffer)
+		_logStatusErr := writeBuffer.WriteSerializable(m.LogStatus)
 		if popErr := writeBuffer.PopContext("logStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for logStatus")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetLogRecordLogDatumLogStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

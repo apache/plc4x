@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAccessEventTag) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("accessEventTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessEventTag")
 		}
-		_accessEventTagErr := m.AccessEventTag.Serialize(writeBuffer)
+		_accessEventTagErr := writeBuffer.WriteSerializable(m.AccessEventTag)
 		if popErr := writeBuffer.PopContext("accessEventTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessEventTag")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAccessEventTag) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

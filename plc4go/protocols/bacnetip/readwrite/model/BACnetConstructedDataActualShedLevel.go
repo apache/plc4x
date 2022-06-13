@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataActualShedLevel) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("actualShedLevel"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for actualShedLevel")
 		}
-		_actualShedLevelErr := m.ActualShedLevel.Serialize(writeBuffer)
+		_actualShedLevelErr := writeBuffer.WriteSerializable(m.ActualShedLevel)
 		if popErr := writeBuffer.PopContext("actualShedLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for actualShedLevel")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataActualShedLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

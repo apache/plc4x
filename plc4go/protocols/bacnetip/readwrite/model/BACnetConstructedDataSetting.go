@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataSetting) Serialize(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("setting"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setting")
 		}
-		_settingErr := m.Setting.Serialize(writeBuffer)
+		_settingErr := writeBuffer.WriteSerializable(m.Setting)
 		if popErr := writeBuffer.PopContext("setting"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setting")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataSetting) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

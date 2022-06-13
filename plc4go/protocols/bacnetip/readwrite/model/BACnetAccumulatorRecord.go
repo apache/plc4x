@@ -203,7 +203,7 @@ func (m *BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
-	_timestampErr := m.Timestamp.Serialize(writeBuffer)
+	_timestampErr := writeBuffer.WriteSerializable(m.Timestamp)
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
@@ -215,7 +215,7 @@ func (m *BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for presentValue")
 	}
-	_presentValueErr := m.PresentValue.Serialize(writeBuffer)
+	_presentValueErr := writeBuffer.WriteSerializable(m.PresentValue)
 	if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for presentValue")
 	}
@@ -227,7 +227,7 @@ func (m *BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("accumulatedValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for accumulatedValue")
 	}
-	_accumulatedValueErr := m.AccumulatedValue.Serialize(writeBuffer)
+	_accumulatedValueErr := writeBuffer.WriteSerializable(m.AccumulatedValue)
 	if popErr := writeBuffer.PopContext("accumulatedValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for accumulatedValue")
 	}
@@ -239,7 +239,7 @@ func (m *BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("accumulatorStatus"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for accumulatorStatus")
 	}
-	_accumulatorStatusErr := m.AccumulatorStatus.Serialize(writeBuffer)
+	_accumulatorStatusErr := writeBuffer.WriteSerializable(m.AccumulatorStatus)
 	if popErr := writeBuffer.PopContext("accumulatorStatus"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for accumulatorStatus")
 	}
@@ -257,9 +257,9 @@ func (m *BACnetAccumulatorRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

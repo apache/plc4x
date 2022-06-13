@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDoorPulseTime) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("doorPulseTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorPulseTime")
 		}
-		_doorPulseTimeErr := m.DoorPulseTime.Serialize(writeBuffer)
+		_doorPulseTimeErr := writeBuffer.WriteSerializable(m.DoorPulseTime)
 		if popErr := writeBuffer.PopContext("doorPulseTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorPulseTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDoorPulseTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

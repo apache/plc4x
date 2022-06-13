@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataEventParameters) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("eventParameter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventParameter")
 		}
-		_eventParameterErr := m.EventParameter.Serialize(writeBuffer)
+		_eventParameterErr := writeBuffer.WriteSerializable(m.EventParameter)
 		if popErr := writeBuffer.PopContext("eventParameter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventParameter")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataEventParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

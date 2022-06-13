@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataPassengerAlarm) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("passengerAlarm"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for passengerAlarm")
 		}
-		_passengerAlarmErr := m.PassengerAlarm.Serialize(writeBuffer)
+		_passengerAlarmErr := writeBuffer.WriteSerializable(m.PassengerAlarm)
 		if popErr := writeBuffer.PopContext("passengerAlarm"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for passengerAlarm")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataPassengerAlarm) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

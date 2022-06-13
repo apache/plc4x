@@ -302,7 +302,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -314,7 +314,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("newState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for newState")
 		}
-		_newStateErr := m.NewState.Serialize(writeBuffer)
+		_newStateErr := writeBuffer.WriteSerializable(m.NewState)
 		if popErr := writeBuffer.PopContext("newState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for newState")
 		}
@@ -326,7 +326,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("newMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for newMode")
 		}
-		_newModeErr := m.NewMode.Serialize(writeBuffer)
+		_newModeErr := writeBuffer.WriteSerializable(m.NewMode)
 		if popErr := writeBuffer.PopContext("newMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for newMode")
 		}
@@ -338,7 +338,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
+		_statusFlagsErr := writeBuffer.WriteSerializable(m.StatusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -350,7 +350,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("operationExpected"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for operationExpected")
 		}
-		_operationExpectedErr := m.OperationExpected.Serialize(writeBuffer)
+		_operationExpectedErr := writeBuffer.WriteSerializable(m.OperationExpected)
 		if popErr := writeBuffer.PopContext("operationExpected"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for operationExpected")
 		}
@@ -362,7 +362,7 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -382,9 +382,9 @@ func (m *BACnetNotificationParametersChangeOfLifeSafety) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

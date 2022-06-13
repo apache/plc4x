@@ -253,7 +253,7 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("errorChoice"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorChoice")
 		}
-		_errorChoiceErr := m.ErrorChoice.Serialize(writeBuffer)
+		_errorChoiceErr := writeBuffer.WriteSerializable(m.ErrorChoice)
 		if popErr := writeBuffer.PopContext("errorChoice"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorChoice")
 		}
@@ -265,7 +265,7 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for error")
 		}
-		_errorErr := m.Error.Serialize(writeBuffer)
+		_errorErr := writeBuffer.WriteSerializable(m.Error)
 		if popErr := writeBuffer.PopContext("error"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for error")
 		}
@@ -285,9 +285,9 @@ func (m *APDUError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

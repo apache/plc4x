@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataEventDetectionEnable) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("eventDetectionEnable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventDetectionEnable")
 		}
-		_eventDetectionEnableErr := m.EventDetectionEnable.Serialize(writeBuffer)
+		_eventDetectionEnableErr := writeBuffer.WriteSerializable(m.EventDetectionEnable)
 		if popErr := writeBuffer.PopContext("eventDetectionEnable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventDetectionEnable")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataEventDetectionEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

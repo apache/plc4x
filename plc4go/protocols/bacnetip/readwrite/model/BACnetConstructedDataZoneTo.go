@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataZoneTo) Serialize(writeBuffer utils.WriteBuffer) e
 		if pushErr := writeBuffer.PushContext("zoneTo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for zoneTo")
 		}
-		_zoneToErr := m.ZoneTo.Serialize(writeBuffer)
+		_zoneToErr := writeBuffer.WriteSerializable(m.ZoneTo)
 		if popErr := writeBuffer.PopContext("zoneTo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for zoneTo")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataZoneTo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

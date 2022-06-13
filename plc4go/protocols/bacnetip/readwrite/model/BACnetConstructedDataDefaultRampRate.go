@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDefaultRampRate) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("defaultRampRate"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for defaultRampRate")
 		}
-		_defaultRampRateErr := m.DefaultRampRate.Serialize(writeBuffer)
+		_defaultRampRateErr := writeBuffer.WriteSerializable(m.DefaultRampRate)
 		if popErr := writeBuffer.PopContext("defaultRampRate"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for defaultRampRate")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDefaultRampRate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

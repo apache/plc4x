@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataNetworkPortMaxInfoFrames) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("maxInfoFrames"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxInfoFrames")
 		}
-		_maxInfoFramesErr := m.MaxInfoFrames.Serialize(writeBuffer)
+		_maxInfoFramesErr := writeBuffer.WriteSerializable(m.MaxInfoFrames)
 		if popErr := writeBuffer.PopContext("maxInfoFrames"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxInfoFrames")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataNetworkPortMaxInfoFrames) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

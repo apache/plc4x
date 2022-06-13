@@ -219,7 +219,7 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(writeBuffer utils.WriteBuffe
 				return errors.Wrap(pushErr, "Error pushing for items")
 			}
 			for _, _element := range m.Items {
-				_elementErr := _element.Serialize(writeBuffer)
+				_elementErr := writeBuffer.WriteSerializable(_element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
@@ -241,9 +241,9 @@ func (m *ModbusPDUWriteFileRecordRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

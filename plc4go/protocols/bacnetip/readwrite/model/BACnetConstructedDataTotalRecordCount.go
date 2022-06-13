@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataTotalRecordCount) Serialize(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("totalRecordCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for totalRecordCount")
 		}
-		_totalRecordCountErr := m.TotalRecordCount.Serialize(writeBuffer)
+		_totalRecordCountErr := writeBuffer.WriteSerializable(m.TotalRecordCount)
 		if popErr := writeBuffer.PopContext("totalRecordCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for totalRecordCount")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataTotalRecordCount) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

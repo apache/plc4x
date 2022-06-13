@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAnalogOutputMaxPresValue) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("maxPresValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxPresValue")
 		}
-		_maxPresValueErr := m.MaxPresValue.Serialize(writeBuffer)
+		_maxPresValueErr := writeBuffer.WriteSerializable(m.MaxPresValue)
 		if popErr := writeBuffer.PopContext("maxPresValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxPresValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAnalogOutputMaxPresValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

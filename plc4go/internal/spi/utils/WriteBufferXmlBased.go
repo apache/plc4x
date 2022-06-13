@@ -202,6 +202,13 @@ func (x *xmlWriteBuffer) WriteVirtual(_ string, _ interface{}, _ ...WithWriterAr
 	return nil
 }
 
+func (x *xmlWriteBuffer) WriteSerializable(serializable Serializable) error {
+	if serializable == nil {
+		return nil
+	}
+	return serializable.Serialize(x)
+}
+
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
 	if err := x.Encoder.EncodeToken(xml.EndElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}}); err != nil {
 		return err

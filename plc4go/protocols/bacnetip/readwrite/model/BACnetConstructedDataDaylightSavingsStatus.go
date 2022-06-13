@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("daylightSavingsStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for daylightSavingsStatus")
 		}
-		_daylightSavingsStatusErr := m.DaylightSavingsStatus.Serialize(writeBuffer)
+		_daylightSavingsStatusErr := writeBuffer.WriteSerializable(m.DaylightSavingsStatus)
 		if popErr := writeBuffer.PopContext("daylightSavingsStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for daylightSavingsStatus")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

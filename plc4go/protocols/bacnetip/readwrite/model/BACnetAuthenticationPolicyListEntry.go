@@ -157,7 +157,7 @@ func (m *BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("credentialDataInput"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for credentialDataInput")
 	}
-	_credentialDataInputErr := m.CredentialDataInput.Serialize(writeBuffer)
+	_credentialDataInputErr := writeBuffer.WriteSerializable(m.CredentialDataInput)
 	if popErr := writeBuffer.PopContext("credentialDataInput"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for credentialDataInput")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("index"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for index")
 	}
-	_indexErr := m.Index.Serialize(writeBuffer)
+	_indexErr := writeBuffer.WriteSerializable(m.Index)
 	if popErr := writeBuffer.PopContext("index"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for index")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetAuthenticationPolicyListEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesShedState) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("shedState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for shedState")
 		}
-		_shedStateErr := m.ShedState.Serialize(writeBuffer)
+		_shedStateErr := writeBuffer.WriteSerializable(m.ShedState)
 		if popErr := writeBuffer.PopContext("shedState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for shedState")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesShedState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

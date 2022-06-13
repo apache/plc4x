@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataSerialNumber) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("serialNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serialNumber")
 		}
-		_serialNumberErr := m.SerialNumber.Serialize(writeBuffer)
+		_serialNumberErr := writeBuffer.WriteSerializable(m.SerialNumber)
 		if popErr := writeBuffer.PopContext("serialNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serialNumber")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataSerialNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

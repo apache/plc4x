@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataReferencePort) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("referencePort"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referencePort")
 		}
-		_referencePortErr := m.ReferencePort.Serialize(writeBuffer)
+		_referencePortErr := writeBuffer.WriteSerializable(m.ReferencePort)
 		if popErr := writeBuffer.PopContext("referencePort"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referencePort")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataReferencePort) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

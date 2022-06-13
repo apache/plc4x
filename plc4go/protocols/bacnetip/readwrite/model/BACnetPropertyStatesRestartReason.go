@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesRestartReason) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("restartReason"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for restartReason")
 		}
-		_restartReasonErr := m.RestartReason.Serialize(writeBuffer)
+		_restartReasonErr := writeBuffer.WriteSerializable(m.RestartReason)
 		if popErr := writeBuffer.PopContext("restartReason"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for restartReason")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesRestartReason) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

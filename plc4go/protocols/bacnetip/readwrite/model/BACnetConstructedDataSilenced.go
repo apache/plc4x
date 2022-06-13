@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataSilenced) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("silenced"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for silenced")
 		}
-		_silencedErr := m.Silenced.Serialize(writeBuffer)
+		_silencedErr := writeBuffer.WriteSerializable(m.Silenced)
 		if popErr := writeBuffer.PopContext("silenced"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for silenced")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataSilenced) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -195,7 +195,7 @@ func (m *BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 	}
-	_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+	_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 	if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 	}
@@ -209,7 +209,7 @@ func (m *BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for data")
 		}
 		for _, _element := range m.Data {
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
@@ -223,7 +223,7 @@ func (m *BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 	}
-	_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+	_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 	if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for innerClosingTag")
 	}
@@ -241,9 +241,9 @@ func (m *BACnetPropertyValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

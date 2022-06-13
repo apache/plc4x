@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataMusterPoint) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("musterPoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for musterPoint")
 		}
-		_musterPointErr := m.MusterPoint.Serialize(writeBuffer)
+		_musterPointErr := writeBuffer.WriteSerializable(m.MusterPoint)
 		if popErr := writeBuffer.PopContext("musterPoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for musterPoint")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataMusterPoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

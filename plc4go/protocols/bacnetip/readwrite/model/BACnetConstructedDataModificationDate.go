@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataModificationDate) Serialize(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("modificationDate"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for modificationDate")
 		}
-		_modificationDateErr := m.ModificationDate.Serialize(writeBuffer)
+		_modificationDateErr := writeBuffer.WriteSerializable(m.ModificationDate)
 		if popErr := writeBuffer.PopContext("modificationDate"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for modificationDate")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataModificationDate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

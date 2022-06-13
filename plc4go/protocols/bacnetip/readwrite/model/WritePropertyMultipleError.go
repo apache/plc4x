@@ -198,7 +198,7 @@ func (m *WritePropertyMultipleError) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
-		_errorTypeErr := m.ErrorType.Serialize(writeBuffer)
+		_errorTypeErr := writeBuffer.WriteSerializable(m.ErrorType)
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorType")
 		}
@@ -210,7 +210,7 @@ func (m *WritePropertyMultipleError) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("firstFailedWriteAttempt"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for firstFailedWriteAttempt")
 		}
-		_firstFailedWriteAttemptErr := m.FirstFailedWriteAttempt.Serialize(writeBuffer)
+		_firstFailedWriteAttemptErr := writeBuffer.WriteSerializable(m.FirstFailedWriteAttempt)
 		if popErr := writeBuffer.PopContext("firstFailedWriteAttempt"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for firstFailedWriteAttempt")
 		}
@@ -230,9 +230,9 @@ func (m *WritePropertyMultipleError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

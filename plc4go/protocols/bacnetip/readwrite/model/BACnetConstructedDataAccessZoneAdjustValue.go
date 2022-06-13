@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAccessZoneAdjustValue) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("adjustValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for adjustValue")
 		}
-		_adjustValueErr := m.AdjustValue.Serialize(writeBuffer)
+		_adjustValueErr := writeBuffer.WriteSerializable(m.AdjustValue)
 		if popErr := writeBuffer.PopContext("adjustValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for adjustValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAccessZoneAdjustValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

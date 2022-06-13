@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAPDULength) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("apduLength"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for apduLength")
 		}
-		_apduLengthErr := m.ApduLength.Serialize(writeBuffer)
+		_apduLengthErr := writeBuffer.WriteSerializable(m.ApduLength)
 		if popErr := writeBuffer.PopContext("apduLength"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apduLength")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAPDULength) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

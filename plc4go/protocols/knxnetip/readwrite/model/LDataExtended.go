@@ -316,7 +316,7 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
 		}
-		_sourceAddressErr := m.SourceAddress.Serialize(writeBuffer)
+		_sourceAddressErr := writeBuffer.WriteSerializable(m.SourceAddress)
 		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for sourceAddress")
 		}
@@ -344,7 +344,7 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for apdu")
 		}
-		_apduErr := m.Apdu.Serialize(writeBuffer)
+		_apduErr := writeBuffer.WriteSerializable(m.Apdu)
 		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apdu")
 		}
@@ -364,9 +364,9 @@ func (m *LDataExtended) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

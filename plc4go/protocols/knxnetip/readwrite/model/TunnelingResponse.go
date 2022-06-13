@@ -173,7 +173,7 @@ func (m *TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("tunnelingResponseDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for tunnelingResponseDataBlock")
 		}
-		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(writeBuffer)
+		_tunnelingResponseDataBlockErr := writeBuffer.WriteSerializable(m.TunnelingResponseDataBlock)
 		if popErr := writeBuffer.PopContext("tunnelingResponseDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for tunnelingResponseDataBlock")
 		}
@@ -193,9 +193,9 @@ func (m *TunnelingResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -294,7 +294,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer 
 				return errors.Wrap(pushErr, "Error pushing for Alarmtype")
 			}
 			Alarmtype = m.Alarmtype
-			_AlarmtypeErr := Alarmtype.Serialize(writeBuffer)
+			_AlarmtypeErr := writeBuffer.WriteSerializable(Alarmtype)
 			if popErr := writeBuffer.PopContext("Alarmtype"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for Alarmtype")
 			}
@@ -325,9 +325,9 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

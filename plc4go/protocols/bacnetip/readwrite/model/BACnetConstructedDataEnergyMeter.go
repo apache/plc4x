@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataEnergyMeter) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("energyMeter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for energyMeter")
 		}
-		_energyMeterErr := m.EnergyMeter.Serialize(writeBuffer)
+		_energyMeterErr := writeBuffer.WriteSerializable(m.EnergyMeter)
 		if popErr := writeBuffer.PopContext("energyMeter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for energyMeter")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataEnergyMeter) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

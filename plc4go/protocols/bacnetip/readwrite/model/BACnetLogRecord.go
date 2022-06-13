@@ -193,7 +193,7 @@ func (m *BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
-	_timestampErr := m.Timestamp.Serialize(writeBuffer)
+	_timestampErr := writeBuffer.WriteSerializable(m.Timestamp)
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
@@ -205,7 +205,7 @@ func (m *BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("logDatum"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for logDatum")
 	}
-	_logDatumErr := m.LogDatum.Serialize(writeBuffer)
+	_logDatumErr := writeBuffer.WriteSerializable(m.LogDatum)
 	if popErr := writeBuffer.PopContext("logDatum"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for logDatum")
 	}
@@ -220,7 +220,7 @@ func (m *BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
 		statusFlags = m.StatusFlags
-		_statusFlagsErr := statusFlags.Serialize(writeBuffer)
+		_statusFlagsErr := writeBuffer.WriteSerializable(statusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -239,9 +239,9 @@ func (m *BACnetLogRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

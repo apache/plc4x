@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesLockStatus) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("lockStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lockStatus")
 		}
-		_lockStatusErr := m.LockStatus.Serialize(writeBuffer)
+		_lockStatusErr := writeBuffer.WriteSerializable(m.LockStatus)
 		if popErr := writeBuffer.PopContext("lockStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lockStatus")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesLockStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

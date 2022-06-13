@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDirectReading) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("directReading"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for directReading")
 		}
-		_directReadingErr := m.DirectReading.Serialize(writeBuffer)
+		_directReadingErr := writeBuffer.WriteSerializable(m.DirectReading)
 		if popErr := writeBuffer.PopContext("directReading"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for directReading")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDirectReading) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataSecurityTimeWindow) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("securityTimeWindow"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for securityTimeWindow")
 		}
-		_securityTimeWindowErr := m.SecurityTimeWindow.Serialize(writeBuffer)
+		_securityTimeWindowErr := writeBuffer.WriteSerializable(m.SecurityTimeWindow)
 		if popErr := writeBuffer.PopContext("securityTimeWindow"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for securityTimeWindow")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataSecurityTimeWindow) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

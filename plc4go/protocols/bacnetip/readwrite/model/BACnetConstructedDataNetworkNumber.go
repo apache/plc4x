@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataNetworkNumber) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkNumber")
 		}
-		_networkNumberErr := m.NetworkNumber.Serialize(writeBuffer)
+		_networkNumberErr := writeBuffer.WriteSerializable(m.NetworkNumber)
 		if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkNumber")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataNetworkNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

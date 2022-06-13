@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataControlledVariableReference) Serialize(writeBuffer
 		if pushErr := writeBuffer.PushContext("controlledVariableReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for controlledVariableReference")
 		}
-		_controlledVariableReferenceErr := m.ControlledVariableReference.Serialize(writeBuffer)
+		_controlledVariableReferenceErr := writeBuffer.WriteSerializable(m.ControlledVariableReference)
 		if popErr := writeBuffer.PopContext("controlledVariableReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for controlledVariableReference")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataControlledVariableReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

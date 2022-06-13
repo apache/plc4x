@@ -226,7 +226,7 @@ func (m *BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -238,7 +238,7 @@ func (m *BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("notification"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for notification")
 		}
-		_notificationErr := m.Notification.Serialize(writeBuffer)
+		_notificationErr := writeBuffer.WriteSerializable(m.Notification)
 		if popErr := writeBuffer.PopContext("notification"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for notification")
 		}
@@ -250,7 +250,7 @@ func (m *BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -270,9 +270,9 @@ func (m *BACnetEventLogRecordLogDatumNotification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

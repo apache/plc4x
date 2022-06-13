@@ -574,7 +574,7 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("lowApplication"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lowApplication")
 		}
-		_lowApplicationErr := m.LowApplication.Serialize(writeBuffer)
+		_lowApplicationErr := writeBuffer.WriteSerializable(m.LowApplication)
 		if popErr := writeBuffer.PopContext("lowApplication"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lowApplication")
 		}
@@ -586,7 +586,7 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("highApplication"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for highApplication")
 		}
-		_highApplicationErr := m.HighApplication.Serialize(writeBuffer)
+		_highApplicationErr := writeBuffer.WriteSerializable(m.HighApplication)
 		if popErr := writeBuffer.PopContext("highApplication"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for highApplication")
 		}
@@ -749,9 +749,9 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

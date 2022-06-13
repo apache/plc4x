@@ -248,7 +248,7 @@ func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALRepl
 	if pushErr := writeBuffer.PushContext("calData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for calData")
 	}
-	_calDataErr := m.CalData.Serialize(writeBuffer)
+	_calDataErr := writeBuffer.WriteSerializable(m.CalData)
 	if popErr := writeBuffer.PopContext("calData"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for calData")
 	}
@@ -278,9 +278,9 @@ func (m *CALReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

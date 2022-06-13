@@ -302,7 +302,7 @@ func (m *BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -314,7 +314,7 @@ func (m *BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("referenceValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referenceValue")
 		}
-		_referenceValueErr := m.ReferenceValue.Serialize(writeBuffer)
+		_referenceValueErr := writeBuffer.WriteSerializable(m.ReferenceValue)
 		if popErr := writeBuffer.PopContext("referenceValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referenceValue")
 		}
@@ -326,7 +326,7 @@ func (m *BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
+		_statusFlagsErr := writeBuffer.WriteSerializable(m.StatusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -338,7 +338,7 @@ func (m *BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("setPointValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setPointValue")
 		}
-		_setPointValueErr := m.SetPointValue.Serialize(writeBuffer)
+		_setPointValueErr := writeBuffer.WriteSerializable(m.SetPointValue)
 		if popErr := writeBuffer.PopContext("setPointValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setPointValue")
 		}
@@ -350,7 +350,7 @@ func (m *BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("errorLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorLimit")
 		}
-		_errorLimitErr := m.ErrorLimit.Serialize(writeBuffer)
+		_errorLimitErr := writeBuffer.WriteSerializable(m.ErrorLimit)
 		if popErr := writeBuffer.PopContext("errorLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorLimit")
 		}
@@ -362,7 +362,7 @@ func (m *BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -382,9 +382,9 @@ func (m *BACnetNotificationParametersFloatingLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

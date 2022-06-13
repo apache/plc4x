@@ -171,7 +171,7 @@ func (m *BACnetClientCOVNone) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("defaultIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for defaultIncrement")
 		}
-		_defaultIncrementErr := m.DefaultIncrement.Serialize(writeBuffer)
+		_defaultIncrementErr := writeBuffer.WriteSerializable(m.DefaultIncrement)
 		if popErr := writeBuffer.PopContext("defaultIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for defaultIncrement")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetClientCOVNone) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

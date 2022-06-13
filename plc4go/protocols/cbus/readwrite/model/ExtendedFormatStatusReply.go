@@ -300,7 +300,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("statusHeader"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for statusHeader")
 	}
-	_statusHeaderErr := m.StatusHeader.Serialize(writeBuffer)
+	_statusHeaderErr := writeBuffer.WriteSerializable(m.StatusHeader)
 	if popErr := writeBuffer.PopContext("statusHeader"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for statusHeader")
 	}
@@ -312,7 +312,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("coding"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for coding")
 	}
-	_codingErr := m.Coding.Serialize(writeBuffer)
+	_codingErr := writeBuffer.WriteSerializable(m.Coding)
 	if popErr := writeBuffer.PopContext("coding"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for coding")
 	}
@@ -324,7 +324,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for application")
 	}
-	_applicationErr := m.Application.Serialize(writeBuffer)
+	_applicationErr := writeBuffer.WriteSerializable(m.Application)
 	if popErr := writeBuffer.PopContext("application"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for application")
 	}
@@ -345,7 +345,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 			return errors.Wrap(pushErr, "Error pushing for statusBytes")
 		}
 		for _, _element := range m.StatusBytes {
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
 			}
@@ -359,7 +359,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for crc")
 	}
-	_crcErr := m.Crc.Serialize(writeBuffer)
+	_crcErr := writeBuffer.WriteSerializable(m.Crc)
 	if popErr := writeBuffer.PopContext("crc"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for crc")
 	}
@@ -389,9 +389,9 @@ func (m *ExtendedFormatStatusReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

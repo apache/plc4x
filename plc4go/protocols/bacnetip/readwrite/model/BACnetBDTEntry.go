@@ -170,7 +170,7 @@ func (m *BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("bbmdAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for bbmdAddress")
 	}
-	_bbmdAddressErr := m.BbmdAddress.Serialize(writeBuffer)
+	_bbmdAddressErr := writeBuffer.WriteSerializable(m.BbmdAddress)
 	if popErr := writeBuffer.PopContext("bbmdAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for bbmdAddress")
 	}
@@ -185,7 +185,7 @@ func (m *BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for broadcastMask")
 		}
 		broadcastMask = m.BroadcastMask
-		_broadcastMaskErr := broadcastMask.Serialize(writeBuffer)
+		_broadcastMaskErr := writeBuffer.WriteSerializable(broadcastMask)
 		if popErr := writeBuffer.PopContext("broadcastMask"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for broadcastMask")
 		}
@@ -204,9 +204,9 @@ func (m *BACnetBDTEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

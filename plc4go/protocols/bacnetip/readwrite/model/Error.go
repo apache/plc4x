@@ -157,7 +157,7 @@ func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("errorClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for errorClass")
 	}
-	_errorClassErr := m.ErrorClass.Serialize(writeBuffer)
+	_errorClassErr := writeBuffer.WriteSerializable(m.ErrorClass)
 	if popErr := writeBuffer.PopContext("errorClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for errorClass")
 	}
@@ -169,7 +169,7 @@ func (m *Error) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("errorCode"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for errorCode")
 	}
-	_errorCodeErr := m.ErrorCode.Serialize(writeBuffer)
+	_errorCodeErr := writeBuffer.WriteSerializable(m.ErrorCode)
 	if popErr := writeBuffer.PopContext("errorCode"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for errorCode")
 	}
@@ -187,9 +187,9 @@ func (m *Error) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

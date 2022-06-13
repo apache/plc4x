@@ -157,7 +157,7 @@ func (m *BACnetAssignedLandingCallsLandingCallsListEntry) Serialize(writeBuffer 
 	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for floorNumber")
 	}
-	_floorNumberErr := m.FloorNumber.Serialize(writeBuffer)
+	_floorNumberErr := writeBuffer.WriteSerializable(m.FloorNumber)
 	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for floorNumber")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetAssignedLandingCallsLandingCallsListEntry) Serialize(writeBuffer 
 	if pushErr := writeBuffer.PushContext("direction"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for direction")
 	}
-	_directionErr := m.Direction.Serialize(writeBuffer)
+	_directionErr := writeBuffer.WriteSerializable(m.Direction)
 	if popErr := writeBuffer.PopContext("direction"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for direction")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetAssignedLandingCallsLandingCallsListEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

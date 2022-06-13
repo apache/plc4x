@@ -193,6 +193,13 @@ func (j *jsonWriteBuffer) WriteVirtual(logicalName string, value interface{}, wr
 	return nil
 }
 
+func (j *jsonWriteBuffer) WriteSerializable(serializable Serializable) error {
+	if serializable == nil {
+		return nil
+	}
+	return serializable.Serialize(j)
+}
+
 func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
 	pop := j.Pop()
 	var poppedName string

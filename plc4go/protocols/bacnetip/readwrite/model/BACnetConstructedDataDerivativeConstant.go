@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDerivativeConstant) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("derivativeConstant"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for derivativeConstant")
 		}
-		_derivativeConstantErr := m.DerivativeConstant.Serialize(writeBuffer)
+		_derivativeConstantErr := writeBuffer.WriteSerializable(m.DerivativeConstant)
 		if popErr := writeBuffer.PopContext("derivativeConstant"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for derivativeConstant")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDerivativeConstant) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

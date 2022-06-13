@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataIntegralConstant) Serialize(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("integralConstant"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for integralConstant")
 		}
-		_integralConstantErr := m.IntegralConstant.Serialize(writeBuffer)
+		_integralConstantErr := writeBuffer.WriteSerializable(m.IntegralConstant)
 		if popErr := writeBuffer.PopContext("integralConstant"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for integralConstant")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataIntegralConstant) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

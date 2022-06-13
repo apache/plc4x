@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("reliabilityEvaluationInhibit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reliabilityEvaluationInhibit")
 		}
-		_reliabilityEvaluationInhibitErr := m.ReliabilityEvaluationInhibit.Serialize(writeBuffer)
+		_reliabilityEvaluationInhibitErr := writeBuffer.WriteSerializable(m.ReliabilityEvaluationInhibit)
 		if popErr := writeBuffer.PopContext("reliabilityEvaluationInhibit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reliabilityEvaluationInhibit")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

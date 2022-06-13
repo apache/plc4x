@@ -193,7 +193,7 @@ func (m *BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("channel"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channel")
 	}
-	_channelErr := m.Channel.Serialize(writeBuffer)
+	_channelErr := writeBuffer.WriteSerializable(m.Channel)
 	if popErr := writeBuffer.PopContext("channel"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channel")
 	}
@@ -208,7 +208,7 @@ func (m *BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error
 			return errors.Wrap(pushErr, "Error pushing for overridingPriority")
 		}
 		overridingPriority = m.OverridingPriority
-		_overridingPriorityErr := overridingPriority.Serialize(writeBuffer)
+		_overridingPriorityErr := writeBuffer.WriteSerializable(overridingPriority)
 		if popErr := writeBuffer.PopContext("overridingPriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for overridingPriority")
 		}
@@ -221,7 +221,7 @@ func (m *BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for value")
 	}
-	_valueErr := m.Value.Serialize(writeBuffer)
+	_valueErr := writeBuffer.WriteSerializable(m.Value)
 	if popErr := writeBuffer.PopContext("value"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for value")
 	}
@@ -239,9 +239,9 @@ func (m *BACnetGroupChannelValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataInstantaneousPower) Serialize(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("instantaneousPower"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for instantaneousPower")
 		}
-		_instantaneousPowerErr := m.InstantaneousPower.Serialize(writeBuffer)
+		_instantaneousPowerErr := writeBuffer.WriteSerializable(m.InstantaneousPower)
 		if popErr := writeBuffer.PopContext("instantaneousPower"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for instantaneousPower")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataInstantaneousPower) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

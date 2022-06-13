@@ -785,7 +785,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+	_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -812,7 +812,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
 		nullValue = m.NullValue
-		_nullValueErr := nullValue.Serialize(writeBuffer)
+		_nullValueErr := writeBuffer.WriteSerializable(nullValue)
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
@@ -828,7 +828,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for realValue")
 		}
 		realValue = m.RealValue
-		_realValueErr := realValue.Serialize(writeBuffer)
+		_realValueErr := writeBuffer.WriteSerializable(realValue)
 		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for realValue")
 		}
@@ -844,7 +844,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
 		}
 		unsignedValue = m.UnsignedValue
-		_unsignedValueErr := unsignedValue.Serialize(writeBuffer)
+		_unsignedValueErr := writeBuffer.WriteSerializable(unsignedValue)
 		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unsignedValue")
 		}
@@ -860,7 +860,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
 		booleanValue = m.BooleanValue
-		_booleanValueErr := booleanValue.Serialize(writeBuffer)
+		_booleanValueErr := writeBuffer.WriteSerializable(booleanValue)
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
@@ -876,7 +876,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
 		integerValue = m.IntegerValue
-		_integerValueErr := integerValue.Serialize(writeBuffer)
+		_integerValueErr := writeBuffer.WriteSerializable(integerValue)
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
@@ -892,7 +892,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for doubleValue")
 		}
 		doubleValue = m.DoubleValue
-		_doubleValueErr := doubleValue.Serialize(writeBuffer)
+		_doubleValueErr := writeBuffer.WriteSerializable(doubleValue)
 		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doubleValue")
 		}
@@ -908,7 +908,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
 		}
 		octetStringValue = m.OctetStringValue
-		_octetStringValueErr := octetStringValue.Serialize(writeBuffer)
+		_octetStringValueErr := writeBuffer.WriteSerializable(octetStringValue)
 		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for octetStringValue")
 		}
@@ -924,7 +924,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
 		}
 		characterStringValue = m.CharacterStringValue
-		_characterStringValueErr := characterStringValue.Serialize(writeBuffer)
+		_characterStringValueErr := writeBuffer.WriteSerializable(characterStringValue)
 		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for characterStringValue")
 		}
@@ -940,7 +940,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
 		}
 		bitStringValue = m.BitStringValue
-		_bitStringValueErr := bitStringValue.Serialize(writeBuffer)
+		_bitStringValueErr := writeBuffer.WriteSerializable(bitStringValue)
 		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bitStringValue")
 		}
@@ -956,7 +956,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
 		}
 		enumeratedValue = m.EnumeratedValue
-		_enumeratedValueErr := enumeratedValue.Serialize(writeBuffer)
+		_enumeratedValueErr := writeBuffer.WriteSerializable(enumeratedValue)
 		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enumeratedValue")
 		}
@@ -972,7 +972,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for dateValue")
 		}
 		dateValue = m.DateValue
-		_dateValueErr := dateValue.Serialize(writeBuffer)
+		_dateValueErr := writeBuffer.WriteSerializable(dateValue)
 		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dateValue")
 		}
@@ -988,7 +988,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for timeValue")
 		}
 		timeValue = m.TimeValue
-		_timeValueErr := timeValue.Serialize(writeBuffer)
+		_timeValueErr := writeBuffer.WriteSerializable(timeValue)
 		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeValue")
 		}
@@ -1004,7 +1004,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		objectIdentifier = m.ObjectIdentifier
-		_objectIdentifierErr := objectIdentifier.Serialize(writeBuffer)
+		_objectIdentifierErr := writeBuffer.WriteSerializable(objectIdentifier)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -1020,7 +1020,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 			return errors.Wrap(pushErr, "Error pushing for reference")
 		}
 		reference = m.Reference
-		_referenceErr := reference.Serialize(writeBuffer)
+		_referenceErr := writeBuffer.WriteSerializable(reference)
 		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reference")
 		}
@@ -1033,7 +1033,7 @@ func (m *BACnetEventParameterExtendedParameters) Serialize(writeBuffer utils.Wri
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+	_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -1051,9 +1051,9 @@ func (m *BACnetEventParameterExtendedParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

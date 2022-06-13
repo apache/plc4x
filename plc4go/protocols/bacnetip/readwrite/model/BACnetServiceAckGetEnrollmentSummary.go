@@ -289,7 +289,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
-		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+		_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -301,7 +301,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventType")
 		}
-		_eventTypeErr := m.EventType.Serialize(writeBuffer)
+		_eventTypeErr := writeBuffer.WriteSerializable(m.EventType)
 		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventType")
 		}
@@ -313,7 +313,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventState")
 		}
-		_eventStateErr := m.EventState.Serialize(writeBuffer)
+		_eventStateErr := writeBuffer.WriteSerializable(m.EventState)
 		if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventState")
 		}
@@ -325,7 +325,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
-		_priorityErr := m.Priority.Serialize(writeBuffer)
+		_priorityErr := writeBuffer.WriteSerializable(m.Priority)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for priority")
 		}
@@ -340,7 +340,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Write
 				return errors.Wrap(pushErr, "Error pushing for notificationClass")
 			}
 			notificationClass = m.NotificationClass
-			_notificationClassErr := notificationClass.Serialize(writeBuffer)
+			_notificationClassErr := writeBuffer.WriteSerializable(notificationClass)
 			if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for notificationClass")
 			}
@@ -361,9 +361,9 @@ func (m *BACnetServiceAckGetEnrollmentSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

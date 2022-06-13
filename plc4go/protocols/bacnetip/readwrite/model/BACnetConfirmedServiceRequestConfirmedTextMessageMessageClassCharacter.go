@@ -176,7 +176,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)
 		if pushErr := writeBuffer.PushContext("characterValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for characterValue")
 		}
-		_characterValueErr := m.CharacterValue.Serialize(writeBuffer)
+		_characterValueErr := writeBuffer.WriteSerializable(m.CharacterValue)
 		if popErr := writeBuffer.PopContext("characterValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for characterValue")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

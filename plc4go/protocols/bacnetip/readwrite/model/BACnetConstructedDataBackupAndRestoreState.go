@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBackupAndRestoreState) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("backupAndRestoreState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for backupAndRestoreState")
 		}
-		_backupAndRestoreStateErr := m.BackupAndRestoreState.Serialize(writeBuffer)
+		_backupAndRestoreStateErr := writeBuffer.WriteSerializable(m.BackupAndRestoreState)
 		if popErr := writeBuffer.PopContext("backupAndRestoreState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for backupAndRestoreState")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBackupAndRestoreState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

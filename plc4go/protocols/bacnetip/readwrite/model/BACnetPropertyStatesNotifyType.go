@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesNotifyType) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for notifyType")
 		}
-		_notifyTypeErr := m.NotifyType.Serialize(writeBuffer)
+		_notifyTypeErr := writeBuffer.WriteSerializable(m.NotifyType)
 		if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for notifyType")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesNotifyType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

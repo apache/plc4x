@@ -201,7 +201,7 @@ func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("deviceConfigurationRequestDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationRequestDataBlock")
 		}
-		_deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(writeBuffer)
+		_deviceConfigurationRequestDataBlockErr := writeBuffer.WriteSerializable(m.DeviceConfigurationRequestDataBlock)
 		if popErr := writeBuffer.PopContext("deviceConfigurationRequestDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceConfigurationRequestDataBlock")
 		}
@@ -213,7 +213,7 @@ func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for cemi")
 		}
-		_cemiErr := m.Cemi.Serialize(writeBuffer)
+		_cemiErr := writeBuffer.WriteSerializable(m.Cemi)
 		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for cemi")
 		}
@@ -233,9 +233,9 @@ func (m *DeviceConfigurationRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -378,7 +378,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 		}
 		deviceIdentifier = m.DeviceIdentifier
-		_deviceIdentifierErr := deviceIdentifier.Serialize(writeBuffer)
+		_deviceIdentifierErr := writeBuffer.WriteSerializable(deviceIdentifier)
 		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 		}
@@ -391,7 +391,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+	_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -403,7 +403,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.PropertyIdentifier)
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -418,7 +418,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.ArrayIndex
-		_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
+		_arrayIndexErr := writeBuffer.WriteSerializable(arrayIndex)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
@@ -434,7 +434,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		propertyValue = m.PropertyValue
-		_propertyValueErr := propertyValue.Serialize(writeBuffer)
+		_propertyValueErr := writeBuffer.WriteSerializable(propertyValue)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
@@ -450,7 +450,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.Priority
-		_priorityErr := priority.Serialize(writeBuffer)
+		_priorityErr := writeBuffer.WriteSerializable(priority)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for priority")
 		}
@@ -466,7 +466,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for postDelay")
 		}
 		postDelay = m.PostDelay
-		_postDelayErr := postDelay.Serialize(writeBuffer)
+		_postDelayErr := writeBuffer.WriteSerializable(postDelay)
 		if popErr := writeBuffer.PopContext("postDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for postDelay")
 		}
@@ -479,7 +479,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("quitOnFailure"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for quitOnFailure")
 	}
-	_quitOnFailureErr := m.QuitOnFailure.Serialize(writeBuffer)
+	_quitOnFailureErr := writeBuffer.WriteSerializable(m.QuitOnFailure)
 	if popErr := writeBuffer.PopContext("quitOnFailure"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for quitOnFailure")
 	}
@@ -491,7 +491,7 @@ func (m *BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("writeSuccessful"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for writeSuccessful")
 	}
-	_writeSuccessfulErr := m.WriteSuccessful.Serialize(writeBuffer)
+	_writeSuccessfulErr := writeBuffer.WriteSerializable(m.WriteSuccessful)
 	if popErr := writeBuffer.PopContext("writeSuccessful"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for writeSuccessful")
 	}
@@ -509,9 +509,9 @@ func (m *BACnetActionCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -180,7 +180,7 @@ func (m *BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("period"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for period")
 	}
-	_periodErr := m.Period.Serialize(writeBuffer)
+	_periodErr := writeBuffer.WriteSerializable(m.Period)
 	if popErr := writeBuffer.PopContext("period"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for period")
 	}
@@ -192,7 +192,7 @@ func (m *BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("listOfTimeValues"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for listOfTimeValues")
 	}
-	_listOfTimeValuesErr := m.ListOfTimeValues.Serialize(writeBuffer)
+	_listOfTimeValuesErr := writeBuffer.WriteSerializable(m.ListOfTimeValues)
 	if popErr := writeBuffer.PopContext("listOfTimeValues"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for listOfTimeValues")
 	}
@@ -204,7 +204,7 @@ func (m *BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("eventPriority"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventPriority")
 	}
-	_eventPriorityErr := m.EventPriority.Serialize(writeBuffer)
+	_eventPriorityErr := writeBuffer.WriteSerializable(m.EventPriority)
 	if popErr := writeBuffer.PopContext("eventPriority"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventPriority")
 	}
@@ -222,9 +222,9 @@ func (m *BACnetSpecialEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

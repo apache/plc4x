@@ -171,7 +171,7 @@ func (m *BACnetProcessIdSelectionValue) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 		}
-		_processIdentifierErr := m.ProcessIdentifier.Serialize(writeBuffer)
+		_processIdentifierErr := writeBuffer.WriteSerializable(m.ProcessIdentifier)
 		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for processIdentifier")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetProcessIdSelectionValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

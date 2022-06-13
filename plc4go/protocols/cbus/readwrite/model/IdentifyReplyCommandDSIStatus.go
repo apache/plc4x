@@ -392,7 +392,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus1"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus1")
 		}
-		_channelStatus1Err := m.ChannelStatus1.Serialize(writeBuffer)
+		_channelStatus1Err := writeBuffer.WriteSerializable(m.ChannelStatus1)
 		if popErr := writeBuffer.PopContext("channelStatus1"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus1")
 		}
@@ -404,7 +404,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus2"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus2")
 		}
-		_channelStatus2Err := m.ChannelStatus2.Serialize(writeBuffer)
+		_channelStatus2Err := writeBuffer.WriteSerializable(m.ChannelStatus2)
 		if popErr := writeBuffer.PopContext("channelStatus2"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus2")
 		}
@@ -416,7 +416,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus3"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus3")
 		}
-		_channelStatus3Err := m.ChannelStatus3.Serialize(writeBuffer)
+		_channelStatus3Err := writeBuffer.WriteSerializable(m.ChannelStatus3)
 		if popErr := writeBuffer.PopContext("channelStatus3"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus3")
 		}
@@ -428,7 +428,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus4"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus4")
 		}
-		_channelStatus4Err := m.ChannelStatus4.Serialize(writeBuffer)
+		_channelStatus4Err := writeBuffer.WriteSerializable(m.ChannelStatus4)
 		if popErr := writeBuffer.PopContext("channelStatus4"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus4")
 		}
@@ -440,7 +440,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus5"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus5")
 		}
-		_channelStatus5Err := m.ChannelStatus5.Serialize(writeBuffer)
+		_channelStatus5Err := writeBuffer.WriteSerializable(m.ChannelStatus5)
 		if popErr := writeBuffer.PopContext("channelStatus5"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus5")
 		}
@@ -452,7 +452,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus6"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus6")
 		}
-		_channelStatus6Err := m.ChannelStatus6.Serialize(writeBuffer)
+		_channelStatus6Err := writeBuffer.WriteSerializable(m.ChannelStatus6)
 		if popErr := writeBuffer.PopContext("channelStatus6"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus6")
 		}
@@ -464,7 +464,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus7"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus7")
 		}
-		_channelStatus7Err := m.ChannelStatus7.Serialize(writeBuffer)
+		_channelStatus7Err := writeBuffer.WriteSerializable(m.ChannelStatus7)
 		if popErr := writeBuffer.PopContext("channelStatus7"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus7")
 		}
@@ -476,7 +476,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("channelStatus8"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for channelStatus8")
 		}
-		_channelStatus8Err := m.ChannelStatus8.Serialize(writeBuffer)
+		_channelStatus8Err := writeBuffer.WriteSerializable(m.ChannelStatus8)
 		if popErr := writeBuffer.PopContext("channelStatus8"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for channelStatus8")
 		}
@@ -488,7 +488,7 @@ func (m *IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("unitStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unitStatus")
 		}
-		_unitStatusErr := m.UnitStatus.Serialize(writeBuffer)
+		_unitStatusErr := writeBuffer.WriteSerializable(m.UnitStatus)
 		if popErr := writeBuffer.PopContext("unitStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unitStatus")
 		}
@@ -515,9 +515,9 @@ func (m *IdentifyReplyCommandDSIStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

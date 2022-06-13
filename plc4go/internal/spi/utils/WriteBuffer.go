@@ -45,6 +45,7 @@ type WriteBuffer interface {
 	WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error
 	WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error
 	WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error
+	WriteSerializable(serializable Serializable) error
 	// PopContext signals work done with the context with the supplied logical name
 	PopContext(logicalName string, writerArgs ...WithWriterArgs) error
 }

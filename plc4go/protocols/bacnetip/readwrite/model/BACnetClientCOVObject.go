@@ -171,7 +171,7 @@ func (m *BACnetClientCOVObject) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("realIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for realIncrement")
 		}
-		_realIncrementErr := m.RealIncrement.Serialize(writeBuffer)
+		_realIncrementErr := writeBuffer.WriteSerializable(m.RealIncrement)
 		if popErr := writeBuffer.PopContext("realIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for realIncrement")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetClientCOVObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

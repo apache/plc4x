@@ -277,7 +277,7 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -289,7 +289,7 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
-		_vendorIdErr := m.VendorId.Serialize(writeBuffer)
+		_vendorIdErr := writeBuffer.WriteSerializable(m.VendorId)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -301,7 +301,7 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("extendedEventType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for extendedEventType")
 		}
-		_extendedEventTypeErr := m.ExtendedEventType.Serialize(writeBuffer)
+		_extendedEventTypeErr := writeBuffer.WriteSerializable(m.ExtendedEventType)
 		if popErr := writeBuffer.PopContext("extendedEventType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for extendedEventType")
 		}
@@ -313,7 +313,7 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("parameters"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for parameters")
 		}
-		_parametersErr := m.Parameters.Serialize(writeBuffer)
+		_parametersErr := writeBuffer.WriteSerializable(m.Parameters)
 		if popErr := writeBuffer.PopContext("parameters"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameters")
 		}
@@ -325,7 +325,7 @@ func (m *BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -345,9 +345,9 @@ func (m *BACnetNotificationParametersExtended) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

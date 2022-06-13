@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataTransactionNotificationClass) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("transactionNotificationClass"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for transactionNotificationClass")
 		}
-		_transactionNotificationClassErr := m.TransactionNotificationClass.Serialize(writeBuffer)
+		_transactionNotificationClassErr := writeBuffer.WriteSerializable(m.TransactionNotificationClass)
 		if popErr := writeBuffer.PopContext("transactionNotificationClass"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for transactionNotificationClass")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataTransactionNotificationClass) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

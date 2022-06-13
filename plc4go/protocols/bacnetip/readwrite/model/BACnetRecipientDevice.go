@@ -171,7 +171,7 @@ func (m *BACnetRecipientDevice) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("deviceValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deviceValue")
 		}
-		_deviceValueErr := m.DeviceValue.Serialize(writeBuffer)
+		_deviceValueErr := writeBuffer.WriteSerializable(m.DeviceValue)
 		if popErr := writeBuffer.PopContext("deviceValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deviceValue")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetRecipientDevice) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

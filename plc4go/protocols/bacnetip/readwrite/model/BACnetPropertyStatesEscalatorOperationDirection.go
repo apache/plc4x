@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesEscalatorOperationDirection) Serialize(writeBuffer 
 		if pushErr := writeBuffer.PushContext("escalatorOperationDirection"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for escalatorOperationDirection")
 		}
-		_escalatorOperationDirectionErr := m.EscalatorOperationDirection.Serialize(writeBuffer)
+		_escalatorOperationDirectionErr := writeBuffer.WriteSerializable(m.EscalatorOperationDirection)
 		if popErr := writeBuffer.PopContext("escalatorOperationDirection"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for escalatorOperationDirection")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesEscalatorOperationDirection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

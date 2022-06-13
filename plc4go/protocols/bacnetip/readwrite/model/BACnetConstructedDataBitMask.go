@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataBitMask) Serialize(writeBuffer utils.WriteBuffer) 
 		if pushErr := writeBuffer.PushContext("bitString"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bitString")
 		}
-		_bitStringErr := m.BitString.Serialize(writeBuffer)
+		_bitStringErr := writeBuffer.WriteSerializable(m.BitString)
 		if popErr := writeBuffer.PopContext("bitString"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bitString")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataBitMask) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

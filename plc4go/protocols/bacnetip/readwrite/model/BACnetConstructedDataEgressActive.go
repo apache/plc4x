@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataEgressActive) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("egressActive"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for egressActive")
 		}
-		_egressActiveErr := m.EgressActive.Serialize(writeBuffer)
+		_egressActiveErr := writeBuffer.WriteSerializable(m.EgressActive)
 		if popErr := writeBuffer.PopContext("egressActive"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for egressActive")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataEgressActive) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

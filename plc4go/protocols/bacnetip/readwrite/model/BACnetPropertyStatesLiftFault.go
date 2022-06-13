@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesLiftFault) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("liftFault"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for liftFault")
 		}
-		_liftFaultErr := m.LiftFault.Serialize(writeBuffer)
+		_liftFaultErr := writeBuffer.WriteSerializable(m.LiftFault)
 		if popErr := writeBuffer.PopContext("liftFault"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for liftFault")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesLiftFault) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

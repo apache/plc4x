@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) Serialize(writeBu
 		if pushErr := writeBuffer.PushContext("accessEventAuthenticationFactor"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessEventAuthenticationFactor")
 		}
-		_accessEventAuthenticationFactorErr := m.AccessEventAuthenticationFactor.Serialize(writeBuffer)
+		_accessEventAuthenticationFactorErr := writeBuffer.WriteSerializable(m.AccessEventAuthenticationFactor)
 		if popErr := writeBuffer.PopContext("accessEventAuthenticationFactor"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessEventAuthenticationFactor")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

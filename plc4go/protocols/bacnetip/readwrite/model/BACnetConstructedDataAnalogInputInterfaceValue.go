@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAnalogInputInterfaceValue) Serialize(writeBuffer u
 		if pushErr := writeBuffer.PushContext("interfaceValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for interfaceValue")
 		}
-		_interfaceValueErr := m.InterfaceValue.Serialize(writeBuffer)
+		_interfaceValueErr := writeBuffer.WriteSerializable(m.InterfaceValue)
 		if popErr := writeBuffer.PopContext("interfaceValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for interfaceValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAnalogInputInterfaceValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

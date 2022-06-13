@@ -265,7 +265,7 @@ func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for additionalInformation")
 			}
 			for _, _element := range m.AdditionalInformation {
-				_elementErr := _element.Serialize(writeBuffer)
+				_elementErr := writeBuffer.WriteSerializable(_element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
@@ -279,7 +279,7 @@ func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("dataFrame"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dataFrame")
 		}
-		_dataFrameErr := m.DataFrame.Serialize(writeBuffer)
+		_dataFrameErr := writeBuffer.WriteSerializable(m.DataFrame)
 		if popErr := writeBuffer.PopContext("dataFrame"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dataFrame")
 		}
@@ -309,9 +309,9 @@ func (m *LBusmonInd) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

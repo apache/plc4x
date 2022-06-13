@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesUnits) Serialize(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for units")
 		}
-		_unitsErr := m.Units.Serialize(writeBuffer)
+		_unitsErr := writeBuffer.WriteSerializable(m.Units)
 		if popErr := writeBuffer.PopContext("units"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for units")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesUnits) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

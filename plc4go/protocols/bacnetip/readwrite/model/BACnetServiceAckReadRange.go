@@ -361,7 +361,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
-		_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+		_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -373,7 +373,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 		}
-		_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+		_propertyIdentifierErr := writeBuffer.WriteSerializable(m.PropertyIdentifier)
 		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 		}
@@ -388,7 +388,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 				return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
 			}
 			propertyArrayIndex = m.PropertyArrayIndex
-			_propertyArrayIndexErr := propertyArrayIndex.Serialize(writeBuffer)
+			_propertyArrayIndexErr := writeBuffer.WriteSerializable(propertyArrayIndex)
 			if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
 			}
@@ -401,7 +401,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("resultFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for resultFlags")
 		}
-		_resultFlagsErr := m.ResultFlags.Serialize(writeBuffer)
+		_resultFlagsErr := writeBuffer.WriteSerializable(m.ResultFlags)
 		if popErr := writeBuffer.PopContext("resultFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for resultFlags")
 		}
@@ -413,7 +413,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("itemCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for itemCount")
 		}
-		_itemCountErr := m.ItemCount.Serialize(writeBuffer)
+		_itemCountErr := writeBuffer.WriteSerializable(m.ItemCount)
 		if popErr := writeBuffer.PopContext("itemCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for itemCount")
 		}
@@ -428,7 +428,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 				return errors.Wrap(pushErr, "Error pushing for itemData")
 			}
 			itemData = m.ItemData
-			_itemDataErr := itemData.Serialize(writeBuffer)
+			_itemDataErr := writeBuffer.WriteSerializable(itemData)
 			if popErr := writeBuffer.PopContext("itemData"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for itemData")
 			}
@@ -444,7 +444,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 				return errors.Wrap(pushErr, "Error pushing for firstSequenceNumber")
 			}
 			firstSequenceNumber = m.FirstSequenceNumber
-			_firstSequenceNumberErr := firstSequenceNumber.Serialize(writeBuffer)
+			_firstSequenceNumberErr := writeBuffer.WriteSerializable(firstSequenceNumber)
 			if popErr := writeBuffer.PopContext("firstSequenceNumber"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for firstSequenceNumber")
 			}
@@ -465,9 +465,9 @@ func (m *BACnetServiceAckReadRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

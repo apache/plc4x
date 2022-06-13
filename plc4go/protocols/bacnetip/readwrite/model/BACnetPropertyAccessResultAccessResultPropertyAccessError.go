@@ -176,7 +176,7 @@ func (m *BACnetPropertyAccessResultAccessResultPropertyAccessError) Serialize(wr
 		if pushErr := writeBuffer.PushContext("propertyAccessError"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for propertyAccessError")
 		}
-		_propertyAccessErrorErr := m.PropertyAccessError.Serialize(writeBuffer)
+		_propertyAccessErrorErr := writeBuffer.WriteSerializable(m.PropertyAccessError)
 		if popErr := writeBuffer.PopContext("propertyAccessError"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyAccessError")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetPropertyAccessResultAccessResultPropertyAccessError) String() str
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

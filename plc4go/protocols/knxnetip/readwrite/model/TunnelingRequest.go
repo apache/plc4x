@@ -201,7 +201,7 @@ func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("tunnelingRequestDataBlock"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for tunnelingRequestDataBlock")
 		}
-		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(writeBuffer)
+		_tunnelingRequestDataBlockErr := writeBuffer.WriteSerializable(m.TunnelingRequestDataBlock)
 		if popErr := writeBuffer.PopContext("tunnelingRequestDataBlock"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for tunnelingRequestDataBlock")
 		}
@@ -213,7 +213,7 @@ func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for cemi")
 		}
-		_cemiErr := m.Cemi.Serialize(writeBuffer)
+		_cemiErr := writeBuffer.WriteSerializable(m.Cemi)
 		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for cemi")
 		}
@@ -233,9 +233,9 @@ func (m *TunnelingRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

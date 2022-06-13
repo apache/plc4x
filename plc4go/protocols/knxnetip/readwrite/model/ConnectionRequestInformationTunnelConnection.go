@@ -192,7 +192,7 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("knxLayer"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for knxLayer")
 		}
-		_knxLayerErr := m.KnxLayer.Serialize(writeBuffer)
+		_knxLayerErr := writeBuffer.WriteSerializable(m.KnxLayer)
 		if popErr := writeBuffer.PopContext("knxLayer"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for knxLayer")
 		}
@@ -220,9 +220,9 @@ func (m *ConnectionRequestInformationTunnelConnection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

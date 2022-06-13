@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataOccupancyUpperLimit) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("occupancyUpperLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for occupancyUpperLimit")
 		}
-		_occupancyUpperLimitErr := m.OccupancyUpperLimit.Serialize(writeBuffer)
+		_occupancyUpperLimitErr := writeBuffer.WriteSerializable(m.OccupancyUpperLimit)
 		if popErr := writeBuffer.PopContext("occupancyUpperLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for occupancyUpperLimit")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataOccupancyUpperLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

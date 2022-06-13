@@ -176,7 +176,7 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) Serialize
 		if pushErr := writeBuffer.PushContext("changedBits"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changedBits")
 		}
-		_changedBitsErr := m.ChangedBits.Serialize(writeBuffer)
+		_changedBitsErr := writeBuffer.WriteSerializable(m.ChangedBits)
 		if popErr := writeBuffer.PopContext("changedBits"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changedBits")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) String() 
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

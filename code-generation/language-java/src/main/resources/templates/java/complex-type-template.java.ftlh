@@ -863,7 +863,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     public String toString() {
         WriteBufferBoxBased writeBufferBoxBased = new WriteBufferBoxBased(true, true);
         try {
-            serialize(writeBufferBoxBased);
+            writeBufferBoxBased.writeSerializable(this);
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         }

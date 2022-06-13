@@ -244,6 +244,13 @@ func (wb *byteWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 	return nil
 }
 
+func (wb *byteWriteBuffer) WriteSerializable(serializable Serializable) error {
+	if serializable == nil {
+		return nil
+	}
+	return serializable.Serialize(wb)
+}
+
 func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {
 	return nil
 }

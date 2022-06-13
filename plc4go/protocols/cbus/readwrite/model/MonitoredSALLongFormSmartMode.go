@@ -391,7 +391,7 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(pushErr, "Error pushing for unitAddress")
 			}
 			unitAddress = m.UnitAddress
-			_unitAddressErr := unitAddress.Serialize(writeBuffer)
+			_unitAddressErr := writeBuffer.WriteSerializable(unitAddress)
 			if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for unitAddress")
 			}
@@ -407,7 +407,7 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 			}
 			bridgeAddress = m.BridgeAddress
-			_bridgeAddressErr := bridgeAddress.Serialize(writeBuffer)
+			_bridgeAddressErr := writeBuffer.WriteSerializable(bridgeAddress)
 			if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for bridgeAddress")
 			}
@@ -420,7 +420,7 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("serialInterfaceAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serialInterfaceAddress")
 		}
-		_serialInterfaceAddressErr := m.SerialInterfaceAddress.Serialize(writeBuffer)
+		_serialInterfaceAddressErr := writeBuffer.WriteSerializable(m.SerialInterfaceAddress)
 		if popErr := writeBuffer.PopContext("serialInterfaceAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serialInterfaceAddress")
 		}
@@ -445,7 +445,7 @@ func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(pushErr, "Error pushing for replyNetwork")
 			}
 			replyNetwork = m.ReplyNetwork
-			_replyNetworkErr := replyNetwork.Serialize(writeBuffer)
+			_replyNetworkErr := writeBuffer.WriteSerializable(replyNetwork)
 			if popErr := writeBuffer.PopContext("replyNetwork"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for replyNetwork")
 			}
@@ -466,9 +466,9 @@ func (m *MonitoredSALLongFormSmartMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

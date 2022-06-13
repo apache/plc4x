@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataElevatorGroup) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("elevatorGroup"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for elevatorGroup")
 		}
-		_elevatorGroupErr := m.ElevatorGroup.Serialize(writeBuffer)
+		_elevatorGroupErr := writeBuffer.WriteSerializable(m.ElevatorGroup)
 		if popErr := writeBuffer.PopContext("elevatorGroup"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for elevatorGroup")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataElevatorGroup) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

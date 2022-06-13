@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataDoorAlarmState) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("doorAlarmState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorAlarmState")
 		}
-		_doorAlarmStateErr := m.DoorAlarmState.Serialize(writeBuffer)
+		_doorAlarmStateErr := writeBuffer.WriteSerializable(m.DoorAlarmState)
 		if popErr := writeBuffer.PopContext("doorAlarmState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorAlarmState")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataDoorAlarmState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

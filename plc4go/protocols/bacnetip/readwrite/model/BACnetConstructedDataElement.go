@@ -349,7 +349,7 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(pushErr, "Error pushing for applicationTag")
 		}
 		applicationTag = m.ApplicationTag
-		_applicationTagErr := applicationTag.Serialize(writeBuffer)
+		_applicationTagErr := writeBuffer.WriteSerializable(applicationTag)
 		if popErr := writeBuffer.PopContext("applicationTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for applicationTag")
 		}
@@ -365,7 +365,7 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(pushErr, "Error pushing for contextTag")
 		}
 		contextTag = m.ContextTag
-		_contextTagErr := contextTag.Serialize(writeBuffer)
+		_contextTagErr := writeBuffer.WriteSerializable(contextTag)
 		if popErr := writeBuffer.PopContext("contextTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for contextTag")
 		}
@@ -381,7 +381,7 @@ func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(pushErr, "Error pushing for constructedData")
 		}
 		constructedData = m.ConstructedData
-		_constructedDataErr := constructedData.Serialize(writeBuffer)
+		_constructedDataErr := writeBuffer.WriteSerializable(constructedData)
 		if popErr := writeBuffer.PopContext("constructedData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for constructedData")
 		}
@@ -400,9 +400,9 @@ func (m *BACnetConstructedDataElement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

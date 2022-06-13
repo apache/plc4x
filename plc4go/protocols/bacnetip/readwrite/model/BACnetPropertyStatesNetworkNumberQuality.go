@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesNetworkNumberQuality) Serialize(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("networkNumberQuality"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for networkNumberQuality")
 		}
-		_networkNumberQualityErr := m.NetworkNumberQuality.Serialize(writeBuffer)
+		_networkNumberQualityErr := writeBuffer.WriteSerializable(m.NetworkNumberQuality)
 		if popErr := writeBuffer.PopContext("networkNumberQuality"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for networkNumberQuality")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesNetworkNumberQuality) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

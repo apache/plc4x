@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLastPriority) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("lastPriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastPriority")
 		}
-		_lastPriorityErr := m.LastPriority.Serialize(writeBuffer)
+		_lastPriorityErr := writeBuffer.WriteSerializable(m.LastPriority)
 		if popErr := writeBuffer.PopContext("lastPriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastPriority")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLastPriority) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -272,7 +272,7 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+	_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -284,7 +284,7 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventState")
 	}
-	_eventStateErr := m.EventState.Serialize(writeBuffer)
+	_eventStateErr := writeBuffer.WriteSerializable(m.EventState)
 	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventState")
 	}
@@ -296,7 +296,7 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("acknowledgedTransitions"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for acknowledgedTransitions")
 	}
-	_acknowledgedTransitionsErr := m.AcknowledgedTransitions.Serialize(writeBuffer)
+	_acknowledgedTransitionsErr := writeBuffer.WriteSerializable(m.AcknowledgedTransitions)
 	if popErr := writeBuffer.PopContext("acknowledgedTransitions"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for acknowledgedTransitions")
 	}
@@ -308,7 +308,7 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("eventTimestamps"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventTimestamps")
 	}
-	_eventTimestampsErr := m.EventTimestamps.Serialize(writeBuffer)
+	_eventTimestampsErr := writeBuffer.WriteSerializable(m.EventTimestamps)
 	if popErr := writeBuffer.PopContext("eventTimestamps"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventTimestamps")
 	}
@@ -320,7 +320,7 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for notifyType")
 	}
-	_notifyTypeErr := m.NotifyType.Serialize(writeBuffer)
+	_notifyTypeErr := writeBuffer.WriteSerializable(m.NotifyType)
 	if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for notifyType")
 	}
@@ -332,7 +332,7 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("eventEnable"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventEnable")
 	}
-	_eventEnableErr := m.EventEnable.Serialize(writeBuffer)
+	_eventEnableErr := writeBuffer.WriteSerializable(m.EventEnable)
 	if popErr := writeBuffer.PopContext("eventEnable"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventEnable")
 	}
@@ -344,7 +344,7 @@ func (m *BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("eventPriorities"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventPriorities")
 	}
-	_eventPrioritiesErr := m.EventPriorities.Serialize(writeBuffer)
+	_eventPrioritiesErr := writeBuffer.WriteSerializable(m.EventPriorities)
 	if popErr := writeBuffer.PopContext("eventPriorities"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventPriorities")
 	}
@@ -362,9 +362,9 @@ func (m *BACnetEventSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

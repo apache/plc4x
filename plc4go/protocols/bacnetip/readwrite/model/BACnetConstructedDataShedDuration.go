@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataShedDuration) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("shedDuration"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for shedDuration")
 		}
-		_shedDurationErr := m.ShedDuration.Serialize(writeBuffer)
+		_shedDurationErr := writeBuffer.WriteSerializable(m.ShedDuration)
 		if popErr := writeBuffer.PopContext("shedDuration"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for shedDuration")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataShedDuration) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

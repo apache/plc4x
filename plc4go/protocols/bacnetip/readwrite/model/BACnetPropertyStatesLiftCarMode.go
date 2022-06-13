@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesLiftCarMode) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("liftCarMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for liftCarMode")
 		}
-		_liftCarModeErr := m.LiftCarMode.Serialize(writeBuffer)
+		_liftCarModeErr := writeBuffer.WriteSerializable(m.LiftCarMode)
 		if popErr := writeBuffer.PopContext("liftCarMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for liftCarMode")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesLiftCarMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

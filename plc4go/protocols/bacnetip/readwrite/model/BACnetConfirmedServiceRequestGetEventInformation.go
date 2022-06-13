@@ -193,7 +193,7 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffer
 				return errors.Wrap(pushErr, "Error pushing for lastReceivedObjectIdentifier")
 			}
 			lastReceivedObjectIdentifier = m.LastReceivedObjectIdentifier
-			_lastReceivedObjectIdentifierErr := lastReceivedObjectIdentifier.Serialize(writeBuffer)
+			_lastReceivedObjectIdentifierErr := writeBuffer.WriteSerializable(lastReceivedObjectIdentifier)
 			if popErr := writeBuffer.PopContext("lastReceivedObjectIdentifier"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lastReceivedObjectIdentifier")
 			}
@@ -214,9 +214,9 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

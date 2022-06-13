@@ -321,7 +321,7 @@ func (m *BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+		_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -333,7 +333,7 @@ func (m *BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := m.TimeDelay.Serialize(writeBuffer)
+		_timeDelayErr := writeBuffer.WriteSerializable(m.TimeDelay)
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -345,7 +345,7 @@ func (m *BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("setpointReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setpointReference")
 		}
-		_setpointReferenceErr := m.SetpointReference.Serialize(writeBuffer)
+		_setpointReferenceErr := writeBuffer.WriteSerializable(m.SetpointReference)
 		if popErr := writeBuffer.PopContext("setpointReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setpointReference")
 		}
@@ -357,7 +357,7 @@ func (m *BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("lowDiffLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lowDiffLimit")
 		}
-		_lowDiffLimitErr := m.LowDiffLimit.Serialize(writeBuffer)
+		_lowDiffLimitErr := writeBuffer.WriteSerializable(m.LowDiffLimit)
 		if popErr := writeBuffer.PopContext("lowDiffLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lowDiffLimit")
 		}
@@ -369,7 +369,7 @@ func (m *BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("highDiffLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for highDiffLimit")
 		}
-		_highDiffLimitErr := m.HighDiffLimit.Serialize(writeBuffer)
+		_highDiffLimitErr := writeBuffer.WriteSerializable(m.HighDiffLimit)
 		if popErr := writeBuffer.PopContext("highDiffLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for highDiffLimit")
 		}
@@ -381,7 +381,7 @@ func (m *BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deadband")
 		}
-		_deadbandErr := m.Deadband.Serialize(writeBuffer)
+		_deadbandErr := writeBuffer.WriteSerializable(m.Deadband)
 		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deadband")
 		}
@@ -393,7 +393,7 @@ func (m *BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+		_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -413,9 +413,9 @@ func (m *BACnetEventParameterFloatingLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -192,7 +192,7 @@ func (m *CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("priorityClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for priorityClass")
 	}
-	_priorityClassErr := m.PriorityClass.Serialize(writeBuffer)
+	_priorityClassErr := writeBuffer.WriteSerializable(m.PriorityClass)
 	if popErr := writeBuffer.PopContext("priorityClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for priorityClass")
 	}
@@ -220,7 +220,7 @@ func (m *CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("destinationAddressType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for destinationAddressType")
 	}
-	_destinationAddressTypeErr := m.DestinationAddressType.Serialize(writeBuffer)
+	_destinationAddressTypeErr := writeBuffer.WriteSerializable(m.DestinationAddressType)
 	if popErr := writeBuffer.PopContext("destinationAddressType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for destinationAddressType")
 	}
@@ -238,9 +238,9 @@ func (m *CBusHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

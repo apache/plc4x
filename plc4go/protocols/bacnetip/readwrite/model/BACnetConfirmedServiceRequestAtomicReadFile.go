@@ -202,7 +202,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("fileIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileIdentifier")
 		}
-		_fileIdentifierErr := m.FileIdentifier.Serialize(writeBuffer)
+		_fileIdentifierErr := writeBuffer.WriteSerializable(m.FileIdentifier)
 		if popErr := writeBuffer.PopContext("fileIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileIdentifier")
 		}
@@ -214,7 +214,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("accessMethod"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessMethod")
 		}
-		_accessMethodErr := m.AccessMethod.Serialize(writeBuffer)
+		_accessMethodErr := writeBuffer.WriteSerializable(m.AccessMethod)
 		if popErr := writeBuffer.PopContext("accessMethod"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessMethod")
 		}
@@ -234,9 +234,9 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -214,7 +214,7 @@ func (m *BACnetReadAccessSpecification) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+	_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -226,7 +226,7 @@ func (m *BACnetReadAccessSpecification) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+	_openingTagErr := writeBuffer.WriteSerializable(m.OpeningTag)
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -240,7 +240,7 @@ func (m *BACnetReadAccessSpecification) Serialize(writeBuffer utils.WriteBuffer)
 			return errors.Wrap(pushErr, "Error pushing for listOfPropertyReferences")
 		}
 		for _, _element := range m.ListOfPropertyReferences {
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyReferences' field")
 			}
@@ -254,7 +254,7 @@ func (m *BACnetReadAccessSpecification) Serialize(writeBuffer utils.WriteBuffer)
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+	_closingTagErr := writeBuffer.WriteSerializable(m.ClosingTag)
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -272,9 +272,9 @@ func (m *BACnetReadAccessSpecification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

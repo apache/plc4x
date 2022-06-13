@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataFileRecordCount) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("recordCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for recordCount")
 		}
-		_recordCountErr := m.RecordCount.Serialize(writeBuffer)
+		_recordCountErr := writeBuffer.WriteSerializable(m.RecordCount)
 		if popErr := writeBuffer.PopContext("recordCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for recordCount")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataFileRecordCount) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

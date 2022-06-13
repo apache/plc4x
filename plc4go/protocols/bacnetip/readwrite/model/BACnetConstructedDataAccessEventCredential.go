@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAccessEventCredential) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("accessEventCredential"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessEventCredential")
 		}
-		_accessEventCredentialErr := m.AccessEventCredential.Serialize(writeBuffer)
+		_accessEventCredentialErr := writeBuffer.WriteSerializable(m.AccessEventCredential)
 		if popErr := writeBuffer.PopContext("accessEventCredential"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessEventCredential")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAccessEventCredential) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

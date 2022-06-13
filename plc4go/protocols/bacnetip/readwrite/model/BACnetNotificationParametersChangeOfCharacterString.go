@@ -277,7 +277,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.InnerOpeningTag)
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -289,7 +289,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("changedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changedValue")
 		}
-		_changedValueErr := m.ChangedValue.Serialize(writeBuffer)
+		_changedValueErr := writeBuffer.WriteSerializable(m.ChangedValue)
 		if popErr := writeBuffer.PopContext("changedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changedValue")
 		}
@@ -301,7 +301,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := m.StatusFlags.Serialize(writeBuffer)
+		_statusFlagsErr := writeBuffer.WriteSerializable(m.StatusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -313,7 +313,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("alarmValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmValue")
 		}
-		_alarmValueErr := m.AlarmValue.Serialize(writeBuffer)
+		_alarmValueErr := writeBuffer.WriteSerializable(m.AlarmValue)
 		if popErr := writeBuffer.PopContext("alarmValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmValue")
 		}
@@ -325,7 +325,7 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
+		_innerClosingTagErr := writeBuffer.WriteSerializable(m.InnerClosingTag)
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -345,9 +345,9 @@ func (m *BACnetNotificationParametersChangeOfCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

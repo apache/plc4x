@@ -157,7 +157,7 @@ func (m *BACnetDateTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for dateValue")
 	}
-	_dateValueErr := m.DateValue.Serialize(writeBuffer)
+	_dateValueErr := writeBuffer.WriteSerializable(m.DateValue)
 	if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for dateValue")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetDateTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeValue")
 	}
-	_timeValueErr := m.TimeValue.Serialize(writeBuffer)
+	_timeValueErr := writeBuffer.WriteSerializable(m.TimeValue)
 	if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeValue")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetDateTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

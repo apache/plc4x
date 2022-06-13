@@ -287,7 +287,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 			return errors.Wrap(pushErr, "Error pushing for parameters")
 		}
 		for _, _element := range m.Parameters {
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 			}
@@ -304,7 +304,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		payload = m.Payload
-		_payloadErr := payload.Serialize(writeBuffer)
+		_payloadErr := writeBuffer.WriteSerializable(payload)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for payload")
 		}
@@ -323,9 +323,9 @@ func (m *COTPPacket) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -170,7 +170,7 @@ func (m *BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error 
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
-	_recipientErr := m.Recipient.Serialize(writeBuffer)
+	_recipientErr := writeBuffer.WriteSerializable(m.Recipient)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for recipient")
 	}
@@ -185,7 +185,7 @@ func (m *BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 		}
 		processIdentifier = m.ProcessIdentifier
-		_processIdentifierErr := processIdentifier.Serialize(writeBuffer)
+		_processIdentifierErr := writeBuffer.WriteSerializable(processIdentifier)
 		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for processIdentifier")
 		}
@@ -204,9 +204,9 @@ func (m *BACnetRecipientProcess) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

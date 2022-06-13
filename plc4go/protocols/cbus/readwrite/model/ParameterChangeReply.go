@@ -171,7 +171,7 @@ func (m *ParameterChangeReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("isA"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for isA")
 		}
-		_isAErr := m.IsA.Serialize(writeBuffer)
+		_isAErr := writeBuffer.WriteSerializable(m.IsA)
 		if popErr := writeBuffer.PopContext("isA"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for isA")
 		}
@@ -191,9 +191,9 @@ func (m *ParameterChangeReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

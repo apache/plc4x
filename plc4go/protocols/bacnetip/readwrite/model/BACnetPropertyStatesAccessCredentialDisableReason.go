@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesAccessCredentialDisableReason) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("accessCredentialDisableReason"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessCredentialDisableReason")
 		}
-		_accessCredentialDisableReasonErr := m.AccessCredentialDisableReason.Serialize(writeBuffer)
+		_accessCredentialDisableReasonErr := writeBuffer.WriteSerializable(m.AccessCredentialDisableReason)
 		if popErr := writeBuffer.PopContext("accessCredentialDisableReason"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessCredentialDisableReason")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesAccessCredentialDisableReason) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

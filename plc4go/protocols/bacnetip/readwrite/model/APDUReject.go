@@ -228,7 +228,7 @@ func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for rejectReason")
 		}
-		_rejectReasonErr := m.RejectReason.Serialize(writeBuffer)
+		_rejectReasonErr := writeBuffer.WriteSerializable(m.RejectReason)
 		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for rejectReason")
 		}
@@ -248,9 +248,9 @@ func (m *APDUReject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

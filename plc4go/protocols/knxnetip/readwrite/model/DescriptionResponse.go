@@ -198,7 +198,7 @@ func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("dibDeviceInfo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dibDeviceInfo")
 		}
-		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(writeBuffer)
+		_dibDeviceInfoErr := writeBuffer.WriteSerializable(m.DibDeviceInfo)
 		if popErr := writeBuffer.PopContext("dibDeviceInfo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dibDeviceInfo")
 		}
@@ -210,7 +210,7 @@ func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("dibSuppSvcFamilies"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for dibSuppSvcFamilies")
 		}
-		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(writeBuffer)
+		_dibSuppSvcFamiliesErr := writeBuffer.WriteSerializable(m.DibSuppSvcFamilies)
 		if popErr := writeBuffer.PopContext("dibSuppSvcFamilies"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for dibSuppSvcFamilies")
 		}
@@ -230,9 +230,9 @@ func (m *DescriptionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

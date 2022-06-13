@@ -157,7 +157,7 @@ func (m *BACnetAssignedAccessRights) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("assignedAccessRights"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for assignedAccessRights")
 	}
-	_assignedAccessRightsErr := m.AssignedAccessRights.Serialize(writeBuffer)
+	_assignedAccessRightsErr := writeBuffer.WriteSerializable(m.AssignedAccessRights)
 	if popErr := writeBuffer.PopContext("assignedAccessRights"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for assignedAccessRights")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetAssignedAccessRights) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for enable")
 	}
-	_enableErr := m.Enable.Serialize(writeBuffer)
+	_enableErr := writeBuffer.WriteSerializable(m.Enable)
 	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for enable")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetAssignedAccessRights) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

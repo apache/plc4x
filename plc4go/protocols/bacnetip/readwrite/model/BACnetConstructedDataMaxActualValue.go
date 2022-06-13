@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataMaxActualValue) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("maxActualValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxActualValue")
 		}
-		_maxActualValueErr := m.MaxActualValue.Serialize(writeBuffer)
+		_maxActualValueErr := writeBuffer.WriteSerializable(m.MaxActualValue)
 		if popErr := writeBuffer.PopContext("maxActualValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxActualValue")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataMaxActualValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

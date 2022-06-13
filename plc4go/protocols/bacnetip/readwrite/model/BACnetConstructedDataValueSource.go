@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataValueSource) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("valueSource"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for valueSource")
 		}
-		_valueSourceErr := m.ValueSource.Serialize(writeBuffer)
+		_valueSourceErr := writeBuffer.WriteSerializable(m.ValueSource)
 		if popErr := writeBuffer.PopContext("valueSource"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for valueSource")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataValueSource) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

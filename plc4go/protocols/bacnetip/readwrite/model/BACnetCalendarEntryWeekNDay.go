@@ -171,7 +171,7 @@ func (m *BACnetCalendarEntryWeekNDay) Serialize(writeBuffer utils.WriteBuffer) e
 		if pushErr := writeBuffer.PushContext("weekNDay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for weekNDay")
 		}
-		_weekNDayErr := m.WeekNDay.Serialize(writeBuffer)
+		_weekNDayErr := writeBuffer.WriteSerializable(m.WeekNDay)
 		if popErr := writeBuffer.PopContext("weekNDay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for weekNDay")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetCalendarEntryWeekNDay) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

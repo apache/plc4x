@@ -353,7 +353,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for syntaxId")
 	}
-	_syntaxIdErr := m.SyntaxId.Serialize(writeBuffer)
+	_syntaxIdErr := writeBuffer.WriteSerializable(m.SyntaxId)
 	if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for syntaxId")
 	}
@@ -379,7 +379,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventState")
 	}
-	_eventStateErr := m.EventState.Serialize(writeBuffer)
+	_eventStateErr := writeBuffer.WriteSerializable(m.EventState)
 	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventState")
 	}
@@ -391,7 +391,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("localState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for localState")
 	}
-	_localStateErr := m.LocalState.Serialize(writeBuffer)
+	_localStateErr := writeBuffer.WriteSerializable(m.LocalState)
 	if popErr := writeBuffer.PopContext("localState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for localState")
 	}
@@ -403,7 +403,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
 	}
-	_ackStateGoingErr := m.AckStateGoing.Serialize(writeBuffer)
+	_ackStateGoingErr := writeBuffer.WriteSerializable(m.AckStateGoing)
 	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateGoing")
 	}
@@ -415,7 +415,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
 	}
-	_ackStateComingErr := m.AckStateComing.Serialize(writeBuffer)
+	_ackStateComingErr := writeBuffer.WriteSerializable(m.AckStateComing)
 	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateComing")
 	}
@@ -429,7 +429,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 			return errors.Wrap(pushErr, "Error pushing for AssociatedValues")
 		}
 		for _, _element := range m.AssociatedValues {
-			_elementErr := _element.Serialize(writeBuffer)
+			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'AssociatedValues' field")
 			}
@@ -449,9 +449,9 @@ func (m *AlarmMessageObjectPushType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

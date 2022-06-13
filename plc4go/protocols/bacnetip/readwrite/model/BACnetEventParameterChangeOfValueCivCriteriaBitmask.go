@@ -176,7 +176,7 @@ func (m *BACnetEventParameterChangeOfValueCivCriteriaBitmask) Serialize(writeBuf
 		if pushErr := writeBuffer.PushContext("bitmask"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for bitmask")
 		}
-		_bitmaskErr := m.Bitmask.Serialize(writeBuffer)
+		_bitmaskErr := writeBuffer.WriteSerializable(m.Bitmask)
 		if popErr := writeBuffer.PopContext("bitmask"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for bitmask")
 		}
@@ -196,9 +196,9 @@ func (m *BACnetEventParameterChangeOfValueCivCriteriaBitmask) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

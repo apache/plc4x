@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLargeAnalogValueDeadband) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deadband")
 		}
-		_deadbandErr := m.Deadband.Serialize(writeBuffer)
+		_deadbandErr := writeBuffer.WriteSerializable(m.Deadband)
 		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deadband")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLargeAnalogValueDeadband) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

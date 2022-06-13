@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataInProgress) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("inProgress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for inProgress")
 		}
-		_inProgressErr := m.InProgress.Serialize(writeBuffer)
+		_inProgressErr := writeBuffer.WriteSerializable(m.InProgress)
 		if popErr := writeBuffer.PopContext("inProgress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for inProgress")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataInProgress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

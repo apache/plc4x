@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataSystemStatus) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("systemStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for systemStatus")
 		}
-		_systemStatusErr := m.SystemStatus.Serialize(writeBuffer)
+		_systemStatusErr := writeBuffer.WriteSerializable(m.SystemStatus)
 		if popErr := writeBuffer.PopContext("systemStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for systemStatus")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataSystemStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

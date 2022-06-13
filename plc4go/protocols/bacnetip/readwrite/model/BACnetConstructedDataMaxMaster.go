@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataMaxMaster) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("maxMaster"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxMaster")
 		}
-		_maxMasterErr := m.MaxMaster.Serialize(writeBuffer)
+		_maxMasterErr := writeBuffer.WriteSerializable(m.MaxMaster)
 		if popErr := writeBuffer.PopContext("maxMaster"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxMaster")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataMaxMaster) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -254,7 +254,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 				return errors.Wrap(pushErr, "Error pushing for timeDuration")
 			}
 			timeDuration = m.TimeDuration
-			_timeDurationErr := timeDuration.Serialize(writeBuffer)
+			_timeDurationErr := writeBuffer.WriteSerializable(timeDuration)
 			if popErr := writeBuffer.PopContext("timeDuration"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for timeDuration")
 			}
@@ -267,7 +267,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 		if pushErr := writeBuffer.PushContext("enableDisable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for enableDisable")
 		}
-		_enableDisableErr := m.EnableDisable.Serialize(writeBuffer)
+		_enableDisableErr := writeBuffer.WriteSerializable(m.EnableDisable)
 		if popErr := writeBuffer.PopContext("enableDisable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enableDisable")
 		}
@@ -282,7 +282,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 				return errors.Wrap(pushErr, "Error pushing for password")
 			}
 			password = m.Password
-			_passwordErr := password.Serialize(writeBuffer)
+			_passwordErr := writeBuffer.WriteSerializable(password)
 			if popErr := writeBuffer.PopContext("password"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for password")
 			}
@@ -303,9 +303,9 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) String() strin
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

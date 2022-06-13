@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAlarmValue) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("binaryPv"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for binaryPv")
 		}
-		_binaryPvErr := m.BinaryPv.Serialize(writeBuffer)
+		_binaryPvErr := writeBuffer.WriteSerializable(m.BinaryPv)
 		if popErr := writeBuffer.PopContext("binaryPv"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for binaryPv")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAlarmValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

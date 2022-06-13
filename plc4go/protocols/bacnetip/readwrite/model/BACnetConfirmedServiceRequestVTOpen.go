@@ -202,7 +202,7 @@ func (m *BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("vtClass"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtClass")
 		}
-		_vtClassErr := m.VtClass.Serialize(writeBuffer)
+		_vtClassErr := writeBuffer.WriteSerializable(m.VtClass)
 		if popErr := writeBuffer.PopContext("vtClass"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtClass")
 		}
@@ -214,7 +214,7 @@ func (m *BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("localVtSessionIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for localVtSessionIdentifier")
 		}
-		_localVtSessionIdentifierErr := m.LocalVtSessionIdentifier.Serialize(writeBuffer)
+		_localVtSessionIdentifierErr := writeBuffer.WriteSerializable(m.LocalVtSessionIdentifier)
 		if popErr := writeBuffer.PopContext("localVtSessionIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for localVtSessionIdentifier")
 		}
@@ -234,9 +234,9 @@ func (m *BACnetConfirmedServiceRequestVTOpen) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

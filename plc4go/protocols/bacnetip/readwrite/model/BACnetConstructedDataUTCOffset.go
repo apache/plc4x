@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataUTCOffset) Serialize(writeBuffer utils.WriteBuffer
 		if pushErr := writeBuffer.PushContext("utcOffset"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for utcOffset")
 		}
-		_utcOffsetErr := m.UtcOffset.Serialize(writeBuffer)
+		_utcOffsetErr := writeBuffer.WriteSerializable(m.UtcOffset)
 		if popErr := writeBuffer.PopContext("utcOffset"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for utcOffset")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataUTCOffset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

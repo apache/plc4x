@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataRestoreCompletionTime) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("completionTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for completionTime")
 		}
-		_completionTimeErr := m.CompletionTime.Serialize(writeBuffer)
+		_completionTimeErr := writeBuffer.WriteSerializable(m.CompletionTime)
 		if popErr := writeBuffer.PopContext("completionTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for completionTime")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataRestoreCompletionTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

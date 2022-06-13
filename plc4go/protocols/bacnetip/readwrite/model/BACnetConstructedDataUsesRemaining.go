@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataUsesRemaining) Serialize(writeBuffer utils.WriteBu
 		if pushErr := writeBuffer.PushContext("usesRemaining"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for usesRemaining")
 		}
-		_usesRemainingErr := m.UsesRemaining.Serialize(writeBuffer)
+		_usesRemainingErr := writeBuffer.WriteSerializable(m.UsesRemaining)
 		if popErr := writeBuffer.PopContext("usesRemaining"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for usesRemaining")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataUsesRemaining) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

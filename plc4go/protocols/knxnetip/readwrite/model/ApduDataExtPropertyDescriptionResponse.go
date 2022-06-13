@@ -392,7 +392,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("propertyDataType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for propertyDataType")
 		}
-		_propertyDataTypeErr := m.PropertyDataType.Serialize(writeBuffer)
+		_propertyDataTypeErr := writeBuffer.WriteSerializable(m.PropertyDataType)
 		if popErr := writeBuffer.PopContext("propertyDataType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyDataType")
 		}
@@ -419,7 +419,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("readLevel"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for readLevel")
 		}
-		_readLevelErr := m.ReadLevel.Serialize(writeBuffer)
+		_readLevelErr := writeBuffer.WriteSerializable(m.ReadLevel)
 		if popErr := writeBuffer.PopContext("readLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for readLevel")
 		}
@@ -431,7 +431,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("writeLevel"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for writeLevel")
 		}
-		_writeLevelErr := m.WriteLevel.Serialize(writeBuffer)
+		_writeLevelErr := writeBuffer.WriteSerializable(m.WriteLevel)
 		if popErr := writeBuffer.PopContext("writeLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for writeLevel")
 		}
@@ -451,9 +451,9 @@ func (m *ApduDataExtPropertyDescriptionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

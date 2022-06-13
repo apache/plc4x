@@ -272,7 +272,7 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("validDays"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for validDays")
 	}
-	_validDaysErr := m.ValidDays.Serialize(writeBuffer)
+	_validDaysErr := writeBuffer.WriteSerializable(m.ValidDays)
 	if popErr := writeBuffer.PopContext("validDays"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for validDays")
 	}
@@ -284,7 +284,7 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("fromTime"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for fromTime")
 	}
-	_fromTimeErr := m.FromTime.Serialize(writeBuffer)
+	_fromTimeErr := writeBuffer.WriteSerializable(m.FromTime)
 	if popErr := writeBuffer.PopContext("fromTime"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for fromTime")
 	}
@@ -296,7 +296,7 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("toTime"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toTime")
 	}
-	_toTimeErr := m.ToTime.Serialize(writeBuffer)
+	_toTimeErr := writeBuffer.WriteSerializable(m.ToTime)
 	if popErr := writeBuffer.PopContext("toTime"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toTime")
 	}
@@ -308,7 +308,7 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
-	_recipientErr := m.Recipient.Serialize(writeBuffer)
+	_recipientErr := writeBuffer.WriteSerializable(m.Recipient)
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for recipient")
 	}
@@ -320,7 +320,7 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 	}
-	_processIdentifierErr := m.ProcessIdentifier.Serialize(writeBuffer)
+	_processIdentifierErr := writeBuffer.WriteSerializable(m.ProcessIdentifier)
 	if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for processIdentifier")
 	}
@@ -332,7 +332,7 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 	}
-	_issueConfirmedNotificationsErr := m.IssueConfirmedNotifications.Serialize(writeBuffer)
+	_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(m.IssueConfirmedNotifications)
 	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 	}
@@ -344,7 +344,7 @@ func (m *BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("transitions"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for transitions")
 	}
-	_transitionsErr := m.Transitions.Serialize(writeBuffer)
+	_transitionsErr := writeBuffer.WriteSerializable(m.Transitions)
 	if popErr := writeBuffer.PopContext("transitions"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for transitions")
 	}
@@ -362,9 +362,9 @@ func (m *BACnetDestination) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

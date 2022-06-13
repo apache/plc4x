@@ -202,7 +202,7 @@ func (m *APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("serviceRequest"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serviceRequest")
 		}
-		_serviceRequestErr := m.ServiceRequest.Serialize(writeBuffer)
+		_serviceRequestErr := writeBuffer.WriteSerializable(m.ServiceRequest)
 		if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serviceRequest")
 		}
@@ -222,9 +222,9 @@ func (m *APDUUnconfirmedRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

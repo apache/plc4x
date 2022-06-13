@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataFirmwareRevision) Serialize(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("firmwareRevision"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for firmwareRevision")
 		}
-		_firmwareRevisionErr := m.FirmwareRevision.Serialize(writeBuffer)
+		_firmwareRevisionErr := writeBuffer.WriteSerializable(m.FirmwareRevision)
 		if popErr := writeBuffer.PopContext("firmwareRevision"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for firmwareRevision")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataFirmwareRevision) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

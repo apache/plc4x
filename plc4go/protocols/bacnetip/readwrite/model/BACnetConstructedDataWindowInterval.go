@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataWindowInterval) Serialize(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("windowInterval"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for windowInterval")
 		}
-		_windowIntervalErr := m.WindowInterval.Serialize(writeBuffer)
+		_windowIntervalErr := writeBuffer.WriteSerializable(m.WindowInterval)
 		if popErr := writeBuffer.PopContext("windowInterval"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for windowInterval")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataWindowInterval) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

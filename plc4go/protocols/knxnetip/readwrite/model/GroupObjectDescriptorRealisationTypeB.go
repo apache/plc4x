@@ -301,7 +301,7 @@ func (m *GroupObjectDescriptorRealisationTypeB) Serialize(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for priority")
 	}
-	_priorityErr := m.Priority.Serialize(writeBuffer)
+	_priorityErr := writeBuffer.WriteSerializable(m.Priority)
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for priority")
 	}
@@ -313,7 +313,7 @@ func (m *GroupObjectDescriptorRealisationTypeB) Serialize(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("valueType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for valueType")
 	}
-	_valueTypeErr := m.ValueType.Serialize(writeBuffer)
+	_valueTypeErr := writeBuffer.WriteSerializable(m.ValueType)
 	if popErr := writeBuffer.PopContext("valueType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for valueType")
 	}
@@ -331,9 +331,9 @@ func (m *GroupObjectDescriptorRealisationTypeB) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

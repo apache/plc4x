@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataActiveText) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("activeText"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for activeText")
 		}
-		_activeTextErr := m.ActiveText.Serialize(writeBuffer)
+		_activeTextErr := writeBuffer.WriteSerializable(m.ActiveText)
 		if popErr := writeBuffer.PopContext("activeText"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for activeText")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataActiveText) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

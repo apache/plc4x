@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataCurrentCommandPriority) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("currentCommandPriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for currentCommandPriority")
 		}
-		_currentCommandPriorityErr := m.CurrentCommandPriority.Serialize(writeBuffer)
+		_currentCommandPriorityErr := writeBuffer.WriteSerializable(m.CurrentCommandPriority)
 		if popErr := writeBuffer.PopContext("currentCommandPriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for currentCommandPriority")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataCurrentCommandPriority) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataCredentialDisable) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("credentialDisable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for credentialDisable")
 		}
-		_credentialDisableErr := m.CredentialDisable.Serialize(writeBuffer)
+		_credentialDisableErr := writeBuffer.WriteSerializable(m.CredentialDisable)
 		if popErr := writeBuffer.PopContext("credentialDisable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for credentialDisable")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataCredentialDisable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

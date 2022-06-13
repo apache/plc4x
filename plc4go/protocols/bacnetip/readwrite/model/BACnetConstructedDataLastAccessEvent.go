@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataLastAccessEvent) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("lastAccessEvent"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastAccessEvent")
 		}
-		_lastAccessEventErr := m.LastAccessEvent.Serialize(writeBuffer)
+		_lastAccessEventErr := writeBuffer.WriteSerializable(m.LastAccessEvent)
 		if popErr := writeBuffer.PopContext("lastAccessEvent"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastAccessEvent")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataLastAccessEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

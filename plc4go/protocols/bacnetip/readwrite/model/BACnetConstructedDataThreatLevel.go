@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataThreatLevel) Serialize(writeBuffer utils.WriteBuff
 		if pushErr := writeBuffer.PushContext("threatLevel"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for threatLevel")
 		}
-		_threatLevelErr := m.ThreatLevel.Serialize(writeBuffer)
+		_threatLevelErr := writeBuffer.WriteSerializable(m.ThreatLevel)
 		if popErr := writeBuffer.PopContext("threatLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for threatLevel")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataThreatLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

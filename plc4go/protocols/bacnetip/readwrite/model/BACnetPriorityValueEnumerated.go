@@ -174,7 +174,7 @@ func (m *BACnetPriorityValueEnumerated) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
 		}
-		_enumeratedValueErr := m.EnumeratedValue.Serialize(writeBuffer)
+		_enumeratedValueErr := writeBuffer.WriteSerializable(m.EnumeratedValue)
 		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enumeratedValue")
 		}
@@ -194,9 +194,9 @@ func (m *BACnetPriorityValueEnumerated) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

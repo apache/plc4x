@@ -171,7 +171,7 @@ func (m *BACnetPropertyStatesDoorValue) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("doorValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doorValue")
 		}
-		_doorValueErr := m.DoorValue.Serialize(writeBuffer)
+		_doorValueErr := writeBuffer.WriteSerializable(m.DoorValue)
 		if popErr := writeBuffer.PopContext("doorValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doorValue")
 		}
@@ -191,9 +191,9 @@ func (m *BACnetPropertyStatesDoorValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

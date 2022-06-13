@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataScale) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("scale"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for scale")
 		}
-		_scaleErr := m.Scale.Serialize(writeBuffer)
+		_scaleErr := writeBuffer.WriteSerializable(m.Scale)
 		if popErr := writeBuffer.PopContext("scale"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for scale")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataScale) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

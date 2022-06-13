@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataNextStoppingFloor) Serialize(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("nextStoppingFloor"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nextStoppingFloor")
 		}
-		_nextStoppingFloorErr := m.NextStoppingFloor.Serialize(writeBuffer)
+		_nextStoppingFloorErr := writeBuffer.WriteSerializable(m.NextStoppingFloor)
 		if popErr := writeBuffer.PopContext("nextStoppingFloor"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nextStoppingFloor")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataNextStoppingFloor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

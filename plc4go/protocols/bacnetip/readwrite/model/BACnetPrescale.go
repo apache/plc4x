@@ -157,7 +157,7 @@ func (m *BACnetPrescale) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("multiplier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for multiplier")
 	}
-	_multiplierErr := m.Multiplier.Serialize(writeBuffer)
+	_multiplierErr := writeBuffer.WriteSerializable(m.Multiplier)
 	if popErr := writeBuffer.PopContext("multiplier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for multiplier")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetPrescale) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("moduloDivide"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for moduloDivide")
 	}
-	_moduloDivideErr := m.ModuloDivide.Serialize(writeBuffer)
+	_moduloDivideErr := writeBuffer.WriteSerializable(m.ModuloDivide)
 	if popErr := writeBuffer.PopContext("moduloDivide"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for moduloDivide")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetPrescale) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

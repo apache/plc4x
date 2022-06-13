@@ -337,7 +337,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
-		_subscriberProcessIdentifierErr := m.SubscriberProcessIdentifier.Serialize(writeBuffer)
+		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(m.SubscriberProcessIdentifier)
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
@@ -349,7 +349,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 		}
-		_monitoredObjectIdentifierErr := m.MonitoredObjectIdentifier.Serialize(writeBuffer)
+		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(m.MonitoredObjectIdentifier)
 		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 		}
@@ -364,7 +364,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 			}
 			issueConfirmedNotifications = m.IssueConfirmedNotifications
-			_issueConfirmedNotificationsErr := issueConfirmedNotifications.Serialize(writeBuffer)
+			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(issueConfirmedNotifications)
 			if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 			}
@@ -380,7 +380,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for lifetime")
 			}
 			lifetime = m.Lifetime
-			_lifetimeErr := lifetime.Serialize(writeBuffer)
+			_lifetimeErr := writeBuffer.WriteSerializable(lifetime)
 			if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lifetime")
 			}
@@ -393,7 +393,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuffe
 		if pushErr := writeBuffer.PushContext("monitoredPropertyIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredPropertyIdentifier")
 		}
-		_monitoredPropertyIdentifierErr := m.MonitoredPropertyIdentifier.Serialize(writeBuffer)
+		_monitoredPropertyIdentifierErr := writeBuffer.WriteSerializable(m.MonitoredPropertyIdentifier)
 		if popErr := writeBuffer.PopContext("monitoredPropertyIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredPropertyIdentifier")
 		}
@@ -408,7 +408,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for covIncrement")
 			}
 			covIncrement = m.CovIncrement
-			_covIncrementErr := covIncrement.Serialize(writeBuffer)
+			_covIncrementErr := writeBuffer.WriteSerializable(covIncrement)
 			if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for covIncrement")
 			}
@@ -429,9 +429,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

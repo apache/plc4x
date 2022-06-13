@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataUserInformationReference) Serialize(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("userInformationReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for userInformationReference")
 		}
-		_userInformationReferenceErr := m.UserInformationReference.Serialize(writeBuffer)
+		_userInformationReferenceErr := writeBuffer.WriteSerializable(m.UserInformationReference)
 		if popErr := writeBuffer.PopContext("userInformationReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for userInformationReference")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataUserInformationReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

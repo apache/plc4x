@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataAttemptedSamples) Serialize(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("attemptedSamples"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for attemptedSamples")
 		}
-		_attemptedSamplesErr := m.AttemptedSamples.Serialize(writeBuffer)
+		_attemptedSamplesErr := writeBuffer.WriteSerializable(m.AttemptedSamples)
 		if popErr := writeBuffer.PopContext("attemptedSamples"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for attemptedSamples")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataAttemptedSamples) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

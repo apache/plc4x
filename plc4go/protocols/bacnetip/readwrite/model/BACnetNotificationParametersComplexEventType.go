@@ -177,7 +177,7 @@ func (m *BACnetNotificationParametersComplexEventType) Serialize(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for listOfValues")
 		}
-		_listOfValuesErr := m.ListOfValues.Serialize(writeBuffer)
+		_listOfValuesErr := writeBuffer.WriteSerializable(m.ListOfValues)
 		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfValues")
 		}
@@ -197,9 +197,9 @@ func (m *BACnetNotificationParametersComplexEventType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }
