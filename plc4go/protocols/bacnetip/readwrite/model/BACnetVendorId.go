@@ -1388,6 +1388,10 @@ const (
 	BACnetVendorId_THERMOPLASTIC_ENGINEERING_LTDTPE                                             BACnetVendorId = 1356
 	BACnetVendorId_WIRTH_RESEARCH_LTD                                                           BACnetVendorId = 1357
 	BACnetVendorId_SST_AUTOMATION                                                               BACnetVendorId = 1358
+	BACnetVendorId_SHANGHAI_BENCOL_ELECTRONIC_TECHNOLOGY_CO_LTD                                 BACnetVendorId = 1359
+	BACnetVendorId_AIWAA_SYSTEMS_PRIVATE_LIMITED                                                BACnetVendorId = 1360
+	BACnetVendorId_ENLESS_WIRELESS                                                              BACnetVendorId = 1361
+	BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD                                                    BACnetVendorId = 1362
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2748,6 +2752,10 @@ func init() {
 		BACnetVendorId_THERMOPLASTIC_ENGINEERING_LTDTPE,
 		BACnetVendorId_WIRTH_RESEARCH_LTD,
 		BACnetVendorId_SST_AUTOMATION,
+		BACnetVendorId_SHANGHAI_BENCOL_ELECTRONIC_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_AIWAA_SYSTEMS_PRIVATE_LIMITED,
+		BACnetVendorId_ENLESS_WIRELESS,
+		BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4358,9 +4366,25 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1358' */
 			return 1358
 		}
+	case 1359:
+		{ /* '1359' */
+			return 1359
+		}
 	case 136:
 		{ /* '136' */
 			return 136
+		}
+	case 1360:
+		{ /* '1360' */
+			return 1360
+		}
+	case 1361:
+		{ /* '1361' */
+			return 1361
+		}
+	case 1362:
+		{ /* '1362' */
+			return 1362
 		}
 	case 137:
 		{ /* '137' */
@@ -9788,9 +9812,25 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1358' */
 			return "SST Automation"
 		}
+	case 1359:
+		{ /* '1359' */
+			return "Shanghai Bencol Electronic Technology Co., Ltd"
+		}
 	case 136:
 		{ /* '136' */
 			return "Regulvar, Inc."
+		}
+	case 1360:
+		{ /* '1360' */
+			return "AIWAA Systems Private Limited"
+		}
+	case 1361:
+		{ /* '1361' */
+			return "Enless Wireless"
+		}
+	case 1362:
+		{ /* '1362' */
+			return "Ozuno Engineering Pty Ltd"
 		}
 	case 137:
 		{ /* '137' */
@@ -14415,8 +14455,16 @@ func BACnetVendorIdByValue(value uint16) BACnetVendorId {
 		return BACnetVendorId_WIRTH_RESEARCH_LTD
 	case 1358:
 		return BACnetVendorId_SST_AUTOMATION
+	case 1359:
+		return BACnetVendorId_SHANGHAI_BENCOL_ELECTRONIC_TECHNOLOGY_CO_LTD
 	case 136:
 		return BACnetVendorId_REGULVAR_INC
+	case 1360:
+		return BACnetVendorId_AIWAA_SYSTEMS_PRIVATE_LIMITED
+	case 1361:
+		return BACnetVendorId_ENLESS_WIRELESS
+	case 1362:
+		return BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD
 	case 137:
 		return BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC
 	case 138:
@@ -17127,8 +17175,16 @@ func BACnetVendorIdByName(value string) BACnetVendorId {
 		return BACnetVendorId_WIRTH_RESEARCH_LTD
 	case "SST_AUTOMATION":
 		return BACnetVendorId_SST_AUTOMATION
+	case "SHANGHAI_BENCOL_ELECTRONIC_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_SHANGHAI_BENCOL_ELECTRONIC_TECHNOLOGY_CO_LTD
 	case "REGULVAR_INC":
 		return BACnetVendorId_REGULVAR_INC
+	case "AIWAA_SYSTEMS_PRIVATE_LIMITED":
+		return BACnetVendorId_AIWAA_SYSTEMS_PRIVATE_LIMITED
+	case "ENLESS_WIRELESS":
+		return BACnetVendorId_ENLESS_WIRELESS
+	case "OZUNO_ENGINEERING_PTY_LTD":
+		return BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD
 	case "AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC":
 		return BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC
 	case "POWER_COLD_COMFORT_AIR_SOLUTIONS_INC":
@@ -19878,8 +19934,16 @@ func (e BACnetVendorId) name() string {
 		return "WIRTH_RESEARCH_LTD"
 	case BACnetVendorId_SST_AUTOMATION:
 		return "SST_AUTOMATION"
+	case BACnetVendorId_SHANGHAI_BENCOL_ELECTRONIC_TECHNOLOGY_CO_LTD:
+		return "SHANGHAI_BENCOL_ELECTRONIC_TECHNOLOGY_CO_LTD"
 	case BACnetVendorId_REGULVAR_INC:
 		return "REGULVAR_INC"
+	case BACnetVendorId_AIWAA_SYSTEMS_PRIVATE_LIMITED:
+		return "AIWAA_SYSTEMS_PRIVATE_LIMITED"
+	case BACnetVendorId_ENLESS_WIRELESS:
+		return "ENLESS_WIRELESS"
+	case BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD:
+		return "OZUNO_ENGINEERING_PTY_LTD"
 	case BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC:
 		return "AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC"
 	case BACnetVendorId_POWER_COLD_COMFORT_AIR_SOLUTIONS_INC:

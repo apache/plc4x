@@ -23,6 +23,7 @@ go 1.16
 
 require (
 	github.com/ajankovic/xdiff v0.0.1
+	github.com/elastic/go-licenser v0.4.0 // indirect
 	github.com/google/gopacket v1.1.19
 	github.com/icza/bitio v1.1.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
@@ -35,5 +36,8 @@ require (
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.7.2
 	github.com/subchen/go-xmldom v1.1.2
+	github.com/tebeka/go2xunit v1.4.10 // indirect
 	github.com/viney-shih/go-lock v1.1.1
+	golang.org/x/tools v0.1.11 // indirect
+	gotest.tools/gotestsum v1.8.1 // indirect
 )

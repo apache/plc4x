@@ -521,7 +521,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataAnalogOutputPresentValue) baCnetServiceAckReadProperty.getValues()).getPresentValue();
+                    BACnetApplicationTagReal baCnetApplicationTagReal = ((BACnetConstructedDataAnalogOutputPresentValue) baCnetServiceAckReadProperty.getValues()).getPresentValue();
                     assertEquals(0, baCnetApplicationTagReal.getPayload().getValue());
                 }),
             DynamicTest.dynamicTest("No. 19-26 - Skip Misc 8 packages",
@@ -595,7 +595,7 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getValue());
 
-                    BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) ((BACnetConstructedDataAnalogOutputPresentValue) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getPresentValue();
+                    BACnetApplicationTagReal baCnetApplicationTagReal = ((BACnetConstructedDataAnalogOutputPresentValue) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue()).getPresentValue();
                     assertEquals(123.449997f, baCnetApplicationTagReal.getPayload().getValue());
                     BACnetContextTagUnsignedInteger priority = baCnetConfirmedServiceRequestWriteProperty.getPriority();
                     assertEquals(10, priority.getPayload().getActualValue().longValue());
@@ -669,7 +669,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(12345, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    BACnetApplicationTagObjectIdentifier objectIdentifier = (BACnetApplicationTagObjectIdentifier) ((BACnetConstructedDataObjectIdentifier) baCnetServiceAckReadProperty.getValues()).getObjectIdentifier();
+                    BACnetApplicationTagObjectIdentifier objectIdentifier = ((BACnetConstructedDataObjectIdentifier) baCnetServiceAckReadProperty.getValues()).getObjectIdentifier();
                     assertEquals(BACnetObjectType.DEVICE, objectIdentifier.getObjectType());
                     assertEquals(12345, objectIdentifier.getInstanceNumber());
                 }),
@@ -1177,7 +1177,7 @@ public class RandomPackagesTest {
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(1);
                             assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetPropertyValue.getPropertyIdentifier().getValue());
-                            BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) ((BACnetConstructedDataObjectName) baCnetPropertyValue.getPropertyValue().getConstructedData()).getObjectName();
+                            BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = ((BACnetConstructedDataObjectName) baCnetPropertyValue.getPropertyValue().getConstructedData()).getObjectName();
                             assertEquals("StockingNAE/N2-1.NAE4-N2A-DX1.OA-T", baCnetApplicationTagCharacterString.getValue());
                         }
                         {
@@ -1230,7 +1230,7 @@ public class RandomPackagesTest {
                         {
                             BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(9);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetPropertyValue.getPropertyIdentifier().getValue());
-                            BACnetVendorIdTagged vendorId = (BACnetVendorIdTagged) ((BACnetConstructedDataVendorIdentifier) baCnetPropertyValue.getPropertyValue().getConstructedData()).getVendorIdentifier();
+                            BACnetVendorIdTagged vendorId = ((BACnetConstructedDataVendorIdentifier) baCnetPropertyValue.getPropertyValue().getConstructedData()).getVendorIdentifier();
                             assertEquals(BACnetVendorId.JOHNSON_CONTROLS_INC, vendorId.getValue());
                         }
                     }
@@ -3377,25 +3377,22 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
             skip(225, "strange siemens package"),
+            skip(278, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(291, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
+            skip(363, SkipInstruction.SkipType.SKIP_COMPARE, "extra bytes at the end which are undefined"),
+            skip(448, SkipInstruction.SkipType.SKIP_COMPARE, "extra bytes at the end which are undefined"),
             skip(827, "This request the results in a error response as it sends wrong data"),
             skip(828, "This request the results in a error response as it sends wrong data"),
             skip(865, "This request the results in a error response as it sends wrong data"),
             skip(866, "This request the results in a error response as it sends wrong data"),
             skip(875, "This request the results in a error response as it sends wrong data"),
             skip(876, "This request the results in a error response as it sends wrong data"),
-            //TODO: investigate those
-            skip(278, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(291, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(363, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(448, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(1575, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(2327, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
+            skip(1575, SkipInstruction.SkipType.SKIP_COMPARE, "extra bytes at the end which are undefined"),
+            skip(2327, SkipInstruction.SkipType.SKIP_COMPARE, "Broken utf-8... 0xae should be 0xc2ae"),
             skip(2329, "strange siemens package"),
             skip(2345, "strange siemens package"),
-            //TODO: investigate those
-            skip(2586, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(2626, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
-
+            skip(2586, SkipInstruction.SkipType.SKIP_COMPARE, "extra bytes at the end which are undefined"),
+            skip(2626, SkipInstruction.SkipType.SKIP_COMPARE, "extra bytes at the end which are undefined")
         ));
     }
 
@@ -3423,28 +3420,14 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-delta-2")
     Collection<DynamicNode> plugfest_delta_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap", BACNET_BPF_FILTER_UDP);
-        // TODO: fixme analyze what is wrong in those
-        SkipInstruction[] whatIsWrongHere = IntStream.rangeClosed(990, 19567)
-            .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme analyze what is wrong in those"))
-            .toArray(SkipInstruction[]::new);
-        return List.of(pcapEvaluator.parseEmAll(
-            ArrayUtils.addAll(whatIsWrongHere
-            )
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-delta-2b")
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER_UDP);
-        // TODO: fixme analyze what is wrong in those
-        SkipInstruction[] whatIsWrongHere = IntStream.rangeClosed(150, 11831)
-            .mapToObj(i -> skip(i, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme analyze what is wrong in those"))
-            .toArray(SkipInstruction[]::new);
-        return List.of(pcapEvaluator.parseEmAll(
-            ArrayUtils.addAll(whatIsWrongHere
-            )
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -3452,25 +3435,24 @@ public class RandomPackagesTest {
     Collection<DynamicNode> plugfest_tridium_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            //TODO: investigate those
-            skip(13, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(15, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(391, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(393, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(423, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(425, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(438, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(440, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(489, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(495, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(828, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(830, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(945, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(947, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(1084, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(1086, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(3405, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(3407, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
+            skip(13, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(15, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(391, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(393, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(423, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(425, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(438, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(440, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(489, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(495, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(828, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(830, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(945, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(947, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(1084, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(1086, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(3405, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(3407, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252")
         ));
     }
 
@@ -3479,57 +3461,56 @@ public class RandomPackagesTest {
     Collection<DynamicNode> plugfest_tridium_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            //TODO: investigate those
-            skip(60, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(62, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(82, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(84, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(103, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(105, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(156, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(158, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(170, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(172, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(184, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(186, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(205, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(207, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(227, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(229, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(245, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(251, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(270, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(272, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(302, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(304, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(319, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(325, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(366, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(368, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(386, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(388, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(410, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(412, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(430, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(434, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(440, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(444, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(460, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(462, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(487, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(489, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(511, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(513, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(527, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(533, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(551, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(553, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(574, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(576, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(597, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(599, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(620, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate"),
-            skip(622, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: investigate")
+            skip(60, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(62, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(82, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(84, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(103, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(105, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(156, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(158, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(170, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(172, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(184, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(186, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(205, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(207, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(227, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(229, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(245, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(251, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(270, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(272, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(302, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(304, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(319, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(325, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(366, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(368, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(386, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(388, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(410, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(412, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(430, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(434, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(440, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(444, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(460, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(462, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(487, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(489, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(511, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(513, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(527, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(533, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(551, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(553, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(574, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(576, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(597, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(599, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(620, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252"),
+            skip(622, SkipInstruction.SkipType.SKIP_COMPARE, "no utf-8, the encoding is just Cp1252")
 
         ));
     }
@@ -3539,8 +3520,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> polarsoft_free_range_router_init_routing_table() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router-init-routing-table.cap");
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fix me, don't know whats wrong
-            skip(2, SkipInstruction.SkipType.SKIP_COMPARE, "fix me, don't know whats wrong")
+            skip(2, SkipInstruction.SkipType.SKIP_COMPARE, "we can't reserialize because of unknown service")
         ));
     }
 
@@ -3549,8 +3529,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> polarsoft_free_range_router() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fix me, don't know whats wrong
-            skip(6155, SkipInstruction.SkipType.SKIP_COMPARE, "fix me, don't know whats wrong")
+            skip(6155, SkipInstruction.SkipType.SKIP_COMPARE, "we can't reserialize because of unknown service")
         ));
     }
 
@@ -5512,17 +5491,7 @@ public class RandomPackagesTest {
     @DisplayName("synergy-broken-rpm")
     Collection<DynamicNode> synergy_broken_rpm() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("synergy-broken-rpm.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fixme: apparently we omit one byte
-            skip(46, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
-            skip(47, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
-            skip(48, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
-            skip(50, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
-            skip(51, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
-            skip(52, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
-            skip(53, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte"),
-            skip(54, SkipInstruction.SkipType.SKIP_COMPARE, "TODO: fixme: apparently we omit one byte")
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -5568,8 +5537,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> who_has_I_have() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fixme
-            skip(1, "todo investigate")
+            skip(1, SkipInstruction.SkipType.SKIP_COMPARE, "who is has some broken bytes")
         ));
     }
 
@@ -5795,7 +5763,7 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp-weekly-schedule-test.cap");
         return List.of(pcapEvaluator.parseEmAll(
             // TODO: fixme
-            skip(17, SkipInstruction.SkipType.SKIP_COMPARE, "fixme don't know whats wrong")
+            skip(17, SkipInstruction.SkipType.SKIP_COMPARE, "something is broken with the pcap reader as a ff is randomly missing")
         ));
     }
 
@@ -5910,7 +5878,7 @@ public class RandomPackagesTest {
         }
 
         public DynamicContainer parseRange(int startPackageNumber, int endPackageNumber, SkipInstruction... skipInstructions) {
-            Map<Integer, SkipInstruction> skipInstructionMap = Arrays.stream(skipInstructions).collect(Collectors.toMap(SkipInstruction::getPackageNumber, v -> v, (s1, s2) -> s1.skipType.ordinal() < s1.skipType.ordinal() ? s1 : s2));
+            Map<Integer, SkipInstruction> skipInstructionMap = Arrays.stream(skipInstructions).collect(Collectors.toMap(SkipInstruction::getPackageNumber, v -> v, (s1, s2) -> s1.skipType.ordinal() < s2.skipType.ordinal() ? s1 : s2));
             Set<Integer> numbersToSkip = Arrays.stream(skipInstructions).filter(SkipInstruction::shouldSkipAll).map(SkipInstruction::getPackageNumber).collect(Collectors.toSet());
             // This means we requested to skip no test number
             boolean hasNoSkipping = numbersToSkip.size() <= 0;
@@ -5935,7 +5903,10 @@ public class RandomPackagesTest {
                                 if (!skipInstruction.shouldParse()) {
                                     throw new TestAbortedException(skipInstruction.toString());
                                 }
-                                BVLC bvlc = nextBVLC(skipInstruction);
+                                if (packageNumber <= currentPackageNumber) {
+                                    throw new TestAbortedException("Apparently we read that package before");
+                                }
+                                BVLC bvlc = nextBVLC(packageNumber, skipInstruction);
                                 LOGGER.info("Test number {} is package number {}", i, currentPackageNumber);
                                 assumeTrue(bvlc != null, "No more package left");
                                 dump(bvlc);
@@ -6046,7 +6017,7 @@ public class RandomPackagesTest {
             }
             if (ensurePackageNumber != null) {
                 if (ensurePackageNumber < 0) {
-                    throw new IllegalArgumentException("Seached package number must be > 0");
+                    throw new IllegalArgumentException("Searched package number must be > 0");
                 }
                 // we ensure we find the searched package
                 while (currentPackageNumber < ensurePackageNumber) {
