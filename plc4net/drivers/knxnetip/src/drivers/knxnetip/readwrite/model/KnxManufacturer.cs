@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -615,8 +615,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_STEC = 588,
         M_ARIGO_SOFTWARE_GMBH = 589,
         M_FEISHELEC = 590,
-        M_ABB___RESERVED = 591,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 592,
+        M_GORDIC = 591,
+        M_ABB___RESERVED = 592,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 593,
     }
 
     public static class KnxManufacturerInfo
@@ -2267,10 +2268,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_FEISHELEC: { /* '590' */
                     return 648;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '591' */
+                case KnxManufacturer.M_GORDIC: { /* '591' */
+                    return 649;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '592' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '592' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '593' */
                     return 43959;
                 }
                 case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO: { /* '6' */
@@ -4056,10 +4060,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_FEISHELEC: { /* '590' */
                     return "Feishelec";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '591' */
+                case KnxManufacturer.M_GORDIC: { /* '591' */
+                    return "GORDIC";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '592' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '592' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '593' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO: { /* '6' */
