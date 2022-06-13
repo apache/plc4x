@@ -365,8 +365,11 @@
 ]
 
 [type VariableIntegerType
+    // A default vint will be being backed by a 32 bit property
     [simple vint  variableLengthInt                                              ]
+    // A default vuint will be being backed by a 32 bit property
     [simple vuint variableLengthUnsignedInt                                      ]
+    // We can override the property size, by specifying the bit size in an attribute
     [simple vint  variableLengthIntWithNonDefaultProperty propertySizeInBits='8' ]
     [simple vuint variableLengthUnsignedInt               propertySizeInBits='16']
 ]
