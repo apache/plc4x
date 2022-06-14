@@ -41,6 +41,8 @@ type IBACnetConstructedDataSegmentationSupported interface {
 	IBACnetConstructedData
 	// GetSegmentationSupported returns SegmentationSupported (property field)
 	GetSegmentationSupported() *BACnetSegmentationTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetSegmentationTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSegmentationSupported) GetSegmentationSupported() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSegmentationSupported) GetActualValue() *BACnetSegmentationTagged {
+	return CastBACnetSegmentationTagged(m.GetSegmentationSupported())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSegmentationSupported factory function for BACnetConstructedDataSegmentationSupported
 func NewBACnetConstructedDataSegmentationSupported(segmentationSupported *BACnetSegmentationTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSegmentationSupported {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSegmentationSupported) GetLengthInBitsConditional(
 	// Simple field (segmentationSupported)
 	lengthInBits += m.SegmentationSupported.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for segmentationSupported")
 	}
+
+	// Virtual field
+	_actualValue := segmentationSupported
+	actualValue := CastBACnetSegmentationTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSegmentationSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSegmentationSupported")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSegmentationSupported) Serialize(writeBuffer utils
 		}
 		if _segmentationSupportedErr != nil {
 			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSegmentationSupported"); popErr != nil {

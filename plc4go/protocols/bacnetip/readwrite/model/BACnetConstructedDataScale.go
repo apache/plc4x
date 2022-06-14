@@ -41,6 +41,8 @@ type IBACnetConstructedDataScale interface {
 	IBACnetConstructedData
 	// GetScale returns Scale (property field)
 	GetScale() *BACnetScale
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetScale
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataScale) GetScale() *BACnetScale {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataScale) GetActualValue() *BACnetScale {
+	return CastBACnetScale(m.GetScale())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataScale factory function for BACnetConstructedDataScale
 func NewBACnetConstructedDataScale(scale *BACnetScale, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataScale {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataScale) GetLengthInBitsConditional(lastItem bool) u
 	// Simple field (scale)
 	lengthInBits += m.Scale.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataScaleParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if closeErr := readBuffer.CloseContext("scale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for scale")
 	}
+
+	// Virtual field
+	_actualValue := scale
+	actualValue := CastBACnetScale(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScale")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataScale) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		if _scaleErr != nil {
 			return errors.Wrap(_scaleErr, "Error serializing 'scale' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataScale"); popErr != nil {

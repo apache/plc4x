@@ -41,6 +41,8 @@ type IBACnetConstructedDataCommand interface {
 	IBACnetConstructedData
 	// GetCommand returns Command (property field)
 	GetCommand() *BACnetNetworkPortCommandTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetNetworkPortCommandTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCommand) GetCommand() *BACnetNetworkPortCommandTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCommand) GetActualValue() *BACnetNetworkPortCommandTagged {
+	return CastBACnetNetworkPortCommandTagged(m.GetCommand())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCommand factory function for BACnetConstructedDataCommand
 func NewBACnetConstructedDataCommand(command *BACnetNetworkPortCommandTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCommand {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCommand) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (command)
 	lengthInBits += m.Command.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCommandParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
+
+	// Virtual field
+	_actualValue := command
+	actualValue := CastBACnetNetworkPortCommandTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCommand")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCommand) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _commandErr != nil {
 			return errors.Wrap(_commandErr, "Error serializing 'command' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCommand"); popErr != nil {

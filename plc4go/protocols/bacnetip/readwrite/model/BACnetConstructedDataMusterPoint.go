@@ -41,6 +41,8 @@ type IBACnetConstructedDataMusterPoint interface {
 	IBACnetConstructedData
 	// GetMusterPoint returns MusterPoint (property field)
 	GetMusterPoint() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMusterPoint) GetMusterPoint() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMusterPoint) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetMusterPoint())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMusterPoint factory function for BACnetConstructedDataMusterPoint
 func NewBACnetConstructedDataMusterPoint(musterPoint *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMusterPoint {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMusterPoint) GetLengthInBitsConditional(lastItem b
 	// Simple field (musterPoint)
 	lengthInBits += m.MusterPoint.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMusterPointParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("musterPoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for musterPoint")
 	}
+
+	// Virtual field
+	_actualValue := musterPoint
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMusterPoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMusterPoint")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMusterPoint) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _musterPointErr != nil {
 			return errors.Wrap(_musterPointErr, "Error serializing 'musterPoint' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMusterPoint"); popErr != nil {

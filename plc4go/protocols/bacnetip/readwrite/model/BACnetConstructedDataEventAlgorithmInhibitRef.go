@@ -41,6 +41,8 @@ type IBACnetConstructedDataEventAlgorithmInhibitRef interface {
 	IBACnetConstructedData
 	// GetEventAlgorithmInhibitRef returns EventAlgorithmInhibitRef (property field)
 	GetEventAlgorithmInhibitRef() *BACnetObjectPropertyReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetObjectPropertyReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEventAlgorithmInhibitRef) GetEventAlgorithmInhibit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEventAlgorithmInhibitRef) GetActualValue() *BACnetObjectPropertyReference {
+	return CastBACnetObjectPropertyReference(m.GetEventAlgorithmInhibitRef())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for BACnetConstructedDataEventAlgorithmInhibitRef
 func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef *BACnetObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventAlgorithmInhibitRef {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEventAlgorithmInhibitRef) GetLengthInBitsCondition
 	// Simple field (eventAlgorithmInhibitRef)
 	lengthInBits += m.EventAlgorithmInhibitRef.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParse(readBuffer utils.ReadBuf
 	if closeErr := readBuffer.CloseContext("eventAlgorithmInhibitRef"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for eventAlgorithmInhibitRef")
 	}
+
+	// Virtual field
+	_actualValue := eventAlgorithmInhibitRef
+	actualValue := CastBACnetObjectPropertyReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventAlgorithmInhibitRef"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventAlgorithmInhibitRef")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEventAlgorithmInhibitRef) Serialize(writeBuffer ut
 		}
 		if _eventAlgorithmInhibitRefErr != nil {
 			return errors.Wrap(_eventAlgorithmInhibitRefErr, "Error serializing 'eventAlgorithmInhibitRef' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventAlgorithmInhibitRef"); popErr != nil {

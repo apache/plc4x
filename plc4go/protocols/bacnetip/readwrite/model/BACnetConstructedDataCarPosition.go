@@ -41,6 +41,8 @@ type IBACnetConstructedDataCarPosition interface {
 	IBACnetConstructedData
 	// GetCarPosition returns CarPosition (property field)
 	GetCarPosition() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCarPosition) GetCarPosition() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCarPosition) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetCarPosition())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarPosition factory function for BACnetConstructedDataCarPosition
 func NewBACnetConstructedDataCarPosition(carPosition *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarPosition {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCarPosition) GetLengthInBitsConditional(lastItem b
 	// Simple field (carPosition)
 	lengthInBits += m.CarPosition.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCarPositionParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("carPosition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for carPosition")
 	}
+
+	// Virtual field
+	_actualValue := carPosition
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarPosition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarPosition")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCarPosition) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _carPositionErr != nil {
 			return errors.Wrap(_carPositionErr, "Error serializing 'carPosition' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarPosition"); popErr != nil {

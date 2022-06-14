@@ -41,6 +41,8 @@ type IBACnetConstructedDataUserExternalIdentifier interface {
 	IBACnetConstructedData
 	// GetUserExternalIdentifier returns UserExternalIdentifier (property field)
 	GetUserExternalIdentifier() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataUserExternalIdentifier) GetUserExternalIdentifier(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataUserExternalIdentifier) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetUserExternalIdentifier())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUserExternalIdentifier factory function for BACnetConstructedDataUserExternalIdentifier
 func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUserExternalIdentifier {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataUserExternalIdentifier) GetLengthInBitsConditional
 	// Simple field (userExternalIdentifier)
 	lengthInBits += m.UserExternalIdentifier.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataUserExternalIdentifierParse(readBuffer utils.ReadBuffe
 	if closeErr := readBuffer.CloseContext("userExternalIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for userExternalIdentifier")
 	}
+
+	// Virtual field
+	_actualValue := userExternalIdentifier
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserExternalIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserExternalIdentifier")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataUserExternalIdentifier) Serialize(writeBuffer util
 		}
 		if _userExternalIdentifierErr != nil {
 			return errors.Wrap(_userExternalIdentifierErr, "Error serializing 'userExternalIdentifier' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUserExternalIdentifier"); popErr != nil {

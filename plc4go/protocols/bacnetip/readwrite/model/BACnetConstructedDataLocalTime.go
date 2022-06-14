@@ -41,6 +41,8 @@ type IBACnetConstructedDataLocalTime interface {
 	IBACnetConstructedData
 	// GetLocalTime returns LocalTime (property field)
 	GetLocalTime() *BACnetApplicationTagTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLocalTime) GetLocalTime() *BACnetApplicationTagTim
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLocalTime) GetActualValue() *BACnetApplicationTagTime {
+	return CastBACnetApplicationTagTime(m.GetLocalTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLocalTime factory function for BACnetConstructedDataLocalTime
 func NewBACnetConstructedDataLocalTime(localTime *BACnetApplicationTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLocalTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLocalTime) GetLengthInBitsConditional(lastItem boo
 	// Simple field (localTime)
 	lengthInBits += m.LocalTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLocalTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("localTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for localTime")
 	}
+
+	// Virtual field
+	_actualValue := localTime
+	actualValue := CastBACnetApplicationTagTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocalTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLocalTime) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _localTimeErr != nil {
 			return errors.Wrap(_localTimeErr, "Error serializing 'localTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLocalTime"); popErr != nil {

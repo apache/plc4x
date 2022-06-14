@@ -51,9 +51,9 @@ Warsaw | He started working with Apache Software Foundation projects in 2007 - a
 
 | *Sebastian Rühl*
 
-IoT Consultant
+Software Developer
 
-codecentric AG
+Mapped
 
 Frankfurt |Software engineer, member of the PMC of PLC4X| a| image::team/sruehl.jpg[sruehl, 240, 320]
 | *Tim Mitsch*

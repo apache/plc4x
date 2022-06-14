@@ -41,6 +41,8 @@ type IBACnetConstructedDataMultiStateOutputInterfaceValue interface {
 	IBACnetConstructedData
 	// GetInterfaceValue returns InterfaceValue (property field)
 	GetInterfaceValue() *BACnetOptionalBinaryPV
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetOptionalBinaryPV
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMultiStateOutputInterfaceValue) GetInterfaceValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMultiStateOutputInterfaceValue) GetActualValue() *BACnetOptionalBinaryPV {
+	return CastBACnetOptionalBinaryPV(m.GetInterfaceValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMultiStateOutputInterfaceValue factory function for BACnetConstructedDataMultiStateOutputInterfaceValue
 func NewBACnetConstructedDataMultiStateOutputInterfaceValue(interfaceValue *BACnetOptionalBinaryPV, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMultiStateOutputInterfaceValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMultiStateOutputInterfaceValue) GetLengthInBitsCon
 	// Simple field (interfaceValue)
 	lengthInBits += m.InterfaceValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMultiStateOutputInterfaceValueParse(readBuffer utils.R
 	if closeErr := readBuffer.CloseContext("interfaceValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for interfaceValue")
 	}
+
+	// Virtual field
+	_actualValue := interfaceValue
+	actualValue := CastBACnetOptionalBinaryPV(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateOutputInterfaceValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMultiStateOutputInterfaceValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMultiStateOutputInterfaceValue) Serialize(writeBuf
 		}
 		if _interfaceValueErr != nil {
 			return errors.Wrap(_interfaceValueErr, "Error serializing 'interfaceValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMultiStateOutputInterfaceValue"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataProtocolLevel interface {
 	IBACnetConstructedData
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() *BACnetProtocolLevelTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetProtocolLevelTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProtocolLevel) GetProtocolLevel() *BACnetProtocolL
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProtocolLevel) GetActualValue() *BACnetProtocolLevelTagged {
+	return CastBACnetProtocolLevelTagged(m.GetProtocolLevel())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolLevel factory function for BACnetConstructedDataProtocolLevel
 func NewBACnetConstructedDataProtocolLevel(protocolLevel *BACnetProtocolLevelTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProtocolLevel {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProtocolLevel) GetLengthInBitsConditional(lastItem
 	// Simple field (protocolLevel)
 	lengthInBits += m.ProtocolLevel.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProtocolLevelParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("protocolLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for protocolLevel")
 	}
+
+	// Virtual field
+	_actualValue := protocolLevel
+	actualValue := CastBACnetProtocolLevelTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolLevel")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProtocolLevel) Serialize(writeBuffer utils.WriteBu
 		}
 		if _protocolLevelErr != nil {
 			return errors.Wrap(_protocolLevelErr, "Error serializing 'protocolLevel' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolLevel"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataDefaultStepIncrement interface {
 	IBACnetConstructedData
 	// GetDefaultStepIncrement returns DefaultStepIncrement (property field)
 	GetDefaultStepIncrement() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDefaultStepIncrement) GetDefaultStepIncrement() *B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDefaultStepIncrement) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetDefaultStepIncrement())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultStepIncrement factory function for BACnetConstructedDataDefaultStepIncrement
 func NewBACnetConstructedDataDefaultStepIncrement(defaultStepIncrement *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultStepIncrement {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDefaultStepIncrement) GetLengthInBitsConditional(l
 	// Simple field (defaultStepIncrement)
 	lengthInBits += m.DefaultStepIncrement.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 	if closeErr := readBuffer.CloseContext("defaultStepIncrement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for defaultStepIncrement")
 	}
+
+	// Virtual field
+	_actualValue := defaultStepIncrement
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultStepIncrement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultStepIncrement")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDefaultStepIncrement) Serialize(writeBuffer utils.
 		}
 		if _defaultStepIncrementErr != nil {
 			return errors.Wrap(_defaultStepIncrementErr, "Error serializing 'defaultStepIncrement' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultStepIncrement"); popErr != nil {

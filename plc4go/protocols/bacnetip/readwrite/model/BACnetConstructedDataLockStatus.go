@@ -41,6 +41,8 @@ type IBACnetConstructedDataLockStatus interface {
 	IBACnetConstructedData
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() *BACnetLockStatusTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLockStatusTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLockStatus) GetLockStatus() *BACnetLockStatusTagge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLockStatus) GetActualValue() *BACnetLockStatusTagged {
+	return CastBACnetLockStatusTagged(m.GetLockStatus())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLockStatus factory function for BACnetConstructedDataLockStatus
 func NewBACnetConstructedDataLockStatus(lockStatus *BACnetLockStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLockStatus {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLockStatus) GetLengthInBitsConditional(lastItem bo
 	// Simple field (lockStatus)
 	lengthInBits += m.LockStatus.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("lockStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lockStatus")
 	}
+
+	// Virtual field
+	_actualValue := lockStatus
+	actualValue := CastBACnetLockStatusTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLockStatus")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLockStatus) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _lockStatusErr != nil {
 			return errors.Wrap(_lockStatusErr, "Error serializing 'lockStatus' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLockStatus"); popErr != nil {

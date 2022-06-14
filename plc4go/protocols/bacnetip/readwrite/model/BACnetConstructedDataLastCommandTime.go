@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastCommandTime interface {
 	IBACnetConstructedData
 	// GetLastCommandTime returns LastCommandTime (property field)
 	GetLastCommandTime() *BACnetTimeStamp
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetTimeStamp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastCommandTime) GetLastCommandTime() *BACnetTimeS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastCommandTime) GetActualValue() *BACnetTimeStamp {
+	return CastBACnetTimeStamp(m.GetLastCommandTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastCommandTime factory function for BACnetConstructedDataLastCommandTime
 func NewBACnetConstructedDataLastCommandTime(lastCommandTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastCommandTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastCommandTime) GetLengthInBitsConditional(lastIt
 	// Simple field (lastCommandTime)
 	lengthInBits += m.LastCommandTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastCommandTimeParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("lastCommandTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastCommandTime")
 	}
+
+	// Virtual field
+	_actualValue := lastCommandTime
+	actualValue := CastBACnetTimeStamp(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCommandTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCommandTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastCommandTime) Serialize(writeBuffer utils.Write
 		}
 		if _lastCommandTimeErr != nil {
 			return errors.Wrap(_lastCommandTimeErr, "Error serializing 'lastCommandTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastCommandTime"); popErr != nil {

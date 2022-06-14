@@ -41,6 +41,8 @@ type IBACnetConstructedDataGlobalIdentifier interface {
 	IBACnetConstructedData
 	// GetGlobalIdentifier returns GlobalIdentifier (property field)
 	GetGlobalIdentifier() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataGlobalIdentifier) GetGlobalIdentifier() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataGlobalIdentifier) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetGlobalIdentifier())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGlobalIdentifier factory function for BACnetConstructedDataGlobalIdentifier
 func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataGlobalIdentifier {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataGlobalIdentifier) GetLengthInBitsConditional(lastI
 	// Simple field (globalIdentifier)
 	lengthInBits += m.GlobalIdentifier.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataGlobalIdentifierParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("globalIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for globalIdentifier")
 	}
+
+	// Virtual field
+	_actualValue := globalIdentifier
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGlobalIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGlobalIdentifier")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataGlobalIdentifier) Serialize(writeBuffer utils.Writ
 		}
 		if _globalIdentifierErr != nil {
 			return errors.Wrap(_globalIdentifierErr, "Error serializing 'globalIdentifier' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGlobalIdentifier"); popErr != nil {

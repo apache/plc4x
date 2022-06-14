@@ -41,6 +41,8 @@ type IBACnetConstructedDataLockout interface {
 	IBACnetConstructedData
 	// GetLockout returns Lockout (property field)
 	GetLockout() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLockout) GetLockout() *BACnetApplicationTagBoolean
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLockout) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetLockout())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLockout factory function for BACnetConstructedDataLockout
 func NewBACnetConstructedDataLockout(lockout *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLockout {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLockout) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (lockout)
 	lengthInBits += m.Lockout.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLockoutParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("lockout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lockout")
 	}
+
+	// Virtual field
+	_actualValue := lockout
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLockout")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLockout) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _lockoutErr != nil {
 			return errors.Wrap(_lockoutErr, "Error serializing 'lockout' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLockout"); popErr != nil {

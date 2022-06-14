@@ -41,6 +41,8 @@ type IBACnetConstructedDataOutOfService interface {
 	IBACnetConstructedData
 	// GetOutOfService returns OutOfService (property field)
 	GetOutOfService() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataOutOfService) GetOutOfService() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataOutOfService) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetOutOfService())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOutOfService factory function for BACnetConstructedDataOutOfService
 func NewBACnetConstructedDataOutOfService(outOfService *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOutOfService {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataOutOfService) GetLengthInBitsConditional(lastItem 
 	// Simple field (outOfService)
 	lengthInBits += m.OutOfService.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("outOfService"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for outOfService")
 	}
+
+	// Virtual field
+	_actualValue := outOfService
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOutOfService"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOutOfService")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataOutOfService) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _outOfServiceErr != nil {
 			return errors.Wrap(_outOfServiceErr, "Error serializing 'outOfService' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOutOfService"); popErr != nil {

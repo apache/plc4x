@@ -41,6 +41,8 @@ type IBACnetConstructedDataEventState interface {
 	IBACnetConstructedData
 	// GetEventState returns EventState (property field)
 	GetEventState() *BACnetEventStateTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEventStateTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEventState) GetEventState() *BACnetEventStateTagge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEventState) GetActualValue() *BACnetEventStateTagged {
+	return CastBACnetEventStateTagged(m.GetEventState())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventState factory function for BACnetConstructedDataEventState
 func NewBACnetConstructedDataEventState(eventState *BACnetEventStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventState {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEventState) GetLengthInBitsConditional(lastItem bo
 	// Simple field (eventState)
 	lengthInBits += m.EventState.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEventStateParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for eventState")
 	}
+
+	// Virtual field
+	_actualValue := eventState
+	actualValue := CastBACnetEventStateTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventState")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEventState) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _eventStateErr != nil {
 			return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventState"); popErr != nil {

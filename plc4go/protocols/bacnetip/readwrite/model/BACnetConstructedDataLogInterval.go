@@ -41,6 +41,8 @@ type IBACnetConstructedDataLogInterval interface {
 	IBACnetConstructedData
 	// GetLogInterval returns LogInterval (property field)
 	GetLogInterval() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLogInterval) GetLogInterval() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLogInterval) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetLogInterval())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLogInterval factory function for BACnetConstructedDataLogInterval
 func NewBACnetConstructedDataLogInterval(logInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLogInterval {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLogInterval) GetLengthInBitsConditional(lastItem b
 	// Simple field (logInterval)
 	lengthInBits += m.LogInterval.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("logInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for logInterval")
 	}
+
+	// Virtual field
+	_actualValue := logInterval
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLogInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLogInterval")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLogInterval) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _logIntervalErr != nil {
 			return errors.Wrap(_logIntervalErr, "Error serializing 'logInterval' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLogInterval"); popErr != nil {

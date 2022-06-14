@@ -41,6 +41,8 @@ type IBACnetConstructedDataDescriptionOfHalt interface {
 	IBACnetConstructedData
 	// GetDescriptionForHalt returns DescriptionForHalt (property field)
 	GetDescriptionForHalt() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDescriptionOfHalt) GetDescriptionForHalt() *BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDescriptionOfHalt) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetDescriptionForHalt())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDescriptionOfHalt factory function for BACnetConstructedDataDescriptionOfHalt
 func NewBACnetConstructedDataDescriptionOfHalt(descriptionForHalt *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDescriptionOfHalt {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDescriptionOfHalt) GetLengthInBitsConditional(last
 	// Simple field (descriptionForHalt)
 	lengthInBits += m.DescriptionForHalt.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDescriptionOfHaltParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("descriptionForHalt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for descriptionForHalt")
 	}
+
+	// Virtual field
+	_actualValue := descriptionForHalt
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDescriptionOfHalt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDescriptionOfHalt")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDescriptionOfHalt) Serialize(writeBuffer utils.Wri
 		}
 		if _descriptionForHaltErr != nil {
 			return errors.Wrap(_descriptionForHaltErr, "Error serializing 'descriptionForHalt' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDescriptionOfHalt"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataAPDUSegmentTimeout interface {
 	IBACnetConstructedData
 	// GetApduSegmentTimeout returns ApduSegmentTimeout (property field)
 	GetApduSegmentTimeout() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) GetApduSegmentTimeout() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAPDUSegmentTimeout) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetApduSegmentTimeout())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAPDUSegmentTimeout factory function for BACnetConstructedDataAPDUSegmentTimeout
 func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAPDUSegmentTimeout {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) GetLengthInBitsConditional(las
 	// Simple field (apduSegmentTimeout)
 	lengthInBits += m.ApduSegmentTimeout.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("apduSegmentTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for apduSegmentTimeout")
 	}
+
+	// Virtual field
+	_actualValue := apduSegmentTimeout
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDUSegmentTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAPDUSegmentTimeout")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAPDUSegmentTimeout) Serialize(writeBuffer utils.Wr
 		}
 		if _apduSegmentTimeoutErr != nil {
 			return errors.Wrap(_apduSegmentTimeoutErr, "Error serializing 'apduSegmentTimeout' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAPDUSegmentTimeout"); popErr != nil {

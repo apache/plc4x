@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPv6ZoneIndex interface {
 	IBACnetConstructedData
 	// GetIpv6ZoneIndex returns Ipv6ZoneIndex (property field)
 	GetIpv6ZoneIndex() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPv6ZoneIndex) GetIpv6ZoneIndex() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPv6ZoneIndex) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetIpv6ZoneIndex())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6ZoneIndex factory function for BACnetConstructedDataIPv6ZoneIndex
 func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6ZoneIndex {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPv6ZoneIndex) GetLengthInBitsConditional(lastItem
 	// Simple field (ipv6ZoneIndex)
 	lengthInBits += m.Ipv6ZoneIndex.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("ipv6ZoneIndex"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipv6ZoneIndex")
 	}
+
+	// Virtual field
+	_actualValue := ipv6ZoneIndex
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6ZoneIndex"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6ZoneIndex")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPv6ZoneIndex) Serialize(writeBuffer utils.WriteBu
 		}
 		if _ipv6ZoneIndexErr != nil {
 			return errors.Wrap(_ipv6ZoneIndexErr, "Error serializing 'ipv6ZoneIndex' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6ZoneIndex"); popErr != nil {

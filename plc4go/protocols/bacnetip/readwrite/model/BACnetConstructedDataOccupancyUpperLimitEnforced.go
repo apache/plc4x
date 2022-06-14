@@ -41,6 +41,8 @@ type IBACnetConstructedDataOccupancyUpperLimitEnforced interface {
 	IBACnetConstructedData
 	// GetOccupancyUpperLimitEnforced returns OccupancyUpperLimitEnforced (property field)
 	GetOccupancyUpperLimitEnforced() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) GetOccupancyUpperLimi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetOccupancyUpperLimitEnforced())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyUpperLimitEnforced factory function for BACnetConstructedDataOccupancyUpperLimitEnforced
 func NewBACnetConstructedDataOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOccupancyUpperLimitEnforced {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) GetLengthInBitsCondit
 	// Simple field (occupancyUpperLimitEnforced)
 	lengthInBits += m.OccupancyUpperLimitEnforced.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer utils.Read
 	if closeErr := readBuffer.CloseContext("occupancyUpperLimitEnforced"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for occupancyUpperLimitEnforced")
 	}
+
+	// Virtual field
+	_actualValue := occupancyUpperLimitEnforced
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyUpperLimitEnforced")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataOccupancyUpperLimitEnforced) Serialize(writeBuffer
 		}
 		if _occupancyUpperLimitEnforcedErr != nil {
 			return errors.Wrap(_occupancyUpperLimitEnforcedErr, "Error serializing 'occupancyUpperLimitEnforced' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); popErr != nil {

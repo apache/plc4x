@@ -41,6 +41,8 @@ type IBACnetConstructedDataInactiveText interface {
 	IBACnetConstructedData
 	// GetInactiveText returns InactiveText (property field)
 	GetInactiveText() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataInactiveText) GetInactiveText() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataInactiveText) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetInactiveText())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInactiveText factory function for BACnetConstructedDataInactiveText
 func NewBACnetConstructedDataInactiveText(inactiveText *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataInactiveText {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataInactiveText) GetLengthInBitsConditional(lastItem 
 	// Simple field (inactiveText)
 	lengthInBits += m.InactiveText.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataInactiveTextParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("inactiveText"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for inactiveText")
 	}
+
+	// Virtual field
+	_actualValue := inactiveText
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInactiveText"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInactiveText")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataInactiveText) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _inactiveTextErr != nil {
 			return errors.Wrap(_inactiveTextErr, "Error serializing 'inactiveText' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInactiveText"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataProgramLocation interface {
 	IBACnetConstructedData
 	// GetProgramLocation returns ProgramLocation (property field)
 	GetProgramLocation() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProgramLocation) GetProgramLocation() *BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProgramLocation) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetProgramLocation())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProgramLocation factory function for BACnetConstructedDataProgramLocation
 func NewBACnetConstructedDataProgramLocation(programLocation *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProgramLocation {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProgramLocation) GetLengthInBitsConditional(lastIt
 	// Simple field (programLocation)
 	lengthInBits += m.ProgramLocation.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProgramLocationParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("programLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for programLocation")
 	}
+
+	// Virtual field
+	_actualValue := programLocation
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProgramLocation")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProgramLocation) Serialize(writeBuffer utils.Write
 		}
 		if _programLocationErr != nil {
 			return errors.Wrap(_programLocationErr, "Error serializing 'programLocation' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProgramLocation"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataAttemptedSamples interface {
 	IBACnetConstructedData
 	// GetAttemptedSamples returns AttemptedSamples (property field)
 	GetAttemptedSamples() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAttemptedSamples) GetAttemptedSamples() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAttemptedSamples) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetAttemptedSamples())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAttemptedSamples factory function for BACnetConstructedDataAttemptedSamples
 func NewBACnetConstructedDataAttemptedSamples(attemptedSamples *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAttemptedSamples {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAttemptedSamples) GetLengthInBitsConditional(lastI
 	// Simple field (attemptedSamples)
 	lengthInBits += m.AttemptedSamples.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAttemptedSamplesParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("attemptedSamples"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for attemptedSamples")
 	}
+
+	// Virtual field
+	_actualValue := attemptedSamples
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAttemptedSamples"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAttemptedSamples")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAttemptedSamples) Serialize(writeBuffer utils.Writ
 		}
 		if _attemptedSamplesErr != nil {
 			return errors.Wrap(_attemptedSamplesErr, "Error serializing 'attemptedSamples' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAttemptedSamples"); popErr != nil {

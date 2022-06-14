@@ -41,6 +41,8 @@ type IBACnetConstructedDataLocalForwardingOnly interface {
 	IBACnetConstructedData
 	// GetLocalForwardingOnly returns LocalForwardingOnly (property field)
 	GetLocalForwardingOnly() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLocalForwardingOnly) GetLocalForwardingOnly() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLocalForwardingOnly) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetLocalForwardingOnly())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLocalForwardingOnly factory function for BACnetConstructedDataLocalForwardingOnly
 func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLocalForwardingOnly {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLocalForwardingOnly) GetLengthInBitsConditional(la
 	// Simple field (localForwardingOnly)
 	lengthInBits += m.LocalForwardingOnly.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("localForwardingOnly"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for localForwardingOnly")
 	}
+
+	// Virtual field
+	_actualValue := localForwardingOnly
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalForwardingOnly"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLocalForwardingOnly")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLocalForwardingOnly) Serialize(writeBuffer utils.W
 		}
 		if _localForwardingOnlyErr != nil {
 			return errors.Wrap(_localForwardingOnlyErr, "Error serializing 'localForwardingOnly' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLocalForwardingOnly"); popErr != nil {

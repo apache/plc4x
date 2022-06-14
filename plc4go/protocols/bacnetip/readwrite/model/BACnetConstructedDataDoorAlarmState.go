@@ -41,6 +41,8 @@ type IBACnetConstructedDataDoorAlarmState interface {
 	IBACnetConstructedData
 	// GetDoorAlarmState returns DoorAlarmState (property field)
 	GetDoorAlarmState() *BACnetDoorAlarmStateTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDoorAlarmStateTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDoorAlarmState) GetDoorAlarmState() *BACnetDoorAla
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDoorAlarmState) GetActualValue() *BACnetDoorAlarmStateTagged {
+	return CastBACnetDoorAlarmStateTagged(m.GetDoorAlarmState())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorAlarmState factory function for BACnetConstructedDataDoorAlarmState
 func NewBACnetConstructedDataDoorAlarmState(doorAlarmState *BACnetDoorAlarmStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorAlarmState {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDoorAlarmState) GetLengthInBitsConditional(lastIte
 	// Simple field (doorAlarmState)
 	lengthInBits += m.DoorAlarmState.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDoorAlarmStateParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("doorAlarmState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for doorAlarmState")
 	}
+
+	// Virtual field
+	_actualValue := doorAlarmState
+	actualValue := CastBACnetDoorAlarmStateTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorAlarmState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorAlarmState")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDoorAlarmState) Serialize(writeBuffer utils.WriteB
 		}
 		if _doorAlarmStateErr != nil {
 			return errors.Wrap(_doorAlarmStateErr, "Error serializing 'doorAlarmState' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorAlarmState"); popErr != nil {

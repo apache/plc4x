@@ -41,6 +41,8 @@ type IBACnetConstructedDataProportionalConstant interface {
 	IBACnetConstructedData
 	// GetProportionalConstant returns ProportionalConstant (property field)
 	GetProportionalConstant() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProportionalConstant) GetProportionalConstant() *B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProportionalConstant) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetProportionalConstant())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProportionalConstant factory function for BACnetConstructedDataProportionalConstant
 func NewBACnetConstructedDataProportionalConstant(proportionalConstant *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProportionalConstant {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProportionalConstant) GetLengthInBitsConditional(l
 	// Simple field (proportionalConstant)
 	lengthInBits += m.ProportionalConstant.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer,
 	if closeErr := readBuffer.CloseContext("proportionalConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for proportionalConstant")
 	}
+
+	// Virtual field
+	_actualValue := proportionalConstant
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProportionalConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProportionalConstant")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProportionalConstant) Serialize(writeBuffer utils.
 		}
 		if _proportionalConstantErr != nil {
 			return errors.Wrap(_proportionalConstantErr, "Error serializing 'proportionalConstant' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProportionalConstant"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataUTCOffset interface {
 	IBACnetConstructedData
 	// GetUtcOffset returns UtcOffset (property field)
 	GetUtcOffset() *BACnetApplicationTagSignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagSignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataUTCOffset) GetUtcOffset() *BACnetApplicationTagSig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataUTCOffset) GetActualValue() *BACnetApplicationTagSignedInteger {
+	return CastBACnetApplicationTagSignedInteger(m.GetUtcOffset())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUTCOffset factory function for BACnetConstructedDataUTCOffset
 func NewBACnetConstructedDataUTCOffset(utcOffset *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUTCOffset {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataUTCOffset) GetLengthInBitsConditional(lastItem boo
 	// Simple field (utcOffset)
 	lengthInBits += m.UtcOffset.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("utcOffset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for utcOffset")
 	}
+
+	// Virtual field
+	_actualValue := utcOffset
+	actualValue := CastBACnetApplicationTagSignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUTCOffset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUTCOffset")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataUTCOffset) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _utcOffsetErr != nil {
 			return errors.Wrap(_utcOffsetErr, "Error serializing 'utcOffset' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUTCOffset"); popErr != nil {

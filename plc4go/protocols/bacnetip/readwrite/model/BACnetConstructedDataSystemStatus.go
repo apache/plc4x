@@ -41,6 +41,8 @@ type IBACnetConstructedDataSystemStatus interface {
 	IBACnetConstructedData
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() *BACnetDeviceStatusTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceStatusTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSystemStatus) GetSystemStatus() *BACnetDeviceStatu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSystemStatus) GetActualValue() *BACnetDeviceStatusTagged {
+	return CastBACnetDeviceStatusTagged(m.GetSystemStatus())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSystemStatus factory function for BACnetConstructedDataSystemStatus
 func NewBACnetConstructedDataSystemStatus(systemStatus *BACnetDeviceStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSystemStatus {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSystemStatus) GetLengthInBitsConditional(lastItem 
 	// Simple field (systemStatus)
 	lengthInBits += m.SystemStatus.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSystemStatusParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("systemStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for systemStatus")
 	}
+
+	// Virtual field
+	_actualValue := systemStatus
+	actualValue := CastBACnetDeviceStatusTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSystemStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSystemStatus")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSystemStatus) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _systemStatusErr != nil {
 			return errors.Wrap(_systemStatusErr, "Error serializing 'systemStatus' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSystemStatus"); popErr != nil {

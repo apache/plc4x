@@ -41,6 +41,8 @@ type IBACnetConstructedDataNodeSubtype interface {
 	IBACnetConstructedData
 	// GetNodeSubType returns NodeSubType (property field)
 	GetNodeSubType() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNodeSubtype) GetNodeSubType() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNodeSubtype) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetNodeSubType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNodeSubtype factory function for BACnetConstructedDataNodeSubtype
 func NewBACnetConstructedDataNodeSubtype(nodeSubType *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNodeSubtype {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNodeSubtype) GetLengthInBitsConditional(lastItem b
 	// Simple field (nodeSubType)
 	lengthInBits += m.NodeSubType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNodeSubtypeParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("nodeSubType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for nodeSubType")
 	}
+
+	// Virtual field
+	_actualValue := nodeSubType
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNodeSubtype"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNodeSubtype")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNodeSubtype) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _nodeSubTypeErr != nil {
 			return errors.Wrap(_nodeSubTypeErr, "Error serializing 'nodeSubType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNodeSubtype"); popErr != nil {

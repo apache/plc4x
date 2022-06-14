@@ -41,6 +41,8 @@ type IBACnetConstructedDataZoneFrom interface {
 	IBACnetConstructedData
 	// GetZoneFrom returns ZoneFrom (property field)
 	GetZoneFrom() *BACnetDeviceObjectReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataZoneFrom) GetZoneFrom() *BACnetDeviceObjectReferen
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataZoneFrom) GetActualValue() *BACnetDeviceObjectReference {
+	return CastBACnetDeviceObjectReference(m.GetZoneFrom())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataZoneFrom factory function for BACnetConstructedDataZoneFrom
 func NewBACnetConstructedDataZoneFrom(zoneFrom *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataZoneFrom {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataZoneFrom) GetLengthInBitsConditional(lastItem bool
 	// Simple field (zoneFrom)
 	lengthInBits += m.ZoneFrom.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataZoneFromParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("zoneFrom"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for zoneFrom")
 	}
+
+	// Virtual field
+	_actualValue := zoneFrom
+	actualValue := CastBACnetDeviceObjectReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataZoneFrom"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataZoneFrom")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataZoneFrom) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _zoneFromErr != nil {
 			return errors.Wrap(_zoneFromErr, "Error serializing 'zoneFrom' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataZoneFrom"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataPriorityForWriting interface {
 	IBACnetConstructedData
 	// GetPriorityForWriting returns PriorityForWriting (property field)
 	GetPriorityForWriting() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPriorityForWriting) GetPriorityForWriting() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPriorityForWriting) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetPriorityForWriting())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPriorityForWriting factory function for BACnetConstructedDataPriorityForWriting
 func NewBACnetConstructedDataPriorityForWriting(priorityForWriting *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPriorityForWriting {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPriorityForWriting) GetLengthInBitsConditional(las
 	// Simple field (priorityForWriting)
 	lengthInBits += m.PriorityForWriting.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPriorityForWritingParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("priorityForWriting"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for priorityForWriting")
 	}
+
+	// Virtual field
+	_actualValue := priorityForWriting
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriorityForWriting"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPriorityForWriting")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPriorityForWriting) Serialize(writeBuffer utils.Wr
 		}
 		if _priorityForWritingErr != nil {
 			return errors.Wrap(_priorityForWritingErr, "Error serializing 'priorityForWriting' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPriorityForWriting"); popErr != nil {

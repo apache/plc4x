@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastAccessEvent interface {
 	IBACnetConstructedData
 	// GetLastAccessEvent returns LastAccessEvent (property field)
 	GetLastAccessEvent() *BACnetAccessEventTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAccessEventTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastAccessEvent) GetLastAccessEvent() *BACnetAcces
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastAccessEvent) GetActualValue() *BACnetAccessEventTagged {
+	return CastBACnetAccessEventTagged(m.GetLastAccessEvent())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastAccessEvent factory function for BACnetConstructedDataLastAccessEvent
 func NewBACnetConstructedDataLastAccessEvent(lastAccessEvent *BACnetAccessEventTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastAccessEvent {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastAccessEvent) GetLengthInBitsConditional(lastIt
 	// Simple field (lastAccessEvent)
 	lengthInBits += m.LastAccessEvent.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("lastAccessEvent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastAccessEvent")
 	}
+
+	// Virtual field
+	_actualValue := lastAccessEvent
+	actualValue := CastBACnetAccessEventTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastAccessEvent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastAccessEvent")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastAccessEvent) Serialize(writeBuffer utils.Write
 		}
 		if _lastAccessEventErr != nil {
 			return errors.Wrap(_lastAccessEventErr, "Error serializing 'lastAccessEvent' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastAccessEvent"); popErr != nil {

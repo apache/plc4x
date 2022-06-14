@@ -41,6 +41,8 @@ type IBACnetConstructedDataLinkSpeedAutonegotiate interface {
 	IBACnetConstructedData
 	// GetLinkSpeedAutonegotiate returns LinkSpeedAutonegotiate (property field)
 	GetLinkSpeedAutonegotiate() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLinkSpeedAutonegotiate) GetLinkSpeedAutonegotiate(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLinkSpeedAutonegotiate) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetLinkSpeedAutonegotiate())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLinkSpeedAutonegotiate factory function for BACnetConstructedDataLinkSpeedAutonegotiate
 func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLinkSpeedAutonegotiate {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBitsConditional
 	// Simple field (linkSpeedAutonegotiate)
 	lengthInBits += m.LinkSpeedAutonegotiate.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 	if closeErr := readBuffer.CloseContext("linkSpeedAutonegotiate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for linkSpeedAutonegotiate")
 	}
+
+	// Virtual field
+	_actualValue := linkSpeedAutonegotiate
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLinkSpeedAutonegotiate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLinkSpeedAutonegotiate")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLinkSpeedAutonegotiate) Serialize(writeBuffer util
 		}
 		if _linkSpeedAutonegotiateErr != nil {
 			return errors.Wrap(_linkSpeedAutonegotiateErr, "Error serializing 'linkSpeedAutonegotiate' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLinkSpeedAutonegotiate"); popErr != nil {

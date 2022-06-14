@@ -41,6 +41,8 @@ type IBACnetConstructedDataCredentialStatus interface {
 	IBACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() *BACnetBinaryPVTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetBinaryPVTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCredentialStatus) GetBinaryPv() *BACnetBinaryPVTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCredentialStatus) GetActualValue() *BACnetBinaryPVTagged {
+	return CastBACnetBinaryPVTagged(m.GetBinaryPv())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialStatus factory function for BACnetConstructedDataCredentialStatus
 func NewBACnetConstructedDataCredentialStatus(binaryPv *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCredentialStatus {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCredentialStatus) GetLengthInBitsConditional(lastI
 	// Simple field (binaryPv)
 	lengthInBits += m.BinaryPv.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCredentialStatusParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("binaryPv"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for binaryPv")
 	}
+
+	// Virtual field
+	_actualValue := binaryPv
+	actualValue := CastBACnetBinaryPVTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCredentialStatus")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCredentialStatus) Serialize(writeBuffer utils.Writ
 		}
 		if _binaryPvErr != nil {
 			return errors.Wrap(_binaryPvErr, "Error serializing 'binaryPv' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialStatus"); popErr != nil {

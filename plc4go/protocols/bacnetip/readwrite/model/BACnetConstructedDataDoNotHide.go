@@ -41,6 +41,8 @@ type IBACnetConstructedDataDoNotHide interface {
 	IBACnetConstructedData
 	// GetDoNotHide returns DoNotHide (property field)
 	GetDoNotHide() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDoNotHide) GetDoNotHide() *BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDoNotHide) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetDoNotHide())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoNotHide factory function for BACnetConstructedDataDoNotHide
 func NewBACnetConstructedDataDoNotHide(doNotHide *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoNotHide {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDoNotHide) GetLengthInBitsConditional(lastItem boo
 	// Simple field (doNotHide)
 	lengthInBits += m.DoNotHide.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDoNotHideParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("doNotHide"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for doNotHide")
 	}
+
+	// Virtual field
+	_actualValue := doNotHide
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoNotHide"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoNotHide")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDoNotHide) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _doNotHideErr != nil {
 			return errors.Wrap(_doNotHideErr, "Error serializing 'doNotHide' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoNotHide"); popErr != nil {

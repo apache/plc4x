@@ -41,6 +41,8 @@ type IBACnetConstructedDataErrorLimit interface {
 	IBACnetConstructedData
 	// GetErrorLimit returns ErrorLimit (property field)
 	GetErrorLimit() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataErrorLimit) GetErrorLimit() *BACnetApplicationTagR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataErrorLimit) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetErrorLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataErrorLimit factory function for BACnetConstructedDataErrorLimit
 func NewBACnetConstructedDataErrorLimit(errorLimit *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataErrorLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataErrorLimit) GetLengthInBitsConditional(lastItem bo
 	// Simple field (errorLimit)
 	lengthInBits += m.ErrorLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataErrorLimitParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("errorLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for errorLimit")
 	}
+
+	// Virtual field
+	_actualValue := errorLimit
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataErrorLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataErrorLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataErrorLimit) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _errorLimitErr != nil {
 			return errors.Wrap(_errorLimitErr, "Error serializing 'errorLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataErrorLimit"); popErr != nil {

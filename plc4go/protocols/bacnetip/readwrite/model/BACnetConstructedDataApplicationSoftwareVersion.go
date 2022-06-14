@@ -41,6 +41,8 @@ type IBACnetConstructedDataApplicationSoftwareVersion interface {
 	IBACnetConstructedData
 	// GetApplicationSoftwareVersion returns ApplicationSoftwareVersion (property field)
 	GetApplicationSoftwareVersion() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataApplicationSoftwareVersion) GetApplicationSoftware
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataApplicationSoftwareVersion) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetApplicationSoftwareVersion())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataApplicationSoftwareVersion factory function for BACnetConstructedDataApplicationSoftwareVersion
 func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersion *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataApplicationSoftwareVersion {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBitsConditi
 	// Simple field (applicationSoftwareVersion)
 	lengthInBits += m.ApplicationSoftwareVersion.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadB
 	if closeErr := readBuffer.CloseContext("applicationSoftwareVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for applicationSoftwareVersion")
 	}
+
+	// Virtual field
+	_actualValue := applicationSoftwareVersion
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataApplicationSoftwareVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataApplicationSoftwareVersion")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataApplicationSoftwareVersion) Serialize(writeBuffer 
 		}
 		if _applicationSoftwareVersionErr != nil {
 			return errors.Wrap(_applicationSoftwareVersionErr, "Error serializing 'applicationSoftwareVersion' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataApplicationSoftwareVersion"); popErr != nil {

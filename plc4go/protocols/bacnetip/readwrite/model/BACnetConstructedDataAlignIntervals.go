@@ -41,6 +41,8 @@ type IBACnetConstructedDataAlignIntervals interface {
 	IBACnetConstructedData
 	// GetAlignIntervals returns AlignIntervals (property field)
 	GetAlignIntervals() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAlignIntervals) GetAlignIntervals() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAlignIntervals) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetAlignIntervals())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAlignIntervals factory function for BACnetConstructedDataAlignIntervals
 func NewBACnetConstructedDataAlignIntervals(alignIntervals *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAlignIntervals {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAlignIntervals) GetLengthInBitsConditional(lastIte
 	// Simple field (alignIntervals)
 	lengthInBits += m.AlignIntervals.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("alignIntervals"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for alignIntervals")
 	}
+
+	// Virtual field
+	_actualValue := alignIntervals
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAlignIntervals"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAlignIntervals")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAlignIntervals) Serialize(writeBuffer utils.WriteB
 		}
 		if _alignIntervalsErr != nil {
 			return errors.Wrap(_alignIntervalsErr, "Error serializing 'alignIntervals' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAlignIntervals"); popErr != nil {

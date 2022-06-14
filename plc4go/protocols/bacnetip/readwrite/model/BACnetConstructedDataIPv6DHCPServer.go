@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPv6DHCPServer interface {
 	IBACnetConstructedData
 	// GetDhcpServer returns DhcpServer (property field)
 	GetDhcpServer() *BACnetApplicationTagOctetString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagOctetString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPv6DHCPServer) GetDhcpServer() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPv6DHCPServer) GetActualValue() *BACnetApplicationTagOctetString {
+	return CastBACnetApplicationTagOctetString(m.GetDhcpServer())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6DHCPServer factory function for BACnetConstructedDataIPv6DHCPServer
 func NewBACnetConstructedDataIPv6DHCPServer(dhcpServer *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6DHCPServer {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPv6DHCPServer) GetLengthInBitsConditional(lastIte
 	// Simple field (dhcpServer)
 	lengthInBits += m.DhcpServer.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPv6DHCPServerParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("dhcpServer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for dhcpServer")
 	}
+
+	// Virtual field
+	_actualValue := dhcpServer
+	actualValue := CastBACnetApplicationTagOctetString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DHCPServer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6DHCPServer")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPv6DHCPServer) Serialize(writeBuffer utils.WriteB
 		}
 		if _dhcpServerErr != nil {
 			return errors.Wrap(_dhcpServerErr, "Error serializing 'dhcpServer' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6DHCPServer"); popErr != nil {

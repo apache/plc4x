@@ -41,6 +41,8 @@ type IBACnetConstructedDataDefaultTimeout interface {
 	IBACnetConstructedData
 	// GetDefaultTimeout returns DefaultTimeout (property field)
 	GetDefaultTimeout() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDefaultTimeout) GetDefaultTimeout() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDefaultTimeout) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDefaultTimeout())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultTimeout factory function for BACnetConstructedDataDefaultTimeout
 func NewBACnetConstructedDataDefaultTimeout(defaultTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultTimeout {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDefaultTimeout) GetLengthInBitsConditional(lastIte
 	// Simple field (defaultTimeout)
 	lengthInBits += m.DefaultTimeout.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("defaultTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for defaultTimeout")
 	}
+
+	// Virtual field
+	_actualValue := defaultTimeout
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultTimeout")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDefaultTimeout) Serialize(writeBuffer utils.WriteB
 		}
 		if _defaultTimeoutErr != nil {
 			return errors.Wrap(_defaultTimeoutErr, "Error serializing 'defaultTimeout' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultTimeout"); popErr != nil {

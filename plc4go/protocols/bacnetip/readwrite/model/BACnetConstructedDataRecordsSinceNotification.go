@@ -41,6 +41,8 @@ type IBACnetConstructedDataRecordsSinceNotification interface {
 	IBACnetConstructedData
 	// GetRecordsSinceNotifications returns RecordsSinceNotifications (property field)
 	GetRecordsSinceNotifications() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataRecordsSinceNotification) GetRecordsSinceNotificat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataRecordsSinceNotification) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetRecordsSinceNotifications())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRecordsSinceNotification factory function for BACnetConstructedDataRecordsSinceNotification
 func NewBACnetConstructedDataRecordsSinceNotification(recordsSinceNotifications *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRecordsSinceNotification {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataRecordsSinceNotification) GetLengthInBitsCondition
 	// Simple field (recordsSinceNotifications)
 	lengthInBits += m.RecordsSinceNotifications.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 	if closeErr := readBuffer.CloseContext("recordsSinceNotifications"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for recordsSinceNotifications")
 	}
+
+	// Virtual field
+	_actualValue := recordsSinceNotifications
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRecordsSinceNotification"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRecordsSinceNotification")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataRecordsSinceNotification) Serialize(writeBuffer ut
 		}
 		if _recordsSinceNotificationsErr != nil {
 			return errors.Wrap(_recordsSinceNotificationsErr, "Error serializing 'recordsSinceNotifications' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRecordsSinceNotification"); popErr != nil {

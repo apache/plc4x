@@ -41,6 +41,8 @@ type IBACnetConstructedDataPositiveIntegerValueFaultLowLimit interface {
 	IBACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPositiveIntegerValueFaultLowLimit) GetFaultLowLimi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPositiveIntegerValueFaultLowLimit) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetFaultLowLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPositiveIntegerValueFaultLowLimit factory function for BACnetConstructedDataPositiveIntegerValueFaultLowLimit
 func NewBACnetConstructedDataPositiveIntegerValueFaultLowLimit(faultLowLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPositiveIntegerValueFaultLowLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPositiveIntegerValueFaultLowLimit) GetLengthInBits
 	// Simple field (faultLowLimit)
 	lengthInBits += m.FaultLowLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPositiveIntegerValueFaultLowLimitParse(readBuffer util
 	if closeErr := readBuffer.CloseContext("faultLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for faultLowLimit")
 	}
+
+	// Virtual field
+	_actualValue := faultLowLimit
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueFaultLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueFaultLowLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPositiveIntegerValueFaultLowLimit) Serialize(write
 		}
 		if _faultLowLimitErr != nil {
 			return errors.Wrap(_faultLowLimitErr, "Error serializing 'faultLowLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPositiveIntegerValueFaultLowLimit"); popErr != nil {

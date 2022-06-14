@@ -41,6 +41,8 @@ type IBACnetConstructedDataHigherDeck interface {
 	IBACnetConstructedData
 	// GetHigherDeck returns HigherDeck (property field)
 	GetHigherDeck() *BACnetApplicationTagObjectIdentifier
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataHigherDeck) GetHigherDeck() *BACnetApplicationTagO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataHigherDeck) GetActualValue() *BACnetApplicationTagObjectIdentifier {
+	return CastBACnetApplicationTagObjectIdentifier(m.GetHigherDeck())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataHigherDeck factory function for BACnetConstructedDataHigherDeck
 func NewBACnetConstructedDataHigherDeck(higherDeck *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataHigherDeck {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataHigherDeck) GetLengthInBitsConditional(lastItem bo
 	// Simple field (higherDeck)
 	lengthInBits += m.HigherDeck.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataHigherDeckParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("higherDeck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for higherDeck")
 	}
+
+	// Virtual field
+	_actualValue := higherDeck
+	actualValue := CastBACnetApplicationTagObjectIdentifier(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataHigherDeck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataHigherDeck")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataHigherDeck) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _higherDeckErr != nil {
 			return errors.Wrap(_higherDeckErr, "Error serializing 'higherDeck' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataHigherDeck"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataInProcess interface {
 	IBACnetConstructedData
 	// GetInProcess returns InProcess (property field)
 	GetInProcess() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataInProcess) GetInProcess() *BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataInProcess) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetInProcess())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInProcess factory function for BACnetConstructedDataInProcess
 func NewBACnetConstructedDataInProcess(inProcess *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataInProcess {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataInProcess) GetLengthInBitsConditional(lastItem boo
 	// Simple field (inProcess)
 	lengthInBits += m.InProcess.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("inProcess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for inProcess")
 	}
+
+	// Virtual field
+	_actualValue := inProcess
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInProcess"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInProcess")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataInProcess) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _inProcessErr != nil {
 			return errors.Wrap(_inProcessErr, "Error serializing 'inProcess' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInProcess"); popErr != nil {

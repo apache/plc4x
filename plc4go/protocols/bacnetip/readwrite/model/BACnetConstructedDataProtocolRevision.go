@@ -41,6 +41,8 @@ type IBACnetConstructedDataProtocolRevision interface {
 	IBACnetConstructedData
 	// GetProtocolRevision returns ProtocolRevision (property field)
 	GetProtocolRevision() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProtocolRevision) GetProtocolRevision() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProtocolRevision) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetProtocolRevision())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolRevision factory function for BACnetConstructedDataProtocolRevision
 func NewBACnetConstructedDataProtocolRevision(protocolRevision *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProtocolRevision {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProtocolRevision) GetLengthInBitsConditional(lastI
 	// Simple field (protocolRevision)
 	lengthInBits += m.ProtocolRevision.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProtocolRevisionParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("protocolRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for protocolRevision")
 	}
+
+	// Virtual field
+	_actualValue := protocolRevision
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolRevision")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProtocolRevision) Serialize(writeBuffer utils.Writ
 		}
 		if _protocolRevisionErr != nil {
 			return errors.Wrap(_protocolRevisionErr, "Error serializing 'protocolRevision' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolRevision"); popErr != nil {

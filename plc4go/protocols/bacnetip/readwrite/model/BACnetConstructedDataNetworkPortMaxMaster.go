@@ -41,6 +41,8 @@ type IBACnetConstructedDataNetworkPortMaxMaster interface {
 	IBACnetConstructedData
 	// GetMaxMaster returns MaxMaster (property field)
 	GetMaxMaster() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNetworkPortMaxMaster) GetMaxMaster() *BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNetworkPortMaxMaster) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxMaster())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkPortMaxMaster factory function for BACnetConstructedDataNetworkPortMaxMaster
 func NewBACnetConstructedDataNetworkPortMaxMaster(maxMaster *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkPortMaxMaster {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBitsConditional(l
 	// Simple field (maxMaster)
 	lengthInBits += m.MaxMaster.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNetworkPortMaxMasterParse(readBuffer utils.ReadBuffer,
 	if closeErr := readBuffer.CloseContext("maxMaster"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maxMaster")
 	}
+
+	// Virtual field
+	_actualValue := maxMaster
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkPortMaxMaster"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkPortMaxMaster")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNetworkPortMaxMaster) Serialize(writeBuffer utils.
 		}
 		if _maxMasterErr != nil {
 			return errors.Wrap(_maxMasterErr, "Error serializing 'maxMaster' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkPortMaxMaster"); popErr != nil {

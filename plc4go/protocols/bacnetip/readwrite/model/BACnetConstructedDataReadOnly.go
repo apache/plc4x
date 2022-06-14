@@ -41,6 +41,8 @@ type IBACnetConstructedDataReadOnly interface {
 	IBACnetConstructedData
 	// GetReadOnly returns ReadOnly (property field)
 	GetReadOnly() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataReadOnly) GetReadOnly() *BACnetApplicationTagBoole
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataReadOnly) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetReadOnly())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReadOnly factory function for BACnetConstructedDataReadOnly
 func NewBACnetConstructedDataReadOnly(readOnly *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReadOnly {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataReadOnly) GetLengthInBitsConditional(lastItem bool
 	// Simple field (readOnly)
 	lengthInBits += m.ReadOnly.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("readOnly"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for readOnly")
 	}
+
+	// Virtual field
+	_actualValue := readOnly
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReadOnly"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReadOnly")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataReadOnly) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _readOnlyErr != nil {
 			return errors.Wrap(_readOnlyErr, "Error serializing 'readOnly' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReadOnly"); popErr != nil {

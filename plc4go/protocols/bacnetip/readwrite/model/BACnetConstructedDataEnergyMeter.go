@@ -41,6 +41,8 @@ type IBACnetConstructedDataEnergyMeter interface {
 	IBACnetConstructedData
 	// GetEnergyMeter returns EnergyMeter (property field)
 	GetEnergyMeter() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEnergyMeter) GetEnergyMeter() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEnergyMeter) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetEnergyMeter())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEnergyMeter factory function for BACnetConstructedDataEnergyMeter
 func NewBACnetConstructedDataEnergyMeter(energyMeter *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEnergyMeter {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEnergyMeter) GetLengthInBitsConditional(lastItem b
 	// Simple field (energyMeter)
 	lengthInBits += m.EnergyMeter.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEnergyMeterParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("energyMeter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for energyMeter")
 	}
+
+	// Virtual field
+	_actualValue := energyMeter
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnergyMeter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEnergyMeter")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEnergyMeter) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _energyMeterErr != nil {
 			return errors.Wrap(_energyMeterErr, "Error serializing 'energyMeter' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEnergyMeter"); popErr != nil {

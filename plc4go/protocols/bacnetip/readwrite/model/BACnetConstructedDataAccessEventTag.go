@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccessEventTag interface {
 	IBACnetConstructedData
 	// GetAccessEventTag returns AccessEventTag (property field)
 	GetAccessEventTag() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccessEventTag) GetAccessEventTag() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccessEventTag) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetAccessEventTag())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEventTag factory function for BACnetConstructedDataAccessEventTag
 func NewBACnetConstructedDataAccessEventTag(accessEventTag *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessEventTag {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccessEventTag) GetLengthInBitsConditional(lastIte
 	// Simple field (accessEventTag)
 	lengthInBits += m.AccessEventTag.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("accessEventTag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for accessEventTag")
 	}
+
+	// Virtual field
+	_actualValue := accessEventTag
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventTag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventTag")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccessEventTag) Serialize(writeBuffer utils.WriteB
 		}
 		if _accessEventTagErr != nil {
 			return errors.Wrap(_accessEventTagErr, "Error serializing 'accessEventTag' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventTag"); popErr != nil {

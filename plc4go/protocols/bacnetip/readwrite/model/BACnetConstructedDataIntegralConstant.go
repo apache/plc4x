@@ -41,6 +41,8 @@ type IBACnetConstructedDataIntegralConstant interface {
 	IBACnetConstructedData
 	// GetIntegralConstant returns IntegralConstant (property field)
 	GetIntegralConstant() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIntegralConstant) GetIntegralConstant() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIntegralConstant) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetIntegralConstant())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntegralConstant factory function for BACnetConstructedDataIntegralConstant
 func NewBACnetConstructedDataIntegralConstant(integralConstant *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIntegralConstant {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIntegralConstant) GetLengthInBitsConditional(lastI
 	// Simple field (integralConstant)
 	lengthInBits += m.IntegralConstant.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIntegralConstantParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("integralConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for integralConstant")
 	}
+
+	// Virtual field
+	_actualValue := integralConstant
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegralConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntegralConstant")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIntegralConstant) Serialize(writeBuffer utils.Writ
 		}
 		if _integralConstantErr != nil {
 			return errors.Wrap(_integralConstantErr, "Error serializing 'integralConstant' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIntegralConstant"); popErr != nil {

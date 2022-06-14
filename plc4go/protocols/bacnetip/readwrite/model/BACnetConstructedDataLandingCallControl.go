@@ -41,6 +41,8 @@ type IBACnetConstructedDataLandingCallControl interface {
 	IBACnetConstructedData
 	// GetLandingCallControl returns LandingCallControl (property field)
 	GetLandingCallControl() *BACnetLandingCallStatus
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLandingCallStatus
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLandingCallControl) GetLandingCallControl() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLandingCallControl) GetActualValue() *BACnetLandingCallStatus {
+	return CastBACnetLandingCallStatus(m.GetLandingCallControl())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLandingCallControl factory function for BACnetConstructedDataLandingCallControl
 func NewBACnetConstructedDataLandingCallControl(landingCallControl *BACnetLandingCallStatus, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLandingCallControl {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLandingCallControl) GetLengthInBitsConditional(las
 	// Simple field (landingCallControl)
 	lengthInBits += m.LandingCallControl.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("landingCallControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for landingCallControl")
 	}
+
+	// Virtual field
+	_actualValue := landingCallControl
+	actualValue := CastBACnetLandingCallStatus(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLandingCallControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLandingCallControl")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLandingCallControl) Serialize(writeBuffer utils.Wr
 		}
 		if _landingCallControlErr != nil {
 			return errors.Wrap(_landingCallControlErr, "Error serializing 'landingCallControl' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLandingCallControl"); popErr != nil {

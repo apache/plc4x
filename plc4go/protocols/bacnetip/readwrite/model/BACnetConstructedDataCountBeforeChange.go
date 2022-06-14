@@ -41,6 +41,8 @@ type IBACnetConstructedDataCountBeforeChange interface {
 	IBACnetConstructedData
 	// GetCountBeforeChange returns CountBeforeChange (property field)
 	GetCountBeforeChange() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCountBeforeChange) GetCountBeforeChange() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCountBeforeChange) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetCountBeforeChange())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCountBeforeChange factory function for BACnetConstructedDataCountBeforeChange
 func NewBACnetConstructedDataCountBeforeChange(countBeforeChange *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCountBeforeChange {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCountBeforeChange) GetLengthInBitsConditional(last
 	// Simple field (countBeforeChange)
 	lengthInBits += m.CountBeforeChange.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("countBeforeChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for countBeforeChange")
 	}
+
+	// Virtual field
+	_actualValue := countBeforeChange
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCountBeforeChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCountBeforeChange")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCountBeforeChange) Serialize(writeBuffer utils.Wri
 		}
 		if _countBeforeChangeErr != nil {
 			return errors.Wrap(_countBeforeChangeErr, "Error serializing 'countBeforeChange' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCountBeforeChange"); popErr != nil {

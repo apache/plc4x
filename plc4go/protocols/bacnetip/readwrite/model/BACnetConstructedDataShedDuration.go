@@ -41,6 +41,8 @@ type IBACnetConstructedDataShedDuration interface {
 	IBACnetConstructedData
 	// GetShedDuration returns ShedDuration (property field)
 	GetShedDuration() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataShedDuration) GetShedDuration() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataShedDuration) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetShedDuration())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataShedDuration factory function for BACnetConstructedDataShedDuration
 func NewBACnetConstructedDataShedDuration(shedDuration *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataShedDuration {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataShedDuration) GetLengthInBitsConditional(lastItem 
 	// Simple field (shedDuration)
 	lengthInBits += m.ShedDuration.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("shedDuration"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for shedDuration")
 	}
+
+	// Virtual field
+	_actualValue := shedDuration
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataShedDuration"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataShedDuration")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataShedDuration) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _shedDurationErr != nil {
 			return errors.Wrap(_shedDurationErr, "Error serializing 'shedDuration' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataShedDuration"); popErr != nil {

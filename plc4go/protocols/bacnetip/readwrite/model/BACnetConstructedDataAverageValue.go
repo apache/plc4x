@@ -41,6 +41,8 @@ type IBACnetConstructedDataAverageValue interface {
 	IBACnetConstructedData
 	// GetAverageValue returns AverageValue (property field)
 	GetAverageValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAverageValue) GetAverageValue() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAverageValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetAverageValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAverageValue factory function for BACnetConstructedDataAverageValue
 func NewBACnetConstructedDataAverageValue(averageValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAverageValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAverageValue) GetLengthInBitsConditional(lastItem 
 	// Simple field (averageValue)
 	lengthInBits += m.AverageValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("averageValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for averageValue")
 	}
+
+	// Virtual field
+	_actualValue := averageValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAverageValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAverageValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAverageValue) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _averageValueErr != nil {
 			return errors.Wrap(_averageValueErr, "Error serializing 'averageValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAverageValue"); popErr != nil {

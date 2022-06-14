@@ -41,6 +41,8 @@ type IBACnetConstructedDataElapsedActiveTime interface {
 	IBACnetConstructedData
 	// GetElapsedActiveTime returns ElapsedActiveTime (property field)
 	GetElapsedActiveTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataElapsedActiveTime) GetElapsedActiveTime() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataElapsedActiveTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetElapsedActiveTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataElapsedActiveTime factory function for BACnetConstructedDataElapsedActiveTime
 func NewBACnetConstructedDataElapsedActiveTime(elapsedActiveTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataElapsedActiveTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataElapsedActiveTime) GetLengthInBitsConditional(last
 	// Simple field (elapsedActiveTime)
 	lengthInBits += m.ElapsedActiveTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("elapsedActiveTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for elapsedActiveTime")
 	}
+
+	// Virtual field
+	_actualValue := elapsedActiveTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElapsedActiveTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataElapsedActiveTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataElapsedActiveTime) Serialize(writeBuffer utils.Wri
 		}
 		if _elapsedActiveTimeErr != nil {
 			return errors.Wrap(_elapsedActiveTimeErr, "Error serializing 'elapsedActiveTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataElapsedActiveTime"); popErr != nil {

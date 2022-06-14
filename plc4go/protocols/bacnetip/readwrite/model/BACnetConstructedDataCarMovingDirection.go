@@ -41,6 +41,8 @@ type IBACnetConstructedDataCarMovingDirection interface {
 	IBACnetConstructedData
 	// GetCarMovingDirection returns CarMovingDirection (property field)
 	GetCarMovingDirection() *BACnetLiftCarDirectionTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLiftCarDirectionTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCarMovingDirection) GetCarMovingDirection() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCarMovingDirection) GetActualValue() *BACnetLiftCarDirectionTagged {
+	return CastBACnetLiftCarDirectionTagged(m.GetCarMovingDirection())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarMovingDirection factory function for BACnetConstructedDataCarMovingDirection
 func NewBACnetConstructedDataCarMovingDirection(carMovingDirection *BACnetLiftCarDirectionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarMovingDirection {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCarMovingDirection) GetLengthInBitsConditional(las
 	// Simple field (carMovingDirection)
 	lengthInBits += m.CarMovingDirection.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("carMovingDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for carMovingDirection")
 	}
+
+	// Virtual field
+	_actualValue := carMovingDirection
+	actualValue := CastBACnetLiftCarDirectionTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarMovingDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarMovingDirection")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCarMovingDirection) Serialize(writeBuffer utils.Wr
 		}
 		if _carMovingDirectionErr != nil {
 			return errors.Wrap(_carMovingDirectionErr, "Error serializing 'carMovingDirection' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarMovingDirection"); popErr != nil {

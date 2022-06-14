@@ -41,6 +41,8 @@ type IBACnetConstructedDataControlledVariableReference interface {
 	IBACnetConstructedData
 	// GetControlledVariableReference returns ControlledVariableReference (property field)
 	GetControlledVariableReference() *BACnetObjectPropertyReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetObjectPropertyReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataControlledVariableReference) GetControlledVariable
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataControlledVariableReference) GetActualValue() *BACnetObjectPropertyReference {
+	return CastBACnetObjectPropertyReference(m.GetControlledVariableReference())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataControlledVariableReference factory function for BACnetConstructedDataControlledVariableReference
 func NewBACnetConstructedDataControlledVariableReference(controlledVariableReference *BACnetObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataControlledVariableReference {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataControlledVariableReference) GetLengthInBitsCondit
 	// Simple field (controlledVariableReference)
 	lengthInBits += m.ControlledVariableReference.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataControlledVariableReferenceParse(readBuffer utils.Read
 	if closeErr := readBuffer.CloseContext("controlledVariableReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for controlledVariableReference")
 	}
+
+	// Virtual field
+	_actualValue := controlledVariableReference
+	actualValue := CastBACnetObjectPropertyReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataControlledVariableReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataControlledVariableReference")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataControlledVariableReference) Serialize(writeBuffer
 		}
 		if _controlledVariableReferenceErr != nil {
 			return errors.Wrap(_controlledVariableReferenceErr, "Error serializing 'controlledVariableReference' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataControlledVariableReference"); popErr != nil {

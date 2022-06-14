@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccompanimentTime interface {
 	IBACnetConstructedData
 	// GetAccompanimentTime returns AccompanimentTime (property field)
 	GetAccompanimentTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccompanimentTime) GetAccompanimentTime() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccompanimentTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetAccompanimentTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccompanimentTime factory function for BACnetConstructedDataAccompanimentTime
 func NewBACnetConstructedDataAccompanimentTime(accompanimentTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccompanimentTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccompanimentTime) GetLengthInBitsConditional(last
 	// Simple field (accompanimentTime)
 	lengthInBits += m.AccompanimentTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("accompanimentTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for accompanimentTime")
 	}
+
+	// Virtual field
+	_actualValue := accompanimentTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompanimentTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccompanimentTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccompanimentTime) Serialize(writeBuffer utils.Wri
 		}
 		if _accompanimentTimeErr != nil {
 			return errors.Wrap(_accompanimentTimeErr, "Error serializing 'accompanimentTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccompanimentTime"); popErr != nil {

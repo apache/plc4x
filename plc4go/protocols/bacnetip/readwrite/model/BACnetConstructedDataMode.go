@@ -41,6 +41,8 @@ type IBACnetConstructedDataMode interface {
 	IBACnetConstructedData
 	// GetMode returns Mode (property field)
 	GetMode() *BACnetLifeSafetyModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLifeSafetyModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMode) GetMode() *BACnetLifeSafetyModeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMode) GetActualValue() *BACnetLifeSafetyModeTagged {
+	return CastBACnetLifeSafetyModeTagged(m.GetMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMode factory function for BACnetConstructedDataMode
 func NewBACnetConstructedDataMode(mode *BACnetLifeSafetyModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMode) GetLengthInBitsConditional(lastItem bool) ui
 	// Simple field (mode)
 	lengthInBits += m.Mode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for mode")
 	}
+
+	// Virtual field
+	_actualValue := mode
+	actualValue := CastBACnetLifeSafetyModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMode) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		if _modeErr != nil {
 			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMode"); popErr != nil {

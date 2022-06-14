@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastCredentialRemoved interface {
 	IBACnetConstructedData
 	// GetLastCredentialRemoved returns LastCredentialRemoved (property field)
 	GetLastCredentialRemoved() *BACnetDeviceObjectReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastCredentialRemoved) GetLastCredentialRemoved() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastCredentialRemoved) GetActualValue() *BACnetDeviceObjectReference {
+	return CastBACnetDeviceObjectReference(m.GetLastCredentialRemoved())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastCredentialRemoved factory function for BACnetConstructedDataLastCredentialRemoved
 func NewBACnetConstructedDataLastCredentialRemoved(lastCredentialRemoved *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastCredentialRemoved {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastCredentialRemoved) GetLengthInBitsConditional(
 	// Simple field (lastCredentialRemoved)
 	lengthInBits += m.LastCredentialRemoved.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastCredentialRemovedParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("lastCredentialRemoved"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastCredentialRemoved")
 	}
+
+	// Virtual field
+	_actualValue := lastCredentialRemoved
+	actualValue := CastBACnetDeviceObjectReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCredentialRemoved"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCredentialRemoved")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastCredentialRemoved) Serialize(writeBuffer utils
 		}
 		if _lastCredentialRemovedErr != nil {
 			return errors.Wrap(_lastCredentialRemovedErr, "Error serializing 'lastCredentialRemoved' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastCredentialRemoved"); popErr != nil {

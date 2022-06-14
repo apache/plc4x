@@ -41,6 +41,8 @@ type IBACnetConstructedDataStrikeCount interface {
 	IBACnetConstructedData
 	// GetStrikeCount returns StrikeCount (property field)
 	GetStrikeCount() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataStrikeCount) GetStrikeCount() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataStrikeCount) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetStrikeCount())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStrikeCount factory function for BACnetConstructedDataStrikeCount
 func NewBACnetConstructedDataStrikeCount(strikeCount *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStrikeCount {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataStrikeCount) GetLengthInBitsConditional(lastItem b
 	// Simple field (strikeCount)
 	lengthInBits += m.StrikeCount.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataStrikeCountParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("strikeCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for strikeCount")
 	}
+
+	// Virtual field
+	_actualValue := strikeCount
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStrikeCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStrikeCount")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataStrikeCount) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _strikeCountErr != nil {
 			return errors.Wrap(_strikeCountErr, "Error serializing 'strikeCount' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStrikeCount"); popErr != nil {

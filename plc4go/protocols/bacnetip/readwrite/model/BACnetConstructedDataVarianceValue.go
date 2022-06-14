@@ -41,6 +41,8 @@ type IBACnetConstructedDataVarianceValue interface {
 	IBACnetConstructedData
 	// GetVarianceValue returns VarianceValue (property field)
 	GetVarianceValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataVarianceValue) GetVarianceValue() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataVarianceValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetVarianceValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVarianceValue factory function for BACnetConstructedDataVarianceValue
 func NewBACnetConstructedDataVarianceValue(varianceValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataVarianceValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataVarianceValue) GetLengthInBitsConditional(lastItem
 	// Simple field (varianceValue)
 	lengthInBits += m.VarianceValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataVarianceValueParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("varianceValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for varianceValue")
 	}
+
+	// Virtual field
+	_actualValue := varianceValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVarianceValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVarianceValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataVarianceValue) Serialize(writeBuffer utils.WriteBu
 		}
 		if _varianceValueErr != nil {
 			return errors.Wrap(_varianceValueErr, "Error serializing 'varianceValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVarianceValue"); popErr != nil {

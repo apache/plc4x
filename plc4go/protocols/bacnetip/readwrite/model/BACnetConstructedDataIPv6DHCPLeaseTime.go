@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPv6DHCPLeaseTime interface {
 	IBACnetConstructedData
 	// GetIpv6DhcpLeaseTime returns Ipv6DhcpLeaseTime (property field)
 	GetIpv6DhcpLeaseTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) GetIpv6DhcpLeaseTime() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPv6DHCPLeaseTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetIpv6DhcpLeaseTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6DHCPLeaseTime factory function for BACnetConstructedDataIPv6DHCPLeaseTime
 func NewBACnetConstructedDataIPv6DHCPLeaseTime(ipv6DhcpLeaseTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6DHCPLeaseTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBitsConditional(last
 	// Simple field (ipv6DhcpLeaseTime)
 	lengthInBits += m.Ipv6DhcpLeaseTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("ipv6DhcpLeaseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipv6DhcpLeaseTime")
 	}
+
+	// Virtual field
+	_actualValue := ipv6DhcpLeaseTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DHCPLeaseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6DHCPLeaseTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPv6DHCPLeaseTime) Serialize(writeBuffer utils.Wri
 		}
 		if _ipv6DhcpLeaseTimeErr != nil {
 			return errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error serializing 'ipv6DhcpLeaseTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6DHCPLeaseTime"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPSubnetMask interface {
 	IBACnetConstructedData
 	// GetIpSubnetMask returns IpSubnetMask (property field)
 	GetIpSubnetMask() *BACnetApplicationTagOctetString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagOctetString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPSubnetMask) GetIpSubnetMask() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPSubnetMask) GetActualValue() *BACnetApplicationTagOctetString {
+	return CastBACnetApplicationTagOctetString(m.GetIpSubnetMask())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPSubnetMask factory function for BACnetConstructedDataIPSubnetMask
 func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPSubnetMask {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPSubnetMask) GetLengthInBitsConditional(lastItem 
 	// Simple field (ipSubnetMask)
 	lengthInBits += m.IpSubnetMask.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("ipSubnetMask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipSubnetMask")
 	}
+
+	// Virtual field
+	_actualValue := ipSubnetMask
+	actualValue := CastBACnetApplicationTagOctetString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPSubnetMask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPSubnetMask")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPSubnetMask) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _ipSubnetMaskErr != nil {
 			return errors.Wrap(_ipSubnetMaskErr, "Error serializing 'ipSubnetMask' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPSubnetMask"); popErr != nil {

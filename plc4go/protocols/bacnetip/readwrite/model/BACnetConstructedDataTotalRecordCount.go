@@ -41,6 +41,8 @@ type IBACnetConstructedDataTotalRecordCount interface {
 	IBACnetConstructedData
 	// GetTotalRecordCount returns TotalRecordCount (property field)
 	GetTotalRecordCount() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTotalRecordCount) GetTotalRecordCount() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTotalRecordCount) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetTotalRecordCount())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTotalRecordCount factory function for BACnetConstructedDataTotalRecordCount
 func NewBACnetConstructedDataTotalRecordCount(totalRecordCount *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTotalRecordCount {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTotalRecordCount) GetLengthInBitsConditional(lastI
 	// Simple field (totalRecordCount)
 	lengthInBits += m.TotalRecordCount.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTotalRecordCountParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("totalRecordCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for totalRecordCount")
 	}
+
+	// Virtual field
+	_actualValue := totalRecordCount
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTotalRecordCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTotalRecordCount")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTotalRecordCount) Serialize(writeBuffer utils.Writ
 		}
 		if _totalRecordCountErr != nil {
 			return errors.Wrap(_totalRecordCountErr, "Error serializing 'totalRecordCount' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTotalRecordCount"); popErr != nil {

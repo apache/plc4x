@@ -41,6 +41,8 @@ type IBACnetConstructedDataBlinkWarnEnable interface {
 	IBACnetConstructedData
 	// GetBlinkWarnEnable returns BlinkWarnEnable (property field)
 	GetBlinkWarnEnable() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBlinkWarnEnable) GetBlinkWarnEnable() *BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBlinkWarnEnable) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetBlinkWarnEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBlinkWarnEnable factory function for BACnetConstructedDataBlinkWarnEnable
 func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBlinkWarnEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBlinkWarnEnable) GetLengthInBitsConditional(lastIt
 	// Simple field (blinkWarnEnable)
 	lengthInBits += m.BlinkWarnEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("blinkWarnEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for blinkWarnEnable")
 	}
+
+	// Virtual field
+	_actualValue := blinkWarnEnable
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBlinkWarnEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBlinkWarnEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBlinkWarnEnable) Serialize(writeBuffer utils.Write
 		}
 		if _blinkWarnEnableErr != nil {
 			return errors.Wrap(_blinkWarnEnableErr, "Error serializing 'blinkWarnEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBlinkWarnEnable"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataNumberOfStates interface {
 	IBACnetConstructedData
 	// GetNumberOfState returns NumberOfState (property field)
 	GetNumberOfState() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNumberOfStates) GetNumberOfState() *BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNumberOfStates) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetNumberOfState())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNumberOfStates factory function for BACnetConstructedDataNumberOfStates
 func NewBACnetConstructedDataNumberOfStates(numberOfState *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNumberOfStates {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNumberOfStates) GetLengthInBitsConditional(lastIte
 	// Simple field (numberOfState)
 	lengthInBits += m.NumberOfState.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNumberOfStatesParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("numberOfState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for numberOfState")
 	}
+
+	// Virtual field
+	_actualValue := numberOfState
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfStates"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfStates")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNumberOfStates) Serialize(writeBuffer utils.WriteB
 		}
 		if _numberOfStateErr != nil {
 			return errors.Wrap(_numberOfStateErr, "Error serializing 'numberOfState' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNumberOfStates"); popErr != nil {

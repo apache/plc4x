@@ -41,6 +41,8 @@ type IBACnetConstructedDataAckRequired interface {
 	IBACnetConstructedData
 	// GetAckRequired returns AckRequired (property field)
 	GetAckRequired() *BACnetEventTransitionBitsTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEventTransitionBitsTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAckRequired) GetAckRequired() *BACnetEventTransiti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAckRequired) GetActualValue() *BACnetEventTransitionBitsTagged {
+	return CastBACnetEventTransitionBitsTagged(m.GetAckRequired())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAckRequired factory function for BACnetConstructedDataAckRequired
 func NewBACnetConstructedDataAckRequired(ackRequired *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAckRequired {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAckRequired) GetLengthInBitsConditional(lastItem b
 	// Simple field (ackRequired)
 	lengthInBits += m.AckRequired.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("ackRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackRequired")
 	}
+
+	// Virtual field
+	_actualValue := ackRequired
+	actualValue := CastBACnetEventTransitionBitsTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAckRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAckRequired")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAckRequired) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _ackRequiredErr != nil {
 			return errors.Wrap(_ackRequiredErr, "Error serializing 'ackRequired' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAckRequired"); popErr != nil {

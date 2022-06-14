@@ -41,6 +41,8 @@ type IBACnetConstructedDataInstanceOf interface {
 	IBACnetConstructedData
 	// GetInstanceOf returns InstanceOf (property field)
 	GetInstanceOf() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataInstanceOf) GetInstanceOf() *BACnetApplicationTagC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataInstanceOf) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetInstanceOf())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInstanceOf factory function for BACnetConstructedDataInstanceOf
 func NewBACnetConstructedDataInstanceOf(instanceOf *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataInstanceOf {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataInstanceOf) GetLengthInBitsConditional(lastItem bo
 	// Simple field (instanceOf)
 	lengthInBits += m.InstanceOf.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataInstanceOfParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("instanceOf"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for instanceOf")
 	}
+
+	// Virtual field
+	_actualValue := instanceOf
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstanceOf"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstanceOf")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataInstanceOf) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _instanceOfErr != nil {
 			return errors.Wrap(_instanceOfErr, "Error serializing 'instanceOf' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInstanceOf"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataBelongsTo interface {
 	IBACnetConstructedData
 	// GetBelongsTo returns BelongsTo (property field)
 	GetBelongsTo() *BACnetDeviceObjectReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBelongsTo) GetBelongsTo() *BACnetDeviceObjectRefer
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBelongsTo) GetActualValue() *BACnetDeviceObjectReference {
+	return CastBACnetDeviceObjectReference(m.GetBelongsTo())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBelongsTo factory function for BACnetConstructedDataBelongsTo
 func NewBACnetConstructedDataBelongsTo(belongsTo *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBelongsTo {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBelongsTo) GetLengthInBitsConditional(lastItem boo
 	// Simple field (belongsTo)
 	lengthInBits += m.BelongsTo.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("belongsTo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for belongsTo")
 	}
+
+	// Virtual field
+	_actualValue := belongsTo
+	actualValue := CastBACnetDeviceObjectReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBelongsTo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBelongsTo")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBelongsTo) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _belongsToErr != nil {
 			return errors.Wrap(_belongsToErr, "Error serializing 'belongsTo' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBelongsTo"); popErr != nil {

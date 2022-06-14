@@ -41,6 +41,8 @@ type IBACnetConstructedDataMinPresValue interface {
 	IBACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMinPresValue) GetMinPresValue() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMinPresValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetMinPresValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMinPresValue factory function for BACnetConstructedDataMinPresValue
 func NewBACnetConstructedDataMinPresValue(minPresValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMinPresValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMinPresValue) GetLengthInBitsConditional(lastItem 
 	// Simple field (minPresValue)
 	lengthInBits += m.MinPresValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMinPresValueParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("minPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for minPresValue")
 	}
+
+	// Virtual field
+	_actualValue := minPresValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinPresValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMinPresValue) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _minPresValueErr != nil {
 			return errors.Wrap(_minPresValueErr, "Error serializing 'minPresValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMinPresValue"); popErr != nil {

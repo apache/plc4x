@@ -41,6 +41,8 @@ type IBACnetConstructedDataOperationExpected interface {
 	IBACnetConstructedData
 	// GetLifeSafetyOperations returns LifeSafetyOperations (property field)
 	GetLifeSafetyOperations() *BACnetLifeSafetyOperationTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLifeSafetyOperationTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataOperationExpected) GetLifeSafetyOperations() *BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataOperationExpected) GetActualValue() *BACnetLifeSafetyOperationTagged {
+	return CastBACnetLifeSafetyOperationTagged(m.GetLifeSafetyOperations())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOperationExpected factory function for BACnetConstructedDataOperationExpected
 func NewBACnetConstructedDataOperationExpected(lifeSafetyOperations *BACnetLifeSafetyOperationTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOperationExpected {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataOperationExpected) GetLengthInBitsConditional(last
 	// Simple field (lifeSafetyOperations)
 	lengthInBits += m.LifeSafetyOperations.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("lifeSafetyOperations"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lifeSafetyOperations")
 	}
+
+	// Virtual field
+	_actualValue := lifeSafetyOperations
+	actualValue := CastBACnetLifeSafetyOperationTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationExpected"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOperationExpected")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataOperationExpected) Serialize(writeBuffer utils.Wri
 		}
 		if _lifeSafetyOperationsErr != nil {
 			return errors.Wrap(_lifeSafetyOperationsErr, "Error serializing 'lifeSafetyOperations' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOperationExpected"); popErr != nil {

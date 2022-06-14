@@ -41,6 +41,8 @@ type IBACnetConstructedDataProgramChange interface {
 	IBACnetConstructedData
 	// GetProgramChange returns ProgramChange (property field)
 	GetProgramChange() *BACnetProgramRequestTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetProgramRequestTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProgramChange) GetProgramChange() *BACnetProgramRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProgramChange) GetActualValue() *BACnetProgramRequestTagged {
+	return CastBACnetProgramRequestTagged(m.GetProgramChange())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProgramChange factory function for BACnetConstructedDataProgramChange
 func NewBACnetConstructedDataProgramChange(programChange *BACnetProgramRequestTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProgramChange {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProgramChange) GetLengthInBitsConditional(lastItem
 	// Simple field (programChange)
 	lengthInBits += m.ProgramChange.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("programChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for programChange")
 	}
+
+	// Virtual field
+	_actualValue := programChange
+	actualValue := CastBACnetProgramRequestTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProgramChange")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProgramChange) Serialize(writeBuffer utils.WriteBu
 		}
 		if _programChangeErr != nil {
 			return errors.Wrap(_programChangeErr, "Error serializing 'programChange' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProgramChange"); popErr != nil {

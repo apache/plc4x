@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastAccessPoint interface {
 	IBACnetConstructedData
 	// GetLastAccessPoint returns LastAccessPoint (property field)
 	GetLastAccessPoint() *BACnetDeviceObjectReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastAccessPoint) GetLastAccessPoint() *BACnetDevic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastAccessPoint) GetActualValue() *BACnetDeviceObjectReference {
+	return CastBACnetDeviceObjectReference(m.GetLastAccessPoint())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastAccessPoint factory function for BACnetConstructedDataLastAccessPoint
 func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastAccessPoint {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastAccessPoint) GetLengthInBitsConditional(lastIt
 	// Simple field (lastAccessPoint)
 	lengthInBits += m.LastAccessPoint.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastAccessPointParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("lastAccessPoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastAccessPoint")
 	}
+
+	// Virtual field
+	_actualValue := lastAccessPoint
+	actualValue := CastBACnetDeviceObjectReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastAccessPoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastAccessPoint")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastAccessPoint) Serialize(writeBuffer utils.Write
 		}
 		if _lastAccessPointErr != nil {
 			return errors.Wrap(_lastAccessPointErr, "Error serializing 'lastAccessPoint' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastAccessPoint"); popErr != nil {

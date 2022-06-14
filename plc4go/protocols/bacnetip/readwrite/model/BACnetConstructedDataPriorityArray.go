@@ -41,6 +41,8 @@ type IBACnetConstructedDataPriorityArray interface {
 	IBACnetConstructedData
 	// GetPriorityArray returns PriorityArray (property field)
 	GetPriorityArray() *BACnetPriorityArray
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetPriorityArray
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPriorityArray) GetPriorityArray() *BACnetPriorityA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPriorityArray) GetActualValue() *BACnetPriorityArray {
+	return CastBACnetPriorityArray(m.GetPriorityArray())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPriorityArray factory function for BACnetConstructedDataPriorityArray
 func NewBACnetConstructedDataPriorityArray(priorityArray *BACnetPriorityArray, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPriorityArray {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPriorityArray) GetLengthInBitsConditional(lastItem
 	// Simple field (priorityArray)
 	lengthInBits += m.PriorityArray.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("priorityArray"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for priorityArray")
 	}
+
+	// Virtual field
+	_actualValue := priorityArray
+	actualValue := CastBACnetPriorityArray(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriorityArray"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPriorityArray")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPriorityArray) Serialize(writeBuffer utils.WriteBu
 		}
 		if _priorityArrayErr != nil {
 			return errors.Wrap(_priorityArrayErr, "Error serializing 'priorityArray' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPriorityArray"); popErr != nil {

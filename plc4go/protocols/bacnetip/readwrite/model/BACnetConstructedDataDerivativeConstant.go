@@ -41,6 +41,8 @@ type IBACnetConstructedDataDerivativeConstant interface {
 	IBACnetConstructedData
 	// GetDerivativeConstant returns DerivativeConstant (property field)
 	GetDerivativeConstant() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDerivativeConstant) GetDerivativeConstant() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDerivativeConstant) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetDerivativeConstant())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDerivativeConstant factory function for BACnetConstructedDataDerivativeConstant
 func NewBACnetConstructedDataDerivativeConstant(derivativeConstant *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDerivativeConstant {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDerivativeConstant) GetLengthInBitsConditional(las
 	// Simple field (derivativeConstant)
 	lengthInBits += m.DerivativeConstant.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("derivativeConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for derivativeConstant")
 	}
+
+	// Virtual field
+	_actualValue := derivativeConstant
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDerivativeConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDerivativeConstant")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDerivativeConstant) Serialize(writeBuffer utils.Wr
 		}
 		if _derivativeConstantErr != nil {
 			return errors.Wrap(_derivativeConstantErr, "Error serializing 'derivativeConstant' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDerivativeConstant"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataOperationDirection interface {
 	IBACnetConstructedData
 	// GetOperationDirection returns OperationDirection (property field)
 	GetOperationDirection() *BACnetEscalatorOperationDirectionTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEscalatorOperationDirectionTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataOperationDirection) GetOperationDirection() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataOperationDirection) GetActualValue() *BACnetEscalatorOperationDirectionTagged {
+	return CastBACnetEscalatorOperationDirectionTagged(m.GetOperationDirection())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOperationDirection factory function for BACnetConstructedDataOperationDirection
 func NewBACnetConstructedDataOperationDirection(operationDirection *BACnetEscalatorOperationDirectionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOperationDirection {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataOperationDirection) GetLengthInBitsConditional(las
 	// Simple field (operationDirection)
 	lengthInBits += m.OperationDirection.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("operationDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for operationDirection")
 	}
+
+	// Virtual field
+	_actualValue := operationDirection
+	actualValue := CastBACnetEscalatorOperationDirectionTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOperationDirection")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataOperationDirection) Serialize(writeBuffer utils.Wr
 		}
 		if _operationDirectionErr != nil {
 			return errors.Wrap(_operationDirectionErr, "Error serializing 'operationDirection' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOperationDirection"); popErr != nil {

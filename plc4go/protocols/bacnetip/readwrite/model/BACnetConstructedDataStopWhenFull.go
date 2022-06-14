@@ -41,6 +41,8 @@ type IBACnetConstructedDataStopWhenFull interface {
 	IBACnetConstructedData
 	// GetStopWhenFull returns StopWhenFull (property field)
 	GetStopWhenFull() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataStopWhenFull) GetStopWhenFull() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataStopWhenFull) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetStopWhenFull())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStopWhenFull factory function for BACnetConstructedDataStopWhenFull
 func NewBACnetConstructedDataStopWhenFull(stopWhenFull *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStopWhenFull {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataStopWhenFull) GetLengthInBitsConditional(lastItem 
 	// Simple field (stopWhenFull)
 	lengthInBits += m.StopWhenFull.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("stopWhenFull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for stopWhenFull")
 	}
+
+	// Virtual field
+	_actualValue := stopWhenFull
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStopWhenFull"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStopWhenFull")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataStopWhenFull) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _stopWhenFullErr != nil {
 			return errors.Wrap(_stopWhenFullErr, "Error serializing 'stopWhenFull' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStopWhenFull"); popErr != nil {

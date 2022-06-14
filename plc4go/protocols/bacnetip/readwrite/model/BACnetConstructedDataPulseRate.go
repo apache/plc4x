@@ -41,6 +41,8 @@ type IBACnetConstructedDataPulseRate interface {
 	IBACnetConstructedData
 	// GetPulseRate returns PulseRate (property field)
 	GetPulseRate() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPulseRate) GetPulseRate() *BACnetApplicationTagUns
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPulseRate) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetPulseRate())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPulseRate factory function for BACnetConstructedDataPulseRate
 func NewBACnetConstructedDataPulseRate(pulseRate *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPulseRate {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPulseRate) GetLengthInBitsConditional(lastItem boo
 	// Simple field (pulseRate)
 	lengthInBits += m.PulseRate.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPulseRateParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("pulseRate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for pulseRate")
 	}
+
+	// Virtual field
+	_actualValue := pulseRate
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPulseRate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPulseRate")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPulseRate) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _pulseRateErr != nil {
 			return errors.Wrap(_pulseRateErr, "Error serializing 'pulseRate' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPulseRate"); popErr != nil {

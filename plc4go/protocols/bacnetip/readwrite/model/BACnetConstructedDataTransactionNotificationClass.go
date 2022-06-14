@@ -41,6 +41,8 @@ type IBACnetConstructedDataTransactionNotificationClass interface {
 	IBACnetConstructedData
 	// GetTransactionNotificationClass returns TransactionNotificationClass (property field)
 	GetTransactionNotificationClass() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTransactionNotificationClass) GetTransactionNotifi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTransactionNotificationClass) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetTransactionNotificationClass())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTransactionNotificationClass factory function for BACnetConstructedDataTransactionNotificationClass
 func NewBACnetConstructedDataTransactionNotificationClass(transactionNotificationClass *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTransactionNotificationClass {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTransactionNotificationClass) GetLengthInBitsCondi
 	// Simple field (transactionNotificationClass)
 	lengthInBits += m.TransactionNotificationClass.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 	if closeErr := readBuffer.CloseContext("transactionNotificationClass"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for transactionNotificationClass")
 	}
+
+	// Virtual field
+	_actualValue := transactionNotificationClass
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransactionNotificationClass"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTransactionNotificationClass")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTransactionNotificationClass) Serialize(writeBuffe
 		}
 		if _transactionNotificationClassErr != nil {
 			return errors.Wrap(_transactionNotificationClassErr, "Error serializing 'transactionNotificationClass' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTransactionNotificationClass"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataDutyWindow interface {
 	IBACnetConstructedData
 	// GetDutyWindow returns DutyWindow (property field)
 	GetDutyWindow() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDutyWindow) GetDutyWindow() *BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDutyWindow) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDutyWindow())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDutyWindow factory function for BACnetConstructedDataDutyWindow
 func NewBACnetConstructedDataDutyWindow(dutyWindow *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDutyWindow {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDutyWindow) GetLengthInBitsConditional(lastItem bo
 	// Simple field (dutyWindow)
 	lengthInBits += m.DutyWindow.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDutyWindowParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("dutyWindow"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for dutyWindow")
 	}
+
+	// Virtual field
+	_actualValue := dutyWindow
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDutyWindow"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDutyWindow")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDutyWindow) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _dutyWindowErr != nil {
 			return errors.Wrap(_dutyWindowErr, "Error serializing 'dutyWindow' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDutyWindow"); popErr != nil {

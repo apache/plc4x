@@ -41,6 +41,8 @@ type IBACnetConstructedDataVendorIdentifier interface {
 	IBACnetConstructedData
 	// GetVendorIdentifier returns VendorIdentifier (property field)
 	GetVendorIdentifier() *BACnetVendorIdTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetVendorIdTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataVendorIdentifier) GetVendorIdentifier() *BACnetVen
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataVendorIdentifier) GetActualValue() *BACnetVendorIdTagged {
+	return CastBACnetVendorIdTagged(m.GetVendorIdentifier())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVendorIdentifier factory function for BACnetConstructedDataVendorIdentifier
 func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier *BACnetVendorIdTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataVendorIdentifier {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataVendorIdentifier) GetLengthInBitsConditional(lastI
 	// Simple field (vendorIdentifier)
 	lengthInBits += m.VendorIdentifier.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("vendorIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for vendorIdentifier")
 	}
+
+	// Virtual field
+	_actualValue := vendorIdentifier
+	actualValue := CastBACnetVendorIdTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVendorIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVendorIdentifier")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataVendorIdentifier) Serialize(writeBuffer utils.Writ
 		}
 		if _vendorIdentifierErr != nil {
 			return errors.Wrap(_vendorIdentifierErr, "Error serializing 'vendorIdentifier' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVendorIdentifier"); popErr != nil {

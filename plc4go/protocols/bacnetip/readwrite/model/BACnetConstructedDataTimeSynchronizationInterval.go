@@ -41,6 +41,8 @@ type IBACnetConstructedDataTimeSynchronizationInterval interface {
 	IBACnetConstructedData
 	// GetTimeSynchronization returns TimeSynchronization (property field)
 	GetTimeSynchronization() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTimeSynchronizationInterval) GetTimeSynchronizatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTimeSynchronizationInterval) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetTimeSynchronization())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeSynchronizationInterval factory function for BACnetConstructedDataTimeSynchronizationInterval
 func NewBACnetConstructedDataTimeSynchronizationInterval(timeSynchronization *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeSynchronizationInterval {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBitsCondit
 	// Simple field (timeSynchronization)
 	lengthInBits += m.TimeSynchronization.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 	if closeErr := readBuffer.CloseContext("timeSynchronization"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timeSynchronization")
 	}
+
+	// Virtual field
+	_actualValue := timeSynchronization
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeSynchronizationInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeSynchronizationInterval")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTimeSynchronizationInterval) Serialize(writeBuffer
 		}
 		if _timeSynchronizationErr != nil {
 			return errors.Wrap(_timeSynchronizationErr, "Error serializing 'timeSynchronization' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeSynchronizationInterval"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataPassengerAlarm interface {
 	IBACnetConstructedData
 	// GetPassengerAlarm returns PassengerAlarm (property field)
 	GetPassengerAlarm() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPassengerAlarm) GetPassengerAlarm() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPassengerAlarm) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetPassengerAlarm())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPassengerAlarm factory function for BACnetConstructedDataPassengerAlarm
 func NewBACnetConstructedDataPassengerAlarm(passengerAlarm *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPassengerAlarm {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPassengerAlarm) GetLengthInBitsConditional(lastIte
 	// Simple field (passengerAlarm)
 	lengthInBits += m.PassengerAlarm.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPassengerAlarmParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("passengerAlarm"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for passengerAlarm")
 	}
+
+	// Virtual field
+	_actualValue := passengerAlarm
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassengerAlarm"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassengerAlarm")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPassengerAlarm) Serialize(writeBuffer utils.WriteB
 		}
 		if _passengerAlarmErr != nil {
 			return errors.Wrap(_passengerAlarmErr, "Error serializing 'passengerAlarm' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPassengerAlarm"); popErr != nil {

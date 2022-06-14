@@ -41,6 +41,8 @@ type IBACnetConstructedDataMinimumOnTime interface {
 	IBACnetConstructedData
 	// GetMinimumOnTime returns MinimumOnTime (property field)
 	GetMinimumOnTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMinimumOnTime) GetMinimumOnTime() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMinimumOnTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetMinimumOnTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMinimumOnTime factory function for BACnetConstructedDataMinimumOnTime
 func NewBACnetConstructedDataMinimumOnTime(minimumOnTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMinimumOnTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMinimumOnTime) GetLengthInBitsConditional(lastItem
 	// Simple field (minimumOnTime)
 	lengthInBits += m.MinimumOnTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMinimumOnTimeParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("minimumOnTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for minimumOnTime")
 	}
+
+	// Virtual field
+	_actualValue := minimumOnTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumOnTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumOnTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMinimumOnTime) Serialize(writeBuffer utils.WriteBu
 		}
 		if _minimumOnTimeErr != nil {
 			return errors.Wrap(_minimumOnTimeErr, "Error serializing 'minimumOnTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMinimumOnTime"); popErr != nil {

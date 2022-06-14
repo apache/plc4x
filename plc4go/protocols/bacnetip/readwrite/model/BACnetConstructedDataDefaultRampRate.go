@@ -41,6 +41,8 @@ type IBACnetConstructedDataDefaultRampRate interface {
 	IBACnetConstructedData
 	// GetDefaultRampRate returns DefaultRampRate (property field)
 	GetDefaultRampRate() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDefaultRampRate) GetDefaultRampRate() *BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDefaultRampRate) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetDefaultRampRate())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultRampRate factory function for BACnetConstructedDataDefaultRampRate
 func NewBACnetConstructedDataDefaultRampRate(defaultRampRate *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultRampRate {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDefaultRampRate) GetLengthInBitsConditional(lastIt
 	// Simple field (defaultRampRate)
 	lengthInBits += m.DefaultRampRate.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("defaultRampRate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for defaultRampRate")
 	}
+
+	// Virtual field
+	_actualValue := defaultRampRate
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultRampRate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultRampRate")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDefaultRampRate) Serialize(writeBuffer utils.Write
 		}
 		if _defaultRampRateErr != nil {
 			return errors.Wrap(_defaultRampRateErr, "Error serializing 'defaultRampRate' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultRampRate"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataMachineRoomID interface {
 	IBACnetConstructedData
 	// GetMachineRoomId returns MachineRoomId (property field)
 	GetMachineRoomId() *BACnetApplicationTagObjectIdentifier
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMachineRoomID) GetMachineRoomId() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMachineRoomID) GetActualValue() *BACnetApplicationTagObjectIdentifier {
+	return CastBACnetApplicationTagObjectIdentifier(m.GetMachineRoomId())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMachineRoomID factory function for BACnetConstructedDataMachineRoomID
 func NewBACnetConstructedDataMachineRoomID(machineRoomId *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMachineRoomID {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMachineRoomID) GetLengthInBitsConditional(lastItem
 	// Simple field (machineRoomId)
 	lengthInBits += m.MachineRoomId.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("machineRoomId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for machineRoomId")
 	}
+
+	// Virtual field
+	_actualValue := machineRoomId
+	actualValue := CastBACnetApplicationTagObjectIdentifier(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMachineRoomID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMachineRoomID")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMachineRoomID) Serialize(writeBuffer utils.WriteBu
 		}
 		if _machineRoomIdErr != nil {
 			return errors.Wrap(_machineRoomIdErr, "Error serializing 'machineRoomId' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMachineRoomID"); popErr != nil {

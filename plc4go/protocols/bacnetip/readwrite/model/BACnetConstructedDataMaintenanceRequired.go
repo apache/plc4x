@@ -41,6 +41,8 @@ type IBACnetConstructedDataMaintenanceRequired interface {
 	IBACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() *BACnetMaintenanceTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetMaintenanceTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMaintenanceRequired) GetMaintenanceRequired() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMaintenanceRequired) GetActualValue() *BACnetMaintenanceTagged {
+	return CastBACnetMaintenanceTagged(m.GetMaintenanceRequired())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaintenanceRequired factory function for BACnetConstructedDataMaintenanceRequired
 func NewBACnetConstructedDataMaintenanceRequired(maintenanceRequired *BACnetMaintenanceTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaintenanceRequired {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMaintenanceRequired) GetLengthInBitsConditional(la
 	// Simple field (maintenanceRequired)
 	lengthInBits += m.MaintenanceRequired.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMaintenanceRequiredParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("maintenanceRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maintenanceRequired")
 	}
+
+	// Virtual field
+	_actualValue := maintenanceRequired
+	actualValue := CastBACnetMaintenanceTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaintenanceRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaintenanceRequired")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMaintenanceRequired) Serialize(writeBuffer utils.W
 		}
 		if _maintenanceRequiredErr != nil {
 			return errors.Wrap(_maintenanceRequiredErr, "Error serializing 'maintenanceRequired' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaintenanceRequired"); popErr != nil {

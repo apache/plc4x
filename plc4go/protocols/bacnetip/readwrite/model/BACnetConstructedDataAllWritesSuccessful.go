@@ -41,6 +41,8 @@ type IBACnetConstructedDataAllWritesSuccessful interface {
 	IBACnetConstructedData
 	// GetAllWritesSuccessful returns AllWritesSuccessful (property field)
 	GetAllWritesSuccessful() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAllWritesSuccessful) GetAllWritesSuccessful() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAllWritesSuccessful) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetAllWritesSuccessful())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAllWritesSuccessful factory function for BACnetConstructedDataAllWritesSuccessful
 func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAllWritesSuccessful {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAllWritesSuccessful) GetLengthInBitsConditional(la
 	// Simple field (allWritesSuccessful)
 	lengthInBits += m.AllWritesSuccessful.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("allWritesSuccessful"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for allWritesSuccessful")
 	}
+
+	// Virtual field
+	_actualValue := allWritesSuccessful
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAllWritesSuccessful"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAllWritesSuccessful")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAllWritesSuccessful) Serialize(writeBuffer utils.W
 		}
 		if _allWritesSuccessfulErr != nil {
 			return errors.Wrap(_allWritesSuccessfulErr, "Error serializing 'allWritesSuccessful' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAllWritesSuccessful"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataWindowSamples interface {
 	IBACnetConstructedData
 	// GetWindowSamples returns WindowSamples (property field)
 	GetWindowSamples() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataWindowSamples) GetWindowSamples() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataWindowSamples) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetWindowSamples())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataWindowSamples factory function for BACnetConstructedDataWindowSamples
 func NewBACnetConstructedDataWindowSamples(windowSamples *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataWindowSamples {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataWindowSamples) GetLengthInBitsConditional(lastItem
 	// Simple field (windowSamples)
 	lengthInBits += m.WindowSamples.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("windowSamples"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for windowSamples")
 	}
+
+	// Virtual field
+	_actualValue := windowSamples
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWindowSamples"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataWindowSamples")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataWindowSamples) Serialize(writeBuffer utils.WriteBu
 		}
 		if _windowSamplesErr != nil {
 			return errors.Wrap(_windowSamplesErr, "Error serializing 'windowSamples' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataWindowSamples"); popErr != nil {

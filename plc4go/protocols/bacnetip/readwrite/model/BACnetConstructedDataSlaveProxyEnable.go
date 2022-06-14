@@ -41,6 +41,8 @@ type IBACnetConstructedDataSlaveProxyEnable interface {
 	IBACnetConstructedData
 	// GetSlaveProxyEnable returns SlaveProxyEnable (property field)
 	GetSlaveProxyEnable() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSlaveProxyEnable) GetSlaveProxyEnable() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSlaveProxyEnable) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetSlaveProxyEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSlaveProxyEnable factory function for BACnetConstructedDataSlaveProxyEnable
 func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSlaveProxyEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSlaveProxyEnable) GetLengthInBitsConditional(lastI
 	// Simple field (slaveProxyEnable)
 	lengthInBits += m.SlaveProxyEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("slaveProxyEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for slaveProxyEnable")
 	}
+
+	// Virtual field
+	_actualValue := slaveProxyEnable
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSlaveProxyEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSlaveProxyEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSlaveProxyEnable) Serialize(writeBuffer utils.Writ
 		}
 		if _slaveProxyEnableErr != nil {
 			return errors.Wrap(_slaveProxyEnableErr, "Error serializing 'slaveProxyEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSlaveProxyEnable"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataPassbackTimeout interface {
 	IBACnetConstructedData
 	// GetPassbackTimeout returns PassbackTimeout (property field)
 	GetPassbackTimeout() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPassbackTimeout) GetPassbackTimeout() *BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPassbackTimeout) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetPassbackTimeout())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPassbackTimeout factory function for BACnetConstructedDataPassbackTimeout
 func NewBACnetConstructedDataPassbackTimeout(passbackTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPassbackTimeout {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPassbackTimeout) GetLengthInBitsConditional(lastIt
 	// Simple field (passbackTimeout)
 	lengthInBits += m.PassbackTimeout.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("passbackTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for passbackTimeout")
 	}
+
+	// Virtual field
+	_actualValue := passbackTimeout
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassbackTimeout")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPassbackTimeout) Serialize(writeBuffer utils.Write
 		}
 		if _passbackTimeoutErr != nil {
 			return errors.Wrap(_passbackTimeoutErr, "Error serializing 'passbackTimeout' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPassbackTimeout"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataFileAccessMethod interface {
 	IBACnetConstructedData
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() *BACnetFileAccessMethodTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetFileAccessMethodTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFileAccessMethod) GetFileAccessMethod() *BACnetFil
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFileAccessMethod) GetActualValue() *BACnetFileAccessMethodTagged {
+	return CastBACnetFileAccessMethodTagged(m.GetFileAccessMethod())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFileAccessMethod factory function for BACnetConstructedDataFileAccessMethod
 func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod *BACnetFileAccessMethodTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFileAccessMethod {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFileAccessMethod) GetLengthInBitsConditional(lastI
 	// Simple field (fileAccessMethod)
 	lengthInBits += m.FileAccessMethod.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("fileAccessMethod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for fileAccessMethod")
 	}
+
+	// Virtual field
+	_actualValue := fileAccessMethod
+	actualValue := CastBACnetFileAccessMethodTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileAccessMethod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileAccessMethod")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFileAccessMethod) Serialize(writeBuffer utils.Writ
 		}
 		if _fileAccessMethodErr != nil {
 			return errors.Wrap(_fileAccessMethodErr, "Error serializing 'fileAccessMethod' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFileAccessMethod"); popErr != nil {

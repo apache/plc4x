@@ -41,6 +41,8 @@ type IBACnetConstructedDataCarDriveStatus interface {
 	IBACnetConstructedData
 	// GetCarDriveStatus returns CarDriveStatus (property field)
 	GetCarDriveStatus() *BACnetLiftCarDriveStatusTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLiftCarDriveStatusTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCarDriveStatus) GetCarDriveStatus() *BACnetLiftCar
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCarDriveStatus) GetActualValue() *BACnetLiftCarDriveStatusTagged {
+	return CastBACnetLiftCarDriveStatusTagged(m.GetCarDriveStatus())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarDriveStatus factory function for BACnetConstructedDataCarDriveStatus
 func NewBACnetConstructedDataCarDriveStatus(carDriveStatus *BACnetLiftCarDriveStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarDriveStatus {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCarDriveStatus) GetLengthInBitsConditional(lastIte
 	// Simple field (carDriveStatus)
 	lengthInBits += m.CarDriveStatus.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCarDriveStatusParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("carDriveStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for carDriveStatus")
 	}
+
+	// Virtual field
+	_actualValue := carDriveStatus
+	actualValue := CastBACnetLiftCarDriveStatusTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarDriveStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarDriveStatus")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCarDriveStatus) Serialize(writeBuffer utils.WriteB
 		}
 		if _carDriveStatusErr != nil {
 			return errors.Wrap(_carDriveStatusErr, "Error serializing 'carDriveStatus' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarDriveStatus"); popErr != nil {

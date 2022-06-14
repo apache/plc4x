@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPAddress interface {
 	IBACnetConstructedData
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() *BACnetApplicationTagOctetString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagOctetString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPAddress) GetIpAddress() *BACnetApplicationTagOct
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPAddress) GetActualValue() *BACnetApplicationTagOctetString {
+	return CastBACnetApplicationTagOctetString(m.GetIpAddress())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPAddress factory function for BACnetConstructedDataIPAddress
 func NewBACnetConstructedDataIPAddress(ipAddress *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPAddress {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPAddress) GetLengthInBitsConditional(lastItem boo
 	// Simple field (ipAddress)
 	lengthInBits += m.IpAddress.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPAddressParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
 	}
+
+	// Virtual field
+	_actualValue := ipAddress
+	actualValue := CastBACnetApplicationTagOctetString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPAddress")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPAddress) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _ipAddressErr != nil {
 			return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPAddress"); popErr != nil {

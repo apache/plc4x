@@ -41,6 +41,8 @@ type IBACnetConstructedDataMaximumValueTimestamp interface {
 	IBACnetConstructedData
 	// GetMaximumValueTimestamp returns MaximumValueTimestamp (property field)
 	GetMaximumValueTimestamp() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMaximumValueTimestamp) GetMaximumValueTimestamp() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMaximumValueTimestamp) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetMaximumValueTimestamp())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaximumValueTimestamp factory function for BACnetConstructedDataMaximumValueTimestamp
 func NewBACnetConstructedDataMaximumValueTimestamp(maximumValueTimestamp *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaximumValueTimestamp {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMaximumValueTimestamp) GetLengthInBitsConditional(
 	// Simple field (maximumValueTimestamp)
 	lengthInBits += m.MaximumValueTimestamp.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("maximumValueTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maximumValueTimestamp")
 	}
+
+	// Virtual field
+	_actualValue := maximumValueTimestamp
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaximumValueTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaximumValueTimestamp")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMaximumValueTimestamp) Serialize(writeBuffer utils
 		}
 		if _maximumValueTimestampErr != nil {
 			return errors.Wrap(_maximumValueTimestampErr, "Error serializing 'maximumValueTimestamp' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaximumValueTimestamp"); popErr != nil {

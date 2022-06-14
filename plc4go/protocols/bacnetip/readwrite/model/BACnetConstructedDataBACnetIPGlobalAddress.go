@@ -41,6 +41,8 @@ type IBACnetConstructedDataBACnetIPGlobalAddress interface {
 	IBACnetConstructedData
 	// GetBacnetIpGlobalAddress returns BacnetIpGlobalAddress (property field)
 	GetBacnetIpGlobalAddress() *BACnetHostNPort
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetHostNPort
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBACnetIPGlobalAddress) GetBacnetIpGlobalAddress() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBACnetIPGlobalAddress) GetActualValue() *BACnetHostNPort {
+	return CastBACnetHostNPort(m.GetBacnetIpGlobalAddress())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPGlobalAddress factory function for BACnetConstructedDataBACnetIPGlobalAddress
 func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPGlobalAddress {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBACnetIPGlobalAddress) GetLengthInBitsConditional(
 	// Simple field (bacnetIpGlobalAddress)
 	lengthInBits += m.BacnetIpGlobalAddress.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("bacnetIpGlobalAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpGlobalAddress")
 	}
+
+	// Virtual field
+	_actualValue := bacnetIpGlobalAddress
+	actualValue := CastBACnetHostNPort(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPGlobalAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPGlobalAddress")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBACnetIPGlobalAddress) Serialize(writeBuffer utils
 		}
 		if _bacnetIpGlobalAddressErr != nil {
 			return errors.Wrap(_bacnetIpGlobalAddressErr, "Error serializing 'bacnetIpGlobalAddress' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPGlobalAddress"); popErr != nil {

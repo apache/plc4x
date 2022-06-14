@@ -41,6 +41,8 @@ type IBACnetConstructedDataNetworkType interface {
 	IBACnetConstructedData
 	// GetNetworkType returns NetworkType (property field)
 	GetNetworkType() *BACnetNetworkTypeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetNetworkTypeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNetworkType) GetNetworkType() *BACnetNetworkTypeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNetworkType) GetActualValue() *BACnetNetworkTypeTagged {
+	return CastBACnetNetworkTypeTagged(m.GetNetworkType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkType factory function for BACnetConstructedDataNetworkType
 func NewBACnetConstructedDataNetworkType(networkType *BACnetNetworkTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNetworkType) GetLengthInBitsConditional(lastItem b
 	// Simple field (networkType)
 	lengthInBits += m.NetworkType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNetworkTypeParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("networkType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for networkType")
 	}
+
+	// Virtual field
+	_actualValue := networkType
+	actualValue := CastBACnetNetworkTypeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNetworkType) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _networkTypeErr != nil {
 			return errors.Wrap(_networkTypeErr, "Error serializing 'networkType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkType"); popErr != nil {

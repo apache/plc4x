@@ -41,6 +41,8 @@ type IBACnetConstructedDataDistributionKeyRevision interface {
 	IBACnetConstructedData
 	// GetDistributionKeyRevision returns DistributionKeyRevision (property field)
 	GetDistributionKeyRevision() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDistributionKeyRevision) GetDistributionKeyRevisio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDistributionKeyRevision) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDistributionKeyRevision())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDistributionKeyRevision factory function for BACnetConstructedDataDistributionKeyRevision
 func NewBACnetConstructedDataDistributionKeyRevision(distributionKeyRevision *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDistributionKeyRevision {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDistributionKeyRevision) GetLengthInBitsConditiona
 	// Simple field (distributionKeyRevision)
 	lengthInBits += m.DistributionKeyRevision.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("distributionKeyRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for distributionKeyRevision")
 	}
+
+	// Virtual field
+	_actualValue := distributionKeyRevision
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDistributionKeyRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDistributionKeyRevision")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDistributionKeyRevision) Serialize(writeBuffer uti
 		}
 		if _distributionKeyRevisionErr != nil {
 			return errors.Wrap(_distributionKeyRevisionErr, "Error serializing 'distributionKeyRevision' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDistributionKeyRevision"); popErr != nil {

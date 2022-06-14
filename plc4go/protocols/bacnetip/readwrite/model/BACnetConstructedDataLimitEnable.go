@@ -41,6 +41,8 @@ type IBACnetConstructedDataLimitEnable interface {
 	IBACnetConstructedData
 	// GetLimitEnable returns LimitEnable (property field)
 	GetLimitEnable() *BACnetLimitEnableTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLimitEnableTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLimitEnable) GetLimitEnable() *BACnetLimitEnableTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLimitEnable) GetActualValue() *BACnetLimitEnableTagged {
+	return CastBACnetLimitEnableTagged(m.GetLimitEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLimitEnable factory function for BACnetConstructedDataLimitEnable
 func NewBACnetConstructedDataLimitEnable(limitEnable *BACnetLimitEnableTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLimitEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLimitEnable) GetLengthInBitsConditional(lastItem b
 	// Simple field (limitEnable)
 	lengthInBits += m.LimitEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("limitEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for limitEnable")
 	}
+
+	// Virtual field
+	_actualValue := limitEnable
+	actualValue := CastBACnetLimitEnableTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLimitEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLimitEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLimitEnable) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _limitEnableErr != nil {
 			return errors.Wrap(_limitEnableErr, "Error serializing 'limitEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLimitEnable"); popErr != nil {

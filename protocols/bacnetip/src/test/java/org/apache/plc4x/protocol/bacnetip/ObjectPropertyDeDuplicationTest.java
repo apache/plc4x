@@ -19,9 +19,7 @@
 package org.apache.plc4x.protocol.bacnetip;
 
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.FieldConversions;
@@ -35,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.apache.plc4x.protocol.bacnetip.BACnetObjectsDefinitions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -315,6 +314,27 @@ public class ObjectPropertyDeDuplicationTest {
         return tests;
     }
 
+    @TestFactory
+    Collection<DynamicNode> singleAttributesHaveAnActualValue() {
+        List<DynamicNode> tests = new LinkedList<>();
+        ComplexTypeDefinition baCnetConstructedData = typeDefinitions.get("BACnetConstructedData").asComplexTypeDefinition().orElseThrow();
+        typeDefinitions.values().stream()
+            .filter(TypeDefinitionConversions::isDiscriminatedComplexTypeDefinition)
+            .filter(typeDefinition -> !typeDefinition.getName().endsWith("All"))
+            .filter(typeDefinition -> !typeDefinition.getName().equals("BACnetConstructedDataOptional"))
+            .filter(typeDefinition -> !typeDefinition.getName().equals("BACnetConstructedDataRequired"))
+            .map(DiscriminatedComplexTypeDefinition.class::cast)
+            .filter(discriminatedComplexTypeDefinition -> discriminatedComplexTypeDefinition.getParentType().isPresent())
+            .filter(discriminatedComplexTypeDefinition -> discriminatedComplexTypeDefinition.getParentType().get() == baCnetConstructedData)
+            .filter(discriminatedComplexTypeDefinition -> discriminatedComplexTypeDefinition.getPropertyFields().stream().noneMatch(FieldConversions::isArrayField))
+            .forEach(discriminatedComplexTypeDefinition -> {
+                tests.add(DynamicTest.dynamicTest("Test for actualValue on " + discriminatedComplexTypeDefinition.getName(), () -> {
+                    assertTrue(discriminatedComplexTypeDefinition.getNamedFieldByName("actualValue").isPresent());
+                }));
+            });
+        return tests;
+    }
+
     @Nested
     @Tag("just-output")
     class JustOutputs {
@@ -373,6 +393,19 @@ public class ObjectPropertyDeDuplicationTest {
                 }
                 LOGGER.info("property {} is used by {} non uniquely", propertyIdentifier, bacNetObjectNames);
             });
+        }
+
+        @Test
+        void outputDataConstructedDataChilds() {
+            ComplexTypeDefinition baCnetConstructedData = typeDefinitions.get("BACnetConstructedData").asComplexTypeDefinition().orElseThrow();
+            Set<String> childsOfConstructedData = typeDefinitions.values().stream()
+                .filter(TypeDefinitionConversions::isDiscriminatedComplexTypeDefinition)
+                .map(DiscriminatedComplexTypeDefinition.class::cast)
+                .filter(discriminatedComplexTypeDefinition -> discriminatedComplexTypeDefinition.getParentType().isPresent())
+                .filter(discriminatedComplexTypeDefinition -> discriminatedComplexTypeDefinition.getParentType().get() == baCnetConstructedData)
+                .map(TypeDefinition::getName)
+                .collect(Collectors.toSet());
+            childsOfConstructedData.stream().sorted().forEach(System.out::println);
         }
     }
 }

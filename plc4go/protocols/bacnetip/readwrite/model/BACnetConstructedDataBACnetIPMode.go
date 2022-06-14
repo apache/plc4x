@@ -41,6 +41,8 @@ type IBACnetConstructedDataBACnetIPMode interface {
 	IBACnetConstructedData
 	// GetBacnetIpMode returns BacnetIpMode (property field)
 	GetBacnetIpMode() *BACnetIPModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetIPModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBACnetIPMode) GetBacnetIpMode() *BACnetIPModeTagge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBACnetIPMode) GetActualValue() *BACnetIPModeTagged {
+	return CastBACnetIPModeTagged(m.GetBacnetIpMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPMode factory function for BACnetConstructedDataBACnetIPMode
 func NewBACnetConstructedDataBACnetIPMode(bacnetIpMode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBACnetIPMode) GetLengthInBitsConditional(lastItem 
 	// Simple field (bacnetIpMode)
 	lengthInBits += m.BacnetIpMode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("bacnetIpMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpMode")
 	}
+
+	// Virtual field
+	_actualValue := bacnetIpMode
+	actualValue := CastBACnetIPModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBACnetIPMode) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _bacnetIpModeErr != nil {
 			return errors.Wrap(_bacnetIpModeErr, "Error serializing 'bacnetIpMode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPMode"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataCarMode interface {
 	IBACnetConstructedData
 	// GetCarMode returns CarMode (property field)
 	GetCarMode() *BACnetLiftCarModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLiftCarModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCarMode) GetCarMode() *BACnetLiftCarModeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCarMode) GetActualValue() *BACnetLiftCarModeTagged {
+	return CastBACnetLiftCarModeTagged(m.GetCarMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarMode factory function for BACnetConstructedDataCarMode
 func NewBACnetConstructedDataCarMode(carMode *BACnetLiftCarModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCarMode) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (carMode)
 	lengthInBits += m.CarMode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("carMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for carMode")
 	}
+
+	// Virtual field
+	_actualValue := carMode
+	actualValue := CastBACnetLiftCarModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCarMode) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _carModeErr != nil {
 			return errors.Wrap(_carModeErr, "Error serializing 'carMode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarMode"); popErr != nil {

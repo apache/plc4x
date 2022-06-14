@@ -41,6 +41,8 @@ type IBACnetConstructedDataDirectReading interface {
 	IBACnetConstructedData
 	// GetDirectReading returns DirectReading (property field)
 	GetDirectReading() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDirectReading) GetDirectReading() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDirectReading) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetDirectReading())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDirectReading factory function for BACnetConstructedDataDirectReading
 func NewBACnetConstructedDataDirectReading(directReading *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDirectReading {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDirectReading) GetLengthInBitsConditional(lastItem
 	// Simple field (directReading)
 	lengthInBits += m.DirectReading.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDirectReadingParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("directReading"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for directReading")
 	}
+
+	// Virtual field
+	_actualValue := directReading
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDirectReading"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDirectReading")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDirectReading) Serialize(writeBuffer utils.WriteBu
 		}
 		if _directReadingErr != nil {
 			return errors.Wrap(_directReadingErr, "Error serializing 'directReading' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDirectReading"); popErr != nil {

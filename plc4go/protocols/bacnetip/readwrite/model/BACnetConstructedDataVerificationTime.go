@@ -41,6 +41,8 @@ type IBACnetConstructedDataVerificationTime interface {
 	IBACnetConstructedData
 	// GetVerificationTime returns VerificationTime (property field)
 	GetVerificationTime() *BACnetApplicationTagSignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagSignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataVerificationTime) GetVerificationTime() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataVerificationTime) GetActualValue() *BACnetApplicationTagSignedInteger {
+	return CastBACnetApplicationTagSignedInteger(m.GetVerificationTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataVerificationTime factory function for BACnetConstructedDataVerificationTime
 func NewBACnetConstructedDataVerificationTime(verificationTime *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataVerificationTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataVerificationTime) GetLengthInBitsConditional(lastI
 	// Simple field (verificationTime)
 	lengthInBits += m.VerificationTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataVerificationTimeParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("verificationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for verificationTime")
 	}
+
+	// Virtual field
+	_actualValue := verificationTime
+	actualValue := CastBACnetApplicationTagSignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVerificationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVerificationTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataVerificationTime) Serialize(writeBuffer utils.Writ
 		}
 		if _verificationTimeErr != nil {
 			return errors.Wrap(_verificationTimeErr, "Error serializing 'verificationTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVerificationTime"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataEventType interface {
 	IBACnetConstructedData
 	// GetEventType returns EventType (property field)
 	GetEventType() *BACnetEventTypeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEventTypeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEventType) GetEventType() *BACnetEventTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEventType) GetActualValue() *BACnetEventTypeTagged {
+	return CastBACnetEventTypeTagged(m.GetEventType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventType factory function for BACnetConstructedDataEventType
 func NewBACnetConstructedDataEventType(eventType *BACnetEventTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEventType) GetLengthInBitsConditional(lastItem boo
 	// Simple field (eventType)
 	lengthInBits += m.EventType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEventTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for eventType")
 	}
+
+	// Virtual field
+	_actualValue := eventType
+	actualValue := CastBACnetEventTypeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEventType) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _eventTypeErr != nil {
 			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventType"); popErr != nil {

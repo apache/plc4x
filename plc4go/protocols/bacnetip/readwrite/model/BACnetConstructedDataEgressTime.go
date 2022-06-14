@@ -41,6 +41,8 @@ type IBACnetConstructedDataEgressTime interface {
 	IBACnetConstructedData
 	// GetEgressTime returns EgressTime (property field)
 	GetEgressTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEgressTime) GetEgressTime() *BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEgressTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetEgressTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEgressTime factory function for BACnetConstructedDataEgressTime
 func NewBACnetConstructedDataEgressTime(egressTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEgressTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEgressTime) GetLengthInBitsConditional(lastItem bo
 	// Simple field (egressTime)
 	lengthInBits += m.EgressTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEgressTimeParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("egressTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for egressTime")
 	}
+
+	// Virtual field
+	_actualValue := egressTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEgressTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEgressTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEgressTime) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _egressTimeErr != nil {
 			return errors.Wrap(_egressTimeErr, "Error serializing 'egressTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEgressTime"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataIntegerValueResolution interface {
 	IBACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() *BACnetApplicationTagSignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagSignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIntegerValueResolution) GetResolution() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIntegerValueResolution) GetActualValue() *BACnetApplicationTagSignedInteger {
+	return CastBACnetApplicationTagSignedInteger(m.GetResolution())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntegerValueResolution factory function for BACnetConstructedDataIntegerValueResolution
 func NewBACnetConstructedDataIntegerValueResolution(resolution *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIntegerValueResolution {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIntegerValueResolution) GetLengthInBitsConditional
 	// Simple field (resolution)
 	lengthInBits += m.Resolution.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIntegerValueResolutionParse(readBuffer utils.ReadBuffe
 	if closeErr := readBuffer.CloseContext("resolution"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for resolution")
 	}
+
+	// Virtual field
+	_actualValue := resolution
+	actualValue := CastBACnetApplicationTagSignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegerValueResolution"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntegerValueResolution")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIntegerValueResolution) Serialize(writeBuffer util
 		}
 		if _resolutionErr != nil {
 			return errors.Wrap(_resolutionErr, "Error serializing 'resolution' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIntegerValueResolution"); popErr != nil {

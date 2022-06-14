@@ -41,6 +41,8 @@ type IBACnetConstructedDataRepresents interface {
 	IBACnetConstructedData
 	// GetRepresents returns Represents (property field)
 	GetRepresents() *BACnetDeviceObjectReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataRepresents) GetRepresents() *BACnetDeviceObjectRef
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataRepresents) GetActualValue() *BACnetDeviceObjectReference {
+	return CastBACnetDeviceObjectReference(m.GetRepresents())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRepresents factory function for BACnetConstructedDataRepresents
 func NewBACnetConstructedDataRepresents(represents *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRepresents {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataRepresents) GetLengthInBitsConditional(lastItem bo
 	// Simple field (represents)
 	lengthInBits += m.Represents.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataRepresentsParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("represents"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for represents")
 	}
+
+	// Virtual field
+	_actualValue := represents
+	actualValue := CastBACnetDeviceObjectReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRepresents"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRepresents")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataRepresents) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _representsErr != nil {
 			return errors.Wrap(_representsErr, "Error serializing 'represents' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRepresents"); popErr != nil {

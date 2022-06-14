@@ -41,6 +41,8 @@ type IBACnetConstructedDataBACnetIPNATTraversal interface {
 	IBACnetConstructedData
 	// GetBacnetIPNATTraversal returns BacnetIPNATTraversal (property field)
 	GetBacnetIPNATTraversal() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) GetBacnetIPNATTraversal() *B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBACnetIPNATTraversal) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetBacnetIPNATTraversal())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPNATTraversal factory function for BACnetConstructedDataBACnetIPNATTraversal
 func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPNATTraversal {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBitsConditional(l
 	// Simple field (bacnetIPNATTraversal)
 	lengthInBits += m.BacnetIPNATTraversal.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer,
 	if closeErr := readBuffer.CloseContext("bacnetIPNATTraversal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for bacnetIPNATTraversal")
 	}
+
+	// Virtual field
+	_actualValue := bacnetIPNATTraversal
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPNATTraversal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPNATTraversal")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBACnetIPNATTraversal) Serialize(writeBuffer utils.
 		}
 		if _bacnetIPNATTraversalErr != nil {
 			return errors.Wrap(_bacnetIPNATTraversalErr, "Error serializing 'bacnetIPNATTraversal' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPNATTraversal"); popErr != nil {

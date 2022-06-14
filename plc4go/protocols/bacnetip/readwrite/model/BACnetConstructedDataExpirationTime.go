@@ -41,6 +41,8 @@ type IBACnetConstructedDataExpirationTime interface {
 	IBACnetConstructedData
 	// GetExpirationTime returns ExpirationTime (property field)
 	GetExpirationTime() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataExpirationTime) GetExpirationTime() *BACnetDateTim
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataExpirationTime) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetExpirationTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExpirationTime factory function for BACnetConstructedDataExpirationTime
 func NewBACnetConstructedDataExpirationTime(expirationTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExpirationTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataExpirationTime) GetLengthInBitsConditional(lastIte
 	// Simple field (expirationTime)
 	lengthInBits += m.ExpirationTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataExpirationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for expirationTime")
 	}
+
+	// Virtual field
+	_actualValue := expirationTime
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExpirationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExpirationTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataExpirationTime) Serialize(writeBuffer utils.WriteB
 		}
 		if _expirationTimeErr != nil {
 			return errors.Wrap(_expirationTimeErr, "Error serializing 'expirationTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExpirationTime"); popErr != nil {

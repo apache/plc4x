@@ -41,6 +41,8 @@ type IBACnetConstructedDataTimeOfStateCountReset interface {
 	IBACnetConstructedData
 	// GetTimeOfStateCountReset returns TimeOfStateCountReset (property field)
 	GetTimeOfStateCountReset() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTimeOfStateCountReset) GetTimeOfStateCountReset() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTimeOfStateCountReset) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetTimeOfStateCountReset())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeOfStateCountReset factory function for BACnetConstructedDataTimeOfStateCountReset
 func NewBACnetConstructedDataTimeOfStateCountReset(timeOfStateCountReset *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeOfStateCountReset {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTimeOfStateCountReset) GetLengthInBitsConditional(
 	// Simple field (timeOfStateCountReset)
 	lengthInBits += m.TimeOfStateCountReset.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTimeOfStateCountResetParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("timeOfStateCountReset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timeOfStateCountReset")
 	}
+
+	// Virtual field
+	_actualValue := timeOfStateCountReset
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfStateCountReset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeOfStateCountReset")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTimeOfStateCountReset) Serialize(writeBuffer utils
 		}
 		if _timeOfStateCountResetErr != nil {
 			return errors.Wrap(_timeOfStateCountResetErr, "Error serializing 'timeOfStateCountReset' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeOfStateCountReset"); popErr != nil {

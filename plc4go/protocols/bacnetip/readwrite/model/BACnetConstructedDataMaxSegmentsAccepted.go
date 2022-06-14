@@ -41,6 +41,8 @@ type IBACnetConstructedDataMaxSegmentsAccepted interface {
 	IBACnetConstructedData
 	// GetMaxSegmentsAccepted returns MaxSegmentsAccepted (property field)
 	GetMaxSegmentsAccepted() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMaxSegmentsAccepted) GetMaxSegmentsAccepted() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMaxSegmentsAccepted) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxSegmentsAccepted())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaxSegmentsAccepted factory function for BACnetConstructedDataMaxSegmentsAccepted
 func NewBACnetConstructedDataMaxSegmentsAccepted(maxSegmentsAccepted *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaxSegmentsAccepted {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBitsConditional(la
 	// Simple field (maxSegmentsAccepted)
 	lengthInBits += m.MaxSegmentsAccepted.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("maxSegmentsAccepted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maxSegmentsAccepted")
 	}
+
+	// Virtual field
+	_actualValue := maxSegmentsAccepted
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxSegmentsAccepted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxSegmentsAccepted")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMaxSegmentsAccepted) Serialize(writeBuffer utils.W
 		}
 		if _maxSegmentsAcceptedErr != nil {
 			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaxSegmentsAccepted"); popErr != nil {

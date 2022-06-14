@@ -41,6 +41,8 @@ type IBACnetConstructedDataDoorUnlockDelayTime interface {
 	IBACnetConstructedData
 	// GetDoorUnlockDelayTime returns DoorUnlockDelayTime (property field)
 	GetDoorUnlockDelayTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDoorUnlockDelayTime) GetDoorUnlockDelayTime() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDoorUnlockDelayTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDoorUnlockDelayTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorUnlockDelayTime factory function for BACnetConstructedDataDoorUnlockDelayTime
 func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorUnlockDelayTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBitsConditional(la
 	// Simple field (doorUnlockDelayTime)
 	lengthInBits += m.DoorUnlockDelayTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("doorUnlockDelayTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for doorUnlockDelayTime")
 	}
+
+	// Virtual field
+	_actualValue := doorUnlockDelayTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorUnlockDelayTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorUnlockDelayTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDoorUnlockDelayTime) Serialize(writeBuffer utils.W
 		}
 		if _doorUnlockDelayTimeErr != nil {
 			return errors.Wrap(_doorUnlockDelayTimeErr, "Error serializing 'doorUnlockDelayTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorUnlockDelayTime"); popErr != nil {

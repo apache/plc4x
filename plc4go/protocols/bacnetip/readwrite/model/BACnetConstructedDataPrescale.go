@@ -41,6 +41,8 @@ type IBACnetConstructedDataPrescale interface {
 	IBACnetConstructedData
 	// GetPrescale returns Prescale (property field)
 	GetPrescale() *BACnetPrescale
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetPrescale
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPrescale) GetPrescale() *BACnetPrescale {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPrescale) GetActualValue() *BACnetPrescale {
+	return CastBACnetPrescale(m.GetPrescale())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPrescale factory function for BACnetConstructedDataPrescale
 func NewBACnetConstructedDataPrescale(prescale *BACnetPrescale, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPrescale {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPrescale) GetLengthInBitsConditional(lastItem bool
 	// Simple field (prescale)
 	lengthInBits += m.Prescale.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("prescale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for prescale")
 	}
+
+	// Virtual field
+	_actualValue := prescale
+	actualValue := CastBACnetPrescale(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPrescale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPrescale")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPrescale) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _prescaleErr != nil {
 			return errors.Wrap(_prescaleErr, "Error serializing 'prescale' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPrescale"); popErr != nil {

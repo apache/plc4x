@@ -41,6 +41,8 @@ type IBACnetConstructedDataTraceFlag interface {
 	IBACnetConstructedData
 	// GetTraceFlag returns TraceFlag (property field)
 	GetTraceFlag() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTraceFlag) GetTraceFlag() *BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTraceFlag) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetTraceFlag())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTraceFlag factory function for BACnetConstructedDataTraceFlag
 func NewBACnetConstructedDataTraceFlag(traceFlag *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTraceFlag {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTraceFlag) GetLengthInBitsConditional(lastItem boo
 	// Simple field (traceFlag)
 	lengthInBits += m.TraceFlag.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTraceFlagParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("traceFlag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for traceFlag")
 	}
+
+	// Virtual field
+	_actualValue := traceFlag
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTraceFlag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTraceFlag")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTraceFlag) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _traceFlagErr != nil {
 			return errors.Wrap(_traceFlagErr, "Error serializing 'traceFlag' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTraceFlag"); popErr != nil {

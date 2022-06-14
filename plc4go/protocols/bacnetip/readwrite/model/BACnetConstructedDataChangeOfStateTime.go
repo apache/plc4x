@@ -41,6 +41,8 @@ type IBACnetConstructedDataChangeOfStateTime interface {
 	IBACnetConstructedData
 	// GetChangeOfStateTime returns ChangeOfStateTime (property field)
 	GetChangeOfStateTime() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataChangeOfStateTime) GetChangeOfStateTime() *BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataChangeOfStateTime) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetChangeOfStateTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataChangeOfStateTime factory function for BACnetConstructedDataChangeOfStateTime
 func NewBACnetConstructedDataChangeOfStateTime(changeOfStateTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataChangeOfStateTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataChangeOfStateTime) GetLengthInBitsConditional(last
 	// Simple field (changeOfStateTime)
 	lengthInBits += m.ChangeOfStateTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataChangeOfStateTimeParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("changeOfStateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for changeOfStateTime")
 	}
+
+	// Virtual field
+	_actualValue := changeOfStateTime
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangeOfStateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangeOfStateTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataChangeOfStateTime) Serialize(writeBuffer utils.Wri
 		}
 		if _changeOfStateTimeErr != nil {
 			return errors.Wrap(_changeOfStateTimeErr, "Error serializing 'changeOfStateTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChangeOfStateTime"); popErr != nil {

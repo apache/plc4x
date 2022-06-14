@@ -41,6 +41,8 @@ type IBACnetConstructedDataUpdateKeySetTimeout interface {
 	IBACnetConstructedData
 	// GetUpdateKeySetTimeout returns UpdateKeySetTimeout (property field)
 	GetUpdateKeySetTimeout() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) GetUpdateKeySetTimeout() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataUpdateKeySetTimeout) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetUpdateKeySetTimeout())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUpdateKeySetTimeout factory function for BACnetConstructedDataUpdateKeySetTimeout
 func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUpdateKeySetTimeout {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBitsConditional(la
 	// Simple field (updateKeySetTimeout)
 	lengthInBits += m.UpdateKeySetTimeout.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("updateKeySetTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for updateKeySetTimeout")
 	}
+
+	// Virtual field
+	_actualValue := updateKeySetTimeout
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUpdateKeySetTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUpdateKeySetTimeout")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataUpdateKeySetTimeout) Serialize(writeBuffer utils.W
 		}
 		if _updateKeySetTimeoutErr != nil {
 			return errors.Wrap(_updateKeySetTimeoutErr, "Error serializing 'updateKeySetTimeout' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUpdateKeySetTimeout"); popErr != nil {

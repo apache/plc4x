@@ -41,6 +41,8 @@ type IBACnetConstructedDataEffectivePeriod interface {
 	IBACnetConstructedData
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() *BACnetDateRange
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateRange
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEffectivePeriod) GetDateRange() *BACnetDateRange {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEffectivePeriod) GetActualValue() *BACnetDateRange {
+	return CastBACnetDateRange(m.GetDateRange())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEffectivePeriod factory function for BACnetConstructedDataEffectivePeriod
 func NewBACnetConstructedDataEffectivePeriod(dateRange *BACnetDateRange, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEffectivePeriod {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEffectivePeriod) GetLengthInBitsConditional(lastIt
 	// Simple field (dateRange)
 	lengthInBits += m.DateRange.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for dateRange")
 	}
+
+	// Virtual field
+	_actualValue := dateRange
+	actualValue := CastBACnetDateRange(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEffectivePeriod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEffectivePeriod")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEffectivePeriod) Serialize(writeBuffer utils.Write
 		}
 		if _dateRangeErr != nil {
 			return errors.Wrap(_dateRangeErr, "Error serializing 'dateRange' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEffectivePeriod"); popErr != nil {

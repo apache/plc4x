@@ -41,6 +41,8 @@ type IBACnetConstructedDataDoorOpenTooLongTime interface {
 	IBACnetConstructedData
 	// GetDoorOpenTooLongTime returns DoorOpenTooLongTime (property field)
 	GetDoorOpenTooLongTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) GetDoorOpenTooLongTime() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDoorOpenTooLongTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDoorOpenTooLongTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorOpenTooLongTime factory function for BACnetConstructedDataDoorOpenTooLongTime
 func NewBACnetConstructedDataDoorOpenTooLongTime(doorOpenTooLongTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorOpenTooLongTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) GetLengthInBitsConditional(la
 	// Simple field (doorOpenTooLongTime)
 	lengthInBits += m.DoorOpenTooLongTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("doorOpenTooLongTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for doorOpenTooLongTime")
 	}
+
+	// Virtual field
+	_actualValue := doorOpenTooLongTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorOpenTooLongTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorOpenTooLongTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDoorOpenTooLongTime) Serialize(writeBuffer utils.W
 		}
 		if _doorOpenTooLongTimeErr != nil {
 			return errors.Wrap(_doorOpenTooLongTimeErr, "Error serializing 'doorOpenTooLongTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorOpenTooLongTime"); popErr != nil {

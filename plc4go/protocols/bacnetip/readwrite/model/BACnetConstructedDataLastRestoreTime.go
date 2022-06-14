@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastRestoreTime interface {
 	IBACnetConstructedData
 	// GetLastRestoreTime returns LastRestoreTime (property field)
 	GetLastRestoreTime() *BACnetTimeStamp
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetTimeStamp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastRestoreTime) GetLastRestoreTime() *BACnetTimeS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastRestoreTime) GetActualValue() *BACnetTimeStamp {
+	return CastBACnetTimeStamp(m.GetLastRestoreTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastRestoreTime factory function for BACnetConstructedDataLastRestoreTime
 func NewBACnetConstructedDataLastRestoreTime(lastRestoreTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastRestoreTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastRestoreTime) GetLengthInBitsConditional(lastIt
 	// Simple field (lastRestoreTime)
 	lengthInBits += m.LastRestoreTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastRestoreTimeParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("lastRestoreTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastRestoreTime")
 	}
+
+	// Virtual field
+	_actualValue := lastRestoreTime
+	actualValue := CastBACnetTimeStamp(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastRestoreTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastRestoreTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastRestoreTime) Serialize(writeBuffer utils.Write
 		}
 		if _lastRestoreTimeErr != nil {
 			return errors.Wrap(_lastRestoreTimeErr, "Error serializing 'lastRestoreTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastRestoreTime"); popErr != nil {

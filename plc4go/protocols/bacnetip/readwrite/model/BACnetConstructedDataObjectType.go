@@ -41,6 +41,8 @@ type IBACnetConstructedDataObjectType interface {
 	IBACnetConstructedData
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() *BACnetObjectTypeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetObjectTypeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataObjectType) GetObjectType() *BACnetObjectTypeTagge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataObjectType) GetActualValue() *BACnetObjectTypeTagged {
+	return CastBACnetObjectTypeTagged(m.GetObjectType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataObjectType factory function for BACnetConstructedDataObjectType
 func NewBACnetConstructedDataObjectType(objectType *BACnetObjectTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataObjectType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataObjectType) GetLengthInBitsConditional(lastItem bo
 	// Simple field (objectType)
 	lengthInBits += m.ObjectType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataObjectTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("objectType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for objectType")
 	}
+
+	// Virtual field
+	_actualValue := objectType
+	actualValue := CastBACnetObjectTypeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataObjectType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataObjectType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataObjectType) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataObjectType"); popErr != nil {

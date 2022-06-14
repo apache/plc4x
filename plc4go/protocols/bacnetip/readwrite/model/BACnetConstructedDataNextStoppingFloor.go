@@ -41,6 +41,8 @@ type IBACnetConstructedDataNextStoppingFloor interface {
 	IBACnetConstructedData
 	// GetNextStoppingFloor returns NextStoppingFloor (property field)
 	GetNextStoppingFloor() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNextStoppingFloor) GetNextStoppingFloor() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNextStoppingFloor) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetNextStoppingFloor())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNextStoppingFloor factory function for BACnetConstructedDataNextStoppingFloor
 func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNextStoppingFloor {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNextStoppingFloor) GetLengthInBitsConditional(last
 	// Simple field (nextStoppingFloor)
 	lengthInBits += m.NextStoppingFloor.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("nextStoppingFloor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for nextStoppingFloor")
 	}
+
+	// Virtual field
+	_actualValue := nextStoppingFloor
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNextStoppingFloor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNextStoppingFloor")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNextStoppingFloor) Serialize(writeBuffer utils.Wri
 		}
 		if _nextStoppingFloorErr != nil {
 			return errors.Wrap(_nextStoppingFloorErr, "Error serializing 'nextStoppingFloor' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNextStoppingFloor"); popErr != nil {

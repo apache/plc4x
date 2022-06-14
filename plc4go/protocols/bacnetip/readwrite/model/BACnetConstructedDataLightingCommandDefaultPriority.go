@@ -41,6 +41,8 @@ type IBACnetConstructedDataLightingCommandDefaultPriority interface {
 	IBACnetConstructedData
 	// GetLightingCommandDefaultPriority returns LightingCommandDefaultPriority (property field)
 	GetLightingCommandDefaultPriority() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLightingCommandDefaultPriority) GetLightingCommand
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLightingCommandDefaultPriority) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetLightingCommandDefaultPriority())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLightingCommandDefaultPriority factory function for BACnetConstructedDataLightingCommandDefaultPriority
 func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefaultPriority *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLightingCommandDefaultPriority {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBitsCon
 	// Simple field (lightingCommandDefaultPriority)
 	lengthInBits += m.LightingCommandDefaultPriority.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.R
 	if closeErr := readBuffer.CloseContext("lightingCommandDefaultPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lightingCommandDefaultPriority")
 	}
+
+	// Virtual field
+	_actualValue := lightingCommandDefaultPriority
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommandDefaultPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommandDefaultPriority")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLightingCommandDefaultPriority) Serialize(writeBuf
 		}
 		if _lightingCommandDefaultPriorityErr != nil {
 			return errors.Wrap(_lightingCommandDefaultPriorityErr, "Error serializing 'lightingCommandDefaultPriority' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLightingCommandDefaultPriority"); popErr != nil {

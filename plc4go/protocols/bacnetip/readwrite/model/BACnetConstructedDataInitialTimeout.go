@@ -41,6 +41,8 @@ type IBACnetConstructedDataInitialTimeout interface {
 	IBACnetConstructedData
 	// GetInitialTimeout returns InitialTimeout (property field)
 	GetInitialTimeout() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataInitialTimeout) GetInitialTimeout() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataInitialTimeout) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetInitialTimeout())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInitialTimeout factory function for BACnetConstructedDataInitialTimeout
 func NewBACnetConstructedDataInitialTimeout(initialTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataInitialTimeout {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataInitialTimeout) GetLengthInBitsConditional(lastIte
 	// Simple field (initialTimeout)
 	lengthInBits += m.InitialTimeout.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("initialTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for initialTimeout")
 	}
+
+	// Virtual field
+	_actualValue := initialTimeout
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInitialTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInitialTimeout")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataInitialTimeout) Serialize(writeBuffer utils.WriteB
 		}
 		if _initialTimeoutErr != nil {
 			return errors.Wrap(_initialTimeoutErr, "Error serializing 'initialTimeout' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInitialTimeout"); popErr != nil {

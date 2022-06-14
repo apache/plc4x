@@ -41,6 +41,8 @@ type IBACnetConstructedDataDeployedProfileLocation interface {
 	IBACnetConstructedData
 	// GetDeployedProfileLocation returns DeployedProfileLocation (property field)
 	GetDeployedProfileLocation() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDeployedProfileLocation) GetDeployedProfileLocatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDeployedProfileLocation) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetDeployedProfileLocation())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeployedProfileLocation factory function for BACnetConstructedDataDeployedProfileLocation
 func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDeployedProfileLocation {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDeployedProfileLocation) GetLengthInBitsConditiona
 	// Simple field (deployedProfileLocation)
 	lengthInBits += m.DeployedProfileLocation.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("deployedProfileLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for deployedProfileLocation")
 	}
+
+	// Virtual field
+	_actualValue := deployedProfileLocation
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeployedProfileLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeployedProfileLocation")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDeployedProfileLocation) Serialize(writeBuffer uti
 		}
 		if _deployedProfileLocationErr != nil {
 			return errors.Wrap(_deployedProfileLocationErr, "Error serializing 'deployedProfileLocation' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeployedProfileLocation"); popErr != nil {

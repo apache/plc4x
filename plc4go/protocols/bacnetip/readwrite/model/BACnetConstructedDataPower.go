@@ -41,6 +41,8 @@ type IBACnetConstructedDataPower interface {
 	IBACnetConstructedData
 	// GetPower returns Power (property field)
 	GetPower() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPower) GetPower() *BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPower) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetPower())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPower factory function for BACnetConstructedDataPower
 func NewBACnetConstructedDataPower(power *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPower {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPower) GetLengthInBitsConditional(lastItem bool) u
 	// Simple field (power)
 	lengthInBits += m.Power.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if closeErr := readBuffer.CloseContext("power"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for power")
 	}
+
+	// Virtual field
+	_actualValue := power
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPower"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPower")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPower) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		if _powerErr != nil {
 			return errors.Wrap(_powerErr, "Error serializing 'power' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPower"); popErr != nil {

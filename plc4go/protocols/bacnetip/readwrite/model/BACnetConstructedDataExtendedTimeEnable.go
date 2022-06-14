@@ -41,6 +41,8 @@ type IBACnetConstructedDataExtendedTimeEnable interface {
 	IBACnetConstructedData
 	// GetExtendedTimeEnable returns ExtendedTimeEnable (property field)
 	GetExtendedTimeEnable() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataExtendedTimeEnable) GetExtendedTimeEnable() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataExtendedTimeEnable) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetExtendedTimeEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExtendedTimeEnable factory function for BACnetConstructedDataExtendedTimeEnable
 func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExtendedTimeEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataExtendedTimeEnable) GetLengthInBitsConditional(las
 	// Simple field (extendedTimeEnable)
 	lengthInBits += m.ExtendedTimeEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("extendedTimeEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for extendedTimeEnable")
 	}
+
+	// Virtual field
+	_actualValue := extendedTimeEnable
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExtendedTimeEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExtendedTimeEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataExtendedTimeEnable) Serialize(writeBuffer utils.Wr
 		}
 		if _extendedTimeEnableErr != nil {
 			return errors.Wrap(_extendedTimeEnableErr, "Error serializing 'extendedTimeEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExtendedTimeEnable"); popErr != nil {

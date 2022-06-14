@@ -41,6 +41,8 @@ type IBACnetConstructedDataBinaryLightingOutputFeedbackValue interface {
 	IBACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() *BACnetBinaryLightingPVTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetBinaryLightingPVTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetFeedbackValu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetActualValue() *BACnetBinaryLightingPVTagged {
+	return CastBACnetBinaryLightingPVTagged(m.GetFeedbackValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryLightingOutputFeedbackValue factory function for BACnetConstructedDataBinaryLightingOutputFeedbackValue
 func NewBACnetConstructedDataBinaryLightingOutputFeedbackValue(feedbackValue *BACnetBinaryLightingPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBinaryLightingOutputFeedbackValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInBits
 	// Simple field (feedbackValue)
 	lengthInBits += m.FeedbackValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(readBuffer util
 	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for feedbackValue")
 	}
+
+	// Virtual field
+	_actualValue := feedbackValue
+	actualValue := CastBACnetBinaryLightingPVTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryLightingOutputFeedbackValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBinaryLightingOutputFeedbackValue) Serialize(write
 		}
 		if _feedbackValueErr != nil {
 			return errors.Wrap(_feedbackValueErr, "Error serializing 'feedbackValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue"); popErr != nil {

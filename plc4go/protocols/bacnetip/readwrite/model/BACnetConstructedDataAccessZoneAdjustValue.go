@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccessZoneAdjustValue interface {
 	IBACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() *BACnetApplicationTagSignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagSignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccessZoneAdjustValue) GetAdjustValue() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccessZoneAdjustValue) GetActualValue() *BACnetApplicationTagSignedInteger {
+	return CastBACnetApplicationTagSignedInteger(m.GetAdjustValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessZoneAdjustValue factory function for BACnetConstructedDataAccessZoneAdjustValue
 func NewBACnetConstructedDataAccessZoneAdjustValue(adjustValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessZoneAdjustValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBitsConditional(
 	// Simple field (adjustValue)
 	lengthInBits += m.AdjustValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("adjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for adjustValue")
 	}
+
+	// Virtual field
+	_actualValue := adjustValue
+	actualValue := CastBACnetApplicationTagSignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessZoneAdjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessZoneAdjustValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccessZoneAdjustValue) Serialize(writeBuffer utils
 		}
 		if _adjustValueErr != nil {
 			return errors.Wrap(_adjustValueErr, "Error serializing 'adjustValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessZoneAdjustValue"); popErr != nil {
