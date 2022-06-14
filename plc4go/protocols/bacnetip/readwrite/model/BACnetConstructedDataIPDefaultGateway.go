@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPDefaultGateway interface {
 	IBACnetConstructedData
 	// GetIpDefaultGateway returns IpDefaultGateway (property field)
 	GetIpDefaultGateway() *BACnetApplicationTagOctetString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagOctetString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPDefaultGateway) GetIpDefaultGateway() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPDefaultGateway) GetActualValue() *BACnetApplicationTagOctetString {
+	return CastBACnetApplicationTagOctetString(m.GetIpDefaultGateway())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPDefaultGateway factory function for BACnetConstructedDataIPDefaultGateway
 func NewBACnetConstructedDataIPDefaultGateway(ipDefaultGateway *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPDefaultGateway {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPDefaultGateway) GetLengthInBitsConditional(lastI
 	// Simple field (ipDefaultGateway)
 	lengthInBits += m.IpDefaultGateway.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("ipDefaultGateway"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipDefaultGateway")
 	}
+
+	// Virtual field
+	_actualValue := ipDefaultGateway
+	actualValue := CastBACnetApplicationTagOctetString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDefaultGateway"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDefaultGateway")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPDefaultGateway) Serialize(writeBuffer utils.Writ
 		}
 		if _ipDefaultGatewayErr != nil {
 			return errors.Wrap(_ipDefaultGatewayErr, "Error serializing 'ipDefaultGateway' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPDefaultGateway"); popErr != nil {

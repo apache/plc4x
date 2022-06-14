@@ -41,6 +41,8 @@ type IBACnetConstructedDataPowerMode interface {
 	IBACnetConstructedData
 	// GetPowerMode returns PowerMode (property field)
 	GetPowerMode() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPowerMode) GetPowerMode() *BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPowerMode) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetPowerMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPowerMode factory function for BACnetConstructedDataPowerMode
 func NewBACnetConstructedDataPowerMode(powerMode *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPowerMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPowerMode) GetLengthInBitsConditional(lastItem boo
 	// Simple field (powerMode)
 	lengthInBits += m.PowerMode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPowerModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("powerMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for powerMode")
 	}
+
+	// Virtual field
+	_actualValue := powerMode
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPowerMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPowerMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPowerMode) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _powerModeErr != nil {
 			return errors.Wrap(_powerModeErr, "Error serializing 'powerMode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPowerMode"); popErr != nil {

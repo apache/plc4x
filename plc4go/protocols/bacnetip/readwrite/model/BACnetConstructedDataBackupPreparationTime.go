@@ -41,6 +41,8 @@ type IBACnetConstructedDataBackupPreparationTime interface {
 	IBACnetConstructedData
 	// GetBackupPreparationTime returns BackupPreparationTime (property field)
 	GetBackupPreparationTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBackupPreparationTime) GetBackupPreparationTime() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBackupPreparationTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetBackupPreparationTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBackupPreparationTime factory function for BACnetConstructedDataBackupPreparationTime
 func NewBACnetConstructedDataBackupPreparationTime(backupPreparationTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBackupPreparationTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBackupPreparationTime) GetLengthInBitsConditional(
 	// Simple field (backupPreparationTime)
 	lengthInBits += m.BackupPreparationTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBackupPreparationTimeParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("backupPreparationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for backupPreparationTime")
 	}
+
+	// Virtual field
+	_actualValue := backupPreparationTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupPreparationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBackupPreparationTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBackupPreparationTime) Serialize(writeBuffer utils
 		}
 		if _backupPreparationTimeErr != nil {
 			return errors.Wrap(_backupPreparationTimeErr, "Error serializing 'backupPreparationTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBackupPreparationTime"); popErr != nil {

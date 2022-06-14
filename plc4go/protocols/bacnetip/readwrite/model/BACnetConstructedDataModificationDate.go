@@ -41,6 +41,8 @@ type IBACnetConstructedDataModificationDate interface {
 	IBACnetConstructedData
 	// GetModificationDate returns ModificationDate (property field)
 	GetModificationDate() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataModificationDate) GetModificationDate() *BACnetDat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataModificationDate) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetModificationDate())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataModificationDate factory function for BACnetConstructedDataModificationDate
 func NewBACnetConstructedDataModificationDate(modificationDate *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataModificationDate {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataModificationDate) GetLengthInBitsConditional(lastI
 	// Simple field (modificationDate)
 	lengthInBits += m.ModificationDate.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataModificationDateParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("modificationDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for modificationDate")
 	}
+
+	// Virtual field
+	_actualValue := modificationDate
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataModificationDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataModificationDate")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataModificationDate) Serialize(writeBuffer utils.Writ
 		}
 		if _modificationDateErr != nil {
 			return errors.Wrap(_modificationDateErr, "Error serializing 'modificationDate' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataModificationDate"); popErr != nil {

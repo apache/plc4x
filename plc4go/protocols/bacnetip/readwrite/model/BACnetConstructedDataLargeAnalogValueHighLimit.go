@@ -41,6 +41,8 @@ type IBACnetConstructedDataLargeAnalogValueHighLimit interface {
 	IBACnetConstructedData
 	// GetHighLimit returns HighLimit (property field)
 	GetHighLimit() *BACnetApplicationTagDouble
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagDouble
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLargeAnalogValueHighLimit) GetHighLimit() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLargeAnalogValueHighLimit) GetActualValue() *BACnetApplicationTagDouble {
+	return CastBACnetApplicationTagDouble(m.GetHighLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for BACnetConstructedDataLargeAnalogValueHighLimit
 func NewBACnetConstructedDataLargeAnalogValueHighLimit(highLimit *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLargeAnalogValueHighLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLargeAnalogValueHighLimit) GetLengthInBitsConditio
 	// Simple field (highLimit)
 	lengthInBits += m.HighLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLargeAnalogValueHighLimitParse(readBuffer utils.ReadBu
 	if closeErr := readBuffer.CloseContext("highLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for highLimit")
 	}
+
+	// Virtual field
+	_actualValue := highLimit
+	actualValue := CastBACnetApplicationTagDouble(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueHighLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueHighLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLargeAnalogValueHighLimit) Serialize(writeBuffer u
 		}
 		if _highLimitErr != nil {
 			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLargeAnalogValueHighLimit"); popErr != nil {

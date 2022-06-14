@@ -41,6 +41,8 @@ type IBACnetConstructedDataAlertEnrollmentPresentValue interface {
 	IBACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() *BACnetApplicationTagObjectIdentifier
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAlertEnrollmentPresentValue) GetPresentValue() *BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAlertEnrollmentPresentValue) GetActualValue() *BACnetApplicationTagObjectIdentifier {
+	return CastBACnetApplicationTagObjectIdentifier(m.GetPresentValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAlertEnrollmentPresentValue factory function for BACnetConstructedDataAlertEnrollmentPresentValue
 func NewBACnetConstructedDataAlertEnrollmentPresentValue(presentValue *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAlertEnrollmentPresentValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAlertEnrollmentPresentValue) GetLengthInBitsCondit
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAlertEnrollmentPresentValueParse(readBuffer utils.Read
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
 	}
+
+	// Virtual field
+	_actualValue := presentValue
+	actualValue := CastBACnetApplicationTagObjectIdentifier(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAlertEnrollmentPresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAlertEnrollmentPresentValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAlertEnrollmentPresentValue) Serialize(writeBuffer
 		}
 		if _presentValueErr != nil {
 			return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAlertEnrollmentPresentValue"); popErr != nil {

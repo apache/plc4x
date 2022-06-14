@@ -41,6 +41,8 @@ type IBACnetConstructedDataDateValuePresentValue interface {
 	IBACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() *BACnetApplicationTagDate
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagDate
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDateValuePresentValue) GetPresentValue() *BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDateValuePresentValue) GetActualValue() *BACnetApplicationTagDate {
+	return CastBACnetApplicationTagDate(m.GetPresentValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDateValuePresentValue factory function for BACnetConstructedDataDateValuePresentValue
 func NewBACnetConstructedDataDateValuePresentValue(presentValue *BACnetApplicationTagDate, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDateValuePresentValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDateValuePresentValue) GetLengthInBitsConditional(
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDateValuePresentValueParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
 	}
+
+	// Virtual field
+	_actualValue := presentValue
+	actualValue := CastBACnetApplicationTagDate(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDateValuePresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDateValuePresentValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDateValuePresentValue) Serialize(writeBuffer utils
 		}
 		if _presentValueErr != nil {
 			return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDateValuePresentValue"); popErr != nil {

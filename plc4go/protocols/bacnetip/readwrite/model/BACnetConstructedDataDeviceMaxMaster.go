@@ -41,6 +41,8 @@ type IBACnetConstructedDataDeviceMaxMaster interface {
 	IBACnetConstructedData
 	// GetMaxMaster returns MaxMaster (property field)
 	GetMaxMaster() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDeviceMaxMaster) GetMaxMaster() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDeviceMaxMaster) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxMaster())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeviceMaxMaster factory function for BACnetConstructedDataDeviceMaxMaster
 func NewBACnetConstructedDataDeviceMaxMaster(maxMaster *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDeviceMaxMaster {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDeviceMaxMaster) GetLengthInBitsConditional(lastIt
 	// Simple field (maxMaster)
 	lengthInBits += m.MaxMaster.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDeviceMaxMasterParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("maxMaster"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maxMaster")
 	}
+
+	// Virtual field
+	_actualValue := maxMaster
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceMaxMaster"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceMaxMaster")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDeviceMaxMaster) Serialize(writeBuffer utils.Write
 		}
 		if _maxMasterErr != nil {
 			return errors.Wrap(_maxMasterErr, "Error serializing 'maxMaster' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceMaxMaster"); popErr != nil {

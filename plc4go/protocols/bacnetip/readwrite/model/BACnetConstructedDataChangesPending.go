@@ -41,6 +41,8 @@ type IBACnetConstructedDataChangesPending interface {
 	IBACnetConstructedData
 	// GetChangesPending returns ChangesPending (property field)
 	GetChangesPending() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataChangesPending) GetChangesPending() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataChangesPending) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetChangesPending())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataChangesPending factory function for BACnetConstructedDataChangesPending
 func NewBACnetConstructedDataChangesPending(changesPending *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataChangesPending {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataChangesPending) GetLengthInBitsConditional(lastIte
 	// Simple field (changesPending)
 	lengthInBits += m.ChangesPending.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("changesPending"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for changesPending")
 	}
+
+	// Virtual field
+	_actualValue := changesPending
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangesPending"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangesPending")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataChangesPending) Serialize(writeBuffer utils.WriteB
 		}
 		if _changesPendingErr != nil {
 			return errors.Wrap(_changesPendingErr, "Error serializing 'changesPending' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChangesPending"); popErr != nil {

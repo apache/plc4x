@@ -41,6 +41,8 @@ type IBACnetConstructedDataActivationTime interface {
 	IBACnetConstructedData
 	// GetActivationTime returns ActivationTime (property field)
 	GetActivationTime() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataActivationTime) GetActivationTime() *BACnetDateTim
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataActivationTime) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetActivationTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActivationTime factory function for BACnetConstructedDataActivationTime
 func NewBACnetConstructedDataActivationTime(activationTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActivationTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataActivationTime) GetLengthInBitsConditional(lastIte
 	// Simple field (activationTime)
 	lengthInBits += m.ActivationTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataActivationTimeParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("activationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for activationTime")
 	}
+
+	// Virtual field
+	_actualValue := activationTime
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActivationTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActivationTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataActivationTime) Serialize(writeBuffer utils.WriteB
 		}
 		if _activationTimeErr != nil {
 			return errors.Wrap(_activationTimeErr, "Error serializing 'activationTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActivationTime"); popErr != nil {

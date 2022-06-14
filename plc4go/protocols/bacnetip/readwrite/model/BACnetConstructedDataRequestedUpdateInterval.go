@@ -41,6 +41,8 @@ type IBACnetConstructedDataRequestedUpdateInterval interface {
 	IBACnetConstructedData
 	// GetRequestedUpdateInterval returns RequestedUpdateInterval (property field)
 	GetRequestedUpdateInterval() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) GetRequestedUpdateInterva
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataRequestedUpdateInterval) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetRequestedUpdateInterval())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRequestedUpdateInterval factory function for BACnetConstructedDataRequestedUpdateInterval
 func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRequestedUpdateInterval {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) GetLengthInBitsConditiona
 	// Simple field (requestedUpdateInterval)
 	lengthInBits += m.RequestedUpdateInterval.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("requestedUpdateInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for requestedUpdateInterval")
 	}
+
+	// Virtual field
+	_actualValue := requestedUpdateInterval
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRequestedUpdateInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRequestedUpdateInterval")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataRequestedUpdateInterval) Serialize(writeBuffer uti
 		}
 		if _requestedUpdateIntervalErr != nil {
 			return errors.Wrap(_requestedUpdateIntervalErr, "Error serializing 'requestedUpdateInterval' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRequestedUpdateInterval"); popErr != nil {

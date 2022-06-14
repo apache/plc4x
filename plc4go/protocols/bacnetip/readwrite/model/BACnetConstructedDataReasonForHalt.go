@@ -41,6 +41,8 @@ type IBACnetConstructedDataReasonForHalt interface {
 	IBACnetConstructedData
 	// GetProgramError returns ProgramError (property field)
 	GetProgramError() *BACnetProgramErrorTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetProgramErrorTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataReasonForHalt) GetProgramError() *BACnetProgramErr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataReasonForHalt) GetActualValue() *BACnetProgramErrorTagged {
+	return CastBACnetProgramErrorTagged(m.GetProgramError())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReasonForHalt factory function for BACnetConstructedDataReasonForHalt
 func NewBACnetConstructedDataReasonForHalt(programError *BACnetProgramErrorTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReasonForHalt {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataReasonForHalt) GetLengthInBitsConditional(lastItem
 	// Simple field (programError)
 	lengthInBits += m.ProgramError.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("programError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for programError")
 	}
+
+	// Virtual field
+	_actualValue := programError
+	actualValue := CastBACnetProgramErrorTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReasonForHalt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReasonForHalt")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataReasonForHalt) Serialize(writeBuffer utils.WriteBu
 		}
 		if _programErrorErr != nil {
 			return errors.Wrap(_programErrorErr, "Error serializing 'programError' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReasonForHalt"); popErr != nil {

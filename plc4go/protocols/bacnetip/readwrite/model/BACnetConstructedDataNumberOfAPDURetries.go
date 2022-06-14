@@ -41,6 +41,8 @@ type IBACnetConstructedDataNumberOfAPDURetries interface {
 	IBACnetConstructedData
 	// GetNumberOfApduRetries returns NumberOfApduRetries (property field)
 	GetNumberOfApduRetries() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) GetNumberOfApduRetries() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNumberOfAPDURetries) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetNumberOfApduRetries())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNumberOfAPDURetries factory function for BACnetConstructedDataNumberOfAPDURetries
 func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNumberOfAPDURetries {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) GetLengthInBitsConditional(la
 	// Simple field (numberOfApduRetries)
 	lengthInBits += m.NumberOfApduRetries.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("numberOfApduRetries"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for numberOfApduRetries")
 	}
+
+	// Virtual field
+	_actualValue := numberOfApduRetries
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfAPDURetries"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfAPDURetries")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNumberOfAPDURetries) Serialize(writeBuffer utils.W
 		}
 		if _numberOfApduRetriesErr != nil {
 			return errors.Wrap(_numberOfApduRetriesErr, "Error serializing 'numberOfApduRetries' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNumberOfAPDURetries"); popErr != nil {

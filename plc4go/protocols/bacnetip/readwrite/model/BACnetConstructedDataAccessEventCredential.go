@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccessEventCredential interface {
 	IBACnetConstructedData
 	// GetAccessEventCredential returns AccessEventCredential (property field)
 	GetAccessEventCredential() *BACnetDeviceObjectReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccessEventCredential) GetAccessEventCredential() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccessEventCredential) GetActualValue() *BACnetDeviceObjectReference {
+	return CastBACnetDeviceObjectReference(m.GetAccessEventCredential())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEventCredential factory function for BACnetConstructedDataAccessEventCredential
 func NewBACnetConstructedDataAccessEventCredential(accessEventCredential *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessEventCredential {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccessEventCredential) GetLengthInBitsConditional(
 	// Simple field (accessEventCredential)
 	lengthInBits += m.AccessEventCredential.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("accessEventCredential"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for accessEventCredential")
 	}
+
+	// Virtual field
+	_actualValue := accessEventCredential
+	actualValue := CastBACnetDeviceObjectReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventCredential"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventCredential")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccessEventCredential) Serialize(writeBuffer utils
 		}
 		if _accessEventCredentialErr != nil {
 			return errors.Wrap(_accessEventCredentialErr, "Error serializing 'accessEventCredential' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventCredential"); popErr != nil {

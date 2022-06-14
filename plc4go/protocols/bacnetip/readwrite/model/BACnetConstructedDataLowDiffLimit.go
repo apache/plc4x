@@ -41,6 +41,8 @@ type IBACnetConstructedDataLowDiffLimit interface {
 	IBACnetConstructedData
 	// GetLowDiffLimit returns LowDiffLimit (property field)
 	GetLowDiffLimit() *BACnetOptionalREAL
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetOptionalREAL
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLowDiffLimit) GetLowDiffLimit() *BACnetOptionalREA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLowDiffLimit) GetActualValue() *BACnetOptionalREAL {
+	return CastBACnetOptionalREAL(m.GetLowDiffLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLowDiffLimit factory function for BACnetConstructedDataLowDiffLimit
 func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit *BACnetOptionalREAL, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLowDiffLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLowDiffLimit) GetLengthInBitsConditional(lastItem 
 	// Simple field (lowDiffLimit)
 	lengthInBits += m.LowDiffLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("lowDiffLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lowDiffLimit")
 	}
+
+	// Virtual field
+	_actualValue := lowDiffLimit
+	actualValue := CastBACnetOptionalREAL(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLowDiffLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLowDiffLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLowDiffLimit) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _lowDiffLimitErr != nil {
 			return errors.Wrap(_lowDiffLimitErr, "Error serializing 'lowDiffLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLowDiffLimit"); popErr != nil {

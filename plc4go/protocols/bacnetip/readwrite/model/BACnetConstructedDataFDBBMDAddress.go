@@ -41,6 +41,8 @@ type IBACnetConstructedDataFDBBMDAddress interface {
 	IBACnetConstructedData
 	// GetFDBBMDAddress returns FDBBMDAddress (property field)
 	GetFDBBMDAddress() *BACnetHostNPort
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetHostNPort
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFDBBMDAddress) GetFDBBMDAddress() *BACnetHostNPort
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFDBBMDAddress) GetActualValue() *BACnetHostNPort {
+	return CastBACnetHostNPort(m.GetFDBBMDAddress())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFDBBMDAddress factory function for BACnetConstructedDataFDBBMDAddress
 func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress *BACnetHostNPort, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFDBBMDAddress {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFDBBMDAddress) GetLengthInBitsConditional(lastItem
 	// Simple field (fDBBMDAddress)
 	lengthInBits += m.FDBBMDAddress.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("fDBBMDAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for fDBBMDAddress")
 	}
+
+	// Virtual field
+	_actualValue := fDBBMDAddress
+	actualValue := CastBACnetHostNPort(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDBBMDAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDBBMDAddress")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFDBBMDAddress) Serialize(writeBuffer utils.WriteBu
 		}
 		if _fDBBMDAddressErr != nil {
 			return errors.Wrap(_fDBBMDAddressErr, "Error serializing 'fDBBMDAddress' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFDBBMDAddress"); popErr != nil {

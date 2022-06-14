@@ -41,6 +41,8 @@ type IBACnetConstructedDataValueChangeTime interface {
 	IBACnetConstructedData
 	// GetValueChangeTime returns ValueChangeTime (property field)
 	GetValueChangeTime() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataValueChangeTime) GetValueChangeTime() *BACnetDateT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataValueChangeTime) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetValueChangeTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataValueChangeTime factory function for BACnetConstructedDataValueChangeTime
 func NewBACnetConstructedDataValueChangeTime(valueChangeTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataValueChangeTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataValueChangeTime) GetLengthInBitsConditional(lastIt
 	// Simple field (valueChangeTime)
 	lengthInBits += m.ValueChangeTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataValueChangeTimeParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("valueChangeTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for valueChangeTime")
 	}
+
+	// Virtual field
+	_actualValue := valueChangeTime
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueChangeTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueChangeTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataValueChangeTime) Serialize(writeBuffer utils.Write
 		}
 		if _valueChangeTimeErr != nil {
 			return errors.Wrap(_valueChangeTimeErr, "Error serializing 'valueChangeTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueChangeTime"); popErr != nil {

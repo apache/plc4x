@@ -41,6 +41,8 @@ type IBACnetConstructedDataTimeDelay interface {
 	IBACnetConstructedData
 	// GetTimeDelay returns TimeDelay (property field)
 	GetTimeDelay() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTimeDelay) GetTimeDelay() *BACnetApplicationTagUns
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTimeDelay) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetTimeDelay())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeDelay factory function for BACnetConstructedDataTimeDelay
 func NewBACnetConstructedDataTimeDelay(timeDelay *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeDelay {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTimeDelay) GetLengthInBitsConditional(lastItem boo
 	// Simple field (timeDelay)
 	lengthInBits += m.TimeDelay.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTimeDelayParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("timeDelay"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timeDelay")
 	}
+
+	// Virtual field
+	_actualValue := timeDelay
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeDelay"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeDelay")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTimeDelay) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _timeDelayErr != nil {
 			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeDelay"); popErr != nil {

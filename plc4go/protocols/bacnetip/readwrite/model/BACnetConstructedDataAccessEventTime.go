@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccessEventTime interface {
 	IBACnetConstructedData
 	// GetAccessEventTime returns AccessEventTime (property field)
 	GetAccessEventTime() *BACnetTimeStamp
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetTimeStamp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccessEventTime) GetAccessEventTime() *BACnetTimeS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccessEventTime) GetActualValue() *BACnetTimeStamp {
+	return CastBACnetTimeStamp(m.GetAccessEventTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEventTime factory function for BACnetConstructedDataAccessEventTime
 func NewBACnetConstructedDataAccessEventTime(accessEventTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessEventTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccessEventTime) GetLengthInBitsConditional(lastIt
 	// Simple field (accessEventTime)
 	lengthInBits += m.AccessEventTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccessEventTimeParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("accessEventTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for accessEventTime")
 	}
+
+	// Virtual field
+	_actualValue := accessEventTime
+	actualValue := CastBACnetTimeStamp(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccessEventTime) Serialize(writeBuffer utils.Write
 		}
 		if _accessEventTimeErr != nil {
 			return errors.Wrap(_accessEventTimeErr, "Error serializing 'accessEventTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventTime"); popErr != nil {

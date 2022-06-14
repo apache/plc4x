@@ -41,6 +41,8 @@ type IBACnetConstructedDataProcessIdentifier interface {
 	IBACnetConstructedData
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProcessIdentifier) GetProcessIdentifier() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProcessIdentifier) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetProcessIdentifier())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProcessIdentifier factory function for BACnetConstructedDataProcessIdentifier
 func NewBACnetConstructedDataProcessIdentifier(processIdentifier *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProcessIdentifier {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProcessIdentifier) GetLengthInBitsConditional(last
 	// Simple field (processIdentifier)
 	lengthInBits += m.ProcessIdentifier.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
 	}
+
+	// Virtual field
+	_actualValue := processIdentifier
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProcessIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProcessIdentifier")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProcessIdentifier) Serialize(writeBuffer utils.Wri
 		}
 		if _processIdentifierErr != nil {
 			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProcessIdentifier"); popErr != nil {

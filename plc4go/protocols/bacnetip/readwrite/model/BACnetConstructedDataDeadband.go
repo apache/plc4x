@@ -41,6 +41,8 @@ type IBACnetConstructedDataDeadband interface {
 	IBACnetConstructedData
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDeadband) GetDeadband() *BACnetApplicationTagReal 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDeadband) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetDeadband())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeadband factory function for BACnetConstructedDataDeadband
 func NewBACnetConstructedDataDeadband(deadband *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDeadband {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDeadband) GetLengthInBitsConditional(lastItem bool
 	// Simple field (deadband)
 	lengthInBits += m.Deadband.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDeadbandParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("deadband"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for deadband")
 	}
+
+	// Virtual field
+	_actualValue := deadband
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeadband"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeadband")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDeadband) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _deadbandErr != nil {
 			return errors.Wrap(_deadbandErr, "Error serializing 'deadband' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeadband"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastKeyServer interface {
 	IBACnetConstructedData
 	// GetLastKeyServer returns LastKeyServer (property field)
 	GetLastKeyServer() *BACnetAddressBinding
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAddressBinding
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastKeyServer) GetLastKeyServer() *BACnetAddressBi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastKeyServer) GetActualValue() *BACnetAddressBinding {
+	return CastBACnetAddressBinding(m.GetLastKeyServer())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastKeyServer factory function for BACnetConstructedDataLastKeyServer
 func NewBACnetConstructedDataLastKeyServer(lastKeyServer *BACnetAddressBinding, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastKeyServer {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastKeyServer) GetLengthInBitsConditional(lastItem
 	// Simple field (lastKeyServer)
 	lengthInBits += m.LastKeyServer.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("lastKeyServer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastKeyServer")
 	}
+
+	// Virtual field
+	_actualValue := lastKeyServer
+	actualValue := CastBACnetAddressBinding(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastKeyServer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastKeyServer")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastKeyServer) Serialize(writeBuffer utils.WriteBu
 		}
 		if _lastKeyServerErr != nil {
 			return errors.Wrap(_lastKeyServerErr, "Error serializing 'lastKeyServer' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastKeyServer"); popErr != nil {

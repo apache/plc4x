@@ -41,6 +41,8 @@ type IBACnetConstructedDataCarDoorZone interface {
 	IBACnetConstructedData
 	// GetCarDoorZone returns CarDoorZone (property field)
 	GetCarDoorZone() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCarDoorZone) GetCarDoorZone() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCarDoorZone) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetCarDoorZone())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarDoorZone factory function for BACnetConstructedDataCarDoorZone
 func NewBACnetConstructedDataCarDoorZone(carDoorZone *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarDoorZone {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCarDoorZone) GetLengthInBitsConditional(lastItem b
 	// Simple field (carDoorZone)
 	lengthInBits += m.CarDoorZone.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCarDoorZoneParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("carDoorZone"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for carDoorZone")
 	}
+
+	// Virtual field
+	_actualValue := carDoorZone
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarDoorZone"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarDoorZone")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCarDoorZone) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _carDoorZoneErr != nil {
 			return errors.Wrap(_carDoorZoneErr, "Error serializing 'carDoorZone' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarDoorZone"); popErr != nil {

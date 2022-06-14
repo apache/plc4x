@@ -41,6 +41,8 @@ type IBACnetConstructedDataLowLimit interface {
 	IBACnetConstructedData
 	// GetLowLimit returns LowLimit (property field)
 	GetLowLimit() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLowLimit) GetLowLimit() *BACnetApplicationTagReal 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLowLimit) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetLowLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLowLimit factory function for BACnetConstructedDataLowLimit
 func NewBACnetConstructedDataLowLimit(lowLimit *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLowLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLowLimit) GetLengthInBitsConditional(lastItem bool
 	// Simple field (lowLimit)
 	lengthInBits += m.LowLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLowLimitParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("lowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lowLimit")
 	}
+
+	// Virtual field
+	_actualValue := lowLimit
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLowLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLowLimit) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _lowLimitErr != nil {
 			return errors.Wrap(_lowLimitErr, "Error serializing 'lowLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLowLimit"); popErr != nil {

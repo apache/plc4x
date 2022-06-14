@@ -41,6 +41,8 @@ type IBACnetConstructedDataAutoSlaveDiscovery interface {
 	IBACnetConstructedData
 	// GetAutoSlaveDiscovery returns AutoSlaveDiscovery (property field)
 	GetAutoSlaveDiscovery() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAutoSlaveDiscovery) GetAutoSlaveDiscovery() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAutoSlaveDiscovery) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetAutoSlaveDiscovery())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAutoSlaveDiscovery factory function for BACnetConstructedDataAutoSlaveDiscovery
 func NewBACnetConstructedDataAutoSlaveDiscovery(autoSlaveDiscovery *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAutoSlaveDiscovery {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBitsConditional(las
 	// Simple field (autoSlaveDiscovery)
 	lengthInBits += m.AutoSlaveDiscovery.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("autoSlaveDiscovery"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for autoSlaveDiscovery")
 	}
+
+	// Virtual field
+	_actualValue := autoSlaveDiscovery
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAutoSlaveDiscovery"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAutoSlaveDiscovery")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAutoSlaveDiscovery) Serialize(writeBuffer utils.Wr
 		}
 		if _autoSlaveDiscoveryErr != nil {
 			return errors.Wrap(_autoSlaveDiscoveryErr, "Error serializing 'autoSlaveDiscovery' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAutoSlaveDiscovery"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataMaxActualValue interface {
 	IBACnetConstructedData
 	// GetMaxActualValue returns MaxActualValue (property field)
 	GetMaxActualValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMaxActualValue) GetMaxActualValue() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMaxActualValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetMaxActualValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaxActualValue factory function for BACnetConstructedDataMaxActualValue
 func NewBACnetConstructedDataMaxActualValue(maxActualValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaxActualValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMaxActualValue) GetLengthInBitsConditional(lastIte
 	// Simple field (maxActualValue)
 	lengthInBits += m.MaxActualValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMaxActualValueParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("maxActualValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maxActualValue")
 	}
+
+	// Virtual field
+	_actualValue := maxActualValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxActualValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxActualValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMaxActualValue) Serialize(writeBuffer utils.WriteB
 		}
 		if _maxActualValueErr != nil {
 			return errors.Wrap(_maxActualValueErr, "Error serializing 'maxActualValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaxActualValue"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataExpectedShedLevel interface {
 	IBACnetConstructedData
 	// GetExpectedShedLevel returns ExpectedShedLevel (property field)
 	GetExpectedShedLevel() *BACnetShedLevel
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetShedLevel
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataExpectedShedLevel) GetExpectedShedLevel() *BACnetS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataExpectedShedLevel) GetActualValue() *BACnetShedLevel {
+	return CastBACnetShedLevel(m.GetExpectedShedLevel())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExpectedShedLevel factory function for BACnetConstructedDataExpectedShedLevel
 func NewBACnetConstructedDataExpectedShedLevel(expectedShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataExpectedShedLevel {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataExpectedShedLevel) GetLengthInBitsConditional(last
 	// Simple field (expectedShedLevel)
 	lengthInBits += m.ExpectedShedLevel.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataExpectedShedLevelParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("expectedShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for expectedShedLevel")
 	}
+
+	// Virtual field
+	_actualValue := expectedShedLevel
+	actualValue := CastBACnetShedLevel(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExpectedShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExpectedShedLevel")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataExpectedShedLevel) Serialize(writeBuffer utils.Wri
 		}
 		if _expectedShedLevelErr != nil {
 			return errors.Wrap(_expectedShedLevelErr, "Error serializing 'expectedShedLevel' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExpectedShedLevel"); popErr != nil {

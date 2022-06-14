@@ -41,6 +41,8 @@ type IBACnetConstructedDataActiveText interface {
 	IBACnetConstructedData
 	// GetActiveText returns ActiveText (property field)
 	GetActiveText() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataActiveText) GetActiveText() *BACnetApplicationTagC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataActiveText) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetActiveText())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveText factory function for BACnetConstructedDataActiveText
 func NewBACnetConstructedDataActiveText(activeText *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActiveText {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataActiveText) GetLengthInBitsConditional(lastItem bo
 	// Simple field (activeText)
 	lengthInBits += m.ActiveText.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataActiveTextParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("activeText"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for activeText")
 	}
+
+	// Virtual field
+	_actualValue := activeText
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveText"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActiveText")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataActiveText) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _activeTextErr != nil {
 			return errors.Wrap(_activeTextErr, "Error serializing 'activeText' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveText"); popErr != nil {

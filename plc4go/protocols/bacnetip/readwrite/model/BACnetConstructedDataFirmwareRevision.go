@@ -41,6 +41,8 @@ type IBACnetConstructedDataFirmwareRevision interface {
 	IBACnetConstructedData
 	// GetFirmwareRevision returns FirmwareRevision (property field)
 	GetFirmwareRevision() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFirmwareRevision) GetFirmwareRevision() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFirmwareRevision) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetFirmwareRevision())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFirmwareRevision factory function for BACnetConstructedDataFirmwareRevision
 func NewBACnetConstructedDataFirmwareRevision(firmwareRevision *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFirmwareRevision {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFirmwareRevision) GetLengthInBitsConditional(lastI
 	// Simple field (firmwareRevision)
 	lengthInBits += m.FirmwareRevision.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFirmwareRevisionParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("firmwareRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for firmwareRevision")
 	}
+
+	// Virtual field
+	_actualValue := firmwareRevision
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFirmwareRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFirmwareRevision")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFirmwareRevision) Serialize(writeBuffer utils.Writ
 		}
 		if _firmwareRevisionErr != nil {
 			return errors.Wrap(_firmwareRevisionErr, "Error serializing 'firmwareRevision' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFirmwareRevision"); popErr != nil {

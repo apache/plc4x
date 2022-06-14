@@ -41,6 +41,8 @@ type IBACnetConstructedDataUserInformationReference interface {
 	IBACnetConstructedData
 	// GetUserInformationReference returns UserInformationReference (property field)
 	GetUserInformationReference() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataUserInformationReference) GetUserInformationRefere
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataUserInformationReference) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetUserInformationReference())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUserInformationReference factory function for BACnetConstructedDataUserInformationReference
 func NewBACnetConstructedDataUserInformationReference(userInformationReference *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUserInformationReference {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataUserInformationReference) GetLengthInBitsCondition
 	// Simple field (userInformationReference)
 	lengthInBits += m.UserInformationReference.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 	if closeErr := readBuffer.CloseContext("userInformationReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for userInformationReference")
 	}
+
+	// Virtual field
+	_actualValue := userInformationReference
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserInformationReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserInformationReference")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataUserInformationReference) Serialize(writeBuffer ut
 		}
 		if _userInformationReferenceErr != nil {
 			return errors.Wrap(_userInformationReferenceErr, "Error serializing 'userInformationReference' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUserInformationReference"); popErr != nil {

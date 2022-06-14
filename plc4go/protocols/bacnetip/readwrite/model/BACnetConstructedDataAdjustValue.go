@@ -41,6 +41,8 @@ type IBACnetConstructedDataAdjustValue interface {
 	IBACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() *BACnetApplicationTagSignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagSignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAdjustValue) GetAdjustValue() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAdjustValue) GetActualValue() *BACnetApplicationTagSignedInteger {
+	return CastBACnetApplicationTagSignedInteger(m.GetAdjustValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAdjustValue factory function for BACnetConstructedDataAdjustValue
 func NewBACnetConstructedDataAdjustValue(adjustValue *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAdjustValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAdjustValue) GetLengthInBitsConditional(lastItem b
 	// Simple field (adjustValue)
 	lengthInBits += m.AdjustValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAdjustValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("adjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for adjustValue")
 	}
+
+	// Virtual field
+	_actualValue := adjustValue
+	actualValue := CastBACnetApplicationTagSignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAdjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAdjustValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAdjustValue) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _adjustValueErr != nil {
 			return errors.Wrap(_adjustValueErr, "Error serializing 'adjustValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAdjustValue"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataThreatAuthority interface {
 	IBACnetConstructedData
 	// GetThreatAuthority returns ThreatAuthority (property field)
 	GetThreatAuthority() *BACnetAccessThreatLevel
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAccessThreatLevel
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataThreatAuthority) GetThreatAuthority() *BACnetAcces
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataThreatAuthority) GetActualValue() *BACnetAccessThreatLevel {
+	return CastBACnetAccessThreatLevel(m.GetThreatAuthority())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataThreatAuthority factory function for BACnetConstructedDataThreatAuthority
 func NewBACnetConstructedDataThreatAuthority(threatAuthority *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataThreatAuthority {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataThreatAuthority) GetLengthInBitsConditional(lastIt
 	// Simple field (threatAuthority)
 	lengthInBits += m.ThreatAuthority.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataThreatAuthorityParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("threatAuthority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for threatAuthority")
 	}
+
+	// Virtual field
+	_actualValue := threatAuthority
+	actualValue := CastBACnetAccessThreatLevel(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataThreatAuthority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataThreatAuthority")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataThreatAuthority) Serialize(writeBuffer utils.Write
 		}
 		if _threatAuthorityErr != nil {
 			return errors.Wrap(_threatAuthorityErr, "Error serializing 'threatAuthority' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataThreatAuthority"); popErr != nil {

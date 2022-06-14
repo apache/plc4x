@@ -41,6 +41,8 @@ type IBACnetConstructedDataValidSamples interface {
 	IBACnetConstructedData
 	// GetValidSamples returns ValidSamples (property field)
 	GetValidSamples() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataValidSamples) GetValidSamples() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataValidSamples) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetValidSamples())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataValidSamples factory function for BACnetConstructedDataValidSamples
 func NewBACnetConstructedDataValidSamples(validSamples *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataValidSamples {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataValidSamples) GetLengthInBitsConditional(lastItem 
 	// Simple field (validSamples)
 	lengthInBits += m.ValidSamples.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataValidSamplesParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("validSamples"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for validSamples")
 	}
+
+	// Virtual field
+	_actualValue := validSamples
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValidSamples"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValidSamples")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataValidSamples) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _validSamplesErr != nil {
 			return errors.Wrap(_validSamplesErr, "Error serializing 'validSamples' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValidSamples"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataUsesRemaining interface {
 	IBACnetConstructedData
 	// GetUsesRemaining returns UsesRemaining (property field)
 	GetUsesRemaining() *BACnetApplicationTagSignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagSignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataUsesRemaining) GetUsesRemaining() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataUsesRemaining) GetActualValue() *BACnetApplicationTagSignedInteger {
+	return CastBACnetApplicationTagSignedInteger(m.GetUsesRemaining())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUsesRemaining factory function for BACnetConstructedDataUsesRemaining
 func NewBACnetConstructedDataUsesRemaining(usesRemaining *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUsesRemaining {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataUsesRemaining) GetLengthInBitsConditional(lastItem
 	// Simple field (usesRemaining)
 	lengthInBits += m.UsesRemaining.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("usesRemaining"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for usesRemaining")
 	}
+
+	// Virtual field
+	_actualValue := usesRemaining
+	actualValue := CastBACnetApplicationTagSignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUsesRemaining"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUsesRemaining")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataUsesRemaining) Serialize(writeBuffer utils.WriteBu
 		}
 		if _usesRemainingErr != nil {
 			return errors.Wrap(_usesRemainingErr, "Error serializing 'usesRemaining' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUsesRemaining"); popErr != nil {

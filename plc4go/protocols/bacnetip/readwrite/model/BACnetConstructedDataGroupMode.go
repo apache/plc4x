@@ -41,6 +41,8 @@ type IBACnetConstructedDataGroupMode interface {
 	IBACnetConstructedData
 	// GetGroupMode returns GroupMode (property field)
 	GetGroupMode() *BACnetLiftGroupModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLiftGroupModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataGroupMode) GetGroupMode() *BACnetLiftGroupModeTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataGroupMode) GetActualValue() *BACnetLiftGroupModeTagged {
+	return CastBACnetLiftGroupModeTagged(m.GetGroupMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGroupMode factory function for BACnetConstructedDataGroupMode
 func NewBACnetConstructedDataGroupMode(groupMode *BACnetLiftGroupModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataGroupMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataGroupMode) GetLengthInBitsConditional(lastItem boo
 	// Simple field (groupMode)
 	lengthInBits += m.GroupMode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("groupMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for groupMode")
 	}
+
+	// Virtual field
+	_actualValue := groupMode
+	actualValue := CastBACnetLiftGroupModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGroupMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGroupMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataGroupMode) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _groupModeErr != nil {
 			return errors.Wrap(_groupModeErr, "Error serializing 'groupMode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGroupMode"); popErr != nil {

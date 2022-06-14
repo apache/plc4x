@@ -41,6 +41,8 @@ type IBACnetConstructedDataNetworkNumber interface {
 	IBACnetConstructedData
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNetworkNumber) GetNetworkNumber() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNetworkNumber) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetNetworkNumber())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkNumber factory function for BACnetConstructedDataNetworkNumber
 func NewBACnetConstructedDataNetworkNumber(networkNumber *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkNumber {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNetworkNumber) GetLengthInBitsConditional(lastItem
 	// Simple field (networkNumber)
 	lengthInBits += m.NetworkNumber.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNetworkNumberParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for networkNumber")
 	}
+
+	// Virtual field
+	_actualValue := networkNumber
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkNumber")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNetworkNumber) Serialize(writeBuffer utils.WriteBu
 		}
 		if _networkNumberErr != nil {
 			return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkNumber"); popErr != nil {

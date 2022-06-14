@@ -41,6 +41,8 @@ type IBACnetConstructedDataRelinquishDefault interface {
 	IBACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataRelinquishDefault) GetRelinquishDefault() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataRelinquishDefault) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetRelinquishDefault())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRelinquishDefault factory function for BACnetConstructedDataRelinquishDefault
 func NewBACnetConstructedDataRelinquishDefault(relinquishDefault *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRelinquishDefault {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataRelinquishDefault) GetLengthInBitsConditional(last
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataRelinquishDefaultParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
 	}
+
+	// Virtual field
+	_actualValue := relinquishDefault
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRelinquishDefault")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataRelinquishDefault) Serialize(writeBuffer utils.Wri
 		}
 		if _relinquishDefaultErr != nil {
 			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRelinquishDefault"); popErr != nil {

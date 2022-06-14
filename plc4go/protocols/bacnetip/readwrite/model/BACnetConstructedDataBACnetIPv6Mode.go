@@ -41,6 +41,8 @@ type IBACnetConstructedDataBACnetIPv6Mode interface {
 	IBACnetConstructedData
 	// GetBacnetIpv6Mode returns BacnetIpv6Mode (property field)
 	GetBacnetIpv6Mode() *BACnetIPModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetIPModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) GetBacnetIpv6Mode() *BACnetIPModeT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBACnetIPv6Mode) GetActualValue() *BACnetIPModeTagged {
+	return CastBACnetIPModeTagged(m.GetBacnetIpv6Mode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6Mode factory function for BACnetConstructedDataBACnetIPv6Mode
 func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode *BACnetIPModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPv6Mode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) GetLengthInBitsConditional(lastIte
 	// Simple field (bacnetIpv6Mode)
 	lengthInBits += m.BacnetIpv6Mode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("bacnetIpv6Mode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpv6Mode")
 	}
+
+	// Virtual field
+	_actualValue := bacnetIpv6Mode
+	actualValue := CastBACnetIPModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPv6Mode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPv6Mode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBACnetIPv6Mode) Serialize(writeBuffer utils.WriteB
 		}
 		if _bacnetIpv6ModeErr != nil {
 			return errors.Wrap(_bacnetIpv6ModeErr, "Error serializing 'bacnetIpv6Mode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPv6Mode"); popErr != nil {

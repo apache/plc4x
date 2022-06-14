@@ -41,6 +41,8 @@ type IBACnetConstructedDataEgressActive interface {
 	IBACnetConstructedData
 	// GetEgressActive returns EgressActive (property field)
 	GetEgressActive() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEgressActive) GetEgressActive() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEgressActive) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetEgressActive())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEgressActive factory function for BACnetConstructedDataEgressActive
 func NewBACnetConstructedDataEgressActive(egressActive *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEgressActive {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEgressActive) GetLengthInBitsConditional(lastItem 
 	// Simple field (egressActive)
 	lengthInBits += m.EgressActive.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("egressActive"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for egressActive")
 	}
+
+	// Virtual field
+	_actualValue := egressActive
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEgressActive"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEgressActive")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEgressActive) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _egressActiveErr != nil {
 			return errors.Wrap(_egressActiveErr, "Error serializing 'egressActive' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEgressActive"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataMaxAPDULengthAccepted interface {
 	IBACnetConstructedData
 	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted (property field)
 	GetMaxApduLengthAccepted() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMaxAPDULengthAccepted) GetMaxApduLengthAccepted() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMaxAPDULengthAccepted) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxApduLengthAccepted())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaxAPDULengthAccepted factory function for BACnetConstructedDataMaxAPDULengthAccepted
 func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMaxAPDULengthAccepted {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBitsConditional(
 	// Simple field (maxApduLengthAccepted)
 	lengthInBits += m.MaxApduLengthAccepted.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("maxApduLengthAccepted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maxApduLengthAccepted")
 	}
+
+	// Virtual field
+	_actualValue := maxApduLengthAccepted
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxAPDULengthAccepted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxAPDULengthAccepted")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMaxAPDULengthAccepted) Serialize(writeBuffer utils
 		}
 		if _maxApduLengthAcceptedErr != nil {
 			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaxAPDULengthAccepted"); popErr != nil {

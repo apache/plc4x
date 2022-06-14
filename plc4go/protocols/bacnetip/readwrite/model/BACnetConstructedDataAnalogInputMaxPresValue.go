@@ -41,6 +41,8 @@ type IBACnetConstructedDataAnalogInputMaxPresValue interface {
 	IBACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAnalogInputMaxPresValue) GetMaxPresValue() *BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAnalogInputMaxPresValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetMaxPresValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAnalogInputMaxPresValue factory function for BACnetConstructedDataAnalogInputMaxPresValue
 func NewBACnetConstructedDataAnalogInputMaxPresValue(maxPresValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAnalogInputMaxPresValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAnalogInputMaxPresValue) GetLengthInBitsConditiona
 	// Simple field (maxPresValue)
 	lengthInBits += m.MaxPresValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAnalogInputMaxPresValueParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("maxPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maxPresValue")
 	}
+
+	// Virtual field
+	_actualValue := maxPresValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAnalogInputMaxPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAnalogInputMaxPresValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAnalogInputMaxPresValue) Serialize(writeBuffer uti
 		}
 		if _maxPresValueErr != nil {
 			return errors.Wrap(_maxPresValueErr, "Error serializing 'maxPresValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAnalogInputMaxPresValue"); popErr != nil {

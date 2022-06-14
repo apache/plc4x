@@ -41,6 +41,8 @@ type IBACnetConstructedDataLinkSpeed interface {
 	IBACnetConstructedData
 	// GetLinkSpeed returns LinkSpeed (property field)
 	GetLinkSpeed() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLinkSpeed) GetLinkSpeed() *BACnetApplicationTagRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLinkSpeed) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetLinkSpeed())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLinkSpeed factory function for BACnetConstructedDataLinkSpeed
 func NewBACnetConstructedDataLinkSpeed(linkSpeed *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLinkSpeed {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLinkSpeed) GetLengthInBitsConditional(lastItem boo
 	// Simple field (linkSpeed)
 	lengthInBits += m.LinkSpeed.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("linkSpeed"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for linkSpeed")
 	}
+
+	// Virtual field
+	_actualValue := linkSpeed
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLinkSpeed"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLinkSpeed")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLinkSpeed) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _linkSpeedErr != nil {
 			return errors.Wrap(_linkSpeedErr, "Error serializing 'linkSpeed' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLinkSpeed"); popErr != nil {

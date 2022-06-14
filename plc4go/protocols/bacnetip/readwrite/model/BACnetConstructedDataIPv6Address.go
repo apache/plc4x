@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPv6Address interface {
 	IBACnetConstructedData
 	// GetIpv6Address returns Ipv6Address (property field)
 	GetIpv6Address() *BACnetApplicationTagOctetString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagOctetString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPv6Address) GetIpv6Address() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPv6Address) GetActualValue() *BACnetApplicationTagOctetString {
+	return CastBACnetApplicationTagOctetString(m.GetIpv6Address())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6Address factory function for BACnetConstructedDataIPv6Address
 func NewBACnetConstructedDataIPv6Address(ipv6Address *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6Address {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPv6Address) GetLengthInBitsConditional(lastItem b
 	// Simple field (ipv6Address)
 	lengthInBits += m.Ipv6Address.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPv6AddressParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("ipv6Address"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipv6Address")
 	}
+
+	// Virtual field
+	_actualValue := ipv6Address
+	actualValue := CastBACnetApplicationTagOctetString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6Address"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6Address")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPv6Address) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _ipv6AddressErr != nil {
 			return errors.Wrap(_ipv6AddressErr, "Error serializing 'ipv6Address' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6Address"); popErr != nil {

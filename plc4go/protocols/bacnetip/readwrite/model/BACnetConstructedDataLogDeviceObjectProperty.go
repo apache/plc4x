@@ -41,6 +41,8 @@ type IBACnetConstructedDataLogDeviceObjectProperty interface {
 	IBACnetConstructedData
 	// GetLogDeviceObjectProperty returns LogDeviceObjectProperty (property field)
 	GetLogDeviceObjectProperty() *BACnetDeviceObjectPropertyReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectPropertyReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLogDeviceObjectProperty) GetLogDeviceObjectPropert
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLogDeviceObjectProperty) GetActualValue() *BACnetDeviceObjectPropertyReference {
+	return CastBACnetDeviceObjectPropertyReference(m.GetLogDeviceObjectProperty())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLogDeviceObjectProperty factory function for BACnetConstructedDataLogDeviceObjectProperty
 func NewBACnetConstructedDataLogDeviceObjectProperty(logDeviceObjectProperty *BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLogDeviceObjectProperty {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLogDeviceObjectProperty) GetLengthInBitsConditiona
 	// Simple field (logDeviceObjectProperty)
 	lengthInBits += m.LogDeviceObjectProperty.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLogDeviceObjectPropertyParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("logDeviceObjectProperty"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for logDeviceObjectProperty")
 	}
+
+	// Virtual field
+	_actualValue := logDeviceObjectProperty
+	actualValue := CastBACnetDeviceObjectPropertyReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLogDeviceObjectProperty"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLogDeviceObjectProperty")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLogDeviceObjectProperty) Serialize(writeBuffer uti
 		}
 		if _logDeviceObjectPropertyErr != nil {
 			return errors.Wrap(_logDeviceObjectPropertyErr, "Error serializing 'logDeviceObjectProperty' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLogDeviceObjectProperty"); popErr != nil {

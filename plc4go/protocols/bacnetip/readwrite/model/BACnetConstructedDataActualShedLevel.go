@@ -41,6 +41,8 @@ type IBACnetConstructedDataActualShedLevel interface {
 	IBACnetConstructedData
 	// GetActualShedLevel returns ActualShedLevel (property field)
 	GetActualShedLevel() *BACnetShedLevel
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetShedLevel
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataActualShedLevel) GetActualShedLevel() *BACnetShedL
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataActualShedLevel) GetActualValue() *BACnetShedLevel {
+	return CastBACnetShedLevel(m.GetActualShedLevel())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActualShedLevel factory function for BACnetConstructedDataActualShedLevel
 func NewBACnetConstructedDataActualShedLevel(actualShedLevel *BACnetShedLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataActualShedLevel {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataActualShedLevel) GetLengthInBitsConditional(lastIt
 	// Simple field (actualShedLevel)
 	lengthInBits += m.ActualShedLevel.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("actualShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for actualShedLevel")
 	}
+
+	// Virtual field
+	_actualValue := actualShedLevel
+	actualValue := CastBACnetShedLevel(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActualShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActualShedLevel")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataActualShedLevel) Serialize(writeBuffer utils.Write
 		}
 		if _actualShedLevelErr != nil {
 			return errors.Wrap(_actualShedLevelErr, "Error serializing 'actualShedLevel' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActualShedLevel"); popErr != nil {

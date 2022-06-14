@@ -41,6 +41,8 @@ type IBACnetConstructedDataBinaryValuePresentValue interface {
 	IBACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() *BACnetBinaryPVTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetBinaryPVTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBinaryValuePresentValue) GetPresentValue() *BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBinaryValuePresentValue) GetActualValue() *BACnetBinaryPVTagged {
+	return CastBACnetBinaryPVTagged(m.GetPresentValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryValuePresentValue factory function for BACnetConstructedDataBinaryValuePresentValue
 func NewBACnetConstructedDataBinaryValuePresentValue(presentValue *BACnetBinaryPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBinaryValuePresentValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBinaryValuePresentValue) GetLengthInBitsConditiona
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBinaryValuePresentValueParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
 	}
+
+	// Virtual field
+	_actualValue := presentValue
+	actualValue := CastBACnetBinaryPVTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryValuePresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryValuePresentValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBinaryValuePresentValue) Serialize(writeBuffer uti
 		}
 		if _presentValueErr != nil {
 			return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBinaryValuePresentValue"); popErr != nil {

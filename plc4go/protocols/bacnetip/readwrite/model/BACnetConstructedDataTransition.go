@@ -41,6 +41,8 @@ type IBACnetConstructedDataTransition interface {
 	IBACnetConstructedData
 	// GetTransition returns Transition (property field)
 	GetTransition() *BACnetLightingTransitionTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLightingTransitionTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTransition) GetTransition() *BACnetLightingTransit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTransition) GetActualValue() *BACnetLightingTransitionTagged {
+	return CastBACnetLightingTransitionTagged(m.GetTransition())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTransition factory function for BACnetConstructedDataTransition
 func NewBACnetConstructedDataTransition(transition *BACnetLightingTransitionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTransition {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTransition) GetLengthInBitsConditional(lastItem bo
 	// Simple field (transition)
 	lengthInBits += m.Transition.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTransitionParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("transition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for transition")
 	}
+
+	// Virtual field
+	_actualValue := transition
+	actualValue := CastBACnetLightingTransitionTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTransition")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTransition) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _transitionErr != nil {
 			return errors.Wrap(_transitionErr, "Error serializing 'transition' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTransition"); popErr != nil {

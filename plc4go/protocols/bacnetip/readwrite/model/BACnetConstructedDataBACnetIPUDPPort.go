@@ -41,6 +41,8 @@ type IBACnetConstructedDataBACnetIPUDPPort interface {
 	IBACnetConstructedData
 	// GetIpUdpPort returns IpUdpPort (property field)
 	GetIpUdpPort() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBACnetIPUDPPort) GetIpUdpPort() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBACnetIPUDPPort) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetIpUdpPort())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPUDPPort factory function for BACnetConstructedDataBACnetIPUDPPort
 func NewBACnetConstructedDataBACnetIPUDPPort(ipUdpPort *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPUDPPort {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBACnetIPUDPPort) GetLengthInBitsConditional(lastIt
 	// Simple field (ipUdpPort)
 	lengthInBits += m.IpUdpPort.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBACnetIPUDPPortParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("ipUdpPort"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipUdpPort")
 	}
+
+	// Virtual field
+	_actualValue := ipUdpPort
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPUDPPort"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPUDPPort")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBACnetIPUDPPort) Serialize(writeBuffer utils.Write
 		}
 		if _ipUdpPortErr != nil {
 			return errors.Wrap(_ipUdpPortErr, "Error serializing 'ipUdpPort' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPUDPPort"); popErr != nil {

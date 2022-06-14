@@ -41,6 +41,8 @@ type IBACnetConstructedDataGroupID interface {
 	IBACnetConstructedData
 	// GetGroupId returns GroupId (property field)
 	GetGroupId() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataGroupID) GetGroupId() *BACnetApplicationTagUnsigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataGroupID) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetGroupId())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGroupID factory function for BACnetConstructedDataGroupID
 func NewBACnetConstructedDataGroupID(groupId *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataGroupID {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataGroupID) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (groupId)
 	lengthInBits += m.GroupId.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataGroupIDParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("groupId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for groupId")
 	}
+
+	// Virtual field
+	_actualValue := groupId
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGroupID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGroupID")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataGroupID) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _groupIdErr != nil {
 			return errors.Wrap(_groupIdErr, "Error serializing 'groupId' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGroupID"); popErr != nil {

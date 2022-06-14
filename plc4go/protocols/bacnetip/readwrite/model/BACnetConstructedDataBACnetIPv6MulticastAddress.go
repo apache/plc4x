@@ -41,6 +41,8 @@ type IBACnetConstructedDataBACnetIPv6MulticastAddress interface {
 	IBACnetConstructedData
 	// GetIpv6MulticastAddress returns Ipv6MulticastAddress (property field)
 	GetIpv6MulticastAddress() *BACnetApplicationTagOctetString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagOctetString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBACnetIPv6MulticastAddress) GetIpv6MulticastAddres
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBACnetIPv6MulticastAddress) GetActualValue() *BACnetApplicationTagOctetString {
+	return CastBACnetApplicationTagOctetString(m.GetIpv6MulticastAddress())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6MulticastAddress factory function for BACnetConstructedDataBACnetIPv6MulticastAddress
 func NewBACnetConstructedDataBACnetIPv6MulticastAddress(ipv6MulticastAddress *BACnetApplicationTagOctetString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBACnetIPv6MulticastAddress {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBitsConditi
 	// Simple field (ipv6MulticastAddress)
 	lengthInBits += m.Ipv6MulticastAddress.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParse(readBuffer utils.ReadB
 	if closeErr := readBuffer.CloseContext("ipv6MulticastAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipv6MulticastAddress")
 	}
+
+	// Virtual field
+	_actualValue := ipv6MulticastAddress
+	actualValue := CastBACnetApplicationTagOctetString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPv6MulticastAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPv6MulticastAddress")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBACnetIPv6MulticastAddress) Serialize(writeBuffer 
 		}
 		if _ipv6MulticastAddressErr != nil {
 			return errors.Wrap(_ipv6MulticastAddressErr, "Error serializing 'ipv6MulticastAddress' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBACnetIPv6MulticastAddress"); popErr != nil {

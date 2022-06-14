@@ -41,6 +41,8 @@ type IBACnetConstructedDataAckedTransitions interface {
 	IBACnetConstructedData
 	// GetAckedTransitions returns AckedTransitions (property field)
 	GetAckedTransitions() *BACnetEventTransitionBitsTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEventTransitionBitsTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAckedTransitions) GetAckedTransitions() *BACnetEve
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAckedTransitions) GetActualValue() *BACnetEventTransitionBitsTagged {
+	return CastBACnetEventTransitionBitsTagged(m.GetAckedTransitions())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAckedTransitions factory function for BACnetConstructedDataAckedTransitions
 func NewBACnetConstructedDataAckedTransitions(ackedTransitions *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAckedTransitions {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAckedTransitions) GetLengthInBitsConditional(lastI
 	// Simple field (ackedTransitions)
 	lengthInBits += m.AckedTransitions.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("ackedTransitions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackedTransitions")
 	}
+
+	// Virtual field
+	_actualValue := ackedTransitions
+	actualValue := CastBACnetEventTransitionBitsTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAckedTransitions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAckedTransitions")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAckedTransitions) Serialize(writeBuffer utils.Writ
 		}
 		if _ackedTransitionsErr != nil {
 			return errors.Wrap(_ackedTransitionsErr, "Error serializing 'ackedTransitions' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAckedTransitions"); popErr != nil {

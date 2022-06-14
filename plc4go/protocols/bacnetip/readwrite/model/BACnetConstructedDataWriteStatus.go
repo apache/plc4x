@@ -41,6 +41,8 @@ type IBACnetConstructedDataWriteStatus interface {
 	IBACnetConstructedData
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() *BACnetWriteStatusTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetWriteStatusTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataWriteStatus) GetWriteStatus() *BACnetWriteStatusTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataWriteStatus) GetActualValue() *BACnetWriteStatusTagged {
+	return CastBACnetWriteStatusTagged(m.GetWriteStatus())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataWriteStatus factory function for BACnetConstructedDataWriteStatus
 func NewBACnetConstructedDataWriteStatus(writeStatus *BACnetWriteStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataWriteStatus {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataWriteStatus) GetLengthInBitsConditional(lastItem b
 	// Simple field (writeStatus)
 	lengthInBits += m.WriteStatus.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataWriteStatusParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("writeStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for writeStatus")
 	}
+
+	// Virtual field
+	_actualValue := writeStatus
+	actualValue := CastBACnetWriteStatusTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWriteStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataWriteStatus")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataWriteStatus) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _writeStatusErr != nil {
 			return errors.Wrap(_writeStatusErr, "Error serializing 'writeStatus' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataWriteStatus"); popErr != nil {

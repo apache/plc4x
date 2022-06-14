@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPDHCPEnable interface {
 	IBACnetConstructedData
 	// GetIpDhcpEnable returns IpDhcpEnable (property field)
 	GetIpDhcpEnable() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPDHCPEnable) GetIpDhcpEnable() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPDHCPEnable) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetIpDhcpEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPDHCPEnable factory function for BACnetConstructedDataIPDHCPEnable
 func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPDHCPEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPDHCPEnable) GetLengthInBitsConditional(lastItem 
 	// Simple field (ipDhcpEnable)
 	lengthInBits += m.IpDhcpEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPDHCPEnableParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("ipDhcpEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipDhcpEnable")
 	}
+
+	// Virtual field
+	_actualValue := ipDhcpEnable
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDHCPEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDHCPEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPDHCPEnable) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _ipDhcpEnableErr != nil {
 			return errors.Wrap(_ipDhcpEnableErr, "Error serializing 'ipDhcpEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPDHCPEnable"); popErr != nil {

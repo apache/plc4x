@@ -41,6 +41,8 @@ type IBACnetConstructedDataFaultHighLimit interface {
 	IBACnetConstructedData
 	// GetFaultHighLimit returns FaultHighLimit (property field)
 	GetFaultHighLimit() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFaultHighLimit) GetFaultHighLimit() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFaultHighLimit) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetFaultHighLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFaultHighLimit factory function for BACnetConstructedDataFaultHighLimit
 func NewBACnetConstructedDataFaultHighLimit(faultHighLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFaultHighLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFaultHighLimit) GetLengthInBitsConditional(lastIte
 	// Simple field (faultHighLimit)
 	lengthInBits += m.FaultHighLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFaultHighLimitParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("faultHighLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for faultHighLimit")
 	}
+
+	// Virtual field
+	_actualValue := faultHighLimit
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultHighLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFaultHighLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFaultHighLimit) Serialize(writeBuffer utils.WriteB
 		}
 		if _faultHighLimitErr != nil {
 			return errors.Wrap(_faultHighLimitErr, "Error serializing 'faultHighLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFaultHighLimit"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataCurrentCommandPriority interface {
 	IBACnetConstructedData
 	// GetCurrentCommandPriority returns CurrentCommandPriority (property field)
 	GetCurrentCommandPriority() *BACnetOptionalUnsigned
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetOptionalUnsigned
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCurrentCommandPriority) GetCurrentCommandPriority(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCurrentCommandPriority) GetActualValue() *BACnetOptionalUnsigned {
+	return CastBACnetOptionalUnsigned(m.GetCurrentCommandPriority())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCurrentCommandPriority factory function for BACnetConstructedDataCurrentCommandPriority
 func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority *BACnetOptionalUnsigned, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCurrentCommandPriority {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCurrentCommandPriority) GetLengthInBitsConditional
 	// Simple field (currentCommandPriority)
 	lengthInBits += m.CurrentCommandPriority.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 	if closeErr := readBuffer.CloseContext("currentCommandPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for currentCommandPriority")
 	}
+
+	// Virtual field
+	_actualValue := currentCommandPriority
+	actualValue := CastBACnetOptionalUnsigned(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCurrentCommandPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCurrentCommandPriority")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCurrentCommandPriority) Serialize(writeBuffer util
 		}
 		if _currentCommandPriorityErr != nil {
 			return errors.Wrap(_currentCommandPriorityErr, "Error serializing 'currentCommandPriority' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCurrentCommandPriority"); popErr != nil {

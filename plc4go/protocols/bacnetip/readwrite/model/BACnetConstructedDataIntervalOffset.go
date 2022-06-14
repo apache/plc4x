@@ -41,6 +41,8 @@ type IBACnetConstructedDataIntervalOffset interface {
 	IBACnetConstructedData
 	// GetIntervalOffset returns IntervalOffset (property field)
 	GetIntervalOffset() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIntervalOffset) GetIntervalOffset() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIntervalOffset) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetIntervalOffset())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIntervalOffset factory function for BACnetConstructedDataIntervalOffset
 func NewBACnetConstructedDataIntervalOffset(intervalOffset *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIntervalOffset {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIntervalOffset) GetLengthInBitsConditional(lastIte
 	// Simple field (intervalOffset)
 	lengthInBits += m.IntervalOffset.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIntervalOffsetParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("intervalOffset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for intervalOffset")
 	}
+
+	// Virtual field
+	_actualValue := intervalOffset
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntervalOffset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntervalOffset")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIntervalOffset) Serialize(writeBuffer utils.WriteB
 		}
 		if _intervalOffsetErr != nil {
 			return errors.Wrap(_intervalOffsetErr, "Error serializing 'intervalOffset' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIntervalOffset"); popErr != nil {

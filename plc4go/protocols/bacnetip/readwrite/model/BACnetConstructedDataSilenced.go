@@ -41,6 +41,8 @@ type IBACnetConstructedDataSilenced interface {
 	IBACnetConstructedData
 	// GetSilenced returns Silenced (property field)
 	GetSilenced() *BACnetSilencedStateTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetSilencedStateTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSilenced) GetSilenced() *BACnetSilencedStateTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSilenced) GetActualValue() *BACnetSilencedStateTagged {
+	return CastBACnetSilencedStateTagged(m.GetSilenced())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSilenced factory function for BACnetConstructedDataSilenced
 func NewBACnetConstructedDataSilenced(silenced *BACnetSilencedStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSilenced {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSilenced) GetLengthInBitsConditional(lastItem bool
 	// Simple field (silenced)
 	lengthInBits += m.Silenced.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("silenced"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for silenced")
 	}
+
+	// Virtual field
+	_actualValue := silenced
+	actualValue := CastBACnetSilencedStateTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSilenced"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSilenced")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSilenced) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _silencedErr != nil {
 			return errors.Wrap(_silencedErr, "Error serializing 'silenced' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSilenced"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPv6PrefixLength interface {
 	IBACnetConstructedData
 	// GetIpv6PrefixLength returns Ipv6PrefixLength (property field)
 	GetIpv6PrefixLength() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPv6PrefixLength) GetIpv6PrefixLength() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPv6PrefixLength) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetIpv6PrefixLength())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6PrefixLength factory function for BACnetConstructedDataIPv6PrefixLength
 func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6PrefixLength {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPv6PrefixLength) GetLengthInBitsConditional(lastI
 	// Simple field (ipv6PrefixLength)
 	lengthInBits += m.Ipv6PrefixLength.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("ipv6PrefixLength"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ipv6PrefixLength")
 	}
+
+	// Virtual field
+	_actualValue := ipv6PrefixLength
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6PrefixLength"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6PrefixLength")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPv6PrefixLength) Serialize(writeBuffer utils.Writ
 		}
 		if _ipv6PrefixLengthErr != nil {
 			return errors.Wrap(_ipv6PrefixLengthErr, "Error serializing 'ipv6PrefixLength' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6PrefixLength"); popErr != nil {

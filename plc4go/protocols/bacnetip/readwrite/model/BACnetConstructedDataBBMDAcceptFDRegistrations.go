@@ -41,6 +41,8 @@ type IBACnetConstructedDataBBMDAcceptFDRegistrations interface {
 	IBACnetConstructedData
 	// GetBbmdAcceptFDRegistrations returns BbmdAcceptFDRegistrations (property field)
 	GetBbmdAcceptFDRegistrations() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBBMDAcceptFDRegistrations) GetBbmdAcceptFDRegistra
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBBMDAcceptFDRegistrations) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetBbmdAcceptFDRegistrations())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for BACnetConstructedDataBBMDAcceptFDRegistrations
 func NewBACnetConstructedDataBBMDAcceptFDRegistrations(bbmdAcceptFDRegistrations *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBBMDAcceptFDRegistrations {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBitsConditio
 	// Simple field (bbmdAcceptFDRegistrations)
 	lengthInBits += m.BbmdAcceptFDRegistrations.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer utils.ReadBu
 	if closeErr := readBuffer.CloseContext("bbmdAcceptFDRegistrations"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for bbmdAcceptFDRegistrations")
 	}
+
+	// Virtual field
+	_actualValue := bbmdAcceptFDRegistrations
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBBMDAcceptFDRegistrations")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBBMDAcceptFDRegistrations) Serialize(writeBuffer u
 		}
 		if _bbmdAcceptFDRegistrationsErr != nil {
 			return errors.Wrap(_bbmdAcceptFDRegistrationsErr, "Error serializing 'bbmdAcceptFDRegistrations' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); popErr != nil {

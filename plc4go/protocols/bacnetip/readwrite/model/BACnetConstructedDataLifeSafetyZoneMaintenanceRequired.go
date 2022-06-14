@@ -41,6 +41,8 @@ type IBACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
 	IBACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetMaintenanceR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetMaintenanceRequired())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired factory function for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
 func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(maintenanceRequired *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetLengthInBits
 	// Simple field (maintenanceRequired)
 	lengthInBits += m.MaintenanceRequired.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer util
 	if closeErr := readBuffer.CloseContext("maintenanceRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maintenanceRequired")
 	}
+
+	// Virtual field
+	_actualValue := maintenanceRequired
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) Serialize(write
 		}
 		if _maintenanceRequiredErr != nil {
 			return errors.Wrap(_maintenanceRequiredErr, "Error serializing 'maintenanceRequired' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); popErr != nil {

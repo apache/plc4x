@@ -41,6 +41,8 @@ type IBACnetConstructedDataMinimumValueTimestamp interface {
 	IBACnetConstructedData
 	// GetMinimumValueTimestamp returns MinimumValueTimestamp (property field)
 	GetMinimumValueTimestamp() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMinimumValueTimestamp) GetMinimumValueTimestamp() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMinimumValueTimestamp) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetMinimumValueTimestamp())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMinimumValueTimestamp factory function for BACnetConstructedDataMinimumValueTimestamp
 func NewBACnetConstructedDataMinimumValueTimestamp(minimumValueTimestamp *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMinimumValueTimestamp {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMinimumValueTimestamp) GetLengthInBitsConditional(
 	// Simple field (minimumValueTimestamp)
 	lengthInBits += m.MinimumValueTimestamp.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("minimumValueTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for minimumValueTimestamp")
 	}
+
+	// Virtual field
+	_actualValue := minimumValueTimestamp
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumValueTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumValueTimestamp")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMinimumValueTimestamp) Serialize(writeBuffer utils
 		}
 		if _minimumValueTimestampErr != nil {
 			return errors.Wrap(_minimumValueTimestampErr, "Error serializing 'minimumValueTimestamp' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMinimumValueTimestamp"); popErr != nil {

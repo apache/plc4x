@@ -41,6 +41,8 @@ type IBACnetConstructedDataEnable interface {
 	IBACnetConstructedData
 	// GetEnable returns Enable (property field)
 	GetEnable() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEnable) GetEnable() *BACnetApplicationTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEnable) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEnable factory function for BACnetConstructedDataEnable
 func NewBACnetConstructedDataEnable(enable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEnable) GetLengthInBitsConditional(lastItem bool) 
 	// Simple field (enable)
 	lengthInBits += m.Enable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEnableParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for enable")
 	}
+
+	// Virtual field
+	_actualValue := enable
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEnable) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		if _enableErr != nil {
 			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEnable"); popErr != nil {

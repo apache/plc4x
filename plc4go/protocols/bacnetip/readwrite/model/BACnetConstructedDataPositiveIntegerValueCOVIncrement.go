@@ -41,6 +41,8 @@ type IBACnetConstructedDataPositiveIntegerValueCOVIncrement interface {
 	IBACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetCovIncrement(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetCovIncrement())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPositiveIntegerValueCOVIncrement factory function for BACnetConstructedDataPositiveIntegerValueCOVIncrement
 func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(covIncrement *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPositiveIntegerValueCOVIncrement {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInBitsC
 	// Simple field (covIncrement)
 	lengthInBits += m.CovIncrement.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPositiveIntegerValueCOVIncrementParse(readBuffer utils
 	if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
 	}
+
+	// Virtual field
+	_actualValue := covIncrement
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueCOVIncrement")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPositiveIntegerValueCOVIncrement) Serialize(writeB
 		}
 		if _covIncrementErr != nil {
 			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement"); popErr != nil {

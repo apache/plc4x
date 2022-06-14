@@ -41,6 +41,8 @@ type IBACnetConstructedDataObjectPropertyReference interface {
 	IBACnetConstructedData
 	// GetPropertyReference returns PropertyReference (property field)
 	GetPropertyReference() *BACnetDeviceObjectPropertyReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectPropertyReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataObjectPropertyReference) GetPropertyReference() *B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataObjectPropertyReference) GetActualValue() *BACnetDeviceObjectPropertyReference {
+	return CastBACnetDeviceObjectPropertyReference(m.GetPropertyReference())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataObjectPropertyReference factory function for BACnetConstructedDataObjectPropertyReference
 func NewBACnetConstructedDataObjectPropertyReference(propertyReference *BACnetDeviceObjectPropertyReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataObjectPropertyReference {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataObjectPropertyReference) GetLengthInBitsConditiona
 	// Simple field (propertyReference)
 	lengthInBits += m.PropertyReference.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("propertyReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for propertyReference")
 	}
+
+	// Virtual field
+	_actualValue := propertyReference
+	actualValue := CastBACnetDeviceObjectPropertyReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataObjectPropertyReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataObjectPropertyReference")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataObjectPropertyReference) Serialize(writeBuffer uti
 		}
 		if _propertyReferenceErr != nil {
 			return errors.Wrap(_propertyReferenceErr, "Error serializing 'propertyReference' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataObjectPropertyReference"); popErr != nil {

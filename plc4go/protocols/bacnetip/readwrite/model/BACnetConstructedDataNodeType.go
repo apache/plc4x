@@ -41,6 +41,8 @@ type IBACnetConstructedDataNodeType interface {
 	IBACnetConstructedData
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() *BACnetNodeTypeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetNodeTypeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNodeType) GetNodeType() *BACnetNodeTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNodeType) GetActualValue() *BACnetNodeTypeTagged {
+	return CastBACnetNodeTypeTagged(m.GetNodeType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNodeType factory function for BACnetConstructedDataNodeType
 func NewBACnetConstructedDataNodeType(nodeType *BACnetNodeTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNodeType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNodeType) GetLengthInBitsConditional(lastItem bool
 	// Simple field (nodeType)
 	lengthInBits += m.NodeType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNodeTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("nodeType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for nodeType")
 	}
+
+	// Virtual field
+	_actualValue := nodeType
+	actualValue := CastBACnetNodeTypeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNodeType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNodeType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNodeType) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _nodeTypeErr != nil {
 			return errors.Wrap(_nodeTypeErr, "Error serializing 'nodeType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNodeType"); popErr != nil {

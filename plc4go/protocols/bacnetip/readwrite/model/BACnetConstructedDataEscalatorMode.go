@@ -41,6 +41,8 @@ type IBACnetConstructedDataEscalatorMode interface {
 	IBACnetConstructedData
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() *BACnetEscalatorModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEscalatorModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEscalatorMode) GetEscalatorMode() *BACnetEscalator
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEscalatorMode) GetActualValue() *BACnetEscalatorModeTagged {
+	return CastBACnetEscalatorModeTagged(m.GetEscalatorMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEscalatorMode factory function for BACnetConstructedDataEscalatorMode
 func NewBACnetConstructedDataEscalatorMode(escalatorMode *BACnetEscalatorModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEscalatorMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEscalatorMode) GetLengthInBitsConditional(lastItem
 	// Simple field (escalatorMode)
 	lengthInBits += m.EscalatorMode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEscalatorModeParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("escalatorMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for escalatorMode")
 	}
+
+	// Virtual field
+	_actualValue := escalatorMode
+	actualValue := CastBACnetEscalatorModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEscalatorMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEscalatorMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEscalatorMode) Serialize(writeBuffer utils.WriteBu
 		}
 		if _escalatorModeErr != nil {
 			return errors.Wrap(_escalatorModeErr, "Error serializing 'escalatorMode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEscalatorMode"); popErr != nil {

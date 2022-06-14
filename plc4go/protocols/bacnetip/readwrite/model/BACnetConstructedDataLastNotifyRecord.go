@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastNotifyRecord interface {
 	IBACnetConstructedData
 	// GetLastNotifyRecord returns LastNotifyRecord (property field)
 	GetLastNotifyRecord() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastNotifyRecord) GetLastNotifyRecord() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastNotifyRecord) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetLastNotifyRecord())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastNotifyRecord factory function for BACnetConstructedDataLastNotifyRecord
 func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastNotifyRecord {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastNotifyRecord) GetLengthInBitsConditional(lastI
 	// Simple field (lastNotifyRecord)
 	lengthInBits += m.LastNotifyRecord.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("lastNotifyRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastNotifyRecord")
 	}
+
+	// Virtual field
+	_actualValue := lastNotifyRecord
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastNotifyRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastNotifyRecord")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastNotifyRecord) Serialize(writeBuffer utils.Writ
 		}
 		if _lastNotifyRecordErr != nil {
 			return errors.Wrap(_lastNotifyRecordErr, "Error serializing 'lastNotifyRecord' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastNotifyRecord"); popErr != nil {

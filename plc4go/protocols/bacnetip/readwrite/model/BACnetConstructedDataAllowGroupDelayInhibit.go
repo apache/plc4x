@@ -41,6 +41,8 @@ type IBACnetConstructedDataAllowGroupDelayInhibit interface {
 	IBACnetConstructedData
 	// GetAllowGroupDelayInhibit returns AllowGroupDelayInhibit (property field)
 	GetAllowGroupDelayInhibit() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAllowGroupDelayInhibit) GetAllowGroupDelayInhibit(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAllowGroupDelayInhibit) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetAllowGroupDelayInhibit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAllowGroupDelayInhibit factory function for BACnetConstructedDataAllowGroupDelayInhibit
 func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAllowGroupDelayInhibit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAllowGroupDelayInhibit) GetLengthInBitsConditional
 	// Simple field (allowGroupDelayInhibit)
 	lengthInBits += m.AllowGroupDelayInhibit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAllowGroupDelayInhibitParse(readBuffer utils.ReadBuffe
 	if closeErr := readBuffer.CloseContext("allowGroupDelayInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for allowGroupDelayInhibit")
 	}
+
+	// Virtual field
+	_actualValue := allowGroupDelayInhibit
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAllowGroupDelayInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAllowGroupDelayInhibit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAllowGroupDelayInhibit) Serialize(writeBuffer util
 		}
 		if _allowGroupDelayInhibitErr != nil {
 			return errors.Wrap(_allowGroupDelayInhibitErr, "Error serializing 'allowGroupDelayInhibit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAllowGroupDelayInhibit"); popErr != nil {

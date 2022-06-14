@@ -41,6 +41,8 @@ type IBACnetConstructedDataThreatLevel interface {
 	IBACnetConstructedData
 	// GetThreatLevel returns ThreatLevel (property field)
 	GetThreatLevel() *BACnetAccessThreatLevel
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAccessThreatLevel
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataThreatLevel) GetThreatLevel() *BACnetAccessThreatL
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataThreatLevel) GetActualValue() *BACnetAccessThreatLevel {
+	return CastBACnetAccessThreatLevel(m.GetThreatLevel())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataThreatLevel factory function for BACnetConstructedDataThreatLevel
 func NewBACnetConstructedDataThreatLevel(threatLevel *BACnetAccessThreatLevel, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataThreatLevel {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataThreatLevel) GetLengthInBitsConditional(lastItem b
 	// Simple field (threatLevel)
 	lengthInBits += m.ThreatLevel.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataThreatLevelParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("threatLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for threatLevel")
 	}
+
+	// Virtual field
+	_actualValue := threatLevel
+	actualValue := CastBACnetAccessThreatLevel(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataThreatLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataThreatLevel")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataThreatLevel) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _threatLevelErr != nil {
 			return errors.Wrap(_threatLevelErr, "Error serializing 'threatLevel' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataThreatLevel"); popErr != nil {

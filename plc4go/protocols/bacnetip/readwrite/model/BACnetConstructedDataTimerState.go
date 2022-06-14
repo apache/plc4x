@@ -41,6 +41,8 @@ type IBACnetConstructedDataTimerState interface {
 	IBACnetConstructedData
 	// GetTimerState returns TimerState (property field)
 	GetTimerState() *BACnetTimerStateTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetTimerStateTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTimerState) GetTimerState() *BACnetTimerStateTagge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTimerState) GetActualValue() *BACnetTimerStateTagged {
+	return CastBACnetTimerStateTagged(m.GetTimerState())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimerState factory function for BACnetConstructedDataTimerState
 func NewBACnetConstructedDataTimerState(timerState *BACnetTimerStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimerState {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTimerState) GetLengthInBitsConditional(lastItem bo
 	// Simple field (timerState)
 	lengthInBits += m.TimerState.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTimerStateParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("timerState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timerState")
 	}
+
+	// Virtual field
+	_actualValue := timerState
+	actualValue := CastBACnetTimerStateTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimerState")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTimerState) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _timerStateErr != nil {
 			return errors.Wrap(_timerStateErr, "Error serializing 'timerState' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimerState"); popErr != nil {

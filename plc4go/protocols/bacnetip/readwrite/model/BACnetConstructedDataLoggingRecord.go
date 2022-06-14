@@ -41,6 +41,8 @@ type IBACnetConstructedDataLoggingRecord interface {
 	IBACnetConstructedData
 	// GetLoggingRecord returns LoggingRecord (property field)
 	GetLoggingRecord() *BACnetAccumulatorRecord
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAccumulatorRecord
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLoggingRecord) GetLoggingRecord() *BACnetAccumulat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLoggingRecord) GetActualValue() *BACnetAccumulatorRecord {
+	return CastBACnetAccumulatorRecord(m.GetLoggingRecord())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoggingRecord factory function for BACnetConstructedDataLoggingRecord
 func NewBACnetConstructedDataLoggingRecord(loggingRecord *BACnetAccumulatorRecord, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoggingRecord {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLoggingRecord) GetLengthInBitsConditional(lastItem
 	// Simple field (loggingRecord)
 	lengthInBits += m.LoggingRecord.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLoggingRecordParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("loggingRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for loggingRecord")
 	}
+
+	// Virtual field
+	_actualValue := loggingRecord
+	actualValue := CastBACnetAccumulatorRecord(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingRecord")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLoggingRecord) Serialize(writeBuffer utils.WriteBu
 		}
 		if _loggingRecordErr != nil {
 			return errors.Wrap(_loggingRecordErr, "Error serializing 'loggingRecord' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoggingRecord"); popErr != nil {

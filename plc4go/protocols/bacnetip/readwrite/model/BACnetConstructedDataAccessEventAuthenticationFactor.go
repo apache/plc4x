@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccessEventAuthenticationFactor interface {
 	IBACnetConstructedData
 	// GetAccessEventAuthenticationFactor returns AccessEventAuthenticationFactor (property field)
 	GetAccessEventAuthenticationFactor() *BACnetAuthenticationFactor
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAuthenticationFactor
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) GetAccessEventAut
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccessEventAuthenticationFactor) GetActualValue() *BACnetAuthenticationFactor {
+	return CastBACnetAuthenticationFactor(m.GetAccessEventAuthenticationFactor())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessEventAuthenticationFactor factory function for BACnetConstructedDataAccessEventAuthenticationFactor
 func NewBACnetConstructedDataAccessEventAuthenticationFactor(accessEventAuthenticationFactor *BACnetAuthenticationFactor, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessEventAuthenticationFactor {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBitsCo
 	// Simple field (accessEventAuthenticationFactor)
 	lengthInBits += m.AccessEventAuthenticationFactor.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 	if closeErr := readBuffer.CloseContext("accessEventAuthenticationFactor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for accessEventAuthenticationFactor")
 	}
+
+	// Virtual field
+	_actualValue := accessEventAuthenticationFactor
+	actualValue := CastBACnetAuthenticationFactor(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventAuthenticationFactor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventAuthenticationFactor")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccessEventAuthenticationFactor) Serialize(writeBu
 		}
 		if _accessEventAuthenticationFactorErr != nil {
 			return errors.Wrap(_accessEventAuthenticationFactorErr, "Error serializing 'accessEventAuthenticationFactor' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessEventAuthenticationFactor"); popErr != nil {

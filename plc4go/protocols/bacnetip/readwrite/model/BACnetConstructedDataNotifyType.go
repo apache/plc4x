@@ -41,6 +41,8 @@ type IBACnetConstructedDataNotifyType interface {
 	IBACnetConstructedData
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() *BACnetNotifyTypeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetNotifyTypeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNotifyType) GetNotifyType() *BACnetNotifyTypeTagge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNotifyType) GetActualValue() *BACnetNotifyTypeTagged {
+	return CastBACnetNotifyTypeTagged(m.GetNotifyType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNotifyType factory function for BACnetConstructedDataNotifyType
 func NewBACnetConstructedDataNotifyType(notifyType *BACnetNotifyTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNotifyType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNotifyType) GetLengthInBitsConditional(lastItem bo
 	// Simple field (notifyType)
 	lengthInBits += m.NotifyType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
 	}
+
+	// Virtual field
+	_actualValue := notifyType
+	actualValue := CastBACnetNotifyTypeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotifyType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNotifyType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNotifyType) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _notifyTypeErr != nil {
 			return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNotifyType"); popErr != nil {

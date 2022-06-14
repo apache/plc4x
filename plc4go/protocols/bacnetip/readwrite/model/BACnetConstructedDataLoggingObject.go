@@ -41,6 +41,8 @@ type IBACnetConstructedDataLoggingObject interface {
 	IBACnetConstructedData
 	// GetLoggingObject returns LoggingObject (property field)
 	GetLoggingObject() *BACnetApplicationTagObjectIdentifier
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLoggingObject) GetLoggingObject() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLoggingObject) GetActualValue() *BACnetApplicationTagObjectIdentifier {
+	return CastBACnetApplicationTagObjectIdentifier(m.GetLoggingObject())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoggingObject factory function for BACnetConstructedDataLoggingObject
 func NewBACnetConstructedDataLoggingObject(loggingObject *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoggingObject {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLoggingObject) GetLengthInBitsConditional(lastItem
 	// Simple field (loggingObject)
 	lengthInBits += m.LoggingObject.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLoggingObjectParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("loggingObject"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for loggingObject")
 	}
+
+	// Virtual field
+	_actualValue := loggingObject
+	actualValue := CastBACnetApplicationTagObjectIdentifier(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingObject"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingObject")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLoggingObject) Serialize(writeBuffer utils.WriteBu
 		}
 		if _loggingObjectErr != nil {
 			return errors.Wrap(_loggingObjectErr, "Error serializing 'loggingObject' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoggingObject"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataSetting interface {
 	IBACnetConstructedData
 	// GetSetting returns Setting (property field)
 	GetSetting() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSetting) GetSetting() *BACnetApplicationTagUnsigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSetting) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetSetting())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSetting factory function for BACnetConstructedDataSetting
 func NewBACnetConstructedDataSetting(setting *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSetting {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSetting) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (setting)
 	lengthInBits += m.Setting.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSettingParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("setting"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for setting")
 	}
+
+	// Virtual field
+	_actualValue := setting
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetting"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSetting")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSetting) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _settingErr != nil {
 			return errors.Wrap(_settingErr, "Error serializing 'setting' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSetting"); popErr != nil {

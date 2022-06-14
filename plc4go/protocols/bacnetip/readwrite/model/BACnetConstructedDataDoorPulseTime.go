@@ -41,6 +41,8 @@ type IBACnetConstructedDataDoorPulseTime interface {
 	IBACnetConstructedData
 	// GetDoorPulseTime returns DoorPulseTime (property field)
 	GetDoorPulseTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDoorPulseTime) GetDoorPulseTime() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDoorPulseTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDoorPulseTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorPulseTime factory function for BACnetConstructedDataDoorPulseTime
 func NewBACnetConstructedDataDoorPulseTime(doorPulseTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorPulseTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDoorPulseTime) GetLengthInBitsConditional(lastItem
 	// Simple field (doorPulseTime)
 	lengthInBits += m.DoorPulseTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDoorPulseTimeParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("doorPulseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for doorPulseTime")
 	}
+
+	// Virtual field
+	_actualValue := doorPulseTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorPulseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorPulseTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDoorPulseTime) Serialize(writeBuffer utils.WriteBu
 		}
 		if _doorPulseTimeErr != nil {
 			return errors.Wrap(_doorPulseTimeErr, "Error serializing 'doorPulseTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDoorPulseTime"); popErr != nil {

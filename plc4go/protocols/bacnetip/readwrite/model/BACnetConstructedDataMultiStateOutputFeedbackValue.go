@@ -41,6 +41,8 @@ type IBACnetConstructedDataMultiStateOutputFeedbackValue interface {
 	IBACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) GetFeedbackValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetFeedbackValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMultiStateOutputFeedbackValue factory function for BACnetConstructedDataMultiStateOutputFeedbackValue
 func NewBACnetConstructedDataMultiStateOutputFeedbackValue(feedbackValue *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMultiStateOutputFeedbackValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) GetLengthInBitsCond
 	// Simple field (feedbackValue)
 	lengthInBits += m.FeedbackValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParse(readBuffer utils.Re
 	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for feedbackValue")
 	}
+
+	// Virtual field
+	_actualValue := feedbackValue
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateOutputFeedbackValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMultiStateOutputFeedbackValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataMultiStateOutputFeedbackValue) Serialize(writeBuff
 		}
 		if _feedbackValueErr != nil {
 			return errors.Wrap(_feedbackValueErr, "Error serializing 'feedbackValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMultiStateOutputFeedbackValue"); popErr != nil {

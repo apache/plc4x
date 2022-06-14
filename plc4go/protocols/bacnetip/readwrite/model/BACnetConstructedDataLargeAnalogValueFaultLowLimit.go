@@ -41,6 +41,8 @@ type IBACnetConstructedDataLargeAnalogValueFaultLowLimit interface {
 	IBACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() *BACnetApplicationTagDouble
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagDouble
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLargeAnalogValueFaultLowLimit) GetFaultLowLimit() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLargeAnalogValueFaultLowLimit) GetActualValue() *BACnetApplicationTagDouble {
+	return CastBACnetApplicationTagDouble(m.GetFaultLowLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLargeAnalogValueFaultLowLimit factory function for BACnetConstructedDataLargeAnalogValueFaultLowLimit
 func NewBACnetConstructedDataLargeAnalogValueFaultLowLimit(faultLowLimit *BACnetApplicationTagDouble, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLargeAnalogValueFaultLowLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLargeAnalogValueFaultLowLimit) GetLengthInBitsCond
 	// Simple field (faultLowLimit)
 	lengthInBits += m.FaultLowLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLargeAnalogValueFaultLowLimitParse(readBuffer utils.Re
 	if closeErr := readBuffer.CloseContext("faultLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for faultLowLimit")
 	}
+
+	// Virtual field
+	_actualValue := faultLowLimit
+	actualValue := CastBACnetApplicationTagDouble(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueFaultLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueFaultLowLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLargeAnalogValueFaultLowLimit) Serialize(writeBuff
 		}
 		if _faultLowLimitErr != nil {
 			return errors.Wrap(_faultLowLimitErr, "Error serializing 'faultLowLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLargeAnalogValueFaultLowLimit"); popErr != nil {

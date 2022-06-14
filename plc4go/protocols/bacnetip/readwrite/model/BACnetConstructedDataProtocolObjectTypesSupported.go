@@ -41,6 +41,8 @@ type IBACnetConstructedDataProtocolObjectTypesSupported interface {
 	IBACnetConstructedData
 	// GetProtocolObjectTypesSupported returns ProtocolObjectTypesSupported (property field)
 	GetProtocolObjectTypesSupported() *BACnetObjectTypesSupportedTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetObjectTypesSupportedTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) GetProtocolObjectTyp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProtocolObjectTypesSupported) GetActualValue() *BACnetObjectTypesSupportedTagged {
+	return CastBACnetObjectTypesSupportedTagged(m.GetProtocolObjectTypesSupported())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolObjectTypesSupported factory function for BACnetConstructedDataProtocolObjectTypesSupported
 func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported *BACnetObjectTypesSupportedTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProtocolObjectTypesSupported {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) GetLengthInBitsCondi
 	// Simple field (protocolObjectTypesSupported)
 	lengthInBits += m.ProtocolObjectTypesSupported.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.Rea
 	if closeErr := readBuffer.CloseContext("protocolObjectTypesSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for protocolObjectTypesSupported")
 	}
+
+	// Virtual field
+	_actualValue := protocolObjectTypesSupported
+	actualValue := CastBACnetObjectTypesSupportedTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolObjectTypesSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolObjectTypesSupported")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProtocolObjectTypesSupported) Serialize(writeBuffe
 		}
 		if _protocolObjectTypesSupportedErr != nil {
 			return errors.Wrap(_protocolObjectTypesSupportedErr, "Error serializing 'protocolObjectTypesSupported' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolObjectTypesSupported"); popErr != nil {

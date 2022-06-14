@@ -41,6 +41,8 @@ type IBACnetConstructedDataFullDutyBaseline interface {
 	IBACnetConstructedData
 	// GetFullDutyBaseLine returns FullDutyBaseLine (property field)
 	GetFullDutyBaseLine() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFullDutyBaseline) GetFullDutyBaseLine() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFullDutyBaseline) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetFullDutyBaseLine())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFullDutyBaseline factory function for BACnetConstructedDataFullDutyBaseline
 func NewBACnetConstructedDataFullDutyBaseline(fullDutyBaseLine *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFullDutyBaseline {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFullDutyBaseline) GetLengthInBitsConditional(lastI
 	// Simple field (fullDutyBaseLine)
 	lengthInBits += m.FullDutyBaseLine.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("fullDutyBaseLine"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for fullDutyBaseLine")
 	}
+
+	// Virtual field
+	_actualValue := fullDutyBaseLine
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFullDutyBaseline"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFullDutyBaseline")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFullDutyBaseline) Serialize(writeBuffer utils.Writ
 		}
 		if _fullDutyBaseLineErr != nil {
 			return errors.Wrap(_fullDutyBaseLineErr, "Error serializing 'fullDutyBaseLine' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFullDutyBaseline"); popErr != nil {

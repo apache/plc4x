@@ -41,6 +41,8 @@ type IBACnetConstructedDataAuthenticationStatus interface {
 	IBACnetConstructedData
 	// GetAuthenticationStatus returns AuthenticationStatus (property field)
 	GetAuthenticationStatus() *BACnetAuthenticationStatusTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAuthenticationStatusTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAuthenticationStatus) GetAuthenticationStatus() *B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAuthenticationStatus) GetActualValue() *BACnetAuthenticationStatusTagged {
+	return CastBACnetAuthenticationStatusTagged(m.GetAuthenticationStatus())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthenticationStatus factory function for BACnetConstructedDataAuthenticationStatus
 func NewBACnetConstructedDataAuthenticationStatus(authenticationStatus *BACnetAuthenticationStatusTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAuthenticationStatus {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAuthenticationStatus) GetLengthInBitsConditional(l
 	// Simple field (authenticationStatus)
 	lengthInBits += m.AuthenticationStatus.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 	if closeErr := readBuffer.CloseContext("authenticationStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for authenticationStatus")
 	}
+
+	// Virtual field
+	_actualValue := authenticationStatus
+	actualValue := CastBACnetAuthenticationStatusTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthenticationStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthenticationStatus")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAuthenticationStatus) Serialize(writeBuffer utils.
 		}
 		if _authenticationStatusErr != nil {
 			return errors.Wrap(_authenticationStatusErr, "Error serializing 'authenticationStatus' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationStatus"); popErr != nil {

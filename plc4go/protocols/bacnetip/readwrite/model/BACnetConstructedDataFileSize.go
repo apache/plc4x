@@ -41,6 +41,8 @@ type IBACnetConstructedDataFileSize interface {
 	IBACnetConstructedData
 	// GetFileSize returns FileSize (property field)
 	GetFileSize() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFileSize) GetFileSize() *BACnetApplicationTagUnsig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFileSize) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetFileSize())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFileSize factory function for BACnetConstructedDataFileSize
 func NewBACnetConstructedDataFileSize(fileSize *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFileSize {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFileSize) GetLengthInBitsConditional(lastItem bool
 	// Simple field (fileSize)
 	lengthInBits += m.FileSize.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("fileSize"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for fileSize")
 	}
+
+	// Virtual field
+	_actualValue := fileSize
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileSize"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileSize")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFileSize) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _fileSizeErr != nil {
 			return errors.Wrap(_fileSizeErr, "Error serializing 'fileSize' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFileSize"); popErr != nil {

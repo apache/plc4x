@@ -41,6 +41,8 @@ type IBACnetConstructedDataStateDescription interface {
 	IBACnetConstructedData
 	// GetStateDescription returns StateDescription (property field)
 	GetStateDescription() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataStateDescription) GetStateDescription() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataStateDescription) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetStateDescription())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStateDescription factory function for BACnetConstructedDataStateDescription
 func NewBACnetConstructedDataStateDescription(stateDescription *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStateDescription {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataStateDescription) GetLengthInBitsConditional(lastI
 	// Simple field (stateDescription)
 	lengthInBits += m.StateDescription.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataStateDescriptionParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("stateDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for stateDescription")
 	}
+
+	// Virtual field
+	_actualValue := stateDescription
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStateDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStateDescription")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataStateDescription) Serialize(writeBuffer utils.Writ
 		}
 		if _stateDescriptionErr != nil {
 			return errors.Wrap(_stateDescriptionErr, "Error serializing 'stateDescription' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStateDescription"); popErr != nil {

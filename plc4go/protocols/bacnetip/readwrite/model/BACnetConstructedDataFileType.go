@@ -41,6 +41,8 @@ type IBACnetConstructedDataFileType interface {
 	IBACnetConstructedData
 	// GetFileType returns FileType (property field)
 	GetFileType() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFileType) GetFileType() *BACnetApplicationTagChara
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFileType) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetFileType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFileType factory function for BACnetConstructedDataFileType
 func NewBACnetConstructedDataFileType(fileType *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFileType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFileType) GetLengthInBitsConditional(lastItem bool
 	// Simple field (fileType)
 	lengthInBits += m.FileType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("fileType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for fileType")
 	}
+
+	// Virtual field
+	_actualValue := fileType
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFileType) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _fileTypeErr != nil {
 			return errors.Wrap(_fileTypeErr, "Error serializing 'fileType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFileType"); popErr != nil {

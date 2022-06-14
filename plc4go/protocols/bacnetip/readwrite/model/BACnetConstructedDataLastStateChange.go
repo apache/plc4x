@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastStateChange interface {
 	IBACnetConstructedData
 	// GetLastStateChange returns LastStateChange (property field)
 	GetLastStateChange() *BACnetTimerTransitionTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetTimerTransitionTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastStateChange) GetLastStateChange() *BACnetTimer
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastStateChange) GetActualValue() *BACnetTimerTransitionTagged {
+	return CastBACnetTimerTransitionTagged(m.GetLastStateChange())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastStateChange factory function for BACnetConstructedDataLastStateChange
 func NewBACnetConstructedDataLastStateChange(lastStateChange *BACnetTimerTransitionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastStateChange {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastStateChange) GetLengthInBitsConditional(lastIt
 	// Simple field (lastStateChange)
 	lengthInBits += m.LastStateChange.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("lastStateChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastStateChange")
 	}
+
+	// Virtual field
+	_actualValue := lastStateChange
+	actualValue := CastBACnetTimerTransitionTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastStateChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastStateChange")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastStateChange) Serialize(writeBuffer utils.Write
 		}
 		if _lastStateChangeErr != nil {
 			return errors.Wrap(_lastStateChangeErr, "Error serializing 'lastStateChange' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastStateChange"); popErr != nil {

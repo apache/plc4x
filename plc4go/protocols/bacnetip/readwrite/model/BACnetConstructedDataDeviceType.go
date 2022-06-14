@@ -41,6 +41,8 @@ type IBACnetConstructedDataDeviceType interface {
 	IBACnetConstructedData
 	// GetDeviceType returns DeviceType (property field)
 	GetDeviceType() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDeviceType) GetDeviceType() *BACnetApplicationTagC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDeviceType) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetDeviceType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeviceType factory function for BACnetConstructedDataDeviceType
 func NewBACnetConstructedDataDeviceType(deviceType *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDeviceType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDeviceType) GetLengthInBitsConditional(lastItem bo
 	// Simple field (deviceType)
 	lengthInBits += m.DeviceType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDeviceTypeParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("deviceType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for deviceType")
 	}
+
+	// Virtual field
+	_actualValue := deviceType
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDeviceType) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _deviceTypeErr != nil {
 			return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceType"); popErr != nil {

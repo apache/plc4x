@@ -41,6 +41,8 @@ type IBACnetConstructedDataNumberOfAuthenticationPolicies interface {
 	IBACnetConstructedData
 	// GetNumberOfAuthenticationPolicies returns NumberOfAuthenticationPolicies (property field)
 	GetNumberOfAuthenticationPolicies() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNumberOfAuthenticationPolicies) GetNumberOfAuthent
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNumberOfAuthenticationPolicies) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetNumberOfAuthenticationPolicies())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNumberOfAuthenticationPolicies factory function for BACnetConstructedDataNumberOfAuthenticationPolicies
 func NewBACnetConstructedDataNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNumberOfAuthenticationPolicies {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNumberOfAuthenticationPolicies) GetLengthInBitsCon
 	// Simple field (numberOfAuthenticationPolicies)
 	lengthInBits += m.NumberOfAuthenticationPolicies.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(readBuffer utils.R
 	if closeErr := readBuffer.CloseContext("numberOfAuthenticationPolicies"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for numberOfAuthenticationPolicies")
 	}
+
+	// Virtual field
+	_actualValue := numberOfAuthenticationPolicies
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNumberOfAuthenticationPolicies")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNumberOfAuthenticationPolicies) Serialize(writeBuf
 		}
 		if _numberOfAuthenticationPoliciesErr != nil {
 			return errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error serializing 'numberOfAuthenticationPolicies' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNumberOfAuthenticationPolicies"); popErr != nil {

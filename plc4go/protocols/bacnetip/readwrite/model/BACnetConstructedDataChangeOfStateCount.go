@@ -41,6 +41,8 @@ type IBACnetConstructedDataChangeOfStateCount interface {
 	IBACnetConstructedData
 	// GetChangeIfStateCount returns ChangeIfStateCount (property field)
 	GetChangeIfStateCount() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataChangeOfStateCount) GetChangeIfStateCount() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataChangeOfStateCount) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetChangeIfStateCount())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataChangeOfStateCount factory function for BACnetConstructedDataChangeOfStateCount
 func NewBACnetConstructedDataChangeOfStateCount(changeIfStateCount *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataChangeOfStateCount {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataChangeOfStateCount) GetLengthInBitsConditional(las
 	// Simple field (changeIfStateCount)
 	lengthInBits += m.ChangeIfStateCount.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("changeIfStateCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for changeIfStateCount")
 	}
+
+	// Virtual field
+	_actualValue := changeIfStateCount
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangeOfStateCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangeOfStateCount")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataChangeOfStateCount) Serialize(writeBuffer utils.Wr
 		}
 		if _changeIfStateCountErr != nil {
 			return errors.Wrap(_changeIfStateCountErr, "Error serializing 'changeIfStateCount' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataChangeOfStateCount"); popErr != nil {

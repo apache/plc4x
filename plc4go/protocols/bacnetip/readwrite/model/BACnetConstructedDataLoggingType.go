@@ -41,6 +41,8 @@ type IBACnetConstructedDataLoggingType interface {
 	IBACnetConstructedData
 	// GetLoggingType returns LoggingType (property field)
 	GetLoggingType() *BACnetLoggingTypeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLoggingTypeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLoggingType) GetLoggingType() *BACnetLoggingTypeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLoggingType) GetActualValue() *BACnetLoggingTypeTagged {
+	return CastBACnetLoggingTypeTagged(m.GetLoggingType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoggingType factory function for BACnetConstructedDataLoggingType
 func NewBACnetConstructedDataLoggingType(loggingType *BACnetLoggingTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoggingType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLoggingType) GetLengthInBitsConditional(lastItem b
 	// Simple field (loggingType)
 	lengthInBits += m.LoggingType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("loggingType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for loggingType")
 	}
+
+	// Virtual field
+	_actualValue := loggingType
+	actualValue := CastBACnetLoggingTypeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLoggingType) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _loggingTypeErr != nil {
 			return errors.Wrap(_loggingTypeErr, "Error serializing 'loggingType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoggingType"); popErr != nil {

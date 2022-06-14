@@ -41,6 +41,8 @@ type IBACnetConstructedDataDefaultSubordinateRelationship interface {
 	IBACnetConstructedData
 	// GetDefaultSubordinateRelationship returns DefaultSubordinateRelationship (property field)
 	GetDefaultSubordinateRelationship() *BACnetRelationshipTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetRelationshipTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) GetDefaultSubordin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDefaultSubordinateRelationship) GetActualValue() *BACnetRelationshipTagged {
+	return CastBACnetRelationshipTagged(m.GetDefaultSubordinateRelationship())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultSubordinateRelationship factory function for BACnetConstructedDataDefaultSubordinateRelationship
 func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRelationship *BACnetRelationshipTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultSubordinateRelationship {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) GetLengthInBitsCon
 	// Simple field (defaultSubordinateRelationship)
 	lengthInBits += m.DefaultSubordinateRelationship.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.R
 	if closeErr := readBuffer.CloseContext("defaultSubordinateRelationship"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for defaultSubordinateRelationship")
 	}
+
+	// Virtual field
+	_actualValue := defaultSubordinateRelationship
+	actualValue := CastBACnetRelationshipTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultSubordinateRelationship"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultSubordinateRelationship")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDefaultSubordinateRelationship) Serialize(writeBuf
 		}
 		if _defaultSubordinateRelationshipErr != nil {
 			return errors.Wrap(_defaultSubordinateRelationshipErr, "Error serializing 'defaultSubordinateRelationship' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultSubordinateRelationship"); popErr != nil {

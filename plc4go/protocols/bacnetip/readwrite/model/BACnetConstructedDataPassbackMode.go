@@ -41,6 +41,8 @@ type IBACnetConstructedDataPassbackMode interface {
 	IBACnetConstructedData
 	// GetPassbackMode returns PassbackMode (property field)
 	GetPassbackMode() *BACnetAccessPassbackModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAccessPassbackModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPassbackMode) GetPassbackMode() *BACnetAccessPassb
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPassbackMode) GetActualValue() *BACnetAccessPassbackModeTagged {
+	return CastBACnetAccessPassbackModeTagged(m.GetPassbackMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPassbackMode factory function for BACnetConstructedDataPassbackMode
 func NewBACnetConstructedDataPassbackMode(passbackMode *BACnetAccessPassbackModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPassbackMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPassbackMode) GetLengthInBitsConditional(lastItem 
 	// Simple field (passbackMode)
 	lengthInBits += m.PassbackMode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("passbackMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for passbackMode")
 	}
+
+	// Virtual field
+	_actualValue := passbackMode
+	actualValue := CastBACnetAccessPassbackModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassbackMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPassbackMode) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _passbackModeErr != nil {
 			return errors.Wrap(_passbackModeErr, "Error serializing 'passbackMode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPassbackMode"); popErr != nil {

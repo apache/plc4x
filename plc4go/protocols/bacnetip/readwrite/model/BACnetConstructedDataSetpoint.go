@@ -41,6 +41,8 @@ type IBACnetConstructedDataSetpoint interface {
 	IBACnetConstructedData
 	// GetSetpoint returns Setpoint (property field)
 	GetSetpoint() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSetpoint) GetSetpoint() *BACnetApplicationTagReal 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSetpoint) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetSetpoint())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSetpoint factory function for BACnetConstructedDataSetpoint
 func NewBACnetConstructedDataSetpoint(setpoint *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSetpoint {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSetpoint) GetLengthInBitsConditional(lastItem bool
 	// Simple field (setpoint)
 	lengthInBits += m.Setpoint.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("setpoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for setpoint")
 	}
+
+	// Virtual field
+	_actualValue := setpoint
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetpoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSetpoint")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSetpoint) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _setpointErr != nil {
 			return errors.Wrap(_setpointErr, "Error serializing 'setpoint' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSetpoint"); popErr != nil {

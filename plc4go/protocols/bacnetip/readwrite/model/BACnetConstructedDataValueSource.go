@@ -41,6 +41,8 @@ type IBACnetConstructedDataValueSource interface {
 	IBACnetConstructedData
 	// GetValueSource returns ValueSource (property field)
 	GetValueSource() *BACnetValueSource
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetValueSource
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataValueSource) GetValueSource() *BACnetValueSource {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataValueSource) GetActualValue() *BACnetValueSource {
+	return CastBACnetValueSource(m.GetValueSource())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataValueSource factory function for BACnetConstructedDataValueSource
 func NewBACnetConstructedDataValueSource(valueSource *BACnetValueSource, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataValueSource {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataValueSource) GetLengthInBitsConditional(lastItem b
 	// Simple field (valueSource)
 	lengthInBits += m.ValueSource.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("valueSource"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for valueSource")
 	}
+
+	// Virtual field
+	_actualValue := valueSource
+	actualValue := CastBACnetValueSource(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSource"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSource")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataValueSource) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _valueSourceErr != nil {
 			return errors.Wrap(_valueSourceErr, "Error serializing 'valueSource' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueSource"); popErr != nil {

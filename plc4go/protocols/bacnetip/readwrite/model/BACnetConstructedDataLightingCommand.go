@@ -41,6 +41,8 @@ type IBACnetConstructedDataLightingCommand interface {
 	IBACnetConstructedData
 	// GetLightingCommand returns LightingCommand (property field)
 	GetLightingCommand() *BACnetLightingCommand
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLightingCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLightingCommand) GetLightingCommand() *BACnetLight
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLightingCommand) GetActualValue() *BACnetLightingCommand {
+	return CastBACnetLightingCommand(m.GetLightingCommand())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLightingCommand factory function for BACnetConstructedDataLightingCommand
 func NewBACnetConstructedDataLightingCommand(lightingCommand *BACnetLightingCommand, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLightingCommand {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLightingCommand) GetLengthInBitsConditional(lastIt
 	// Simple field (lightingCommand)
 	lengthInBits += m.LightingCommand.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("lightingCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lightingCommand")
 	}
+
+	// Virtual field
+	_actualValue := lightingCommand
+	actualValue := CastBACnetLightingCommand(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommand")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLightingCommand) Serialize(writeBuffer utils.Write
 		}
 		if _lightingCommandErr != nil {
 			return errors.Wrap(_lightingCommandErr, "Error serializing 'lightingCommand' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLightingCommand"); popErr != nil {

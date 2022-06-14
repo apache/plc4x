@@ -41,6 +41,8 @@ type IBACnetConstructedDataInstallationID interface {
 	IBACnetConstructedData
 	// GetInstallationId returns InstallationId (property field)
 	GetInstallationId() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataInstallationID) GetInstallationId() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataInstallationID) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetInstallationId())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInstallationID factory function for BACnetConstructedDataInstallationID
 func NewBACnetConstructedDataInstallationID(installationId *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataInstallationID {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataInstallationID) GetLengthInBitsConditional(lastIte
 	// Simple field (installationId)
 	lengthInBits += m.InstallationId.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("installationId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for installationId")
 	}
+
+	// Virtual field
+	_actualValue := installationId
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstallationID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstallationID")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataInstallationID) Serialize(writeBuffer utils.WriteB
 		}
 		if _installationIdErr != nil {
 			return errors.Wrap(_installationIdErr, "Error serializing 'installationId' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInstallationID"); popErr != nil {

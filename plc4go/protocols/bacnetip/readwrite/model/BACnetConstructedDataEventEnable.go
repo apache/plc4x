@@ -41,6 +41,8 @@ type IBACnetConstructedDataEventEnable interface {
 	IBACnetConstructedData
 	// GetEventEnable returns EventEnable (property field)
 	GetEventEnable() *BACnetEventTransitionBitsTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEventTransitionBitsTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEventEnable) GetEventEnable() *BACnetEventTransiti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEventEnable) GetActualValue() *BACnetEventTransitionBitsTagged {
+	return CastBACnetEventTransitionBitsTagged(m.GetEventEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventEnable factory function for BACnetConstructedDataEventEnable
 func NewBACnetConstructedDataEventEnable(eventEnable *BACnetEventTransitionBitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEventEnable) GetLengthInBitsConditional(lastItem b
 	// Simple field (eventEnable)
 	lengthInBits += m.EventEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEventEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("eventEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for eventEnable")
 	}
+
+	// Virtual field
+	_actualValue := eventEnable
+	actualValue := CastBACnetEventTransitionBitsTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEventEnable) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _eventEnableErr != nil {
 			return errors.Wrap(_eventEnableErr, "Error serializing 'eventEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventEnable"); popErr != nil {

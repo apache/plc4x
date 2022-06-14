@@ -41,6 +41,8 @@ type IBACnetConstructedDataSecurityPDUTimeout interface {
 	IBACnetConstructedData
 	// GetSecurityPduTimeout returns SecurityPduTimeout (property field)
 	GetSecurityPduTimeout() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSecurityPDUTimeout) GetSecurityPduTimeout() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSecurityPDUTimeout) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetSecurityPduTimeout())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSecurityPDUTimeout factory function for BACnetConstructedDataSecurityPDUTimeout
 func NewBACnetConstructedDataSecurityPDUTimeout(securityPduTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSecurityPDUTimeout {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSecurityPDUTimeout) GetLengthInBitsConditional(las
 	// Simple field (securityPduTimeout)
 	lengthInBits += m.SecurityPduTimeout.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("securityPduTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for securityPduTimeout")
 	}
+
+	// Virtual field
+	_actualValue := securityPduTimeout
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecurityPDUTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSecurityPDUTimeout")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSecurityPDUTimeout) Serialize(writeBuffer utils.Wr
 		}
 		if _securityPduTimeoutErr != nil {
 			return errors.Wrap(_securityPduTimeoutErr, "Error serializing 'securityPduTimeout' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSecurityPDUTimeout"); popErr != nil {

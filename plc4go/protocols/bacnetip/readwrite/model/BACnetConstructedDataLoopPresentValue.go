@@ -41,6 +41,8 @@ type IBACnetConstructedDataLoopPresentValue interface {
 	IBACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLoopPresentValue) GetPresentValue() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLoopPresentValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetPresentValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoopPresentValue factory function for BACnetConstructedDataLoopPresentValue
 func NewBACnetConstructedDataLoopPresentValue(presentValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoopPresentValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLoopPresentValue) GetLengthInBitsConditional(lastI
 	// Simple field (presentValue)
 	lengthInBits += m.PresentValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLoopPresentValueParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
 	}
+
+	// Virtual field
+	_actualValue := presentValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoopPresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoopPresentValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLoopPresentValue) Serialize(writeBuffer utils.Writ
 		}
 		if _presentValueErr != nil {
 			return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoopPresentValue"); popErr != nil {

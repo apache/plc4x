@@ -41,6 +41,8 @@ type IBACnetConstructedDataControlledVariableValue interface {
 	IBACnetConstructedData
 	// GetControlledVariableValue returns ControlledVariableValue (property field)
 	GetControlledVariableValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataControlledVariableValue) GetControlledVariableValu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataControlledVariableValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetControlledVariableValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataControlledVariableValue factory function for BACnetConstructedDataControlledVariableValue
 func NewBACnetConstructedDataControlledVariableValue(controlledVariableValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataControlledVariableValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataControlledVariableValue) GetLengthInBitsConditiona
 	// Simple field (controlledVariableValue)
 	lengthInBits += m.ControlledVariableValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("controlledVariableValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for controlledVariableValue")
 	}
+
+	// Virtual field
+	_actualValue := controlledVariableValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataControlledVariableValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataControlledVariableValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataControlledVariableValue) Serialize(writeBuffer uti
 		}
 		if _controlledVariableValueErr != nil {
 			return errors.Wrap(_controlledVariableValueErr, "Error serializing 'controlledVariableValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataControlledVariableValue"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataValueSet interface {
 	IBACnetConstructedData
 	// GetValueSet returns ValueSet (property field)
 	GetValueSet() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataValueSet) GetValueSet() *BACnetApplicationTagUnsig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataValueSet) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetValueSet())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataValueSet factory function for BACnetConstructedDataValueSet
 func NewBACnetConstructedDataValueSet(valueSet *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataValueSet {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataValueSet) GetLengthInBitsConditional(lastItem bool
 	// Simple field (valueSet)
 	lengthInBits += m.ValueSet.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataValueSetParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("valueSet"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for valueSet")
 	}
+
+	// Virtual field
+	_actualValue := valueSet
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSet"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSet")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataValueSet) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _valueSetErr != nil {
 			return errors.Wrap(_valueSetErr, "Error serializing 'valueSet' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueSet"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataTimeOfDeviceRestart interface {
 	IBACnetConstructedData
 	// GetTimeOfDeviceRestart returns TimeOfDeviceRestart (property field)
 	GetTimeOfDeviceRestart() *BACnetTimeStamp
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetTimeStamp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) GetTimeOfDeviceRestart() *BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTimeOfDeviceRestart) GetActualValue() *BACnetTimeStamp {
+	return CastBACnetTimeStamp(m.GetTimeOfDeviceRestart())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeOfDeviceRestart factory function for BACnetConstructedDataTimeOfDeviceRestart
 func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeOfDeviceRestart {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBitsConditional(la
 	// Simple field (timeOfDeviceRestart)
 	lengthInBits += m.TimeOfDeviceRestart.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("timeOfDeviceRestart"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timeOfDeviceRestart")
 	}
+
+	// Virtual field
+	_actualValue := timeOfDeviceRestart
+	actualValue := CastBACnetTimeStamp(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfDeviceRestart"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeOfDeviceRestart")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTimeOfDeviceRestart) Serialize(writeBuffer utils.W
 		}
 		if _timeOfDeviceRestartErr != nil {
 			return errors.Wrap(_timeOfDeviceRestartErr, "Error serializing 'timeOfDeviceRestart' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeOfDeviceRestart"); popErr != nil {

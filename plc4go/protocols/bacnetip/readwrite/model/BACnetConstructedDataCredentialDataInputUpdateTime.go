@@ -41,6 +41,8 @@ type IBACnetConstructedDataCredentialDataInputUpdateTime interface {
 	IBACnetConstructedData
 	// GetUpdateTime returns UpdateTime (property field)
 	GetUpdateTime() *BACnetTimeStamp
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetTimeStamp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCredentialDataInputUpdateTime) GetUpdateTime() *BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCredentialDataInputUpdateTime) GetActualValue() *BACnetTimeStamp {
+	return CastBACnetTimeStamp(m.GetUpdateTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for BACnetConstructedDataCredentialDataInputUpdateTime
 func NewBACnetConstructedDataCredentialDataInputUpdateTime(updateTime *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCredentialDataInputUpdateTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBitsCond
 	// Simple field (updateTime)
 	lengthInBits += m.UpdateTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCredentialDataInputUpdateTimeParse(readBuffer utils.Re
 	if closeErr := readBuffer.CloseContext("updateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for updateTime")
 	}
+
+	// Virtual field
+	_actualValue := updateTime
+	actualValue := CastBACnetTimeStamp(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialDataInputUpdateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCredentialDataInputUpdateTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCredentialDataInputUpdateTime) Serialize(writeBuff
 		}
 		if _updateTimeErr != nil {
 			return errors.Wrap(_updateTimeErr, "Error serializing 'updateTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialDataInputUpdateTime"); popErr != nil {

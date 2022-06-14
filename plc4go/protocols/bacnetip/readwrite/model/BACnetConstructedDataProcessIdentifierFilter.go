@@ -41,6 +41,8 @@ type IBACnetConstructedDataProcessIdentifierFilter interface {
 	IBACnetConstructedData
 	// GetProcessIdentifierFilter returns ProcessIdentifierFilter (property field)
 	GetProcessIdentifierFilter() *BACnetProcessIdSelection
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetProcessIdSelection
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) GetProcessIdentifierFilte
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProcessIdentifierFilter) GetActualValue() *BACnetProcessIdSelection {
+	return CastBACnetProcessIdSelection(m.GetProcessIdentifierFilter())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProcessIdentifierFilter factory function for BACnetConstructedDataProcessIdentifierFilter
 func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter *BACnetProcessIdSelection, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProcessIdentifierFilter {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) GetLengthInBitsConditiona
 	// Simple field (processIdentifierFilter)
 	lengthInBits += m.ProcessIdentifierFilter.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("processIdentifierFilter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for processIdentifierFilter")
 	}
+
+	// Virtual field
+	_actualValue := processIdentifierFilter
+	actualValue := CastBACnetProcessIdSelection(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProcessIdentifierFilter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProcessIdentifierFilter")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProcessIdentifierFilter) Serialize(writeBuffer uti
 		}
 		if _processIdentifierFilterErr != nil {
 			return errors.Wrap(_processIdentifierFilterErr, "Error serializing 'processIdentifierFilter' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProcessIdentifierFilter"); popErr != nil {

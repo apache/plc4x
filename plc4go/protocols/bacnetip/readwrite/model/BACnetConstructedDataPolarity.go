@@ -41,6 +41,8 @@ type IBACnetConstructedDataPolarity interface {
 	IBACnetConstructedData
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() *BACnetPolarityTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetPolarityTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPolarity) GetPolarity() *BACnetPolarityTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPolarity) GetActualValue() *BACnetPolarityTagged {
+	return CastBACnetPolarityTagged(m.GetPolarity())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPolarity factory function for BACnetConstructedDataPolarity
 func NewBACnetConstructedDataPolarity(polarity *BACnetPolarityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPolarity {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPolarity) GetLengthInBitsConditional(lastItem bool
 	// Simple field (polarity)
 	lengthInBits += m.Polarity.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPolarityParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("polarity"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for polarity")
 	}
+
+	// Virtual field
+	_actualValue := polarity
+	actualValue := CastBACnetPolarityTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPolarity"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPolarity")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPolarity) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _polarityErr != nil {
 			return errors.Wrap(_polarityErr, "Error serializing 'polarity' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPolarity"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataDateTimeValueRelinquishDefault interface {
 	IBACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDateTimeValueRelinquishDefault) GetRelinquishDefau
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDateTimeValueRelinquishDefault) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetRelinquishDefault())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for BACnetConstructedDataDateTimeValueRelinquishDefault
 func NewBACnetConstructedDataDateTimeValueRelinquishDefault(relinquishDefault *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDateTimeValueRelinquishDefault {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDateTimeValueRelinquishDefault) GetLengthInBitsCon
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDateTimeValueRelinquishDefaultParse(readBuffer utils.R
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
 	}
+
+	// Virtual field
+	_actualValue := relinquishDefault
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDateTimeValueRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDateTimeValueRelinquishDefault")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDateTimeValueRelinquishDefault) Serialize(writeBuf
 		}
 		if _relinquishDefaultErr != nil {
 			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDateTimeValueRelinquishDefault"); popErr != nil {

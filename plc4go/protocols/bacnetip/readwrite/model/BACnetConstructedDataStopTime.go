@@ -41,6 +41,8 @@ type IBACnetConstructedDataStopTime interface {
 	IBACnetConstructedData
 	// GetStopTime returns StopTime (property field)
 	GetStopTime() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataStopTime) GetStopTime() *BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataStopTime) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetStopTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStopTime factory function for BACnetConstructedDataStopTime
 func NewBACnetConstructedDataStopTime(stopTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStopTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataStopTime) GetLengthInBitsConditional(lastItem bool
 	// Simple field (stopTime)
 	lengthInBits += m.StopTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataStopTimeParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("stopTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for stopTime")
 	}
+
+	// Virtual field
+	_actualValue := stopTime
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStopTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStopTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataStopTime) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _stopTimeErr != nil {
 			return errors.Wrap(_stopTimeErr, "Error serializing 'stopTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStopTime"); popErr != nil {

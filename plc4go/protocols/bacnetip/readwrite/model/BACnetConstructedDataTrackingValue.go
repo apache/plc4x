@@ -41,6 +41,8 @@ type IBACnetConstructedDataTrackingValue interface {
 	IBACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() *BACnetLifeSafetyStateTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetLifeSafetyStateTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTrackingValue) GetTrackingValue() *BACnetLifeSafet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTrackingValue) GetActualValue() *BACnetLifeSafetyStateTagged {
+	return CastBACnetLifeSafetyStateTagged(m.GetTrackingValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTrackingValue factory function for BACnetConstructedDataTrackingValue
 func NewBACnetConstructedDataTrackingValue(trackingValue *BACnetLifeSafetyStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTrackingValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTrackingValue) GetLengthInBitsConditional(lastItem
 	// Simple field (trackingValue)
 	lengthInBits += m.TrackingValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTrackingValueParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("trackingValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for trackingValue")
 	}
+
+	// Virtual field
+	_actualValue := trackingValue
+	actualValue := CastBACnetLifeSafetyStateTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrackingValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTrackingValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTrackingValue) Serialize(writeBuffer utils.WriteBu
 		}
 		if _trackingValueErr != nil {
 			return errors.Wrap(_trackingValueErr, "Error serializing 'trackingValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTrackingValue"); popErr != nil {

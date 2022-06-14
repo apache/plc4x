@@ -41,6 +41,8 @@ type IBACnetConstructedDataBinaryLightingOutputRelinquishDefault interface {
 	IBACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() *BACnetBinaryLightingPVTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetBinaryLightingPVTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBinaryLightingOutputRelinquishDefault) GetRelinqui
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBinaryLightingOutputRelinquishDefault) GetActualValue() *BACnetBinaryLightingPVTagged {
+	return CastBACnetBinaryLightingPVTagged(m.GetRelinquishDefault())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault factory function for BACnetConstructedDataBinaryLightingOutputRelinquishDefault
 func NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault(relinquishDefault *BACnetBinaryLightingPVTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBinaryLightingOutputRelinquishDefault) GetLengthIn
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParse(readBuffer 
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
 	}
+
+	// Virtual field
+	_actualValue := relinquishDefault
+	actualValue := CastBACnetBinaryLightingPVTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryLightingOutputRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryLightingOutputRelinquishDefault")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBinaryLightingOutputRelinquishDefault) Serialize(w
 		}
 		if _relinquishDefaultErr != nil {
 			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBinaryLightingOutputRelinquishDefault"); popErr != nil {

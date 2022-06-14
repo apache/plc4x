@@ -41,6 +41,8 @@ type IBACnetConstructedDataBitMask interface {
 	IBACnetConstructedData
 	// GetBitString returns BitString (property field)
 	GetBitString() *BACnetApplicationTagBitString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBitString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBitMask) GetBitString() *BACnetApplicationTagBitSt
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBitMask) GetActualValue() *BACnetApplicationTagBitString {
+	return CastBACnetApplicationTagBitString(m.GetBitString())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBitMask factory function for BACnetConstructedDataBitMask
 func NewBACnetConstructedDataBitMask(bitString *BACnetApplicationTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBitMask {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBitMask) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (bitString)
 	lengthInBits += m.BitString.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("bitString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for bitString")
 	}
+
+	// Virtual field
+	_actualValue := bitString
+	actualValue := CastBACnetApplicationTagBitString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBitMask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBitMask")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBitMask) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _bitStringErr != nil {
 			return errors.Wrap(_bitStringErr, "Error serializing 'bitString' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBitMask"); popErr != nil {

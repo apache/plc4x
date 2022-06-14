@@ -41,6 +41,8 @@ type IBACnetConstructedDataArchive interface {
 	IBACnetConstructedData
 	// GetArchive returns Archive (property field)
 	GetArchive() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataArchive) GetArchive() *BACnetApplicationTagBoolean
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataArchive) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetArchive())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataArchive factory function for BACnetConstructedDataArchive
 func NewBACnetConstructedDataArchive(archive *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataArchive {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataArchive) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (archive)
 	lengthInBits += m.Archive.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataArchiveParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("archive"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for archive")
 	}
+
+	// Virtual field
+	_actualValue := archive
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataArchive"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataArchive")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataArchive) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _archiveErr != nil {
 			return errors.Wrap(_archiveErr, "Error serializing 'archive' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataArchive"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataAPDULength interface {
 	IBACnetConstructedData
 	// GetApduLength returns ApduLength (property field)
 	GetApduLength() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAPDULength) GetApduLength() *BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAPDULength) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetApduLength())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAPDULength factory function for BACnetConstructedDataAPDULength
 func NewBACnetConstructedDataAPDULength(apduLength *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAPDULength {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAPDULength) GetLengthInBitsConditional(lastItem bo
 	// Simple field (apduLength)
 	lengthInBits += m.ApduLength.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAPDULengthParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("apduLength"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for apduLength")
 	}
+
+	// Virtual field
+	_actualValue := apduLength
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDULength"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAPDULength")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAPDULength) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _apduLengthErr != nil {
 			return errors.Wrap(_apduLengthErr, "Error serializing 'apduLength' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAPDULength"); popErr != nil {

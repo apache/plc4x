@@ -41,6 +41,8 @@ type IBACnetConstructedDataReliability interface {
 	IBACnetConstructedData
 	// GetReliability returns Reliability (property field)
 	GetReliability() *BACnetReliabilityTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetReliabilityTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataReliability) GetReliability() *BACnetReliabilityTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataReliability) GetActualValue() *BACnetReliabilityTagged {
+	return CastBACnetReliabilityTagged(m.GetReliability())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliability factory function for BACnetConstructedDataReliability
 func NewBACnetConstructedDataReliability(reliability *BACnetReliabilityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReliability {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataReliability) GetLengthInBitsConditional(lastItem b
 	// Simple field (reliability)
 	lengthInBits += m.Reliability.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("reliability"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for reliability")
 	}
+
+	// Virtual field
+	_actualValue := reliability
+	actualValue := CastBACnetReliabilityTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliability"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReliability")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataReliability) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _reliabilityErr != nil {
 			return errors.Wrap(_reliabilityErr, "Error serializing 'reliability' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReliability"); popErr != nil {

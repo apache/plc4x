@@ -41,6 +41,8 @@ type IBACnetConstructedDataPulseConverterAdjustValue interface {
 	IBACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPulseConverterAdjustValue) GetAdjustValue() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPulseConverterAdjustValue) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetAdjustValue())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPulseConverterAdjustValue factory function for BACnetConstructedDataPulseConverterAdjustValue
 func NewBACnetConstructedDataPulseConverterAdjustValue(adjustValue *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPulseConverterAdjustValue {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPulseConverterAdjustValue) GetLengthInBitsConditio
 	// Simple field (adjustValue)
 	lengthInBits += m.AdjustValue.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPulseConverterAdjustValueParse(readBuffer utils.ReadBu
 	if closeErr := readBuffer.CloseContext("adjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for adjustValue")
 	}
+
+	// Virtual field
+	_actualValue := adjustValue
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPulseConverterAdjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPulseConverterAdjustValue")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPulseConverterAdjustValue) Serialize(writeBuffer u
 		}
 		if _adjustValueErr != nil {
 			return errors.Wrap(_adjustValueErr, "Error serializing 'adjustValue' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPulseConverterAdjustValue"); popErr != nil {

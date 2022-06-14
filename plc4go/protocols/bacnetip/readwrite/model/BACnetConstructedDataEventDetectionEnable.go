@@ -41,6 +41,8 @@ type IBACnetConstructedDataEventDetectionEnable interface {
 	IBACnetConstructedData
 	// GetEventDetectionEnable returns EventDetectionEnable (property field)
 	GetEventDetectionEnable() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataEventDetectionEnable) GetEventDetectionEnable() *B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataEventDetectionEnable) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetEventDetectionEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventDetectionEnable factory function for BACnetConstructedDataEventDetectionEnable
 func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataEventDetectionEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataEventDetectionEnable) GetLengthInBitsConditional(l
 	// Simple field (eventDetectionEnable)
 	lengthInBits += m.EventDetectionEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 	if closeErr := readBuffer.CloseContext("eventDetectionEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for eventDetectionEnable")
 	}
+
+	// Virtual field
+	_actualValue := eventDetectionEnable
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventDetectionEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventDetectionEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataEventDetectionEnable) Serialize(writeBuffer utils.
 		}
 		if _eventDetectionEnableErr != nil {
 			return errors.Wrap(_eventDetectionEnableErr, "Error serializing 'eventDetectionEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventDetectionEnable"); popErr != nil {

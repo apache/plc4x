@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccompaniment interface {
 	IBACnetConstructedData
 	// GetAccompaniment returns Accompaniment (property field)
 	GetAccompaniment() *BACnetDeviceObjectReference
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccompaniment) GetAccompaniment() *BACnetDeviceObj
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccompaniment) GetActualValue() *BACnetDeviceObjectReference {
+	return CastBACnetDeviceObjectReference(m.GetAccompaniment())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccompaniment factory function for BACnetConstructedDataAccompaniment
 func NewBACnetConstructedDataAccompaniment(accompaniment *BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccompaniment {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccompaniment) GetLengthInBitsConditional(lastItem
 	// Simple field (accompaniment)
 	lengthInBits += m.Accompaniment.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccompanimentParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("accompaniment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for accompaniment")
 	}
+
+	// Virtual field
+	_actualValue := accompaniment
+	actualValue := CastBACnetDeviceObjectReference(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompaniment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccompaniment")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccompaniment) Serialize(writeBuffer utils.WriteBu
 		}
 		if _accompanimentErr != nil {
 			return errors.Wrap(_accompanimentErr, "Error serializing 'accompaniment' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccompaniment"); popErr != nil {

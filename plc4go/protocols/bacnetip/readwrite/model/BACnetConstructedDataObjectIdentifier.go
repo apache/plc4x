@@ -41,6 +41,8 @@ type IBACnetConstructedDataObjectIdentifier interface {
 	IBACnetConstructedData
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataObjectIdentifier) GetObjectIdentifier() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataObjectIdentifier) GetActualValue() *BACnetApplicationTagObjectIdentifier {
+	return CastBACnetApplicationTagObjectIdentifier(m.GetObjectIdentifier())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataObjectIdentifier factory function for BACnetConstructedDataObjectIdentifier
 func NewBACnetConstructedDataObjectIdentifier(objectIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataObjectIdentifier {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataObjectIdentifier) GetLengthInBitsConditional(lastI
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataObjectIdentifierParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
+
+	// Virtual field
+	_actualValue := objectIdentifier
+	actualValue := CastBACnetApplicationTagObjectIdentifier(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataObjectIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataObjectIdentifier")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataObjectIdentifier) Serialize(writeBuffer utils.Writ
 		}
 		if _objectIdentifierErr != nil {
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataObjectIdentifier"); popErr != nil {

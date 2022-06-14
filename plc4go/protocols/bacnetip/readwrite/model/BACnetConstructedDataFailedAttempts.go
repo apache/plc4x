@@ -41,6 +41,8 @@ type IBACnetConstructedDataFailedAttempts interface {
 	IBACnetConstructedData
 	// GetFailedAttempts returns FailedAttempts (property field)
 	GetFailedAttempts() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFailedAttempts) GetFailedAttempts() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFailedAttempts) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetFailedAttempts())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFailedAttempts factory function for BACnetConstructedDataFailedAttempts
 func NewBACnetConstructedDataFailedAttempts(failedAttempts *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFailedAttempts {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFailedAttempts) GetLengthInBitsConditional(lastIte
 	// Simple field (failedAttempts)
 	lengthInBits += m.FailedAttempts.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFailedAttemptsParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("failedAttempts"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for failedAttempts")
 	}
+
+	// Virtual field
+	_actualValue := failedAttempts
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFailedAttempts"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFailedAttempts")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFailedAttempts) Serialize(writeBuffer utils.WriteB
 		}
 		if _failedAttemptsErr != nil {
 			return errors.Wrap(_failedAttemptsErr, "Error serializing 'failedAttempts' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFailedAttempts"); popErr != nil {

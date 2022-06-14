@@ -41,6 +41,8 @@ type IBACnetConstructedDataReliabilityEvaluationInhibit interface {
 	IBACnetConstructedData
 	// GetReliabilityEvaluationInhibit returns ReliabilityEvaluationInhibit (property field)
 	GetReliabilityEvaluationInhibit() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) GetReliabilityEvalua
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataReliabilityEvaluationInhibit) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetReliabilityEvaluationInhibit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliabilityEvaluationInhibit factory function for BACnetConstructedDataReliabilityEvaluationInhibit
 func NewBACnetConstructedDataReliabilityEvaluationInhibit(reliabilityEvaluationInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReliabilityEvaluationInhibit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBitsCondi
 	// Simple field (reliabilityEvaluationInhibit)
 	lengthInBits += m.ReliabilityEvaluationInhibit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.Rea
 	if closeErr := readBuffer.CloseContext("reliabilityEvaluationInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for reliabilityEvaluationInhibit")
 	}
+
+	// Virtual field
+	_actualValue := reliabilityEvaluationInhibit
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliabilityEvaluationInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReliabilityEvaluationInhibit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) Serialize(writeBuffe
 		}
 		if _reliabilityEvaluationInhibitErr != nil {
 			return errors.Wrap(_reliabilityEvaluationInhibitErr, "Error serializing 'reliabilityEvaluationInhibit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReliabilityEvaluationInhibit"); popErr != nil {

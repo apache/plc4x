@@ -41,6 +41,8 @@ type IBACnetConstructedDataProtocolVersion interface {
 	IBACnetConstructedData
 	// GetProtocolVersion returns ProtocolVersion (property field)
 	GetProtocolVersion() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataProtocolVersion) GetProtocolVersion() *BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataProtocolVersion) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetProtocolVersion())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolVersion factory function for BACnetConstructedDataProtocolVersion
 func NewBACnetConstructedDataProtocolVersion(protocolVersion *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataProtocolVersion {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataProtocolVersion) GetLengthInBitsConditional(lastIt
 	// Simple field (protocolVersion)
 	lengthInBits += m.ProtocolVersion.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataProtocolVersionParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("protocolVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for protocolVersion")
 	}
+
+	// Virtual field
+	_actualValue := protocolVersion
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolVersion")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataProtocolVersion) Serialize(writeBuffer utils.Write
 		}
 		if _protocolVersionErr != nil {
 			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataProtocolVersion"); popErr != nil {

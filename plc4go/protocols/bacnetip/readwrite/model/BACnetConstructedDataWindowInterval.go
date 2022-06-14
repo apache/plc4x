@@ -41,6 +41,8 @@ type IBACnetConstructedDataWindowInterval interface {
 	IBACnetConstructedData
 	// GetWindowInterval returns WindowInterval (property field)
 	GetWindowInterval() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataWindowInterval) GetWindowInterval() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataWindowInterval) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetWindowInterval())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataWindowInterval factory function for BACnetConstructedDataWindowInterval
 func NewBACnetConstructedDataWindowInterval(windowInterval *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataWindowInterval {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataWindowInterval) GetLengthInBitsConditional(lastIte
 	// Simple field (windowInterval)
 	lengthInBits += m.WindowInterval.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataWindowIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("windowInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for windowInterval")
 	}
+
+	// Virtual field
+	_actualValue := windowInterval
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWindowInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataWindowInterval")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataWindowInterval) Serialize(writeBuffer utils.WriteB
 		}
 		if _windowIntervalErr != nil {
 			return errors.Wrap(_windowIntervalErr, "Error serializing 'windowInterval' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataWindowInterval"); popErr != nil {

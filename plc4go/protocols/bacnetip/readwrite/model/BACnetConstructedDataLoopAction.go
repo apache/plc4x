@@ -41,6 +41,8 @@ type IBACnetConstructedDataLoopAction interface {
 	IBACnetConstructedData
 	// GetAction returns Action (property field)
 	GetAction() *BACnetActionTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetActionTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLoopAction) GetAction() *BACnetActionTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLoopAction) GetActualValue() *BACnetActionTagged {
+	return CastBACnetActionTagged(m.GetAction())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoopAction factory function for BACnetConstructedDataLoopAction
 func NewBACnetConstructedDataLoopAction(action *BACnetActionTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLoopAction {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLoopAction) GetLengthInBitsConditional(lastItem bo
 	// Simple field (action)
 	lengthInBits += m.Action.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber
 	if closeErr := readBuffer.CloseContext("action"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for action")
 	}
+
+	// Virtual field
+	_actualValue := action
+	actualValue := CastBACnetActionTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoopAction"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoopAction")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLoopAction) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _actionErr != nil {
 			return errors.Wrap(_actionErr, "Error serializing 'action' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLoopAction"); popErr != nil {

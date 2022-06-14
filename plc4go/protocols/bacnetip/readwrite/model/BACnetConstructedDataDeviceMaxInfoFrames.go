@@ -41,6 +41,8 @@ type IBACnetConstructedDataDeviceMaxInfoFrames interface {
 	IBACnetConstructedData
 	// GetMaxInfoFrames returns MaxInfoFrames (property field)
 	GetMaxInfoFrames() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDeviceMaxInfoFrames) GetMaxInfoFrames() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDeviceMaxInfoFrames) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxInfoFrames())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeviceMaxInfoFrames factory function for BACnetConstructedDataDeviceMaxInfoFrames
 func NewBACnetConstructedDataDeviceMaxInfoFrames(maxInfoFrames *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDeviceMaxInfoFrames {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBitsConditional(la
 	// Simple field (maxInfoFrames)
 	lengthInBits += m.MaxInfoFrames.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, 
 	if closeErr := readBuffer.CloseContext("maxInfoFrames"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for maxInfoFrames")
 	}
+
+	// Virtual field
+	_actualValue := maxInfoFrames
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceMaxInfoFrames"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceMaxInfoFrames")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDeviceMaxInfoFrames) Serialize(writeBuffer utils.W
 		}
 		if _maxInfoFramesErr != nil {
 			return errors.Wrap(_maxInfoFramesErr, "Error serializing 'maxInfoFrames' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceMaxInfoFrames"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataRestoreCompletionTime interface {
 	IBACnetConstructedData
 	// GetCompletionTime returns CompletionTime (property field)
 	GetCompletionTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataRestoreCompletionTime) GetCompletionTime() *BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataRestoreCompletionTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetCompletionTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRestoreCompletionTime factory function for BACnetConstructedDataRestoreCompletionTime
 func NewBACnetConstructedDataRestoreCompletionTime(completionTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataRestoreCompletionTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataRestoreCompletionTime) GetLengthInBitsConditional(
 	// Simple field (completionTime)
 	lengthInBits += m.CompletionTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("completionTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for completionTime")
 	}
+
+	// Virtual field
+	_actualValue := completionTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestoreCompletionTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestoreCompletionTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataRestoreCompletionTime) Serialize(writeBuffer utils
 		}
 		if _completionTimeErr != nil {
 			return errors.Wrap(_completionTimeErr, "Error serializing 'completionTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRestoreCompletionTime"); popErr != nil {

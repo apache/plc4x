@@ -41,6 +41,8 @@ type IBACnetConstructedDataDaylightSavingsStatus interface {
 	IBACnetConstructedData
 	// GetDaylightSavingsStatus returns DaylightSavingsStatus (property field)
 	GetDaylightSavingsStatus() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) GetDaylightSavingsStatus() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDaylightSavingsStatus) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetDaylightSavingsStatus())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDaylightSavingsStatus factory function for BACnetConstructedDataDaylightSavingsStatus
 func NewBACnetConstructedDataDaylightSavingsStatus(daylightSavingsStatus *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDaylightSavingsStatus {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) GetLengthInBitsConditional(
 	// Simple field (daylightSavingsStatus)
 	lengthInBits += m.DaylightSavingsStatus.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDaylightSavingsStatusParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("daylightSavingsStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for daylightSavingsStatus")
 	}
+
+	// Virtual field
+	_actualValue := daylightSavingsStatus
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDaylightSavingsStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDaylightSavingsStatus")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDaylightSavingsStatus) Serialize(writeBuffer utils
 		}
 		if _daylightSavingsStatusErr != nil {
 			return errors.Wrap(_daylightSavingsStatusErr, "Error serializing 'daylightSavingsStatus' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDaylightSavingsStatus"); popErr != nil {

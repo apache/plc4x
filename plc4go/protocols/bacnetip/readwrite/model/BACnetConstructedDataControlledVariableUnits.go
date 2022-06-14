@@ -41,6 +41,8 @@ type IBACnetConstructedDataControlledVariableUnits interface {
 	IBACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() *BACnetEngineeringUnitsTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetEngineeringUnitsTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataControlledVariableUnits) GetUnits() *BACnetEnginee
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataControlledVariableUnits) GetActualValue() *BACnetEngineeringUnitsTagged {
+	return CastBACnetEngineeringUnitsTagged(m.GetUnits())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataControlledVariableUnits factory function for BACnetConstructedDataControlledVariableUnits
 func NewBACnetConstructedDataControlledVariableUnits(units *BACnetEngineeringUnitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataControlledVariableUnits {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataControlledVariableUnits) GetLengthInBitsConditiona
 	// Simple field (units)
 	lengthInBits += m.Units.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataControlledVariableUnitsParse(readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for units")
 	}
+
+	// Virtual field
+	_actualValue := units
+	actualValue := CastBACnetEngineeringUnitsTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataControlledVariableUnits"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataControlledVariableUnits")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataControlledVariableUnits) Serialize(writeBuffer uti
 		}
 		if _unitsErr != nil {
 			return errors.Wrap(_unitsErr, "Error serializing 'units' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataControlledVariableUnits"); popErr != nil {

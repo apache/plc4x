@@ -41,6 +41,8 @@ type IBACnetConstructedDataUserName interface {
 	IBACnetConstructedData
 	// GetUserName returns UserName (property field)
 	GetUserName() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataUserName) GetUserName() *BACnetApplicationTagChara
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataUserName) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetUserName())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUserName factory function for BACnetConstructedDataUserName
 func NewBACnetConstructedDataUserName(userName *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUserName {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataUserName) GetLengthInBitsConditional(lastItem bool
 	// Simple field (userName)
 	lengthInBits += m.UserName.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataUserNameParse(readBuffer utils.ReadBuffer, tagNumber u
 	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for userName")
 	}
+
+	// Virtual field
+	_actualValue := userName
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserName")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataUserName) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _userNameErr != nil {
 			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUserName"); popErr != nil {

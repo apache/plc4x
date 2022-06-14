@@ -41,6 +41,8 @@ type IBACnetConstructedDataScaleFactor interface {
 	IBACnetConstructedData
 	// GetScaleFactor returns ScaleFactor (property field)
 	GetScaleFactor() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataScaleFactor) GetScaleFactor() *BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataScaleFactor) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetScaleFactor())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataScaleFactor factory function for BACnetConstructedDataScaleFactor
 func NewBACnetConstructedDataScaleFactor(scaleFactor *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataScaleFactor {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataScaleFactor) GetLengthInBitsConditional(lastItem b
 	// Simple field (scaleFactor)
 	lengthInBits += m.ScaleFactor.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataScaleFactorParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("scaleFactor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for scaleFactor")
 	}
+
+	// Virtual field
+	_actualValue := scaleFactor
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScaleFactor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScaleFactor")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataScaleFactor) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _scaleFactorErr != nil {
 			return errors.Wrap(_scaleFactorErr, "Error serializing 'scaleFactor' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataScaleFactor"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataOccupancyCount interface {
 	IBACnetConstructedData
 	// GetOccupancyCount returns OccupancyCount (property field)
 	GetOccupancyCount() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataOccupancyCount) GetOccupancyCount() *BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataOccupancyCount) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetOccupancyCount())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyCount factory function for BACnetConstructedDataOccupancyCount
 func NewBACnetConstructedDataOccupancyCount(occupancyCount *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataOccupancyCount {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataOccupancyCount) GetLengthInBitsConditional(lastIte
 	// Simple field (occupancyCount)
 	lengthInBits += m.OccupancyCount.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNu
 	if closeErr := readBuffer.CloseContext("occupancyCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for occupancyCount")
 	}
+
+	// Virtual field
+	_actualValue := occupancyCount
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyCount")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataOccupancyCount) Serialize(writeBuffer utils.WriteB
 		}
 		if _occupancyCountErr != nil {
 			return errors.Wrap(_occupancyCountErr, "Error serializing 'occupancyCount' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataOccupancyCount"); popErr != nil {

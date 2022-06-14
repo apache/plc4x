@@ -41,6 +41,8 @@ type IBACnetConstructedDataAccessDoorRelinquishDefault interface {
 	IBACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() *BACnetDoorValueTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDoorValueTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAccessDoorRelinquishDefault) GetRelinquishDefault(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAccessDoorRelinquishDefault) GetActualValue() *BACnetDoorValueTagged {
+	return CastBACnetDoorValueTagged(m.GetRelinquishDefault())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAccessDoorRelinquishDefault factory function for BACnetConstructedDataAccessDoorRelinquishDefault
 func NewBACnetConstructedDataAccessDoorRelinquishDefault(relinquishDefault *BACnetDoorValueTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAccessDoorRelinquishDefault {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAccessDoorRelinquishDefault) GetLengthInBitsCondit
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.Read
 	if closeErr := readBuffer.CloseContext("relinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for relinquishDefault")
 	}
+
+	// Virtual field
+	_actualValue := relinquishDefault
+	actualValue := CastBACnetDoorValueTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessDoorRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessDoorRelinquishDefault")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAccessDoorRelinquishDefault) Serialize(writeBuffer
 		}
 		if _relinquishDefaultErr != nil {
 			return errors.Wrap(_relinquishDefaultErr, "Error serializing 'relinquishDefault' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessDoorRelinquishDefault"); popErr != nil {

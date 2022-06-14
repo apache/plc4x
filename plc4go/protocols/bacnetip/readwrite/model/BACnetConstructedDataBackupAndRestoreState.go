@@ -41,6 +41,8 @@ type IBACnetConstructedDataBackupAndRestoreState interface {
 	IBACnetConstructedData
 	// GetBackupAndRestoreState returns BackupAndRestoreState (property field)
 	GetBackupAndRestoreState() *BACnetBackupStateTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetBackupStateTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBackupAndRestoreState) GetBackupAndRestoreState() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBackupAndRestoreState) GetActualValue() *BACnetBackupStateTagged {
+	return CastBACnetBackupStateTagged(m.GetBackupAndRestoreState())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBackupAndRestoreState factory function for BACnetConstructedDataBackupAndRestoreState
 func NewBACnetConstructedDataBackupAndRestoreState(backupAndRestoreState *BACnetBackupStateTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBackupAndRestoreState {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBackupAndRestoreState) GetLengthInBitsConditional(
 	// Simple field (backupAndRestoreState)
 	lengthInBits += m.BackupAndRestoreState.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("backupAndRestoreState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for backupAndRestoreState")
 	}
+
+	// Virtual field
+	_actualValue := backupAndRestoreState
+	actualValue := CastBACnetBackupStateTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupAndRestoreState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBackupAndRestoreState")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBackupAndRestoreState) Serialize(writeBuffer utils
 		}
 		if _backupAndRestoreStateErr != nil {
 			return errors.Wrap(_backupAndRestoreStateErr, "Error serializing 'backupAndRestoreState' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBackupAndRestoreState"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastUseTime interface {
 	IBACnetConstructedData
 	// GetLastUseTime returns LastUseTime (property field)
 	GetLastUseTime() *BACnetDateTime
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastUseTime) GetLastUseTime() *BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastUseTime) GetActualValue() *BACnetDateTime {
+	return CastBACnetDateTime(m.GetLastUseTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastUseTime factory function for BACnetConstructedDataLastUseTime
 func NewBACnetConstructedDataLastUseTime(lastUseTime *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastUseTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastUseTime) GetLengthInBitsConditional(lastItem b
 	// Simple field (lastUseTime)
 	lengthInBits += m.LastUseTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastUseTimeParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("lastUseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastUseTime")
 	}
+
+	// Virtual field
+	_actualValue := lastUseTime
+	actualValue := CastBACnetDateTime(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastUseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastUseTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastUseTime) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _lastUseTimeErr != nil {
 			return errors.Wrap(_lastUseTimeErr, "Error serializing 'lastUseTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastUseTime"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataReferencePort interface {
 	IBACnetConstructedData
 	// GetReferencePort returns ReferencePort (property field)
 	GetReferencePort() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataReferencePort) GetReferencePort() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataReferencePort) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetReferencePort())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReferencePort factory function for BACnetConstructedDataReferencePort
 func NewBACnetConstructedDataReferencePort(referencePort *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReferencePort {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataReferencePort) GetLengthInBitsConditional(lastItem
 	// Simple field (referencePort)
 	lengthInBits += m.ReferencePort.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataReferencePortParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("referencePort"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for referencePort")
 	}
+
+	// Virtual field
+	_actualValue := referencePort
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReferencePort"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReferencePort")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataReferencePort) Serialize(writeBuffer utils.WriteBu
 		}
 		if _referencePortErr != nil {
 			return errors.Wrap(_referencePortErr, "Error serializing 'referencePort' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReferencePort"); popErr != nil {

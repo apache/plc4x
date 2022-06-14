@@ -41,6 +41,8 @@ type IBACnetConstructedDataFDSubscriptionLifetime interface {
 	IBACnetConstructedData
 	// GetFdSubscriptionLifetime returns FdSubscriptionLifetime (property field)
 	GetFdSubscriptionLifetime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFDSubscriptionLifetime) GetFdSubscriptionLifetime(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFDSubscriptionLifetime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetFdSubscriptionLifetime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFDSubscriptionLifetime factory function for BACnetConstructedDataFDSubscriptionLifetime
 func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFDSubscriptionLifetime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBitsConditional
 	// Simple field (fdSubscriptionLifetime)
 	lengthInBits += m.FdSubscriptionLifetime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	if closeErr := readBuffer.CloseContext("fdSubscriptionLifetime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for fdSubscriptionLifetime")
 	}
+
+	// Virtual field
+	_actualValue := fdSubscriptionLifetime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDSubscriptionLifetime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDSubscriptionLifetime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFDSubscriptionLifetime) Serialize(writeBuffer util
 		}
 		if _fdSubscriptionLifetimeErr != nil {
 			return errors.Wrap(_fdSubscriptionLifetimeErr, "Error serializing 'fdSubscriptionLifetime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFDSubscriptionLifetime"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataFaultType interface {
 	IBACnetConstructedData
 	// GetFaultType returns FaultType (property field)
 	GetFaultType() *BACnetFaultTypeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetFaultTypeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataFaultType) GetFaultType() *BACnetFaultTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataFaultType) GetActualValue() *BACnetFaultTypeTagged {
+	return CastBACnetFaultTypeTagged(m.GetFaultType())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFaultType factory function for BACnetConstructedDataFaultType
 func NewBACnetConstructedDataFaultType(faultType *BACnetFaultTypeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataFaultType {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataFaultType) GetLengthInBitsConditional(lastItem boo
 	// Simple field (faultType)
 	lengthInBits += m.FaultType.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataFaultTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("faultType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for faultType")
 	}
+
+	// Virtual field
+	_actualValue := faultType
+	actualValue := CastBACnetFaultTypeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFaultType")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataFaultType) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _faultTypeErr != nil {
 			return errors.Wrap(_faultTypeErr, "Error serializing 'faultType' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFaultType"); popErr != nil {

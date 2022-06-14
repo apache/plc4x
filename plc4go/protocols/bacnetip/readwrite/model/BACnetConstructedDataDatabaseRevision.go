@@ -41,6 +41,8 @@ type IBACnetConstructedDataDatabaseRevision interface {
 	IBACnetConstructedData
 	// GetDatabaseRevision returns DatabaseRevision (property field)
 	GetDatabaseRevision() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDatabaseRevision) GetDatabaseRevision() *BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDatabaseRevision) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDatabaseRevision())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDatabaseRevision factory function for BACnetConstructedDataDatabaseRevision
 func NewBACnetConstructedDataDatabaseRevision(databaseRevision *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDatabaseRevision {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDatabaseRevision) GetLengthInBitsConditional(lastI
 	// Simple field (databaseRevision)
 	lengthInBits += m.DatabaseRevision.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDatabaseRevisionParse(readBuffer utils.ReadBuffer, tag
 	if closeErr := readBuffer.CloseContext("databaseRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for databaseRevision")
 	}
+
+	// Virtual field
+	_actualValue := databaseRevision
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDatabaseRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDatabaseRevision")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDatabaseRevision) Serialize(writeBuffer utils.Writ
 		}
 		if _databaseRevisionErr != nil {
 			return errors.Wrap(_databaseRevisionErr, "Error serializing 'databaseRevision' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDatabaseRevision"); popErr != nil {

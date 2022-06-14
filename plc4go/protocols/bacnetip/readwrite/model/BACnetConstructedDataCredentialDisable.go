@@ -41,6 +41,8 @@ type IBACnetConstructedDataCredentialDisable interface {
 	IBACnetConstructedData
 	// GetCredentialDisable returns CredentialDisable (property field)
 	GetCredentialDisable() *BACnetAccessCredentialDisableTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAccessCredentialDisableTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCredentialDisable) GetCredentialDisable() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCredentialDisable) GetActualValue() *BACnetAccessCredentialDisableTagged {
+	return CastBACnetAccessCredentialDisableTagged(m.GetCredentialDisable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCredentialDisable factory function for BACnetConstructedDataCredentialDisable
 func NewBACnetConstructedDataCredentialDisable(credentialDisable *BACnetAccessCredentialDisableTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCredentialDisable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCredentialDisable) GetLengthInBitsConditional(last
 	// Simple field (credentialDisable)
 	lengthInBits += m.CredentialDisable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCredentialDisableParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("credentialDisable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for credentialDisable")
 	}
+
+	// Virtual field
+	_actualValue := credentialDisable
+	actualValue := CastBACnetAccessCredentialDisableTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialDisable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCredentialDisable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCredentialDisable) Serialize(writeBuffer utils.Wri
 		}
 		if _credentialDisableErr != nil {
 			return errors.Wrap(_credentialDisableErr, "Error serializing 'credentialDisable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialDisable"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataNotificationThreshold interface {
 	IBACnetConstructedData
 	// GetNotificationThreshold returns NotificationThreshold (property field)
 	GetNotificationThreshold() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataNotificationThreshold) GetNotificationThreshold() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataNotificationThreshold) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetNotificationThreshold())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNotificationThreshold factory function for BACnetConstructedDataNotificationThreshold
 func NewBACnetConstructedDataNotificationThreshold(notificationThreshold *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNotificationThreshold {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataNotificationThreshold) GetLengthInBitsConditional(
 	// Simple field (notificationThreshold)
 	lengthInBits += m.NotificationThreshold.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("notificationThreshold"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for notificationThreshold")
 	}
+
+	// Virtual field
+	_actualValue := notificationThreshold
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotificationThreshold"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNotificationThreshold")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataNotificationThreshold) Serialize(writeBuffer utils
 		}
 		if _notificationThresholdErr != nil {
 			return errors.Wrap(_notificationThresholdErr, "Error serializing 'notificationThreshold' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNotificationThreshold"); popErr != nil {

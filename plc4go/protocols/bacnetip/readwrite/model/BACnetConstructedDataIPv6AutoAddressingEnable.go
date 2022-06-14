@@ -41,6 +41,8 @@ type IBACnetConstructedDataIPv6AutoAddressingEnable interface {
 	IBACnetConstructedData
 	// GetAutoAddressingEnable returns AutoAddressingEnable (property field)
 	GetAutoAddressingEnable() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) GetAutoAddressingEnable(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIPv6AutoAddressingEnable) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetAutoAddressingEnable())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6AutoAddressingEnable factory function for BACnetConstructedDataIPv6AutoAddressingEnable
 func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIPv6AutoAddressingEnable {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBitsCondition
 	// Simple field (autoAddressingEnable)
 	lengthInBits += m.AutoAddressingEnable.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuf
 	if closeErr := readBuffer.CloseContext("autoAddressingEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for autoAddressingEnable")
 	}
+
+	// Virtual field
+	_actualValue := autoAddressingEnable
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6AutoAddressingEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6AutoAddressingEnable")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIPv6AutoAddressingEnable) Serialize(writeBuffer ut
 		}
 		if _autoAddressingEnableErr != nil {
 			return errors.Wrap(_autoAddressingEnableErr, "Error serializing 'autoAddressingEnable' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6AutoAddressingEnable"); popErr != nil {

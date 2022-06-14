@@ -41,6 +41,8 @@ type IBACnetConstructedDataBias interface {
 	IBACnetConstructedData
 	// GetBias returns Bias (property field)
 	GetBias() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBias) GetBias() *BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBias) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetBias())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBias factory function for BACnetConstructedDataBias
 func NewBACnetConstructedDataBias(bias *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBias {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBias) GetLengthInBitsConditional(lastItem bool) ui
 	// Simple field (bias)
 	lengthInBits += m.Bias.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if closeErr := readBuffer.CloseContext("bias"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for bias")
 	}
+
+	// Virtual field
+	_actualValue := bias
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBias"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBias")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBias) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		if _biasErr != nil {
 			return errors.Wrap(_biasErr, "Error serializing 'bias' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBias"); popErr != nil {

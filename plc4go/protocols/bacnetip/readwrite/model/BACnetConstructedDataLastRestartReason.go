@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastRestartReason interface {
 	IBACnetConstructedData
 	// GetLastRestartReason returns LastRestartReason (property field)
 	GetLastRestartReason() *BACnetRestartReasonTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetRestartReasonTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastRestartReason) GetLastRestartReason() *BACnetR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastRestartReason) GetActualValue() *BACnetRestartReasonTagged {
+	return CastBACnetRestartReasonTagged(m.GetLastRestartReason())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastRestartReason factory function for BACnetConstructedDataLastRestartReason
 func NewBACnetConstructedDataLastRestartReason(lastRestartReason *BACnetRestartReasonTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastRestartReason {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastRestartReason) GetLengthInBitsConditional(last
 	// Simple field (lastRestartReason)
 	lengthInBits += m.LastRestartReason.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("lastRestartReason"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastRestartReason")
 	}
+
+	// Virtual field
+	_actualValue := lastRestartReason
+	actualValue := CastBACnetRestartReasonTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastRestartReason"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastRestartReason")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastRestartReason) Serialize(writeBuffer utils.Wri
 		}
 		if _lastRestartReasonErr != nil {
 			return errors.Wrap(_lastRestartReasonErr, "Error serializing 'lastRestartReason' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastRestartReason"); popErr != nil {

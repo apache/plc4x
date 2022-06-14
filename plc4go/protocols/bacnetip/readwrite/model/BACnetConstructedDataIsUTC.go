@@ -41,6 +41,8 @@ type IBACnetConstructedDataIsUTC interface {
 	IBACnetConstructedData
 	// GetIsUtc returns IsUtc (property field)
 	GetIsUtc() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataIsUTC) GetIsUtc() *BACnetApplicationTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataIsUTC) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetIsUtc())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIsUTC factory function for BACnetConstructedDataIsUTC
 func NewBACnetConstructedDataIsUTC(isUtc *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataIsUTC {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataIsUTC) GetLengthInBitsConditional(lastItem bool) u
 	// Simple field (isUtc)
 	lengthInBits += m.IsUtc.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if closeErr := readBuffer.CloseContext("isUtc"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for isUtc")
 	}
+
+	// Virtual field
+	_actualValue := isUtc
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIsUTC"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIsUTC")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataIsUTC) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		if _isUtcErr != nil {
 			return errors.Wrap(_isUtcErr, "Error serializing 'isUtc' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIsUTC"); popErr != nil {

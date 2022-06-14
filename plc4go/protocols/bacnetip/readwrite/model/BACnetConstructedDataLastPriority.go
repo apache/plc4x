@@ -41,6 +41,8 @@ type IBACnetConstructedDataLastPriority interface {
 	IBACnetConstructedData
 	// GetLastPriority returns LastPriority (property field)
 	GetLastPriority() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLastPriority) GetLastPriority() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLastPriority) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetLastPriority())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastPriority factory function for BACnetConstructedDataLastPriority
 func NewBACnetConstructedDataLastPriority(lastPriority *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLastPriority {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLastPriority) GetLengthInBitsConditional(lastItem 
 	// Simple field (lastPriority)
 	lengthInBits += m.LastPriority.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLastPriorityParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("lastPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lastPriority")
 	}
+
+	// Virtual field
+	_actualValue := lastPriority
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastPriority")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLastPriority) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _lastPriorityErr != nil {
 			return errors.Wrap(_lastPriorityErr, "Error serializing 'lastPriority' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLastPriority"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataScheduleDefault interface {
 	IBACnetConstructedData
 	// GetScheduleDefault returns ScheduleDefault (property field)
 	GetScheduleDefault() *BACnetConstructedDataElement
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetConstructedDataElement
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataScheduleDefault) GetScheduleDefault() *BACnetConst
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataScheduleDefault) GetActualValue() *BACnetConstructedDataElement {
+	return CastBACnetConstructedDataElement(m.GetScheduleDefault())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataScheduleDefault factory function for BACnetConstructedDataScheduleDefault
 func NewBACnetConstructedDataScheduleDefault(scheduleDefault *BACnetConstructedDataElement, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataScheduleDefault {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataScheduleDefault) GetLengthInBitsConditional(lastIt
 	// Simple field (scheduleDefault)
 	lengthInBits += m.ScheduleDefault.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("scheduleDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for scheduleDefault")
 	}
+
+	// Virtual field
+	_actualValue := scheduleDefault
+	actualValue := CastBACnetConstructedDataElement(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScheduleDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScheduleDefault")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataScheduleDefault) Serialize(writeBuffer utils.Write
 		}
 		if _scheduleDefaultErr != nil {
 			return errors.Wrap(_scheduleDefaultErr, "Error serializing 'scheduleDefault' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataScheduleDefault"); popErr != nil {

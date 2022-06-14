@@ -41,6 +41,8 @@ type IBACnetConstructedDataAbsenteeLimit interface {
 	IBACnetConstructedData
 	// GetAbsenteeLimit returns AbsenteeLimit (property field)
 	GetAbsenteeLimit() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAbsenteeLimit) GetAbsenteeLimit() *BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAbsenteeLimit) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetAbsenteeLimit())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAbsenteeLimit factory function for BACnetConstructedDataAbsenteeLimit
 func NewBACnetConstructedDataAbsenteeLimit(absenteeLimit *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAbsenteeLimit {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAbsenteeLimit) GetLengthInBitsConditional(lastItem
 	// Simple field (absenteeLimit)
 	lengthInBits += m.AbsenteeLimit.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAbsenteeLimitParse(readBuffer utils.ReadBuffer, tagNum
 	if closeErr := readBuffer.CloseContext("absenteeLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for absenteeLimit")
 	}
+
+	// Virtual field
+	_actualValue := absenteeLimit
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAbsenteeLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAbsenteeLimit")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAbsenteeLimit) Serialize(writeBuffer utils.WriteBu
 		}
 		if _absenteeLimitErr != nil {
 			return errors.Wrap(_absenteeLimitErr, "Error serializing 'absenteeLimit' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAbsenteeLimit"); popErr != nil {

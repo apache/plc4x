@@ -41,6 +41,8 @@ type IBACnetConstructedDataLockoutRelinquishTime interface {
 	IBACnetConstructedData
 	// GetLockoutRelinquishTime returns LockoutRelinquishTime (property field)
 	GetLockoutRelinquishTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataLockoutRelinquishTime) GetLockoutRelinquishTime() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataLockoutRelinquishTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetLockoutRelinquishTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLockoutRelinquishTime factory function for BACnetConstructedDataLockoutRelinquishTime
 func NewBACnetConstructedDataLockoutRelinquishTime(lockoutRelinquishTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLockoutRelinquishTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataLockoutRelinquishTime) GetLengthInBitsConditional(
 	// Simple field (lockoutRelinquishTime)
 	lengthInBits += m.LockoutRelinquishTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer utils.ReadBuffer
 	if closeErr := readBuffer.CloseContext("lockoutRelinquishTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for lockoutRelinquishTime")
 	}
+
+	// Virtual field
+	_actualValue := lockoutRelinquishTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockoutRelinquishTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLockoutRelinquishTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataLockoutRelinquishTime) Serialize(writeBuffer utils
 		}
 		if _lockoutRelinquishTimeErr != nil {
 			return errors.Wrap(_lockoutRelinquishTimeErr, "Error serializing 'lockoutRelinquishTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLockoutRelinquishTime"); popErr != nil {

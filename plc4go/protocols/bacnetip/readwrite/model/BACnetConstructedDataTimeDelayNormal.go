@@ -41,6 +41,8 @@ type IBACnetConstructedDataTimeDelayNormal interface {
 	IBACnetConstructedData
 	// GetTimeDelayNormal returns TimeDelayNormal (property field)
 	GetTimeDelayNormal() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTimeDelayNormal) GetTimeDelayNormal() *BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTimeDelayNormal) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetTimeDelayNormal())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimeDelayNormal factory function for BACnetConstructedDataTimeDelayNormal
 func NewBACnetConstructedDataTimeDelayNormal(timeDelayNormal *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTimeDelayNormal {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTimeDelayNormal) GetLengthInBitsConditional(lastIt
 	// Simple field (timeDelayNormal)
 	lengthInBits += m.TimeDelayNormal.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTimeDelayNormalParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("timeDelayNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timeDelayNormal")
 	}
+
+	// Virtual field
+	_actualValue := timeDelayNormal
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeDelayNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeDelayNormal")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTimeDelayNormal) Serialize(writeBuffer utils.Write
 		}
 		if _timeDelayNormalErr != nil {
 			return errors.Wrap(_timeDelayNormalErr, "Error serializing 'timeDelayNormal' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeDelayNormal"); popErr != nil {

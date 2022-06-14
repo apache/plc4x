@@ -41,6 +41,8 @@ type IBACnetConstructedDataDefaultFadeTime interface {
 	IBACnetConstructedData
 	// GetDefaultFadeTime returns DefaultFadeTime (property field)
 	GetDefaultFadeTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataDefaultFadeTime) GetDefaultFadeTime() *BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataDefaultFadeTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetDefaultFadeTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultFadeTime factory function for BACnetConstructedDataDefaultFadeTime
 func NewBACnetConstructedDataDefaultFadeTime(defaultFadeTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultFadeTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataDefaultFadeTime) GetLengthInBitsConditional(lastIt
 	// Simple field (defaultFadeTime)
 	lengthInBits += m.DefaultFadeTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagN
 	if closeErr := readBuffer.CloseContext("defaultFadeTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for defaultFadeTime")
 	}
+
+	// Virtual field
+	_actualValue := defaultFadeTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultFadeTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultFadeTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataDefaultFadeTime) Serialize(writeBuffer utils.Write
 		}
 		if _defaultFadeTimeErr != nil {
 			return errors.Wrap(_defaultFadeTimeErr, "Error serializing 'defaultFadeTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDefaultFadeTime"); popErr != nil {

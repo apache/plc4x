@@ -41,6 +41,8 @@ type IBACnetConstructedDataTrigger interface {
 	IBACnetConstructedData
 	// GetTrigger returns Trigger (property field)
 	GetTrigger() *BACnetApplicationTagBoolean
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataTrigger) GetTrigger() *BACnetApplicationTagBoolean
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataTrigger) GetActualValue() *BACnetApplicationTagBoolean {
+	return CastBACnetApplicationTagBoolean(m.GetTrigger())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTrigger factory function for BACnetConstructedDataTrigger
 func NewBACnetConstructedDataTrigger(trigger *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataTrigger {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataTrigger) GetLengthInBitsConditional(lastItem bool)
 	// Simple field (trigger)
 	lengthInBits += m.Trigger.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataTriggerParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if closeErr := readBuffer.CloseContext("trigger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for trigger")
 	}
+
+	// Virtual field
+	_actualValue := trigger
+	actualValue := CastBACnetApplicationTagBoolean(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrigger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTrigger")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataTrigger) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		if _triggerErr != nil {
 			return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTrigger"); popErr != nil {

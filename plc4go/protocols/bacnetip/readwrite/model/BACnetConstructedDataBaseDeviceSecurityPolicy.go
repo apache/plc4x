@@ -41,6 +41,8 @@ type IBACnetConstructedDataBaseDeviceSecurityPolicy interface {
 	IBACnetConstructedData
 	// GetBaseDeviceSecurityPolicy returns BaseDeviceSecurityPolicy (property field)
 	GetBaseDeviceSecurityPolicy() *BACnetSecurityLevelTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetSecurityLevelTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) GetBaseDeviceSecurityPol
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) GetActualValue() *BACnetSecurityLevelTagged {
+	return CastBACnetSecurityLevelTagged(m.GetBaseDeviceSecurityPolicy())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for BACnetConstructedDataBaseDeviceSecurityPolicy
 func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy *BACnetSecurityLevelTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBaseDeviceSecurityPolicy {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBitsCondition
 	// Simple field (baseDeviceSecurityPolicy)
 	lengthInBits += m.BaseDeviceSecurityPolicy.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuf
 	if closeErr := readBuffer.CloseContext("baseDeviceSecurityPolicy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for baseDeviceSecurityPolicy")
 	}
+
+	// Virtual field
+	_actualValue := baseDeviceSecurityPolicy
+	actualValue := CastBACnetSecurityLevelTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBaseDeviceSecurityPolicy")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) Serialize(writeBuffer ut
 		}
 		if _baseDeviceSecurityPolicyErr != nil {
 			return errors.Wrap(_baseDeviceSecurityPolicyErr, "Error serializing 'baseDeviceSecurityPolicy' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); popErr != nil {

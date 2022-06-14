@@ -41,6 +41,8 @@ type IBACnetConstructedDataStatusFlags interface {
 	IBACnetConstructedData
 	// GetStatusFlags returns StatusFlags (property field)
 	GetStatusFlags() *BACnetStatusFlagsTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetStatusFlagsTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataStatusFlags) GetStatusFlags() *BACnetStatusFlagsTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataStatusFlags) GetActualValue() *BACnetStatusFlagsTagged {
+	return CastBACnetStatusFlagsTagged(m.GetStatusFlags())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataStatusFlags factory function for BACnetConstructedDataStatusFlags
 func NewBACnetConstructedDataStatusFlags(statusFlags *BACnetStatusFlagsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataStatusFlags {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataStatusFlags) GetLengthInBitsConditional(lastItem b
 	// Simple field (statusFlags)
 	lengthInBits += m.StatusFlags.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumbe
 	if closeErr := readBuffer.CloseContext("statusFlags"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for statusFlags")
 	}
+
+	// Virtual field
+	_actualValue := statusFlags
+	actualValue := CastBACnetStatusFlagsTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStatusFlags"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStatusFlags")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataStatusFlags) Serialize(writeBuffer utils.WriteBuff
 		}
 		if _statusFlagsErr != nil {
 			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStatusFlags"); popErr != nil {

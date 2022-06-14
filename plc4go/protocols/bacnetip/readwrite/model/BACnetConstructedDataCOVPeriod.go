@@ -41,6 +41,8 @@ type IBACnetConstructedDataCOVPeriod interface {
 	IBACnetConstructedData
 	// GetCovPeriod returns CovPeriod (property field)
 	GetCovPeriod() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataCOVPeriod) GetCovPeriod() *BACnetApplicationTagUns
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataCOVPeriod) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetCovPeriod())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCOVPeriod factory function for BACnetConstructedDataCOVPeriod
 func NewBACnetConstructedDataCOVPeriod(covPeriod *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCOVPeriod {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataCOVPeriod) GetLengthInBitsConditional(lastItem boo
 	// Simple field (covPeriod)
 	lengthInBits += m.CovPeriod.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataCOVPeriodParse(readBuffer utils.ReadBuffer, tagNumber 
 	if closeErr := readBuffer.CloseContext("covPeriod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for covPeriod")
 	}
+
+	// Virtual field
+	_actualValue := covPeriod
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVPeriod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCOVPeriod")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataCOVPeriod) Serialize(writeBuffer utils.WriteBuffer
 		}
 		if _covPeriodErr != nil {
 			return errors.Wrap(_covPeriodErr, "Error serializing 'covPeriod' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCOVPeriod"); popErr != nil {

@@ -41,6 +41,8 @@ type IBACnetConstructedDataSerialNumber interface {
 	IBACnetConstructedData
 	// GetSerialNumber returns SerialNumber (property field)
 	GetSerialNumber() *BACnetApplicationTagCharacterString
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataSerialNumber) GetSerialNumber() *BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataSerialNumber) GetActualValue() *BACnetApplicationTagCharacterString {
+	return CastBACnetApplicationTagCharacterString(m.GetSerialNumber())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSerialNumber factory function for BACnetConstructedDataSerialNumber
 func NewBACnetConstructedDataSerialNumber(serialNumber *BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataSerialNumber {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataSerialNumber) GetLengthInBitsConditional(lastItem 
 	// Simple field (serialNumber)
 	lengthInBits += m.SerialNumber.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumb
 	if closeErr := readBuffer.CloseContext("serialNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for serialNumber")
 	}
+
+	// Virtual field
+	_actualValue := serialNumber
+	actualValue := CastBACnetApplicationTagCharacterString(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSerialNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSerialNumber")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataSerialNumber) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _serialNumberErr != nil {
 			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSerialNumber"); popErr != nil {

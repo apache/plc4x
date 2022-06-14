@@ -41,6 +41,8 @@ type IBACnetConstructedDataPacketReorderTime interface {
 	IBACnetConstructedData
 	// GetPacketReorderTime returns PacketReorderTime (property field)
 	GetPacketReorderTime() *BACnetApplicationTagUnsignedInteger
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataPacketReorderTime) GetPacketReorderTime() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataPacketReorderTime) GetActualValue() *BACnetApplicationTagUnsignedInteger {
+	return CastBACnetApplicationTagUnsignedInteger(m.GetPacketReorderTime())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPacketReorderTime factory function for BACnetConstructedDataPacketReorderTime
 func NewBACnetConstructedDataPacketReorderTime(packetReorderTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPacketReorderTime {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataPacketReorderTime) GetLengthInBitsConditional(last
 	// Simple field (packetReorderTime)
 	lengthInBits += m.PacketReorderTime.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("packetReorderTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for packetReorderTime")
 	}
+
+	// Virtual field
+	_actualValue := packetReorderTime
+	actualValue := CastBACnetApplicationTagUnsignedInteger(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPacketReorderTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPacketReorderTime")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataPacketReorderTime) Serialize(writeBuffer utils.Wri
 		}
 		if _packetReorderTimeErr != nil {
 			return errors.Wrap(_packetReorderTimeErr, "Error serializing 'packetReorderTime' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPacketReorderTime"); popErr != nil {

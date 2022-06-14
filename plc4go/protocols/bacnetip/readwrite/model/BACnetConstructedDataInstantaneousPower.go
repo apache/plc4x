@@ -41,6 +41,8 @@ type IBACnetConstructedDataInstantaneousPower interface {
 	IBACnetConstructedData
 	// GetInstantaneousPower returns InstantaneousPower (property field)
 	GetInstantaneousPower() *BACnetApplicationTagReal
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetApplicationTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataInstantaneousPower) GetInstantaneousPower() *BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataInstantaneousPower) GetActualValue() *BACnetApplicationTagReal {
+	return CastBACnetApplicationTagReal(m.GetInstantaneousPower())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInstantaneousPower factory function for BACnetConstructedDataInstantaneousPower
 func NewBACnetConstructedDataInstantaneousPower(instantaneousPower *BACnetApplicationTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataInstantaneousPower {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataInstantaneousPower) GetLengthInBitsConditional(las
 	// Simple field (instantaneousPower)
 	lengthInBits += m.InstantaneousPower.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, t
 	if closeErr := readBuffer.CloseContext("instantaneousPower"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for instantaneousPower")
 	}
+
+	// Virtual field
+	_actualValue := instantaneousPower
+	actualValue := CastBACnetApplicationTagReal(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstantaneousPower"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstantaneousPower")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataInstantaneousPower) Serialize(writeBuffer utils.Wr
 		}
 		if _instantaneousPowerErr != nil {
 			return errors.Wrap(_instantaneousPowerErr, "Error serializing 'instantaneousPower' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataInstantaneousPower"); popErr != nil {
