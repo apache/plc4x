@@ -2484,7 +2484,7 @@
         /////
         // All property implementations for every object
 
-        ['ACCESS_CREDENTIAL'     , 'ALL'                BACnetConstructedDataAccessCredentialAl
+        ['ACCESS_CREDENTIAL'     , 'ALL'                BACnetConstructedDataAccessCredentialAll
             [validation '1==2' "All should never occur in context of constructed data. If it does please report"]
         ]
         ['ACCESS_DOOR'           , 'ALL'                BACnetConstructedDataAccessDoorAll

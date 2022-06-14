@@ -280,8 +280,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataAlarmValuesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ALIGN_INTERVALS && peekedTagNumber == uint8(1): // BACnetConstructedDataAlignIntervals
 		_child, typeSwitchError = BACnetConstructedDataAlignIntervalsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-	case objectTypeArgument == BACnetObjectType_ACCESS_CREDENTIAL && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessCredentialAl
-		_child, typeSwitchError = BACnetConstructedDataAccessCredentialAlParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	case objectTypeArgument == BACnetObjectType_ACCESS_CREDENTIAL && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessCredentialAll
+		_child, typeSwitchError = BACnetConstructedDataAccessCredentialAllParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case objectTypeArgument == BACnetObjectType_ACCESS_DOOR && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessDoorAll
 		_child, typeSwitchError = BACnetConstructedDataAccessDoorAllParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case objectTypeArgument == BACnetObjectType_ACCESS_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessPointAll
