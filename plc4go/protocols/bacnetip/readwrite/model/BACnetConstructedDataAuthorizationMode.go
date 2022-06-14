@@ -41,6 +41,8 @@ type IBACnetConstructedDataAuthorizationMode interface {
 	IBACnetConstructedData
 	// GetAuthorizationMode returns AuthorizationMode (property field)
 	GetAuthorizationMode() *BACnetAuthorizationModeTagged
+	// GetActualValue returns ActualValue (virtual field)
+	GetActualValue() *BACnetAuthorizationModeTagged
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -90,6 +92,19 @@ func (m *BACnetConstructedDataAuthorizationMode) GetAuthorizationMode() *BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *BACnetConstructedDataAuthorizationMode) GetActualValue() *BACnetAuthorizationModeTagged {
+	return CastBACnetAuthorizationModeTagged(m.GetAuthorizationMode())
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthorizationMode factory function for BACnetConstructedDataAuthorizationMode
 func NewBACnetConstructedDataAuthorizationMode(authorizationMode *BACnetAuthorizationModeTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAuthorizationMode {
@@ -131,6 +146,8 @@ func (m *BACnetConstructedDataAuthorizationMode) GetLengthInBitsConditional(last
 	// Simple field (authorizationMode)
 	lengthInBits += m.AuthorizationMode.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -159,6 +176,11 @@ func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, ta
 	if closeErr := readBuffer.CloseContext("authorizationMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for authorizationMode")
 	}
+
+	// Virtual field
+	_actualValue := authorizationMode
+	actualValue := CastBACnetAuthorizationModeTagged(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthorizationMode")
@@ -191,6 +213,10 @@ func (m *BACnetConstructedDataAuthorizationMode) Serialize(writeBuffer utils.Wri
 		}
 		if _authorizationModeErr != nil {
 			return errors.Wrap(_authorizationModeErr, "Error serializing 'authorizationMode' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthorizationMode"); popErr != nil {

@@ -2776,6 +2776,7 @@
         ]
         [*, 'AUTHORIZATION_MODE', '9'                   BACnetConstructedDataAuthorizationMode
             [simple   BACnetAuthorizationModeTagged('0', 'TagClass.APPLICATION_TAGS') authorizationMode                 ]
+            [virtual  BACnetAuthorizationModeTagged                             actualValue 'authorizationMode'         ]
         ]
         [*, 'AUTO_SLAVE_DISCOVERY', '1'                 BACnetConstructedDataAutoSlaveDiscovery
             [simple   BACnetApplicationTagBoolean                               autoSlaveDiscovery                      ]
