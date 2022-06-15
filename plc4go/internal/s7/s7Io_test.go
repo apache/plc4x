@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"strings"
 	"testing"
@@ -52,14 +53,14 @@ func TestS7MessageBytes(t *testing.T) {
 					model.NewCOTPPacketData(
 						false,
 						13,
-						[]*model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0).GetParent()},
+						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0)},
 						model.NewS7MessageResponseData(
 							0,
 							0,
 							11,
-							model.NewS7ParameterReadVarResponse(1).GetParent(),
+							model.NewS7ParameterReadVarResponse(1),
 							model.NewS7PayloadReadVarResponse(
-								[]*model.S7VarPayloadDataItem{
+								[]model.S7VarPayloadDataItem{
 									model.NewS7VarPayloadDataItem(
 										model.DataTransportErrorCode_OK,
 										model.DataTransportSize_BIT,
@@ -67,10 +68,10 @@ func TestS7MessageBytes(t *testing.T) {
 									),
 								},
 								nil,
-							).GetParent(),
-						).GetParent(),
+							),
+						),
 						0,
-					).GetParent(),
+					),
 				),
 			},
 			wantStringSerialized: `
@@ -384,10 +385,10 @@ func TestS7MessageBytes(t *testing.T) {
 					model.NewCOTPPacketData(
 						false,
 						13,
-						[]*model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0).GetParent()},
+						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0)},
 						model.NewS7MessageRequest(
 							13,
-							model.NewS7ParameterWriteVarRequest([]*model.S7VarRequestParameterItem{
+							model.NewS7ParameterWriteVarRequest([]model.S7VarRequestParameterItem{
 								model.NewS7VarRequestParameterItemAddress(model.NewS7AddressAny(
 									model.TransportSize_BYTE,
 									64,
@@ -395,10 +396,10 @@ func TestS7MessageBytes(t *testing.T) {
 									model.MemoryArea_INPUTS,
 									0,
 									0,
-								).GetParent()).GetParent(),
-							}).GetParent(),
+								)),
+							}),
 							model.NewS7PayloadWriteVarRequest(
-								[]*model.S7VarPayloadDataItem{
+								[]model.S7VarPayloadDataItem{
 									model.NewS7VarPayloadDataItem(
 										model.DataTransportErrorCode_OK,
 										model.DataTransportSize_BYTE_WORD_DWORD,
@@ -414,10 +415,10 @@ func TestS7MessageBytes(t *testing.T) {
 										},
 									),
 								},
-								nil).GetParent(),
-						).GetParent(),
+								nil),
+						),
 						0,
-					).GetParent(),
+					),
 				),
 			},
 			wantStringSerialized: `
@@ -919,22 +920,20 @@ func TestS7MessageBytes(t *testing.T) {
 					t.Error(err)
 				}
 				tt.wantDump = strings.Trim(tt.wantDump, "\n")
-				if got := utils.Dump(buffer.GetBytes()); !reflect.DeepEqual(got, tt.wantDump) {
+				if got := utils.Dump(buffer.GetBytes()); !assert.Equal(t, got, tt.wantDump) {
 					t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
 				}
 			})
-			t.Run("xml roundtip", func(t *testing.T) {
+			t.Run("xml roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringXml)
 				readBuffer := utils.NewXmlReadBuffer(reader)
-				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
-					if err != nil {
-						t.Error(err)
-					} else {
-						t.Errorf("Roundtrip(xml) = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
-					}
+				if got, err := model.TPKTPacketParse(readBuffer); err != nil {
+					t.Error(err)
+				} else {
+					assert.Equal(t, tt.args.debuggable, got)
 				}
 			})
-			t.Run("json roundtip", func(t *testing.T) {
+			t.Run("json roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringJson)
 				readBuffer := utils.NewJsonReadBuffer(reader)
 				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {

@@ -32,24 +32,16 @@ import (
 // Constant values.
 const S7Message_PROTOCOLID uint8 = 0x32
 
-// S7Message is the data-structure of this message
-type S7Message struct {
-	TpduReference uint16
-	Parameter     *S7Parameter
-	Payload       *S7Payload
-	Child         IS7MessageChild
-}
-
-// IS7Message is the corresponding interface of S7Message
-type IS7Message interface {
+// S7Message is the corresponding interface of S7Message
+type S7Message interface {
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetTpduReference returns TpduReference (property field)
 	GetTpduReference() uint16
 	// GetParameter returns Parameter (property field)
-	GetParameter() *S7Parameter
+	GetParameter() S7Parameter
 	// GetPayload returns Payload (property field)
-	GetPayload() *S7Payload
+	GetPayload() S7Payload
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -58,18 +50,32 @@ type IS7Message interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type IS7MessageParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error
+// _S7Message is the data-structure of this message
+type _S7Message struct {
+	_S7MessageChildRequirements
+	TpduReference uint16
+	Parameter     S7Parameter
+	Payload       S7Payload
+}
+
+type _S7MessageChildRequirements interface {
+	GetLengthInBits() uint16
+	GetLengthInBitsConditional(lastItem bool) uint16
+	GetMessageType() uint8
+}
+
+type S7MessageParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child S7Message, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
-type IS7MessageChild interface {
+type S7MessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload)
+	InitializeParent(parent S7Message, tpduReference uint16, parameter S7Parameter, payload S7Payload)
 	GetParent() *S7Message
 
 	GetTypeName() string
-	IS7Message
+	S7Message
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,15 +83,15 @@ type IS7MessageChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *S7Message) GetTpduReference() uint16 {
+func (m *_S7Message) GetTpduReference() uint16 {
 	return m.TpduReference
 }
 
-func (m *S7Message) GetParameter() *S7Parameter {
+func (m *_S7Message) GetParameter() S7Parameter {
 	return m.Parameter
 }
 
-func (m *S7Message) GetPayload() *S7Payload {
+func (m *_S7Message) GetPayload() S7Payload {
 	return m.Payload
 }
 
@@ -98,7 +104,7 @@ func (m *S7Message) GetPayload() *S7Payload {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *S7Message) GetProtocolId() uint8 {
+func (m *_S7Message) GetProtocolId() uint8 {
 	return S7Message_PROTOCOLID
 }
 
@@ -107,37 +113,27 @@ func (m *S7Message) GetProtocolId() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewS7Message factory function for S7Message
-func NewS7Message(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
-	return &S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
+// NewS7Message factory function for _S7Message
+func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7Message {
+	return &_S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
 }
 
-func CastS7Message(structType interface{}) *S7Message {
+// Deprecated: use the interface for direct cast
+func CastS7Message(structType interface{}) S7Message {
 	if casted, ok := structType.(S7Message); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*S7Message); ok {
 		return casted
 	}
-	if casted, ok := structType.(IS7MessageChild); ok {
-		return casted.GetParent()
+	if casted, ok := structType.(*S7Message); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *S7Message) GetTypeName() string {
+func (m *_S7Message) GetTypeName() string {
 	return "S7Message"
 }
 
-func (m *S7Message) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *S7Message) GetLengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.GetLengthInBits()
-}
-
-func (m *S7Message) GetParentLengthInBits() uint16 {
+func (m *_S7Message) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -159,22 +155,22 @@ func (m *S7Message) GetParentLengthInBits() uint16 {
 
 	// Optional Field (parameter)
 	if m.Parameter != nil {
-		lengthInBits += (*m.Parameter).GetLengthInBits()
+		lengthInBits += m.Parameter.GetLengthInBits()
 	}
 
 	// Optional Field (payload)
 	if m.Payload != nil {
-		lengthInBits += (*m.Payload).GetLengthInBits()
+		lengthInBits += m.Payload.GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *S7Message) GetLengthInBytes() uint16 {
+func (m *_S7Message) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
+func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Message"); pullErr != nil {
@@ -234,21 +230,27 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type S7MessageChild interface {
-		InitializeParent(*S7Message, uint16, *S7Parameter, *S7Payload)
-		GetParent() *S7Message
+	type S7MessageChildSerializeRequirement interface {
+		S7Message
+		InitializeParent(S7Message, uint16, S7Parameter, S7Payload)
+		GetParent() S7Message
 	}
-	var _child S7MessageChild
+	var _childTemp interface{}
+	var _child S7MessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case messageType == 0x01: // S7MessageRequest
-		_child, typeSwitchError = S7MessageRequestParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageRequestParse(readBuffer)
+		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	case messageType == 0x02: // S7MessageResponse
-		_child, typeSwitchError = S7MessageResponseParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageResponseParse(readBuffer)
+		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	case messageType == 0x03: // S7MessageResponseData
-		_child, typeSwitchError = S7MessageResponseDataParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageResponseDataParse(readBuffer)
+		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	case messageType == 0x07: // S7MessageUserData
-		_child, typeSwitchError = S7MessageUserDataParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageUserDataParse(readBuffer)
+		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -258,7 +260,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
-	var parameter *S7Parameter = nil
+	var parameter S7Parameter = nil
 	if bool((parameterLength) > (0)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
@@ -272,7 +274,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
 		default:
-			parameter = CastS7Parameter(_val)
+			parameter = _val.(S7Parameter)
 			if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
 				return nil, errors.Wrap(closeErr, "Error closing for parameter")
 			}
@@ -280,7 +282,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-	var payload *S7Payload = nil
+	var payload S7Payload = nil
 	if bool((payloadLength) > (0)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
@@ -294,7 +296,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		default:
-			payload = CastS7Payload(_val)
+			payload = _val.(S7Payload)
 			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 				return nil, errors.Wrap(closeErr, "Error closing for payload")
 			}
@@ -306,15 +308,18 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent(), tpduReference, parameter, payload)
-	return _child.GetParent(), nil
+	_child.InitializeParent(_child, tpduReference, parameter, payload)
+	return _child, nil
 }
 
-func (m *S7Message) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
+func (m *_S7Message) Serialize(writeBuffer utils.WriteBuffer) error {
+	panic("Required method Serialize not implemented")
 }
 
-func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error {
+func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Message, serializeChildFunction func() error) error {
+	// We redirect all calls through client as some methods are only implemented there
+	m := child
+	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7Message"); pushErr != nil {
@@ -344,21 +349,21 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	}
 
 	// Simple Field (tpduReference)
-	tpduReference := uint16(m.TpduReference)
+	tpduReference := uint16(m.GetTpduReference())
 	_tpduReferenceErr := writeBuffer.WriteUint16("tpduReference", 16, (tpduReference))
 	if _tpduReferenceErr != nil {
 		return errors.Wrap(_tpduReferenceErr, "Error serializing 'tpduReference' field")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() interface{} { return uint16((*m.GetParameter()).GetLengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() interface{} { return uint16((m.GetParameter()).GetLengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	_parameterLengthErr := writeBuffer.WriteUint16("parameterLength", 16, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() interface{} { return uint16((*m.GetPayload()).GetLengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() interface{} { return uint16((m.GetPayload()).GetLengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, (payloadLength))
 	if _payloadLengthErr != nil {
 		return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
@@ -370,12 +375,12 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	}
 
 	// Optional Field (parameter) (Can be skipped, if the value is null)
-	var parameter *S7Parameter = nil
-	if m.Parameter != nil {
+	var parameter S7Parameter = nil
+	if m.GetParameter() != nil {
 		if pushErr := writeBuffer.PushContext("parameter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for parameter")
 		}
-		parameter = m.Parameter
+		parameter = m.GetParameter()
 		_parameterErr := writeBuffer.WriteSerializable(parameter)
 		if popErr := writeBuffer.PopContext("parameter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameter")
@@ -386,12 +391,12 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)
-	var payload *S7Payload = nil
-	if m.Payload != nil {
+	var payload S7Payload = nil
+	if m.GetPayload() != nil {
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
-		payload = m.Payload
+		payload = m.GetPayload()
 		_payloadErr := writeBuffer.WriteSerializable(payload)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for payload")
@@ -407,7 +412,7 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	return nil
 }
 
-func (m *S7Message) String() string {
+func (m *_S7Message) String() string {
 	if m == nil {
 		return "<nil>"
 	}

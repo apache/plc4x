@@ -61,7 +61,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetPriorityArrayParse(io, objectTypeArgument, tagNumber, &arrayIndexArgument)
+		return model.BACnetPriorityArrayParse(io, objectTypeArgument, tagNumber, arrayIndexArgument)
 	case "BACnetNameValue":
 		return model.BACnetNameValueParse(io)
 	case "BACnetPropertyReferenceEnclosed":
@@ -477,7 +477,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetReadAccessPropertyReadResultParse(io, objectTypeArgument, propertyIdentifierArgument, &arrayIndexArgument)
+		return model.BACnetReadAccessPropertyReadResultParse(io, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case "BACnetActionCommand":
 		return model.BACnetActionCommandParse(io)
 	case "BACnetFaultParameterFaultExtendedParametersEntry":
@@ -1203,7 +1203,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[1])
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[2])
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetConstructedDataParse(io, tagNumber, objectTypeArgument, propertyIdentifierArgument, &arrayIndexArgument)
+		return model.BACnetConstructedDataParse(io, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case "BACnetEventTypeTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -1243,7 +1243,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
 		var propertyArrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetPropertyAccessResultAccessResultParse(io, objectTypeArgument, propertyIdentifierArgument, &propertyArrayIndexArgument)
+		return model.BACnetPropertyAccessResultAccessResultParse(io, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	case "BACnetNetworkPortCommandTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -1355,7 +1355,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		objectTypeArgument := model.BACnetObjectTypeByName(arguments[0])
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(arguments[1])
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetConstructedDataElementParse(io, objectTypeArgument, propertyIdentifierArgument, &arrayIndexArgument)
+		return model.BACnetConstructedDataElementParse(io, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case "BACnetPropertyValues":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

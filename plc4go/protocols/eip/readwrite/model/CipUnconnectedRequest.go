@@ -31,22 +31,11 @@ import (
 // Constant values.
 const CipUnconnectedRequest_ROUTE uint16 = 0x0001
 
-// CipUnconnectedRequest is the data-structure of this message
-type CipUnconnectedRequest struct {
-	*CipService
-	UnconnectedService *CipService
-	BackPlane          int8
-	Slot               int8
-
-	// Arguments.
-	ServiceLen uint16
-}
-
-// ICipUnconnectedRequest is the corresponding interface of CipUnconnectedRequest
-type ICipUnconnectedRequest interface {
-	ICipService
+// CipUnconnectedRequest is the corresponding interface of CipUnconnectedRequest
+type CipUnconnectedRequest interface {
+	CipService
 	// GetUnconnectedService returns UnconnectedService (property field)
-	GetUnconnectedService() *CipService
+	GetUnconnectedService() CipService
 	// GetBackPlane returns BackPlane (property field)
 	GetBackPlane() int8
 	// GetSlot returns Slot (property field)
@@ -59,12 +48,23 @@ type ICipUnconnectedRequest interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _CipUnconnectedRequest is the data-structure of this message
+type _CipUnconnectedRequest struct {
+	*_CipService
+	UnconnectedService CipService
+	BackPlane          int8
+	Slot               int8
+
+	// Arguments.
+	ServiceLen uint16
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *CipUnconnectedRequest) GetService() uint8 {
+func (m *_CipUnconnectedRequest) GetService() uint8 {
 	return 0x52
 }
 
@@ -73,10 +73,10 @@ func (m *CipUnconnectedRequest) GetService() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *CipUnconnectedRequest) InitializeParent(parent *CipService) {}
+func (m *_CipUnconnectedRequest) InitializeParent(parent CipService) {}
 
-func (m *CipUnconnectedRequest) GetParent() *CipService {
-	return m.CipService
+func (m *_CipUnconnectedRequest) GetParent() CipService {
+	return m._CipService
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,15 +84,15 @@ func (m *CipUnconnectedRequest) GetParent() *CipService {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *CipUnconnectedRequest) GetUnconnectedService() *CipService {
+func (m *_CipUnconnectedRequest) GetUnconnectedService() CipService {
 	return m.UnconnectedService
 }
 
-func (m *CipUnconnectedRequest) GetBackPlane() int8 {
+func (m *_CipUnconnectedRequest) GetBackPlane() int8 {
 	return m.BackPlane
 }
 
-func (m *CipUnconnectedRequest) GetSlot() int8 {
+func (m *_CipUnconnectedRequest) GetSlot() int8 {
 	return m.Slot
 }
 
@@ -105,7 +105,7 @@ func (m *CipUnconnectedRequest) GetSlot() int8 {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *CipUnconnectedRequest) GetRoute() uint16 {
+func (m *_CipUnconnectedRequest) GetRoute() uint16 {
 	return CipUnconnectedRequest_ROUTE
 }
 
@@ -114,43 +114,38 @@ func (m *CipUnconnectedRequest) GetRoute() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewCipUnconnectedRequest factory function for CipUnconnectedRequest
-func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, slot int8, serviceLen uint16) *CipUnconnectedRequest {
-	_result := &CipUnconnectedRequest{
+// NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
+func NewCipUnconnectedRequest(unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
+	_result := &_CipUnconnectedRequest{
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		CipService:         NewCipService(serviceLen),
+		_CipService:        NewCipService(serviceLen),
 	}
-	_result.Child = _result
+	_result._CipService._CipServiceChildRequirements = _result
 	return _result
 }
 
-func CastCipUnconnectedRequest(structType interface{}) *CipUnconnectedRequest {
+// Deprecated: use the interface for direct cast
+func CastCipUnconnectedRequest(structType interface{}) CipUnconnectedRequest {
 	if casted, ok := structType.(CipUnconnectedRequest); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*CipUnconnectedRequest); ok {
 		return casted
 	}
-	if casted, ok := structType.(CipService); ok {
-		return CastCipUnconnectedRequest(casted.Child)
-	}
-	if casted, ok := structType.(*CipService); ok {
-		return CastCipUnconnectedRequest(casted.Child)
+	if casted, ok := structType.(*CipUnconnectedRequest); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *CipUnconnectedRequest) GetTypeName() string {
+func (m *_CipUnconnectedRequest) GetTypeName() string {
 	return "CipUnconnectedRequest"
 }
 
-func (m *CipUnconnectedRequest) GetLengthInBits() uint16 {
+func (m *_CipUnconnectedRequest) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipUnconnectedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CipUnconnectedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
@@ -189,11 +184,11 @@ func (m *CipUnconnectedRequest) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *CipUnconnectedRequest) GetLengthInBytes() uint16 {
+func (m *_CipUnconnectedRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipUnconnectedRequest, error) {
+func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipUnconnectedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
@@ -301,7 +296,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field")
 	}
-	unconnectedService := CastCipService(_unconnectedService)
+	unconnectedService := _unconnectedService.(CipService)
 	if closeErr := readBuffer.CloseContext("unconnectedService"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for unconnectedService")
 	}
@@ -334,17 +329,17 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	}
 
 	// Create a partially initialized instance
-	_child := &CipUnconnectedRequest{
-		UnconnectedService: CastCipService(unconnectedService),
+	_child := &_CipUnconnectedRequest{
+		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		CipService:         &CipService{},
+		_CipService:        &_CipService{},
 	}
-	_child.CipService.Child = _child
+	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
 }
 
-func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -411,7 +406,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("unconnectedService"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unconnectedService")
 		}
-		_unconnectedServiceErr := writeBuffer.WriteSerializable(m.UnconnectedService)
+		_unconnectedServiceErr := writeBuffer.WriteSerializable(m.GetUnconnectedService())
 		if popErr := writeBuffer.PopContext("unconnectedService"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unconnectedService")
 		}
@@ -426,14 +421,14 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (backPlane)
-		backPlane := int8(m.BackPlane)
+		backPlane := int8(m.GetBackPlane())
 		_backPlaneErr := writeBuffer.WriteInt8("backPlane", 8, (backPlane))
 		if _backPlaneErr != nil {
 			return errors.Wrap(_backPlaneErr, "Error serializing 'backPlane' field")
 		}
 
 		// Simple Field (slot)
-		slot := int8(m.Slot)
+		slot := int8(m.GetSlot())
 		_slotErr := writeBuffer.WriteInt8("slot", 8, (slot))
 		if _slotErr != nil {
 			return errors.Wrap(_slotErr, "Error serializing 'slot' field")
@@ -447,7 +442,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *CipUnconnectedRequest) String() string {
+func (m *_CipUnconnectedRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}

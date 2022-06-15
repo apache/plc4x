@@ -51,7 +51,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 
-		requestItems := make([]*readWriteModel.S7VarRequestParameterItem, len(readRequest.GetFieldNames()))
+		requestItems := make([]readWriteModel.S7VarRequestParameterItem, len(readRequest.GetFieldNames()))
 		for i, fieldName := range readRequest.GetFieldNames() {
 			field := readRequest.GetField(fieldName)
 			address, err := encodeS7Address(field)
@@ -63,22 +63,22 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				}
 				return
 			}
-			requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(address).GetParent()
+			requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(address)
 		}
 
 		// Create a read request template.
 		// tpuId will be inserted before sending in #readInternal so we insert 0 as dummy here
 		s7MessageRequest := readWriteModel.NewS7MessageRequest(
 			0,
-			readWriteModel.NewS7ParameterReadVarRequest(requestItems).GetParent(),
+			readWriteModel.NewS7ParameterReadVarRequest(requestItems),
 			nil,
-		).GetParent()
+		)
 
 		tpduId := m.tpduGenerator.getAndIncrement()
 
 		request := s7MessageRequest
 		// Create a new Request with correct tpuId (is not known before)
-		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.Parameter, request.Payload).GetParent()
+		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.Parameter, request.Payload)
 
 		// Assemble the finished paket
 		log.Trace().Msg("Assemble paket")
@@ -89,7 +89,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				nil,
 				s7MessageRequest,
 				0,
-			).GetParent(),
+			),
 		)
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartTransaction()
@@ -104,25 +104,25 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 					if tpktPacket == nil {
 						return false
 					}
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
+					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
 					if cotpPacketData == nil {
 						return false
 					}
-					payload := cotpPacketData.Payload
+					payload := cotpPacketData.GetPayload()
 					if payload == nil {
 						return false
 					}
-					return payload.TpduReference == tpduId
+					return payload.GetTpduReference() == tpduId
 				},
 				func(message interface{}) error {
 					// Convert the response into an
 					log.Trace().Msg("convert response to ")
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					payload := cotpPacketData.Payload
+					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
+					payload := cotpPacketData.GetPayload()
 					// Convert the s7 response into a PLC4X response
 					log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xReadResponse(*payload, readRequest)
+					readResponse, err := m.ToPlc4xReadResponse(payload, readRequest)
 
 					if err != nil {
 						result <- &plc4goModel.DefaultPlcReadRequestResult{
@@ -160,17 +160,15 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
 	var errorClass uint8
 	var errorCode uint8
-	switch response.Child.(type) {
-	case *readWriteModel.S7MessageResponseData:
-		messageResponseData := response.Child.(*readWriteModel.S7MessageResponseData)
-		errorClass = messageResponseData.ErrorClass
-		errorCode = messageResponseData.ErrorCode
-	case *readWriteModel.S7MessageResponse:
-		messageResponseData := response.Child.(*readWriteModel.S7MessageResponse)
-		errorClass = messageResponseData.ErrorClass
-		errorCode = messageResponseData.ErrorCode
+	switch messageResponseData := response.(type) {
+	case readWriteModel.S7MessageResponseData:
+		errorClass = messageResponseData.GetErrorClass()
+		errorCode = messageResponseData.GetErrorCode()
+	case readWriteModel.S7MessageResponse:
+		errorClass = messageResponseData.GetErrorClass()
+		errorCode = messageResponseData.GetErrorCode()
 	default:
-		return nil, errors.Errorf("unsupported response type %T", response.Child)
+		return nil, errors.Errorf("unsupported response type %T", response)
 	}
 	responseCodes := map[string]model.PlcResponseCode{}
 	plcValues := map[string]values.PlcValue{}
@@ -202,24 +200,24 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 	}
 
 	// In all other cases all went well.
-	payload := response.Payload.Child.(*readWriteModel.S7PayloadReadVarResponse)
+	payload := response.GetPayload().(readWriteModel.S7PayloadReadVarResponse)
 
 	// If the numbers of items don't match, we're in big trouble as the only
 	// way to know how to interpret the responses is by aligning them with the
 	// items from the request as this information is not returned by the PLC.
-	if len(readRequest.GetFieldNames()) != len(payload.Items) {
+	if len(readRequest.GetFieldNames()) != len(payload.GetItems()) {
 		return nil, errors.New("The number of requested items doesn't match the number of returned items")
 	}
 
-	payloadItems := payload.Items
+	payloadItems := payload.GetItems()
 	for i, fieldName := range readRequest.GetFieldNames() {
 		field := readRequest.GetField(fieldName).(S7PlcField)
 		payloadItem := payloadItems[i]
 
-		responseCode := decodeResponseCode(payloadItem.ReturnCode)
+		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		rb := utils.NewReadBufferByteBased(utils.ByteArrayToUint8Array(payloadItem.Data))
+		rb := utils.NewReadBufferByteBased(utils.ByteArrayToUint8Array(payloadItem.GetData()))
 		responseCodes[fieldName] = responseCode
 		if responseCode == model.PlcResponseCode_OK {
 			plcValue, err := readWriteModel.DataItemParse(rb, field.GetDataType().DataProtocolId(), int32(field.GetNumElements()))
@@ -237,7 +235,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 
 // Currently we only support the S7 Any type of addresses. This helper simply converts the S7Field from PLC4X into
 // S7Address objects.
-func encodeS7Address(field model.PlcField) (*readWriteModel.S7Address, error) {
+func encodeS7Address(field model.PlcField) (readWriteModel.S7Address, error) {
 	s7Field, ok := field.(S7PlcField)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", field)
@@ -274,7 +272,7 @@ func encodeS7Address(field model.PlcField) (*readWriteModel.S7Address, error) {
 		s7Field.GetMemoryArea(),
 		s7Field.GetByteOffset(),
 		s7Field.GetBitOffset(),
-	).GetParent(), nil
+	), nil
 }
 
 // Helper to convert the return codes returned from the S7 into one of our standard

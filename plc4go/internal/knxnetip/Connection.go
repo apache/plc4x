@@ -118,8 +118,8 @@ type Connection struct {
 	// Used for detecting connection problems
 	connectionTimeoutTimer *time.Timer
 
-	GatewayKnxAddress             *driverModel.KnxAddress
-	ClientKnxAddress              *driverModel.KnxAddress
+	GatewayKnxAddress             driverModel.KnxAddress
+	ClientKnxAddress              driverModel.KnxAddress
 	CommunicationChannelId        uint8
 	SequenceCounter               int32
 	TunnelingRequestExpectationId int32
@@ -235,21 +235,22 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		}
 
 		// Save some important information
-		m.metadata.KnxMedium = searchResponse.DibDeviceInfo.KnxMedium
-		m.metadata.GatewayName = string(bytes.Trim(searchResponse.DibDeviceInfo.DeviceFriendlyName, "\x00"))
-		m.GatewayKnxAddress = searchResponse.DibDeviceInfo.KnxAddress
+		dibDeviceInfo := searchResponse.GetDibDeviceInfo()
+		m.metadata.KnxMedium = dibDeviceInfo.GetKnxMedium()
+		m.metadata.GatewayName = string(bytes.Trim(dibDeviceInfo.GetDeviceFriendlyName(), "\x00"))
+		m.GatewayKnxAddress = dibDeviceInfo.GetKnxAddress()
 		m.metadata.GatewayKnxAddress = KnxAddressToString(m.GatewayKnxAddress)
-		m.metadata.ProjectNumber = searchResponse.DibDeviceInfo.ProjectInstallationIdentifier.ProjectNumber
-		m.metadata.InstallationNumber = searchResponse.DibDeviceInfo.ProjectInstallationIdentifier.InstallationNumber
-		m.metadata.DeviceSerialNumber = searchResponse.DibDeviceInfo.KnxNetIpDeviceSerialNumber
-		m.metadata.DeviceMulticastAddress = searchResponse.DibDeviceInfo.KnxNetIpDeviceMulticastAddress.Addr
-		m.metadata.DeviceMacAddress = searchResponse.DibDeviceInfo.KnxNetIpDeviceMacAddress.Addr
+		m.metadata.ProjectNumber = dibDeviceInfo.GetProjectInstallationIdentifier().GetProjectNumber()
+		m.metadata.InstallationNumber = dibDeviceInfo.GetProjectInstallationIdentifier().GetInstallationNumber()
+		m.metadata.DeviceSerialNumber = dibDeviceInfo.GetKnxNetIpDeviceSerialNumber()
+		m.metadata.DeviceMulticastAddress = dibDeviceInfo.GetKnxNetIpDeviceMulticastAddress().GetAddr()
+		m.metadata.DeviceMacAddress = dibDeviceInfo.GetKnxNetIpDeviceMacAddress().GetAddr()
 		m.metadata.SupportedServices = []string{}
 		supportsTunneling := false
-		for _, serviceId := range searchResponse.DibSuppSvcFamilies.ServiceIds {
-			m.metadata.SupportedServices = append(m.metadata.SupportedServices, serviceId.Child.GetTypeName())
+		for _, serviceId := range searchResponse.GetDibSuppSvcFamilies().GetServiceIds() {
+			m.metadata.SupportedServices = append(m.metadata.SupportedServices, serviceId.(interface{ GetTypeName() string }).GetTypeName())
 			// If this is an instance of the "tunneling", service, this connection supports tunneling
-			_, ok := serviceId.Child.(*driverModel.KnxNetIpTunneling)
+			_, ok := serviceId.(driverModel.KnxNetIpTunneling)
 			if ok {
 				supportsTunneling = true
 				break
@@ -267,7 +268,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			}
 
 			// Save the communication channel id
-			m.CommunicationChannelId = connectionResponse.CommunicationChannelId
+			m.CommunicationChannelId = connectionResponse.GetCommunicationChannelId()
 
 			// Reset the sequence counter
 			m.SequenceCounter = -1
@@ -275,13 +276,13 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			// If the connection was successful, the gateway will now forward any packets
 			// on the KNX bus that are broadcast packets to us, so we have to setup things
 			// to handle these incoming messages.
-			switch connectionResponse.Status {
+			switch connectionResponse.GetStatus() {
 			case driverModel.Status_NO_ERROR:
 				// Save the KNX Address the Gateway assigned to us for this connection.
 				tunnelConnectionDataBlock := driverModel.CastConnectionResponseDataBlockTunnelConnection(
-					connectionResponse.ConnectionResponseDataBlock,
+					connectionResponse.GetConnectionResponseDataBlock(),
 				)
-				m.ClientKnxAddress = tunnelConnectionDataBlock.KnxAddress
+				m.ClientKnxAddress = tunnelConnectionDataBlock.GetKnxAddress()
 
 				// Create a go routine to handle incoming tunneling-requests which haven't been
 				// handled by any other handler. This is where usually the GroupValueWrite messages
@@ -302,34 +303,34 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 							continue
 						}
 
-						if tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+						if tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 							log.Warn().Msgf("Not for this connection %v\n", tunnelingRequest)
 							continue
 						}
 
-						lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+						lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 						if lDataInd == nil {
 							continue
 						}
 						// Get APDU, source and target address
-						lDataFrameData := driverModel.CastLDataExtended(lDataInd.DataFrame)
-						sourceAddress := lDataFrameData.SourceAddress
+						lDataFrameData := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+						sourceAddress := lDataFrameData.GetSourceAddress()
 
 						// If this is not an APDU, there is no need to further handle it.
-						if lDataFrameData.Apdu == nil {
+						if lDataFrameData.GetApdu() == nil {
 							continue
 						}
 
 						// If this is an incoming disconnect request, remove the device
 						// from the device connections, otherwise handle it as normal
 						// incoming message.
-						apduControlContainer := driverModel.CastApduControlContainer(lDataFrameData.Apdu)
+						apduControlContainer := driverModel.CastApduControlContainer(lDataFrameData.GetApdu())
 						if apduControlContainer != nil {
-							disconnectApdu := driverModel.CastApduControlDisconnect(apduControlContainer.ControlApdu)
+							disconnectApdu := driverModel.CastApduControlDisconnect(apduControlContainer.GetControlApdu())
 							if disconnectApdu != nil {
-								if m.DeviceConnections[*sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
+								if m.DeviceConnections[sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
 									// Remove the connection
-									delete(m.DeviceConnections, *sourceAddress)
+									delete(m.DeviceConnections, sourceAddress)
 								}
 							}
 						} else {
@@ -344,7 +345,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			case driverModel.Status_NO_MORE_CONNECTIONS:
 				m.doSomethingAndClose(func() { sendResult(nil, errors.New("no more connections")) })
 			default:
-				m.doSomethingAndClose(func() { sendResult(nil, errors.Errorf("got a return status of: %s", connectionResponse.Status)) })
+				m.doSomethingAndClose(func() { sendResult(nil, errors.Errorf("got a return status of: %s", connectionResponse.GetStatus())) })
 			}
 		} else {
 			m.doSomethingAndClose(func() { sendResult(nil, errors.New("this device doesn't support tunneling")) })
@@ -398,7 +399,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			case <-ttlTimer.C:
 				ttlTimer.Stop()
 				// If we got a timeout here, well just continue the device will just auto disconnect.
-				log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(&targetAddress))
+				log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(targetAddress))
 			}
 		}
 

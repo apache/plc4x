@@ -66,14 +66,14 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
 	}
-	configuration.sourceAmsNetId = readWriteModel.AmsNetId{
-		Octet1: uint8(octet1),
-		Octet2: uint8(octet2),
-		Octet3: uint8(octet3),
-		Octet4: uint8(octet4),
-		Octet5: uint8(octet5),
-		Octet6: uint8(octet6),
-	}
+	configuration.sourceAmsNetId = readWriteModel.NewAmsNetId(
+		uint8(octet1),
+		uint8(octet2),
+		uint8(octet3),
+		uint8(octet4),
+		uint8(octet5),
+		uint8(octet6),
+	)
 	sourceAmsPort := getFromOptions(options, "sourceAmsPort")
 	if sourceAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter sourceAmsPort missing")
@@ -112,14 +112,14 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
 	}
-	configuration.targetAmsNetId = readWriteModel.AmsNetId{
-		Octet1: uint8(octet1),
-		Octet2: uint8(octet2),
-		Octet3: uint8(octet3),
-		Octet4: uint8(octet4),
-		Octet5: uint8(octet5),
-		Octet6: uint8(octet6),
-	}
+	configuration.targetAmsNetId = readWriteModel.NewAmsNetId(
+		uint8(octet1),
+		uint8(octet2),
+		uint8(octet3),
+		uint8(octet4),
+		uint8(octet5),
+		uint8(octet6),
+	)
 	targetAmsPort := getFromOptions(options, "targetAmsPort")
 	if targetAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter targetAmsPort missing")

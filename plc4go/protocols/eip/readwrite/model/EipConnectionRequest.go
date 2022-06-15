@@ -31,14 +31,9 @@ import (
 const EipConnectionRequest_PROTOCOLVERSION uint16 = 0x01
 const EipConnectionRequest_FLAGS uint16 = 0x00
 
-// EipConnectionRequest is the data-structure of this message
-type EipConnectionRequest struct {
-	*EipPacket
-}
-
-// IEipConnectionRequest is the corresponding interface of EipConnectionRequest
-type IEipConnectionRequest interface {
-	IEipPacket
+// EipConnectionRequest is the corresponding interface of EipConnectionRequest
+type EipConnectionRequest interface {
+	EipPacket
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -47,12 +42,17 @@ type IEipConnectionRequest interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _EipConnectionRequest is the data-structure of this message
+type _EipConnectionRequest struct {
+	*_EipPacket
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *EipConnectionRequest) GetCommand() uint16 {
+func (m *_EipConnectionRequest) GetCommand() uint16 {
 	return 0x0065
 }
 
@@ -61,15 +61,15 @@ func (m *EipConnectionRequest) GetCommand() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *EipConnectionRequest) InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.EipPacket.SessionHandle = sessionHandle
-	m.EipPacket.Status = status
-	m.EipPacket.SenderContext = senderContext
-	m.EipPacket.Options = options
+func (m *_EipConnectionRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
+	m.SessionHandle = sessionHandle
+	m.Status = status
+	m.SenderContext = senderContext
+	m.Options = options
 }
 
-func (m *EipConnectionRequest) GetParent() *EipPacket {
-	return m.EipPacket
+func (m *_EipConnectionRequest) GetParent() EipPacket {
+	return m._EipPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,11 +77,11 @@ func (m *EipConnectionRequest) GetParent() *EipPacket {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *EipConnectionRequest) GetProtocolVersion() uint16 {
+func (m *_EipConnectionRequest) GetProtocolVersion() uint16 {
 	return EipConnectionRequest_PROTOCOLVERSION
 }
 
-func (m *EipConnectionRequest) GetFlags() uint16 {
+func (m *_EipConnectionRequest) GetFlags() uint16 {
 	return EipConnectionRequest_FLAGS
 }
 
@@ -90,40 +90,35 @@ func (m *EipConnectionRequest) GetFlags() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewEipConnectionRequest factory function for EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipConnectionRequest {
-	_result := &EipConnectionRequest{
-		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+// NewEipConnectionRequest factory function for _EipConnectionRequest
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_EipConnectionRequest {
+	_result := &_EipConnectionRequest{
+		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	_result.Child = _result
+	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
 }
 
-func CastEipConnectionRequest(structType interface{}) *EipConnectionRequest {
+// Deprecated: use the interface for direct cast
+func CastEipConnectionRequest(structType interface{}) EipConnectionRequest {
 	if casted, ok := structType.(EipConnectionRequest); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*EipConnectionRequest); ok {
 		return casted
 	}
-	if casted, ok := structType.(EipPacket); ok {
-		return CastEipConnectionRequest(casted.Child)
-	}
-	if casted, ok := structType.(*EipPacket); ok {
-		return CastEipConnectionRequest(casted.Child)
+	if casted, ok := structType.(*EipConnectionRequest); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *EipConnectionRequest) GetTypeName() string {
+func (m *_EipConnectionRequest) GetTypeName() string {
 	return "EipConnectionRequest"
 }
 
-func (m *EipConnectionRequest) GetLengthInBits() uint16 {
+func (m *_EipConnectionRequest) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *EipConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_EipConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (protocolVersion)
@@ -135,11 +130,11 @@ func (m *EipConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *EipConnectionRequest) GetLengthInBytes() uint16 {
+func (m *_EipConnectionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionRequest, error) {
+func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (EipConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
@@ -171,14 +166,14 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionReque
 	}
 
 	// Create a partially initialized instance
-	_child := &EipConnectionRequest{
-		EipPacket: &EipPacket{},
+	_child := &_EipConnectionRequest{
+		_EipPacket: &_EipPacket{},
 	}
-	_child.EipPacket.Child = _child
+	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
-func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -206,7 +201,7 @@ func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *EipConnectionRequest) String() string {
+func (m *_EipConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}

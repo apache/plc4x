@@ -157,13 +157,13 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 							}
 							searchResponse := driverModel.CastSearchResponse(message)
 							if searchResponse != nil {
-								addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
+								addr := searchResponse.GetHpaiControlEndpoint().GetIpAddress().GetAddr()
 								remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
-									uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.HpaiControlEndpoint.IpPort))
+									uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.GetHpaiControlEndpoint().GetIpPort()))
 								if err != nil {
 									continue
 								}
-								deviceName := string(bytes.Trim(searchResponse.DibDeviceInfo.DeviceFriendlyName, "\x00"))
+								deviceName := string(bytes.Trim(searchResponse.GetDibDeviceInfo().GetDeviceFriendlyName(), "\x00"))
 								discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
 									ProtocolCode:  "knxnet-ip",
 									TransportCode: "udp",

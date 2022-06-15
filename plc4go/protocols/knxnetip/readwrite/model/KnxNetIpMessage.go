@@ -30,13 +30,8 @@ import (
 // Constant values.
 const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 
-// KnxNetIpMessage is the data-structure of this message
-type KnxNetIpMessage struct {
-	Child IKnxNetIpMessageChild
-}
-
-// IKnxNetIpMessage is the corresponding interface of KnxNetIpMessage
-type IKnxNetIpMessage interface {
+// KnxNetIpMessage is the corresponding interface of KnxNetIpMessage
+type KnxNetIpMessage interface {
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
 	// GetLengthInBytes returns the length in bytes
@@ -47,18 +42,29 @@ type IKnxNetIpMessage interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type IKnxNetIpMessageParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error
+// _KnxNetIpMessage is the data-structure of this message
+type _KnxNetIpMessage struct {
+	_KnxNetIpMessageChildRequirements
+}
+
+type _KnxNetIpMessageChildRequirements interface {
+	GetLengthInBits() uint16
+	GetLengthInBitsConditional(lastItem bool) uint16
+	GetMsgType() uint16
+}
+
+type KnxNetIpMessageParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child KnxNetIpMessage, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
-type IKnxNetIpMessageChild interface {
+type KnxNetIpMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *KnxNetIpMessage)
+	InitializeParent(parent KnxNetIpMessage)
 	GetParent() *KnxNetIpMessage
 
 	GetTypeName() string
-	IKnxNetIpMessage
+	KnxNetIpMessage
 }
 
 ///////////////////////////////////////////////////////////
@@ -66,7 +72,7 @@ type IKnxNetIpMessageChild interface {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *KnxNetIpMessage) GetProtocolVersion() uint8 {
+func (m *_KnxNetIpMessage) GetProtocolVersion() uint8 {
 	return KnxNetIpMessage_PROTOCOLVERSION
 }
 
@@ -75,37 +81,27 @@ func (m *KnxNetIpMessage) GetProtocolVersion() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewKnxNetIpMessage factory function for KnxNetIpMessage
-func NewKnxNetIpMessage() *KnxNetIpMessage {
-	return &KnxNetIpMessage{}
+// NewKnxNetIpMessage factory function for _KnxNetIpMessage
+func NewKnxNetIpMessage() *_KnxNetIpMessage {
+	return &_KnxNetIpMessage{}
 }
 
-func CastKnxNetIpMessage(structType interface{}) *KnxNetIpMessage {
+// Deprecated: use the interface for direct cast
+func CastKnxNetIpMessage(structType interface{}) KnxNetIpMessage {
 	if casted, ok := structType.(KnxNetIpMessage); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*KnxNetIpMessage); ok {
 		return casted
 	}
-	if casted, ok := structType.(IKnxNetIpMessageChild); ok {
-		return casted.GetParent()
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *KnxNetIpMessage) GetTypeName() string {
+func (m *_KnxNetIpMessage) GetTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *KnxNetIpMessage) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *KnxNetIpMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.GetLengthInBits()
-}
-
-func (m *KnxNetIpMessage) GetParentLengthInBits() uint16 {
+func (m *_KnxNetIpMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -122,11 +118,11 @@ func (m *KnxNetIpMessage) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpMessage) GetLengthInBytes() uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpMessage"); pullErr != nil {
@@ -165,45 +161,63 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type KnxNetIpMessageChild interface {
-		InitializeParent(*KnxNetIpMessage)
-		GetParent() *KnxNetIpMessage
+	type KnxNetIpMessageChildSerializeRequirement interface {
+		KnxNetIpMessage
+		InitializeParent(KnxNetIpMessage)
+		GetParent() KnxNetIpMessage
 	}
-	var _child KnxNetIpMessageChild
+	var _childTemp interface{}
+	var _child KnxNetIpMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case msgType == 0x0201: // SearchRequest
-		_child, typeSwitchError = SearchRequestParse(readBuffer)
+		_childTemp, typeSwitchError = SearchRequestParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0202: // SearchResponse
-		_child, typeSwitchError = SearchResponseParse(readBuffer)
+		_childTemp, typeSwitchError = SearchResponseParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0203: // DescriptionRequest
-		_child, typeSwitchError = DescriptionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = DescriptionRequestParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0204: // DescriptionResponse
-		_child, typeSwitchError = DescriptionResponseParse(readBuffer)
+		_childTemp, typeSwitchError = DescriptionResponseParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0205: // ConnectionRequest
-		_child, typeSwitchError = ConnectionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionRequestParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0206: // ConnectionResponse
-		_child, typeSwitchError = ConnectionResponseParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionResponseParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0207: // ConnectionStateRequest
-		_child, typeSwitchError = ConnectionStateRequestParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionStateRequestParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0208: // ConnectionStateResponse
-		_child, typeSwitchError = ConnectionStateResponseParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionStateResponseParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0209: // DisconnectRequest
-		_child, typeSwitchError = DisconnectRequestParse(readBuffer)
+		_childTemp, typeSwitchError = DisconnectRequestParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x020A: // DisconnectResponse
-		_child, typeSwitchError = DisconnectResponseParse(readBuffer)
+		_childTemp, typeSwitchError = DisconnectResponseParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x020B: // UnknownMessage
-		_child, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		_child, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0311: // DeviceConfigurationAck
-		_child, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
+		_childTemp, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0420: // TunnelingRequest
-		_child, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0421: // TunnelingResponse
-		_child, typeSwitchError = TunnelingResponseParse(readBuffer)
+		_childTemp, typeSwitchError = TunnelingResponseParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0530: // RoutingIndication
-		_child, typeSwitchError = RoutingIndicationParse(readBuffer)
+		_childTemp, typeSwitchError = RoutingIndicationParse(readBuffer)
+		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -217,15 +231,18 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent())
-	return _child.GetParent(), nil
+	_child.InitializeParent(_child)
+	return _child, nil
 }
 
-func (m *KnxNetIpMessage) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
+func (m *_KnxNetIpMessage) Serialize(writeBuffer utils.WriteBuffer) error {
+	panic("Required method Serialize not implemented")
 }
 
-func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error {
+func (pm *_KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child KnxNetIpMessage, serializeChildFunction func() error) error {
+	// We redirect all calls through client as some methods are only implemented there
+	m := child
+	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxNetIpMessage"); pushErr != nil {
@@ -271,7 +288,7 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	return nil
 }
 
-func (m *KnxNetIpMessage) String() string {
+func (m *_KnxNetIpMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}

@@ -33,12 +33,8 @@ const ParameterChange_SPECIALCHAR2 byte = 0x3D
 const ParameterChange_CR byte = 0x0D
 const ParameterChange_LF byte = 0x0A
 
-// ParameterChange is the data-structure of this message
-type ParameterChange struct {
-}
-
-// IParameterChange is the corresponding interface of ParameterChange
-type IParameterChange interface {
+// ParameterChange is the corresponding interface of ParameterChange
+type ParameterChange interface {
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -47,24 +43,28 @@ type IParameterChange interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _ParameterChange is the data-structure of this message
+type _ParameterChange struct {
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *ParameterChange) GetSpecialChar1() byte {
+func (m *_ParameterChange) GetSpecialChar1() byte {
 	return ParameterChange_SPECIALCHAR1
 }
 
-func (m *ParameterChange) GetSpecialChar2() byte {
+func (m *_ParameterChange) GetSpecialChar2() byte {
 	return ParameterChange_SPECIALCHAR2
 }
 
-func (m *ParameterChange) GetCr() byte {
+func (m *_ParameterChange) GetCr() byte {
 	return ParameterChange_CR
 }
 
-func (m *ParameterChange) GetLf() byte {
+func (m *_ParameterChange) GetLf() byte {
 	return ParameterChange_LF
 }
 
@@ -73,30 +73,31 @@ func (m *ParameterChange) GetLf() byte {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewParameterChange factory function for ParameterChange
-func NewParameterChange() *ParameterChange {
-	return &ParameterChange{}
+// NewParameterChange factory function for _ParameterChange
+func NewParameterChange() *_ParameterChange {
+	return &_ParameterChange{}
 }
 
-func CastParameterChange(structType interface{}) *ParameterChange {
+// Deprecated: use the interface for direct cast
+func CastParameterChange(structType interface{}) ParameterChange {
 	if casted, ok := structType.(ParameterChange); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*ParameterChange); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *ParameterChange) GetTypeName() string {
+func (m *_ParameterChange) GetTypeName() string {
 	return "ParameterChange"
 }
 
-func (m *ParameterChange) GetLengthInBits() uint16 {
+func (m *_ParameterChange) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ParameterChange) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ParameterChange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (specialChar1)
@@ -114,11 +115,11 @@ func (m *ParameterChange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ParameterChange) GetLengthInBytes() uint16 {
+func (m *_ParameterChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterChangeParse(readBuffer utils.ReadBuffer) (*ParameterChange, error) {
+func ParameterChangeParse(readBuffer utils.ReadBuffer) (ParameterChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChange"); pullErr != nil {
@@ -171,7 +172,7 @@ func ParameterChangeParse(readBuffer utils.ReadBuffer) (*ParameterChange, error)
 	return NewParameterChange(), nil
 }
 
-func (m *ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ParameterChange"); pushErr != nil {
@@ -208,7 +209,7 @@ func (m *ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
-func (m *ParameterChange) String() string {
+func (m *_ParameterChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}

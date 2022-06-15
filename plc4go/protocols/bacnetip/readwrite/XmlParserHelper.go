@@ -76,7 +76,7 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint1)
 		// TODO: find a way to parse the sub types
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetPriorityArrayParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, tagNumber, &arrayIndexArgument)
+		return model.BACnetPriorityArrayParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, tagNumber, arrayIndexArgument)
 	case "BACnetNameValue":
 		return model.BACnetNameValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPropertyReferenceEnclosed":
@@ -548,7 +548,7 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(parserArguments[1])
 		// TODO: find a way to parse the sub types
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetReadAccessPropertyReadResultParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, propertyIdentifierArgument, &arrayIndexArgument)
+		return model.BACnetReadAccessPropertyReadResultParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case "BACnetActionCommand":
 		return model.BACnetActionCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetFaultParameterFaultExtendedParametersEntry":
@@ -1365,7 +1365,7 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(parserArguments[2])
 		// TODO: find a way to parse the sub types
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetConstructedDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, objectTypeArgument, propertyIdentifierArgument, &arrayIndexArgument)
+		return model.BACnetConstructedDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case "BACnetEventTypeTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1410,7 +1410,7 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(parserArguments[1])
 		// TODO: find a way to parse the sub types
 		var propertyArrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetPropertyAccessResultAccessResultParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, propertyIdentifierArgument, &propertyArrayIndexArgument)
+		return model.BACnetPropertyAccessResultAccessResultParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	case "BACnetNetworkPortCommandTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1537,7 +1537,7 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		propertyIdentifierArgument := model.BACnetPropertyIdentifierByName(parserArguments[1])
 		// TODO: find a way to parse the sub types
 		var arrayIndexArgument model.BACnetTagPayloadUnsignedInteger
-		return model.BACnetConstructedDataElementParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, propertyIdentifierArgument, &arrayIndexArgument)
+		return model.BACnetConstructedDataElementParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	case "BACnetPropertyValues":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

@@ -30,26 +30,15 @@ import (
 // Constant values.
 const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
-// ModbusTcpADU is the data-structure of this message
-type ModbusTcpADU struct {
-	*ModbusADU
-	TransactionIdentifier uint16
-	UnitIdentifier        uint8
-	Pdu                   *ModbusPDU
-
-	// Arguments.
-	Response bool
-}
-
-// IModbusTcpADU is the corresponding interface of ModbusTcpADU
-type IModbusTcpADU interface {
-	IModbusADU
+// ModbusTcpADU is the corresponding interface of ModbusTcpADU
+type ModbusTcpADU interface {
+	ModbusADU
 	// GetTransactionIdentifier returns TransactionIdentifier (property field)
 	GetTransactionIdentifier() uint16
 	// GetUnitIdentifier returns UnitIdentifier (property field)
 	GetUnitIdentifier() uint8
 	// GetPdu returns Pdu (property field)
-	GetPdu() *ModbusPDU
+	GetPdu() ModbusPDU
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -58,12 +47,23 @@ type IModbusTcpADU interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _ModbusTcpADU is the data-structure of this message
+type _ModbusTcpADU struct {
+	*_ModbusADU
+	TransactionIdentifier uint16
+	UnitIdentifier        uint8
+	Pdu                   ModbusPDU
+
+	// Arguments.
+	Response bool
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *ModbusTcpADU) GetDriverType() DriverType {
+func (m *_ModbusTcpADU) GetDriverType() DriverType {
 	return DriverType_MODBUS_TCP
 }
 
@@ -72,10 +72,10 @@ func (m *ModbusTcpADU) GetDriverType() DriverType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *ModbusTcpADU) InitializeParent(parent *ModbusADU) {}
+func (m *_ModbusTcpADU) InitializeParent(parent ModbusADU) {}
 
-func (m *ModbusTcpADU) GetParent() *ModbusADU {
-	return m.ModbusADU
+func (m *_ModbusTcpADU) GetParent() ModbusADU {
+	return m._ModbusADU
 }
 
 ///////////////////////////////////////////////////////////
@@ -83,15 +83,15 @@ func (m *ModbusTcpADU) GetParent() *ModbusADU {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *ModbusTcpADU) GetTransactionIdentifier() uint16 {
+func (m *_ModbusTcpADU) GetTransactionIdentifier() uint16 {
 	return m.TransactionIdentifier
 }
 
-func (m *ModbusTcpADU) GetUnitIdentifier() uint8 {
+func (m *_ModbusTcpADU) GetUnitIdentifier() uint8 {
 	return m.UnitIdentifier
 }
 
-func (m *ModbusTcpADU) GetPdu() *ModbusPDU {
+func (m *_ModbusTcpADU) GetPdu() ModbusPDU {
 	return m.Pdu
 }
 
@@ -104,7 +104,7 @@ func (m *ModbusTcpADU) GetPdu() *ModbusPDU {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *ModbusTcpADU) GetProtocolIdentifier() uint16 {
+func (m *_ModbusTcpADU) GetProtocolIdentifier() uint16 {
 	return ModbusTcpADU_PROTOCOLIDENTIFIER
 }
 
@@ -113,43 +113,38 @@ func (m *ModbusTcpADU) GetProtocolIdentifier() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewModbusTcpADU factory function for ModbusTcpADU
-func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu *ModbusPDU, response bool) *ModbusTcpADU {
-	_result := &ModbusTcpADU{
+// NewModbusTcpADU factory function for _ModbusTcpADU
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU, response bool) *_ModbusTcpADU {
+	_result := &_ModbusTcpADU{
 		TransactionIdentifier: transactionIdentifier,
 		UnitIdentifier:        unitIdentifier,
 		Pdu:                   pdu,
-		ModbusADU:             NewModbusADU(response),
+		_ModbusADU:            NewModbusADU(response),
 	}
-	_result.Child = _result
+	_result._ModbusADU._ModbusADUChildRequirements = _result
 	return _result
 }
 
-func CastModbusTcpADU(structType interface{}) *ModbusTcpADU {
+// Deprecated: use the interface for direct cast
+func CastModbusTcpADU(structType interface{}) ModbusTcpADU {
 	if casted, ok := structType.(ModbusTcpADU); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*ModbusTcpADU); ok {
 		return casted
 	}
-	if casted, ok := structType.(ModbusADU); ok {
-		return CastModbusTcpADU(casted.Child)
-	}
-	if casted, ok := structType.(*ModbusADU); ok {
-		return CastModbusTcpADU(casted.Child)
+	if casted, ok := structType.(*ModbusTcpADU); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *ModbusTcpADU) GetTypeName() string {
+func (m *_ModbusTcpADU) GetTypeName() string {
 	return "ModbusTcpADU"
 }
 
-func (m *ModbusTcpADU) GetLengthInBits() uint16 {
+func (m *_ModbusTcpADU) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusTcpADU) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ModbusTcpADU) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (transactionIdentifier)
@@ -170,11 +165,11 @@ func (m *ModbusTcpADU) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ModbusTcpADU) GetLengthInBytes() uint16 {
+func (m *_ModbusTcpADU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (*ModbusTcpADU, error) {
+func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusTcpADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusTcpADU"); pullErr != nil {
@@ -221,7 +216,7 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
-	pdu := CastModbusPDU(_pdu)
+	pdu := _pdu.(ModbusPDU)
 	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for pdu")
 	}
@@ -231,17 +226,17 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 	}
 
 	// Create a partially initialized instance
-	_child := &ModbusTcpADU{
+	_child := &_ModbusTcpADU{
 		TransactionIdentifier: transactionIdentifier,
 		UnitIdentifier:        unitIdentifier,
-		Pdu:                   CastModbusPDU(pdu),
-		ModbusADU:             &ModbusADU{},
+		Pdu:                   pdu,
+		_ModbusADU:            &_ModbusADU{},
 	}
-	_child.ModbusADU.Child = _child
+	_child._ModbusADU._ModbusADUChildRequirements = _child
 	return _child, nil
 }
 
-func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -250,7 +245,7 @@ func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (transactionIdentifier)
-		transactionIdentifier := uint16(m.TransactionIdentifier)
+		transactionIdentifier := uint16(m.GetTransactionIdentifier())
 		_transactionIdentifierErr := writeBuffer.WriteUint16("transactionIdentifier", 16, (transactionIdentifier))
 		if _transactionIdentifierErr != nil {
 			return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
@@ -270,7 +265,7 @@ func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (unitIdentifier)
-		unitIdentifier := uint8(m.UnitIdentifier)
+		unitIdentifier := uint8(m.GetUnitIdentifier())
 		_unitIdentifierErr := writeBuffer.WriteUint8("unitIdentifier", 8, (unitIdentifier))
 		if _unitIdentifierErr != nil {
 			return errors.Wrap(_unitIdentifierErr, "Error serializing 'unitIdentifier' field")
@@ -280,7 +275,7 @@ func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("pdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pdu")
 		}
-		_pduErr := writeBuffer.WriteSerializable(m.Pdu)
+		_pduErr := writeBuffer.WriteSerializable(m.GetPdu())
 		if popErr := writeBuffer.PopContext("pdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pdu")
 		}
@@ -296,7 +291,7 @@ func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *ModbusTcpADU) String() string {
+func (m *_ModbusTcpADU) String() string {
 	if m == nil {
 		return "<nil>"
 	}

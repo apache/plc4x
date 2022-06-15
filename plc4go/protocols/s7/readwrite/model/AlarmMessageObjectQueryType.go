@@ -31,36 +31,24 @@ import (
 // Constant values.
 const AlarmMessageObjectQueryType_VARIABLESPEC uint8 = 0x12
 
-// AlarmMessageObjectQueryType is the data-structure of this message
-type AlarmMessageObjectQueryType struct {
-	LengthDataset  uint8
-	EventState     *State
-	AckStateGoing  *State
-	AckStateComing *State
-	TimeComing     *DateAndTime
-	ValueComing    *AssociatedValueType
-	TimeGoing      *DateAndTime
-	ValueGoing     *AssociatedValueType
-}
-
-// IAlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
-type IAlarmMessageObjectQueryType interface {
+// AlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
+type AlarmMessageObjectQueryType interface {
 	// GetLengthDataset returns LengthDataset (property field)
 	GetLengthDataset() uint8
 	// GetEventState returns EventState (property field)
-	GetEventState() *State
+	GetEventState() State
 	// GetAckStateGoing returns AckStateGoing (property field)
-	GetAckStateGoing() *State
+	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
-	GetAckStateComing() *State
+	GetAckStateComing() State
 	// GetTimeComing returns TimeComing (property field)
-	GetTimeComing() *DateAndTime
+	GetTimeComing() DateAndTime
 	// GetValueComing returns ValueComing (property field)
-	GetValueComing() *AssociatedValueType
+	GetValueComing() AssociatedValueType
 	// GetTimeGoing returns TimeGoing (property field)
-	GetTimeGoing() *DateAndTime
+	GetTimeGoing() DateAndTime
 	// GetValueGoing returns ValueGoing (property field)
-	GetValueGoing() *AssociatedValueType
+	GetValueGoing() AssociatedValueType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -69,40 +57,52 @@ type IAlarmMessageObjectQueryType interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _AlarmMessageObjectQueryType is the data-structure of this message
+type _AlarmMessageObjectQueryType struct {
+	LengthDataset  uint8
+	EventState     State
+	AckStateGoing  State
+	AckStateComing State
+	TimeComing     DateAndTime
+	ValueComing    AssociatedValueType
+	TimeGoing      DateAndTime
+	ValueGoing     AssociatedValueType
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *AlarmMessageObjectQueryType) GetLengthDataset() uint8 {
+func (m *_AlarmMessageObjectQueryType) GetLengthDataset() uint8 {
 	return m.LengthDataset
 }
 
-func (m *AlarmMessageObjectQueryType) GetEventState() *State {
+func (m *_AlarmMessageObjectQueryType) GetEventState() State {
 	return m.EventState
 }
 
-func (m *AlarmMessageObjectQueryType) GetAckStateGoing() *State {
+func (m *_AlarmMessageObjectQueryType) GetAckStateGoing() State {
 	return m.AckStateGoing
 }
 
-func (m *AlarmMessageObjectQueryType) GetAckStateComing() *State {
+func (m *_AlarmMessageObjectQueryType) GetAckStateComing() State {
 	return m.AckStateComing
 }
 
-func (m *AlarmMessageObjectQueryType) GetTimeComing() *DateAndTime {
+func (m *_AlarmMessageObjectQueryType) GetTimeComing() DateAndTime {
 	return m.TimeComing
 }
 
-func (m *AlarmMessageObjectQueryType) GetValueComing() *AssociatedValueType {
+func (m *_AlarmMessageObjectQueryType) GetValueComing() AssociatedValueType {
 	return m.ValueComing
 }
 
-func (m *AlarmMessageObjectQueryType) GetTimeGoing() *DateAndTime {
+func (m *_AlarmMessageObjectQueryType) GetTimeGoing() DateAndTime {
 	return m.TimeGoing
 }
 
-func (m *AlarmMessageObjectQueryType) GetValueGoing() *AssociatedValueType {
+func (m *_AlarmMessageObjectQueryType) GetValueGoing() AssociatedValueType {
 	return m.ValueGoing
 }
 
@@ -115,7 +115,7 @@ func (m *AlarmMessageObjectQueryType) GetValueGoing() *AssociatedValueType {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
+func (m *_AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
 	return AlarmMessageObjectQueryType_VARIABLESPEC
 }
 
@@ -124,30 +124,31 @@ func (m *AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewAlarmMessageObjectQueryType factory function for AlarmMessageObjectQueryType
-func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState *State, ackStateGoing *State, ackStateComing *State, timeComing *DateAndTime, valueComing *AssociatedValueType, timeGoing *DateAndTime, valueGoing *AssociatedValueType) *AlarmMessageObjectQueryType {
-	return &AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
+// NewAlarmMessageObjectQueryType factory function for _AlarmMessageObjectQueryType
+func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState State, ackStateGoing State, ackStateComing State, timeComing DateAndTime, valueComing AssociatedValueType, timeGoing DateAndTime, valueGoing AssociatedValueType) *_AlarmMessageObjectQueryType {
+	return &_AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
 }
 
-func CastAlarmMessageObjectQueryType(structType interface{}) *AlarmMessageObjectQueryType {
+// Deprecated: use the interface for direct cast
+func CastAlarmMessageObjectQueryType(structType interface{}) AlarmMessageObjectQueryType {
 	if casted, ok := structType.(AlarmMessageObjectQueryType); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*AlarmMessageObjectQueryType); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *AlarmMessageObjectQueryType) GetTypeName() string {
+func (m *_AlarmMessageObjectQueryType) GetTypeName() string {
 	return "AlarmMessageObjectQueryType"
 }
 
-func (m *AlarmMessageObjectQueryType) GetLengthInBits() uint16 {
+func (m *_AlarmMessageObjectQueryType) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageObjectQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AlarmMessageObjectQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (lengthDataset)
@@ -183,11 +184,11 @@ func (m *AlarmMessageObjectQueryType) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *AlarmMessageObjectQueryType) GetLengthInBytes() uint16 {
+func (m *_AlarmMessageObjectQueryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageObjectQueryType, error) {
+func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectQueryType"); pullErr != nil {
@@ -234,7 +235,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
 	}
-	eventState := CastState(_eventState)
+	eventState := _eventState.(State)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for eventState")
 	}
@@ -247,7 +248,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field")
 	}
-	ackStateGoing := CastState(_ackStateGoing)
+	ackStateGoing := _ackStateGoing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackStateGoing")
 	}
@@ -260,7 +261,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field")
 	}
-	ackStateComing := CastState(_ackStateComing)
+	ackStateComing := _ackStateComing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
 	}
@@ -273,7 +274,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if _timeComingErr != nil {
 		return nil, errors.Wrap(_timeComingErr, "Error parsing 'timeComing' field")
 	}
-	timeComing := CastDateAndTime(_timeComing)
+	timeComing := _timeComing.(DateAndTime)
 	if closeErr := readBuffer.CloseContext("timeComing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timeComing")
 	}
@@ -286,7 +287,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if _valueComingErr != nil {
 		return nil, errors.Wrap(_valueComingErr, "Error parsing 'valueComing' field")
 	}
-	valueComing := CastAssociatedValueType(_valueComing)
+	valueComing := _valueComing.(AssociatedValueType)
 	if closeErr := readBuffer.CloseContext("valueComing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for valueComing")
 	}
@@ -299,7 +300,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if _timeGoingErr != nil {
 		return nil, errors.Wrap(_timeGoingErr, "Error parsing 'timeGoing' field")
 	}
-	timeGoing := CastDateAndTime(_timeGoing)
+	timeGoing := _timeGoing.(DateAndTime)
 	if closeErr := readBuffer.CloseContext("timeGoing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for timeGoing")
 	}
@@ -312,7 +313,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if _valueGoingErr != nil {
 		return nil, errors.Wrap(_valueGoingErr, "Error parsing 'valueGoing' field")
 	}
-	valueGoing := CastAssociatedValueType(_valueGoing)
+	valueGoing := _valueGoing.(AssociatedValueType)
 	if closeErr := readBuffer.CloseContext("valueGoing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for valueGoing")
 	}
@@ -325,7 +326,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	return NewAlarmMessageObjectQueryType(lengthDataset, eventState, ackStateGoing, ackStateComing, timeComing, valueComing, timeGoing, valueGoing), nil
 }
 
-func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageObjectQueryType"); pushErr != nil {
@@ -333,7 +334,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	// Simple Field (lengthDataset)
-	lengthDataset := uint8(m.LengthDataset)
+	lengthDataset := uint8(m.GetLengthDataset())
 	_lengthDatasetErr := writeBuffer.WriteUint8("lengthDataset", 8, (lengthDataset))
 	if _lengthDatasetErr != nil {
 		return errors.Wrap(_lengthDatasetErr, "Error serializing 'lengthDataset' field")
@@ -357,7 +358,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventState")
 	}
-	_eventStateErr := writeBuffer.WriteSerializable(m.EventState)
+	_eventStateErr := writeBuffer.WriteSerializable(m.GetEventState())
 	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventState")
 	}
@@ -369,7 +370,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
 	}
-	_ackStateGoingErr := writeBuffer.WriteSerializable(m.AckStateGoing)
+	_ackStateGoingErr := writeBuffer.WriteSerializable(m.GetAckStateGoing())
 	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateGoing")
 	}
@@ -381,7 +382,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
 	}
-	_ackStateComingErr := writeBuffer.WriteSerializable(m.AckStateComing)
+	_ackStateComingErr := writeBuffer.WriteSerializable(m.GetAckStateComing())
 	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateComing")
 	}
@@ -393,7 +394,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("timeComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeComing")
 	}
-	_timeComingErr := writeBuffer.WriteSerializable(m.TimeComing)
+	_timeComingErr := writeBuffer.WriteSerializable(m.GetTimeComing())
 	if popErr := writeBuffer.PopContext("timeComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeComing")
 	}
@@ -405,7 +406,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("valueComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for valueComing")
 	}
-	_valueComingErr := writeBuffer.WriteSerializable(m.ValueComing)
+	_valueComingErr := writeBuffer.WriteSerializable(m.GetValueComing())
 	if popErr := writeBuffer.PopContext("valueComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for valueComing")
 	}
@@ -417,7 +418,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("timeGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeGoing")
 	}
-	_timeGoingErr := writeBuffer.WriteSerializable(m.TimeGoing)
+	_timeGoingErr := writeBuffer.WriteSerializable(m.GetTimeGoing())
 	if popErr := writeBuffer.PopContext("timeGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeGoing")
 	}
@@ -429,7 +430,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	if pushErr := writeBuffer.PushContext("valueGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for valueGoing")
 	}
-	_valueGoingErr := writeBuffer.WriteSerializable(m.ValueGoing)
+	_valueGoingErr := writeBuffer.WriteSerializable(m.GetValueGoing())
 	if popErr := writeBuffer.PopContext("valueGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for valueGoing")
 	}
@@ -443,7 +444,7 @@ func (m *AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) e
 	return nil
 }
 
-func (m *AlarmMessageObjectQueryType) String() string {
+func (m *_AlarmMessageObjectQueryType) String() string {
 	if m == nil {
 		return "<nil>"
 	}

@@ -97,7 +97,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
             TypeReference elementTypeReference = arrayTypeReference.getElementTypeReference();
-            return "[]" + (elementTypeReference.isNonSimpleTypeReference() && !elementTypeReference.isEnumTypeReference() ? "*" : "") + getLanguageTypeNameForTypeReference(elementTypeReference);
+            return "[]" + getLanguageTypeNameForTypeReference(elementTypeReference);
         }
         if (typeReference.isNonSimpleTypeReference()) {
             return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
@@ -280,7 +280,14 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public boolean needsPointerAccess(PropertyField field) {
-        return "optional".equals(field.getTypeName()) || (field.getType().isNonSimpleTypeReference() && !isEnumField(field));
+        boolean isAnTypeOfOptional = "optional".equals(field.getTypeName());
+        return isAnTypeOfOptional && needPointerAccess(field.getType());
+    }
+
+    public boolean needPointerAccess(TypeReference typeReference) {
+        boolean isNotAnComplexTypeReference = !typeReference.isComplexTypeReference();
+        boolean arrayTypeIsNotAnComplexTypeReference = !(typeReference.isArrayTypeReference() && typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference().isComplexTypeReference());
+        return isNotAnComplexTypeReference && arrayTypeIsNotAnComplexTypeReference;
     }
 
     public String getSpecialReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, TypedField field) {
@@ -742,7 +749,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .isPresent()
         ) {
             tracer = tracer.dive("optional fields");
-            return tracer + "(" + (suppressPointerAccess ? "" : "*") + "m.Get" + capitalize(variableLiteral.getName()) + "())" +
+            OptionalField optionalField = thisType.asComplexTypeDefinition().orElseThrow().getPropertyFieldByName(variableLiteralName).orElseThrow().asOptionalField().orElseThrow();
+            return tracer + "(" + (suppressPointerAccess || optionalField.getType().isComplexTypeReference() ? "" : "*") + "m.Get" + capitalize(variableLiteral.getName()) + "())" +
                 variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
         }
         // If we are accessing implicit fields, we need to rely on local variable instead.
@@ -798,7 +806,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
                         .findFirst();
                     if (matchingDiscriminatorField.isPresent()) {
-                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + variableLiteralName + ").Child.Get" + capitalize(childProperty) + "()";
+                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + variableLiteralName + ").Get" + capitalize(childProperty) + "()";
                     }
                     // TODO: is this really meant to fall through?
                     tracer = tracer.dive("we fell through the complex complex");
@@ -813,7 +821,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
             }
             // TODO: is this really meant to fall through?
-            tracer = tracer.dive("we fell through the child comple");
+            tracer = tracer.dive("we fell through the child complete");
         } else if (isVariableLiteralImplicitField(variableLiteral)) {
             tracer = tracer.dive("implicit");
             if (serialize) {
@@ -1039,7 +1047,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toOptionalVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("optional fields");
-        return tracer + "(" + (suppressPointerAccess ? "" : "*") + variableLiteral.getName() + ")" +
+        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference())? "" : "*") + variableLiteral.getName() + ")" +
             variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
     }
 

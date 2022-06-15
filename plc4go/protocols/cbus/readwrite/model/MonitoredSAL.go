@@ -33,19 +33,12 @@ import (
 const MonitoredSAL_CR byte = 0x0D
 const MonitoredSAL_LF byte = 0x0A
 
-// MonitoredSAL is the data-structure of this message
-type MonitoredSAL struct {
-	SalType byte
-	SalData *SALData
-	Child   IMonitoredSALChild
-}
-
-// IMonitoredSAL is the corresponding interface of MonitoredSAL
-type IMonitoredSAL interface {
+// MonitoredSAL is the corresponding interface of MonitoredSAL
+type MonitoredSAL interface {
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
 	// GetSalData returns SalData (property field)
-	GetSalData() *SALData
+	GetSalData() SALData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -54,18 +47,30 @@ type IMonitoredSAL interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type IMonitoredSALParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child IMonitoredSAL, serializeChildFunction func() error) error
+// _MonitoredSAL is the data-structure of this message
+type _MonitoredSAL struct {
+	_MonitoredSALChildRequirements
+	SalType byte
+	SalData SALData
+}
+
+type _MonitoredSALChildRequirements interface {
+	GetLengthInBits() uint16
+	GetLengthInBitsConditional(lastItem bool) uint16
+}
+
+type MonitoredSALParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
-type IMonitoredSALChild interface {
+type MonitoredSALChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *MonitoredSAL, salType byte, salData *SALData)
+	InitializeParent(parent MonitoredSAL, salType byte, salData SALData)
 	GetParent() *MonitoredSAL
 
 	GetTypeName() string
-	IMonitoredSAL
+	MonitoredSAL
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,11 +78,11 @@ type IMonitoredSALChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *MonitoredSAL) GetSalType() byte {
+func (m *_MonitoredSAL) GetSalType() byte {
 	return m.SalType
 }
 
-func (m *MonitoredSAL) GetSalData() *SALData {
+func (m *_MonitoredSAL) GetSalData() SALData {
 	return m.SalData
 }
 
@@ -90,11 +95,11 @@ func (m *MonitoredSAL) GetSalData() *SALData {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *MonitoredSAL) GetCr() byte {
+func (m *_MonitoredSAL) GetCr() byte {
 	return MonitoredSAL_CR
 }
 
-func (m *MonitoredSAL) GetLf() byte {
+func (m *_MonitoredSAL) GetLf() byte {
 	return MonitoredSAL_LF
 }
 
@@ -103,42 +108,32 @@ func (m *MonitoredSAL) GetLf() byte {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewMonitoredSAL factory function for MonitoredSAL
-func NewMonitoredSAL(salType byte, salData *SALData) *MonitoredSAL {
-	return &MonitoredSAL{SalType: salType, SalData: salData}
+// NewMonitoredSAL factory function for _MonitoredSAL
+func NewMonitoredSAL(salType byte, salData SALData) *_MonitoredSAL {
+	return &_MonitoredSAL{SalType: salType, SalData: salData}
 }
 
-func CastMonitoredSAL(structType interface{}) *MonitoredSAL {
+// Deprecated: use the interface for direct cast
+func CastMonitoredSAL(structType interface{}) MonitoredSAL {
 	if casted, ok := structType.(MonitoredSAL); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*MonitoredSAL); ok {
 		return casted
 	}
-	if casted, ok := structType.(IMonitoredSALChild); ok {
-		return casted.GetParent()
+	if casted, ok := structType.(*MonitoredSAL); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *MonitoredSAL) GetTypeName() string {
+func (m *_MonitoredSAL) GetTypeName() string {
 	return "MonitoredSAL"
 }
 
-func (m *MonitoredSAL) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *MonitoredSAL) GetLengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.GetLengthInBits()
-}
-
-func (m *MonitoredSAL) GetParentLengthInBits() uint16 {
+func (m *_MonitoredSAL) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (salData)
 	if m.SalData != nil {
-		lengthInBits += (*m.SalData).GetLengthInBits()
+		lengthInBits += m.SalData.GetLengthInBits()
 	}
 
 	// Const Field (cr)
@@ -150,11 +145,11 @@ func (m *MonitoredSAL) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *MonitoredSAL) GetLengthInBytes() uint16 {
+func (m *_MonitoredSAL) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
+func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSAL"); pullErr != nil {
@@ -173,17 +168,21 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	readBuffer.Reset(currentPos)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type MonitoredSALChild interface {
-		InitializeParent(*MonitoredSAL, byte, *SALData)
-		GetParent() *MonitoredSAL
+	type MonitoredSALChildSerializeRequirement interface {
+		MonitoredSAL
+		InitializeParent(MonitoredSAL, byte, SALData)
+		GetParent() MonitoredSAL
 	}
-	var _child MonitoredSALChild
+	var _childTemp interface{}
+	var _child MonitoredSALChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		_child, typeSwitchError = MonitoredSALLongFormSmartModeParse(readBuffer)
+		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParse(readBuffer)
+		_child = _childTemp.(MonitoredSALChildSerializeRequirement)
 	case true: // MonitoredSALShortFormBasicMode
-		_child, typeSwitchError = MonitoredSALShortFormBasicModeParse(readBuffer)
+		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParse(readBuffer)
+		_child = _childTemp.(MonitoredSALChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -193,7 +192,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	}
 
 	// Optional Field (salData) (Can be skipped, if a given expression evaluates to false)
-	var salData *SALData = nil
+	var salData SALData = nil
 	{
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
@@ -207,7 +206,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'salData' field")
 		default:
-			salData = CastSALData(_val)
+			salData = _val.(SALData)
 			if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
 				return nil, errors.Wrap(closeErr, "Error closing for salData")
 			}
@@ -237,15 +236,18 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent(), salType, salData)
-	return _child.GetParent(), nil
+	_child.InitializeParent(_child, salType, salData)
+	return _child, nil
 }
 
-func (m *MonitoredSAL) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
+func (m *_MonitoredSAL) Serialize(writeBuffer utils.WriteBuffer) error {
+	panic("Required method Serialize not implemented")
 }
 
-func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMonitoredSAL, serializeChildFunction func() error) error {
+func (pm *_MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error {
+	// We redirect all calls through client as some methods are only implemented there
+	m := child
+	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MonitoredSAL"); pushErr != nil {
@@ -258,12 +260,12 @@ func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMon
 	}
 
 	// Optional Field (salData) (Can be skipped, if the value is null)
-	var salData *SALData = nil
-	if m.SalData != nil {
+	var salData SALData = nil
+	if m.GetSalData() != nil {
 		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for salData")
 		}
-		salData = m.SalData
+		salData = m.GetSalData()
 		_salDataErr := writeBuffer.WriteSerializable(salData)
 		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for salData")
@@ -291,7 +293,7 @@ func (m *MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child IMon
 	return nil
 }
 
-func (m *MonitoredSAL) String() string {
+func (m *_MonitoredSAL) String() string {
 	if m == nil {
 		return "<nil>"
 	}

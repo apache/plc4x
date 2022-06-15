@@ -110,7 +110,7 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		var parameter model.S7Parameter
-		return model.S7PayloadParse(io, messageType, &parameter)
+		return model.S7PayloadParse(io, messageType, parameter)
 	case "S7VarRequestParameterItem":
 		return model.S7VarRequestParameterItemParse(io)
 	case "S7VarPayloadDataItem":

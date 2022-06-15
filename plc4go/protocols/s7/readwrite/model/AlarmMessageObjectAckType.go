@@ -31,17 +31,8 @@ import (
 const AlarmMessageObjectAckType_VARIABLESPEC uint8 = 0x12
 const AlarmMessageObjectAckType_LENGTH uint8 = 0x08
 
-// AlarmMessageObjectAckType is the data-structure of this message
-type AlarmMessageObjectAckType struct {
-	SyntaxId       SyntaxIdType
-	NumberOfValues uint8
-	EventId        uint32
-	AckStateGoing  *State
-	AckStateComing *State
-}
-
-// IAlarmMessageObjectAckType is the corresponding interface of AlarmMessageObjectAckType
-type IAlarmMessageObjectAckType interface {
+// AlarmMessageObjectAckType is the corresponding interface of AlarmMessageObjectAckType
+type AlarmMessageObjectAckType interface {
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
 	// GetNumberOfValues returns NumberOfValues (property field)
@@ -49,9 +40,9 @@ type IAlarmMessageObjectAckType interface {
 	// GetEventId returns EventId (property field)
 	GetEventId() uint32
 	// GetAckStateGoing returns AckStateGoing (property field)
-	GetAckStateGoing() *State
+	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
-	GetAckStateComing() *State
+	GetAckStateComing() State
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -60,28 +51,37 @@ type IAlarmMessageObjectAckType interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _AlarmMessageObjectAckType is the data-structure of this message
+type _AlarmMessageObjectAckType struct {
+	SyntaxId       SyntaxIdType
+	NumberOfValues uint8
+	EventId        uint32
+	AckStateGoing  State
+	AckStateComing State
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *AlarmMessageObjectAckType) GetSyntaxId() SyntaxIdType {
+func (m *_AlarmMessageObjectAckType) GetSyntaxId() SyntaxIdType {
 	return m.SyntaxId
 }
 
-func (m *AlarmMessageObjectAckType) GetNumberOfValues() uint8 {
+func (m *_AlarmMessageObjectAckType) GetNumberOfValues() uint8 {
 	return m.NumberOfValues
 }
 
-func (m *AlarmMessageObjectAckType) GetEventId() uint32 {
+func (m *_AlarmMessageObjectAckType) GetEventId() uint32 {
 	return m.EventId
 }
 
-func (m *AlarmMessageObjectAckType) GetAckStateGoing() *State {
+func (m *_AlarmMessageObjectAckType) GetAckStateGoing() State {
 	return m.AckStateGoing
 }
 
-func (m *AlarmMessageObjectAckType) GetAckStateComing() *State {
+func (m *_AlarmMessageObjectAckType) GetAckStateComing() State {
 	return m.AckStateComing
 }
 
@@ -94,11 +94,11 @@ func (m *AlarmMessageObjectAckType) GetAckStateComing() *State {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *AlarmMessageObjectAckType) GetVariableSpec() uint8 {
+func (m *_AlarmMessageObjectAckType) GetVariableSpec() uint8 {
 	return AlarmMessageObjectAckType_VARIABLESPEC
 }
 
-func (m *AlarmMessageObjectAckType) GetLength() uint8 {
+func (m *_AlarmMessageObjectAckType) GetLength() uint8 {
 	return AlarmMessageObjectAckType_LENGTH
 }
 
@@ -107,30 +107,31 @@ func (m *AlarmMessageObjectAckType) GetLength() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewAlarmMessageObjectAckType factory function for AlarmMessageObjectAckType
-func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing *State, ackStateComing *State) *AlarmMessageObjectAckType {
-	return &AlarmMessageObjectAckType{SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
+// NewAlarmMessageObjectAckType factory function for _AlarmMessageObjectAckType
+func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageObjectAckType {
+	return &_AlarmMessageObjectAckType{SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
 }
 
-func CastAlarmMessageObjectAckType(structType interface{}) *AlarmMessageObjectAckType {
+// Deprecated: use the interface for direct cast
+func CastAlarmMessageObjectAckType(structType interface{}) AlarmMessageObjectAckType {
 	if casted, ok := structType.(AlarmMessageObjectAckType); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*AlarmMessageObjectAckType); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *AlarmMessageObjectAckType) GetTypeName() string {
+func (m *_AlarmMessageObjectAckType) GetTypeName() string {
 	return "AlarmMessageObjectAckType"
 }
 
-func (m *AlarmMessageObjectAckType) GetLengthInBits() uint16 {
+func (m *_AlarmMessageObjectAckType) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageObjectAckType) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AlarmMessageObjectAckType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (variableSpec)
@@ -157,11 +158,11 @@ func (m *AlarmMessageObjectAckType) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *AlarmMessageObjectAckType) GetLengthInBytes() uint16 {
+func (m *_AlarmMessageObjectAckType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageObjectAckType, error) {
+func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageObjectAckType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectAckType"); pullErr != nil {
@@ -223,7 +224,7 @@ func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageO
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field")
 	}
-	ackStateGoing := CastState(_ackStateGoing)
+	ackStateGoing := _ackStateGoing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackStateGoing")
 	}
@@ -236,7 +237,7 @@ func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageO
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field")
 	}
-	ackStateComing := CastState(_ackStateComing)
+	ackStateComing := _ackStateComing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
 	}
@@ -249,7 +250,7 @@ func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageO
 	return NewAlarmMessageObjectAckType(syntaxId, numberOfValues, eventId, ackStateGoing, ackStateComing), nil
 }
 
-func (m *AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageObjectAckType"); pushErr != nil {
@@ -272,7 +273,7 @@ func (m *AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for syntaxId")
 	}
-	_syntaxIdErr := writeBuffer.WriteSerializable(m.SyntaxId)
+	_syntaxIdErr := writeBuffer.WriteSerializable(m.GetSyntaxId())
 	if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for syntaxId")
 	}
@@ -281,14 +282,14 @@ func (m *AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	// Simple Field (numberOfValues)
-	numberOfValues := uint8(m.NumberOfValues)
+	numberOfValues := uint8(m.GetNumberOfValues())
 	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, (numberOfValues))
 	if _numberOfValuesErr != nil {
 		return errors.Wrap(_numberOfValuesErr, "Error serializing 'numberOfValues' field")
 	}
 
 	// Simple Field (eventId)
-	eventId := uint32(m.EventId)
+	eventId := uint32(m.GetEventId())
 	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, (eventId))
 	if _eventIdErr != nil {
 		return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
@@ -298,7 +299,7 @@ func (m *AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
 	}
-	_ackStateGoingErr := writeBuffer.WriteSerializable(m.AckStateGoing)
+	_ackStateGoingErr := writeBuffer.WriteSerializable(m.GetAckStateGoing())
 	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateGoing")
 	}
@@ -310,7 +311,7 @@ func (m *AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
 	}
-	_ackStateComingErr := writeBuffer.WriteSerializable(m.AckStateComing)
+	_ackStateComingErr := writeBuffer.WriteSerializable(m.GetAckStateComing())
 	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateComing")
 	}
@@ -324,7 +325,7 @@ func (m *AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
-func (m *AlarmMessageObjectAckType) String() string {
+func (m *_AlarmMessageObjectAckType) String() string {
 	if m == nil {
 		return "<nil>"
 	}

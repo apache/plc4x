@@ -127,7 +127,7 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 		messageType := uint8(parsedUint0)
 		// TODO: find a way to parse the sub types
 		var parameter model.S7Parameter
-		return model.S7PayloadParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType, &parameter)
+		return model.S7PayloadParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType, parameter)
 	case "S7VarRequestParameterItem":
 		return model.S7VarRequestParameterItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7VarPayloadDataItem":

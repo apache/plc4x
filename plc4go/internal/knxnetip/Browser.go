@@ -129,9 +129,9 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 			if deviceConnection.connection != nil {
 				queryResult := &model.DefaultPlcBrowseQueryResult{
 					Field: NewDeviceQueryField(
-						strconv.Itoa(int(knxAddress.MainGroup)),
-						strconv.Itoa(int(knxAddress.MiddleGroup)),
-						strconv.Itoa(int(knxAddress.SubGroup)),
+						strconv.Itoa(int(knxAddress.GetMainGroup())),
+						strconv.Itoa(int(knxAddress.GetMiddleGroup())),
+						strconv.Itoa(int(knxAddress.GetSubGroup())),
 					),
 					PossibleDataTypes: nil,
 				}
@@ -182,7 +182,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 
 	// If we have a building Key, try that to login in order to access protected
 	if m.connection.buildingKey != nil {
-		arr := m.connection.DeviceAuthenticate(*knxAddress, m.connection.buildingKey)
+		arr := m.connection.DeviceAuthenticate(knxAddress, m.connection.buildingKey)
 		<-arr
 	}
 
@@ -213,7 +213,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	readRequestBuilder = m.connection.ReadRequestBuilder()
 	// Depending on the type of device, query an USINT (1 byte) or UINT (2 bytes)
 	// TODO: Do this correctly depending on the device connection device-descriptor
-	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddQuery("numberOfAddressTableEntries",
 			fmt.Sprintf("%s#%X:UINT", knxAddressString, groupAddressTableStartAddress))
 	} else {
@@ -235,7 +235,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	}
 	numGroupAddresses := readResult.GetResponse().GetValue("numberOfAddressTableEntries").GetUint16()
 
-	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		groupAddressTableStartAddress += 2
 	} else {
 		groupAddressTableStartAddress += 3
@@ -265,7 +265,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		return nil, errors.Errorf("error reading the group address table content: %s",
 			readResult.GetResponse().GetResponseCode("groupAddressTable").GetName())
 	}
-	var knxGroupAddresses []*driverModel.KnxGroupAddress
+	var knxGroupAddresses []driverModel.KnxGroupAddress
 	if readResult.GetResponse().GetValue("groupAddressTable").IsList() {
 		for _, groupAddress := range readResult.GetResponse().GetValue("groupAddressTable").GetList() {
 			groupAddress := Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
@@ -303,7 +303,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	// Then read one uint16 at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
 	readRequestBuilder = m.connection.ReadRequestBuilder()
-	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddQuery("numberOfGroupAddressAssociationTableEntries",
 			fmt.Sprintf("%s#%X:UINT", knxAddressString, groupAddressAssociationTableAddress))
 	} else {
@@ -332,7 +332,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	// Reasons for splitting up:
 	// - Max APDU Size exceeded
 	// - Max 63 bytes readable in one request, due to max of count field
-	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddQuery("groupAddressAssociationTable",
 			fmt.Sprintf("%s#%X:UDINT[%d]", knxAddressString, groupAddressAssociationTableAddress+2, numberOfGroupAddressAssociationTableEntries))
 	} else {
@@ -354,17 +354,17 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 			readResult.GetResponse().GetResponseCode("groupAddressAssociationTable").GetName())
 	}
 	// Output the group addresses
-	groupAddressComObjectNumberMapping := map[*driverModel.KnxGroupAddress]uint16{}
+	groupAddressComObjectNumberMapping := map[driverModel.KnxGroupAddress]uint16{}
 	if readResult.GetResponse().GetValue("groupAddressAssociationTable").IsList() {
 		for _, groupAddressAssociation := range readResult.GetResponse().GetValue("groupAddressAssociationTable").GetList() {
-			groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+			groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[knxAddress].deviceDescriptor,
 				knxGroupAddresses, groupAddressAssociation)
 			if groupAddress != nil {
 				groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
 			}
 		}
 	} else {
-		groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+		groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[knxAddress].deviceDescriptor,
 			knxGroupAddresses, readResult.GetResponse().GetValue("groupAddressAssociationTable"))
 		if groupAddress != nil {
 			groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
@@ -378,7 +378,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 
 	// In case of System B devices, the com object table is read as a property array
 	// In this case we can even read only the com objects we're interested in.
-	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder = m.connection.ReadRequestBuilder()
 		// Read data for all com objects that are assigned a group address
 		for _, comObjectNumber := range groupAddressComObjectNumberMapping {
@@ -406,25 +406,26 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 
 			// Assemble a PlcBrowseQueryResult
 			var field apiModel.PlcField
-			readable := descriptor.CommunicationEnable && descriptor.ReadEnable
-			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
-			subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
+			communicationEnable := descriptor.GetCommunicationEnable()
+			readable := communicationEnable && descriptor.GetReadEnable()
+			writable := communicationEnable && descriptor.GetWriteEnable()
+			subscribable := communicationEnable && descriptor.GetTransmitEnable()
 			// Find a matching datatype for the given value-type.
-			fieldType := m.getFieldTypeForValueType(descriptor.ValueType)
-			switch groupAddress.Child.(type) {
-			case *driverModel.KnxGroupAddress3Level:
-				address3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
-				field = NewGroupAddress3LevelPlcField(strconv.Itoa(int(address3Level.MainGroup)),
-					strconv.Itoa(int(address3Level.MiddleGroup)), strconv.Itoa(int(address3Level.SubGroup)),
+			fieldType := m.getFieldTypeForValueType(descriptor.GetValueType())
+			switch groupAddress := groupAddress.(type) {
+			case driverModel.KnxGroupAddress3Level:
+				address3Level := groupAddress
+				field = NewGroupAddress3LevelPlcField(strconv.Itoa(int(address3Level.GetMainGroup())),
+					strconv.Itoa(int(address3Level.GetMiddleGroup())), strconv.Itoa(int(address3Level.GetSubGroup())),
 					&fieldType)
-			case *driverModel.KnxGroupAddress2Level:
-				address2Level := driverModel.CastKnxGroupAddress2Level(groupAddress)
-				field = NewGroupAddress2LevelPlcField(strconv.Itoa(int(address2Level.MainGroup)),
-					strconv.Itoa(int(address2Level.SubGroup)),
+			case driverModel.KnxGroupAddress2Level:
+				address2Level := groupAddress
+				field = NewGroupAddress2LevelPlcField(strconv.Itoa(int(address2Level.GetMainGroup())),
+					strconv.Itoa(int(address2Level.GetSubGroup())),
 					&fieldType)
-			case *driverModel.KnxGroupAddressFreeLevel:
-				address1Level := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
-				field = NewGroupAddress1LevelPlcField(strconv.Itoa(int(address1Level.SubGroup)),
+			case driverModel.KnxGroupAddressFreeLevel:
+				address1Level := groupAddress
+				field = NewGroupAddress1LevelPlcField(strconv.Itoa(int(address1Level.GetSubGroup())),
 					&fieldType)
 			}
 
@@ -437,7 +438,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 				PossibleDataTypes: nil,
 			})
 		}
-	} else if (m.connection.DeviceConnections[*knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
+	} else if (m.connection.DeviceConnections[knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
 		// For System 7 Devices we unfortunately can't access the information of where the memory address for the
 		// Com Object Table is programmatically, so we have to look up the address which is extracted from the XML data
 		// Provided by the manufacturer. Unfortunately in order to be able to do this, we need to get the application
@@ -470,10 +471,10 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 
 		readRequestBuilder = m.connection.ReadRequestBuilder()
 		// Read data for all com objects that are assigned a group address
-		groupAddressMap := map[uint16][]*driverModel.KnxGroupAddress{}
+		groupAddressMap := map[uint16][]driverModel.KnxGroupAddress{}
 		for groupAddress, comObjectNumber := range groupAddressComObjectNumberMapping {
 			if groupAddressMap[comObjectNumber] == nil {
-				groupAddressMap[comObjectNumber] = []*driverModel.KnxGroupAddress{}
+				groupAddressMap[comObjectNumber] = []driverModel.KnxGroupAddress{}
 			}
 			groupAddressMap[comObjectNumber] = append(groupAddressMap[comObjectNumber], groupAddress)
 			entryAddress := comObjectTableAddresses.ComObjectTableAddress() + 3 + (comObjectNumber * 4)
@@ -498,11 +499,12 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 			// We saved the com object number in the field name.
 			comObjectNumber, _ := strconv.ParseUint(fieldName, 10, 16)
 			groupAddresses := groupAddressMap[uint16(comObjectNumber)]
-			readable := descriptor.CommunicationEnable && descriptor.ReadEnable
-			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
-			subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
+			communicationEnable := descriptor.GetCommunicationEnable()
+			readable := communicationEnable && descriptor.GetReadEnable()
+			writable := communicationEnable && descriptor.GetWriteEnable()
+			subscribable := communicationEnable && descriptor.GetTransmitEnable()
 			// Find a matching datatype for the given value-type.
-			fieldType := m.getFieldTypeForValueType(descriptor.ValueType)
+			fieldType := m.getFieldTypeForValueType(descriptor.GetValueType())
 
 			// Create a field for each of the given inputs.
 			for _, groupAddress := range groupAddresses {
@@ -555,11 +557,11 @@ func (m Browser) calculateAddresses(field DeviceQueryField) ([]driverModel.KnxAd
 			for _, subOption := range subGroupOptions {
 				// Don't try connecting to ourselves.
 				if m.connection.ClientKnxAddress != nil {
-					currentAddress := driverModel.KnxAddress{
-						MainGroup:   mainOption,
-						MiddleGroup: middleOption,
-						SubGroup:    subOption,
-					}
+					currentAddress := driverModel.NewKnxAddress(
+						mainOption,
+						middleOption,
+						subOption,
+					)
 					explodedAddresses = append(explodedAddresses, currentAddress)
 				}
 			}
@@ -611,7 +613,7 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 	return options, nil
 }
 
-func (m Browser) parseAssociationTable(deviceDescriptor uint16, knxGroupAddresses []*driverModel.KnxGroupAddress, value values.PlcValue) (*driverModel.KnxGroupAddress, uint16) {
+func (m Browser) parseAssociationTable(deviceDescriptor uint16, knxGroupAddresses []driverModel.KnxGroupAddress, value values.PlcValue) (driverModel.KnxGroupAddress, uint16) {
 	var addressIndex uint16
 	var comObjectNumber uint16
 	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
@@ -628,27 +630,27 @@ func (m Browser) parseAssociationTable(deviceDescriptor uint16, knxGroupAddresse
 	return nil, 0
 }
 
-func (m Browser) getFieldForGroupAddress(groupAddress *driverModel.KnxGroupAddress, datatype driverModel.KnxDatapointType) apiModel.PlcField {
-	switch groupAddress.Child.(type) {
-	case *driverModel.KnxGroupAddress3Level:
-		groupAddress3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
+func (m Browser) getFieldForGroupAddress(groupAddress driverModel.KnxGroupAddress, datatype driverModel.KnxDatapointType) apiModel.PlcField {
+	switch groupAddress := groupAddress.(type) {
+	case driverModel.KnxGroupAddress3Level:
+		groupAddress3Level := groupAddress
 		return GroupAddress3LevelPlcField{
-			MainGroup:   strconv.Itoa(int(groupAddress3Level.MainGroup)),
-			MiddleGroup: strconv.Itoa(int(groupAddress3Level.MiddleGroup)),
-			SubGroup:    strconv.Itoa(int(groupAddress3Level.SubGroup)),
+			MainGroup:   strconv.Itoa(int(groupAddress3Level.GetMainGroup())),
+			MiddleGroup: strconv.Itoa(int(groupAddress3Level.GetMiddleGroup())),
+			SubGroup:    strconv.Itoa(int(groupAddress3Level.GetSubGroup())),
 			FieldType:   &datatype,
 		}
-	case *driverModel.KnxGroupAddress2Level:
-		groupAddress2Level := driverModel.CastKnxGroupAddress2Level(groupAddress)
+	case driverModel.KnxGroupAddress2Level:
+		groupAddress2Level := groupAddress
 		return GroupAddress2LevelPlcField{
-			MainGroup: strconv.Itoa(int(groupAddress2Level.MainGroup)),
-			SubGroup:  strconv.Itoa(int(groupAddress2Level.SubGroup)),
+			MainGroup: strconv.Itoa(int(groupAddress2Level.GetMainGroup())),
+			SubGroup:  strconv.Itoa(int(groupAddress2Level.GetSubGroup())),
 			FieldType: &datatype,
 		}
-	case *driverModel.KnxGroupAddressFreeLevel:
-		groupAddress1Level := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
+	case driverModel.KnxGroupAddressFreeLevel:
+		groupAddress1Level := groupAddress
 		return GroupAddress1LevelPlcField{
-			MainGroup: strconv.Itoa(int(groupAddress1Level.SubGroup)),
+			MainGroup: strconv.Itoa(int(groupAddress1Level.GetSubGroup())),
 			FieldType: &datatype,
 		}
 	}

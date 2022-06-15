@@ -30,13 +30,8 @@ import (
 // Constant values.
 const DF1Symbol_MESSAGESTART uint8 = 0x10
 
-// DF1Symbol is the data-structure of this message
-type DF1Symbol struct {
-	Child IDF1SymbolChild
-}
-
-// IDF1Symbol is the corresponding interface of DF1Symbol
-type IDF1Symbol interface {
+// DF1Symbol is the corresponding interface of DF1Symbol
+type DF1Symbol interface {
 	// GetSymbolType returns SymbolType (discriminator field)
 	GetSymbolType() uint8
 	// GetLengthInBytes returns the length in bytes
@@ -47,18 +42,29 @@ type IDF1Symbol interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type IDF1SymbolParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Symbol, serializeChildFunction func() error) error
+// _DF1Symbol is the data-structure of this message
+type _DF1Symbol struct {
+	_DF1SymbolChildRequirements
+}
+
+type _DF1SymbolChildRequirements interface {
+	GetLengthInBits() uint16
+	GetLengthInBitsConditional(lastItem bool) uint16
+	GetSymbolType() uint8
+}
+
+type DF1SymbolParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
-type IDF1SymbolChild interface {
+type DF1SymbolChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *DF1Symbol)
+	InitializeParent(parent DF1Symbol)
 	GetParent() *DF1Symbol
 
 	GetTypeName() string
-	IDF1Symbol
+	DF1Symbol
 }
 
 ///////////////////////////////////////////////////////////
@@ -66,7 +72,7 @@ type IDF1SymbolChild interface {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *DF1Symbol) GetMessageStart() uint8 {
+func (m *_DF1Symbol) GetMessageStart() uint8 {
 	return DF1Symbol_MESSAGESTART
 }
 
@@ -75,37 +81,27 @@ func (m *DF1Symbol) GetMessageStart() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewDF1Symbol factory function for DF1Symbol
-func NewDF1Symbol() *DF1Symbol {
-	return &DF1Symbol{}
+// NewDF1Symbol factory function for _DF1Symbol
+func NewDF1Symbol() *_DF1Symbol {
+	return &_DF1Symbol{}
 }
 
-func CastDF1Symbol(structType interface{}) *DF1Symbol {
+// Deprecated: use the interface for direct cast
+func CastDF1Symbol(structType interface{}) DF1Symbol {
 	if casted, ok := structType.(DF1Symbol); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*DF1Symbol); ok {
 		return casted
 	}
-	if casted, ok := structType.(IDF1SymbolChild); ok {
-		return casted.GetParent()
+	if casted, ok := structType.(*DF1Symbol); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *DF1Symbol) GetTypeName() string {
+func (m *_DF1Symbol) GetTypeName() string {
 	return "DF1Symbol"
 }
 
-func (m *DF1Symbol) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *DF1Symbol) GetLengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.GetLengthInBits()
-}
-
-func (m *DF1Symbol) GetParentLengthInBits() uint16 {
+func (m *_DF1Symbol) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (messageStart)
@@ -116,11 +112,11 @@ func (m *DF1Symbol) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *DF1Symbol) GetLengthInBytes() uint16 {
+func (m *_DF1Symbol) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
+func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
@@ -145,19 +141,24 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type DF1SymbolChild interface {
-		InitializeParent(*DF1Symbol)
-		GetParent() *DF1Symbol
+	type DF1SymbolChildSerializeRequirement interface {
+		DF1Symbol
+		InitializeParent(DF1Symbol)
+		GetParent() DF1Symbol
 	}
-	var _child DF1SymbolChild
+	var _childTemp interface{}
+	var _child DF1SymbolChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
-		_child, typeSwitchError = DF1SymbolMessageFrameParse(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameParse(readBuffer)
+		_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
-		_child, typeSwitchError = DF1SymbolMessageFrameACKParse(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameACKParse(readBuffer)
+		_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
-		_child, typeSwitchError = DF1SymbolMessageFrameNAKParse(readBuffer)
+		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParse(readBuffer)
+		_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -171,15 +172,18 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent())
-	return _child.GetParent(), nil
+	_child.InitializeParent(_child)
+	return _child, nil
 }
 
-func (m *DF1Symbol) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
+func (m *_DF1Symbol) Serialize(writeBuffer utils.WriteBuffer) error {
+	panic("Required method Serialize not implemented")
 }
 
-func (m *DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Symbol, serializeChildFunction func() error) error {
+func (pm *_DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error {
+	// We redirect all calls through client as some methods are only implemented there
+	m := child
+	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DF1Symbol"); pushErr != nil {
@@ -211,7 +215,7 @@ func (m *DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Sym
 	return nil
 }
 
-func (m *DF1Symbol) String() string {
+func (m *_DF1Symbol) String() string {
 	if m == nil {
 		return "<nil>"
 	}

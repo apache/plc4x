@@ -32,16 +32,9 @@ import (
 const S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_FUNCTIONID uint8 = 0x00
 const S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ uint8 = 0x01
 
-// S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the data-structure of this message
-type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
-	*S7PayloadUserDataItem
-	PudicfReturnCode    DataTransportErrorCode
-	PudicftransportSize DataTransportSize
-}
-
-// IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-type IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
-	IS7PayloadUserDataItem
+// S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
+	S7PayloadUserDataItem
 	// GetPudicfReturnCode returns PudicfReturnCode (property field)
 	GetPudicfReturnCode() DataTransportErrorCode
 	// GetPudicftransportSize returns PudicftransportSize (property field)
@@ -54,20 +47,27 @@ type IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the data-structure of this message
+type _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
+	*_S7PayloadUserDataItem
+	PudicfReturnCode    DataTransportErrorCode
+	PudicftransportSize DataTransportSize
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetCpuFunctionType() uint8 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetCpuSubfunction() uint8 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetCpuSubfunction() uint8 {
 	return 0x13
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetDataLength() uint16 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetDataLength() uint16 {
 	return 0
 }
 
@@ -76,13 +76,13 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetDataLength() uin
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.S7PayloadUserDataItem.ReturnCode = returnCode
-	m.S7PayloadUserDataItem.TransportSize = transportSize
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetParent() *S7PayloadUserDataItem {
-	return m.S7PayloadUserDataItem
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetParent() S7PayloadUserDataItem {
+	return m._S7PayloadUserDataItem
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,11 +90,11 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetParent() *S7Payl
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicfReturnCode() DataTransportErrorCode {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicfReturnCode() DataTransportErrorCode {
 	return m.PudicfReturnCode
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicftransportSize() DataTransportSize {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicftransportSize() DataTransportSize {
 	return m.PudicftransportSize
 }
 
@@ -107,11 +107,11 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicftransportS
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetFunctionId() uint8 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetFunctionId() uint8 {
 	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_FUNCTIONID
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetNumberMessageObj() uint8 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetNumberMessageObj() uint8 {
 	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ
 }
 
@@ -120,42 +120,37 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetNumberMessageObj
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(pudicfReturnCode DataTransportErrorCode, pudicftransportSize DataTransportSize, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
-	_result := &S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
-		PudicfReturnCode:      pudicfReturnCode,
-		PudicftransportSize:   pudicftransportSize,
-		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
+// NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(pudicfReturnCode DataTransportErrorCode, pudicftransportSize DataTransportSize, returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
+		PudicfReturnCode:       pudicfReturnCode,
+		PudicftransportSize:    pudicftransportSize,
+		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	_result.Child = _result
+	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
 	return _result
 }
 
-func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+// Deprecated: use the interface for direct cast
+func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmQueryResponse); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionAlarmQueryResponse); ok {
 		return casted
 	}
-	if casted, ok := structType.(S7PayloadUserDataItem); ok {
-		return CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(casted.Child)
-	}
-	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
-		return CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(casted.Child)
+	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionAlarmQueryResponse); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBits() uint16 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (functionId)
@@ -176,11 +171,11 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBitsCond
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes() uint16 {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pullErr != nil {
@@ -252,16 +247,16 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	}
 
 	// Create a partially initialized instance
-	_child := &S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
-		PudicfReturnCode:      pudicfReturnCode,
-		PudicftransportSize:   pudicftransportSize,
-		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
+	_child := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
+		PudicfReturnCode:       pudicfReturnCode,
+		PudicftransportSize:    pudicftransportSize,
+		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
 	}
-	_child.S7PayloadUserDataItem.Child = _child
+	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -285,7 +280,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("pudicfReturnCode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pudicfReturnCode")
 		}
-		_pudicfReturnCodeErr := writeBuffer.WriteSerializable(m.PudicfReturnCode)
+		_pudicfReturnCodeErr := writeBuffer.WriteSerializable(m.GetPudicfReturnCode())
 		if popErr := writeBuffer.PopContext("pudicfReturnCode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pudicfReturnCode")
 		}
@@ -297,7 +292,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("pudicftransportSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pudicftransportSize")
 		}
-		_pudicftransportSizeErr := writeBuffer.WriteSerializable(m.PudicftransportSize)
+		_pudicftransportSizeErr := writeBuffer.WriteSerializable(m.GetPudicftransportSize())
 		if popErr := writeBuffer.PopContext("pudicftransportSize"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pudicftransportSize")
 		}
@@ -321,7 +316,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}

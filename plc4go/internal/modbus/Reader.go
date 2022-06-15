@@ -75,16 +75,16 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		}
 		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusField.Datatype.DataTypeSize())) / float64(2)))
 		log.Debug().Msgf("Working with %d words", numWords)
-		var pdu *readWriteModel.ModbusPDU = nil
+		var pdu readWriteModel.ModbusPDU = nil
 		switch modbusField.FieldType {
 		case Coil:
-			pdu = readWriteModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity).GetParent()
+			pdu = readWriteModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
 		case DiscreteInput:
-			pdu = readWriteModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity).GetParent()
+			pdu = readWriteModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity)
 		case InputRegister:
-			pdu = readWriteModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords).GetParent()
+			pdu = readWriteModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords)
 		case HoldingRegister:
-			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords).GetParent()
+			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords)
 		case ExtendedRegister:
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
@@ -112,28 +112,24 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 
 		// Assemble the finished ADU
 		log.Trace().Msg("Assemble ADU")
-		requestAdu := readWriteModel.ModbusTcpADU{
-			TransactionIdentifier: uint16(transactionIdentifier),
-			UnitIdentifier:        m.unitIdentifier,
-			Pdu:                   pdu,
-		}
+		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu, false)
 
 		// Send the ADU over the wire
 		log.Trace().Msg("Send ADU")
 		if err = m.messageCodec.SendRequest(
 			requestAdu,
 			func(message interface{}) bool {
-				responseAdu := readWriteModel.CastModbusTcpADU(message)
-				return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
-					responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
+				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
 			},
 			func(message interface{}) error {
 				// Convert the response into an ADU
 				log.Trace().Msg("convert response to ADU")
-				responseAdu := readWriteModel.CastModbusTcpADU(message)
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
 				// Convert the modbus response into a PLC4X response
 				log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xReadResponse(*responseAdu, readRequest)
+				readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
 				if err != nil {
 					result <- &plc4goModel.DefaultPlcReadRequestResult{
@@ -169,26 +165,22 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 
 func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
 	var data []uint8
-	switch responseAdu.Pdu.Child.(type) {
-	case *readWriteModel.ModbusPDUReadDiscreteInputsResponse:
-		pdu := readWriteModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
-		data = pdu.Value
+	switch pdu := responseAdu.GetPdu().(type) {
+	case readWriteModel.ModbusPDUReadDiscreteInputsResponse:
+		data = pdu.GetValue()
 		// Pure Boolean ...
-	case *readWriteModel.ModbusPDUReadCoilsResponse:
-		pdu := readWriteModel.CastModbusPDUReadCoilsResponse(responseAdu.Pdu)
-		data = pdu.Value
+	case readWriteModel.ModbusPDUReadCoilsResponse:
+		data = pdu.GetValue()
 		// Pure Boolean ...
-	case *readWriteModel.ModbusPDUReadInputRegistersResponse:
-		pdu := readWriteModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
-		data = pdu.Value
+	case readWriteModel.ModbusPDUReadInputRegistersResponse:
+		data = pdu.GetValue()
 		// DataIo ...
-	case *readWriteModel.ModbusPDUReadHoldingRegistersResponse:
-		pdu := readWriteModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
-		data = pdu.Value
-	case *readWriteModel.ModbusPDUError:
-		return nil, errors.Errorf("got an error from remote. Errorcode %x", responseAdu.Pdu.Child.(*readWriteModel.ModbusPDUError).ExceptionCode)
+	case readWriteModel.ModbusPDUReadHoldingRegistersResponse:
+		data = pdu.GetValue()
+	case readWriteModel.ModbusPDUError:
+		return nil, errors.Errorf("got an error from remote. Errorcode %x", pdu.GetExceptionCode())
 	default:
-		return nil, errors.Errorf("unsupported response type %T", responseAdu.Pdu.Child)
+		return nil, errors.Errorf("unsupported response type %T", pdu)
 	}
 
 	// Get the field from the request

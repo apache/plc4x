@@ -31,23 +31,15 @@ import (
 const DF1SymbolMessageFrame_MESSAGEEND uint8 = 0x10
 const DF1SymbolMessageFrame_ENDTRANSACTION uint8 = 0x03
 
-// DF1SymbolMessageFrame is the data-structure of this message
-type DF1SymbolMessageFrame struct {
-	*DF1Symbol
-	DestinationAddress uint8
-	SourceAddress      uint8
-	Command            *DF1Command
-}
-
-// IDF1SymbolMessageFrame is the corresponding interface of DF1SymbolMessageFrame
-type IDF1SymbolMessageFrame interface {
-	IDF1Symbol
+// DF1SymbolMessageFrame is the corresponding interface of DF1SymbolMessageFrame
+type DF1SymbolMessageFrame interface {
+	DF1Symbol
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
 	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() uint8
 	// GetCommand returns Command (property field)
-	GetCommand() *DF1Command
+	GetCommand() DF1Command
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -56,12 +48,20 @@ type IDF1SymbolMessageFrame interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _DF1SymbolMessageFrame is the data-structure of this message
+type _DF1SymbolMessageFrame struct {
+	*_DF1Symbol
+	DestinationAddress uint8
+	SourceAddress      uint8
+	Command            DF1Command
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *DF1SymbolMessageFrame) GetSymbolType() uint8 {
+func (m *_DF1SymbolMessageFrame) GetSymbolType() uint8 {
 	return 0x02
 }
 
@@ -70,10 +70,10 @@ func (m *DF1SymbolMessageFrame) GetSymbolType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *DF1SymbolMessageFrame) InitializeParent(parent *DF1Symbol) {}
+func (m *_DF1SymbolMessageFrame) InitializeParent(parent DF1Symbol) {}
 
-func (m *DF1SymbolMessageFrame) GetParent() *DF1Symbol {
-	return m.DF1Symbol
+func (m *_DF1SymbolMessageFrame) GetParent() DF1Symbol {
+	return m._DF1Symbol
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,15 +81,15 @@ func (m *DF1SymbolMessageFrame) GetParent() *DF1Symbol {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *DF1SymbolMessageFrame) GetDestinationAddress() uint8 {
+func (m *_DF1SymbolMessageFrame) GetDestinationAddress() uint8 {
 	return m.DestinationAddress
 }
 
-func (m *DF1SymbolMessageFrame) GetSourceAddress() uint8 {
+func (m *_DF1SymbolMessageFrame) GetSourceAddress() uint8 {
 	return m.SourceAddress
 }
 
-func (m *DF1SymbolMessageFrame) GetCommand() *DF1Command {
+func (m *_DF1SymbolMessageFrame) GetCommand() DF1Command {
 	return m.Command
 }
 
@@ -102,11 +102,11 @@ func (m *DF1SymbolMessageFrame) GetCommand() *DF1Command {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *DF1SymbolMessageFrame) GetMessageEnd() uint8 {
+func (m *_DF1SymbolMessageFrame) GetMessageEnd() uint8 {
 	return DF1SymbolMessageFrame_MESSAGEEND
 }
 
-func (m *DF1SymbolMessageFrame) GetEndTransaction() uint8 {
+func (m *_DF1SymbolMessageFrame) GetEndTransaction() uint8 {
 	return DF1SymbolMessageFrame_ENDTRANSACTION
 }
 
@@ -115,43 +115,38 @@ func (m *DF1SymbolMessageFrame) GetEndTransaction() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewDF1SymbolMessageFrame factory function for DF1SymbolMessageFrame
-func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command *DF1Command) *DF1SymbolMessageFrame {
-	_result := &DF1SymbolMessageFrame{
+// NewDF1SymbolMessageFrame factory function for _DF1SymbolMessageFrame
+func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command DF1Command) *_DF1SymbolMessageFrame {
+	_result := &_DF1SymbolMessageFrame{
 		DestinationAddress: destinationAddress,
 		SourceAddress:      sourceAddress,
 		Command:            command,
-		DF1Symbol:          NewDF1Symbol(),
+		_DF1Symbol:         NewDF1Symbol(),
 	}
-	_result.Child = _result
+	_result._DF1Symbol._DF1SymbolChildRequirements = _result
 	return _result
 }
 
-func CastDF1SymbolMessageFrame(structType interface{}) *DF1SymbolMessageFrame {
+// Deprecated: use the interface for direct cast
+func CastDF1SymbolMessageFrame(structType interface{}) DF1SymbolMessageFrame {
 	if casted, ok := structType.(DF1SymbolMessageFrame); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*DF1SymbolMessageFrame); ok {
 		return casted
 	}
-	if casted, ok := structType.(DF1Symbol); ok {
-		return CastDF1SymbolMessageFrame(casted.Child)
-	}
-	if casted, ok := structType.(*DF1Symbol); ok {
-		return CastDF1SymbolMessageFrame(casted.Child)
+	if casted, ok := structType.(*DF1SymbolMessageFrame); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *DF1SymbolMessageFrame) GetTypeName() string {
+func (m *_DF1SymbolMessageFrame) GetTypeName() string {
 	return "DF1SymbolMessageFrame"
 }
 
-func (m *DF1SymbolMessageFrame) GetLengthInBits() uint16 {
+func (m *_DF1SymbolMessageFrame) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1SymbolMessageFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_DF1SymbolMessageFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationAddress)
@@ -175,11 +170,11 @@ func (m *DF1SymbolMessageFrame) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *DF1SymbolMessageFrame) GetLengthInBytes() uint16 {
+func (m *_DF1SymbolMessageFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageFrame, error) {
+func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrame"); pullErr != nil {
@@ -210,7 +205,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
-	command := CastDF1Command(_command)
+	command := _command.(DF1Command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
@@ -253,17 +248,17 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 	}
 
 	// Create a partially initialized instance
-	_child := &DF1SymbolMessageFrame{
+	_child := &_DF1SymbolMessageFrame{
 		DestinationAddress: destinationAddress,
 		SourceAddress:      sourceAddress,
-		Command:            CastDF1Command(command),
-		DF1Symbol:          &DF1Symbol{},
+		Command:            command,
+		_DF1Symbol:         &_DF1Symbol{},
 	}
-	_child.DF1Symbol.Child = _child
+	_child._DF1Symbol._DF1SymbolChildRequirements = _child
 	return _child, nil
 }
 
-func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -272,14 +267,14 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (destinationAddress)
-		destinationAddress := uint8(m.DestinationAddress)
+		destinationAddress := uint8(m.GetDestinationAddress())
 		_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, (destinationAddress))
 		if _destinationAddressErr != nil {
 			return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
 		}
 
 		// Simple Field (sourceAddress)
-		sourceAddress := uint8(m.SourceAddress)
+		sourceAddress := uint8(m.GetSourceAddress())
 		_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, (sourceAddress))
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
@@ -289,7 +284,7 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for command")
 		}
-		_commandErr := writeBuffer.WriteSerializable(m.Command)
+		_commandErr := writeBuffer.WriteSerializable(m.GetCommand())
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for command")
 		}
@@ -329,7 +324,7 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *DF1SymbolMessageFrame) String() string {
+func (m *_DF1SymbolMessageFrame) String() string {
 	if m == nil {
 		return "<nil>"
 	}
