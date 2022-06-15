@@ -21,7 +21,8 @@
 
 ## plc4go module
 
-To use plc4go use the `driverManager := plc4go.NewPlcDriverManager()` and register a driver e.g. 
+To use plc4go import `"github.com/apache/plc4x/plc4go/pkg/api"` and use the driver manager 
+`driverManager := plc4go.NewPlcDriverManager()` to register a driver e.g. 
 `drivers.RegisterKnxDriver(driverManager)`.
 
 ## plc4go tools
