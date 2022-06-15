@@ -356,7 +356,7 @@
             </goals>
             <configuration>
               <packages>
-                <!-- We want to format every package here so we don't get dirty commits -->
+                <!-- We want to format every package here, so we don't get dirty commits -->
                 <package>./...</package>
               </packages>
             </configuration>
@@ -366,6 +366,7 @@
           <!--
             NOTE: Don't try merging the following 4 executions ...
                   It doesn't work by merging the "packages" sections
+            TODO: The licenser adds a version of the Apache Header with http url
           -->
           <execution>
             <id>add-license</id>
