@@ -23,7 +23,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"regexp"
 	"strconv"

@@ -30,17 +30,11 @@ import (
 // Constant values.
 const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = uint8(2)
 
-// CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message
-type CEMIAdditionalInformationRelativeTimestamp struct {
-	*CEMIAdditionalInformation
-	RelativeTimestamp *RelativeTimestamp
-}
-
-// ICEMIAdditionalInformationRelativeTimestamp is the corresponding interface of CEMIAdditionalInformationRelativeTimestamp
-type ICEMIAdditionalInformationRelativeTimestamp interface {
-	ICEMIAdditionalInformation
+// CEMIAdditionalInformationRelativeTimestamp is the corresponding interface of CEMIAdditionalInformationRelativeTimestamp
+type CEMIAdditionalInformationRelativeTimestamp interface {
+	CEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
-	GetRelativeTimestamp() *RelativeTimestamp
+	GetRelativeTimestamp() RelativeTimestamp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -49,12 +43,18 @@ type ICEMIAdditionalInformationRelativeTimestamp interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message
+type _CEMIAdditionalInformationRelativeTimestamp struct {
+	*_CEMIAdditionalInformation
+	RelativeTimestamp RelativeTimestamp
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationType() uint8 {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationType() uint8 {
 	return 0x04
 }
 
@@ -63,11 +63,11 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationTyp
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) InitializeParent(parent *CEMIAdditionalInformation) {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) InitializeParent(parent CEMIAdditionalInformation) {
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetParent() *CEMIAdditionalInformation {
-	return m.CEMIAdditionalInformation
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetParent() CEMIAdditionalInformation {
+	return m._CEMIAdditionalInformation
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetParent() *CEMIAdditional
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetRelativeTimestamp() *RelativeTimestamp {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetRelativeTimestamp() RelativeTimestamp {
 	return m.RelativeTimestamp
 }
 
@@ -88,7 +88,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetRelativeTimestamp() *Rel
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
 	return CEMIAdditionalInformationRelativeTimestamp_LEN
 }
 
@@ -97,41 +97,36 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewCEMIAdditionalInformationRelativeTimestamp factory function for CEMIAdditionalInformationRelativeTimestamp
-func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp *RelativeTimestamp) *CEMIAdditionalInformationRelativeTimestamp {
-	_result := &CEMIAdditionalInformationRelativeTimestamp{
-		RelativeTimestamp:         relativeTimestamp,
-		CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
+// NewCEMIAdditionalInformationRelativeTimestamp factory function for _CEMIAdditionalInformationRelativeTimestamp
+func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) *_CEMIAdditionalInformationRelativeTimestamp {
+	_result := &_CEMIAdditionalInformationRelativeTimestamp{
+		RelativeTimestamp:          relativeTimestamp,
+		_CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
 	}
-	_result.Child = _result
+	_result._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _result
 	return _result
 }
 
-func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) *CEMIAdditionalInformationRelativeTimestamp {
+// Deprecated: use the interface for direct cast
+func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) CEMIAdditionalInformationRelativeTimestamp {
 	if casted, ok := structType.(CEMIAdditionalInformationRelativeTimestamp); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*CEMIAdditionalInformationRelativeTimestamp); ok {
 		return casted
 	}
-	if casted, ok := structType.(CEMIAdditionalInformation); ok {
-		return CastCEMIAdditionalInformationRelativeTimestamp(casted.Child)
-	}
-	if casted, ok := structType.(*CEMIAdditionalInformation); ok {
-		return CastCEMIAdditionalInformationRelativeTimestamp(casted.Child)
+	if casted, ok := structType.(*CEMIAdditionalInformationRelativeTimestamp); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
 	return "CEMIAdditionalInformationRelativeTimestamp"
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBits() uint16 {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (len)
@@ -143,11 +138,11 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBitsConditional(
 	return lengthInBits
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes() uint16 {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformationRelativeTimestamp, error) {
+func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
@@ -173,7 +168,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
 	}
-	relativeTimestamp := CastRelativeTimestamp(_relativeTimestamp)
+	relativeTimestamp := _relativeTimestamp.(RelativeTimestamp)
 	if closeErr := readBuffer.CloseContext("relativeTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for relativeTimestamp")
 	}
@@ -183,15 +178,15 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	}
 
 	// Create a partially initialized instance
-	_child := &CEMIAdditionalInformationRelativeTimestamp{
-		RelativeTimestamp:         CastRelativeTimestamp(relativeTimestamp),
-		CEMIAdditionalInformation: &CEMIAdditionalInformation{},
+	_child := &_CEMIAdditionalInformationRelativeTimestamp{
+		RelativeTimestamp:          relativeTimestamp,
+		_CEMIAdditionalInformation: &_CEMIAdditionalInformation{},
 	}
-	_child.CEMIAdditionalInformation.Child = _child
+	_child._CEMIAdditionalInformation._CEMIAdditionalInformationChildRequirements = _child
 	return _child, nil
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -209,7 +204,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("relativeTimestamp"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for relativeTimestamp")
 		}
-		_relativeTimestampErr := writeBuffer.WriteSerializable(m.RelativeTimestamp)
+		_relativeTimestampErr := writeBuffer.WriteSerializable(m.GetRelativeTimestamp())
 		if popErr := writeBuffer.PopContext("relativeTimestamp"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for relativeTimestamp")
 		}
@@ -225,7 +220,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) String() string {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) String() string {
 	if m == nil {
 		return "<nil>"
 	}

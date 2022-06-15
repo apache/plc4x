@@ -41,7 +41,7 @@ import (
 // They all assume the connection is checked and is available.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, error) {
+func (m *Connection) sendGatewaySearchRequest() (driverModel.SearchResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting local address")
@@ -53,7 +53,7 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 	)
 	searchRequest := driverModel.NewSearchRequest(discoveryEndpoint)
 
-	result := make(chan *driverModel.SearchResponse)
+	result := make(chan driverModel.SearchResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(searchRequest,
 		func(message interface{}) bool {
@@ -98,7 +98,7 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 	}
 }
 
-func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResponse, error) {
+func (m *Connection) sendGatewayConnectionRequest() (driverModel.ConnectionResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting local address")
@@ -108,10 +108,10 @@ func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResp
 	connectionRequest := driverModel.NewConnectionRequest(
 		driverModel.NewHPAIDiscoveryEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
 		driverModel.NewHPAIDataEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
-		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER).GetParent(),
+		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER),
 	)
 
-	result := make(chan *driverModel.ConnectionResponse)
+	result := make(chan driverModel.ConnectionResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(connectionRequest,
 		func(message interface{}) bool {
@@ -145,7 +145,7 @@ func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResp
 	}
 }
 
-func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectResponse, error) {
+func (m *Connection) sendGatewayDisconnectionRequest() (driverModel.DisconnectResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting local address")
@@ -161,7 +161,7 @@ func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectR
 		),
 	)
 
-	result := make(chan *driverModel.DisconnectResponse)
+	result := make(chan driverModel.DisconnectResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(disconnectRequest,
 		func(message interface{}) bool {
@@ -195,7 +195,7 @@ func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectR
 	}
 }
 
-func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateResponse, error) {
+func (m *Connection) sendConnectionStateRequest() (driverModel.ConnectionStateResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting local address")
@@ -208,7 +208,7 @@ func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateR
 			driverModel.HostProtocolCode_IPV4_UDP,
 			localAddr, uint16(localAddress.Port)))
 
-	result := make(chan *driverModel.ConnectionStateResponse)
+	result := make(chan driverModel.ConnectionStateResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(connectionStateRequest,
 		func(message interface{}) bool {
@@ -242,7 +242,7 @@ func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateR
 	}
 }
 
-func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (*driverModel.ApduDataGroupValueResponse, error) {
+func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (driverModel.ApduDataGroupValueResponse, error) {
 	// Send the property read request and wait for a confirmation that this property is readable.
 	groupAddressReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
@@ -254,53 +254,53 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (*driverMo
 				6,
 				0,
 				m.ClientKnxAddress, groupAddress,
-				driverModel.NewApduDataContainer(driverModel.NewApduDataGroupValueRead(0).GetParent(), false, 0, 0).GetParent(),
+				driverModel.NewApduDataContainer(driverModel.NewApduDataGroupValueRead(0), false, 0, 0),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduDataGroupValueResponse)
+	result := make(chan driverModel.ApduDataGroupValueResponse)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		groupAddressReadRequest,
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			if lDataInd == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
 			if dataContainer == nil {
 				return false
 			}
-			groupReadResponse := driverModel.CastApduDataGroupValueResponse(dataContainer.DataApdu)
+			groupReadResponse := driverModel.CastApduDataGroupValueResponse(dataContainer.GetDataApdu())
 			if groupReadResponse == nil {
 				return false
 			}
 			// Check if it's a value response for the given group address
-			return dataFrameExt.GroupAddress && reflect.DeepEqual(dataFrameExt.DestinationAddress, groupAddress)
+			return dataFrameExt.GetGroupAddress() && reflect.DeepEqual(dataFrameExt.GetSourceAddress(), groupAddress)
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
-			groupReadResponse := driverModel.CastApduDataGroupValueResponse(dataContainer.DataApdu)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
+			groupReadResponse := driverModel.CastApduDataGroupValueResponse(dataContainer.GetDataApdu())
 
 			result <- groupReadResponse
 			return nil
@@ -327,7 +327,7 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (*driverMo
 	}
 }
 
-func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduControlConnect, error) {
+func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAddress) (driverModel.ApduControlConnect, error) {
 	// Send a connection request to the individual KNX device
 	deviceConnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
@@ -339,19 +339,19 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(driverModel.NewApduControlConnect().GetParent(), false, 0, 0).GetParent(),
+				driverModel.NewApduControlContainer(driverModel.NewApduControlConnect(), false, 0, 0),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduControlConnect)
+	result := make(chan driverModel.ApduControlConnect)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		deviceConnectionRequest,
@@ -359,38 +359,38 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
+			lDataCon := driverModel.CastLDataCon(tunnelingRequest.GetCemi())
 			if lDataCon == nil {
 				return false
 			}
-			lDataFrameExt := driverModel.CastLDataExtended(lDataCon.DataFrame)
+			lDataFrameExt := driverModel.CastLDataExtended(lDataCon.GetDataFrame())
 			if lDataFrameExt == nil {
 				return false
 			}
 			// Check if the address matches
-			if *ByteArrayToKnxAddress(lDataFrameExt.DestinationAddress) != targetAddress {
+			if ByteArrayToKnxAddress(lDataFrameExt.GetDestinationAddress()) != targetAddress {
 				return false
 			}
-			apduControlContainer := driverModel.CastApduControlContainer(lDataFrameExt.Apdu)
+			apduControlContainer := driverModel.CastApduControlContainer(lDataFrameExt.GetApdu())
 			if apduControlContainer == nil {
 				return false
 			}
-			apduControlConnect := driverModel.CastApduControlConnect(apduControlContainer.ControlApdu)
+			apduControlConnect := driverModel.CastApduControlConnect(apduControlContainer.GetControlApdu())
 			return apduControlConnect != nil
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
-			lDataFrameExt := driverModel.CastLDataExtended(lDataCon.DataFrame)
-			apduControlContainer := driverModel.CastApduControlContainer(lDataFrameExt.Apdu)
-			apduControlConnect := driverModel.CastApduControlConnect(apduControlContainer.ControlApdu)
+			lDataCon := driverModel.CastLDataCon(tunnelingRequest.GetCemi())
+			lDataFrameExt := driverModel.CastLDataExtended(lDataCon.GetDataFrame())
+			apduControlContainer := driverModel.CastApduControlContainer(lDataFrameExt.GetApdu())
+			apduControlConnect := driverModel.CastApduControlConnect(apduControlContainer.GetControlApdu())
 
 			// If the error flag is set, there was an error connecting
-			if lDataCon.DataFrame.ErrorFlag {
-				errorResult <- errors.Errorf("error connecting to device at: %s", KnxAddressToString(&targetAddress))
+			if lDataCon.GetDataFrame().GetErrorFlag() {
+				errorResult <- errors.Errorf("error connecting to device at: %s", KnxAddressToString(targetAddress))
 			} else {
 				result <- apduControlConnect
 			}
@@ -419,7 +419,7 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 	}
 }
 
-func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduControlDisconnect, error) {
+func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.KnxAddress) (driverModel.ApduControlDisconnect, error) {
 	// Send a connection request to the individual KNX device
 	deviceDisconnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
@@ -431,19 +431,19 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(driverModel.NewApduControlDisconnect().GetParent(), false, 0, 0).GetParent(),
+				driverModel.NewApduControlContainer(driverModel.NewApduControlDisconnect(), false, 0, 0),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduControlDisconnect)
+	result := make(chan driverModel.ApduControlDisconnect)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		deviceDisconnectionRequest,
@@ -451,39 +451,39 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
+			lDataCon := driverModel.CastLDataCon(tunnelingRequest.GetCemi())
 			if lDataCon == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataCon.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataCon.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.DestinationAddress)
+			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
 			// Check if the address matches
-			if *curTargetAddress != targetAddress {
+			if curTargetAddress != targetAddress {
 				return false
 			}
-			apduControlContainer := driverModel.CastApduControlContainer(dataFrameExt.Apdu)
+			apduControlContainer := driverModel.CastApduControlContainer(dataFrameExt.GetApdu())
 			if apduControlContainer == nil {
 				return false
 			}
-			apduControlDisconnect := driverModel.CastApduControlDisconnect(apduControlContainer.ControlApdu)
+			apduControlDisconnect := driverModel.CastApduControlDisconnect(apduControlContainer.GetControlApdu())
 			return apduControlDisconnect != nil
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
-			dataFrameExt := driverModel.CastLDataExtended(lDataCon.DataFrame)
-			apduControlContainer := driverModel.CastApduControlContainer(dataFrameExt.Apdu)
-			apduControlDisconnect := driverModel.CastApduControlDisconnect(apduControlContainer.ControlApdu)
+			lDataCon := driverModel.CastLDataCon(tunnelingRequest.GetCemi())
+			dataFrameExt := driverModel.CastLDataExtended(lDataCon.GetDataFrame())
+			apduControlContainer := driverModel.CastApduControlContainer(dataFrameExt.GetApdu())
+			apduControlDisconnect := driverModel.CastApduControlDisconnect(apduControlContainer.GetControlApdu())
 
 			// If the error flag is set, there was an error disconnecting
-			if lDataCon.DataFrame.ErrorFlag {
-				errorResult <- errors.Errorf("error disconnecting from device at: %s", KnxAddressToString(&targetAddress))
+			if lDataCon.GetDataFrame().GetErrorFlag() {
+				errorResult <- errors.Errorf("error disconnecting from device at: %s", KnxAddressToString(targetAddress))
 			} else {
 				result <- apduControlDisconnect
 			}
@@ -512,7 +512,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 	}
 }
 
-func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddress, authenticationLevel uint8, buildingKey []byte) (*driverModel.ApduDataExtAuthorizeResponse, error) {
+func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddress, authenticationLevel uint8, buildingKey []byte) (driverModel.ApduDataExtAuthorizeResponse, error) {
 	// Check if there is already a connection available,
 	// if not, create a new one.
 	connection, ok := m.DeviceConnections[targetAddress]
@@ -535,25 +535,25 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey), 0).GetParent(),
+						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey), 0),
 						0,
-					).GetParent(),
+					),
 					true,
 					counter,
 					0,
-				).GetParent(),
+				),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduDataExtAuthorizeResponse)
+	result := make(chan driverModel.ApduDataExtAuthorizeResponse)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		deviceAuthenticationRequest,
@@ -561,58 +561,58 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			if lDataInd == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
-			apduDataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			apduDataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
 			if apduDataContainer == nil {
 				return false
 			}
-			apduDataOther := driverModel.CastApduDataOther(apduDataContainer.DataApdu)
+			apduDataOther := driverModel.CastApduDataOther(apduDataContainer.GetDataApdu())
 			if apduDataOther == nil {
 				return false
 			}
-			apduAuthorizeResponse := driverModel.CastApduDataExtAuthorizeResponse(apduDataOther.ExtendedApdu)
+			apduAuthorizeResponse := driverModel.CastApduDataExtAuthorizeResponse(apduDataOther.GetExtendedApdu())
 			if apduAuthorizeResponse == nil {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.DestinationAddress)
+			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
 			// Check if the addresses match
-			if *curTargetAddress != *m.ClientKnxAddress {
+			if curTargetAddress != m.ClientKnxAddress {
 				return false
 			}
-			if *dataFrameExt.SourceAddress != targetAddress {
+			if dataFrameExt.GetSourceAddress() != targetAddress {
 				return false
 			}
 			// Check if the counter matches
-			if dataFrameExt.Apdu.Counter != counter {
+			if dataFrameExt.GetApdu().GetCounter() != counter {
 				return false
 			}
 			return true
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			apduDataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
-			apduDataOther := driverModel.CastApduDataOther(apduDataContainer.DataApdu)
-			apduAuthorizeResponse := driverModel.CastApduDataExtAuthorizeResponse(apduDataOther.ExtendedApdu)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+			apduDataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
+			apduDataOther := driverModel.CastApduDataOther(apduDataContainer.GetDataApdu())
+			apduAuthorizeResponse := driverModel.CastApduDataExtAuthorizeResponse(apduDataOther.GetExtendedApdu())
 
 			// Acknowledge the receipt
-			_ = m.sendDeviceAck(targetAddress, dataFrameExt.Apdu.Counter, func(err error) {
+			_ = m.sendDeviceAck(targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
 				// If the error flag is set, there was an error authenticating
-				if lDataInd.DataFrame.ErrorFlag {
-					errorResult <- errors.New("error authenticating at device: " + KnxAddressToString(&targetAddress))
+				if lDataInd.GetDataFrame().GetErrorFlag() {
+					errorResult <- errors.New("error authenticating at device: " + KnxAddressToString(targetAddress))
 				} else if err != nil {
-					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
 				} else {
 					result <- apduAuthorizeResponse
 				}
@@ -642,7 +642,7 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 	}
 }
 
-func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduDataDeviceDescriptorResponse, error) {
+func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverModel.KnxAddress) (driverModel.ApduDataDeviceDescriptorResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	counter := m.getNextCounter(targetAddress)
 	deviceDescriptorReadRequest := driverModel.NewTunnelingRequest(
@@ -657,50 +657,50 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
-					driverModel.NewApduDataDeviceDescriptorRead(0, 0).GetParent(), true, counter, 0,
-				).GetParent(),
+					driverModel.NewApduDataDeviceDescriptorRead(0, 0), true, counter, 0,
+				),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduDataDeviceDescriptorResponse)
+	result := make(chan driverModel.ApduDataDeviceDescriptorResponse)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		deviceDescriptorReadRequest,
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			if lDataInd == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
 			// Check if the address matches
-			if *dataFrameExt.SourceAddress != targetAddress {
+			if dataFrameExt.GetSourceAddress() != targetAddress {
 				return false
 			}
 			// Check if the counter matches
-			if dataFrameExt.Apdu.Counter != counter {
+			if dataFrameExt.GetApdu().GetCounter() != counter {
 				return false
 			}
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
 			if dataContainer == nil {
 				return false
 			}
-			deviceDescriptorResponse := driverModel.CastApduDataDeviceDescriptorResponse(dataContainer.DataApdu)
+			deviceDescriptorResponse := driverModel.CastApduDataDeviceDescriptorResponse(dataContainer.GetDataApdu())
 			if deviceDescriptorResponse == nil {
 				return false
 			}
@@ -708,18 +708,18 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
-			dataFrame := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			dataContainer := driverModel.CastApduDataContainer(dataFrame.Apdu)
-			deviceDescriptorResponse := driverModel.CastApduDataDeviceDescriptorResponse(dataContainer.DataApdu)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
+			dataFrame := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+			dataContainer := driverModel.CastApduDataContainer(dataFrame.GetApdu())
+			deviceDescriptorResponse := driverModel.CastApduDataDeviceDescriptorResponse(dataContainer.GetDataApdu())
 
 			// Acknowledge the receipt
-			_ = m.sendDeviceAck(targetAddress, dataFrame.Apdu.Counter, func(err error) {
+			_ = m.sendDeviceAck(targetAddress, dataFrame.GetApdu().GetCounter(), func(err error) {
 				// If the error flag is set, there was an error authenticating
-				if lDataInd.DataFrame.ErrorFlag {
-					errorResult <- errors.New("error reading device descriptor from device: " + KnxAddressToString(&targetAddress))
+				if lDataInd.GetDataFrame().GetErrorFlag() {
+					errorResult <- errors.New("error reading device descriptor from device: " + KnxAddressToString(targetAddress))
 				} else if err != nil {
-					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
 				} else {
 					result <- deviceDescriptorResponse
 				}
@@ -749,7 +749,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 	}
 }
 
-func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) (*driverModel.ApduDataExtPropertyValueResponse, error) {
+func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) (driverModel.ApduDataExtPropertyValueResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	// Send the property read request and wait for a confirmation that this property is readable.
 	counter := m.getNextCounter(targetAddress)
@@ -766,79 +766,79 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex, 0).GetParent(),
+						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex, 0),
 						0,
-					).GetParent(),
+					),
 					true,
 					counter,
 					0,
-				).GetParent(),
+				),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduDataExtPropertyValueResponse)
+	result := make(chan driverModel.ApduDataExtPropertyValueResponse)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		propertyReadRequest,
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			if lDataInd == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
 			// Check if the address matches
-			if *dataFrameExt.SourceAddress != targetAddress {
+			if dataFrameExt.GetSourceAddress() != targetAddress {
 				return false
 			}
 			// Check if the counter matches
-			if dataFrameExt.Apdu.Counter != counter {
+			if dataFrameExt.GetApdu().GetCounter() != counter {
 				return false
 			}
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
 			if dataContainer == nil {
 				return false
 			}
-			dataApduOther := driverModel.CastApduDataOther(dataContainer.DataApdu)
+			dataApduOther := driverModel.CastApduDataOther(dataContainer.GetDataApdu())
 			if dataApduOther == nil {
 				return false
 			}
-			propertyValueResponse := driverModel.CastApduDataExtPropertyValueResponse(dataApduOther.ExtendedApdu)
+			propertyValueResponse := driverModel.CastApduDataExtPropertyValueResponse(dataApduOther.GetExtendedApdu())
 			if propertyValueResponse == nil {
 				return false
 			}
-			return propertyValueResponse.ObjectIndex == objectId && propertyValueResponse.PropertyId == propertyId
+			return propertyValueResponse.GetObjectIndex() == objectId && propertyValueResponse.GetPropertyId() == propertyId
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
-			dataApduOther := driverModel.CastApduDataOther(dataContainer.DataApdu)
-			propertyValueResponse := driverModel.CastApduDataExtPropertyValueResponse(dataApduOther.ExtendedApdu)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
+			dataApduOther := driverModel.CastApduDataOther(dataContainer.GetDataApdu())
+			propertyValueResponse := driverModel.CastApduDataExtPropertyValueResponse(dataApduOther.GetExtendedApdu())
 
 			// Acknowledge the receipt
-			_ = m.sendDeviceAck(targetAddress, dataFrameExt.Apdu.Counter, func(err error) {
+			_ = m.sendDeviceAck(targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
 				// If the error flag is set, there was an error authenticating
-				if lDataInd.DataFrame.ErrorFlag {
-					errorResult <- errors.New("error reading property value from device: " + KnxAddressToString(&targetAddress))
+				if lDataInd.GetDataFrame().GetErrorFlag() {
+					errorResult <- errors.New("error reading property value from device: " + KnxAddressToString(targetAddress))
 				} else if err != nil {
-					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
 				} else {
 					result <- propertyValueResponse
 				}
@@ -868,7 +868,7 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 	}
 }
 
-func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) (*driverModel.ApduDataExtPropertyDescriptionResponse, error) {
+func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) (driverModel.ApduDataExtPropertyDescriptionResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	// Send the property read request and wait for a confirmation that this property is readable.
 	counter := m.getNextCounter(targetAddress)
@@ -885,79 +885,79 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1, 0).GetParent(),
+						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1, 0),
 						0,
-					).GetParent(),
+					),
 					true,
 					counter,
 					0,
-				).GetParent(),
+				),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduDataExtPropertyDescriptionResponse)
+	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		propertyReadRequest,
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			if lDataInd == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
 			// Check if the address matches
-			if *dataFrameExt.SourceAddress != targetAddress {
+			if dataFrameExt.GetSourceAddress() != targetAddress {
 				return false
 			}
 			// Check if the counter matches
-			if dataFrameExt.Apdu.Counter != counter {
+			if dataFrameExt.GetApdu().GetCounter() != counter {
 				return false
 			}
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
 			if dataContainer == nil {
 				return false
 			}
-			dataApduOther := driverModel.CastApduDataOther(dataContainer.DataApdu)
+			dataApduOther := driverModel.CastApduDataOther(dataContainer.GetDataApdu())
 			if dataApduOther == nil {
 				return false
 			}
-			propertyDescriptionResponse := driverModel.CastApduDataExtPropertyDescriptionResponse(dataApduOther.ExtendedApdu)
+			propertyDescriptionResponse := driverModel.CastApduDataExtPropertyDescriptionResponse(dataApduOther.GetExtendedApdu())
 			if propertyDescriptionResponse == nil {
 				return false
 			}
-			return propertyDescriptionResponse.ObjectIndex == objectId && propertyDescriptionResponse.PropertyId == propertyId
+			return propertyDescriptionResponse.GetObjectIndex() == objectId && propertyDescriptionResponse.GetPropertyId() == propertyId
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
-			dataApduOther := driverModel.CastApduDataOther(dataContainer.DataApdu)
-			propertyDescriptionResponse := driverModel.CastApduDataExtPropertyDescriptionResponse(dataApduOther.ExtendedApdu)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
+			dataApduOther := driverModel.CastApduDataOther(dataContainer.GetDataApdu())
+			propertyDescriptionResponse := driverModel.CastApduDataExtPropertyDescriptionResponse(dataApduOther.GetExtendedApdu())
 
 			// Acknowledge the receipt
-			_ = m.sendDeviceAck(targetAddress, dataFrameExt.Apdu.Counter, func(err error) {
+			_ = m.sendDeviceAck(targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
 				// If the error flag is set, there was an error authenticating
-				if lDataInd.DataFrame.ErrorFlag {
-					errorResult <- errors.Errorf("error reading property description from device: %s", KnxAddressToString(&targetAddress))
+				if lDataInd.GetDataFrame().GetErrorFlag() {
+					errorResult <- errors.Errorf("error reading property description from device: %s", KnxAddressToString(targetAddress))
 				} else if err != nil {
-					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(targetAddress))
 				} else {
 					result <- propertyDescriptionResponse
 				}
@@ -987,7 +987,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 	}
 }
 
-func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAddress, address uint16, numBytes uint8) (*driverModel.ApduDataMemoryResponse, error) {
+func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAddress, address uint16, numBytes uint8) (driverModel.ApduDataMemoryResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	counter := m.getNextCounter(targetAddress)
 
@@ -1004,73 +1004,73 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
-					driverModel.NewApduDataMemoryRead(numBytes, address, 0).GetParent(),
+					driverModel.NewApduDataMemoryRead(numBytes, address, 0),
 					true,
 					counter,
 					0,
-				).GetParent(),
+				),
 				true,
 				true,
 				driverModel.CEMIPriority_LOW,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
-	result := make(chan *driverModel.ApduDataMemoryResponse)
+	result := make(chan driverModel.ApduDataMemoryResponse)
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		propertyReadRequest,
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			if lDataInd == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
 			if dataContainer == nil {
 				return false
 			}
-			dataApduMemoryResponse := driverModel.CastApduDataMemoryResponse(dataContainer.DataApdu)
+			dataApduMemoryResponse := driverModel.CastApduDataMemoryResponse(dataContainer.GetDataApdu())
 			if dataApduMemoryResponse == nil {
 				return false
 			}
 
 			// Check if the address matches
-			if *dataFrameExt.SourceAddress != targetAddress {
+			if dataFrameExt.GetSourceAddress() != targetAddress {
 				return false
 			}
 			// Check if the counter matches
-			if dataFrameExt.Apdu.Counter != counter {
+			if dataFrameExt.GetApdu().GetCounter() != counter {
 				return false
 			}
-			return dataApduMemoryResponse.Address == address
+			return dataApduMemoryResponse.GetAddress() == address
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
-			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
-			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
-			dataApduMemoryResponse := driverModel.CastApduDataMemoryResponse(dataContainer.DataApdu)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.GetApdu())
+			dataApduMemoryResponse := driverModel.CastApduDataMemoryResponse(dataContainer.GetDataApdu())
 
 			// Acknowledge the receipt
-			_ = m.sendDeviceAck(targetAddress, dataFrameExt.Apdu.Counter, func(err error) {
+			_ = m.sendDeviceAck(targetAddress, dataFrameExt.GetApdu().GetCounter(), func(err error) {
 				// If the error flag is set, there was an error authenticating
-				if lDataInd.DataFrame.ErrorFlag {
-					errorResult <- errors.Errorf("error reading memory from device: %s", KnxAddressToString(&targetAddress))
+				if lDataInd.GetDataFrame().GetErrorFlag() {
+					errorResult <- errors.Errorf("error reading memory from device: %s", KnxAddressToString(targetAddress))
 				} else if err != nil {
-					errorResult <- errors.Errorf("error sending ack to device: %s", KnxAddressToString(&targetAddress))
+					errorResult <- errors.Errorf("error sending ack to device: %s", KnxAddressToString(targetAddress))
 				} else {
 					result <- dataApduMemoryResponse
 				}
@@ -1111,15 +1111,15 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
-				driverModel.NewApduControlContainer(driverModel.NewApduControlAck().GetParent(), true, counter, 0).GetParent(),
+				driverModel.NewApduControlContainer(driverModel.NewApduControlAck(), true, counter, 0),
 				true,
 				true,
 				driverModel.CEMIPriority_SYSTEM,
 				false,
 				false,
-			).GetParent(),
+			),
 			0,
-		).GetParent(),
+		),
 		0,
 	)
 
@@ -1128,34 +1128,34 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 		func(message interface{}) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
 				return false
 			}
-			lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
+			lDataCon := driverModel.CastLDataCon(tunnelingRequest.GetCemi())
 			if lDataCon == nil {
 				return false
 			}
-			dataFrameExt := driverModel.CastLDataExtended(lDataCon.DataFrame)
+			dataFrameExt := driverModel.CastLDataExtended(lDataCon.GetDataFrame())
 			if dataFrameExt == nil {
 				return false
 			}
 			// Check if the addresses match
-			if *dataFrameExt.SourceAddress != *m.ClientKnxAddress {
+			if dataFrameExt.GetSourceAddress() != m.ClientKnxAddress {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.DestinationAddress)
-			if *curTargetAddress != targetAddress {
+			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
+			if curTargetAddress != targetAddress {
 				return false
 			}
 			// Check if the counter matches
-			if dataFrameExt.Apdu.Counter != counter {
+			if dataFrameExt.GetApdu().GetCounter() != counter {
 				return false
 			}
-			controlContainer := driverModel.CastApduControlContainer(dataFrameExt.Apdu)
+			controlContainer := driverModel.CastApduControlContainer(dataFrameExt.GetApdu())
 			if controlContainer == nil {
 				return false
 			}
-			dataApduAck := driverModel.CastApduControlAck(controlContainer.ControlApdu)
+			dataApduAck := driverModel.CastApduControlAck(controlContainer.GetControlApdu())
 			if dataApduAck == nil {
 				return false
 			}

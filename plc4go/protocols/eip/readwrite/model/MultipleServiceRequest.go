@@ -31,20 +31,11 @@ import (
 const MultipleServiceRequest_REQUESTPATHSIZE int8 = 0x02
 const MultipleServiceRequest_REQUESTPATH uint32 = 0x01240220
 
-// MultipleServiceRequest is the data-structure of this message
-type MultipleServiceRequest struct {
-	*CipService
-	Data *Services
-
-	// Arguments.
-	ServiceLen uint16
-}
-
-// IMultipleServiceRequest is the corresponding interface of MultipleServiceRequest
-type IMultipleServiceRequest interface {
-	ICipService
+// MultipleServiceRequest is the corresponding interface of MultipleServiceRequest
+type MultipleServiceRequest interface {
+	CipService
 	// GetData returns Data (property field)
-	GetData() *Services
+	GetData() Services
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -53,12 +44,21 @@ type IMultipleServiceRequest interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _MultipleServiceRequest is the data-structure of this message
+type _MultipleServiceRequest struct {
+	*_CipService
+	Data Services
+
+	// Arguments.
+	ServiceLen uint16
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *MultipleServiceRequest) GetService() uint8 {
+func (m *_MultipleServiceRequest) GetService() uint8 {
 	return 0x0A
 }
 
@@ -67,10 +67,10 @@ func (m *MultipleServiceRequest) GetService() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *MultipleServiceRequest) InitializeParent(parent *CipService) {}
+func (m *_MultipleServiceRequest) InitializeParent(parent CipService) {}
 
-func (m *MultipleServiceRequest) GetParent() *CipService {
-	return m.CipService
+func (m *_MultipleServiceRequest) GetParent() CipService {
+	return m._CipService
 }
 
 ///////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ func (m *MultipleServiceRequest) GetParent() *CipService {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *MultipleServiceRequest) GetData() *Services {
+func (m *_MultipleServiceRequest) GetData() Services {
 	return m.Data
 }
 
@@ -91,11 +91,11 @@ func (m *MultipleServiceRequest) GetData() *Services {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *MultipleServiceRequest) GetRequestPathSize() int8 {
+func (m *_MultipleServiceRequest) GetRequestPathSize() int8 {
 	return MultipleServiceRequest_REQUESTPATHSIZE
 }
 
-func (m *MultipleServiceRequest) GetRequestPath() uint32 {
+func (m *_MultipleServiceRequest) GetRequestPath() uint32 {
 	return MultipleServiceRequest_REQUESTPATH
 }
 
@@ -104,41 +104,36 @@ func (m *MultipleServiceRequest) GetRequestPath() uint32 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewMultipleServiceRequest factory function for MultipleServiceRequest
-func NewMultipleServiceRequest(data *Services, serviceLen uint16) *MultipleServiceRequest {
-	_result := &MultipleServiceRequest{
-		Data:       data,
-		CipService: NewCipService(serviceLen),
+// NewMultipleServiceRequest factory function for _MultipleServiceRequest
+func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
+	_result := &_MultipleServiceRequest{
+		Data:        data,
+		_CipService: NewCipService(serviceLen),
 	}
-	_result.Child = _result
+	_result._CipService._CipServiceChildRequirements = _result
 	return _result
 }
 
-func CastMultipleServiceRequest(structType interface{}) *MultipleServiceRequest {
+// Deprecated: use the interface for direct cast
+func CastMultipleServiceRequest(structType interface{}) MultipleServiceRequest {
 	if casted, ok := structType.(MultipleServiceRequest); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*MultipleServiceRequest); ok {
 		return casted
 	}
-	if casted, ok := structType.(CipService); ok {
-		return CastMultipleServiceRequest(casted.Child)
-	}
-	if casted, ok := structType.(*CipService); ok {
-		return CastMultipleServiceRequest(casted.Child)
+	if casted, ok := structType.(*MultipleServiceRequest); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *MultipleServiceRequest) GetTypeName() string {
+func (m *_MultipleServiceRequest) GetTypeName() string {
 	return "MultipleServiceRequest"
 }
 
-func (m *MultipleServiceRequest) GetLengthInBits() uint16 {
+func (m *_MultipleServiceRequest) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MultipleServiceRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_MultipleServiceRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (requestPathSize)
@@ -153,11 +148,11 @@ func (m *MultipleServiceRequest) GetLengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *MultipleServiceRequest) GetLengthInBytes() uint16 {
+func (m *_MultipleServiceRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*MultipleServiceRequest, error) {
+func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
@@ -192,7 +187,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
-	data := CastServices(_data)
+	data := _data.(Services)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for data")
 	}
@@ -202,15 +197,15 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	}
 
 	// Create a partially initialized instance
-	_child := &MultipleServiceRequest{
-		Data:       CastServices(data),
-		CipService: &CipService{},
+	_child := &_MultipleServiceRequest{
+		Data:        data,
+		_CipService: &_CipService{},
 	}
-	_child.CipService.Child = _child
+	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
 }
 
-func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -234,7 +229,7 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for data")
 		}
-		_dataErr := writeBuffer.WriteSerializable(m.Data)
+		_dataErr := writeBuffer.WriteSerializable(m.GetData())
 		if popErr := writeBuffer.PopContext("data"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for data")
 		}
@@ -250,7 +245,7 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *MultipleServiceRequest) String() string {
+func (m *_MultipleServiceRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}

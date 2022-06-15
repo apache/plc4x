@@ -32,18 +32,10 @@ const CipExchange_ITEMCOUNT uint16 = 0x02
 const CipExchange_NULLPTR uint32 = 0x0
 const CipExchange_UNCONNECTEDDATA uint16 = 0x00B2
 
-// CipExchange is the data-structure of this message
-type CipExchange struct {
-	Service *CipService
-
-	// Arguments.
-	ExchangeLen uint16
-}
-
-// ICipExchange is the corresponding interface of CipExchange
-type ICipExchange interface {
+// CipExchange is the corresponding interface of CipExchange
+type CipExchange interface {
 	// GetService returns Service (property field)
-	GetService() *CipService
+	GetService() CipService
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -52,12 +44,20 @@ type ICipExchange interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _CipExchange is the data-structure of this message
+type _CipExchange struct {
+	Service CipService
+
+	// Arguments.
+	ExchangeLen uint16
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *CipExchange) GetService() *CipService {
+func (m *_CipExchange) GetService() CipService {
 	return m.Service
 }
 
@@ -70,15 +70,15 @@ func (m *CipExchange) GetService() *CipService {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *CipExchange) GetItemCount() uint16 {
+func (m *_CipExchange) GetItemCount() uint16 {
 	return CipExchange_ITEMCOUNT
 }
 
-func (m *CipExchange) GetNullPtr() uint32 {
+func (m *_CipExchange) GetNullPtr() uint32 {
 	return CipExchange_NULLPTR
 }
 
-func (m *CipExchange) GetUnconnectedData() uint16 {
+func (m *_CipExchange) GetUnconnectedData() uint16 {
 	return CipExchange_UNCONNECTEDDATA
 }
 
@@ -87,30 +87,31 @@ func (m *CipExchange) GetUnconnectedData() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewCipExchange factory function for CipExchange
-func NewCipExchange(service *CipService, exchangeLen uint16) *CipExchange {
-	return &CipExchange{Service: service, ExchangeLen: exchangeLen}
+// NewCipExchange factory function for _CipExchange
+func NewCipExchange(service CipService, exchangeLen uint16) *_CipExchange {
+	return &_CipExchange{Service: service, ExchangeLen: exchangeLen}
 }
 
-func CastCipExchange(structType interface{}) *CipExchange {
+// Deprecated: use the interface for direct cast
+func CastCipExchange(structType interface{}) CipExchange {
 	if casted, ok := structType.(CipExchange); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*CipExchange); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *CipExchange) GetTypeName() string {
+func (m *_CipExchange) GetTypeName() string {
 	return "CipExchange"
 }
 
-func (m *CipExchange) GetLengthInBits() uint16 {
+func (m *_CipExchange) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (itemCount)
@@ -131,11 +132,11 @@ func (m *CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipExchange) GetLengthInBytes() uint16 {
+func (m *_CipExchange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExchange, error) {
+func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExchange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
@@ -186,7 +187,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field")
 	}
-	service := CastCipService(_service)
+	service := _service.(CipService)
 	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for service")
 	}
@@ -199,7 +200,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	return NewCipExchange(service, exchangeLen), nil
 }
 
-func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipExchange"); pushErr != nil {
@@ -235,7 +236,7 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for service")
 	}
-	_serviceErr := writeBuffer.WriteSerializable(m.Service)
+	_serviceErr := writeBuffer.WriteSerializable(m.GetService())
 	if popErr := writeBuffer.PopContext("service"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for service")
 	}
@@ -249,7 +250,7 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
-func (m *CipExchange) String() string {
+func (m *_CipExchange) String() string {
 	if m == nil {
 		return "<nil>"
 	}

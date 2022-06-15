@@ -31,15 +31,10 @@ import (
 // Constant values.
 const TPKTPacket_PROTOCOLID uint8 = 0x03
 
-// TPKTPacket is the data-structure of this message
-type TPKTPacket struct {
-	Payload *COTPPacket
-}
-
-// ITPKTPacket is the corresponding interface of TPKTPacket
-type ITPKTPacket interface {
+// TPKTPacket is the corresponding interface of TPKTPacket
+type TPKTPacket interface {
 	// GetPayload returns Payload (property field)
-	GetPayload() *COTPPacket
+	GetPayload() COTPPacket
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -48,12 +43,17 @@ type ITPKTPacket interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _TPKTPacket is the data-structure of this message
+type _TPKTPacket struct {
+	Payload COTPPacket
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *TPKTPacket) GetPayload() *COTPPacket {
+func (m *_TPKTPacket) GetPayload() COTPPacket {
 	return m.Payload
 }
 
@@ -66,7 +66,7 @@ func (m *TPKTPacket) GetPayload() *COTPPacket {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *TPKTPacket) GetProtocolId() uint8 {
+func (m *_TPKTPacket) GetProtocolId() uint8 {
 	return TPKTPacket_PROTOCOLID
 }
 
@@ -75,30 +75,31 @@ func (m *TPKTPacket) GetProtocolId() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewTPKTPacket factory function for TPKTPacket
-func NewTPKTPacket(payload *COTPPacket) *TPKTPacket {
-	return &TPKTPacket{Payload: payload}
+// NewTPKTPacket factory function for _TPKTPacket
+func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
+	return &_TPKTPacket{Payload: payload}
 }
 
-func CastTPKTPacket(structType interface{}) *TPKTPacket {
+// Deprecated: use the interface for direct cast
+func CastTPKTPacket(structType interface{}) TPKTPacket {
 	if casted, ok := structType.(TPKTPacket); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*TPKTPacket); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *TPKTPacket) GetTypeName() string {
+func (m *_TPKTPacket) GetTypeName() string {
 	return "TPKTPacket"
 }
 
-func (m *TPKTPacket) GetLengthInBits() uint16 {
+func (m *_TPKTPacket) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TPKTPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_TPKTPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -116,11 +117,11 @@ func (m *TPKTPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *TPKTPacket) GetLengthInBytes() uint16 {
+func (m *_TPKTPacket) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
+func TPKTPacketParse(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
@@ -167,7 +168,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
-	payload := CastCOTPPacket(_payload)
+	payload := _payload.(COTPPacket)
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for payload")
 	}
@@ -180,7 +181,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	return NewTPKTPacket(payload), nil
 }
 
-func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TPKTPacket"); pushErr != nil {
@@ -212,7 +213,7 @@ func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.Payload)
+	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -226,7 +227,7 @@ func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
-func (m *TPKTPacket) String() string {
+func (m *_TPKTPacket) String() string {
 	if m == nil {
 		return "<nil>"
 	}

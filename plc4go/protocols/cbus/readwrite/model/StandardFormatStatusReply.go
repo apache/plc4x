@@ -31,27 +31,18 @@ import (
 const StandardFormatStatusReply_CR byte = 0x0D
 const StandardFormatStatusReply_LF byte = 0x0A
 
-// StandardFormatStatusReply is the data-structure of this message
-type StandardFormatStatusReply struct {
-	StatusHeader *StatusHeader
-	Application  ApplicationIdContainer
-	BlockStart   uint8
-	StatusBytes  []*StatusByte
-	Crc          *Checksum
-}
-
-// IStandardFormatStatusReply is the corresponding interface of StandardFormatStatusReply
-type IStandardFormatStatusReply interface {
+// StandardFormatStatusReply is the corresponding interface of StandardFormatStatusReply
+type StandardFormatStatusReply interface {
 	// GetStatusHeader returns StatusHeader (property field)
-	GetStatusHeader() *StatusHeader
+	GetStatusHeader() StatusHeader
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
 	// GetStatusBytes returns StatusBytes (property field)
-	GetStatusBytes() []*StatusByte
+	GetStatusBytes() []StatusByte
 	// GetCrc returns Crc (property field)
-	GetCrc() *Checksum
+	GetCrc() Checksum
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -60,28 +51,37 @@ type IStandardFormatStatusReply interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _StandardFormatStatusReply is the data-structure of this message
+type _StandardFormatStatusReply struct {
+	StatusHeader StatusHeader
+	Application  ApplicationIdContainer
+	BlockStart   uint8
+	StatusBytes  []StatusByte
+	Crc          Checksum
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *StandardFormatStatusReply) GetStatusHeader() *StatusHeader {
+func (m *_StandardFormatStatusReply) GetStatusHeader() StatusHeader {
 	return m.StatusHeader
 }
 
-func (m *StandardFormatStatusReply) GetApplication() ApplicationIdContainer {
+func (m *_StandardFormatStatusReply) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
-func (m *StandardFormatStatusReply) GetBlockStart() uint8 {
+func (m *_StandardFormatStatusReply) GetBlockStart() uint8 {
 	return m.BlockStart
 }
 
-func (m *StandardFormatStatusReply) GetStatusBytes() []*StatusByte {
+func (m *_StandardFormatStatusReply) GetStatusBytes() []StatusByte {
 	return m.StatusBytes
 }
 
-func (m *StandardFormatStatusReply) GetCrc() *Checksum {
+func (m *_StandardFormatStatusReply) GetCrc() Checksum {
 	return m.Crc
 }
 
@@ -94,11 +94,11 @@ func (m *StandardFormatStatusReply) GetCrc() *Checksum {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *StandardFormatStatusReply) GetCr() byte {
+func (m *_StandardFormatStatusReply) GetCr() byte {
 	return StandardFormatStatusReply_CR
 }
 
-func (m *StandardFormatStatusReply) GetLf() byte {
+func (m *_StandardFormatStatusReply) GetLf() byte {
 	return StandardFormatStatusReply_LF
 }
 
@@ -107,30 +107,31 @@ func (m *StandardFormatStatusReply) GetLf() byte {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewStandardFormatStatusReply factory function for StandardFormatStatusReply
-func NewStandardFormatStatusReply(statusHeader *StatusHeader, application ApplicationIdContainer, blockStart uint8, statusBytes []*StatusByte, crc *Checksum) *StandardFormatStatusReply {
-	return &StandardFormatStatusReply{StatusHeader: statusHeader, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
+// NewStandardFormatStatusReply factory function for _StandardFormatStatusReply
+func NewStandardFormatStatusReply(statusHeader StatusHeader, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, crc Checksum) *_StandardFormatStatusReply {
+	return &_StandardFormatStatusReply{StatusHeader: statusHeader, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
 }
 
-func CastStandardFormatStatusReply(structType interface{}) *StandardFormatStatusReply {
+// Deprecated: use the interface for direct cast
+func CastStandardFormatStatusReply(structType interface{}) StandardFormatStatusReply {
 	if casted, ok := structType.(StandardFormatStatusReply); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*StandardFormatStatusReply); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *StandardFormatStatusReply) GetTypeName() string {
+func (m *_StandardFormatStatusReply) GetTypeName() string {
 	return "StandardFormatStatusReply"
 }
 
-func (m *StandardFormatStatusReply) GetLengthInBits() uint16 {
+func (m *_StandardFormatStatusReply) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *StandardFormatStatusReply) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_StandardFormatStatusReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (statusHeader)
@@ -146,7 +147,7 @@ func (m *StandardFormatStatusReply) GetLengthInBitsConditional(lastItem bool) ui
 	if len(m.StatusBytes) > 0 {
 		for i, element := range m.StatusBytes {
 			last := i == len(m.StatusBytes)-1
-			lengthInBits += element.GetLengthInBitsConditional(last)
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
 		}
 	}
 
@@ -162,11 +163,11 @@ func (m *StandardFormatStatusReply) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *StandardFormatStatusReply) GetLengthInBytes() uint16 {
+func (m *_StandardFormatStatusReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardFormatStatusReply, error) {
+func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (StandardFormatStatusReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StandardFormatStatusReply"); pullErr != nil {
@@ -183,7 +184,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardForma
 	if _statusHeaderErr != nil {
 		return nil, errors.Wrap(_statusHeaderErr, "Error parsing 'statusHeader' field")
 	}
-	statusHeader := CastStatusHeader(_statusHeader)
+	statusHeader := _statusHeader.(StatusHeader)
 	if closeErr := readBuffer.CloseContext("statusHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for statusHeader")
 	}
@@ -213,14 +214,14 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardForma
 		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
 	}
 	// Count array
-	statusBytes := make([]*StatusByte, uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(2)))
+	statusBytes := make([]StatusByte, uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(2)))
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(2))); curItem++ {
 			_item, _err := StatusByteParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field")
 			}
-			statusBytes[curItem] = CastStatusByte(_item)
+			statusBytes[curItem] = _item.(StatusByte)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("statusBytes", utils.WithRenderAsList(true)); closeErr != nil {
@@ -235,7 +236,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardForma
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
-	crc := CastChecksum(_crc)
+	crc := _crc.(Checksum)
 	if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for crc")
 	}
@@ -266,7 +267,7 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardForma
 	return NewStandardFormatStatusReply(statusHeader, application, blockStart, statusBytes, crc), nil
 }
 
-func (m *StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StandardFormatStatusReply"); pushErr != nil {
@@ -277,7 +278,7 @@ func (m *StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("statusHeader"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for statusHeader")
 	}
-	_statusHeaderErr := writeBuffer.WriteSerializable(m.StatusHeader)
+	_statusHeaderErr := writeBuffer.WriteSerializable(m.GetStatusHeader())
 	if popErr := writeBuffer.PopContext("statusHeader"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for statusHeader")
 	}
@@ -289,7 +290,7 @@ func (m *StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for application")
 	}
-	_applicationErr := writeBuffer.WriteSerializable(m.Application)
+	_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
 	if popErr := writeBuffer.PopContext("application"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for application")
 	}
@@ -298,18 +299,18 @@ func (m *StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	// Simple Field (blockStart)
-	blockStart := uint8(m.BlockStart)
+	blockStart := uint8(m.GetBlockStart())
 	_blockStartErr := writeBuffer.WriteUint8("blockStart", 8, (blockStart))
 	if _blockStartErr != nil {
 		return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 	}
 
 	// Array Field (statusBytes)
-	if m.StatusBytes != nil {
+	if m.GetStatusBytes() != nil {
 		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusBytes")
 		}
-		for _, _element := range m.StatusBytes {
+		for _, _element := range m.GetStatusBytes() {
 			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
@@ -324,7 +325,7 @@ func (m *StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for crc")
 	}
-	_crcErr := writeBuffer.WriteSerializable(m.Crc)
+	_crcErr := writeBuffer.WriteSerializable(m.GetCrc())
 	if popErr := writeBuffer.PopContext("crc"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for crc")
 	}
@@ -350,7 +351,7 @@ func (m *StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
-func (m *StandardFormatStatusReply) String() string {
+func (m *_StandardFormatStatusReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}

@@ -22,8 +22,8 @@ package testutils
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/values"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/rs/zerolog/log"
 	"math/rand"
 	"reflect"

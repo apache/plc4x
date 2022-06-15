@@ -21,7 +21,7 @@ package simulated
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"github.com/rs/zerolog/log"
 	"math/rand"

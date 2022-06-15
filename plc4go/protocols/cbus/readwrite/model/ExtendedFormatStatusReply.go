@@ -31,20 +31,10 @@ import (
 const ExtendedFormatStatusReply_CR byte = 0x0D
 const ExtendedFormatStatusReply_LF byte = 0x0A
 
-// ExtendedFormatStatusReply is the data-structure of this message
-type ExtendedFormatStatusReply struct {
-	StatusHeader *ExtendedStatusHeader
-	Coding       StatusCoding
-	Application  ApplicationIdContainer
-	BlockStart   uint8
-	StatusBytes  []*StatusByte
-	Crc          *Checksum
-}
-
-// IExtendedFormatStatusReply is the corresponding interface of ExtendedFormatStatusReply
-type IExtendedFormatStatusReply interface {
+// ExtendedFormatStatusReply is the corresponding interface of ExtendedFormatStatusReply
+type ExtendedFormatStatusReply interface {
 	// GetStatusHeader returns StatusHeader (property field)
-	GetStatusHeader() *ExtendedStatusHeader
+	GetStatusHeader() ExtendedStatusHeader
 	// GetCoding returns Coding (property field)
 	GetCoding() StatusCoding
 	// GetApplication returns Application (property field)
@@ -52,9 +42,9 @@ type IExtendedFormatStatusReply interface {
 	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
 	// GetStatusBytes returns StatusBytes (property field)
-	GetStatusBytes() []*StatusByte
+	GetStatusBytes() []StatusByte
 	// GetCrc returns Crc (property field)
-	GetCrc() *Checksum
+	GetCrc() Checksum
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -63,32 +53,42 @@ type IExtendedFormatStatusReply interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _ExtendedFormatStatusReply is the data-structure of this message
+type _ExtendedFormatStatusReply struct {
+	StatusHeader ExtendedStatusHeader
+	Coding       StatusCoding
+	Application  ApplicationIdContainer
+	BlockStart   uint8
+	StatusBytes  []StatusByte
+	Crc          Checksum
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *ExtendedFormatStatusReply) GetStatusHeader() *ExtendedStatusHeader {
+func (m *_ExtendedFormatStatusReply) GetStatusHeader() ExtendedStatusHeader {
 	return m.StatusHeader
 }
 
-func (m *ExtendedFormatStatusReply) GetCoding() StatusCoding {
+func (m *_ExtendedFormatStatusReply) GetCoding() StatusCoding {
 	return m.Coding
 }
 
-func (m *ExtendedFormatStatusReply) GetApplication() ApplicationIdContainer {
+func (m *_ExtendedFormatStatusReply) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
-func (m *ExtendedFormatStatusReply) GetBlockStart() uint8 {
+func (m *_ExtendedFormatStatusReply) GetBlockStart() uint8 {
 	return m.BlockStart
 }
 
-func (m *ExtendedFormatStatusReply) GetStatusBytes() []*StatusByte {
+func (m *_ExtendedFormatStatusReply) GetStatusBytes() []StatusByte {
 	return m.StatusBytes
 }
 
-func (m *ExtendedFormatStatusReply) GetCrc() *Checksum {
+func (m *_ExtendedFormatStatusReply) GetCrc() Checksum {
 	return m.Crc
 }
 
@@ -101,11 +101,11 @@ func (m *ExtendedFormatStatusReply) GetCrc() *Checksum {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *ExtendedFormatStatusReply) GetCr() byte {
+func (m *_ExtendedFormatStatusReply) GetCr() byte {
 	return ExtendedFormatStatusReply_CR
 }
 
-func (m *ExtendedFormatStatusReply) GetLf() byte {
+func (m *_ExtendedFormatStatusReply) GetLf() byte {
 	return ExtendedFormatStatusReply_LF
 }
 
@@ -114,30 +114,31 @@ func (m *ExtendedFormatStatusReply) GetLf() byte {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewExtendedFormatStatusReply factory function for ExtendedFormatStatusReply
-func NewExtendedFormatStatusReply(statusHeader *ExtendedStatusHeader, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []*StatusByte, crc *Checksum) *ExtendedFormatStatusReply {
-	return &ExtendedFormatStatusReply{StatusHeader: statusHeader, Coding: coding, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
+// NewExtendedFormatStatusReply factory function for _ExtendedFormatStatusReply
+func NewExtendedFormatStatusReply(statusHeader ExtendedStatusHeader, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, crc Checksum) *_ExtendedFormatStatusReply {
+	return &_ExtendedFormatStatusReply{StatusHeader: statusHeader, Coding: coding, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
 }
 
-func CastExtendedFormatStatusReply(structType interface{}) *ExtendedFormatStatusReply {
+// Deprecated: use the interface for direct cast
+func CastExtendedFormatStatusReply(structType interface{}) ExtendedFormatStatusReply {
 	if casted, ok := structType.(ExtendedFormatStatusReply); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*ExtendedFormatStatusReply); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *ExtendedFormatStatusReply) GetTypeName() string {
+func (m *_ExtendedFormatStatusReply) GetTypeName() string {
 	return "ExtendedFormatStatusReply"
 }
 
-func (m *ExtendedFormatStatusReply) GetLengthInBits() uint16 {
+func (m *_ExtendedFormatStatusReply) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ExtendedFormatStatusReply) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ExtendedFormatStatusReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (statusHeader)
@@ -156,7 +157,7 @@ func (m *ExtendedFormatStatusReply) GetLengthInBitsConditional(lastItem bool) ui
 	if len(m.StatusBytes) > 0 {
 		for i, element := range m.StatusBytes {
 			last := i == len(m.StatusBytes)-1
-			lengthInBits += element.GetLengthInBitsConditional(last)
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
 		}
 	}
 
@@ -172,11 +173,11 @@ func (m *ExtendedFormatStatusReply) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *ExtendedFormatStatusReply) GetLengthInBytes() uint16 {
+func (m *_ExtendedFormatStatusReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedFormatStatusReply, error) {
+func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (ExtendedFormatStatusReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtendedFormatStatusReply"); pullErr != nil {
@@ -193,7 +194,7 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	if _statusHeaderErr != nil {
 		return nil, errors.Wrap(_statusHeaderErr, "Error parsing 'statusHeader' field")
 	}
-	statusHeader := CastExtendedStatusHeader(_statusHeader)
+	statusHeader := _statusHeader.(ExtendedStatusHeader)
 	if closeErr := readBuffer.CloseContext("statusHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for statusHeader")
 	}
@@ -236,14 +237,14 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
 	}
 	// Count array
-	statusBytes := make([]*StatusByte, uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(3)))
+	statusBytes := make([]StatusByte, uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(3)))
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(3))); curItem++ {
 			_item, _err := StatusByteParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field")
 			}
-			statusBytes[curItem] = CastStatusByte(_item)
+			statusBytes[curItem] = _item.(StatusByte)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("statusBytes", utils.WithRenderAsList(true)); closeErr != nil {
@@ -258,7 +259,7 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
-	crc := CastChecksum(_crc)
+	crc := _crc.(Checksum)
 	if closeErr := readBuffer.CloseContext("crc"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for crc")
 	}
@@ -289,7 +290,7 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	return NewExtendedFormatStatusReply(statusHeader, coding, application, blockStart, statusBytes, crc), nil
 }
 
-func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ExtendedFormatStatusReply"); pushErr != nil {
@@ -300,7 +301,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("statusHeader"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for statusHeader")
 	}
-	_statusHeaderErr := writeBuffer.WriteSerializable(m.StatusHeader)
+	_statusHeaderErr := writeBuffer.WriteSerializable(m.GetStatusHeader())
 	if popErr := writeBuffer.PopContext("statusHeader"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for statusHeader")
 	}
@@ -312,7 +313,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("coding"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for coding")
 	}
-	_codingErr := writeBuffer.WriteSerializable(m.Coding)
+	_codingErr := writeBuffer.WriteSerializable(m.GetCoding())
 	if popErr := writeBuffer.PopContext("coding"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for coding")
 	}
@@ -324,7 +325,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for application")
 	}
-	_applicationErr := writeBuffer.WriteSerializable(m.Application)
+	_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
 	if popErr := writeBuffer.PopContext("application"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for application")
 	}
@@ -333,18 +334,18 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	// Simple Field (blockStart)
-	blockStart := uint8(m.BlockStart)
+	blockStart := uint8(m.GetBlockStart())
 	_blockStartErr := writeBuffer.WriteUint8("blockStart", 8, (blockStart))
 	if _blockStartErr != nil {
 		return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 	}
 
 	// Array Field (statusBytes)
-	if m.StatusBytes != nil {
+	if m.GetStatusBytes() != nil {
 		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusBytes")
 		}
-		for _, _element := range m.StatusBytes {
+		for _, _element := range m.GetStatusBytes() {
 			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
@@ -359,7 +360,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("crc"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for crc")
 	}
-	_crcErr := writeBuffer.WriteSerializable(m.Crc)
+	_crcErr := writeBuffer.WriteSerializable(m.GetCrc())
 	if popErr := writeBuffer.PopContext("crc"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for crc")
 	}
@@ -385,7 +386,7 @@ func (m *ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) err
 	return nil
 }
 
-func (m *ExtendedFormatStatusReply) String() string {
+func (m *_ExtendedFormatStatusReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}

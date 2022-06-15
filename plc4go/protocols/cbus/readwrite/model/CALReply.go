@@ -31,19 +31,12 @@ import (
 const CALReply_CR byte = 0x0D
 const CALReply_LF byte = 0x0A
 
-// CALReply is the data-structure of this message
-type CALReply struct {
-	CalType byte
-	CalData *CALData
-	Child   ICALReplyChild
-}
-
-// ICALReply is the corresponding interface of CALReply
-type ICALReply interface {
+// CALReply is the corresponding interface of CALReply
+type CALReply interface {
 	// GetCalType returns CalType (property field)
 	GetCalType() byte
 	// GetCalData returns CalData (property field)
-	GetCalData() *CALData
+	GetCalData() CALData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -52,18 +45,31 @@ type ICALReply interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type ICALReplyParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ICALReply, serializeChildFunction func() error) error
+// _CALReply is the data-structure of this message
+type _CALReply struct {
+	_CALReplyChildRequirements
+	CalType byte
+	CalData CALData
+}
+
+type _CALReplyChildRequirements interface {
+	GetLengthInBits() uint16
+	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+type CALReplyParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child CALReply, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
-type ICALReplyChild interface {
+type CALReplyChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *CALReply, calType byte, calData *CALData)
+	InitializeParent(parent CALReply, calType byte, calData CALData)
 	GetParent() *CALReply
 
 	GetTypeName() string
-	ICALReply
+	CALReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,11 @@ type ICALReplyChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *CALReply) GetCalType() byte {
+func (m *_CALReply) GetCalType() byte {
 	return m.CalType
 }
 
-func (m *CALReply) GetCalData() *CALData {
+func (m *_CALReply) GetCalData() CALData {
 	return m.CalData
 }
 
@@ -88,11 +94,11 @@ func (m *CALReply) GetCalData() *CALData {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *CALReply) GetCr() byte {
+func (m *_CALReply) GetCr() byte {
 	return CALReply_CR
 }
 
-func (m *CALReply) GetLf() byte {
+func (m *_CALReply) GetLf() byte {
 	return CALReply_LF
 }
 
@@ -101,37 +107,27 @@ func (m *CALReply) GetLf() byte {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewCALReply factory function for CALReply
-func NewCALReply(calType byte, calData *CALData) *CALReply {
-	return &CALReply{CalType: calType, CalData: calData}
+// NewCALReply factory function for _CALReply
+func NewCALReply(calType byte, calData CALData) *_CALReply {
+	return &_CALReply{CalType: calType, CalData: calData}
 }
 
-func CastCALReply(structType interface{}) *CALReply {
+// Deprecated: use the interface for direct cast
+func CastCALReply(structType interface{}) CALReply {
 	if casted, ok := structType.(CALReply); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*CALReply); ok {
 		return casted
 	}
-	if casted, ok := structType.(ICALReplyChild); ok {
-		return casted.GetParent()
+	if casted, ok := structType.(*CALReply); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *CALReply) GetTypeName() string {
+func (m *_CALReply) GetTypeName() string {
 	return "CALReply"
 }
 
-func (m *CALReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *CALReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.GetLengthInBits()
-}
-
-func (m *CALReply) GetParentLengthInBits() uint16 {
+func (m *_CALReply) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (calData)
@@ -146,11 +142,11 @@ func (m *CALReply) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CALReply) GetLengthInBytes() uint16 {
+func (m *_CALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
+func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReply"); pullErr != nil {
@@ -169,17 +165,21 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 	readBuffer.Reset(currentPos)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type CALReplyChild interface {
-		InitializeParent(*CALReply, byte, *CALData)
-		GetParent() *CALReply
+	type CALReplyChildSerializeRequirement interface {
+		CALReply
+		InitializeParent(CALReply, byte, CALData)
+		GetParent() CALReply
 	}
-	var _child CALReplyChild
+	var _childTemp interface{}
+	var _child CALReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case calType == 0x86: // CALReplyLong
-		_child, typeSwitchError = CALReplyLongParse(readBuffer)
+		_childTemp, typeSwitchError = CALReplyLongParse(readBuffer)
+		_child = _childTemp.(CALReplyChildSerializeRequirement)
 	case true: // CALReplyShort
-		_child, typeSwitchError = CALReplyShortParse(readBuffer)
+		_childTemp, typeSwitchError = CALReplyShortParse(readBuffer)
+		_child = _childTemp.(CALReplyChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -196,7 +196,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field")
 	}
-	calData := CastCALData(_calData)
+	calData := _calData.(CALData)
 	if closeErr := readBuffer.CloseContext("calData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for calData")
 	}
@@ -224,15 +224,14 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent(), calType, calData)
-	return _child.GetParent(), nil
+	_child.InitializeParent(_child, calType, calData)
+	return _child, nil
 }
 
-func (m *CALReply) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
-}
-
-func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALReply, serializeChildFunction func() error) error {
+func (pm *_CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child CALReply, serializeChildFunction func() error) error {
+	// We redirect all calls through client as some methods are only implemented there
+	m := child
+	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CALReply"); pushErr != nil {
@@ -248,7 +247,7 @@ func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALRepl
 	if pushErr := writeBuffer.PushContext("calData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for calData")
 	}
-	_calDataErr := writeBuffer.WriteSerializable(m.CalData)
+	_calDataErr := writeBuffer.WriteSerializable(m.GetCalData())
 	if popErr := writeBuffer.PopContext("calData"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for calData")
 	}
@@ -274,7 +273,7 @@ func (m *CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child ICALRepl
 	return nil
 }
 
-func (m *CALReply) String() string {
+func (m *_CALReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}

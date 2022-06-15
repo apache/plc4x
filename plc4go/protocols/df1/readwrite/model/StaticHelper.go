@@ -31,7 +31,7 @@ func init() {
 	table = crc.NewTable(&crc.Parameters{Width: 16, Polynomial: 0x8005, Init: 0x0000, ReflectIn: true, ReflectOut: true, FinalXor: 0x0000})
 }
 
-func CrcCheck(destinationAddress uint8, sourceAddress uint8, command *DF1Command) (uint16, error) {
+func CrcCheck(destinationAddress uint8, sourceAddress uint8, command DF1Command) (uint16, error) {
 	df1Crc := table.InitCrc()
 	df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
 	bufferByteBased := utils.NewWriteBufferByteBased()

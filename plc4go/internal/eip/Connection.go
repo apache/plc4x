@@ -25,8 +25,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/plcerrors"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -135,18 +135,18 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	if err := m.messageCodec.SendRequest(
 		readWriteModel.NewEipConnectionRequest(0, 0, make([]byte, 8), 0),
 		func(message interface{}) bool {
-			eipPacket := readWriteModel.CastEipPacket(message)
+			eipPacket := message.(readWriteModel.EipPacket)
 			if eipPacket == nil {
 				return false
 			}
-			eipPacketConnectionRequest := readWriteModel.CastEipConnectionRequest(eipPacket.Child)
+			eipPacketConnectionRequest := eipPacket.(readWriteModel.EipConnectionRequest)
 			return eipPacketConnectionRequest != nil
 		},
 		func(message interface{}) error {
-			eipPacket := readWriteModel.CastEipPacket(message)
-			if eipPacket.Status == 0 {
-				m.sessionHandle = eipPacket.SessionHandle
-				m.senderContext = eipPacket.SenderContext
+			eipPacket := message.(readWriteModel.EipPacket)
+			if eipPacket.GetStatus() == 0 {
+				m.sessionHandle = eipPacket.GetSessionHandle()
+				m.senderContext = eipPacket.GetSenderContext()
 				log.Debug().Msgf("Got assigned with Session %d", m.sessionHandle)
 				// Send an event that connection setup is complete.
 				m.fireConnected(ch)

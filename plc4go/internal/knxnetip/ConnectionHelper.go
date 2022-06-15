@@ -46,55 +46,55 @@ func (m *Connection) interceptIncomingMessage(interface{}) {
 	}
 }
 
-func (m *Connection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
+func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 	return driverModel.NewIPAddress(ip[len(ip)-4:])
 }
 
-func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverModel.TunnelingRequest) {
+func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest driverModel.TunnelingRequest) {
 	go func() {
-		lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi.Child)
+		lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 		if lDataInd == nil {
 			return
 		}
 		var destinationAddress []byte
-		switch lDataInd.DataFrame.Child.(type) {
-		case *driverModel.LDataExtended:
-			dataFrame := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			destinationAddress = dataFrame.DestinationAddress
-			switch dataFrame.Apdu.Child.(type) {
-			case *driverModel.ApduDataContainer:
-				container := driverModel.CastApduDataContainer(dataFrame.Apdu)
-				switch container.DataApdu.Child.(type) {
-				case *driverModel.ApduDataGroupValueWrite:
-					groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
+		switch lDataInd.GetDataFrame().(type) {
+		case driverModel.LDataExtended:
+			dataFrame := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
+			destinationAddress = dataFrame.GetDestinationAddress()
+			switch dataFrame.GetApdu().(type) {
+			case driverModel.ApduDataContainer:
+				container := driverModel.CastApduDataContainer(dataFrame.GetApdu())
+				switch container.GetDataApdu().(type) {
+				case driverModel.ApduDataGroupValueWrite:
+					groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.GetDataApdu())
 					if destinationAddress == nil {
 						return
 					}
 					var payload []byte
-					payload = append(payload, byte(groupValueWrite.DataFirstByte))
-					payload = append(payload, groupValueWrite.Data...)
+					payload = append(payload, byte(groupValueWrite.GetDataFirstByte()))
+					payload = append(payload, groupValueWrite.GetData()...)
 
 					m.handleValueCacheUpdate(destinationAddress, payload)
 				default:
-					if dataFrame.GroupAddress {
+					if dataFrame.GetGroupAddress() {
 						return
 					}
 					// If this is an individual address and it is targeted at us, we need to ack that.
-					targetAddress := ByteArrayToKnxAddress(dataFrame.DestinationAddress)
-					if *targetAddress == *m.ClientKnxAddress {
+					targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+					if targetAddress == m.ClientKnxAddress {
 						log.Info().Msg("Acknowleding an unhandled data message.")
-						_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
+						_ = m.sendDeviceAck(dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
 				}
-			case *driverModel.ApduControlContainer:
-				if dataFrame.GroupAddress {
+			case driverModel.ApduControlContainer:
+				if dataFrame.GetGroupAddress() {
 					return
 				}
 				// If this is an individual address and it is targeted at us, we need to ack that.
-				targetAddress := ByteArrayToKnxAddress(dataFrame.DestinationAddress)
-				if *targetAddress == *m.ClientKnxAddress {
+				targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+				if targetAddress == m.ClientKnxAddress {
 					log.Info().Msg("Acknowleding an unhandled contol message.")
-					_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
+					_ = m.sendDeviceAck(dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 				}
 			}
 		default:
@@ -232,6 +232,6 @@ func (m *Connection) getNextCounter(targetAddress driverModel.KnxAddress) uint8 
 	return counter
 }
 
-func KnxAddressToString(knxAddress *driverModel.KnxAddress) string {
-	return fmt.Sprintf("%d.%d.%d", knxAddress.MainGroup, knxAddress.MiddleGroup, knxAddress.SubGroup)
+func KnxAddressToString(knxAddress driverModel.KnxAddress) string {
+	return fmt.Sprintf("%d.%d.%d", knxAddress.GetMainGroup(), knxAddress.GetMiddleGroup(), knxAddress.GetSubGroup())
 }

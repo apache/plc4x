@@ -253,6 +253,24 @@
     [implicit      uint 16 len 'lengthInBytes - 8']
 ]
 
+// Complex of complex usage
+[type ComplexOfComplexUsageA
+    [simple         ComplexOfComplexUsageB      b]
+]
+
+[type ComplexOfComplexUsageB
+    [optional       ComplexOfComplexUsageC      c]
+    [array          ComplexOfComplexUsageD      ds count      '5']
+]
+
+[type ComplexOfComplexUsageC
+    [simple uint 8  irrelevant]
+]
+
+[type ComplexOfComplexUsageD
+    [simple uint 8  irrelevant]
+]
+
 ////////////////////////////////////////////////////////////////
 // Discriminated Type Tests
 ////////////////////////////////////////////////////////////////

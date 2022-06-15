@@ -20,7 +20,7 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"reflect"
 	"testing"

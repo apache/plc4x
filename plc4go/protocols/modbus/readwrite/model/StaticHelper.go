@@ -19,10 +19,10 @@
 
 package model
 
-func AsciiLrcCheck(address uint8, pdu *ModbusPDU) (uint8, error) {
+func AsciiLrcCheck(address uint8, pdu ModbusPDU) (uint8, error) {
 	return 0, nil
 }
 
-func RtuCrcCheck(address uint8, pdu *ModbusPDU) (uint16, error) {
+func RtuCrcCheck(address uint8, pdu ModbusPDU) (uint16, error) {
 	return 0, nil
 }

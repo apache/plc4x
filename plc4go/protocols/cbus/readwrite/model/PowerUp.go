@@ -32,12 +32,8 @@ const PowerUp_PLUS byte = 0x02B
 const PowerUp_CR byte = 0x0D
 const PowerUp_LF byte = 0x0A
 
-// PowerUp is the data-structure of this message
-type PowerUp struct {
-}
-
-// IPowerUp is the corresponding interface of PowerUp
-type IPowerUp interface {
+// PowerUp is the corresponding interface of PowerUp
+type PowerUp interface {
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -46,20 +42,24 @@ type IPowerUp interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _PowerUp is the data-structure of this message
+type _PowerUp struct {
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *PowerUp) GetPlus() byte {
+func (m *_PowerUp) GetPlus() byte {
 	return PowerUp_PLUS
 }
 
-func (m *PowerUp) GetCr() byte {
+func (m *_PowerUp) GetCr() byte {
 	return PowerUp_CR
 }
 
-func (m *PowerUp) GetLf() byte {
+func (m *_PowerUp) GetLf() byte {
 	return PowerUp_LF
 }
 
@@ -68,30 +68,31 @@ func (m *PowerUp) GetLf() byte {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewPowerUp factory function for PowerUp
-func NewPowerUp() *PowerUp {
-	return &PowerUp{}
+// NewPowerUp factory function for _PowerUp
+func NewPowerUp() *_PowerUp {
+	return &_PowerUp{}
 }
 
-func CastPowerUp(structType interface{}) *PowerUp {
+// Deprecated: use the interface for direct cast
+func CastPowerUp(structType interface{}) PowerUp {
 	if casted, ok := structType.(PowerUp); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*PowerUp); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *PowerUp) GetTypeName() string {
+func (m *_PowerUp) GetTypeName() string {
 	return "PowerUp"
 }
 
-func (m *PowerUp) GetLengthInBits() uint16 {
+func (m *_PowerUp) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *PowerUp) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_PowerUp) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (plus)
@@ -106,11 +107,11 @@ func (m *PowerUp) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *PowerUp) GetLengthInBytes() uint16 {
+func (m *_PowerUp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PowerUpParse(readBuffer utils.ReadBuffer) (*PowerUp, error) {
+func PowerUpParse(readBuffer utils.ReadBuffer) (PowerUp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUp"); pullErr != nil {
@@ -154,7 +155,7 @@ func PowerUpParse(readBuffer utils.ReadBuffer) (*PowerUp, error) {
 	return NewPowerUp(), nil
 }
 
-func (m *PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("PowerUp"); pushErr != nil {
@@ -185,7 +186,7 @@ func (m *PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
-func (m *PowerUp) String() string {
+func (m *_PowerUp) String() string {
 	if m == nil {
 		return "<nil>"
 	}

@@ -30,21 +30,8 @@ import (
 // Constant values.
 const AlarmMessageObjectPushType_VARIABLESPEC uint8 = 0x12
 
-// AlarmMessageObjectPushType is the data-structure of this message
-type AlarmMessageObjectPushType struct {
-	LengthSpec       uint8
-	SyntaxId         SyntaxIdType
-	NumberOfValues   uint8
-	EventId          uint32
-	EventState       *State
-	LocalState       *State
-	AckStateGoing    *State
-	AckStateComing   *State
-	AssociatedValues []*AssociatedValueType
-}
-
-// IAlarmMessageObjectPushType is the corresponding interface of AlarmMessageObjectPushType
-type IAlarmMessageObjectPushType interface {
+// AlarmMessageObjectPushType is the corresponding interface of AlarmMessageObjectPushType
+type AlarmMessageObjectPushType interface {
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -54,15 +41,15 @@ type IAlarmMessageObjectPushType interface {
 	// GetEventId returns EventId (property field)
 	GetEventId() uint32
 	// GetEventState returns EventState (property field)
-	GetEventState() *State
+	GetEventState() State
 	// GetLocalState returns LocalState (property field)
-	GetLocalState() *State
+	GetLocalState() State
 	// GetAckStateGoing returns AckStateGoing (property field)
-	GetAckStateGoing() *State
+	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
-	GetAckStateComing() *State
+	GetAckStateComing() State
 	// GetAssociatedValues returns AssociatedValues (property field)
-	GetAssociatedValues() []*AssociatedValueType
+	GetAssociatedValues() []AssociatedValueType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -71,44 +58,57 @@ type IAlarmMessageObjectPushType interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+// _AlarmMessageObjectPushType is the data-structure of this message
+type _AlarmMessageObjectPushType struct {
+	LengthSpec       uint8
+	SyntaxId         SyntaxIdType
+	NumberOfValues   uint8
+	EventId          uint32
+	EventState       State
+	LocalState       State
+	AckStateGoing    State
+	AckStateComing   State
+	AssociatedValues []AssociatedValueType
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *AlarmMessageObjectPushType) GetLengthSpec() uint8 {
+func (m *_AlarmMessageObjectPushType) GetLengthSpec() uint8 {
 	return m.LengthSpec
 }
 
-func (m *AlarmMessageObjectPushType) GetSyntaxId() SyntaxIdType {
+func (m *_AlarmMessageObjectPushType) GetSyntaxId() SyntaxIdType {
 	return m.SyntaxId
 }
 
-func (m *AlarmMessageObjectPushType) GetNumberOfValues() uint8 {
+func (m *_AlarmMessageObjectPushType) GetNumberOfValues() uint8 {
 	return m.NumberOfValues
 }
 
-func (m *AlarmMessageObjectPushType) GetEventId() uint32 {
+func (m *_AlarmMessageObjectPushType) GetEventId() uint32 {
 	return m.EventId
 }
 
-func (m *AlarmMessageObjectPushType) GetEventState() *State {
+func (m *_AlarmMessageObjectPushType) GetEventState() State {
 	return m.EventState
 }
 
-func (m *AlarmMessageObjectPushType) GetLocalState() *State {
+func (m *_AlarmMessageObjectPushType) GetLocalState() State {
 	return m.LocalState
 }
 
-func (m *AlarmMessageObjectPushType) GetAckStateGoing() *State {
+func (m *_AlarmMessageObjectPushType) GetAckStateGoing() State {
 	return m.AckStateGoing
 }
 
-func (m *AlarmMessageObjectPushType) GetAckStateComing() *State {
+func (m *_AlarmMessageObjectPushType) GetAckStateComing() State {
 	return m.AckStateComing
 }
 
-func (m *AlarmMessageObjectPushType) GetAssociatedValues() []*AssociatedValueType {
+func (m *_AlarmMessageObjectPushType) GetAssociatedValues() []AssociatedValueType {
 	return m.AssociatedValues
 }
 
@@ -121,7 +121,7 @@ func (m *AlarmMessageObjectPushType) GetAssociatedValues() []*AssociatedValueTyp
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *AlarmMessageObjectPushType) GetVariableSpec() uint8 {
+func (m *_AlarmMessageObjectPushType) GetVariableSpec() uint8 {
 	return AlarmMessageObjectPushType_VARIABLESPEC
 }
 
@@ -130,30 +130,31 @@ func (m *AlarmMessageObjectPushType) GetVariableSpec() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewAlarmMessageObjectPushType factory function for AlarmMessageObjectPushType
-func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState *State, localState *State, ackStateGoing *State, ackStateComing *State, AssociatedValues []*AssociatedValueType) *AlarmMessageObjectPushType {
-	return &AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}
+// NewAlarmMessageObjectPushType factory function for _AlarmMessageObjectPushType
+func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState State, localState State, ackStateGoing State, ackStateComing State, AssociatedValues []AssociatedValueType) *_AlarmMessageObjectPushType {
+	return &_AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}
 }
 
-func CastAlarmMessageObjectPushType(structType interface{}) *AlarmMessageObjectPushType {
+// Deprecated: use the interface for direct cast
+func CastAlarmMessageObjectPushType(structType interface{}) AlarmMessageObjectPushType {
 	if casted, ok := structType.(AlarmMessageObjectPushType); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*AlarmMessageObjectPushType); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *AlarmMessageObjectPushType) GetTypeName() string {
+func (m *_AlarmMessageObjectPushType) GetTypeName() string {
 	return "AlarmMessageObjectPushType"
 }
 
-func (m *AlarmMessageObjectPushType) GetLengthInBits() uint16 {
+func (m *_AlarmMessageObjectPushType) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageObjectPushType) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AlarmMessageObjectPushType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (variableSpec)
@@ -187,18 +188,18 @@ func (m *AlarmMessageObjectPushType) GetLengthInBitsConditional(lastItem bool) u
 	if len(m.AssociatedValues) > 0 {
 		for i, element := range m.AssociatedValues {
 			last := i == len(m.AssociatedValues)-1
-			lengthInBits += element.GetLengthInBitsConditional(last)
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageObjectPushType) GetLengthInBytes() uint16 {
+func (m *_AlarmMessageObjectPushType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageObjectPushType, error) {
+func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageObjectPushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectPushType"); pullErr != nil {
@@ -258,7 +259,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
 	}
-	eventState := CastState(_eventState)
+	eventState := _eventState.(State)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for eventState")
 	}
@@ -271,7 +272,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if _localStateErr != nil {
 		return nil, errors.Wrap(_localStateErr, "Error parsing 'localState' field")
 	}
-	localState := CastState(_localState)
+	localState := _localState.(State)
 	if closeErr := readBuffer.CloseContext("localState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for localState")
 	}
@@ -284,7 +285,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field")
 	}
-	ackStateGoing := CastState(_ackStateGoing)
+	ackStateGoing := _ackStateGoing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackStateGoing")
 	}
@@ -297,7 +298,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field")
 	}
-	ackStateComing := CastState(_ackStateComing)
+	ackStateComing := _ackStateComing.(State)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
 	}
@@ -307,14 +308,14 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 		return nil, errors.Wrap(pullErr, "Error pulling for AssociatedValues")
 	}
 	// Count array
-	AssociatedValues := make([]*AssociatedValueType, numberOfValues)
+	AssociatedValues := make([]AssociatedValueType, numberOfValues)
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfValues); curItem++ {
 			_item, _err := AssociatedValueTypeParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'AssociatedValues' field")
 			}
-			AssociatedValues[curItem] = CastAssociatedValueType(_item)
+			AssociatedValues[curItem] = _item.(AssociatedValueType)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("AssociatedValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -329,7 +330,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	return NewAlarmMessageObjectPushType(lengthSpec, syntaxId, numberOfValues, eventId, eventState, localState, ackStateGoing, ackStateComing, AssociatedValues), nil
 }
 
-func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageObjectPushType"); pushErr != nil {
@@ -343,7 +344,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Simple Field (lengthSpec)
-	lengthSpec := uint8(m.LengthSpec)
+	lengthSpec := uint8(m.GetLengthSpec())
 	_lengthSpecErr := writeBuffer.WriteUint8("lengthSpec", 8, (lengthSpec))
 	if _lengthSpecErr != nil {
 		return errors.Wrap(_lengthSpecErr, "Error serializing 'lengthSpec' field")
@@ -353,7 +354,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for syntaxId")
 	}
-	_syntaxIdErr := writeBuffer.WriteSerializable(m.SyntaxId)
+	_syntaxIdErr := writeBuffer.WriteSerializable(m.GetSyntaxId())
 	if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for syntaxId")
 	}
@@ -362,14 +363,14 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Simple Field (numberOfValues)
-	numberOfValues := uint8(m.NumberOfValues)
+	numberOfValues := uint8(m.GetNumberOfValues())
 	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, (numberOfValues))
 	if _numberOfValuesErr != nil {
 		return errors.Wrap(_numberOfValuesErr, "Error serializing 'numberOfValues' field")
 	}
 
 	// Simple Field (eventId)
-	eventId := uint32(m.EventId)
+	eventId := uint32(m.GetEventId())
 	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, (eventId))
 	if _eventIdErr != nil {
 		return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
@@ -379,7 +380,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for eventState")
 	}
-	_eventStateErr := writeBuffer.WriteSerializable(m.EventState)
+	_eventStateErr := writeBuffer.WriteSerializable(m.GetEventState())
 	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for eventState")
 	}
@@ -391,7 +392,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("localState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for localState")
 	}
-	_localStateErr := writeBuffer.WriteSerializable(m.LocalState)
+	_localStateErr := writeBuffer.WriteSerializable(m.GetLocalState())
 	if popErr := writeBuffer.PopContext("localState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for localState")
 	}
@@ -403,7 +404,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
 	}
-	_ackStateGoingErr := writeBuffer.WriteSerializable(m.AckStateGoing)
+	_ackStateGoingErr := writeBuffer.WriteSerializable(m.GetAckStateGoing())
 	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateGoing")
 	}
@@ -415,7 +416,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
 	}
-	_ackStateComingErr := writeBuffer.WriteSerializable(m.AckStateComing)
+	_ackStateComingErr := writeBuffer.WriteSerializable(m.GetAckStateComing())
 	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ackStateComing")
 	}
@@ -424,11 +425,11 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Array Field (AssociatedValues)
-	if m.AssociatedValues != nil {
+	if m.GetAssociatedValues() != nil {
 		if pushErr := writeBuffer.PushContext("AssociatedValues", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AssociatedValues")
 		}
-		for _, _element := range m.AssociatedValues {
+		for _, _element := range m.GetAssociatedValues() {
 			_elementErr := writeBuffer.WriteSerializable(_element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'AssociatedValues' field")
@@ -445,7 +446,7 @@ func (m *AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) er
 	return nil
 }
 
-func (m *AlarmMessageObjectPushType) String() string {
+func (m *_AlarmMessageObjectPushType) String() string {
 	if m == nil {
 		return "<nil>"
 	}

@@ -23,7 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -115,20 +115,20 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		}
 		data := io.GetBytes()
 
-		userdata := readWriteModel.AmsPacket{
-			TargetAmsNetId: &m.targetAmsNetId,
-			TargetAmsPort:  m.targetAmsPort,
-			SourceAmsNetId: &m.sourceAmsNetId,
-			SourceAmsPort:  m.sourceAmsPort,
-			CommandId:      readWriteModel.CommandId_ADS_READ,
-			State:          readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-			ErrorCode:      0,
-			InvokeId:       0,
-			Data:           nil,
-		}
+		userdata := readWriteModel.NewAmsPacket(
+			m.targetAmsNetId,
+			m.targetAmsPort,
+			m.sourceAmsNetId,
+			m.sourceAmsPort,
+			readWriteModel.CommandId_ADS_READ,
+			readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
+			0,
+			0,
+			nil,
+		)
 		switch adsField.FieldType {
 		case DirectAdsStringField:
-			userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data).GetParent()
+			userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
 			panic("implement me")
 		case DirectAdsField:
 			panic("implement me")
@@ -154,22 +154,20 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 
 		// Assemble the finished amsTcpPaket
 		log.Trace().Msg("Assemble amsTcpPaket")
-		amsTcpPaket := readWriteModel.AmsTCPPacket{
-			Userdata: &userdata,
-		}
+		amsTcpPaket := readWriteModel.NewAmsTCPPacket(userdata)
 
 		// Send the TCP Paket over the wire
 		err = m.messageCodec.SendRequest(
 			amsTcpPaket,
 			func(message interface{}) bool {
 				paket := readWriteModel.CastAmsTCPPacket(message)
-				return paket.Userdata.InvokeId == transactionIdentifier
+				return paket.GetUserdata().GetInvokeId() == transactionIdentifier
 			},
 			func(message interface{}) error {
 				// Convert the response into an responseAmsTcpPaket
 				responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
 				// Convert the ads response into a PLC4X response
-				readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, *responseAmsTcpPaket, writeRequest)
+				readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, responseAmsTcpPaket, writeRequest)
 
 				if err != nil {
 					result <- &plc4goModel.DefaultPlcWriteRequestResult{
@@ -202,12 +200,12 @@ func (m *Writer) ToPlc4xWriteResponse(requestTcpPaket readWriteModel.AmsTCPPacke
 
 	// we default to an error until its proven wrong
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-	switch responseTcpPaket.Userdata.Data.Child.(type) {
-	case *readWriteModel.AdsWriteResponse:
-		resp := readWriteModel.CastAdsWriteResponse(responseTcpPaket.Userdata.Data)
-		responseCodes[fieldName] = model.PlcResponseCode(resp.Result)
+	switch responseTcpPaket.GetUserdata().GetData().(type) {
+	case readWriteModel.AdsWriteResponse:
+		resp := readWriteModel.CastAdsWriteResponse(responseTcpPaket.GetUserdata().GetData())
+		responseCodes[fieldName] = model.PlcResponseCode(resp.GetResult())
 	default:
-		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.Userdata.Data.Child)
+		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata().GetData())
 	}
 
 	// Return the response

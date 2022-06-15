@@ -22,7 +22,7 @@ package s7
 import (
 	"encoding/hex"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/pkg/errors"
 	"regexp"
@@ -244,18 +244,18 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", query)
 		}
-		s7AddressAny := s7Address.Child.(*readWriteModel.S7AddressAny)
-		if (s7AddressAny.TransportSize != readWriteModel.TransportSize_BOOL) && s7AddressAny.BitAddress != 0 {
+		s7AddressAny := s7Address.(readWriteModel.S7AddressAny)
+		if (s7AddressAny.GetTransportSize() != readWriteModel.TransportSize_BOOL) && s7AddressAny.GetBitAddress() != 0 {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
 
 		return NewField(
-			s7AddressAny.Area,
-			s7AddressAny.DbNumber,
-			s7AddressAny.ByteAddress,
-			s7AddressAny.BitAddress,
-			s7AddressAny.NumberOfElements,
-			s7AddressAny.TransportSize,
+			s7AddressAny.GetArea(),
+			s7AddressAny.GetDbNumber(),
+			s7AddressAny.GetByteAddress(),
+			s7AddressAny.GetBitAddress(),
+			s7AddressAny.GetNumberOfElements(),
+			s7AddressAny.GetTransportSize(),
 		), nil
 	} else if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])

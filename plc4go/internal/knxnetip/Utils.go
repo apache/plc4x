@@ -20,48 +20,53 @@
 package knxnetip
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"strconv"
 )
 
 func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressField) string {
-	if groupAddress != nil {
-		switch groupAddress.(type) {
-		case GroupAddress3LevelPlcField:
-			main := numericAddress >> 11
-			middle := (numericAddress >> 8) & 0x07
-			sub := numericAddress & 0xFF
-			return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub))
-		case GroupAddress2LevelPlcField:
-			main := numericAddress >> 11
-			sub := numericAddress & 0x07FF
-			return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub))
-		case GroupAddress1LevelPlcField:
-			return strconv.Itoa(int(numericAddress))
-		}
+	if groupAddress == nil {
+		return ""
 	}
-	return ""
+	switch groupAddress.(type) {
+	case GroupAddress3LevelPlcField:
+		main := numericAddress >> 11
+		middle := (numericAddress >> 8) & 0x07
+		sub := numericAddress & 0xFF
+		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub))
+	case GroupAddress2LevelPlcField:
+		main := numericAddress >> 11
+		sub := numericAddress & 0x07FF
+		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub))
+	case GroupAddress1LevelPlcField:
+		return strconv.Itoa(int(numericAddress))
+	default:
+		panic(fmt.Sprintf("Unmapped %T", groupAddress))
+	}
 }
 
-func GroupAddressToString(groupAddress *driverModel.KnxGroupAddress) string {
-	if groupAddress != nil {
-		switch groupAddress.Child.(type) {
-		case *driverModel.KnxGroupAddress3Level:
-			level3 := driverModel.CastKnxGroupAddress3Level(groupAddress)
-			return strconv.Itoa(int(level3.MainGroup)) + "/" + strconv.Itoa(int(level3.MiddleGroup)) + "/" + strconv.Itoa(int(level3.SubGroup))
-		case *driverModel.KnxGroupAddress2Level:
-			level2 := driverModel.CastKnxGroupAddress2Level(groupAddress)
-			return strconv.Itoa(int(level2.MainGroup)) + "/" + strconv.Itoa(int(level2.SubGroup))
-		case *driverModel.KnxGroupAddressFreeLevel:
-			level1 := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
-			return strconv.Itoa(int(level1.SubGroup))
-		}
+func GroupAddressToString(groupAddress driverModel.KnxGroupAddress) string {
+	if groupAddress == nil {
+		return ""
 	}
-	return ""
+	switch groupAddress := groupAddress.(type) {
+	case driverModel.KnxGroupAddress3Level:
+		level3 := groupAddress
+		return strconv.Itoa(int(level3.GetMainGroup())) + "/" + strconv.Itoa(int(level3.GetMiddleGroup())) + "/" + strconv.Itoa(int(level3.GetSubGroup()))
+	case driverModel.KnxGroupAddress2Level:
+		level2 := groupAddress
+		return strconv.Itoa(int(level2.GetMainGroup())) + "/" + strconv.Itoa(int(level2.GetSubGroup()))
+	case driverModel.KnxGroupAddressFreeLevel:
+		level1 := groupAddress
+		return strconv.Itoa(int(level1.GetSubGroup()))
+	default:
+		panic(fmt.Sprintf("Unmapped %T", groupAddress))
+	}
 }
 
-func ByteArrayToKnxAddress(data []byte) *driverModel.KnxAddress {
+func ByteArrayToKnxAddress(data []byte) driverModel.KnxAddress {
 	readBuffer := utils.NewReadBufferByteBased(data)
 	knxAddress, err := driverModel.KnxAddressParse(readBuffer)
 	if err != nil {
@@ -72,24 +77,24 @@ func ByteArrayToKnxAddress(data []byte) *driverModel.KnxAddress {
 
 func KnxAddressToByteArray(knxAddress driverModel.KnxAddress) []byte {
 	targetAddress := make([]byte, 2)
-	targetAddress[0] = (knxAddress.MainGroup&0xF)<<4 | (knxAddress.MiddleGroup & 0xF)
-	targetAddress[1] = knxAddress.SubGroup
+	targetAddress[0] = (knxAddress.GetMainGroup()&0xF)<<4 | (knxAddress.GetMiddleGroup() & 0xF)
+	targetAddress[1] = knxAddress.GetSubGroup()
 	return targetAddress
 }
 
-func Uint16ToKnxAddress(data uint16) *driverModel.KnxAddress {
+func Uint16ToKnxAddress(data uint16) driverModel.KnxAddress {
 	main := uint8(data >> 12)
 	middle := uint8(data>>8) & 0xF
 	sub := uint8(data & 0xFF)
-	knxAddress := driverModel.KnxAddress{
-		MainGroup:   main,
-		MiddleGroup: middle,
-		SubGroup:    sub,
-	}
-	return &knxAddress
+	knxAddress := driverModel.NewKnxAddress(
+		main,
+		middle,
+		sub,
+	)
+	return knxAddress
 }
 
-func Uint16ToKnxGroupAddress(data uint16, numLevels uint8) *driverModel.KnxGroupAddress {
+func Uint16ToKnxGroupAddress(data uint16, numLevels uint8) driverModel.KnxGroupAddress {
 	rawData := make([]uint8, 2)
 	rawData[0] = uint8(data >> 8)
 	rawData[1] = uint8(data & 0xFF)

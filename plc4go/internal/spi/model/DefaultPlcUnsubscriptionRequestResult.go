@@ -19,7 +19,7 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+import "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 type DefaultPlcUnsubscriptionRequestResult struct {
 	Request  model.PlcUnsubscriptionRequest

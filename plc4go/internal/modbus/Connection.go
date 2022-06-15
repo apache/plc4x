@@ -25,8 +25,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/spi/interceptors"
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -93,13 +93,13 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	log.Trace().Msg("Pinging")
 	result := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
-		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42).GetParent()
+		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
 		if err := m.messageCodec.SendRequest(
 			pingRequest,
 			func(message interface{}) bool {
 				responseAdu := readWriteModel.CastModbusTcpADU(message)
-				return responseAdu.TransactionIdentifier == 1 && responseAdu.UnitIdentifier == m.unitIdentifier
+				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == m.unitIdentifier
 			},
 			func(message interface{}) error {
 				log.Trace().Msgf("Received Message")

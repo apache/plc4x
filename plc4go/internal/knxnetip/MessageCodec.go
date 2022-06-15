@@ -120,8 +120,8 @@ func CustomMessageHandling(codec *_default.DefaultCodecRequirements, message int
 	if tunnelingRequest != nil {
 		response := model.NewTunnelingResponse(
 			model.NewTunnelingResponseDataBlock(
-				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId,
-				tunnelingRequest.TunnelingRequestDataBlock.SequenceCounter,
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId(),
+				tunnelingRequest.GetTunnelingRequestDataBlock().GetSequenceCounter(),
 				model.Status_NO_ERROR),
 		)
 		err := (*codec).Send(response)

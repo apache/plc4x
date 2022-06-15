@@ -22,7 +22,7 @@ package plc4go
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"

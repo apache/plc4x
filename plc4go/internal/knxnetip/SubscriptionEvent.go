@@ -22,8 +22,8 @@ package knxnetip
 import (
 	internalMode "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"time"
 )
@@ -51,7 +51,7 @@ func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
 	rawAddressReadBuffer := utils.NewReadBufferByteBased(rawAddress)
 	field := m.DefaultPlcSubscriptionEvent.GetField(name)
-	var groupAddress *driverModel.KnxGroupAddress
+	var groupAddress driverModel.KnxGroupAddress
 	var err error
 	switch field.(type) {
 	case GroupAddress3LevelPlcField:

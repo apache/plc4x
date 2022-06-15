@@ -23,7 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -88,18 +88,18 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))
 
-		var pdu *readWriteModel.ModbusPDU
+		var pdu readWriteModel.ModbusPDU
 		switch modbusField.FieldType {
 		case Coil:
 			pdu = readWriteModel.NewModbusPDUWriteMultipleCoilsRequest(
 				modbusField.Address,
 				modbusField.Quantity,
-				data).GetParent()
+				data)
 		case HoldingRegister:
 			pdu = readWriteModel.NewModbusPDUWriteMultipleHoldingRegistersRequest(
 				modbusField.Address,
 				numWords,
-				data).GetParent()
+				data)
 		case ExtendedRegister:
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
@@ -124,25 +124,21 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		}
 
 		// Assemble the finished ADU
-		requestAdu := readWriteModel.ModbusTcpADU{
-			TransactionIdentifier: uint16(transactionIdentifier),
-			UnitIdentifier:        m.unitIdentifier,
-			Pdu:                   pdu,
-		}
+		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu, false)
 
 		// Send the ADU over the wire
 		err = m.messageCodec.SendRequest(
 			requestAdu,
 			func(message interface{}) bool {
-				responseAdu := readWriteModel.CastModbusTcpADU(message)
-				return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
-					responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
+				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
+					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
 			},
 			func(message interface{}) error {
 				// Convert the response into an ADU
-				responseAdu := readWriteModel.CastModbusTcpADU(message)
+				responseAdu := message.(readWriteModel.ModbusTcpADU)
 				// Convert the modbus response into a PLC4X response
-				readResponse, err := m.ToPlc4xWriteResponse(requestAdu, *responseAdu, writeRequest)
+				readResponse, err := m.ToPlc4xWriteResponse(requestAdu, responseAdu, writeRequest)
 
 				if err != nil {
 					result <- &plc4goModel.DefaultPlcWriteRequestResult{
@@ -175,22 +171,19 @@ func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, res
 
 	// we default to an error until its proven wrong
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-	switch responseAdu.Pdu.Child.(type) {
-	case *readWriteModel.ModbusPDUWriteMultipleCoilsResponse:
-		req := readWriteModel.CastModbusPDUWriteMultipleCoilsRequest(requestAdu.Pdu)
-		resp := readWriteModel.CastModbusPDUWriteMultipleCoilsResponse(responseAdu.Pdu)
-		if req.Quantity == resp.Quantity {
+	switch resp := responseAdu.GetPdu().(type) {
+	case readWriteModel.ModbusPDUWriteMultipleCoilsResponse:
+		req := requestAdu.GetPdu().(readWriteModel.ModbusPDUWriteMultipleCoilsRequest)
+		if req.GetQuantity() == resp.GetQuantity() {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
-	case *readWriteModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
-		req := readWriteModel.CastModbusPDUWriteMultipleHoldingRegistersRequest(requestAdu.Pdu)
-		resp := readWriteModel.CastModbusPDUWriteMultipleHoldingRegistersResponse(responseAdu.Pdu)
-		if req.Quantity == resp.Quantity {
+	case readWriteModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
+		req := requestAdu.GetPdu().(readWriteModel.ModbusPDUWriteMultipleHoldingRegistersRequest)
+		if req.GetQuantity() == resp.GetQuantity() {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
-	case *readWriteModel.ModbusPDUError:
-		resp := readWriteModel.CastModbusPDUError(&responseAdu.Pdu)
-		switch resp.ExceptionCode {
+	case readWriteModel.ModbusPDUError:
+		switch resp.GetExceptionCode() {
 		case readWriteModel.ModbusErrorCode_ILLEGAL_FUNCTION:
 			responseCodes[fieldName] = model.PlcResponseCode_UNSUPPORTED
 		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
@@ -212,10 +205,10 @@ func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, res
 		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
 			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
 		default:
-			log.Debug().Msgf("Unmapped exception code %x", resp.ExceptionCode)
+			log.Debug().Msgf("Unmapped exception code %x", resp.GetExceptionCode())
 		}
 	default:
-		return nil, errors.Errorf("unsupported response type %T", responseAdu.Pdu.Child)
+		return nil, errors.Errorf("unsupported response type %T", resp)
 	}
 
 	// Return the response

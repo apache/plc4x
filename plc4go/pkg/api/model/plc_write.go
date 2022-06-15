@@ -19,31 +19,31 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+import "github.com/apache/plc4x/plc4go/pkg/api/values"
 
-type PlcReadRequestBuilder interface {
-	AddQuery(name string, query string) PlcReadRequestBuilder
-	AddField(name string, field PlcField) PlcReadRequestBuilder
-	Build() (PlcReadRequest, error)
+type PlcWriteRequestBuilder interface {
+	AddQuery(name string, query string, value interface{}) PlcWriteRequestBuilder
+	AddField(name string, field PlcField, value interface{}) PlcWriteRequestBuilder
+	Build() (PlcWriteRequest, error)
 }
 
-type PlcReadRequestResult interface {
-	GetRequest() PlcReadRequest
-	GetResponse() PlcReadResponse
+type PlcWriteRequestResult interface {
+	GetRequest() PlcWriteRequest
+	GetResponse() PlcWriteResponse
 	GetErr() error
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
+type PlcWriteRequest interface {
+	Execute() <-chan PlcWriteRequestResult
 	GetFieldNames() []string
 	GetField(name string) PlcField
+	GetValue(name string) values.PlcValue
 	PlcRequest
 }
 
-type PlcReadResponse interface {
-	GetRequest() PlcReadRequest
+type PlcWriteResponse interface {
+	GetRequest() PlcWriteRequest
 	GetFieldNames() []string
 	GetResponseCode(name string) PlcResponseCode
-	GetValue(name string) values.PlcValue
 	PlcResponse
 }

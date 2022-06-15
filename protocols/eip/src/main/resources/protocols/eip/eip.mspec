@@ -128,7 +128,7 @@
     //['-1'       UNKNOWN         ['-1']]
 ]
 
-[enum uint 16 'CIPStructTypeCode'
+[enum uint 16 CIPStructTypeCode
     ['0x0FCE'   STRING]
 ]
 

@@ -25,8 +25,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/plcerrors"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -142,21 +142,21 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) {
 	log.Debug().Msg("Sending COTP Connection Request")
 	// Open the session on ISO Transport Protocol first.
-	cotpConnectionResult := make(chan *readWriteModel.COTPPacketConnectionResponse)
+	cotpConnectionResult := make(chan readWriteModel.COTPPacketConnectionResponse)
 	cotpConnectionErrorChan := make(chan error)
 	if err := m.messageCodec.SendRequest(
 		readWriteModel.NewTPKTPacket(m.createCOTPConnectionRequest()),
 		func(message interface{}) bool {
-			tpktPacket := readWriteModel.CastTPKTPacket(message)
+			tpktPacket := message.(readWriteModel.TPKTPacket)
 			if tpktPacket == nil {
 				return false
 			}
-			cotpPacketConnectionResponse := readWriteModel.CastCOTPPacketConnectionResponse(tpktPacket.Payload)
+			cotpPacketConnectionResponse := tpktPacket.GetPayload().(readWriteModel.COTPPacketConnectionResponse)
 			return cotpPacketConnectionResponse != nil
 		},
 		func(message interface{}) error {
-			tpktPacket := readWriteModel.CastTPKTPacket(message)
-			cotpPacketConnectionResponse := readWriteModel.CastCOTPPacketConnectionResponse(tpktPacket.Payload)
+			tpktPacket := message.(readWriteModel.TPKTPacket)
+			cotpPacketConnectionResponse := tpktPacket.GetPayload().(readWriteModel.COTPPacketConnectionResponse)
 			cotpConnectionResult <- cotpPacketConnectionResponse
 			return nil
 		},
@@ -179,31 +179,31 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		log.Debug().Msg("Sending S7 Connection Request")
 
 		// Send an S7 login message.
-		s7ConnectionResult := make(chan *readWriteModel.S7ParameterSetupCommunication)
+		s7ConnectionResult := make(chan readWriteModel.S7ParameterSetupCommunication)
 		s7ConnectionErrorChan := make(chan error)
 		if err := m.messageCodec.SendRequest(
 			m.createS7ConnectionRequest(cotpPacketConnectionResponse),
 			func(message interface{}) bool {
-				tpktPacket := readWriteModel.CastTPKTPacket(message)
+				tpktPacket := message.(readWriteModel.TPKTPacket)
 				if tpktPacket == nil {
 					return false
 				}
-				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
+				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
 				if cotpPacketData == nil {
 					return false
 				}
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Payload)
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.GetPayload())
 				if messageResponseData == nil {
 					return false
 				}
-				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parameter)
+				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.GetParameter())
 				return parameterSetupCommunication != nil
 			},
 			func(message interface{}) error {
-				tpktPacket := readWriteModel.CastTPKTPacket(message)
-				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Payload)
-				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parameter)
+				tpktPacket := message.(readWriteModel.TPKTPacket)
+				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.GetPayload())
+				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.GetParameter())
 				s7ConnectionResult <- setupCommunication
 				return nil
 			},
@@ -225,9 +225,9 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			log.Debug().Msg("Got S7 Connection Response")
 			log.Debug().Msg("Sending identify remote Request")
 			// Save some data from the response.
-			m.driverContext.MaxAmqCaller = setupCommunication.MaxAmqCaller
-			m.driverContext.MaxAmqCallee = setupCommunication.MaxAmqCallee
-			m.driverContext.PduSize = setupCommunication.PduLength
+			m.driverContext.MaxAmqCaller = setupCommunication.GetMaxAmqCaller()
+			m.driverContext.MaxAmqCallee = setupCommunication.GetMaxAmqCallee()
+			m.driverContext.PduSize = setupCommunication.GetPduLength()
 
 			// Update the number of concurrent requests to the negotiated number.
 			// I have never seen anything else than equal values for caller and
@@ -246,7 +246,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 
 			// Prepare a message to request the remote to identify itself.
 			log.Debug().Msg("Sending S7 Identification Request")
-			s7IdentificationResult := make(chan *readWriteModel.S7PayloadUserData)
+			s7IdentificationResult := make(chan readWriteModel.S7PayloadUserData)
 			s7IdentificationErrorChan := make(chan error)
 			if err := m.messageCodec.SendRequest(
 				m.createIdentifyRemoteMessage(),
@@ -255,21 +255,21 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 					if tpktPacket == nil {
 						return false
 					}
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
+					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
 					if cotpPacketData == nil {
 						return false
 					}
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Payload)
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.GetPayload())
 					if messageUserData == nil {
 						return false
 					}
-					return readWriteModel.CastS7PayloadUserData(messageUserData.Payload) != nil
+					return readWriteModel.CastS7PayloadUserData(messageUserData.GetPayload()) != nil
 				},
 				func(message interface{}) error {
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Payload)
-					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.Payload)
+					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.GetPayload())
+					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.GetPayload())
 					return nil
 				},
 				func(err error) error {
@@ -317,18 +317,17 @@ func (m *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) 
 	m.SetConnected(true)
 }
 
-func (m *Connection) extractControllerTypeAndFireConnected(payloadUserData *readWriteModel.S7PayloadUserData, ch chan<- plc4go.PlcConnectionConnectResult) {
+func (m *Connection) extractControllerTypeAndFireConnected(payloadUserData readWriteModel.S7PayloadUserData, ch chan<- plc4go.PlcConnectionConnectResult) {
 	// TODO: how do we handle the case if there no items at all? Should we assume it a successful or failure...
 	// TODO ... opposed to the java implementation we treat it as a failure
-	for _, item := range payloadUserData.Items {
-		switch item.Child.(type) {
-		case *readWriteModel.S7PayloadUserDataItemCpuFunctionReadSzlResponse:
-			readSzlResponseItem := item.Child.(*readWriteModel.S7PayloadUserDataItemCpuFunctionReadSzlResponse)
-			for _, readSzlResponseItemItem := range readSzlResponseItem.Items {
-				if readSzlResponseItemItem.ItemIndex != 0x0001 {
+	for _, item := range payloadUserData.GetItems() {
+		switch readSzlResponseItem := item.(type) {
+		case readWriteModel.S7PayloadUserDataItemCpuFunctionReadSzlResponse:
+			for _, readSzlResponseItemItem := range readSzlResponseItem.GetItems() {
+				if readSzlResponseItemItem.GetItemIndex() != 0x0001 {
 					continue
 				}
-				articleNumber := string(readSzlResponseItemItem.Mlfb)
+				articleNumber := string(readSzlResponseItemItem.GetMlfb())
 				var controllerType ControllerType
 				if !strings.HasPrefix(articleNumber, "6ES7 ") {
 					controllerType = ControllerType_ANY
@@ -359,11 +358,11 @@ func (m *Connection) extractControllerTypeAndFireConnected(payloadUserData *read
 	m.fireConnectionError(errors.New("Coudln't find the required information"), ch)
 }
 
-func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
+func (m *Connection) createIdentifyRemoteMessage() readWriteModel.TPKTPacket {
 	identifyRemoteMessage := readWriteModel.NewS7MessageUserData(
 		1,
 		readWriteModel.NewS7ParameterUserData(
-			[]*readWriteModel.S7ParameterUserDataItem{
+			[]readWriteModel.S7ParameterUserDataItem{
 				readWriteModel.NewS7ParameterUserDataItemCPUFunctions(
 					0x11,
 					0x4,
@@ -373,11 +372,11 @@ func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
 					nil,
 					nil,
 					nil,
-				).GetParent(),
+				),
 			},
-		).GetParent(),
+		),
 		readWriteModel.NewS7PayloadUserData(
-			[]*readWriteModel.S7PayloadUserDataItem{
+			[]readWriteModel.S7PayloadUserDataItem{
 				readWriteModel.NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(
 					readWriteModel.NewSzlId(
 						readWriteModel.SzlModuleTypeClass_CPU,
@@ -387,30 +386,27 @@ func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
 					0x0000,
 					readWriteModel.DataTransportErrorCode_OK,
 					readWriteModel.DataTransportSize_OCTET_STRING,
-				).GetParent(),
+				),
 			},
 			nil,
-		).GetParent(),
-	).GetParent()
-	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 2, nil, identifyRemoteMessage, 0).GetParent()
+		),
+	)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 2, nil, identifyRemoteMessage, 0)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
-func (m *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse *readWriteModel.COTPPacketConnectionResponse) *readWriteModel.TPKTPacket {
-	for _, parameter := range cotpPacketConnectionResponse.Parameters {
-		switch parameter.Child.(type) {
-		case *readWriteModel.COTPParameterCalledTsap:
-			cotpParameterCalledTsap := parameter.Child.(*readWriteModel.COTPParameterCalledTsap)
-			m.driverContext.CalledTsapId = cotpParameterCalledTsap.TsapId
-		case *readWriteModel.COTPParameterCallingTsap:
-			cotpParameterCallingTsap := parameter.Child.(*readWriteModel.COTPParameterCallingTsap)
-			if cotpParameterCallingTsap.TsapId != m.driverContext.CallingTsapId {
-				m.driverContext.CallingTsapId = cotpParameterCallingTsap.TsapId
+func (m *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse readWriteModel.COTPPacketConnectionResponse) readWriteModel.TPKTPacket {
+	for _, parameter := range cotpPacketConnectionResponse.GetParameters() {
+		switch parameter := parameter.(type) {
+		case readWriteModel.COTPParameterCalledTsap:
+			m.driverContext.CalledTsapId = parameter.GetTsapId()
+		case readWriteModel.COTPParameterCallingTsap:
+			if parameter.GetTsapId() != m.driverContext.CallingTsapId {
+				m.driverContext.CallingTsapId = parameter.GetTsapId()
 				log.Warn().Msgf("Switching calling TSAP id to '%x'", m.driverContext.CallingTsapId)
 			}
-		case *readWriteModel.COTPParameterTpduSize:
-			cotpParameterTpduSize := parameter.Child.(*readWriteModel.COTPParameterTpduSize)
-			m.driverContext.CotpTpduSize = cotpParameterTpduSize.TpduSize
+		case readWriteModel.COTPParameterTpduSize:
+			m.driverContext.CotpTpduSize = parameter.GetTpduSize()
 		default:
 			log.Warn().Msgf("Got unknown parameter type '%v'", reflect.TypeOf(parameter))
 		}
@@ -418,25 +414,25 @@ func (m *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse *rea
 
 	s7ParameterSetupCommunication := readWriteModel.NewS7ParameterSetupCommunication(
 		m.driverContext.MaxAmqCaller, m.driverContext.MaxAmqCallee, m.driverContext.PduSize,
-	).GetParent()
-	s7Message := readWriteModel.NewS7MessageRequest(0, s7ParameterSetupCommunication, nil).GetParent()
-	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 1, nil, s7Message, 0).GetParent()
+	)
+	s7Message := readWriteModel.NewS7MessageRequest(0, s7ParameterSetupCommunication, nil)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 1, nil, s7Message, 0)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
-func (m *Connection) createCOTPConnectionRequest() *readWriteModel.COTPPacket {
+func (m *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 	return readWriteModel.NewCOTPPacketConnectionRequest(
 		0x0000,
 		0x000F,
 		readWriteModel.COTPProtocolClass_CLASS_0,
-		[]*readWriteModel.COTPParameter{
-			readWriteModel.NewCOTPParameterCalledTsap(m.driverContext.CalledTsapId, 0).GetParent(),
-			readWriteModel.NewCOTPParameterCallingTsap(m.driverContext.CallingTsapId, 0).GetParent(),
-			readWriteModel.NewCOTPParameterTpduSize(m.driverContext.CotpTpduSize, 0).GetParent(),
+		[]readWriteModel.COTPParameter{
+			readWriteModel.NewCOTPParameterCalledTsap(m.driverContext.CalledTsapId, 0),
+			readWriteModel.NewCOTPParameterCallingTsap(m.driverContext.CallingTsapId, 0),
+			readWriteModel.NewCOTPParameterTpduSize(m.driverContext.CotpTpduSize, 0),
 		},
 		nil,
 		0,
-	).GetParent()
+	)
 }
 
 func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {

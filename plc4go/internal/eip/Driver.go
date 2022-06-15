@@ -23,7 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"

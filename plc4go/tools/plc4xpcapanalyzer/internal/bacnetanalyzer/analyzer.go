@@ -37,7 +37,7 @@ func PackageParse(packetInformation string, payload []byte) (interface{}, error)
 }
 
 func SerializePackage(bvlc interface{}) ([]byte, error) {
-	if bvlc, ok := bvlc.(*model.BVLC); !ok {
+	if bvlc, ok := bvlc.(model.BVLC); !ok {
 		log.Fatal().Msgf("Unsupported type %T supplied", bvlc)
 		panic("unreachable statement")
 	} else {

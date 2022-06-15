@@ -30,19 +30,10 @@ import (
 // Constant values.
 const CBusCommand_INITIATOR byte = 0x5C
 
-// CBusCommand is the data-structure of this message
-type CBusCommand struct {
-	Header *CBusHeader
-
-	// Arguments.
-	Srchk bool
-	Child ICBusCommandChild
-}
-
-// ICBusCommand is the corresponding interface of CBusCommand
-type ICBusCommand interface {
+// CBusCommand is the corresponding interface of CBusCommand
+type CBusCommand interface {
 	// GetHeader returns Header (property field)
-	GetHeader() *CBusHeader
+	GetHeader() CBusHeader
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
 	GetDestinationAddressType() DestinationAddressType
 	// GetLengthInBytes returns the length in bytes
@@ -53,18 +44,33 @@ type ICBusCommand interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type ICBusCommandParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ICBusCommand, serializeChildFunction func() error) error
+// _CBusCommand is the data-structure of this message
+type _CBusCommand struct {
+	_CBusCommandChildRequirements
+	Header CBusHeader
+
+	// Arguments.
+	Srchk bool
+}
+
+type _CBusCommandChildRequirements interface {
+	GetLengthInBits() uint16
+	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+type CBusCommandParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child CBusCommand, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
-type ICBusCommandChild interface {
+type CBusCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *CBusCommand, header *CBusHeader)
+	InitializeParent(parent CBusCommand, header CBusHeader)
 	GetParent() *CBusCommand
 
 	GetTypeName() string
-	ICBusCommand
+	CBusCommand
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,7 +78,7 @@ type ICBusCommandChild interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *CBusCommand) GetHeader() *CBusHeader {
+func (m *_CBusCommand) GetHeader() CBusHeader {
 	return m.Header
 }
 
@@ -85,7 +91,7 @@ func (m *CBusCommand) GetHeader() *CBusHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
+func (m *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
 	return CastDestinationAddressType(m.GetHeader().GetDestinationAddressType())
 }
 
@@ -98,7 +104,7 @@ func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *CBusCommand) GetInitiator() byte {
+func (m *_CBusCommand) GetInitiator() byte {
 	return CBusCommand_INITIATOR
 }
 
@@ -107,37 +113,27 @@ func (m *CBusCommand) GetInitiator() byte {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewCBusCommand factory function for CBusCommand
-func NewCBusCommand(header *CBusHeader, srchk bool) *CBusCommand {
-	return &CBusCommand{Header: header, Srchk: srchk}
+// NewCBusCommand factory function for _CBusCommand
+func NewCBusCommand(header CBusHeader, srchk bool) *_CBusCommand {
+	return &_CBusCommand{Header: header, Srchk: srchk}
 }
 
-func CastCBusCommand(structType interface{}) *CBusCommand {
+// Deprecated: use the interface for direct cast
+func CastCBusCommand(structType interface{}) CBusCommand {
 	if casted, ok := structType.(CBusCommand); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*CBusCommand); ok {
 		return casted
 	}
-	if casted, ok := structType.(ICBusCommandChild); ok {
-		return casted.GetParent()
+	if casted, ok := structType.(*CBusCommand); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *CBusCommand) GetTypeName() string {
+func (m *_CBusCommand) GetTypeName() string {
 	return "CBusCommand"
 }
 
-func (m *CBusCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *CBusCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.GetLengthInBits()
-}
-
-func (m *CBusCommand) GetParentLengthInBits() uint16 {
+func (m *_CBusCommand) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (initiator)
@@ -151,11 +147,11 @@ func (m *CBusCommand) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CBusCommand) GetLengthInBytes() uint16 {
+func (m *_CBusCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, error) {
+func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommand"); pullErr != nil {
@@ -181,30 +177,35 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
 	}
-	header := CastCBusHeader(_header)
+	header := _header.(CBusHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
 
 	// Virtual field
 	_destinationAddressType := header.GetDestinationAddressType()
-	destinationAddressType := CastDestinationAddressType(_destinationAddressType)
+	destinationAddressType := DestinationAddressType(_destinationAddressType)
 	_ = destinationAddressType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type CBusCommandChild interface {
-		InitializeParent(*CBusCommand, *CBusHeader)
-		GetParent() *CBusCommand
+	type CBusCommandChildSerializeRequirement interface {
+		CBusCommand
+		InitializeParent(CBusCommand, CBusHeader)
+		GetParent() CBusCommand
 	}
-	var _child CBusCommandChild
+	var _childTemp interface{}
+	var _child CBusCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
-		_child, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
+		_child = _childTemp.(CBusCommandChildSerializeRequirement)
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
-		_child, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, srchk)
+		_child = _childTemp.(CBusCommandChildSerializeRequirement)
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
-		_child, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
+		_childTemp, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
+		_child = _childTemp.(CBusCommandChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -218,15 +219,14 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent(), header)
-	return _child.GetParent(), nil
+	_child.InitializeParent(_child, header)
+	return _child, nil
 }
 
-func (m *CBusCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
-}
-
-func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBusCommand, serializeChildFunction func() error) error {
+func (pm *_CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBusCommand, serializeChildFunction func() error) error {
+	// We redirect all calls through client as some methods are only implemented there
+	m := child
+	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusCommand"); pushErr != nil {
@@ -243,7 +243,7 @@ func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBus
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.Header)
+	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -266,7 +266,7 @@ func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBus
 	return nil
 }
 
-func (m *CBusCommand) String() string {
+func (m *_CBusCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}

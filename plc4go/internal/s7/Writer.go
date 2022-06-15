@@ -23,8 +23,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -48,8 +48,8 @@ func NewWriter(tpduGenerator *TpduGenerator, messageCodec spi.MessageCodec, tm *
 func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
-		parameterItems := make([]*readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetFieldNames()))
-		payloadItems := make([]*readWriteModel.S7VarPayloadDataItem, len(writeRequest.GetFieldNames()))
+		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetFieldNames()))
+		payloadItems := make([]readWriteModel.S7VarPayloadDataItem, len(writeRequest.GetFieldNames()))
 		for i, fieldName := range writeRequest.GetFieldNames() {
 			field := writeRequest.GetField(fieldName)
 			plcValue := writeRequest.GetValue(fieldName)
@@ -62,7 +62,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				}
 				return
 			}
-			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address).GetParent()
+			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
 			value, err := serializePlcValue(field, plcValue)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
@@ -79,9 +79,9 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		// Create a new Request with correct tpuId (is not known before)
 		s7MessageRequest := readWriteModel.NewS7MessageRequest(
 			tpduId,
-			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems).GetParent(),
-			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, nil).GetParent(),
-		).GetParent()
+			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems),
+			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, nil),
+		)
 
 		// Assemble the finished paket
 		log.Trace().Msg("Assemble paket")
@@ -93,7 +93,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				nil,
 				s7MessageRequest,
 				0,
-			).GetParent(),
+			),
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)
@@ -107,25 +107,25 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 					if tpktPacket == nil {
 						return false
 					}
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
+					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
 					if cotpPacketData == nil {
 						return false
 					}
-					payload := cotpPacketData.Payload
+					payload := cotpPacketData.GetPayload()
 					if payload == nil {
 						return false
 					}
-					return payload.TpduReference == tpduId
+					return payload.GetTpduReference() == tpduId
 				},
 				func(message interface{}) error {
 					// Convert the response into an
 					log.Trace().Msg("convert response to ")
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
-					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					payload := cotpPacketData.Payload
+					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.GetPayload())
+					payload := cotpPacketData.GetPayload()
 					// Convert the s7 response into a PLC4X response
 					log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xWriteResponse(*payload, writeRequest)
+					readResponse, err := m.ToPlc4xWriteResponse(payload, writeRequest)
 
 					if err != nil {
 						result <- &plc4goModel.DefaultPlcWriteRequestResult{
@@ -163,17 +163,15 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
 	var errorClass uint8
 	var errorCode uint8
-	switch response.Child.(type) {
-	case *readWriteModel.S7MessageResponseData:
-		messageResponseData := response.Child.(*readWriteModel.S7MessageResponseData)
-		errorClass = messageResponseData.ErrorClass
-		errorCode = messageResponseData.ErrorCode
-	case *readWriteModel.S7MessageResponse:
-		messageResponseData := response.Child.(*readWriteModel.S7MessageResponse)
-		errorClass = messageResponseData.ErrorClass
-		errorCode = messageResponseData.ErrorCode
+	switch messageResponseData := response.(type) {
+	case readWriteModel.S7MessageResponseData:
+		errorClass = messageResponseData.GetErrorClass()
+		errorCode = messageResponseData.GetErrorCode()
+	case readWriteModel.S7MessageResponse:
+		errorClass = messageResponseData.GetErrorClass()
+		errorCode = messageResponseData.GetErrorCode()
 	default:
-		return nil, errors.Errorf("unsupported response type %T", response.Child)
+		return nil, errors.Errorf("unsupported response type %T", response)
 	}
 	responseCodes := map[string]model.PlcResponseCode{}
 
@@ -202,20 +200,20 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 	}
 
 	// In all other cases all went well.
-	payload := response.Payload.Child.(*readWriteModel.S7PayloadWriteVarResponse)
+	payload := response.GetPayload().(readWriteModel.S7PayloadWriteVarResponse)
 
 	// If the numbers of items don't match, we're in big trouble as the only
 	// way to know how to interpret the responses is by aligning them with the
 	// items from the request as this information is not returned by the PLC.
-	if len(writeRequest.GetFieldNames()) != len(payload.Items) {
+	if len(writeRequest.GetFieldNames()) != len(payload.GetItems()) {
 		return nil, errors.New("The number of requested items doesn't match the number of returned items")
 	}
 
-	payloadItems := payload.Items
+	payloadItems := payload.GetItems()
 	for i, fieldName := range writeRequest.GetFieldNames() {
 		payloadItem := payloadItems[i]
 
-		responseCode := decodeResponseCode(payloadItem.ReturnCode)
+		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
 		responseCodes[fieldName] = responseCode
@@ -226,7 +224,7 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }
 
-func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (*readWriteModel.S7VarPayloadDataItem, error) {
+func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (readWriteModel.S7VarPayloadDataItem, error) {
 	s7Field, ok := field.(S7PlcField)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", field)

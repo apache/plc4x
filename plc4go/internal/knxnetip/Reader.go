@@ -28,8 +28,8 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	internalValues "github.com/apache/plc4x/plc4go/internal/spi/values"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
@@ -69,20 +69,20 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 				if knxAddress == nil {
 					continue
 				}
-				if _, ok := deviceAddresses[*knxAddress]; !ok {
-					deviceAddresses[*knxAddress] = map[string]DeviceField{}
+				if _, ok := deviceAddresses[knxAddress]; !ok {
+					deviceAddresses[knxAddress] = map[string]DeviceField{}
 				}
-				deviceAddresses[*knxAddress][fieldName] = propertyField
+				deviceAddresses[knxAddress][fieldName] = propertyField
 			case DeviceMemoryAddressPlcField:
 				memoryField := field.(DeviceMemoryAddressPlcField)
 				knxAddress := memoryField.toKnxAddress()
 				if knxAddress == nil {
 					continue
 				}
-				if _, ok := deviceAddresses[*knxAddress]; !ok {
-					deviceAddresses[*knxAddress] = map[string]DeviceField{}
+				if _, ok := deviceAddresses[knxAddress]; !ok {
+					deviceAddresses[knxAddress] = map[string]DeviceField{}
 				}
-				deviceAddresses[*knxAddress][fieldName] = memoryField
+				deviceAddresses[knxAddress][fieldName] = memoryField
 			case CommunicationObjectQueryField:
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 				plcValues[fieldName] = nil

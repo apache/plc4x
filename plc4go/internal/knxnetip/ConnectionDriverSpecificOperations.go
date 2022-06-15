@@ -26,7 +26,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -71,8 +71,8 @@ func (m *Connection) ReadGroupAddress(groupAddress []byte, datapointType *driver
 
 		var payload []byte
 		// TODO: maybe groupAddressReadResponse.DataFirstByte can be written as uint 6 so the we wouldn't need to cast
-		payload = append(payload, byte(groupAddressReadResponse.DataFirstByte))
-		payload = append(payload, groupAddressReadResponse.Data...)
+		payload = append(payload, byte(groupAddressReadResponse.GetDataFirstByte()))
+		payload = append(payload, groupAddressReadResponse.GetData()...)
 
 		// Parse the response data.
 		rb := utils.NewReadBufferByteBased(payload)
@@ -152,7 +152,7 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 			return
 		}
 		// Save the device-descriptor value
-		deviceDescriptor := uint16(deviceDescriptorResponse.Data[0])<<8 | (uint16(deviceDescriptorResponse.Data[1]) & 0xFF)
+		deviceDescriptor := uint16(deviceDescriptorResponse.GetData()[0])<<8 | (uint16(deviceDescriptorResponse.GetData()[1]) & 0xFF)
 		connection.deviceDescriptor = deviceDescriptor
 
 		// Last, not least, read the max APDU size
@@ -165,9 +165,9 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 		if err == nil {
 			// If the count is 0, then this property doesn't exist or the user has no permission to read it.
 			// In all other cases we expect the response to contain the value.
-			if propertyValueResponse.Count > 0 {
-				dataLength := uint8(len(propertyValueResponse.Data))
-				data := propertyValueResponse.Data
+			if propertyValueResponse.GetCount() > 0 {
+				dataLength := uint8(len(propertyValueResponse.GetData()))
+				data := propertyValueResponse.GetData()
 				rb := utils.NewReadBufferByteBased(data)
 				plcValue, err := driverModel.KnxPropertyParse(rb,
 					driverModel.KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH.PropertyDataType(), dataLength)
@@ -250,7 +250,7 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 			deviceConnectionResult := <-connections
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
-				sendResponse(errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)))
+				sendResponse(errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)))
 			}
 		}
 
@@ -262,15 +262,15 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 		authenticationLevel := uint8(0)
 		authenticationResponse, err := m.sendDeviceAuthentication(targetAddress, authenticationLevel, buildingKey)
 		if err == nil {
-			if authenticationResponse.Level == authenticationLevel {
+			if authenticationResponse.GetLevel() == authenticationLevel {
 				sendResponse(nil)
 			} else {
 				// We authenticated correctly but not to the level requested.
 				sendResponse(errors.Errorf("got error authenticating at device %s",
-					KnxAddressToString(&targetAddress)))
+					KnxAddressToString(targetAddress)))
 			}
 		} else {
-			sendResponse(errors.Errorf("got error authenticating at device %s", KnxAddressToString(&targetAddress)))
+			sendResponse(errors.Errorf("got error authenticating at device %s", KnxAddressToString(targetAddress)))
 		}
 	}()
 
@@ -307,7 +307,7 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 			if deviceConnectionResult.err != nil {
 				sendResponse(nil,
 					0,
-					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)),
+					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)),
 				)
 			}
 		}
@@ -343,8 +343,8 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 			}
 		}
 
-		dataLength := uint8(len(propertyValueResponse.Data))
-		data := propertyValueResponse.Data
+		dataLength := uint8(len(propertyValueResponse.GetData()))
+		data := propertyValueResponse.GetData()
 		rb := utils.NewReadBufferByteBased(data)
 		plcValue, err := driverModel.KnxPropertyParse(rb, property.PropertyDataType(), dataLength)
 		if err != nil {
@@ -388,7 +388,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 				sendResponse(
 					nil,
 					0,
-					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)),
+					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)),
 				)
 			}
 		}
@@ -405,11 +405,11 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 		}
 
 		val := map[string]values.PlcValue{}
-		val["writable"] = values2.NewPlcBOOL(propertyDescriptionResponse.WriteEnabled)
-		val["dataType"] = values2.NewPlcSTRING(propertyDescriptionResponse.PropertyDataType.Name())
-		val["maxElements"] = values2.NewPlcUINT(propertyDescriptionResponse.MaxNrOfElements)
-		val["readLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.ReadLevel.String())
-		val["writeLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.WriteLevel.String())
+		val["writable"] = values2.NewPlcBOOL(propertyDescriptionResponse.GetWriteEnabled())
+		val["dataType"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetPropertyDataType().Name())
+		val["maxElements"] = values2.NewPlcUINT(propertyDescriptionResponse.GetMaxNrOfElements())
+		val["readLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetReadLevel().String())
+		val["writeLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetWriteLevel().String())
 		str := values2.NewPlcStruct(val)
 		sendResponse(&str, 1, nil)
 	}()
@@ -454,7 +454,7 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 				sendResponse(
 					nil,
 					0,
-					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)),
+					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(targetAddress)),
 				)
 			}
 		}
@@ -487,12 +487,12 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 			// Update the connection.maxApdu value. This is required
 			// as some devices seem to be sending back less than the
 			// number of bytes specified than the maxApdu.
-			if uint8(len(memoryReadResponse.Data)) < numBytes {
-				connection.maxApdu = uint16(len(memoryReadResponse.Data) + 3)
+			if uint8(len(memoryReadResponse.GetData())) < numBytes {
+				connection.maxApdu = uint16(len(memoryReadResponse.GetData()) + 3)
 			}
 
 			// Parse the data according to the property type information
-			rb := utils.NewReadBufferByteBased(memoryReadResponse.Data)
+			rb := utils.NewReadBufferByteBased(memoryReadResponse.GetData())
 			for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
 				plcValue, err := driverModel.KnxDatapointParse(rb, *datapointType)
 				// Return the result

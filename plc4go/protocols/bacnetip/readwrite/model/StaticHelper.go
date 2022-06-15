@@ -648,7 +648,7 @@ func WriteVarUint(value uint32) []byte {
 	return big.NewInt(int64(value)).Bytes()
 }
 
-func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACnetTagHeader {
+func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) BACnetTagHeader {
 	tagClass := TagClass_APPLICATION_TAGS
 	if isContext {
 		tagClass = TagClass_CONTEXT_SPECIFIC_TAGS
@@ -690,17 +690,17 @@ func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACn
 	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength)
 }
 
-func CreateBACnetApplicationTagNull() *BACnetApplicationTagNull {
+func CreateBACnetApplicationTagNull() BACnetApplicationTagNull {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_NULL), 0)
 	return NewBACnetApplicationTagNull(header)
 }
 
-func CreateBACnetContextTagNull(tagNumber uint8) *BACnetContextTagNull {
+func CreateBACnetContextTagNull(tagNumber uint8) BACnetContextTagNull {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 0)
 	return NewBACnetContextTagNull(header, tagNumber)
 }
 
-func CreateBACnetOpeningTag(tagNum uint8) *BACnetOpeningTag {
+func CreateBACnetOpeningTag(tagNum uint8) BACnetOpeningTag {
 	var tagNumber uint8
 	var extTagNumber *uint8
 	if tagNum <= 14 {
@@ -713,7 +713,7 @@ func CreateBACnetOpeningTag(tagNum uint8) *BACnetOpeningTag {
 	return NewBACnetOpeningTag(header, tagNum)
 }
 
-func CreateBACnetClosingTag(tagNum uint8) *BACnetClosingTag {
+func CreateBACnetClosingTag(tagNum uint8) BACnetClosingTag {
 	var tagNumber uint8
 	var extTagNumber *uint8
 	if tagNum <= 14 {
@@ -726,7 +726,7 @@ func CreateBACnetClosingTag(tagNum uint8) *BACnetClosingTag {
 	return NewBACnetClosingTag(header, tagNum)
 }
 
-func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) *BACnetApplicationTagObjectIdentifier {
+func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) BACnetApplicationTagObjectIdentifier {
 	header := NewBACnetTagHeader(uint8(BACnetDataType_BACNET_OBJECT_IDENTIFIER), TagClass_APPLICATION_TAGS, uint8(4), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
 	proprietaryValue := uint16(0)
@@ -738,7 +738,7 @@ func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint
 	return NewBACnetApplicationTagObjectIdentifier(payload, header)
 }
 
-func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, instance uint32) *BACnetContextTagObjectIdentifier {
+func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, instance uint32) BACnetContextTagObjectIdentifier {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(4), nil, nil, nil, nil)
 	objectTypeEnum := BACnetObjectTypeByValue(objectType)
 	proprietaryValue := uint16(0)
@@ -750,7 +750,7 @@ func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, ins
 	return NewBACnetContextTagObjectIdentifier(payload, header, tagNum)
 }
 
-func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) *BACnetPropertyIdentifierTagged {
+func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) BACnetPropertyIdentifierTagged {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(propertyType))), nil, nil, nil, nil)
 	propertyTypeEnum := BACnetPropertyIdentifierByValue(propertyType)
 	proprietaryValue := uint32(0)
@@ -761,7 +761,7 @@ func CreateBACnetPropertyIdentifierTagged(tagNum uint8, propertyType uint32) *BA
 	return NewBACnetPropertyIdentifierTagged(header, propertyTypeEnum, proprietaryValue, tagNum, TagClass_CONTEXT_SPECIFIC_TAGS)
 }
 
-func CreateBACnetVendorIdApplicationTagged(vendorId uint16) *BACnetVendorIdTagged {
+func CreateBACnetVendorIdApplicationTagged(vendorId uint16) BACnetVendorIdTagged {
 	header := NewBACnetTagHeader(0x2, TagClass_APPLICATION_TAGS, uint8(requiredLength(uint(vendorId))), nil, nil, nil, nil)
 	baCnetVendorId := BACnetVendorIdByValue(vendorId)
 	unknownVendorId := uint32(0)
@@ -772,7 +772,7 @@ func CreateBACnetVendorIdApplicationTagged(vendorId uint16) *BACnetVendorIdTagge
 	return NewBACnetVendorIdTagged(header, baCnetVendorId, unknownVendorId, 0x2, TagClass_APPLICATION_TAGS)
 }
 
-func CreateBACnetVendorIdContextTagged(tagNum uint8, vendorId uint16) *BACnetVendorIdTagged {
+func CreateBACnetVendorIdContextTagged(tagNum uint8, vendorId uint16) BACnetVendorIdTagged {
 	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, uint8(requiredLength(uint(vendorId))), nil, nil, nil, nil)
 	baCnetVendorId := BACnetVendorIdByValue(vendorId)
 	unknownVendorId := uint32(0)
@@ -783,19 +783,19 @@ func CreateBACnetVendorIdContextTagged(tagNum uint8, vendorId uint16) *BACnetVen
 	return NewBACnetVendorIdTagged(header, baCnetVendorId, unknownVendorId, tagNum, TagClass_CONTEXT_SPECIFIC_TAGS)
 }
 
-func CreateBACnetApplicationTagUnsignedInteger(value uint) *BACnetApplicationTagUnsignedInteger {
+func CreateBACnetApplicationTagUnsignedInteger(value uint) BACnetApplicationTagUnsignedInteger {
 	length, payload := CreateUnsignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_UNSIGNED_INTEGER), length)
 	return NewBACnetApplicationTagUnsignedInteger(payload, header)
 }
 
-func CreateBACnetContextTagUnsignedInteger(tagNumber uint8, value uint) *BACnetContextTagUnsignedInteger {
+func CreateBACnetContextTagUnsignedInteger(tagNumber uint8, value uint) BACnetContextTagUnsignedInteger {
 	length, payload := CreateUnsignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
 	return NewBACnetContextTagUnsignedInteger(payload, header, tagNumber)
 }
 
-func CreateUnsignedPayload(value uint) (uint32, *BACnetTagPayloadUnsignedInteger) {
+func CreateUnsignedPayload(value uint) (uint32, BACnetTagPayloadUnsignedInteger) {
 	var length uint32
 	var valueUint8 *uint8
 	var valueUint16 *uint16
@@ -828,19 +828,19 @@ func CreateUnsignedPayload(value uint) (uint32, *BACnetTagPayloadUnsignedInteger
 	return length, payload
 }
 
-func CreateBACnetApplicationTagSignedInteger(value int) *BACnetApplicationTagSignedInteger {
+func CreateBACnetApplicationTagSignedInteger(value int) BACnetApplicationTagSignedInteger {
 	length, payload := CreateSignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, uint8(BACnetDataType_SIGNED_INTEGER), length)
 	return NewBACnetApplicationTagSignedInteger(payload, header)
 }
 
-func CreateBACnetContextTagSignedInteger(tagNumber uint8, value int) *BACnetContextTagSignedInteger {
+func CreateBACnetContextTagSignedInteger(tagNumber uint8, value int) BACnetContextTagSignedInteger {
 	length, payload := CreateSignedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
 	return NewBACnetContextTagSignedInteger(payload, header, tagNumber)
 }
 
-func CreateSignedPayload(value int) (uint32, *BACnetTagPayloadSignedInteger) {
+func CreateSignedPayload(value int) (uint32, BACnetTagPayloadSignedInteger) {
 	var length uint32
 	var valueInt8 *int8
 	var valueInt16 *int16
@@ -869,12 +869,12 @@ func CreateSignedPayload(value int) (uint32, *BACnetTagPayloadSignedInteger) {
 	return length, payload
 }
 
-func CreatBACnetSegmentationTagged(value BACnetSegmentation) *BACnetSegmentationTagged {
+func CreatBACnetSegmentationTagged(value BACnetSegmentation) BACnetSegmentationTagged {
 	header := CreateBACnetTagHeaderBalanced(false, 0, 1)
 	return NewBACnetSegmentationTagged(header, value, 0, TagClass_APPLICATION_TAGS)
 }
 
-func CreateBACnetApplicationTagBoolean(value bool) *BACnetApplicationTagBoolean {
+func CreateBACnetApplicationTagBoolean(value bool) BACnetApplicationTagBoolean {
 	_value := uint32(0)
 	if value {
 		_value = 1
@@ -883,7 +883,7 @@ func CreateBACnetApplicationTagBoolean(value bool) *BACnetApplicationTagBoolean 
 	return NewBACnetApplicationTagBoolean(NewBACnetTagPayloadBoolean(_value), header)
 }
 
-func CreateBACnetContextTagBoolean(tagNumber uint8, value bool) *BACnetContextTagBoolean {
+func CreateBACnetContextTagBoolean(tagNumber uint8, value bool) BACnetContextTagBoolean {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 1)
 	_value := uint8(0)
 	if value {
@@ -892,47 +892,47 @@ func CreateBACnetContextTagBoolean(tagNumber uint8, value bool) *BACnetContextTa
 	return NewBACnetContextTagBoolean(_value, NewBACnetTagPayloadBoolean(uint32(_value)), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagReal(value float32) *BACnetApplicationTagReal {
+func CreateBACnetApplicationTagReal(value float32) BACnetApplicationTagReal {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_REAL), 4)
 	return NewBACnetApplicationTagReal(NewBACnetTagPayloadReal(value), header)
 }
 
-func CreateBACnetContextTagReal(tagNumber uint8, value float32) *BACnetContextTagReal {
+func CreateBACnetContextTagReal(tagNumber uint8, value float32) BACnetContextTagReal {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 4)
 	return NewBACnetContextTagReal(NewBACnetTagPayloadReal(value), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagDouble(value float64) *BACnetApplicationTagDouble {
+func CreateBACnetApplicationTagDouble(value float64) BACnetApplicationTagDouble {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_DOUBLE), 8)
 	return NewBACnetApplicationTagDouble(NewBACnetTagPayloadDouble(value), header)
 }
 
-func CreateBACnetContextTagDouble(tagNumber uint8, value float64) *BACnetContextTagDouble {
+func CreateBACnetContextTagDouble(tagNumber uint8, value float64) BACnetContextTagDouble {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 8)
 	return NewBACnetContextTagDouble(NewBACnetTagPayloadDouble(value), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagOctetString(value []byte) *BACnetApplicationTagOctetString {
+func CreateBACnetApplicationTagOctetString(value []byte) BACnetApplicationTagOctetString {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_OCTET_STRING), uint32(len(value)+1))
 	return NewBACnetApplicationTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value)+1)), header)
 }
 
-func CreateBACnetContextTagOctetString(tagNumber uint8, value []byte) *BACnetContextTagOctetString {
+func CreateBACnetContextTagOctetString(tagNumber uint8, value []byte) BACnetContextTagOctetString {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)+1))
 	return NewBACnetContextTagOctetString(NewBACnetTagPayloadOctetString(value, uint32(len(value)+1)), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagCharacterString(baCnetCharacterEncoding BACnetCharacterEncoding, value string) *BACnetApplicationTagCharacterString {
+func CreateBACnetApplicationTagCharacterString(baCnetCharacterEncoding BACnetCharacterEncoding, value string) BACnetApplicationTagCharacterString {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_CHARACTER_STRING), uint32(len(value)+1))
 	return NewBACnetApplicationTagCharacterString(NewBACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, uint32(len(value)+1)), header)
 }
 
-func CreateBACnetContextTagCharacterString(tagNumber uint8, baCnetCharacterEncoding BACnetCharacterEncoding, value string) *BACnetContextTagCharacterString {
+func CreateBACnetContextTagCharacterString(tagNumber uint8, baCnetCharacterEncoding BACnetCharacterEncoding, value string) BACnetContextTagCharacterString {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, uint32(len(value)+1))
 	return NewBACnetContextTagCharacterString(NewBACnetTagPayloadCharacterString(baCnetCharacterEncoding, value, uint32(len(value)+1)), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagBitString(value []bool) *BACnetApplicationTagBitString {
+func CreateBACnetApplicationTagBitString(value []bool) BACnetApplicationTagBitString {
 	numberOfBytesNeeded := (len(value) + 7) / 8
 	unusedBits := 8 - (len(value) % 8)
 	if unusedBits == 8 {
@@ -942,7 +942,7 @@ func CreateBACnetApplicationTagBitString(value []bool) *BACnetApplicationTagBitS
 	return NewBACnetApplicationTagBitString(NewBACnetTagPayloadBitString(uint8(unusedBits), value, make([]bool, unusedBits), uint32(numberOfBytesNeeded+1)), header)
 }
 
-func CreateBACnetContextTagBitString(tagNumber uint8, value []bool) *BACnetContextTagBitString {
+func CreateBACnetContextTagBitString(tagNumber uint8, value []bool) BACnetContextTagBitString {
 	numberOfBytesNeeded := (len(value) + 7) / 8
 	unusedBits := 8 - (len(value) % 8)
 	if unusedBits == 8 {
@@ -952,28 +952,26 @@ func CreateBACnetContextTagBitString(tagNumber uint8, value []bool) *BACnetConte
 	return NewBACnetContextTagBitString(NewBACnetTagPayloadBitString(uint8(unusedBits), value, make([]bool, unusedBits), uint32(numberOfBytesNeeded+1)), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagEnumerated(value uint32) *BACnetApplicationTagEnumerated {
+func CreateBACnetApplicationTagEnumerated(value uint32) BACnetApplicationTagEnumerated {
 	length, payload := CreateEnumeratedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_ENUMERATED), length)
-	result := NewBACnetApplicationTagEnumerated(payload, header)
-	return CastBACnetApplicationTagEnumerated(result)
+	return NewBACnetApplicationTagEnumerated(payload, header)
 }
 
-func CreateBACnetContextTagEnumerated(tagNumber uint8, value uint32) *BACnetContextTagEnumerated {
+func CreateBACnetContextTagEnumerated(tagNumber uint8, value uint32) BACnetContextTagEnumerated {
 	length, payload := CreateEnumeratedPayload(value)
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, length)
-	result := NewBACnetContextTagEnumerated(payload, header, tagNumber)
-	return CastBACnetContextTagEnumerated(result)
+	return NewBACnetContextTagEnumerated(payload, header, tagNumber)
 }
 
-func CreateEnumeratedPayload(value uint32) (uint32, *BACnetTagPayloadEnumerated) {
+func CreateEnumeratedPayload(value uint32) (uint32, BACnetTagPayloadEnumerated) {
 	length := requiredLength(uint(value))
 	data := WriteVarUint(value)
 	payload := NewBACnetTagPayloadEnumerated(data, length)
 	return length, payload
 }
 
-func CreateBACnetApplicationTagDate(year uint16, month, dayOfMonth, dayOfWeek uint8) *BACnetApplicationTagDate {
+func CreateBACnetApplicationTagDate(year uint16, month, dayOfMonth, dayOfWeek uint8) BACnetApplicationTagDate {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_DATE), 4)
 	yearMinus1900 := uint8(year - 1900)
 	if year == 0xFF {
@@ -982,7 +980,7 @@ func CreateBACnetApplicationTagDate(year uint16, month, dayOfMonth, dayOfWeek ui
 	return NewBACnetApplicationTagDate(NewBACnetTagPayloadDate(yearMinus1900, month, dayOfMonth, dayOfWeek), header)
 }
 
-func CreateBACnetContextTagDate(tagNumber uint8, year uint16, month, dayOfMonth, dayOfWeek uint8) *BACnetContextTagDate {
+func CreateBACnetContextTagDate(tagNumber uint8, year uint16, month, dayOfMonth, dayOfWeek uint8) BACnetContextTagDate {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 4)
 	yearMinus1900 := uint8(year - 1900)
 	if year == 0xFF {
@@ -991,12 +989,12 @@ func CreateBACnetContextTagDate(tagNumber uint8, year uint16, month, dayOfMonth,
 	return NewBACnetContextTagDate(NewBACnetTagPayloadDate(yearMinus1900, month, dayOfMonth, dayOfWeek), header, tagNumber)
 }
 
-func CreateBACnetApplicationTagTime(hour, minute, second, fractional uint8) *BACnetApplicationTagTime {
+func CreateBACnetApplicationTagTime(hour, minute, second, fractional uint8) BACnetApplicationTagTime {
 	header := CreateBACnetTagHeaderBalanced(false, uint8(BACnetDataType_TIME), 4)
 	return NewBACnetApplicationTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header)
 }
 
-func CreateBACnetContextTagTime(tagNumber uint8, hour, minute, second, fractional uint8) *BACnetContextTagTime {
+func CreateBACnetContextTagTime(tagNumber uint8, hour, minute, second, fractional uint8) BACnetContextTagTime {
 	header := CreateBACnetTagHeaderBalanced(true, tagNumber, 4)
 	return NewBACnetContextTagTime(NewBACnetTagPayloadTime(hour, minute, second, fractional), header, tagNumber)
 }
