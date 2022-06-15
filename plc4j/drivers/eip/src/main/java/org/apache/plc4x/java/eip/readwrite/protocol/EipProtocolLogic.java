@@ -447,12 +447,19 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
             // Taking half to get word size
             boolean isArray = false;
+            boolean isStruct = false;
             String tagIsolated = tag;
             if (tag.contains("[")) {
                 isArray = true;
                 tagIsolated = tag.substring(0, tag.indexOf("["));
             }
-            int dataLength = (tagIsolated.length() + 2 + (tagIsolated.length() % 2) + (isArray ? 2 : 0));
+
+            if (tag.contains(".")) {
+                isStruct = true;
+                tagIsolated = tagIsolated.replace(".", "");
+            }
+
+            int dataLength = (tagIsolated.length() + 2 + ((tagIsolated.length() % 2) * 2) + (isArray ? 2 : 0) + (isStruct ? 2 : 0));
             byte requestPathSize = (byte) (dataLength / 2);
             byte[] data = encodeValue(value, field.getType(), (short) elements);
             CipWriteRequest writeReq = new CipWriteRequest(requestPathSize, toAnsi(tag), field.getType(), elements, data, -1);
