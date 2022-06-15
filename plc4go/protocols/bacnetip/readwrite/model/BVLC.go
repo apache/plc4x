@@ -53,6 +53,7 @@ type _BVLCChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetBvlcFunction() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BVLCParent interface {
@@ -236,10 +237,6 @@ func BVLCParse(readBuffer utils.ReadBuffer) (BVLC, error) {
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_BVLC) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child BVLC, serializeChildFunction func() error) error {

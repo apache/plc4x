@@ -51,6 +51,7 @@ type _DF1SymbolChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetSymbolType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1SymbolParent interface {
@@ -174,10 +175,6 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_DF1Symbol) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child DF1Symbol, serializeChildFunction func() error) error {

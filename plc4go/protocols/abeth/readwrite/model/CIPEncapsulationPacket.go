@@ -60,6 +60,7 @@ type _CIPEncapsulationPacketChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandType() uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CIPEncapsulationPacketParent interface {
@@ -267,10 +268,6 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	// Finish initializing
 	_child.InitializeParent(_child, sessionHandle, status, senderContext, options)
 	return _child, nil
-}
-
-func (m *_CIPEncapsulationPacket) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, child CIPEncapsulationPacket, serializeChildFunction func() error) error {

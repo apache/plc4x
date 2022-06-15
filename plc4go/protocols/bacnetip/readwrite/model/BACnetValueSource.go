@@ -49,6 +49,7 @@ type _BACnetValueSource struct {
 type _BACnetValueSourceChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetValueSourceParent interface {
@@ -180,10 +181,6 @@ func BACnetValueSourceParse(readBuffer utils.ReadBuffer) (BACnetValueSource, err
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetValueSource) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetValueSource) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetValueSource, serializeChildFunction func() error) error {

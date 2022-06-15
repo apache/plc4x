@@ -47,6 +47,7 @@ type _Reply struct {
 type _ReplyChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ReplyParent interface {
@@ -168,10 +169,6 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, magicByte)
 	return _child, nil
-}
-
-func (m *_Reply) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, serializeChildFunction func() error) error {

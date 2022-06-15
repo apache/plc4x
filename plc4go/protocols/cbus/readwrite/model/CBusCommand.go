@@ -56,6 +56,7 @@ type _CBusCommand struct {
 type _CBusCommandChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CBusCommandParent interface {
@@ -220,10 +221,6 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	// Finish initializing
 	_child.InitializeParent(_child, header)
 	return _child, nil
-}
-
-func (m *_CBusCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBusCommand, serializeChildFunction func() error) error {

@@ -49,6 +49,7 @@ type _BACnetTimeStamp struct {
 type _BACnetTimeStampChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetTimeStampParent interface {
@@ -180,10 +181,6 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) 
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetTimeStamp) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetTimeStamp, serializeChildFunction func() error) error {

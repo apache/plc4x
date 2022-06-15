@@ -47,6 +47,7 @@ type _ComObjectTableChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetFirmwareType() FirmwareType
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ComObjectTableParent interface {
@@ -136,10 +137,6 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_ComObjectTable) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_ComObjectTable) SerializeParent(writeBuffer utils.WriteBuffer, child ComObjectTable, serializeChildFunction func() error) error {

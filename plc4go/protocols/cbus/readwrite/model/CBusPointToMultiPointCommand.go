@@ -50,6 +50,7 @@ type _CBusPointToMultiPointCommand struct {
 type _CBusPointToMultiPointCommandChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CBusPointToMultiPointCommandParent interface {
@@ -159,10 +160,6 @@ func CBusPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) 
 	// Finish initializing
 	_child.InitializeParent(_child, peekedApplication)
 	return _child, nil
-}
-
-func (m *_CBusPointToMultiPointCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CBusPointToMultiPointCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToMultiPointCommand, serializeChildFunction func() error) error {

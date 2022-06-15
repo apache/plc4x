@@ -47,6 +47,7 @@ type _KnxGroupAddressChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetNumLevels() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type KnxGroupAddressParent interface {
@@ -136,10 +137,6 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGrou
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_KnxGroupAddress) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child KnxGroupAddress, serializeChildFunction func() error) error {

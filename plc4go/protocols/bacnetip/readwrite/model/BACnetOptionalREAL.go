@@ -49,6 +49,7 @@ type _BACnetOptionalREAL struct {
 type _BACnetOptionalREALChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetOptionalREALParent interface {
@@ -177,10 +178,6 @@ func BACnetOptionalREALParse(readBuffer utils.ReadBuffer) (BACnetOptionalREAL, e
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetOptionalREAL) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetOptionalREAL) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetOptionalREAL, serializeChildFunction func() error) error {

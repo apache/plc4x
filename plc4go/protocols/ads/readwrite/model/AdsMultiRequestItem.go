@@ -47,6 +47,7 @@ type _AdsMultiRequestItemChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetIndexGroup() uint32
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type AdsMultiRequestItemParent interface {
@@ -136,10 +137,6 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (A
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_AdsMultiRequestItem) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, child AdsMultiRequestItem, serializeChildFunction func() error) error {

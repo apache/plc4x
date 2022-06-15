@@ -49,6 +49,7 @@ type _BACnetEventParameter struct {
 type _BACnetEventParameterChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetEventParameterParent interface {
@@ -228,10 +229,6 @@ func BACnetEventParameterParse(readBuffer utils.ReadBuffer) (BACnetEventParamete
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetEventParameter) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetEventParameter) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error {

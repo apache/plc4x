@@ -50,6 +50,7 @@ type _AdsDataChildRequirements interface {
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandId() CommandId
 	GetResponse() bool
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type AdsDataParent interface {
@@ -190,10 +191,6 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_AdsData) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_AdsData) SerializeParent(writeBuffer utils.WriteBuffer, child AdsData, serializeChildFunction func() error) error {

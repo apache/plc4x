@@ -49,6 +49,7 @@ type _BACnetOptionalBinaryPV struct {
 type _BACnetOptionalBinaryPVChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetOptionalBinaryPVParent interface {
@@ -177,10 +178,6 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetOptionalBin
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetOptionalBinaryPV) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetOptionalBinaryPV) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetOptionalBinaryPV, serializeChildFunction func() error) error {

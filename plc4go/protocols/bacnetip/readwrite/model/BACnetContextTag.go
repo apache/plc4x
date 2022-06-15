@@ -57,6 +57,7 @@ type _BACnetContextTagChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetDataType() BACnetDataType
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetContextTagParent interface {
@@ -255,10 +256,6 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	// Finish initializing
 	_child.InitializeParent(_child, header)
 	return _child, nil
-}
-
-func (m *_BACnetContextTag) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetContextTag, serializeChildFunction func() error) error {

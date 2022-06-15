@@ -50,6 +50,7 @@ type _FirmataCommandChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type FirmataCommandParent interface {
@@ -153,10 +154,6 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (FirmataCom
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_FirmataCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_FirmataCommand) SerializeParent(writeBuffer utils.WriteBuffer, child FirmataCommand, serializeChildFunction func() error) error {

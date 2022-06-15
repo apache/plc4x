@@ -50,6 +50,7 @@ type _SysexCommandChildRequirements interface {
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandType() uint8
 	GetResponse() bool
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type SysexCommandParent interface {
@@ -183,10 +184,6 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (SysexCommand
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_SysexCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_SysexCommand) SerializeParent(writeBuffer utils.WriteBuffer, child SysexCommand, serializeChildFunction func() error) error {

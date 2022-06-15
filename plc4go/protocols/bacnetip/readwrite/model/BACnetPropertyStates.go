@@ -49,6 +49,7 @@ type _BACnetPropertyStates struct {
 type _BACnetPropertyStatesChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetPropertyStatesParent interface {
@@ -348,10 +349,6 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer) (BACnetPropertyState
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetPropertyStates) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetPropertyStates) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetPropertyStates, serializeChildFunction func() error) error {

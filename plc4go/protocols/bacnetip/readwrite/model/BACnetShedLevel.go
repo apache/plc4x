@@ -49,6 +49,7 @@ type _BACnetShedLevel struct {
 type _BACnetShedLevelChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetShedLevelParent interface {
@@ -180,10 +181,6 @@ func BACnetShedLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevel, error) 
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetShedLevel) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetShedLevel) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetShedLevel, serializeChildFunction func() error) error {

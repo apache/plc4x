@@ -70,6 +70,7 @@ type _CBusPointToPointCommand struct {
 type _CBusPointToPointCommandChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CBusPointToPointCommandParent interface {
@@ -323,10 +324,6 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	// Finish initializing
 	_child.InitializeParent(_child, bridgeAddressCountPeek, calData, crc, peekAlpha, alpha)
 	return _child, nil
-}
-
-func (m *_CBusPointToPointCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToPointCommand, serializeChildFunction func() error) error {

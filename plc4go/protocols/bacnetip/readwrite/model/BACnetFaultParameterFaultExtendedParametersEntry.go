@@ -51,6 +51,7 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 type _BACnetFaultParameterFaultExtendedParametersEntryChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetFaultParameterFaultExtendedParametersEntryParent interface {
@@ -231,10 +232,6 @@ func BACnetFaultParameterFaultExtendedParametersEntryParse(readBuffer utils.Read
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetFaultParameterFaultExtendedParametersEntry, serializeChildFunction func() error) error {

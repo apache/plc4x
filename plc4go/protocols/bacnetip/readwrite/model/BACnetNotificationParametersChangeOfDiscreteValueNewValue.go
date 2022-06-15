@@ -60,6 +60,7 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueParent interface {
@@ -268,10 +269,6 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(readBuffer u
 	// Finish initializing
 	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
-}
-
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetNotificationParametersChangeOfDiscreteValueNewValue, serializeChildFunction func() error) error {

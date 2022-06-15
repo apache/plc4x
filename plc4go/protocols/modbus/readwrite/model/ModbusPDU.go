@@ -53,6 +53,7 @@ type _ModbusPDUChildRequirements interface {
 	GetErrorFlag() bool
 	GetFunctionFlag() uint8
 	GetResponse() bool
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ModbusPDUParent interface {
@@ -266,10 +267,6 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDU, erro
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_ModbusPDU) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_ModbusPDU) SerializeParent(writeBuffer utils.WriteBuffer, child ModbusPDU, serializeChildFunction func() error) error {

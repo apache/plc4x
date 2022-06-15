@@ -47,6 +47,7 @@ type _S7AddressChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetAddressType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7AddressParent interface {
@@ -138,10 +139,6 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (S7Address, error) {
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_S7Address) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child S7Address, serializeChildFunction func() error) error {

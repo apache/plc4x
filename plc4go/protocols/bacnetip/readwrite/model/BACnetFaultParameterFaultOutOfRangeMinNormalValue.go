@@ -58,6 +58,7 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueParent interface {
@@ -237,10 +238,6 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer utils.Rea
 	// Finish initializing
 	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
-}
-
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetFaultParameterFaultOutOfRangeMinNormalValue, serializeChildFunction func() error) error {

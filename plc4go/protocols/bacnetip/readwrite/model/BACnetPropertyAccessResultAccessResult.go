@@ -54,6 +54,7 @@ type _BACnetPropertyAccessResultAccessResult struct {
 type _BACnetPropertyAccessResultAccessResultChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetPropertyAccessResultAccessResultParent interface {
@@ -182,10 +183,6 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetPropertyAccessResultAccessResult) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetPropertyAccessResultAccessResult) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetPropertyAccessResultAccessResult, serializeChildFunction func() error) error {

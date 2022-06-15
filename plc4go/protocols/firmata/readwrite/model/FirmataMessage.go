@@ -50,6 +50,7 @@ type _FirmataMessageChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type FirmataMessageParent interface {
@@ -153,10 +154,6 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (FirmataMes
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_FirmataMessage) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_FirmataMessage) SerializeParent(writeBuffer utils.WriteBuffer, child FirmataMessage, serializeChildFunction func() error) error {

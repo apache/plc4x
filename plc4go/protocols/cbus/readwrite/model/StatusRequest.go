@@ -47,6 +47,7 @@ type _StatusRequest struct {
 type _StatusRequestChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type StatusRequestParent interface {
@@ -156,10 +157,6 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, statusType)
 	return _child, nil
-}
-
-func (m *_StatusRequest) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_StatusRequest) SerializeParent(writeBuffer utils.WriteBuffer, child StatusRequest, serializeChildFunction func() error) error {

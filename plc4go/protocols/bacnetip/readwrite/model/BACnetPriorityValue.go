@@ -54,6 +54,7 @@ type _BACnetPriorityValue struct {
 type _BACnetPriorityValueChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetPriorityValueParent interface {
@@ -237,10 +238,6 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetPriorityValue) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetPriorityValue) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetPriorityValue, serializeChildFunction func() error) error {

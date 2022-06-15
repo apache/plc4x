@@ -65,6 +65,7 @@ type _LDataFrameChildRequirements interface {
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetNotAckFrame() bool
 	GetPolling() bool
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type LDataFrameParent interface {
@@ -256,10 +257,6 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, frameType, notRepeated, priority, acknowledgeRequested, errorFlag)
 	return _child, nil
-}
-
-func (m *_LDataFrame) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child LDataFrame, serializeChildFunction func() error) error {

@@ -50,6 +50,7 @@ type _CEMIChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageCode() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CEMIParent interface {
@@ -207,10 +208,6 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_CEMI) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child CEMI, serializeChildFunction func() error) error {

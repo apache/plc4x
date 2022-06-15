@@ -57,6 +57,7 @@ type _MonitoredSAL struct {
 type _MonitoredSALChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type MonitoredSALParent interface {
@@ -238,10 +239,6 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, salType, salData)
 	return _child, nil
-}
-
-func (m *_MonitoredSAL) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error {

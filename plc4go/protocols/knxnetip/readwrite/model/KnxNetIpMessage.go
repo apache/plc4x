@@ -51,6 +51,7 @@ type _KnxNetIpMessageChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMsgType() uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type KnxNetIpMessageParent interface {
@@ -233,10 +234,6 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) 
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_KnxNetIpMessage) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child KnxNetIpMessage, serializeChildFunction func() error) error {

@@ -150,6 +150,7 @@ type _${type.name}ChildRequirements interface {
 	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
         </#if>
     </#list>
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 </#if>
 
@@ -1503,10 +1504,6 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 }
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented");
-}
-
 func (pm *_${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child ${type.name}, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child

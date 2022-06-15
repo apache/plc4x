@@ -49,6 +49,7 @@ type _BACnetClientCOV struct {
 type _BACnetClientCOVChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetClientCOVParent interface {
@@ -177,10 +178,6 @@ func BACnetClientCOVParse(readBuffer utils.ReadBuffer) (BACnetClientCOV, error) 
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetClientCOV) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetClientCOV) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetClientCOV, serializeChildFunction func() error) error {

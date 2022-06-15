@@ -50,6 +50,7 @@ type _ModbusADUChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetDriverType() DriverType
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ModbusADUParent interface {
@@ -139,10 +140,6 @@ func ModbusADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_ModbusADU) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_ModbusADU) SerializeParent(writeBuffer utils.WriteBuffer, child ModbusADU, serializeChildFunction func() error) error {

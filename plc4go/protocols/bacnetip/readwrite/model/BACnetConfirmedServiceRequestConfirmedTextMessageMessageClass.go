@@ -58,6 +58,7 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParent interface {
@@ -226,10 +227,6 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	// Finish initializing
 	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
-}
-
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, serializeChildFunction func() error) error {

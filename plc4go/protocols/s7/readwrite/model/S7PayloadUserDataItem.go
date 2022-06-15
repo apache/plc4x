@@ -59,6 +59,7 @@ type _S7PayloadUserDataItemChildRequirements interface {
 	GetCpuFunctionType() uint8
 	GetCpuSubfunction() uint8
 	GetDataLength() uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7PayloadUserDataItemParent interface {
@@ -253,10 +254,6 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	// Finish initializing
 	_child.InitializeParent(_child, returnCode, transportSize)
 	return _child, nil
-}
-
-func (m *_S7PayloadUserDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, child S7PayloadUserDataItem, serializeChildFunction func() error) error {

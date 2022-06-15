@@ -55,6 +55,7 @@ type _BACnetConfirmedServiceRequestReadRangeRange struct {
 type _BACnetConfirmedServiceRequestReadRangeRangeChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestReadRangeRangeParent interface {
@@ -226,10 +227,6 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader, openingTag, closingTag)
 	return _child, nil
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRangeRange) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestReadRangeRange, serializeChildFunction func() error) error {

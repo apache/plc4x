@@ -55,6 +55,7 @@ type _CALReply struct {
 type _CALReplyChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CALReplyParent interface {
@@ -225,10 +226,6 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, calType, calData)
 	return _child, nil
-}
-
-func (m *_CALReply) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child CALReply, serializeChildFunction func() error) error {

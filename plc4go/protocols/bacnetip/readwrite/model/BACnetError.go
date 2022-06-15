@@ -47,6 +47,7 @@ type _BACnetErrorChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetErrorChoice() BACnetConfirmedServiceChoice
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetErrorParent interface {
@@ -151,10 +152,6 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_BACnetError) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetError, serializeChildFunction func() error) error {

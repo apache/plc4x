@@ -49,6 +49,7 @@ type _BACnetLandingCallStatusCommand struct {
 type _BACnetLandingCallStatusCommandChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLandingCallStatusCommandParent interface {
@@ -177,10 +178,6 @@ func BACnetLandingCallStatusCommandParse(readBuffer utils.ReadBuffer) (BACnetLan
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetLandingCallStatusCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetLandingCallStatusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetLandingCallStatusCommand, serializeChildFunction func() error) error {

@@ -47,6 +47,7 @@ type _S7VarRequestParameterItemChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetItemType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7VarRequestParameterItemParent interface {
@@ -138,10 +139,6 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (S7VarRequestPa
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_S7VarRequestParameterItem) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffer, child S7VarRequestParameterItem, serializeChildFunction func() error) error {

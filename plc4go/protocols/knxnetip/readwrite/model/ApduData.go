@@ -50,6 +50,7 @@ type _ApduDataChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetApciType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ApduDataParent interface {
@@ -186,10 +187,6 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, err
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_ApduData) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_ApduData) SerializeParent(writeBuffer utils.WriteBuffer, child ApduData, serializeChildFunction func() error) error {

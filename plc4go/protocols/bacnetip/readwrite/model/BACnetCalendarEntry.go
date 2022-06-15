@@ -49,6 +49,7 @@ type _BACnetCalendarEntry struct {
 type _BACnetCalendarEntryChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetCalendarEntryParent interface {
@@ -185,10 +186,6 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntry,
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetCalendarEntry) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetCalendarEntry) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetCalendarEntry, serializeChildFunction func() error) error {

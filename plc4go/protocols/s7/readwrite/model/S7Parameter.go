@@ -50,6 +50,7 @@ type _S7ParameterChildRequirements interface {
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetParameterType() uint8
 	GetMessageType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7ParameterParent interface {
@@ -159,10 +160,6 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Paramet
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_S7Parameter) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child S7Parameter, serializeChildFunction func() error) error {

@@ -52,6 +52,7 @@ type _BACnetConfirmedServiceRequestChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceChoice() BACnetConfirmedServiceChoice
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestParent interface {
@@ -264,10 +265,6 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_BACnetConfirmedServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequest, serializeChildFunction func() error) error {

@@ -49,6 +49,7 @@ type _BACnetProcessIdSelection struct {
 type _BACnetProcessIdSelectionChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetProcessIdSelectionParent interface {
@@ -177,10 +178,6 @@ func BACnetProcessIdSelectionParse(readBuffer utils.ReadBuffer) (BACnetProcessId
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetProcessIdSelection) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetProcessIdSelection) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetProcessIdSelection, serializeChildFunction func() error) error {

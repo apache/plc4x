@@ -47,6 +47,7 @@ type _ConnectionRequestInformationChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetConnectionType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ConnectionRequestInformationParent interface {
@@ -151,10 +152,6 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (ConnectionR
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_ConnectionRequestInformation) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_ConnectionRequestInformation) SerializeParent(writeBuffer utils.WriteBuffer, child ConnectionRequestInformation, serializeChildFunction func() error) error {

@@ -53,6 +53,7 @@ type _NLMChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type NLMParent interface {
@@ -206,10 +207,6 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, vendorId)
 	return _child, nil
-}
-
-func (m *_NLM) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_NLM) SerializeParent(writeBuffer utils.WriteBuffer, child NLM, serializeChildFunction func() error) error {

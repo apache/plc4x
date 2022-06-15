@@ -58,6 +58,7 @@ type _COTPPacketChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetTpduCode() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type COTPPacketParent interface {
@@ -252,10 +253,6 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	// Finish initializing
 	_child.InitializeParent(_child, parameters, payload)
 	return _child, nil
-}
-
-func (m *_COTPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTPPacket, serializeChildFunction func() error) error {

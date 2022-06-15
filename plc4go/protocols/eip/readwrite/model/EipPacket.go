@@ -59,6 +59,7 @@ type _EipPacketChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommand() uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type EipPacketParent interface {
@@ -246,10 +247,6 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, sessionHandle, status, senderContext, options)
 	return _child, nil
-}
-
-func (m *_EipPacket) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPacket, serializeChildFunction func() error) error {

@@ -54,6 +54,7 @@ type _BACnetTimerStateChangeValue struct {
 type _BACnetTimerStateChangeValueChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetTimerStateChangeValueParent interface {
@@ -243,10 +244,6 @@ func BACnetTimerStateChangeValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetTimerStateChangeValue) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetTimerStateChangeValue) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetTimerStateChangeValue, serializeChildFunction func() error) error {

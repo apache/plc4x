@@ -50,6 +50,7 @@ type _CipServiceChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetService() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CipServiceParent interface {
@@ -159,10 +160,6 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_CipService) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CipService) SerializeParent(writeBuffer utils.WriteBuffer, child CipService, serializeChildFunction func() error) error {

@@ -49,6 +49,7 @@ type _BACnetHostAddress struct {
 type _BACnetHostAddressChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetHostAddressParent interface {
@@ -180,10 +181,6 @@ func BACnetHostAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddress, err
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetHostAddress) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetHostAddress) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetHostAddress, serializeChildFunction func() error) error {

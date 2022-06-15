@@ -65,6 +65,7 @@ type _BACnetConstructedDataChildRequirements interface {
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetObjectTypeArgument() BACnetObjectType
 	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConstructedDataParent interface {
@@ -2201,10 +2202,6 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	// Finish initializing
 	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
-}
-
-func (m *_BACnetConstructedData) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConstructedData, serializeChildFunction func() error) error {

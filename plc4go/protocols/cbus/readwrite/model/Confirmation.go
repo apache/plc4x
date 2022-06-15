@@ -50,6 +50,7 @@ type _ConfirmationChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetConfirmationType() byte
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ConfirmationParent interface {
@@ -183,10 +184,6 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, alpha)
 	return _child, nil
-}
-
-func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child Confirmation, serializeChildFunction func() error) error {

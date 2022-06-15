@@ -47,6 +47,7 @@ type _ServiceIdChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ServiceIdParent interface {
@@ -156,10 +157,6 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (ServiceId, error) {
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_ServiceId) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child ServiceId, serializeChildFunction func() error) error {

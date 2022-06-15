@@ -47,6 +47,7 @@ type _IdentifyReplyCommandChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetAttribute() Attribute
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type IdentifyReplyCommandParent interface {
@@ -181,10 +182,6 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute)
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_IdentifyReplyCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, child IdentifyReplyCommand, serializeChildFunction func() error) error {

@@ -58,6 +58,7 @@ type _BACnetEventParameterChangeOfValueCivCriteria struct {
 type _BACnetEventParameterChangeOfValueCivCriteriaChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetEventParameterChangeOfValueCivCriteriaParent interface {
@@ -226,10 +227,6 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	// Finish initializing
 	_child.InitializeParent(_child, openingTag, peekedTagHeader, closingTag)
 	return _child, nil
-}
-
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetEventParameterChangeOfValueCivCriteria) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetEventParameterChangeOfValueCivCriteria, serializeChildFunction func() error) error {

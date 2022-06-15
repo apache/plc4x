@@ -47,6 +47,7 @@ type _CEMIAdditionalInformationChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetAdditionalInformationType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CEMIAdditionalInformationParent interface {
@@ -141,10 +142,6 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (CEMIAdditional
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_CEMIAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffer, child CEMIAdditionalInformation, serializeChildFunction func() error) error {

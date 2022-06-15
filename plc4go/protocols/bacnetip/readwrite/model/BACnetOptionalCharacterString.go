@@ -49,6 +49,7 @@ type _BACnetOptionalCharacterString struct {
 type _BACnetOptionalCharacterStringChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetOptionalCharacterStringParent interface {
@@ -177,10 +178,6 @@ func BACnetOptionalCharacterStringParse(readBuffer utils.ReadBuffer) (BACnetOpti
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetOptionalCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetOptionalCharacterString) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetOptionalCharacterString, serializeChildFunction func() error) error {

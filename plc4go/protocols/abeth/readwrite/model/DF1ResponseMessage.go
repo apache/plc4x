@@ -63,6 +63,7 @@ type _DF1ResponseMessageChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1ResponseMessageParent interface {
@@ -254,10 +255,6 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	// Finish initializing
 	_child.InitializeParent(_child, destinationAddress, sourceAddress, status, transactionCounter)
 	return _child, nil
-}
-
-func (m *_DF1ResponseMessage) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, child DF1ResponseMessage, serializeChildFunction func() error) error {

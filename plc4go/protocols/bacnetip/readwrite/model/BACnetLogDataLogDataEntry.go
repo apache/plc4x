@@ -49,6 +49,7 @@ type _BACnetLogDataLogDataEntry struct {
 type _BACnetLogDataLogDataEntryChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLogDataLogDataEntryParent interface {
@@ -198,10 +199,6 @@ func BACnetLogDataLogDataEntryParse(readBuffer utils.ReadBuffer) (BACnetLogDataL
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetLogDataLogDataEntry) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetLogDataLogDataEntry) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetLogDataLogDataEntry, serializeChildFunction func() error) error {

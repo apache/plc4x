@@ -62,6 +62,7 @@ type _S7MessageChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7MessageParent interface {
@@ -310,10 +311,6 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, tpduReference, parameter, payload)
 	return _child, nil
-}
-
-func (m *_S7Message) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Message, serializeChildFunction func() error) error {

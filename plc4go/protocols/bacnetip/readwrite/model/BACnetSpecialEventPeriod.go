@@ -49,6 +49,7 @@ type _BACnetSpecialEventPeriod struct {
 type _BACnetSpecialEventPeriodChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetSpecialEventPeriodParent interface {
@@ -182,10 +183,6 @@ func BACnetSpecialEventPeriodParse(readBuffer utils.ReadBuffer) (BACnetSpecialEv
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetSpecialEventPeriod) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetSpecialEventPeriod) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetSpecialEventPeriod, serializeChildFunction func() error) error {

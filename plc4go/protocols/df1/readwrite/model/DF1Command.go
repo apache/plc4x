@@ -53,6 +53,7 @@ type _DF1CommandChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1CommandParent interface {
@@ -185,10 +186,6 @@ func DF1CommandParse(readBuffer utils.ReadBuffer) (DF1Command, error) {
 	// Finish initializing
 	_child.InitializeParent(_child, status, transactionCounter)
 	return _child, nil
-}
-
-func (m *_DF1Command) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_DF1Command) SerializeParent(writeBuffer utils.WriteBuffer, child DF1Command, serializeChildFunction func() error) error {

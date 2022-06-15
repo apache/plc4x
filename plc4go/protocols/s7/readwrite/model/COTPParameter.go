@@ -50,6 +50,7 @@ type _COTPParameterChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetParameterType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type COTPParameterParent interface {
@@ -163,10 +164,6 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter,
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_COTPParameter) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child COTPParameter, serializeChildFunction func() error) error {

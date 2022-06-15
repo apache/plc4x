@@ -49,6 +49,7 @@ type _BACnetRecipient struct {
 type _BACnetRecipientChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetRecipientParent interface {
@@ -177,10 +178,6 @@ func BACnetRecipientParse(readBuffer utils.ReadBuffer) (BACnetRecipient, error) 
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader)
 	return _child, nil
-}
-
-func (m *_BACnetRecipient) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetRecipient) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetRecipient, serializeChildFunction func() error) error {

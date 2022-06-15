@@ -52,6 +52,7 @@ type _S7DataAlarmMessageChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCpuFunctionType() uint8
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7DataAlarmMessageParent interface {
@@ -180,10 +181,6 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	// Finish initializing
 	_child.InitializeParent(_child)
 	return _child, nil
-}
-
-func (m *_S7DataAlarmMessage) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_S7DataAlarmMessage) SerializeParent(writeBuffer utils.WriteBuffer, child S7DataAlarmMessage, serializeChildFunction func() error) error {

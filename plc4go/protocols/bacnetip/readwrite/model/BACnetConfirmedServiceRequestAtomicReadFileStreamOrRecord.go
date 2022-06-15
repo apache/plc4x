@@ -55,6 +55,7 @@ type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
 type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements interface {
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParent interface {
@@ -223,10 +224,6 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	// Finish initializing
 	_child.InitializeParent(_child, peekedTagHeader, openingTag, closingTag)
 	return _child, nil
-}
-
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) Serialize(writeBuffer utils.WriteBuffer) error {
-	panic("Required method Serialize not implemented")
 }
 
 func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serializeChildFunction func() error) error {
