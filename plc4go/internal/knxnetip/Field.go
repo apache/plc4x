@@ -22,7 +22,7 @@ package knxnetip
 import (
 	"errors"
 	"fmt"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"strconv"
 	"strings"

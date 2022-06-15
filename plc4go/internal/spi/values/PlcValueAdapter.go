@@ -20,7 +20,7 @@
 package values
 
 import (
-	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
 )
 

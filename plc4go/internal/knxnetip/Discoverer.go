@@ -32,7 +32,7 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 

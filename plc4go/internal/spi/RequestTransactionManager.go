@@ -22,7 +22,7 @@ package spi
 import (
 	"container/list"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/config"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

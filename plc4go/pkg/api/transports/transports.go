@@ -24,7 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/transports/serial"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/api"
 )
 
 func RegisterTcpTransport(driverManager plc4go.PlcDriverManager) {

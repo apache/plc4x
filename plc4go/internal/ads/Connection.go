@@ -26,8 +26,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/interceptors"
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 type Connection struct {

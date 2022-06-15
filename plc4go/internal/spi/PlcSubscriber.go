@@ -19,7 +19,7 @@
 
 package spi
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+import "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 type PlcSubscriber interface {
 	Subscribe(subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult

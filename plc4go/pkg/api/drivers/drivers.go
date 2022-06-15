@@ -25,8 +25,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	modbus2 "github.com/apache/plc4x/plc4go/internal/modbus"
 	"github.com/apache/plc4x/plc4go/internal/s7"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 )
 
 func RegisterAdsDriver(driverManager plc4go.PlcDriverManager) {

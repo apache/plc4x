@@ -19,7 +19,7 @@
 
 package spi
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+import "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 type PlcBrowser interface {
 	// Browse Non-Blocking request, which will return a full result as soon as the operation is finished

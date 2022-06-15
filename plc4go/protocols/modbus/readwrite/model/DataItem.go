@@ -22,7 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/internal/spi/values"
-	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/pkg/errors"
 )
 

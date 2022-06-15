@@ -26,7 +26,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"

@@ -563,7 +563,7 @@
         </executions>
         <configuration>
           <packages>
-            <package>github.com/apache/plc4x/plc4go/pkg/plc4go</package>
+            <package>github.com/apache/plc4x/plc4go/pkg/api</package>
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
