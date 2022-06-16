@@ -154,8 +154,13 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             // If the type has sub-types it's an abstract type.
             SwitchField switchField = getSwitchField();
             boolean abstractType = switchField != null;
+            final List<Field> fields = parserContexts.pop();
             DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(
-                typeName, attributes, parserArguments, abstractType, parserContexts.peek());
+                typeName, attributes, parserArguments, abstractType, fields);
+            // Link the fields and the complex types.
+            if (fields != null) {
+                fields.forEach(field -> ((DefaultField) field).setParentTypeDefinition(type));
+            }
             dispatchType(typeName, type);
 
             // Set the parent type for all sub-types.
@@ -167,7 +172,6 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                     }
                 }
             }
-            parserContexts.pop();
         }
     }
 
@@ -455,7 +459,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         List<VariableLiteral> variableLiterals = ctx.discriminators.variableLiteral().stream()
             .map(this::getVariableLiteral)
             .collect(Collectors.toList());
-        DefaultSwitchField field = new DefaultSwitchField(variableLiterals);
+        DefaultSwitchField field = new DefaultSwitchField(getAttributes(ctx), variableLiterals);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -499,7 +503,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         if (ctx.description != null) {
             description = ctx.description.getText();
         }
-        Field field = new DefaultValidationField(validationExpression, description, shouldFail);
+        Field field = new DefaultValidationField(getAttributes(ctx), validationExpression, description, shouldFail);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -537,9 +541,14 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         } else {
             discriminatorValues = Collections.emptyList();
         }
+        final List<Field> fields = parserContexts.pop();
         DefaultDiscriminatedComplexTypeDefinition type =
             new DefaultDiscriminatedComplexTypeDefinition(typeName, attributes, parserArguments,
-                discriminatorValues, parserContexts.pop());
+                discriminatorValues, fields);
+        // Link the fields and the complex types.
+        if (fields != null) {
+            fields.forEach(field -> ((DefaultField) field).setParentTypeDefinition(type));
+        }
 
         // For DataIO we don't need to generate the sub-types as these will be PlcValues.
         if (!(ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext)) {

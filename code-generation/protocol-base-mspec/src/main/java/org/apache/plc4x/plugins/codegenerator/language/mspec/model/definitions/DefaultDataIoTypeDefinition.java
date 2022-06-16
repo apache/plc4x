@@ -32,14 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DefaultDataIoTypeDefinition extends DefaultComplexTypeDefinition implements DataIoTypeDefinition {
-
-    
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataIoTypeDefinition.class);
-    
-    
     private final SwitchField switchField;
     private TypeReference type;
-
     public DefaultDataIoTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, SwitchField switchField) {
         super(name, attributes, parserArguments, false, List.of(switchField));
         this.switchField = Objects.requireNonNull(switchField);

@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
@@ -26,10 +27,19 @@ import java.util.Optional;
 
 public abstract class DefaultField {
 
+    protected TypeDefinition parentTypeDefinition;
     protected final Map<String, Term> attributes;
 
     protected DefaultField(Map<String, Term> attributes) {
         this.attributes = Objects.requireNonNull(attributes);
+    }
+
+    public void setParentTypeDefinition(TypeDefinition parentTypeDefinition) {
+        this.parentTypeDefinition = parentTypeDefinition;
+    }
+
+    public TypeDefinition getParentTypeDefinition() {
+        return parentTypeDefinition;
     }
 
     public Optional<Term> getAttribute(String attributeName) {

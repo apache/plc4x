@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
