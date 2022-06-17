@@ -137,6 +137,7 @@
         <item name="Validating" href="developers/release/validation.html"/>
         <item name="Releasing Build-Tools" href="developers/release/build-tools.html"/>
       </item>
+      <item name="Tools" href="developers/tools.html"/>
       <item name="Team" href="developers/team.html"/>
       <item name="Decision Making" href="developers/decisions.html"/>
       <item name="Maturity" href="developers/maturity.html"/>
