@@ -100,23 +100,32 @@ class SerialPollingSelector extends AbstractSelector {
         }
         this.selectPromise = new DefaultPromise<>(executor);
         try {
-            selectPromise.await(timeout);
+            if(timeout == 0) {
+                selectPromise.await();
+            } else {
+                selectPromise.await(timeout);
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Was interrupted", e);
         }
-        return events.size();
+        final var eventCount = events.size();
+        logger.debug("returning from select with {} events", eventCount);
+        return eventCount;
     }
 
     @Override
     public int select() {
-        return select(10);
+        return select(0);
     }
 
     @Override
     public Selector wakeup() {
+        logger.debug("being asked to wake up from select");
         // throw new NotImplementedException("Not implemented for this selector, should not be needed.");
-        // NOOP
+        if (!selectPromise.isDone()) {
+            selectPromise.setSuccess(null);
+        }
         return this;
     }
 
