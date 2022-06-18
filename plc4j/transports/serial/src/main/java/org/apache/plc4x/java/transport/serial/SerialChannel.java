@@ -158,9 +158,10 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         logger.debug("Connecting to Socket Address '{}'", ((SerialSocketAddress) remoteAddress).getIdentifier());
 
         try {
-            // A bit hacky but to make a Test Connection start the String with TEST
-            if (((SerialSocketAddress) remoteAddress).getIdentifier().startsWith("TEST")) {
-                comPort = SerialChannelHandler.DummyHandler.INSTANCE;
+            // A bit hacky but to support testing check for custom handler
+            final var customHandler = ((SerialSocketAddress) remoteAddress).getHandler();
+            if (customHandler.isPresent()) {
+                comPort = customHandler.get();
             } else {
                 comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress, config);
             }

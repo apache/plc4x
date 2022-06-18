@@ -53,7 +53,7 @@ public class SerialChannelFactoryTest {
 
     @Test
     public void createChannel() throws PlcConnectionException, InterruptedException, UnknownHostException {
-        SerialChannelFactory asdf = new SerialChannelFactory(new SerialSocketAddress("TEST-port1"));
+        SerialChannelFactory asdf = new SerialChannelFactory(new SerialSocketAddress("TEST-port1", DummyHandler.INSTANCE));
         // final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
         final Channel channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
             @Override
@@ -64,7 +64,7 @@ public class SerialChannelFactoryTest {
         Thread.sleep(100);
         for (int i = 1; i <= 10; i++) {
             Thread.sleep(10);
-            SerialChannelHandler.DummyHandler.INSTANCE.fireEvent(1);
+            DummyHandler.INSTANCE.fireEvent(1);
         }
         Thread.sleep(100);
         channel.close().sync();
