@@ -48,7 +48,7 @@ RUN apt install -y software-properties-common
 RUN add-apt-repository universe -y
 RUN apt install -y apt-transport-https
 RUN apt update -y
-RUN apt install -y dotnet-sdk-3.1
+RUN apt install -y dotnet-sdk-6.0
 
 # Required for "with-go" profile
 RUN apt install -y golang
