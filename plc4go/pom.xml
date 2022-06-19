@@ -563,6 +563,7 @@
           </execution>
         </executions>
         <configuration>
+          <!-- The go get command doesn't seem to work with go 1.18 -->
           <goVersion>1.17.11</goVersion>
           <packages>
             <package>github.com/apache/plc4x/plc4go/pkg/api</package>
