@@ -25,6 +25,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.transport.serial.DummyHandler;
 import org.apache.plc4x.java.transport.serial.SerialChannel;
 import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
 import org.apache.plc4x.java.transport.serial.SerialChannelHandler;
