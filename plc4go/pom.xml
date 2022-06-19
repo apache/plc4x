@@ -37,7 +37,8 @@
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>examples,internal,pkg,tools</sonar.sources>
     <maven.install.skip>true</maven.install.skip>
-    <maven.deploy.skip>true</maven.deploy.skip>
+    <!-- The deploy goal of the go plugin uses go install to install the result, unfortunately disabling the deploy, disables the go install. -->
+    <!--maven.deploy.skip>true</maven.deploy.skip-->
   </properties>
 
   <build>
@@ -337,7 +338,7 @@
             <id>get-tools</id>
             <phase>initialize</phase>
             <goals>
-              <goal>get</goal>
+              <goal>install</goal>
             </goals>
             <configuration>
               <packages>
@@ -483,7 +484,7 @@
             <id>test-get</id>
             <phase>process-test-resources</phase>
             <goals>
-              <goal>get</goal>
+              <goal>install</goal>
             </goals>
             <configuration>
               <packages>
@@ -563,8 +564,6 @@
           </execution>
         </executions>
         <configuration>
-          <!-- The go get command doesn't seem to work with go 1.18 -->
-          <goVersion>1.17.11</goVersion>
           <packages>
             <package>github.com/apache/plc4x/plc4go/pkg/api</package>
           </packages>
