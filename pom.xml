@@ -155,7 +155,7 @@
     <milo.version>0.6.6</milo.version>
     <mockito.version>4.5.1</mockito.version>
     <netty.version>4.1.77.Final</netty.version>
-    <owasp-dependency-check.version>7.1.0</owasp-dependency-check.version>
+    <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>1.7.36</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
