@@ -37,7 +37,7 @@
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>examples,internal,pkg,tools</sonar.sources>
     <maven.install.skip>true</maven.install.skip>
-    <!-- The deploy goal of the go plugin uses go install to install the result, unfortunately disabling the deploy, disables the go install. -->
+    <!-- The deploy-goal of the go plugin uses go install to install the result, unfortunately disabling the deploy, disables the go install. -->
     <!--maven.deploy.skip>true</maven.deploy.skip-->
   </properties>
 
@@ -593,6 +593,15 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- Ensure we don't deploy anything -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
     </plugins>
   </build>
