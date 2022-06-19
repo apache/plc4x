@@ -38,6 +38,7 @@ import java.lang.reflect.Method;
 import java.net.SocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
+import java.util.Optional;
 import java.util.concurrent.RejectedExecutionException;
 
 public class SerialChannel extends AbstractNioByteChannel implements DuplexChannel {
@@ -159,7 +160,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
         try {
             // A bit hacky but to support testing check for custom handler
-            final var customHandler = ((SerialSocketAddress) remoteAddress).getHandler();
+            final Optional<SerialChannelHandler> customHandler = ((SerialSocketAddress) remoteAddress).getHandler();
             if (customHandler.isPresent()) {
                 comPort = customHandler.get();
             } else {

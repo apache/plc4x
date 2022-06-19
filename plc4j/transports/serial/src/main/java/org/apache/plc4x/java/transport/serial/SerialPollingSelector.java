@@ -109,7 +109,7 @@ class SerialPollingSelector extends AbstractSelector {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Was interrupted", e);
         }
-        final var eventCount = events.size();
+        final int eventCount = events.size();
         logger.debug("returning from select with {} events", eventCount);
         return eventCount;
     }
