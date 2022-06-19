@@ -54,7 +54,7 @@ RUN apt install -y dotnet-sdk-6.0
 RUN apt install -y golang
 
 # Required for "with-python" profile
-RUN apt install -y python-setuptools python
+RUN apt install -y python-setuptools python3 python-is-python3
 
 # Required for running on Windows systems
 RUN apt install -y dos2unix
