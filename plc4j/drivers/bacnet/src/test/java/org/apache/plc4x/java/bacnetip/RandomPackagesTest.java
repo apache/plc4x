@@ -53,6 +53,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Tests from http://kargs.net/captures
 @RequirePcapNg
+@Tag("bacnet-regression")
 public class RandomPackagesTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);

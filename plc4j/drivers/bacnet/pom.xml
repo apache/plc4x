@@ -50,7 +50,12 @@
           </execution>
         </executions>
       </plugin>
-
+      <!--plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludedGroups>bacnet-regression</excludedGroups>
+        </configuration>
+      </plugin-->
     </plugins>
   </build>
 
