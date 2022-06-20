@@ -115,13 +115,10 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	switch {
 	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
 		_childTemp, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer, firmwareType)
-		_child = _childTemp.(ComObjectTableChildSerializeRequirement)
 	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
 		_childTemp, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer, firmwareType)
-		_child = _childTemp.(ComObjectTableChildSerializeRequirement)
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
 		_childTemp, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer, firmwareType)
-		_child = _childTemp.(ComObjectTableChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -129,6 +126,7 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ComObjectTableChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ComObjectTable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ComObjectTable")

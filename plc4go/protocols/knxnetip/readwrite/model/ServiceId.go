@@ -123,25 +123,18 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (ServiceId, error) {
 	switch {
 	case serviceType == 0x02: // KnxNetIpCore
 		_childTemp, typeSwitchError = KnxNetIpCoreParse(readBuffer)
-		_child = _childTemp.(ServiceIdChildSerializeRequirement)
 	case serviceType == 0x03: // KnxNetIpDeviceManagement
 		_childTemp, typeSwitchError = KnxNetIpDeviceManagementParse(readBuffer)
-		_child = _childTemp.(ServiceIdChildSerializeRequirement)
 	case serviceType == 0x04: // KnxNetIpTunneling
 		_childTemp, typeSwitchError = KnxNetIpTunnelingParse(readBuffer)
-		_child = _childTemp.(ServiceIdChildSerializeRequirement)
 	case serviceType == 0x05: // KnxNetIpRouting
 		_childTemp, typeSwitchError = KnxNetIpRoutingParse(readBuffer)
-		_child = _childTemp.(ServiceIdChildSerializeRequirement)
 	case serviceType == 0x06: // KnxNetRemoteLogging
 		_childTemp, typeSwitchError = KnxNetRemoteLoggingParse(readBuffer)
-		_child = _childTemp.(ServiceIdChildSerializeRequirement)
 	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
 		_childTemp, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer)
-		_child = _childTemp.(ServiceIdChildSerializeRequirement)
 	case serviceType == 0x08: // KnxNetObjectServer
 		_childTemp, typeSwitchError = KnxNetObjectServerParse(readBuffer)
-		_child = _childTemp.(ServiceIdChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -149,6 +142,7 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (ServiceId, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ServiceIdChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ServiceId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ServiceId")

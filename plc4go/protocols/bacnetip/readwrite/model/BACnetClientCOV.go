@@ -159,10 +159,8 @@ func BACnetClientCOVParse(readBuffer utils.ReadBuffer) (BACnetClientCOV, error) 
 	switch {
 	case peekedTagNumber == 0x4: // BACnetClientCOVObject
 		_childTemp, typeSwitchError = BACnetClientCOVObjectParse(readBuffer)
-		_child = _childTemp.(BACnetClientCOVChildSerializeRequirement)
 	case peekedTagNumber == 0x0: // BACnetClientCOVNone
 		_childTemp, typeSwitchError = BACnetClientCOVNoneParse(readBuffer)
-		_child = _childTemp.(BACnetClientCOVChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -170,6 +168,7 @@ func BACnetClientCOVParse(readBuffer utils.ReadBuffer) (BACnetClientCOV, error) 
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetClientCOVChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetClientCOV"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetClientCOV")

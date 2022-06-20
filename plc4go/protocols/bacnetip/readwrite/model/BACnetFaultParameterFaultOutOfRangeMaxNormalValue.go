@@ -200,16 +200,12 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueParse(readBuffer utils.Rea
 	switch {
 	case peekedTagNumber == 0x4: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildSerializeRequirement)
 	case peekedTagNumber == 0x2: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildSerializeRequirement)
 	case peekedTagNumber == 0x5: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildSerializeRequirement)
 	case peekedTagNumber == 0x3: // BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -217,6 +213,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueParse(readBuffer utils.Rea
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {

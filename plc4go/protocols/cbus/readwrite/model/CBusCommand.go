@@ -199,13 +199,10 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	switch {
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
 		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
-		_child = _childTemp.(CBusCommandChildSerializeRequirement)
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
 		_childTemp, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, srchk)
-		_child = _childTemp.(CBusCommandChildSerializeRequirement)
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
 		_childTemp, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
-		_child = _childTemp.(CBusCommandChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -213,6 +210,7 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CBusCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CBusCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusCommand")

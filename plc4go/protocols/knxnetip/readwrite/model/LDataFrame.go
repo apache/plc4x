@@ -235,13 +235,10 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
 		_childTemp, typeSwitchError = LDataExtendedParse(readBuffer)
-		_child = _childTemp.(LDataFrameChildSerializeRequirement)
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
 		_childTemp, typeSwitchError = LPollDataParse(readBuffer)
-		_child = _childTemp.(LDataFrameChildSerializeRequirement)
 	case notAckFrame == bool(false): // LDataFrameACK
 		_childTemp, typeSwitchError = LDataFrameACKParse(readBuffer)
-		_child = _childTemp.(LDataFrameChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -249,6 +246,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(LDataFrameChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("LDataFrame"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LDataFrame")

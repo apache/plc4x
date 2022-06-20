@@ -185,43 +185,30 @@ func BVLCParse(readBuffer utils.ReadBuffer) (BVLC, error) {
 	switch {
 	case bvlcFunction == 0x00: // BVLCResult
 		_childTemp, typeSwitchError = BVLCResultParse(readBuffer)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x01: // BVLCWriteBroadcastDistributionTable
 		_childTemp, typeSwitchError = BVLCWriteBroadcastDistributionTableParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x02: // BVLCReadBroadcastDistributionTable
 		_childTemp, typeSwitchError = BVLCReadBroadcastDistributionTableParse(readBuffer)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x03: // BVLCReadBroadcastDistributionTableAck
 		_childTemp, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x04: // BVLCForwardedNPDU
 		_childTemp, typeSwitchError = BVLCForwardedNPDUParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x05: // BVLCRegisterForeignDevice
 		_childTemp, typeSwitchError = BVLCRegisterForeignDeviceParse(readBuffer)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x06: // BVLCReadForeignDeviceTable
 		_childTemp, typeSwitchError = BVLCReadForeignDeviceTableParse(readBuffer)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x07: // BVLCReadForeignDeviceTableAck
 		_childTemp, typeSwitchError = BVLCReadForeignDeviceTableAckParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x08: // BVLCDeleteForeignDeviceTableEntry
 		_childTemp, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(readBuffer)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x09: // BVLCDistributeBroadcastToNetwork
 		_childTemp, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x0A: // BVLCOriginalUnicastNPDU
 		_childTemp, typeSwitchError = BVLCOriginalUnicastNPDUParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x0B: // BVLCOriginalBroadcastNPDU
 		_childTemp, typeSwitchError = BVLCOriginalBroadcastNPDUParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
 		_childTemp, typeSwitchError = BVLCSecureBVLLParse(readBuffer, bvlcPayloadLength)
-		_child = _childTemp.(BVLCChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -229,6 +216,7 @@ func BVLCParse(readBuffer utils.ReadBuffer) (BVLC, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BVLCChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BVLC"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLC")

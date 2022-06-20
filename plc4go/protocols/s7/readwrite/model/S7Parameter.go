@@ -126,25 +126,18 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Paramet
 	switch {
 	case parameterType == 0xF0: // S7ParameterSetupCommunication
 		_childTemp, typeSwitchError = S7ParameterSetupCommunicationParse(readBuffer, messageType)
-		_child = _childTemp.(S7ParameterChildSerializeRequirement)
 	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
 		_childTemp, typeSwitchError = S7ParameterReadVarRequestParse(readBuffer, messageType)
-		_child = _childTemp.(S7ParameterChildSerializeRequirement)
 	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
 		_childTemp, typeSwitchError = S7ParameterReadVarResponseParse(readBuffer, messageType)
-		_child = _childTemp.(S7ParameterChildSerializeRequirement)
 	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
 		_childTemp, typeSwitchError = S7ParameterWriteVarRequestParse(readBuffer, messageType)
-		_child = _childTemp.(S7ParameterChildSerializeRequirement)
 	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
 		_childTemp, typeSwitchError = S7ParameterWriteVarResponseParse(readBuffer, messageType)
-		_child = _childTemp.(S7ParameterChildSerializeRequirement)
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
 		_childTemp, typeSwitchError = S7ParameterUserDataParse(readBuffer, messageType)
-		_child = _childTemp.(S7ParameterChildSerializeRequirement)
 	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
 		_childTemp, typeSwitchError = S7ParameterModeTransitionParse(readBuffer, messageType)
-		_child = _childTemp.(S7ParameterChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -152,6 +145,7 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Paramet
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7ParameterChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7Parameter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7Parameter")

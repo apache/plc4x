@@ -123,7 +123,6 @@ func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (S7ParameterUserD
 	switch {
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
 		_childTemp, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(readBuffer)
-		_child = _childTemp.(S7ParameterUserDataItemChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -131,6 +130,7 @@ func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (S7ParameterUserD
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7ParameterUserDataItemChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7ParameterUserDataItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterUserDataItem")

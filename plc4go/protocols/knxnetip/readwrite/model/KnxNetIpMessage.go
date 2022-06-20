@@ -173,52 +173,36 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) 
 	switch {
 	case msgType == 0x0201: // SearchRequest
 		_childTemp, typeSwitchError = SearchRequestParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0202: // SearchResponse
 		_childTemp, typeSwitchError = SearchResponseParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0203: // DescriptionRequest
 		_childTemp, typeSwitchError = DescriptionRequestParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0204: // DescriptionResponse
 		_childTemp, typeSwitchError = DescriptionResponseParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0205: // ConnectionRequest
 		_childTemp, typeSwitchError = ConnectionRequestParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0206: // ConnectionResponse
 		_childTemp, typeSwitchError = ConnectionResponseParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0207: // ConnectionStateRequest
 		_childTemp, typeSwitchError = ConnectionStateRequestParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0208: // ConnectionStateResponse
 		_childTemp, typeSwitchError = ConnectionStateResponseParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0209: // DisconnectRequest
 		_childTemp, typeSwitchError = DisconnectRequestParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x020A: // DisconnectResponse
 		_childTemp, typeSwitchError = DisconnectResponseParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x020B: // UnknownMessage
 		_childTemp, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0310: // DeviceConfigurationRequest
 		_childTemp, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0311: // DeviceConfigurationAck
 		_childTemp, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0420: // TunnelingRequest
 		_childTemp, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0421: // TunnelingResponse
 		_childTemp, typeSwitchError = TunnelingResponseParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	case msgType == 0x0530: // RoutingIndication
 		_childTemp, typeSwitchError = RoutingIndicationParse(readBuffer)
-		_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -226,6 +210,7 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) 
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxNetIpMessage")

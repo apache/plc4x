@@ -133,10 +133,8 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (ConnectionR
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
 		_childTemp, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(readBuffer)
-		_child = _childTemp.(ConnectionRequestInformationChildSerializeRequirement)
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
 		_childTemp, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(readBuffer)
-		_child = _childTemp.(ConnectionRequestInformationChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -144,6 +142,7 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (ConnectionR
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ConnectionRequestInformationChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ConnectionRequestInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectionRequestInformation")

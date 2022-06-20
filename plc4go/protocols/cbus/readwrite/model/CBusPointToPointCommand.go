@@ -230,10 +230,8 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
 		_childTemp, typeSwitchError = CBusPointToPointCommandDirectParse(readBuffer, srchk)
-		_child = _childTemp.(CBusPointToPointCommandChildSerializeRequirement)
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
 		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParse(readBuffer, srchk)
-		_child = _childTemp.(CBusPointToPointCommandChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -241,6 +239,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CBusPointToPointCommandChildSerializeRequirement)
 
 	// Simple Field (calData)
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {

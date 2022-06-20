@@ -176,22 +176,16 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
 		_childTemp, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
-		_child = _childTemp.(COTPPacketChildSerializeRequirement)
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
 		_childTemp, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
-		_child = _childTemp.(COTPPacketChildSerializeRequirement)
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
 		_childTemp, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
-		_child = _childTemp.(COTPPacketChildSerializeRequirement)
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
 		_childTemp, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
-		_child = _childTemp.(COTPPacketChildSerializeRequirement)
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
 		_childTemp, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
-		_child = _childTemp.(COTPPacketChildSerializeRequirement)
 	case tpduCode == 0x70: // COTPPacketTpduError
 		_childTemp, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
-		_child = _childTemp.(COTPPacketChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -199,6 +193,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(COTPPacketChildSerializeRequirement)
 
 	// Array field (parameters)
 	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {

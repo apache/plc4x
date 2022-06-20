@@ -123,10 +123,8 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (CEMIAdditional
 	switch {
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
 		_childTemp, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(readBuffer)
-		_child = _childTemp.(CEMIAdditionalInformationChildSerializeRequirement)
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
 		_childTemp, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(readBuffer)
-		_child = _childTemp.(CEMIAdditionalInformationChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -134,6 +132,7 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (CEMIAdditional
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CEMIAdditionalInformationChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CEMIAdditionalInformation")

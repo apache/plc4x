@@ -153,13 +153,10 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
 		_childTemp, typeSwitchError = DF1SymbolMessageFrameParse(readBuffer)
-		_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
 		_childTemp, typeSwitchError = DF1SymbolMessageFrameACKParse(readBuffer)
-		_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
 		_childTemp, typeSwitchError = DF1SymbolMessageFrameNAKParse(readBuffer)
-		_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -167,6 +164,7 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(DF1SymbolChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("DF1Symbol"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1Symbol")

@@ -177,46 +177,32 @@ func BACnetChannelValueParse(readBuffer utils.ReadBuffer) (BACnetChannelValue, e
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetChannelValueNull
 		_childTemp, typeSwitchError = BACnetChannelValueNullParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetChannelValueReal
 		_childTemp, typeSwitchError = BACnetChannelValueRealParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetChannelValueEnumerated
 		_childTemp, typeSwitchError = BACnetChannelValueEnumeratedParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetChannelValueUnsigned
 		_childTemp, typeSwitchError = BACnetChannelValueUnsignedParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetChannelValueBoolean
 		_childTemp, typeSwitchError = BACnetChannelValueBooleanParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetChannelValueInteger
 		_childTemp, typeSwitchError = BACnetChannelValueIntegerParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetChannelValueDouble
 		_childTemp, typeSwitchError = BACnetChannelValueDoubleParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetChannelValueTime
 		_childTemp, typeSwitchError = BACnetChannelValueTimeParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetChannelValueCharacterString
 		_childTemp, typeSwitchError = BACnetChannelValueCharacterStringParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetChannelValueOctetString
 		_childTemp, typeSwitchError = BACnetChannelValueOctetStringParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetChannelValueBitString
 		_childTemp, typeSwitchError = BACnetChannelValueBitStringParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetChannelValueDate
 		_childTemp, typeSwitchError = BACnetChannelValueDateParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetChannelValueObjectidentifier
 		_childTemp, typeSwitchError = BACnetChannelValueObjectidentifierParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetChannelValueLightingCommand
 		_childTemp, typeSwitchError = BACnetChannelValueLightingCommandParse(readBuffer)
-		_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -224,6 +210,7 @@ func BACnetChannelValueParse(readBuffer utils.ReadBuffer) (BACnetChannelValue, e
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetChannelValueChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetChannelValue")

@@ -136,19 +136,14 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter,
 	switch {
 	case parameterType == 0xC0: // COTPParameterTpduSize
 		_childTemp, typeSwitchError = COTPParameterTpduSizeParse(readBuffer, rest)
-		_child = _childTemp.(COTPParameterChildSerializeRequirement)
 	case parameterType == 0xC1: // COTPParameterCallingTsap
 		_childTemp, typeSwitchError = COTPParameterCallingTsapParse(readBuffer, rest)
-		_child = _childTemp.(COTPParameterChildSerializeRequirement)
 	case parameterType == 0xC2: // COTPParameterCalledTsap
 		_childTemp, typeSwitchError = COTPParameterCalledTsapParse(readBuffer, rest)
-		_child = _childTemp.(COTPParameterChildSerializeRequirement)
 	case parameterType == 0xC3: // COTPParameterChecksum
 		_childTemp, typeSwitchError = COTPParameterChecksumParse(readBuffer, rest)
-		_child = _childTemp.(COTPParameterChildSerializeRequirement)
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
 		_childTemp, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
-		_child = _childTemp.(COTPParameterChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -156,6 +151,7 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter,
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(COTPParameterChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("COTPParameter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPParameter")

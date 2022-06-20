@@ -126,52 +126,36 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, err
 	switch {
 	case apciType == 0x0: // ApduDataGroupValueRead
 		_childTemp, typeSwitchError = ApduDataGroupValueReadParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x1: // ApduDataGroupValueResponse
 		_childTemp, typeSwitchError = ApduDataGroupValueResponseParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x2: // ApduDataGroupValueWrite
 		_childTemp, typeSwitchError = ApduDataGroupValueWriteParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x3: // ApduDataIndividualAddressWrite
 		_childTemp, typeSwitchError = ApduDataIndividualAddressWriteParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x4: // ApduDataIndividualAddressRead
 		_childTemp, typeSwitchError = ApduDataIndividualAddressReadParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x5: // ApduDataIndividualAddressResponse
 		_childTemp, typeSwitchError = ApduDataIndividualAddressResponseParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x6: // ApduDataAdcRead
 		_childTemp, typeSwitchError = ApduDataAdcReadParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x7: // ApduDataAdcResponse
 		_childTemp, typeSwitchError = ApduDataAdcResponseParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x8: // ApduDataMemoryRead
 		_childTemp, typeSwitchError = ApduDataMemoryReadParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0x9: // ApduDataMemoryResponse
 		_childTemp, typeSwitchError = ApduDataMemoryResponseParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0xA: // ApduDataMemoryWrite
 		_childTemp, typeSwitchError = ApduDataMemoryWriteParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0xB: // ApduDataUserMessage
 		_childTemp, typeSwitchError = ApduDataUserMessageParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0xC: // ApduDataDeviceDescriptorRead
 		_childTemp, typeSwitchError = ApduDataDeviceDescriptorReadParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
 		_childTemp, typeSwitchError = ApduDataDeviceDescriptorResponseParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0xE: // ApduDataRestart
 		_childTemp, typeSwitchError = ApduDataRestartParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	case apciType == 0xF: // ApduDataOther
 		_childTemp, typeSwitchError = ApduDataOtherParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduDataChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -179,6 +163,7 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, err
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ApduDataChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ApduData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduData")

@@ -138,10 +138,8 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
 		_childTemp, typeSwitchError = StatusRequestBinaryStateParse(readBuffer)
-		_child = _childTemp.(StatusRequestChildSerializeRequirement)
 	case statusType == 0x73: // StatusRequestLevel
 		_childTemp, typeSwitchError = StatusRequestLevelParse(readBuffer)
-		_child = _childTemp.(StatusRequestChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -149,6 +147,7 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(StatusRequestChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("StatusRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StatusRequest")

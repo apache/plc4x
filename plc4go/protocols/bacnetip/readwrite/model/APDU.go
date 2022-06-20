@@ -133,31 +133,22 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	switch {
 	case apduType == ApduType_CONFIRMED_REQUEST_PDU: // APDUConfirmedRequest
 		_childTemp, typeSwitchError = APDUConfirmedRequestParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case apduType == ApduType_UNCONFIRMED_REQUEST_PDU: // APDUUnconfirmedRequest
 		_childTemp, typeSwitchError = APDUUnconfirmedRequestParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case apduType == ApduType_SIMPLE_ACK_PDU: // APDUSimpleAck
 		_childTemp, typeSwitchError = APDUSimpleAckParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case apduType == ApduType_COMPLEX_ACK_PDU: // APDUComplexAck
 		_childTemp, typeSwitchError = APDUComplexAckParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case apduType == ApduType_SEGMENT_ACK_PDU: // APDUSegmentAck
 		_childTemp, typeSwitchError = APDUSegmentAckParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case apduType == ApduType_ERROR_PDU: // APDUError
 		_childTemp, typeSwitchError = APDUErrorParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case apduType == ApduType_REJECT_PDU: // APDUReject
 		_childTemp, typeSwitchError = APDURejectParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case apduType == ApduType_ABORT_PDU: // APDUAbort
 		_childTemp, typeSwitchError = APDUAbortParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	case true: // APDUUnknown
 		_childTemp, typeSwitchError = APDUUnknownParse(readBuffer, apduLength)
-		_child = _childTemp.(APDUChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -165,6 +156,7 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(APDUChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("APDU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDU")

@@ -1372,7 +1372,6 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     </@compress>
 
 		_childTemp, typeSwitchError = ${case.name}Parse(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
-		_child = _childTemp.(${type.name}ChildSerializeRequirement)
 				</#list>
 	default:
 		// TODO: return actual type
@@ -1381,6 +1380,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")<@emitImport import="github.com/pkg/errors" />
 	}
+	_child = _childTemp.(${type.name}ChildSerializeRequirement)
 				<#break>
 
 			<#case "unknown">

@@ -159,28 +159,20 @@ func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (BACnetFaultParamete
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetFaultParameterNone
 		_childTemp, typeSwitchError = BACnetFaultParameterNoneParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetFaultParameterFaultCharacterString
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultCharacterStringParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetFaultParameterFaultExtended
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(3): // BACnetFaultParameterFaultLifeSafety
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultLifeSafetyParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(4): // BACnetFaultParameterFaultState
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultStateParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(5): // BACnetFaultParameterFaultStatusFlags
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultStatusFlagsParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(6): // BACnetFaultParameterFaultOutOfRange
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(7): // BACnetFaultParameterFaultListed
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultListedParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -188,6 +180,7 @@ func BACnetFaultParameterParse(readBuffer utils.ReadBuffer) (BACnetFaultParamete
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetFaultParameterChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameter")

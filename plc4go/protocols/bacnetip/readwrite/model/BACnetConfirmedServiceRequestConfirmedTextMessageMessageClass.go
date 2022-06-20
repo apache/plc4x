@@ -195,10 +195,8 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -206,6 +204,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {

@@ -156,19 +156,14 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	switch {
 	case confirmationType == 0x2E: // ConfirmationSuccessful
 		_childTemp, typeSwitchError = ConfirmationSuccessfulParse(readBuffer)
-		_child = _childTemp.(ConfirmationChildSerializeRequirement)
 	case confirmationType == 0x23: // NotTransmittedToManyReTransmissions
 		_childTemp, typeSwitchError = NotTransmittedToManyReTransmissionsParse(readBuffer)
-		_child = _childTemp.(ConfirmationChildSerializeRequirement)
 	case confirmationType == 0x24: // NotTransmittedCorruption
 		_childTemp, typeSwitchError = NotTransmittedCorruptionParse(readBuffer)
-		_child = _childTemp.(ConfirmationChildSerializeRequirement)
 	case confirmationType == 0x25: // NotTransmittedSyncLoss
 		_childTemp, typeSwitchError = NotTransmittedSyncLossParse(readBuffer)
-		_child = _childTemp.(ConfirmationChildSerializeRequirement)
 	case confirmationType == 0x27: // NotTransmittedTooLong
 		_childTemp, typeSwitchError = NotTransmittedTooLongParse(readBuffer)
-		_child = _childTemp.(ConfirmationChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -176,6 +171,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ConfirmationChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("Confirmation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Confirmation")

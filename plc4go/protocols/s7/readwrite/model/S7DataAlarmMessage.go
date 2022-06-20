@@ -162,10 +162,8 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
 		_childTemp, typeSwitchError = S7MessageObjectRequestParse(readBuffer, cpuFunctionType)
-		_child = _childTemp.(S7DataAlarmMessageChildSerializeRequirement)
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
 		_childTemp, typeSwitchError = S7MessageObjectResponseParse(readBuffer, cpuFunctionType)
-		_child = _childTemp.(S7DataAlarmMessageChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -173,6 +171,7 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7DataAlarmMessageChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7DataAlarmMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7DataAlarmMessage")

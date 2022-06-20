@@ -159,13 +159,10 @@ func BACnetHostAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddress, err
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetHostAddressNull
 		_childTemp, typeSwitchError = BACnetHostAddressNullParse(readBuffer)
-		_child = _childTemp.(BACnetHostAddressChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetHostAddressIpAddress
 		_childTemp, typeSwitchError = BACnetHostAddressIpAddressParse(readBuffer)
-		_child = _childTemp.(BACnetHostAddressChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetHostAddressName
 		_childTemp, typeSwitchError = BACnetHostAddressNameParse(readBuffer)
-		_child = _childTemp.(BACnetHostAddressChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -173,6 +170,7 @@ func BACnetHostAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddress, err
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetHostAddressChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetHostAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetHostAddress")

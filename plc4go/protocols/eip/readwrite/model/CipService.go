@@ -126,25 +126,18 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService
 	switch {
 	case service == 0x4C: // CipReadRequest
 		_childTemp, typeSwitchError = CipReadRequestParse(readBuffer, serviceLen)
-		_child = _childTemp.(CipServiceChildSerializeRequirement)
 	case service == 0xCC: // CipReadResponse
 		_childTemp, typeSwitchError = CipReadResponseParse(readBuffer, serviceLen)
-		_child = _childTemp.(CipServiceChildSerializeRequirement)
 	case service == 0x4D: // CipWriteRequest
 		_childTemp, typeSwitchError = CipWriteRequestParse(readBuffer, serviceLen)
-		_child = _childTemp.(CipServiceChildSerializeRequirement)
 	case service == 0xCD: // CipWriteResponse
 		_childTemp, typeSwitchError = CipWriteResponseParse(readBuffer, serviceLen)
-		_child = _childTemp.(CipServiceChildSerializeRequirement)
 	case service == 0x0A: // MultipleServiceRequest
 		_childTemp, typeSwitchError = MultipleServiceRequestParse(readBuffer, serviceLen)
-		_child = _childTemp.(CipServiceChildSerializeRequirement)
 	case service == 0x8A: // MultipleServiceResponse
 		_childTemp, typeSwitchError = MultipleServiceResponseParse(readBuffer, serviceLen)
-		_child = _childTemp.(CipServiceChildSerializeRequirement)
 	case service == 0x52: // CipUnconnectedRequest
 		_childTemp, typeSwitchError = CipUnconnectedRequestParse(readBuffer, serviceLen)
-		_child = _childTemp.(CipServiceChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -152,6 +145,7 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CipServiceChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CipService"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipService")

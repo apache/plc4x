@@ -195,10 +195,8 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfValueCivCriteriaBitmask
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -206,6 +204,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer utils.ReadBuff
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetEventParameterChangeOfValueCivCriteriaChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {

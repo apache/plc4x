@@ -159,31 +159,22 @@ func BACnetLogDataLogDataEntryParse(readBuffer utils.ReadBuffer) (BACnetLogDataL
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogDataEntryBooleanValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBooleanValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogDataEntryRealValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryRealValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataEntryEnumeratedValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryEnumeratedValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(3): // BACnetLogDataLogDataEntryUnsignedValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryUnsignedValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(4): // BACnetLogDataLogDataEntryIntegerValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryIntegerValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(5): // BACnetLogDataLogDataEntryBitStringValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBitStringValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(6): // BACnetLogDataLogDataEntryNullValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryNullValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(7): // BACnetLogDataLogDataEntryFailure
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryFailureParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(8): // BACnetLogDataLogDataEntryAnyValue
 		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryAnyValueParse(readBuffer)
-		_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -191,6 +182,7 @@ func BACnetLogDataLogDataEntryParse(readBuffer utils.ReadBuffer) (BACnetLogDataL
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetLogDataLogDataEntryChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogDataLogDataEntry")

@@ -159,13 +159,10 @@ func BACnetShedLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevel, error) 
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetShedLevelPercent
 		_childTemp, typeSwitchError = BACnetShedLevelPercentParse(readBuffer)
-		_child = _childTemp.(BACnetShedLevelChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetShedLevelLevel
 		_childTemp, typeSwitchError = BACnetShedLevelLevelParse(readBuffer)
-		_child = _childTemp.(BACnetShedLevelChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetShedLevelAmount
 		_childTemp, typeSwitchError = BACnetShedLevelAmountParse(readBuffer)
-		_child = _childTemp.(BACnetShedLevelChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -173,6 +170,7 @@ func BACnetShedLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevel, error) 
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetShedLevelChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetShedLevel")

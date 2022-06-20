@@ -195,13 +195,10 @@ func BACnetLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLog
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogStatus
 		_childTemp, typeSwitchError = BACnetLogDataLogStatusParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogDataChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogData
 		_childTemp, typeSwitchError = BACnetLogDataLogDataParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogDataChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataTimeChange
 		_childTemp, typeSwitchError = BACnetLogDataLogDataTimeChangeParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogDataChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -209,6 +206,7 @@ func BACnetLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLog
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetLogDataChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {

@@ -213,34 +213,24 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(readBuffer u
 	switch {
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -248,6 +238,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(readBuffer u
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {

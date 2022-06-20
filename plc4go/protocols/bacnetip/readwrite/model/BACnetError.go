@@ -115,28 +115,20 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 	switch {
 	case errorChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // SubscribeCOVPropertyMultipleError
 		_childTemp, typeSwitchError = SubscribeCOVPropertyMultipleErrorParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	case errorChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // ChangeListAddError
 		_childTemp, typeSwitchError = ChangeListAddErrorParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	case errorChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // ChangeListRemoveError
 		_childTemp, typeSwitchError = ChangeListRemoveErrorParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	case errorChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // CreateObjectError
 		_childTemp, typeSwitchError = CreateObjectErrorParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	case errorChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // WritePropertyMultipleError
 		_childTemp, typeSwitchError = WritePropertyMultipleErrorParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	case errorChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // ConfirmedPrivateTransferError
 		_childTemp, typeSwitchError = ConfirmedPrivateTransferErrorParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	case errorChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // VTCloseError
 		_childTemp, typeSwitchError = VTCloseErrorParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	case true: // BACnetErrorGeneral
 		_childTemp, typeSwitchError = BACnetErrorGeneralParse(readBuffer, errorChoice)
-		_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -144,6 +136,7 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetErrorChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetError")

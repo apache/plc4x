@@ -176,10 +176,8 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	switch {
 	case calType == 0x86: // CALReplyLong
 		_childTemp, typeSwitchError = CALReplyLongParse(readBuffer)
-		_child = _childTemp.(CALReplyChildSerializeRequirement)
 	case true: // CALReplyShort
 		_childTemp, typeSwitchError = CALReplyShortParse(readBuffer)
-		_child = _childTemp.(CALReplyChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -187,6 +185,7 @@ func CALReplyParse(readBuffer utils.ReadBuffer) (CALReply, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CALReplyChildSerializeRequirement)
 
 	// Simple Field (calData)
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {

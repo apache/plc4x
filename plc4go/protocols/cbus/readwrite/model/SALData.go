@@ -167,16 +167,12 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 	switch {
 	case commandType == SALCommandType_OFF: // SALDataOff
 		_childTemp, typeSwitchError = SALDataOffParse(readBuffer)
-		_child = _childTemp.(SALDataChildSerializeRequirement)
 	case commandType == SALCommandType_ON: // SALDataOn
 		_childTemp, typeSwitchError = SALDataOnParse(readBuffer)
-		_child = _childTemp.(SALDataChildSerializeRequirement)
 	case commandType == SALCommandType_RAMP_TO_LEVEL: // SALDataRampToLevel
 		_childTemp, typeSwitchError = SALDataRampToLevelParse(readBuffer)
-		_child = _childTemp.(SALDataChildSerializeRequirement)
 	case commandType == SALCommandType_TERMINATE_RAMP: // SALDataTerminateRamp
 		_childTemp, typeSwitchError = SALDataTerminateRampParse(readBuffer)
-		_child = _childTemp.(SALDataChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -184,6 +180,7 @@ func SALDataParse(readBuffer utils.ReadBuffer) (SALData, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(SALDataChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("SALData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SALData")

@@ -133,10 +133,8 @@ func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (ConnectionRe
 	switch {
 	case connectionType == 0x03: // ConnectionResponseDataBlockDeviceManagement
 		_childTemp, typeSwitchError = ConnectionResponseDataBlockDeviceManagementParse(readBuffer)
-		_child = _childTemp.(ConnectionResponseDataBlockChildSerializeRequirement)
 	case connectionType == 0x04: // ConnectionResponseDataBlockTunnelConnection
 		_childTemp, typeSwitchError = ConnectionResponseDataBlockTunnelConnectionParse(readBuffer)
-		_child = _childTemp.(ConnectionResponseDataBlockChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -144,6 +142,7 @@ func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (ConnectionRe
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ConnectionResponseDataBlockChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlock"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectionResponseDataBlock")

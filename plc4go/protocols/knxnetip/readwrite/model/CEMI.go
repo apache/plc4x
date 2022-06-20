@@ -126,73 +126,50 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	switch {
 	case messageCode == 0x2B: // LBusmonInd
 		_childTemp, typeSwitchError = LBusmonIndParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x11: // LDataReq
 		_childTemp, typeSwitchError = LDataReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x29: // LDataInd
 		_childTemp, typeSwitchError = LDataIndParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x2E: // LDataCon
 		_childTemp, typeSwitchError = LDataConParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x10: // LRawReq
 		_childTemp, typeSwitchError = LRawReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x2D: // LRawInd
 		_childTemp, typeSwitchError = LRawIndParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x2F: // LRawCon
 		_childTemp, typeSwitchError = LRawConParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x13: // LPollDataReq
 		_childTemp, typeSwitchError = LPollDataReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x25: // LPollDataCon
 		_childTemp, typeSwitchError = LPollDataConParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x41: // TDataConnectedReq
 		_childTemp, typeSwitchError = TDataConnectedReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x89: // TDataConnectedInd
 		_childTemp, typeSwitchError = TDataConnectedIndParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x4A: // TDataIndividualReq
 		_childTemp, typeSwitchError = TDataIndividualReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0x94: // TDataIndividualInd
 		_childTemp, typeSwitchError = TDataIndividualIndParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xFC: // MPropReadReq
 		_childTemp, typeSwitchError = MPropReadReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xFB: // MPropReadCon
 		_childTemp, typeSwitchError = MPropReadConParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xF6: // MPropWriteReq
 		_childTemp, typeSwitchError = MPropWriteReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xF5: // MPropWriteCon
 		_childTemp, typeSwitchError = MPropWriteConParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xF7: // MPropInfoInd
 		_childTemp, typeSwitchError = MPropInfoIndParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xF8: // MFuncPropCommandReq
 		_childTemp, typeSwitchError = MFuncPropCommandReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xF9: // MFuncPropStateReadReq
 		_childTemp, typeSwitchError = MFuncPropStateReadReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xFA: // MFuncPropCon
 		_childTemp, typeSwitchError = MFuncPropConParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xF1: // MResetReq
 		_childTemp, typeSwitchError = MResetReqParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	case messageCode == 0xF0: // MResetInd
 		_childTemp, typeSwitchError = MResetIndParse(readBuffer, size)
-		_child = _childTemp.(CEMIChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -200,6 +177,7 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CEMIChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CEMI"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CEMI")

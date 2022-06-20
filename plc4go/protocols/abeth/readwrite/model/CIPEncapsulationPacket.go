@@ -243,16 +243,12 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
 		_childTemp, typeSwitchError = CIPEncapsulationConnectionRequestParse(readBuffer)
-		_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
 		_childTemp, typeSwitchError = CIPEncapsulationConnectionResponseParse(readBuffer)
-		_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
 		_childTemp, typeSwitchError = CIPEncapsulationReadRequestParse(readBuffer)
-		_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
 		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, len)
-		_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -260,6 +256,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CIPEncapsulationPacketChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationPacket"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CIPEncapsulationPacket")

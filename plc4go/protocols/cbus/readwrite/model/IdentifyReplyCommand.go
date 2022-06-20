@@ -115,58 +115,40 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute)
 	switch {
 	case attribute == Attribute_Manufacturer: // IdentifyReplyCommandManufacturer
 		_childTemp, typeSwitchError = IdentifyReplyCommandManufacturerParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_Type: // IdentifyReplyCommandType
 		_childTemp, typeSwitchError = IdentifyReplyCommandTypeParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_FirmwareVersion: // IdentifyReplyCommandFirmwareVersion
 		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareVersionParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_Summary: // IdentifyReplyCommandFirmwareSummary
 		_childTemp, typeSwitchError = IdentifyReplyCommandFirmwareSummaryParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_ExtendedDiagnosticSummary: // IdentifyReplyCommandExtendedDiagnosticSummary
 		_childTemp, typeSwitchError = IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_NetworkTerminalLevels: // IdentifyReplyCommandNetworkTerminalLevels
 		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkTerminalLevelsParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_TerminalLevel: // IdentifyReplyCommandTerminalLevels
 		_childTemp, typeSwitchError = IdentifyReplyCommandTerminalLevelsParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_NetworkVoltage: // IdentifyReplyCommandNetworkVoltage
 		_childTemp, typeSwitchError = IdentifyReplyCommandNetworkVoltageParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_GAVValuesCurrent: // IdentifyReplyCommandGAVValuesCurrent
 		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesCurrentParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_GAVValuesStored: // IdentifyReplyCommandGAVValuesStored
 		_childTemp, typeSwitchError = IdentifyReplyCommandGAVValuesStoredParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_GAVPhysicalAddresses: // IdentifyReplyCommandGAVPhysicalAddresses
 		_childTemp, typeSwitchError = IdentifyReplyCommandGAVPhysicalAddressesParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_LogicalAssignment: // IdentifyReplyCommandLogicalAssignment
 		_childTemp, typeSwitchError = IdentifyReplyCommandLogicalAssignmentParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_Delays: // IdentifyReplyCommandDelays
 		_childTemp, typeSwitchError = IdentifyReplyCommandDelaysParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_MinimumLevels: // IdentifyReplyCommandMinimumLevels
 		_childTemp, typeSwitchError = IdentifyReplyCommandMinimumLevelsParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_MaximumLevels: // IdentifyReplyCommandMaximumLevels
 		_childTemp, typeSwitchError = IdentifyReplyCommandMaximumLevelsParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_CurrentSenseLevels: // IdentifyReplyCommandCurrentSenseLevels
 		_childTemp, typeSwitchError = IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_OutputUnitSummary: // IdentifyReplyCommandOutputUnitSummary
 		_childTemp, typeSwitchError = IdentifyReplyCommandOutputUnitSummaryParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	case attribute == Attribute_DSIStatus: // IdentifyReplyCommandDSIStatus
 		_childTemp, typeSwitchError = IdentifyReplyCommandDSIStatusParse(readBuffer, attribute)
-		_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -174,6 +156,7 @@ func IdentifyReplyCommandParse(readBuffer utils.ReadBuffer, attribute Attribute)
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(IdentifyReplyCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommand")

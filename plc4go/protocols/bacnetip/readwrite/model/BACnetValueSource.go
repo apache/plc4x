@@ -159,13 +159,10 @@ func BACnetValueSourceParse(readBuffer utils.ReadBuffer) (BACnetValueSource, err
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetValueSourceNone
 		_childTemp, typeSwitchError = BACnetValueSourceNoneParse(readBuffer)
-		_child = _childTemp.(BACnetValueSourceChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetValueSourceObject
 		_childTemp, typeSwitchError = BACnetValueSourceObjectParse(readBuffer)
-		_child = _childTemp.(BACnetValueSourceChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetValueSourceAddress
 		_childTemp, typeSwitchError = BACnetValueSourceAddressParse(readBuffer)
-		_child = _childTemp.(BACnetValueSourceChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -173,6 +170,7 @@ func BACnetValueSourceParse(readBuffer utils.ReadBuffer) (BACnetValueSource, err
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetValueSourceChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetValueSource"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetValueSource")

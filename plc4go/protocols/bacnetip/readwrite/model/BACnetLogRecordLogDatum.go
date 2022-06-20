@@ -195,37 +195,26 @@ func BACnetLogRecordLogDatumParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogRecordLogDatumLogStatus
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumLogStatusParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetLogRecordLogDatumBooleanValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumBooleanValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetLogRecordLogDatumRealValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumRealValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(3): // BACnetLogRecordLogDatumEnumeratedValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumEnumeratedValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(4): // BACnetLogRecordLogDatumUnsignedValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumUnsignedValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(5): // BACnetLogRecordLogDatumIntegerValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumIntegerValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(6): // BACnetLogRecordLogDatumBitStringValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumBitStringValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(7): // BACnetLogRecordLogDatumNullValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumNullValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(8): // BACnetLogRecordLogDatumFailure
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumFailureParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(9): // BACnetLogRecordLogDatumTimeChange
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumTimeChangeParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	case peekedTagNumber == uint8(10): // BACnetLogRecordLogDatumAnyValue
 		_childTemp, typeSwitchError = BACnetLogRecordLogDatumAnyValueParse(readBuffer, tagNumber)
-		_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -233,6 +222,7 @@ func BACnetLogRecordLogDatumParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetLogRecordLogDatumChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
