@@ -174,7 +174,7 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := transactionNotificationClass
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransactionNotificationClass"); closeErr != nil {

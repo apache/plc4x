@@ -174,7 +174,7 @@ func BACnetConstructedDataHigherDeckParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := higherDeck
-	actualValue := _actualValue.(BACnetApplicationTagObjectIdentifier)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataHigherDeck"); closeErr != nil {

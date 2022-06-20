@@ -174,7 +174,7 @@ func BACnetConstructedDataIPAddressParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Virtual field
 	_actualValue := ipAddress
-	actualValue := _actualValue.(BACnetApplicationTagOctetString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPAddress"); closeErr != nil {

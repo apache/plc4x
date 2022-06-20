@@ -174,7 +174,7 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := controlledVariableValue
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataControlledVariableValue"); closeErr != nil {

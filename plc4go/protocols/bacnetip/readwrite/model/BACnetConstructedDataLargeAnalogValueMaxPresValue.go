@@ -174,7 +174,7 @@ func BACnetConstructedDataLargeAnalogValueMaxPresValueParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := maxPresValue
-	actualValue := _actualValue.(BACnetApplicationTagDouble)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueMaxPresValue"); closeErr != nil {

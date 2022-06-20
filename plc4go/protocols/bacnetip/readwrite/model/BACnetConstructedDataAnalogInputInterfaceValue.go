@@ -174,7 +174,7 @@ func BACnetConstructedDataAnalogInputInterfaceValueParse(readBuffer utils.ReadBu
 
 	// Virtual field
 	_actualValue := interfaceValue
-	actualValue := _actualValue.(BACnetOptionalREAL)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAnalogInputInterfaceValue"); closeErr != nil {

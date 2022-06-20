@@ -174,7 +174,7 @@ func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := machineRoomId
-	actualValue := _actualValue.(BACnetApplicationTagObjectIdentifier)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMachineRoomID"); closeErr != nil {

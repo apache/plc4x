@@ -174,7 +174,7 @@ func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := logInterval
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLogInterval"); closeErr != nil {

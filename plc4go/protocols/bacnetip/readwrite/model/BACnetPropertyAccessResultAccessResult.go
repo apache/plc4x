@@ -164,10 +164,8 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	switch {
 	case peekedTagNumber == uint8(4): // BACnetPropertyAccessResultAccessResultPropertyValue
 		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
-		_child = _childTemp.(BACnetPropertyAccessResultAccessResultChildSerializeRequirement)
 	case peekedTagNumber == uint8(5): // BACnetPropertyAccessResultAccessResultPropertyAccessError
 		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
-		_child = _childTemp.(BACnetPropertyAccessResultAccessResultChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -175,6 +173,7 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetPropertyAccessResultAccessResultChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyAccessResultAccessResult"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPropertyAccessResultAccessResult")

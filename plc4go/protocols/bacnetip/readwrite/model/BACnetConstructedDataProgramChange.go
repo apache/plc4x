@@ -174,7 +174,7 @@ func BACnetConstructedDataProgramChangeParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := programChange
-	actualValue := _actualValue.(BACnetProgramRequestTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramChange"); closeErr != nil {

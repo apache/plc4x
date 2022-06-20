@@ -126,49 +126,34 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (SysexCommand
 	switch {
 	case commandType == 0x00: // SysexCommandExtendedId
 		_childTemp, typeSwitchError = SysexCommandExtendedIdParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x69 && response == bool(false): // SysexCommandAnalogMappingQueryRequest
 		_childTemp, typeSwitchError = SysexCommandAnalogMappingQueryRequestParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x69 && response == bool(true): // SysexCommandAnalogMappingQueryResponse
 		_childTemp, typeSwitchError = SysexCommandAnalogMappingQueryResponseParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x6A: // SysexCommandAnalogMappingResponse
 		_childTemp, typeSwitchError = SysexCommandAnalogMappingResponseParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x6B: // SysexCommandCapabilityQuery
 		_childTemp, typeSwitchError = SysexCommandCapabilityQueryParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x6C: // SysexCommandCapabilityResponse
 		_childTemp, typeSwitchError = SysexCommandCapabilityResponseParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x6D: // SysexCommandPinStateQuery
 		_childTemp, typeSwitchError = SysexCommandPinStateQueryParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x6E: // SysexCommandPinStateResponse
 		_childTemp, typeSwitchError = SysexCommandPinStateResponseParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x6F: // SysexCommandExtendedAnalog
 		_childTemp, typeSwitchError = SysexCommandExtendedAnalogParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x71: // SysexCommandStringData
 		_childTemp, typeSwitchError = SysexCommandStringDataParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x79 && response == bool(false): // SysexCommandReportFirmwareRequest
 		_childTemp, typeSwitchError = SysexCommandReportFirmwareRequestParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x79 && response == bool(true): // SysexCommandReportFirmwareResponse
 		_childTemp, typeSwitchError = SysexCommandReportFirmwareResponseParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x7A: // SysexCommandSamplingInterval
 		_childTemp, typeSwitchError = SysexCommandSamplingIntervalParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x7E: // SysexCommandSysexNonRealtime
 		_childTemp, typeSwitchError = SysexCommandSysexNonRealtimeParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	case commandType == 0x7F: // SysexCommandSysexRealtime
 		_childTemp, typeSwitchError = SysexCommandSysexRealtimeParse(readBuffer, response)
-		_child = _childTemp.(SysexCommandChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -176,6 +161,7 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (SysexCommand
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(SysexCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("SysexCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommand")

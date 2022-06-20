@@ -174,7 +174,7 @@ func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Virtual field
 	_actualValue := fileType
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileType"); closeErr != nil {

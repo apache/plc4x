@@ -174,7 +174,7 @@ func BACnetConstructedDataPositiveIntegerValueMinPresValueParse(readBuffer utils
 
 	// Virtual field
 	_actualValue := minPresValue
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueMinPresValue"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 
 	// Virtual field
 	_actualValue := mode
-	actualValue := _actualValue.(BACnetLifeSafetyModeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMode"); closeErr != nil {

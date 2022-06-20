@@ -174,7 +174,7 @@ func BACnetConstructedDataMinimumOffTimeParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := minimumOffTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumOffTime"); closeErr != nil {

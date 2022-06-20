@@ -174,7 +174,7 @@ func BACnetConstructedDataTotalRecordCountParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := totalRecordCount
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTotalRecordCount"); closeErr != nil {

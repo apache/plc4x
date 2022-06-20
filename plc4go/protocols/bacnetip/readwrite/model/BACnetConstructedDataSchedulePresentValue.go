@@ -174,7 +174,7 @@ func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetConstructedDataElement)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSchedulePresentValue"); closeErr != nil {

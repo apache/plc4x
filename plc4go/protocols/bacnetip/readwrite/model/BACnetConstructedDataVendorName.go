@@ -174,7 +174,7 @@ func BACnetConstructedDataVendorNameParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := vendorName
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVendorName"); closeErr != nil {

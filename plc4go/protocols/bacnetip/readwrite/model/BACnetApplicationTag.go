@@ -185,43 +185,30 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (BACnetApplicationTa
 	switch {
 	case actualTagNumber == 0x0: // BACnetApplicationTagNull
 		_childTemp, typeSwitchError = BACnetApplicationTagNullParse(readBuffer)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
 		_childTemp, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, header)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
 		_childTemp, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, header)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
 		_childTemp, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, header)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x4: // BACnetApplicationTagReal
 		_childTemp, typeSwitchError = BACnetApplicationTagRealParse(readBuffer)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
 		_childTemp, typeSwitchError = BACnetApplicationTagDoubleParse(readBuffer)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
 		_childTemp, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, header)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
 		_childTemp, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, header)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
 		_childTemp, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, header)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
 		_childTemp, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, header)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0xA: // BACnetApplicationTagDate
 		_childTemp, typeSwitchError = BACnetApplicationTagDateParse(readBuffer)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0xB: // BACnetApplicationTagTime
 		_childTemp, typeSwitchError = BACnetApplicationTagTimeParse(readBuffer)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	case actualTagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
 		_childTemp, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
-		_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -229,6 +216,7 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (BACnetApplicationTa
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetApplicationTagChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTag")

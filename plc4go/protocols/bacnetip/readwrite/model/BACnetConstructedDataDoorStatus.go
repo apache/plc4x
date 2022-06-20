@@ -174,7 +174,7 @@ func BACnetConstructedDataDoorStatusParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := doorStatus
-	actualValue := _actualValue.(BACnetDoorStatusTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorStatus"); closeErr != nil {

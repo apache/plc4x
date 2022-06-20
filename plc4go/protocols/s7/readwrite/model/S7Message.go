@@ -242,16 +242,12 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	switch {
 	case messageType == 0x01: // S7MessageRequest
 		_childTemp, typeSwitchError = S7MessageRequestParse(readBuffer)
-		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	case messageType == 0x02: // S7MessageResponse
 		_childTemp, typeSwitchError = S7MessageResponseParse(readBuffer)
-		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	case messageType == 0x03: // S7MessageResponseData
 		_childTemp, typeSwitchError = S7MessageResponseDataParse(readBuffer)
-		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	case messageType == 0x07: // S7MessageUserData
 		_childTemp, typeSwitchError = S7MessageUserDataParse(readBuffer)
-		_child = _childTemp.(S7MessageChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -259,6 +255,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7MessageChildSerializeRequirement)
 
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
 	var parameter S7Parameter = nil

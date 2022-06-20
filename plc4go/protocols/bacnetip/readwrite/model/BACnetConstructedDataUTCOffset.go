@@ -174,7 +174,7 @@ func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Virtual field
 	_actualValue := utcOffset
-	actualValue := _actualValue.(BACnetApplicationTagSignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUTCOffset"); closeErr != nil {

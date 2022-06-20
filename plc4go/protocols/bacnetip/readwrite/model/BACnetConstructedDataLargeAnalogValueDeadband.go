@@ -174,7 +174,7 @@ func BACnetConstructedDataLargeAnalogValueDeadbandParse(readBuffer utils.ReadBuf
 
 	// Virtual field
 	_actualValue := deadband
-	actualValue := _actualValue.(BACnetApplicationTagDouble)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueDeadband"); closeErr != nil {

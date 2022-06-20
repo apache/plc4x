@@ -174,7 +174,7 @@ func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := distributionKeyRevision
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDistributionKeyRevision"); closeErr != nil {

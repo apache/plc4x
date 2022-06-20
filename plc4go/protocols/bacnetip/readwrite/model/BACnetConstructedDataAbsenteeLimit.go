@@ -174,7 +174,7 @@ func BACnetConstructedDataAbsenteeLimitParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := absenteeLimit
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAbsenteeLimit"); closeErr != nil {

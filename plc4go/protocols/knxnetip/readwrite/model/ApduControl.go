@@ -123,16 +123,12 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (ApduControl, error) {
 	switch {
 	case controlType == 0x0: // ApduControlConnect
 		_childTemp, typeSwitchError = ApduControlConnectParse(readBuffer)
-		_child = _childTemp.(ApduControlChildSerializeRequirement)
 	case controlType == 0x1: // ApduControlDisconnect
 		_childTemp, typeSwitchError = ApduControlDisconnectParse(readBuffer)
-		_child = _childTemp.(ApduControlChildSerializeRequirement)
 	case controlType == 0x2: // ApduControlAck
 		_childTemp, typeSwitchError = ApduControlAckParse(readBuffer)
-		_child = _childTemp.(ApduControlChildSerializeRequirement)
 	case controlType == 0x3: // ApduControlNack
 		_childTemp, typeSwitchError = ApduControlNackParse(readBuffer)
-		_child = _childTemp.(ApduControlChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -140,6 +136,7 @@ func ApduControlParse(readBuffer utils.ReadBuffer) (ApduControl, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ApduControlChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ApduControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduControl")

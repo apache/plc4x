@@ -174,7 +174,7 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 
 	// Virtual field
 	_actualValue := bias
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBias"); closeErr != nil {

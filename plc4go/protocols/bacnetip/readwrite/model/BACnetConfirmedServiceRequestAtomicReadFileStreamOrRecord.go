@@ -192,10 +192,8 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	switch {
 	case peekedTagNumber == 0x0: // BACnetConfirmedServiceRequestAtomicReadFileStream
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer)
-		_child = _childTemp.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildSerializeRequirement)
 	case peekedTagNumber == 0x1: // BACnetConfirmedServiceRequestAtomicReadFileRecord
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer)
-		_child = _childTemp.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -203,6 +201,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {

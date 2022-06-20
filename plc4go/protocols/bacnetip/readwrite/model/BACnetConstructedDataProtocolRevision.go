@@ -174,7 +174,7 @@ func BACnetConstructedDataProtocolRevisionParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := protocolRevision
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolRevision"); closeErr != nil {

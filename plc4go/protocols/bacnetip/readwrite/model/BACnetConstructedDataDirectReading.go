@@ -174,7 +174,7 @@ func BACnetConstructedDataDirectReadingParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := directReading
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDirectReading"); closeErr != nil {

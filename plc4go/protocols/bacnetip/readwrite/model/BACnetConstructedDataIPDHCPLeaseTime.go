@@ -174,7 +174,7 @@ func BACnetConstructedDataIPDHCPLeaseTimeParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := ipDhcpLeaseTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDHCPLeaseTime"); closeErr != nil {

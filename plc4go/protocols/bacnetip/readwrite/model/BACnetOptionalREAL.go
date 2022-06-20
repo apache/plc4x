@@ -159,10 +159,8 @@ func BACnetOptionalREALParse(readBuffer utils.ReadBuffer) (BACnetOptionalREAL, e
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalREALNull
 		_childTemp, typeSwitchError = BACnetOptionalREALNullParse(readBuffer)
-		_child = _childTemp.(BACnetOptionalREALChildSerializeRequirement)
 	case true: // BACnetOptionalREALValue
 		_childTemp, typeSwitchError = BACnetOptionalREALValueParse(readBuffer)
-		_child = _childTemp.(BACnetOptionalREALChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -170,6 +168,7 @@ func BACnetOptionalREALParse(readBuffer utils.ReadBuffer) (BACnetOptionalREAL, e
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetOptionalREALChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalREAL"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetOptionalREAL")

@@ -174,7 +174,7 @@ func BACnetConstructedDataAlertEnrollmentPresentValueParse(readBuffer utils.Read
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetApplicationTagObjectIdentifier)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAlertEnrollmentPresentValue"); closeErr != nil {

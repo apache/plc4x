@@ -138,22 +138,16 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	switch {
 	case magicByte == 0x0: // CALReplyReply
 		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer)
-		_child = _childTemp.(ReplyChildSerializeRequirement)
 	case magicByte == 0x0: // MonitoredSALReply
 		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer)
-		_child = _childTemp.(ReplyChildSerializeRequirement)
 	case magicByte == 0x0: // ConfirmationReply
 		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer)
-		_child = _childTemp.(ReplyChildSerializeRequirement)
 	case magicByte == 0x0: // PowerUpReply
 		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer)
-		_child = _childTemp.(ReplyChildSerializeRequirement)
 	case magicByte == 0x0: // ParameterChangeReply
 		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer)
-		_child = _childTemp.(ReplyChildSerializeRequirement)
 	case magicByte == 0x0: // ExclamationMarkReply
 		_childTemp, typeSwitchError = ExclamationMarkReplyParse(readBuffer)
-		_child = _childTemp.(ReplyChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -161,6 +155,7 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ReplyChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("Reply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Reply")

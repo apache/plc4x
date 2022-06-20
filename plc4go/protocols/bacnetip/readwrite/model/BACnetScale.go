@@ -159,10 +159,8 @@ func BACnetScaleParse(readBuffer utils.ReadBuffer) (BACnetScale, error) {
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetScaleFloatScale
 		_childTemp, typeSwitchError = BACnetScaleFloatScaleParse(readBuffer)
-		_child = _childTemp.(BACnetScaleChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetScaleIntegerScale
 		_childTemp, typeSwitchError = BACnetScaleIntegerScaleParse(readBuffer)
-		_child = _childTemp.(BACnetScaleChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -170,6 +168,7 @@ func BACnetScaleParse(readBuffer utils.ReadBuffer) (BACnetScale, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetScaleChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetScale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetScale")

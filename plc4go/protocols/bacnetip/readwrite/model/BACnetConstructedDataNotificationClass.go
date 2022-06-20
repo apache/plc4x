@@ -174,7 +174,7 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := notificationClass
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotificationClass"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataProfileNameParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := profileName
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProfileName"); closeErr != nil {

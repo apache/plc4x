@@ -174,7 +174,7 @@ func BACnetConstructedDataCommandParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Virtual field
 	_actualValue := command
-	actualValue := _actualValue.(BACnetNetworkPortCommandTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCommand"); closeErr != nil {

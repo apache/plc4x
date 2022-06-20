@@ -174,7 +174,7 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := apduSegmentTimeout
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDUSegmentTimeout"); closeErr != nil {

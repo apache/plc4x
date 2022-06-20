@@ -167,28 +167,20 @@ func CALDataParse(readBuffer utils.ReadBuffer) (CALData, error) {
 	switch {
 	case commandType == CALCommandType_RESET: // CALDataRequestReset
 		_childTemp, typeSwitchError = CALDataRequestResetParse(readBuffer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	case commandType == CALCommandType_RECALL: // CALDataRequestRecall
 		_childTemp, typeSwitchError = CALDataRequestRecallParse(readBuffer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	case commandType == CALCommandType_IDENTIFY: // CALDataRequestIdentify
 		_childTemp, typeSwitchError = CALDataRequestIdentifyParse(readBuffer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	case commandType == CALCommandType_GET_STATUS: // CALDataRequestGetStatus
 		_childTemp, typeSwitchError = CALDataRequestGetStatusParse(readBuffer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	case commandType == CALCommandType_REPLY: // CALDataReplyReply
 		_childTemp, typeSwitchError = CALDataReplyReplyParse(readBuffer, commandTypeContainer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataReplyAcknowledge
 		_childTemp, typeSwitchError = CALDataReplyAcknowledgeParse(readBuffer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	case commandType == CALCommandType_STATUS: // CALDataReplyStatus
 		_childTemp, typeSwitchError = CALDataReplyStatusParse(readBuffer, commandTypeContainer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataReplyStatusExtended
 		_childTemp, typeSwitchError = CALDataReplyStatusExtendedParse(readBuffer, commandTypeContainer)
-		_child = _childTemp.(CALDataChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -196,6 +188,7 @@ func CALDataParse(readBuffer utils.ReadBuffer) (CALData, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(CALDataChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("CALData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALData")

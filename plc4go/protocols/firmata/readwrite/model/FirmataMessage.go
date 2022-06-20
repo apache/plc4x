@@ -126,19 +126,14 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (FirmataMes
 	switch {
 	case messageType == 0xE: // FirmataMessageAnalogIO
 		_childTemp, typeSwitchError = FirmataMessageAnalogIOParse(readBuffer, response)
-		_child = _childTemp.(FirmataMessageChildSerializeRequirement)
 	case messageType == 0x9: // FirmataMessageDigitalIO
 		_childTemp, typeSwitchError = FirmataMessageDigitalIOParse(readBuffer, response)
-		_child = _childTemp.(FirmataMessageChildSerializeRequirement)
 	case messageType == 0xC: // FirmataMessageSubscribeAnalogPinValue
 		_childTemp, typeSwitchError = FirmataMessageSubscribeAnalogPinValueParse(readBuffer, response)
-		_child = _childTemp.(FirmataMessageChildSerializeRequirement)
 	case messageType == 0xD: // FirmataMessageSubscribeDigitalPinValue
 		_childTemp, typeSwitchError = FirmataMessageSubscribeDigitalPinValueParse(readBuffer, response)
-		_child = _childTemp.(FirmataMessageChildSerializeRequirement)
 	case messageType == 0xF: // FirmataMessageCommand
 		_childTemp, typeSwitchError = FirmataMessageCommandParse(readBuffer, response)
-		_child = _childTemp.(FirmataMessageChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -146,6 +141,7 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (FirmataMes
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(FirmataMessageChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("FirmataMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessage")

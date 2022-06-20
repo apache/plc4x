@@ -174,7 +174,7 @@ func BACnetConstructedDataUserExternalIdentifierParse(readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_actualValue := userExternalIdentifier
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserExternalIdentifier"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataIntegralConstantParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := integralConstant
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegralConstant"); closeErr != nil {

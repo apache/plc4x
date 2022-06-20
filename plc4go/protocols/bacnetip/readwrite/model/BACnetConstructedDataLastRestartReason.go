@@ -174,7 +174,7 @@ func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := lastRestartReason
-	actualValue := _actualValue.(BACnetRestartReasonTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastRestartReason"); closeErr != nil {

@@ -159,10 +159,8 @@ func BACnetRecipientParse(readBuffer utils.ReadBuffer) (BACnetRecipient, error) 
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetRecipientDevice
 		_childTemp, typeSwitchError = BACnetRecipientDeviceParse(readBuffer)
-		_child = _childTemp.(BACnetRecipientChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetRecipientAddress
 		_childTemp, typeSwitchError = BACnetRecipientAddressParse(readBuffer)
-		_child = _childTemp.(BACnetRecipientChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -170,6 +168,7 @@ func BACnetRecipientParse(readBuffer utils.ReadBuffer) (BACnetRecipient, error) 
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetRecipientChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipient"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetRecipient")

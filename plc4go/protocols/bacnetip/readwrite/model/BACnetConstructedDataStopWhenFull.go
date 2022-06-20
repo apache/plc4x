@@ -174,7 +174,7 @@ func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := stopWhenFull
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStopWhenFull"); closeErr != nil {

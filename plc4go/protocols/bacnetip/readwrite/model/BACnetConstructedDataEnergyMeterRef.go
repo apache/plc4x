@@ -174,7 +174,7 @@ func BACnetConstructedDataEnergyMeterRefParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := energyMeterRef
-	actualValue := _actualValue.(BACnetDeviceObjectReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnergyMeterRef"); closeErr != nil {

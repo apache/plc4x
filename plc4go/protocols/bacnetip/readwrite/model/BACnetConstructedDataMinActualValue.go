@@ -174,7 +174,7 @@ func BACnetConstructedDataMinActualValueParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := minActualValue
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinActualValue"); closeErr != nil {

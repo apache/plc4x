@@ -174,7 +174,7 @@ func BACnetConstructedDataScaleParse(readBuffer utils.ReadBuffer, tagNumber uint
 
 	// Virtual field
 	_actualValue := scale
-	actualValue := _actualValue.(BACnetScale)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScale"); closeErr != nil {

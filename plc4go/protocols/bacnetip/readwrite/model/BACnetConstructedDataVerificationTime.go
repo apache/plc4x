@@ -174,7 +174,7 @@ func BACnetConstructedDataVerificationTimeParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := verificationTime
-	actualValue := _actualValue.(BACnetApplicationTagSignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVerificationTime"); closeErr != nil {

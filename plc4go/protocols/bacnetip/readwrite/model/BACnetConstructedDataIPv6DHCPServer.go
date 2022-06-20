@@ -174,7 +174,7 @@ func BACnetConstructedDataIPv6DHCPServerParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := dhcpServer
-	actualValue := _actualValue.(BACnetApplicationTagOctetString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DHCPServer"); closeErr != nil {

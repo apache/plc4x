@@ -174,7 +174,7 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadB
 
 	// Virtual field
 	_actualValue := activeAuthenticationPolicy
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveAuthenticationPolicy"); closeErr != nil {

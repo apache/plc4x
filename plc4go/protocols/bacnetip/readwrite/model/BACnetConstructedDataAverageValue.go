@@ -174,7 +174,7 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := averageValue
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAverageValue"); closeErr != nil {

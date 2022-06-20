@@ -187,58 +187,40 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	switch {
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x03: // S7PayloadDiagnosticMessage
 		_childTemp, typeSwitchError = S7PayloadDiagnosticMessageParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x05: // S7PayloadAlarm8
 		_childTemp, typeSwitchError = S7PayloadAlarm8Parse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x06: // S7PayloadNotify
 		_childTemp, typeSwitchError = S7PayloadNotifyParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x0c: // S7PayloadAlarmAckInd
 		_childTemp, typeSwitchError = S7PayloadAlarmAckIndParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x11: // S7PayloadAlarmSQ
 		_childTemp, typeSwitchError = S7PayloadAlarmSQParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x12: // S7PayloadAlarmS
 		_childTemp, typeSwitchError = S7PayloadAlarmSParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x13: // S7PayloadAlarmSC
 		_childTemp, typeSwitchError = S7PayloadAlarmSCParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x16: // S7PayloadNotify8
 		_childTemp, typeSwitchError = S7PayloadNotify8Parse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlRequest
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscription
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x00: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x05: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAck
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAckResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQuery
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
-		_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -246,6 +228,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7PayloadUserDataItemChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItem")

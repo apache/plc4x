@@ -174,7 +174,7 @@ func BACnetConstructedDataBinaryOutputInterfaceValueParse(readBuffer utils.ReadB
 
 	// Virtual field
 	_actualValue := interfaceValue
-	actualValue := _actualValue.(BACnetOptionalBinaryPV)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryOutputInterfaceValue"); closeErr != nil {

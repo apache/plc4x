@@ -174,7 +174,7 @@ func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := reliability
-	actualValue := _actualValue.(BACnetReliabilityTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliability"); closeErr != nil {

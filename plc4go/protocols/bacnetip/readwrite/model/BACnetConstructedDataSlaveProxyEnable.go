@@ -174,7 +174,7 @@ func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := slaveProxyEnable
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSlaveProxyEnable"); closeErr != nil {

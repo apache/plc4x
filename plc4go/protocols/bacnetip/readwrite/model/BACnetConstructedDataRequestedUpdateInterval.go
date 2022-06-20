@@ -174,7 +174,7 @@ func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := requestedUpdateInterval
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRequestedUpdateInterval"); closeErr != nil {

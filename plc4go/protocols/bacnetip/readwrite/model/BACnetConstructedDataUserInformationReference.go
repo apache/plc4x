@@ -174,7 +174,7 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 
 	// Virtual field
 	_actualValue := userInformationReference
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserInformationReference"); closeErr != nil {

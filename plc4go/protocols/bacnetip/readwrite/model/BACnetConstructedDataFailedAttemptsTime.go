@@ -174,7 +174,7 @@ func BACnetConstructedDataFailedAttemptsTimeParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := failedAttemptsTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFailedAttemptsTime"); closeErr != nil {

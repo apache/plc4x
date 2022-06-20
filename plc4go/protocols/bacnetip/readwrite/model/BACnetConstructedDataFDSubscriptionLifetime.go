@@ -174,7 +174,7 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_actualValue := fdSubscriptionLifetime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDSubscriptionLifetime"); closeErr != nil {

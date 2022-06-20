@@ -174,7 +174,7 @@ func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := ipv6ZoneIndex
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6ZoneIndex"); closeErr != nil {

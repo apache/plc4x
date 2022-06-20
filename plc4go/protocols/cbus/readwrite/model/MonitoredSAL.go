@@ -180,10 +180,8 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
 		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParse(readBuffer)
-		_child = _childTemp.(MonitoredSALChildSerializeRequirement)
 	case true: // MonitoredSALShortFormBasicMode
 		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParse(readBuffer)
-		_child = _childTemp.(MonitoredSALChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -191,6 +189,7 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (MonitoredSAL, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(MonitoredSALChildSerializeRequirement)
 
 	// Optional Field (salData) (Can be skipped, if a given expression evaluates to false)
 	var salData SALData = nil

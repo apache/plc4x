@@ -174,7 +174,7 @@ func BACnetConstructedDataCarDoorZoneParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := carDoorZone
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarDoorZone"); closeErr != nil {

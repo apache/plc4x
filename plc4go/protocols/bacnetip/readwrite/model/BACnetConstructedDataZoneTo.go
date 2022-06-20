@@ -174,7 +174,7 @@ func BACnetConstructedDataZoneToParse(readBuffer utils.ReadBuffer, tagNumber uin
 
 	// Virtual field
 	_actualValue := zoneTo
-	actualValue := _actualValue.(BACnetDeviceObjectReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataZoneTo"); closeErr != nil {

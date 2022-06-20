@@ -174,7 +174,7 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(readBuffer utils.Read
 
 	// Virtual field
 	_actualValue := occupancyUpperLimitEnforced
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); closeErr != nil {

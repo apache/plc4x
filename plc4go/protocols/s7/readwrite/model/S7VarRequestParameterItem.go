@@ -123,7 +123,6 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (S7VarRequestPa
 	switch {
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
 		_childTemp, typeSwitchError = S7VarRequestParameterItemAddressParse(readBuffer)
-		_child = _childTemp.(S7VarRequestParameterItemChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -131,6 +130,7 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (S7VarRequestPa
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7VarRequestParameterItemChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7VarRequestParameterItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7VarRequestParameterItem")

@@ -123,7 +123,6 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (S7Address, error) {
 	switch {
 	case addressType == 0x10: // S7AddressAny
 		_childTemp, typeSwitchError = S7AddressAnyParse(readBuffer)
-		_child = _childTemp.(S7AddressChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -131,6 +130,7 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (S7Address, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7AddressChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7Address"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7Address")

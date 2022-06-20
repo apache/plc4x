@@ -174,7 +174,7 @@ func BACnetConstructedDataCarLoadUnitsParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := units
-	actualValue := _actualValue.(BACnetEngineeringUnitsTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarLoadUnits"); closeErr != nil {

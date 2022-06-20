@@ -174,7 +174,7 @@ func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Virtual field
 	_actualValue := silenced
-	actualValue := _actualValue.(BACnetSilencedStateTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSilenced"); closeErr != nil {

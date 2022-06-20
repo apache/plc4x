@@ -174,7 +174,7 @@ func BACnetConstructedDataIntegerValueMaxPresValueParse(readBuffer utils.ReadBuf
 
 	// Virtual field
 	_actualValue := maxPresValue
-	actualValue := _actualValue.(BACnetApplicationTagSignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegerValueMaxPresValue"); closeErr != nil {

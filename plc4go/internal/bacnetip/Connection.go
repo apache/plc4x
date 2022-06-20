@@ -99,10 +99,6 @@ func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBu
 	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
 }
 
-func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("Not implemented yet. (at least as a default)")
-}
-
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {

@@ -174,7 +174,7 @@ func BACnetConstructedDataBufferSizeParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := bufferSize
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBufferSize"); closeErr != nil {

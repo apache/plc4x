@@ -174,7 +174,7 @@ func BACnetConstructedDataMultiStateValueRelinquishDefaultParse(readBuffer utils
 
 	// Virtual field
 	_actualValue := relinquishDefault
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateValueRelinquishDefault"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := countBeforeChange
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCountBeforeChange"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataOccupancyCountAdjustParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := occupancyCountAdjust
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyCountAdjust"); closeErr != nil {

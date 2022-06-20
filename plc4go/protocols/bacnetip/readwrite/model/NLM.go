@@ -164,34 +164,24 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
 	switch {
 	case messageType == 0x00: // NLMWhoIsRouterToNetwork
 		_childTemp, typeSwitchError = NLMWhoIsRouterToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x01: // NLMIAmRouterToNetwork
 		_childTemp, typeSwitchError = NLMIAmRouterToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x02: // NLMICouldBeRouterToNetwork
 		_childTemp, typeSwitchError = NLMICouldBeRouterToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x03: // NLMRejectRouterToNetwork
 		_childTemp, typeSwitchError = NLMRejectRouterToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x04: // NLMRouterBusyToNetwork
 		_childTemp, typeSwitchError = NLMRouterBusyToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x05: // NLMRouterAvailableToNetwork
 		_childTemp, typeSwitchError = NLMRouterAvailableToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x06: // NLMInitalizeRoutingTable
 		_childTemp, typeSwitchError = NLMInitalizeRoutingTableParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x07: // NLMInitalizeRoutingTableAck
 		_childTemp, typeSwitchError = NLMInitalizeRoutingTableAckParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x08: // NLMEstablishConnectionToNetwork
 		_childTemp, typeSwitchError = NLMEstablishConnectionToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	case messageType == 0x09: // NLMDisconnectConnectionToNetwork
 		_childTemp, typeSwitchError = NLMDisconnectConnectionToNetworkParse(readBuffer, apduLength, messageType)
-		_child = _childTemp.(NLMChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -199,6 +189,7 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(NLMChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("NLM"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLM")

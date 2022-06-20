@@ -174,7 +174,7 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParse(readBuffer utils.Re
 
 	// Virtual field
 	_actualValue := feedbackValue
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateOutputFeedbackValue"); closeErr != nil {

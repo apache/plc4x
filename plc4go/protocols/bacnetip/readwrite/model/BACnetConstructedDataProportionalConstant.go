@@ -174,7 +174,7 @@ func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := proportionalConstant
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProportionalConstant"); closeErr != nil {

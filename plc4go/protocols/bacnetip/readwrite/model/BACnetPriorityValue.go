@@ -180,49 +180,34 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetPriorityValueNull
 		_childTemp, typeSwitchError = BACnetPriorityValueNullParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetPriorityValueReal
 		_childTemp, typeSwitchError = BACnetPriorityValueRealParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetPriorityValueEnumerated
 		_childTemp, typeSwitchError = BACnetPriorityValueEnumeratedParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetPriorityValueUnsigned
 		_childTemp, typeSwitchError = BACnetPriorityValueUnsignedParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetPriorityValueBoolean
 		_childTemp, typeSwitchError = BACnetPriorityValueBooleanParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetPriorityValueInteger
 		_childTemp, typeSwitchError = BACnetPriorityValueIntegerParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetPriorityValueDouble
 		_childTemp, typeSwitchError = BACnetPriorityValueDoubleParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetPriorityValueTime
 		_childTemp, typeSwitchError = BACnetPriorityValueTimeParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetPriorityValueCharacterString
 		_childTemp, typeSwitchError = BACnetPriorityValueCharacterStringParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetPriorityValueOctetString
 		_childTemp, typeSwitchError = BACnetPriorityValueOctetStringParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetPriorityValueBitString
 		_childTemp, typeSwitchError = BACnetPriorityValueBitStringParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetPriorityValueDate
 		_childTemp, typeSwitchError = BACnetPriorityValueDateParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetPriorityValueObjectidentifier
 		_childTemp, typeSwitchError = BACnetPriorityValueObjectidentifierParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetPriorityValueConstructedValue
 		_childTemp, typeSwitchError = BACnetPriorityValueConstructedValueParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetPriorityValueDateTime
 		_childTemp, typeSwitchError = BACnetPriorityValueDateTimeParse(readBuffer, objectTypeArgument)
-		_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -230,6 +215,7 @@ func BACnetPriorityValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetPriorityValueChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityValue")

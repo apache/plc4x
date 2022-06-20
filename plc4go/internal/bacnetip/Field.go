@@ -28,12 +28,14 @@ type BacNetPlcField interface {
 	GetDeviceIdentifier() uint32
 	GetObjectType() uint16
 	GetObjectInstance() uint32
+	GetPropertyIdentifier() uint32
 }
 
 type PlcField struct {
-	DeviceIdentifier uint32
-	ObjectType       uint16
-	ObjectInstance   uint32
+	DeviceIdentifier   uint32
+	ObjectType         uint16
+	ObjectInstance     uint32
+	PropertyIdentifier uint32
 }
 
 func (m PlcField) GetAddressString() string {
@@ -48,11 +50,12 @@ func (m PlcField) GetQuantity() uint16 {
 	return 1
 }
 
-func NewField(deviceIdentifier uint32, objectType uint16, objectInstance uint32) PlcField {
+func NewField(deviceIdentifier uint32, objectType uint16, objectInstance uint32, propertyIdentifier uint32) PlcField {
 	return PlcField{
-		DeviceIdentifier: deviceIdentifier,
-		ObjectType:       objectType,
-		ObjectInstance:   objectInstance,
+		DeviceIdentifier:   deviceIdentifier,
+		ObjectType:         objectType,
+		ObjectInstance:     objectInstance,
+		PropertyIdentifier: propertyIdentifier,
 	}
 }
 
@@ -66,6 +69,10 @@ func (m PlcField) GetObjectType() uint16 {
 
 func (m PlcField) GetObjectInstance() uint32 {
 	return m.ObjectInstance
+}
+
+func (m PlcField) GetPropertyIdentifier() uint32 {
+	return m.PropertyIdentifier
 }
 
 func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -82,6 +89,10 @@ func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if err := writeBuffer.WriteUint32("objectInstance", 32, m.ObjectInstance); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteUint32("propertyIdentifier", 32, m.PropertyIdentifier); err != nil {
 		return err
 	}
 

@@ -174,7 +174,7 @@ func BACnetConstructedDataDescriptionOfHaltParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := descriptionForHalt
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDescriptionOfHalt"); closeErr != nil {

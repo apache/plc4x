@@ -174,7 +174,7 @@ func BACnetConstructedDataCarAssignedDirectionParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := assignedDirection
-	actualValue := _actualValue.(BACnetLiftCarDirectionTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarAssignedDirection"); closeErr != nil {

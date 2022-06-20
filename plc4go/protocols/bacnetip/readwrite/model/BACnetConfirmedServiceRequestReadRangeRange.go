@@ -192,13 +192,10 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	switch {
 	case peekedTagNumber == 0x3: // BACnetConfirmedServiceRequestReadRangeRangeByPosition
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(readBuffer)
-		_child = _childTemp.(BACnetConfirmedServiceRequestReadRangeRangeChildSerializeRequirement)
 	case peekedTagNumber == 0x6: // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer)
-		_child = _childTemp.(BACnetConfirmedServiceRequestReadRangeRangeChildSerializeRequirement)
 	case peekedTagNumber == 0x7: // BACnetConfirmedServiceRequestReadRangeRangeByTime
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer)
-		_child = _childTemp.(BACnetConfirmedServiceRequestReadRangeRangeChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -206,6 +203,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetConfirmedServiceRequestReadRangeRangeChildSerializeRequirement)
 
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataEgressTimeParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := egressTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEgressTime"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := alignIntervals
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAlignIntervals"); closeErr != nil {

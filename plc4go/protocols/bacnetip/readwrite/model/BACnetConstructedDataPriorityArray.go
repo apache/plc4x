@@ -174,7 +174,7 @@ func BACnetConstructedDataPriorityArrayParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := priorityArray
-	actualValue := _actualValue.(BACnetPriorityArray)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriorityArray"); closeErr != nil {

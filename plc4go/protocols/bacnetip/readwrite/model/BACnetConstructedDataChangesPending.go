@@ -174,7 +174,7 @@ func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := changesPending
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangesPending"); closeErr != nil {

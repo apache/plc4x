@@ -174,7 +174,7 @@ func BACnetConstructedDataTraceFlagParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Virtual field
 	_actualValue := traceFlag
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTraceFlag"); closeErr != nil {

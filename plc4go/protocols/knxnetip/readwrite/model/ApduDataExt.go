@@ -126,127 +126,86 @@ func ApduDataExtParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExt, e
 	switch {
 	case extApciType == 0x00: // ApduDataExtOpenRoutingTableRequest
 		_childTemp, typeSwitchError = ApduDataExtOpenRoutingTableRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x01: // ApduDataExtReadRoutingTableRequest
 		_childTemp, typeSwitchError = ApduDataExtReadRoutingTableRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x02: // ApduDataExtReadRoutingTableResponse
 		_childTemp, typeSwitchError = ApduDataExtReadRoutingTableResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x03: // ApduDataExtWriteRoutingTableRequest
 		_childTemp, typeSwitchError = ApduDataExtWriteRoutingTableRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x08: // ApduDataExtReadRouterMemoryRequest
 		_childTemp, typeSwitchError = ApduDataExtReadRouterMemoryRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x09: // ApduDataExtReadRouterMemoryResponse
 		_childTemp, typeSwitchError = ApduDataExtReadRouterMemoryResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x0A: // ApduDataExtWriteRouterMemoryRequest
 		_childTemp, typeSwitchError = ApduDataExtWriteRouterMemoryRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x0D: // ApduDataExtReadRouterStatusRequest
 		_childTemp, typeSwitchError = ApduDataExtReadRouterStatusRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x0E: // ApduDataExtReadRouterStatusResponse
 		_childTemp, typeSwitchError = ApduDataExtReadRouterStatusResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x0F: // ApduDataExtWriteRouterStatusRequest
 		_childTemp, typeSwitchError = ApduDataExtWriteRouterStatusRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x10: // ApduDataExtMemoryBitWrite
 		_childTemp, typeSwitchError = ApduDataExtMemoryBitWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x11: // ApduDataExtAuthorizeRequest
 		_childTemp, typeSwitchError = ApduDataExtAuthorizeRequestParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x12: // ApduDataExtAuthorizeResponse
 		_childTemp, typeSwitchError = ApduDataExtAuthorizeResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x13: // ApduDataExtKeyWrite
 		_childTemp, typeSwitchError = ApduDataExtKeyWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x14: // ApduDataExtKeyResponse
 		_childTemp, typeSwitchError = ApduDataExtKeyResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x15: // ApduDataExtPropertyValueRead
 		_childTemp, typeSwitchError = ApduDataExtPropertyValueReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x16: // ApduDataExtPropertyValueResponse
 		_childTemp, typeSwitchError = ApduDataExtPropertyValueResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x17: // ApduDataExtPropertyValueWrite
 		_childTemp, typeSwitchError = ApduDataExtPropertyValueWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x18: // ApduDataExtPropertyDescriptionRead
 		_childTemp, typeSwitchError = ApduDataExtPropertyDescriptionReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x19: // ApduDataExtPropertyDescriptionResponse
 		_childTemp, typeSwitchError = ApduDataExtPropertyDescriptionResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x1A: // ApduDataExtNetworkParameterRead
 		_childTemp, typeSwitchError = ApduDataExtNetworkParameterReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x1B: // ApduDataExtNetworkParameterResponse
 		_childTemp, typeSwitchError = ApduDataExtNetworkParameterResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x1C: // ApduDataExtIndividualAddressSerialNumberRead
 		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x1D: // ApduDataExtIndividualAddressSerialNumberResponse
 		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x1E: // ApduDataExtIndividualAddressSerialNumberWrite
 		_childTemp, typeSwitchError = ApduDataExtIndividualAddressSerialNumberWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x20: // ApduDataExtDomainAddressWrite
 		_childTemp, typeSwitchError = ApduDataExtDomainAddressWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x21: // ApduDataExtDomainAddressRead
 		_childTemp, typeSwitchError = ApduDataExtDomainAddressReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x22: // ApduDataExtDomainAddressResponse
 		_childTemp, typeSwitchError = ApduDataExtDomainAddressResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x23: // ApduDataExtDomainAddressSelectiveRead
 		_childTemp, typeSwitchError = ApduDataExtDomainAddressSelectiveReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x24: // ApduDataExtNetworkParameterWrite
 		_childTemp, typeSwitchError = ApduDataExtNetworkParameterWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x25: // ApduDataExtLinkRead
 		_childTemp, typeSwitchError = ApduDataExtLinkReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x26: // ApduDataExtLinkResponse
 		_childTemp, typeSwitchError = ApduDataExtLinkResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x27: // ApduDataExtLinkWrite
 		_childTemp, typeSwitchError = ApduDataExtLinkWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x28: // ApduDataExtGroupPropertyValueRead
 		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x29: // ApduDataExtGroupPropertyValueResponse
 		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x2A: // ApduDataExtGroupPropertyValueWrite
 		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x2B: // ApduDataExtGroupPropertyValueInfoReport
 		_childTemp, typeSwitchError = ApduDataExtGroupPropertyValueInfoReportParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x2C: // ApduDataExtDomainAddressSerialNumberRead
 		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberReadParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x2D: // ApduDataExtDomainAddressSerialNumberResponse
 		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberResponseParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x2E: // ApduDataExtDomainAddressSerialNumberWrite
 		_childTemp, typeSwitchError = ApduDataExtDomainAddressSerialNumberWriteParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	case extApciType == 0x30: // ApduDataExtFileStreamInfoReport
 		_childTemp, typeSwitchError = ApduDataExtFileStreamInfoReportParse(readBuffer, length)
-		_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -254,6 +213,7 @@ func ApduDataExtParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExt, e
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ApduDataExtChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ApduDataExt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExt")

@@ -159,13 +159,10 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) 
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
 		_childTemp, typeSwitchError = BACnetTimeStampTimeParse(readBuffer)
-		_child = _childTemp.(BACnetTimeStampChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
 		_childTemp, typeSwitchError = BACnetTimeStampSequenceParse(readBuffer)
-		_child = _childTemp.(BACnetTimeStampChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
 		_childTemp, typeSwitchError = BACnetTimeStampDateTimeParse(readBuffer)
-		_child = _childTemp.(BACnetTimeStampChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -173,6 +170,7 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) 
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetTimeStampChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetTimeStamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTimeStamp")

@@ -133,43 +133,30 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 	switch {
 	case serviceChoice == BACnetUnconfirmedServiceChoice_I_AM: // BACnetUnconfirmedServiceRequestIAm
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_I_HAVE: // BACnetUnconfirmedServiceRequestIHave
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestTimeSynchronization
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_HAS: // BACnetUnconfirmedServiceRequestWhoHas
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_IS: // BACnetUnconfirmedServiceRequestWhoIs
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WRITE_GROUP: // BACnetUnconfirmedServiceRequestWriteGroup
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	case true: // BACnetUnconfirmedServiceRequestUnconfirmedUnknown
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedUnknownParse(readBuffer, serviceRequestLength)
-		_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -177,6 +164,7 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetUnconfirmedServiceRequest")

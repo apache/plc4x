@@ -115,13 +115,10 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGrou
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
 		_childTemp, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer, numLevels)
-		_child = _childTemp.(KnxGroupAddressChildSerializeRequirement)
 	case numLevels == uint8(2): // KnxGroupAddress2Level
 		_childTemp, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer, numLevels)
-		_child = _childTemp.(KnxGroupAddressChildSerializeRequirement)
 	case numLevels == uint8(3): // KnxGroupAddress3Level
 		_childTemp, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer, numLevels)
-		_child = _childTemp.(KnxGroupAddressChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -129,6 +126,7 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGrou
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(KnxGroupAddressChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxGroupAddress")

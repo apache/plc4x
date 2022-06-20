@@ -174,7 +174,7 @@ func BACnetConstructedDataLoadControlPresentValueParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetShedStateTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoadControlPresentValue"); closeErr != nil {

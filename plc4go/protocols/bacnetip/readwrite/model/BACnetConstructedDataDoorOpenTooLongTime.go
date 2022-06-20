@@ -174,7 +174,7 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := doorOpenTooLongTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorOpenTooLongTime"); closeErr != nil {

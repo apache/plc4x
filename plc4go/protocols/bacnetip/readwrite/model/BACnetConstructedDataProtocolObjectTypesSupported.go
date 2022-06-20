@@ -174,7 +174,7 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := protocolObjectTypesSupported
-	actualValue := _actualValue.(BACnetObjectTypesSupportedTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolObjectTypesSupported"); closeErr != nil {

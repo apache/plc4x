@@ -174,7 +174,7 @@ func BACnetConstructedDataLimitMonitoringIntervalParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := limitMonitoringInterval
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLimitMonitoringInterval"); closeErr != nil {

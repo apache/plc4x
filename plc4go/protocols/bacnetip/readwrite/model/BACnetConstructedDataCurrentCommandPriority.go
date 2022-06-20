@@ -174,7 +174,7 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_actualValue := currentCommandPriority
-	actualValue := _actualValue.(BACnetOptionalUnsigned)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCurrentCommandPriority"); closeErr != nil {

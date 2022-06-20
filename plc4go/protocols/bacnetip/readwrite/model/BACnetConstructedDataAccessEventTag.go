@@ -174,7 +174,7 @@ func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := accessEventTag
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventTag"); closeErr != nil {

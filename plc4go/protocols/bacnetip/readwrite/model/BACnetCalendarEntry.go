@@ -164,13 +164,10 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntry,
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetCalendarEntryDate
 		_childTemp, typeSwitchError = BACnetCalendarEntryDateParse(readBuffer)
-		_child = _childTemp.(BACnetCalendarEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetCalendarEntryDateRange
 		_childTemp, typeSwitchError = BACnetCalendarEntryDateRangeParse(readBuffer)
-		_child = _childTemp.(BACnetCalendarEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetCalendarEntryWeekNDay
 		_childTemp, typeSwitchError = BACnetCalendarEntryWeekNDayParse(readBuffer)
-		_child = _childTemp.(BACnetCalendarEntryChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -178,6 +175,7 @@ func BACnetCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntry,
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetCalendarEntryChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetCalendarEntry")

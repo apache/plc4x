@@ -174,7 +174,7 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuf
 
 	// Virtual field
 	_actualValue := baseDeviceSecurityPolicy
-	actualValue := _actualValue.(BACnetSecurityLevelTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); closeErr != nil {

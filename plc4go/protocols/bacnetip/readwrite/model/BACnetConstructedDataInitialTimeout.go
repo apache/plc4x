@@ -174,7 +174,7 @@ func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := initialTimeout
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInitialTimeout"); closeErr != nil {

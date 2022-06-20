@@ -174,7 +174,7 @@ func BACnetConstructedDataIntegerValueLowLimitParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := lowLimit
-	actualValue := _actualValue.(BACnetApplicationTagSignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegerValueLowLimit"); closeErr != nil {

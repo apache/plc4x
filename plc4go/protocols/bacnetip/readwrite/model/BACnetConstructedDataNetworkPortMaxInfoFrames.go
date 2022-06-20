@@ -174,7 +174,7 @@ func BACnetConstructedDataNetworkPortMaxInfoFramesParse(readBuffer utils.ReadBuf
 
 	// Virtual field
 	_actualValue := maxInfoFrames
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkPortMaxInfoFrames"); closeErr != nil {

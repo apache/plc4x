@@ -174,7 +174,7 @@ func BACnetConstructedDataArchiveParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Virtual field
 	_actualValue := archive
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataArchive"); closeErr != nil {

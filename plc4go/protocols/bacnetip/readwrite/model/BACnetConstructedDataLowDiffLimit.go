@@ -174,7 +174,7 @@ func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := lowDiffLimit
-	actualValue := _actualValue.(BACnetOptionalREAL)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLowDiffLimit"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataChangeOfStateTimeParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := changeOfStateTime
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangeOfStateTime"); closeErr != nil {

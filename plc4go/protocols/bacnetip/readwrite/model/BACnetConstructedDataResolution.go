@@ -174,7 +174,7 @@ func BACnetConstructedDataResolutionParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := resolution
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataResolution"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataRestorePreparationTimeParse(readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_actualValue := restorePreparationTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestorePreparationTime"); closeErr != nil {

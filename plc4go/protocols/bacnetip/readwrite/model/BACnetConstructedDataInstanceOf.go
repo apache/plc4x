@@ -174,7 +174,7 @@ func BACnetConstructedDataInstanceOfParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := instanceOf
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstanceOf"); closeErr != nil {

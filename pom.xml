@@ -142,7 +142,7 @@
     <jackson.version>2.13.3</jackson.version>
     <woodstox-core.version>6.2.8</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
-    <jaxb.version>3.0.2</jaxb.version>
+    <jaxb.version>4.0.0</jaxb.version>
     <jetty-util.version>11.0.9</jetty-util.version>
     <jna.version>5.10.0</jna.version>
     <joda-time.version>2.10.14</joda-time.version>
@@ -152,18 +152,19 @@
     <logback.version>1.2.11</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.6</milo.version>
+    <milo.version>0.6.6</milo.version>
     <mockito.version>4.5.1</mockito.version>
     <netty.version>4.1.77.Final</netty.version>
-    <owasp-dependency-check.version>7.1.0</owasp-dependency-check.version>
+    <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>1.7.36</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
     <xmlunit.version>2.9.0</xmlunit.version>
 
     <!-- Site properties -->
-    <asciidoctor.maven.plugin.version>2.2.1</asciidoctor.maven.plugin.version>
+    <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.3</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.2.1</asciidoctorj.diagram.version>
+    <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
@@ -631,6 +632,12 @@
         <groupId>org.apiguardian</groupId>
         <artifactId>apiguardian-api</artifactId>
         <version>${apiguardian.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
+        <version>1.2.2</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -1137,7 +1144,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M5</version>
+          <version>3.0.0-M7</version>
           <!--version>2.22.2</version-->
           <dependencies>
             <dependency>
@@ -1209,7 +1216,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.9.1</version>
+          <version>3.12.0</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>

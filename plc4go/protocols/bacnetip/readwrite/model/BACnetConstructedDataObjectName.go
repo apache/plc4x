@@ -174,7 +174,7 @@ func BACnetConstructedDataObjectNameParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := objectName
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataObjectName"); closeErr != nil {

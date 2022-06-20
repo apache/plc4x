@@ -115,13 +115,10 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (A
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
 		_childTemp, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
-		_child = _childTemp.(AdsMultiRequestItemChildSerializeRequirement)
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
 		_childTemp, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
-		_child = _childTemp.(AdsMultiRequestItemChildSerializeRequirement)
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
 		_childTemp, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
-		_child = _childTemp.(AdsMultiRequestItemChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -129,6 +126,7 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (A
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(AdsMultiRequestItemChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsMultiRequestItem")

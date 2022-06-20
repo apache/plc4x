@@ -174,7 +174,7 @@ func BACnetConstructedDataLastUseTimeParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := lastUseTime
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastUseTime"); closeErr != nil {

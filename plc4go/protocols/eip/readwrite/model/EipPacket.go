@@ -225,13 +225,10 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	switch {
 	case command == 0x0065: // EipConnectionRequest
 		_childTemp, typeSwitchError = EipConnectionRequestParse(readBuffer)
-		_child = _childTemp.(EipPacketChildSerializeRequirement)
 	case command == 0x0066: // EipDisconnectRequest
 		_childTemp, typeSwitchError = EipDisconnectRequestParse(readBuffer)
-		_child = _childTemp.(EipPacketChildSerializeRequirement)
 	case command == 0x006F: // CipRRData
 		_childTemp, typeSwitchError = CipRRDataParse(readBuffer, len)
-		_child = _childTemp.(EipPacketChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -239,6 +236,7 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(EipPacketChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("EipPacket"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EipPacket")

@@ -174,7 +174,7 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := minimumValueTimestamp
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumValueTimestamp"); closeErr != nil {

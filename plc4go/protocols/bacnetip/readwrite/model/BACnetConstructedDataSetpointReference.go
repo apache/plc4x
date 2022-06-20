@@ -174,7 +174,7 @@ func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := setpointReference
-	actualValue := _actualValue.(BACnetSetpointReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetpointReference"); closeErr != nil {

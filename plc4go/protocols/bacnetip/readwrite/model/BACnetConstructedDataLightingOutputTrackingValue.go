@@ -174,7 +174,7 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 
 	// Virtual field
 	_actualValue := trackingValue
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingOutputTrackingValue"); closeErr != nil {

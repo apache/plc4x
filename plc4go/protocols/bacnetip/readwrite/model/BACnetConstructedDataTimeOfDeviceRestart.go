@@ -174,7 +174,7 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := timeOfDeviceRestart
-	actualValue := _actualValue.(BACnetTimeStamp)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfDeviceRestart"); closeErr != nil {

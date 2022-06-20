@@ -174,7 +174,7 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuf
 
 	// Virtual field
 	_actualValue := autoAddressingEnable
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6AutoAddressingEnable"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := defaultStepIncrement
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultStepIncrement"); closeErr != nil {

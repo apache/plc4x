@@ -174,7 +174,7 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.
 
 	// Virtual field
 	_actualValue := logDeviceObjectProperty
-	actualValue := _actualValue.(BACnetDeviceObjectPropertyReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty"); closeErr != nil {

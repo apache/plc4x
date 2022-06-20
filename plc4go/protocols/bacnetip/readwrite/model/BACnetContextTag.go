@@ -201,46 +201,32 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	switch {
 	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
 		_childTemp, typeSwitchError = BACnetContextTagNullParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
 		_childTemp, typeSwitchError = BACnetContextTagBooleanParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
 		_childTemp, typeSwitchError = BACnetContextTagUnsignedIntegerParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_SIGNED_INTEGER: // BACnetContextTagSignedInteger
 		_childTemp, typeSwitchError = BACnetContextTagSignedIntegerParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_REAL: // BACnetContextTagReal
 		_childTemp, typeSwitchError = BACnetContextTagRealParse(readBuffer, tagNumberArgument, dataType)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_DOUBLE: // BACnetContextTagDouble
 		_childTemp, typeSwitchError = BACnetContextTagDoubleParse(readBuffer, tagNumberArgument, dataType)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetContextTagOctetString
 		_childTemp, typeSwitchError = BACnetContextTagOctetStringParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetContextTagCharacterString
 		_childTemp, typeSwitchError = BACnetContextTagCharacterStringParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_BIT_STRING: // BACnetContextTagBitString
 		_childTemp, typeSwitchError = BACnetContextTagBitStringParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_ENUMERATED: // BACnetContextTagEnumerated
 		_childTemp, typeSwitchError = BACnetContextTagEnumeratedParse(readBuffer, tagNumberArgument, dataType, header)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_DATE: // BACnetContextTagDate
 		_childTemp, typeSwitchError = BACnetContextTagDateParse(readBuffer, tagNumberArgument, dataType)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_TIME: // BACnetContextTagTime
 		_childTemp, typeSwitchError = BACnetContextTagTimeParse(readBuffer, tagNumberArgument, dataType)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetContextTagObjectIdentifier
 		_childTemp, typeSwitchError = BACnetContextTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	case dataType == BACnetDataType_UNKNOWN: // BACnetContextTagUnknown
 		_childTemp, typeSwitchError = BACnetContextTagUnknownParse(readBuffer, tagNumberArgument, dataType, actualLength)
-		_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -248,6 +234,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetContextTagChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTag")

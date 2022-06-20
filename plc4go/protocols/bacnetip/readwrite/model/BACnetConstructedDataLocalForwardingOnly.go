@@ -174,7 +174,7 @@ func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := localForwardingOnly
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalForwardingOnly"); closeErr != nil {

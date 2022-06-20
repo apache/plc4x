@@ -174,7 +174,7 @@ func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBu
 
 	// Virtual field
 	_actualValue := covResubscriptionInterval
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVResubscriptionInterval"); closeErr != nil {

@@ -62,6 +62,13 @@ func WithDiscoveryOptionRemoteAddress(remoteAddress string) WithDiscoveryOption 
 	}
 }
 
+func WithDiscoveryOptionProtocolSpecific(key string, value interface{}) WithDiscoveryOption {
+	return discoveryOptionProtocolSpecific{
+		key:   key,
+		value: value,
+	}
+}
+
 func FilterDiscoveryOptionsProtocol(options []WithDiscoveryOption) []DiscoveryOptionProtocol {
 	var filtered []DiscoveryOptionProtocol
 	for _, option := range options {
@@ -112,6 +119,17 @@ func FilterDiscoveryOptionsRemoteAddress(options []WithDiscoveryOption) []Discov
 		switch option.(type) {
 		case DiscoveryOptionRemoteAddress:
 			filtered = append(filtered, option.(DiscoveryOptionRemoteAddress))
+		}
+	}
+	return filtered
+}
+
+func FilterDiscoveryOptionProtocolSpecific(options []WithDiscoveryOption) []DiscoveryOptionProtocolSpecific {
+	var filtered []DiscoveryOptionProtocolSpecific
+	for _, option := range options {
+		switch option.(type) {
+		case DiscoveryOptionProtocolSpecific:
+			filtered = append(filtered, option.(DiscoveryOptionProtocolSpecific))
 		}
 	}
 	return filtered
@@ -186,6 +204,25 @@ type discoveryOptionRemoteAddress struct {
 
 func (d *discoveryOptionRemoteAddress) GetRemoteAddress() string {
 	return d.remoteAddress
+}
+
+type DiscoveryOptionProtocolSpecific interface {
+	GetKey() string
+	GetValue() interface{}
+}
+
+type discoveryOptionProtocolSpecific struct {
+	DiscoveryOption
+	key   string
+	value interface{}
+}
+
+func (d *discoveryOptionProtocolSpecific) GetKey() string {
+	return d.key
+}
+
+func (d *discoveryOptionProtocolSpecific) GetValue() interface{} {
+	return d.value
 }
 
 //

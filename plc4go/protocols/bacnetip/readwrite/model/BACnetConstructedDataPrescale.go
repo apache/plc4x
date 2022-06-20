@@ -174,7 +174,7 @@ func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Virtual field
 	_actualValue := prescale
-	actualValue := _actualValue.(BACnetPrescale)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPrescale"); closeErr != nil {

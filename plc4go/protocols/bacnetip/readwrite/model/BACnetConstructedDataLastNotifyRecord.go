@@ -174,7 +174,7 @@ func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := lastNotifyRecord
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastNotifyRecord"); closeErr != nil {

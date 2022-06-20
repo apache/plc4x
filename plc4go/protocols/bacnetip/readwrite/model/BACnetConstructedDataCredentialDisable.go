@@ -174,7 +174,7 @@ func BACnetConstructedDataCredentialDisableParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := credentialDisable
-	actualValue := _actualValue.(BACnetAccessCredentialDisableTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialDisable"); closeErr != nil {

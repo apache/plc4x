@@ -174,7 +174,7 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := updateKeySetTimeout
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUpdateKeySetTimeout"); closeErr != nil {

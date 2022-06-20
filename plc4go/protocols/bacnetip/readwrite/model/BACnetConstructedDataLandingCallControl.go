@@ -174,7 +174,7 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := landingCallControl
-	actualValue := _actualValue.(BACnetLandingCallStatus)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLandingCallControl"); closeErr != nil {

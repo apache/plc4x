@@ -174,7 +174,7 @@ func BACnetConstructedDataTimeValueRelinquishDefaultParse(readBuffer utils.ReadB
 
 	// Virtual field
 	_actualValue := relinquishDefault
-	actualValue := _actualValue.(BACnetApplicationTagTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeValueRelinquishDefault"); closeErr != nil {

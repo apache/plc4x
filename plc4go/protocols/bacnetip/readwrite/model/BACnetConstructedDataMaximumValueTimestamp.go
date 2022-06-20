@@ -174,7 +174,7 @@ func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := maximumValueTimestamp
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaximumValueTimestamp"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := securityPduTimeout
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecurityPDUTimeout"); closeErr != nil {

@@ -177,46 +177,32 @@ func BACnetFaultParameterFaultExtendedParametersEntryParse(readBuffer utils.Read
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryNull
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryNullParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryReal
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryRealParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryUnsignedParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBoolean
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryInteger
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryIntegerParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDouble
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDoubleParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryOctetString
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryOctetStringParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryCharacterString
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBitString
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryEnumerated
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDate
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDateParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryTime
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryTimeParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetFaultParameterFaultExtendedParametersEntryReference
 		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(readBuffer)
-		_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -224,6 +210,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParse(readBuffer utils.Read
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetFaultParameterFaultExtendedParametersEntryChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetFaultParameterFaultExtendedParametersEntry")

@@ -174,7 +174,7 @@ func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBu
 
 	// Virtual field
 	_actualValue := protocolServicesSupported
-	actualValue := _actualValue.(BACnetServicesSupportedTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolServicesSupported"); closeErr != nil {

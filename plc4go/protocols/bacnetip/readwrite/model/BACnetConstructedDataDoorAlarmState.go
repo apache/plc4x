@@ -174,7 +174,7 @@ func BACnetConstructedDataDoorAlarmStateParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := doorAlarmState
-	actualValue := _actualValue.(BACnetDoorAlarmStateTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorAlarmState"); closeErr != nil {

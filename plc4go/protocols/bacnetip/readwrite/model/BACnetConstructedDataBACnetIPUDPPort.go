@@ -174,7 +174,7 @@ func BACnetConstructedDataBACnetIPUDPPortParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := ipUdpPort
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPUDPPort"); closeErr != nil {

@@ -170,10 +170,8 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
 	switch {
 	case control == uint8(1): // ApduControlContainer
 		_childTemp, typeSwitchError = ApduControlContainerParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduChildSerializeRequirement)
 	case control == uint8(0): // ApduDataContainer
 		_childTemp, typeSwitchError = ApduDataContainerParse(readBuffer, dataLength)
-		_child = _childTemp.(ApduChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -181,6 +179,7 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ApduChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("Apdu"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Apdu")

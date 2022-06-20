@@ -137,121 +137,82 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDU, erro
 	switch {
 	case errorFlag == bool(true): // ModbusPDUError
 		_childTemp, typeSwitchError = ModbusPDUErrorParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x02 && response == bool(false): // ModbusPDUReadDiscreteInputsRequest
 		_childTemp, typeSwitchError = ModbusPDUReadDiscreteInputsRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x02 && response == bool(true): // ModbusPDUReadDiscreteInputsResponse
 		_childTemp, typeSwitchError = ModbusPDUReadDiscreteInputsResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x01 && response == bool(false): // ModbusPDUReadCoilsRequest
 		_childTemp, typeSwitchError = ModbusPDUReadCoilsRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x01 && response == bool(true): // ModbusPDUReadCoilsResponse
 		_childTemp, typeSwitchError = ModbusPDUReadCoilsResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x05 && response == bool(false): // ModbusPDUWriteSingleCoilRequest
 		_childTemp, typeSwitchError = ModbusPDUWriteSingleCoilRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x05 && response == bool(true): // ModbusPDUWriteSingleCoilResponse
 		_childTemp, typeSwitchError = ModbusPDUWriteSingleCoilResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x0F && response == bool(false): // ModbusPDUWriteMultipleCoilsRequest
 		_childTemp, typeSwitchError = ModbusPDUWriteMultipleCoilsRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x0F && response == bool(true): // ModbusPDUWriteMultipleCoilsResponse
 		_childTemp, typeSwitchError = ModbusPDUWriteMultipleCoilsResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x04 && response == bool(false): // ModbusPDUReadInputRegistersRequest
 		_childTemp, typeSwitchError = ModbusPDUReadInputRegistersRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x04 && response == bool(true): // ModbusPDUReadInputRegistersResponse
 		_childTemp, typeSwitchError = ModbusPDUReadInputRegistersResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x03 && response == bool(false): // ModbusPDUReadHoldingRegistersRequest
 		_childTemp, typeSwitchError = ModbusPDUReadHoldingRegistersRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x03 && response == bool(true): // ModbusPDUReadHoldingRegistersResponse
 		_childTemp, typeSwitchError = ModbusPDUReadHoldingRegistersResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x06 && response == bool(false): // ModbusPDUWriteSingleRegisterRequest
 		_childTemp, typeSwitchError = ModbusPDUWriteSingleRegisterRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x06 && response == bool(true): // ModbusPDUWriteSingleRegisterResponse
 		_childTemp, typeSwitchError = ModbusPDUWriteSingleRegisterResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x10 && response == bool(false): // ModbusPDUWriteMultipleHoldingRegistersRequest
 		_childTemp, typeSwitchError = ModbusPDUWriteMultipleHoldingRegistersRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x10 && response == bool(true): // ModbusPDUWriteMultipleHoldingRegistersResponse
 		_childTemp, typeSwitchError = ModbusPDUWriteMultipleHoldingRegistersResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x17 && response == bool(false): // ModbusPDUReadWriteMultipleHoldingRegistersRequest
 		_childTemp, typeSwitchError = ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x17 && response == bool(true): // ModbusPDUReadWriteMultipleHoldingRegistersResponse
 		_childTemp, typeSwitchError = ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x16 && response == bool(false): // ModbusPDUMaskWriteHoldingRegisterRequest
 		_childTemp, typeSwitchError = ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x16 && response == bool(true): // ModbusPDUMaskWriteHoldingRegisterResponse
 		_childTemp, typeSwitchError = ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x18 && response == bool(false): // ModbusPDUReadFifoQueueRequest
 		_childTemp, typeSwitchError = ModbusPDUReadFifoQueueRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x18 && response == bool(true): // ModbusPDUReadFifoQueueResponse
 		_childTemp, typeSwitchError = ModbusPDUReadFifoQueueResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x14 && response == bool(false): // ModbusPDUReadFileRecordRequest
 		_childTemp, typeSwitchError = ModbusPDUReadFileRecordRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x14 && response == bool(true): // ModbusPDUReadFileRecordResponse
 		_childTemp, typeSwitchError = ModbusPDUReadFileRecordResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x15 && response == bool(false): // ModbusPDUWriteFileRecordRequest
 		_childTemp, typeSwitchError = ModbusPDUWriteFileRecordRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x15 && response == bool(true): // ModbusPDUWriteFileRecordResponse
 		_childTemp, typeSwitchError = ModbusPDUWriteFileRecordResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x07 && response == bool(false): // ModbusPDUReadExceptionStatusRequest
 		_childTemp, typeSwitchError = ModbusPDUReadExceptionStatusRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x07 && response == bool(true): // ModbusPDUReadExceptionStatusResponse
 		_childTemp, typeSwitchError = ModbusPDUReadExceptionStatusResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x08 && response == bool(false): // ModbusPDUDiagnosticRequest
 		_childTemp, typeSwitchError = ModbusPDUDiagnosticRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x08 && response == bool(true): // ModbusPDUDiagnosticResponse
 		_childTemp, typeSwitchError = ModbusPDUDiagnosticResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x0B && response == bool(false): // ModbusPDUGetComEventCounterRequest
 		_childTemp, typeSwitchError = ModbusPDUGetComEventCounterRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x0B && response == bool(true): // ModbusPDUGetComEventCounterResponse
 		_childTemp, typeSwitchError = ModbusPDUGetComEventCounterResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x0C && response == bool(false): // ModbusPDUGetComEventLogRequest
 		_childTemp, typeSwitchError = ModbusPDUGetComEventLogRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x0C && response == bool(true): // ModbusPDUGetComEventLogResponse
 		_childTemp, typeSwitchError = ModbusPDUGetComEventLogResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x11 && response == bool(false): // ModbusPDUReportServerIdRequest
 		_childTemp, typeSwitchError = ModbusPDUReportServerIdRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x11 && response == bool(true): // ModbusPDUReportServerIdResponse
 		_childTemp, typeSwitchError = ModbusPDUReportServerIdResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x2B && response == bool(false): // ModbusPDUReadDeviceIdentificationRequest
 		_childTemp, typeSwitchError = ModbusPDUReadDeviceIdentificationRequestParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	case errorFlag == bool(false) && functionFlag == 0x2B && response == bool(true): // ModbusPDUReadDeviceIdentificationResponse
 		_childTemp, typeSwitchError = ModbusPDUReadDeviceIdentificationResponseParse(readBuffer, response)
-		_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -259,6 +220,7 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDU, erro
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(ModbusPDUChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("ModbusPDU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDU")

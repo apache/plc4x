@@ -77,6 +77,10 @@ func WithDiscoveryOptionRemoteAddress(remoteAddress string) WithDiscoveryOption 
 	return withDiscoveryOption{options.WithDiscoveryOptionRemoteAddress(remoteAddress)}
 }
 
+func WithDiscoveryOptionProtocolSpecific(key string, value interface{}) WithDiscoveryOption {
+	return withDiscoveryOption{options.WithDiscoveryOptionProtocolSpecific(key, value)}
+}
+
 // WithDiscoveryOption is a marker interface for options regarding discovery
 // FIXME: this is to avoid leaks spi in the signature move to spi driver or create interfaces. Can also be done by moving spi in a proper module
 type WithDiscoveryOption interface {

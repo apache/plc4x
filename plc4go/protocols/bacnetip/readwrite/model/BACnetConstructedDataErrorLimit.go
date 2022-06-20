@@ -174,7 +174,7 @@ func BACnetConstructedDataErrorLimitParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := errorLimit
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataErrorLimit"); closeErr != nil {

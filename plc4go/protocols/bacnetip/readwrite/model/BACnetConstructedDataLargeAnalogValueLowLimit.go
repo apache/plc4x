@@ -174,7 +174,7 @@ func BACnetConstructedDataLargeAnalogValueLowLimitParse(readBuffer utils.ReadBuf
 
 	// Virtual field
 	_actualValue := lowLimit
-	actualValue := _actualValue.(BACnetApplicationTagDouble)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueLowLimit"); closeErr != nil {

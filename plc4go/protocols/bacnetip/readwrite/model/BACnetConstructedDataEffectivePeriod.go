@@ -174,7 +174,7 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := dateRange
-	actualValue := _actualValue.(BACnetDateRange)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEffectivePeriod"); closeErr != nil {

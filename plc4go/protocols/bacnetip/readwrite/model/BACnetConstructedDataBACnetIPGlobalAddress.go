@@ -174,7 +174,7 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := bacnetIpGlobalAddress
-	actualValue := _actualValue.(BACnetHostNPort)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPGlobalAddress"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataIPDefaultGatewayParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := ipDefaultGateway
-	actualValue := _actualValue.(BACnetApplicationTagOctetString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDefaultGateway"); closeErr != nil {

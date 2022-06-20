@@ -174,7 +174,7 @@ func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint
 
 	// Virtual field
 	_actualValue := power
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPower"); closeErr != nil {

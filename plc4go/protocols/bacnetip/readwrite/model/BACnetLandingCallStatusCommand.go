@@ -159,10 +159,8 @@ func BACnetLandingCallStatusCommandParse(readBuffer utils.ReadBuffer) (BACnetLan
 	switch {
 	case peekedTagNumber == uint8(1): // BACnetLandingCallStatusCommandDirection
 		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDirectionParse(readBuffer)
-		_child = _childTemp.(BACnetLandingCallStatusCommandChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetLandingCallStatusCommandDestination
 		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDestinationParse(readBuffer)
-		_child = _childTemp.(BACnetLandingCallStatusCommandChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -170,6 +168,7 @@ func BACnetLandingCallStatusCommandParse(readBuffer utils.ReadBuffer) (BACnetLan
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetLandingCallStatusCommandChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLandingCallStatusCommand")

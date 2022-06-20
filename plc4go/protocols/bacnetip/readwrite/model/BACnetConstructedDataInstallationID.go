@@ -174,7 +174,7 @@ func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := installationId
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstallationID"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := covIncrement
-	actualValue := _actualValue.(BACnetApplicationTagDouble)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueCOVIncrement"); closeErr != nil {

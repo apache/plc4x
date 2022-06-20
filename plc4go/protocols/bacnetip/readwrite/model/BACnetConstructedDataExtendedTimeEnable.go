@@ -174,7 +174,7 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := extendedTimeEnable
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExtendedTimeEnable"); closeErr != nil {

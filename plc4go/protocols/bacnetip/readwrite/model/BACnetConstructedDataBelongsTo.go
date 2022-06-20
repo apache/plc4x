@@ -174,7 +174,7 @@ func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Virtual field
 	_actualValue := belongsTo
-	actualValue := _actualValue.(BACnetDeviceObjectReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBelongsTo"); closeErr != nil {

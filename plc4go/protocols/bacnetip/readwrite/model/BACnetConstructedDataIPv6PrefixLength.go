@@ -174,7 +174,7 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := ipv6PrefixLength
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6PrefixLength"); closeErr != nil {

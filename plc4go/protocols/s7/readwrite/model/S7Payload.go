@@ -121,16 +121,12 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7
 	switch {
 	case CastS7Parameter(parameter).GetParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
 		_childTemp, typeSwitchError = S7PayloadReadVarResponseParse(readBuffer, messageType, parameter)
-		_child = _childTemp.(S7PayloadChildSerializeRequirement)
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
 		_childTemp, typeSwitchError = S7PayloadWriteVarRequestParse(readBuffer, messageType, parameter)
-		_child = _childTemp.(S7PayloadChildSerializeRequirement)
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
 		_childTemp, typeSwitchError = S7PayloadWriteVarResponseParse(readBuffer, messageType, parameter)
-		_child = _childTemp.(S7PayloadChildSerializeRequirement)
 	case CastS7Parameter(parameter).GetParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
 		_childTemp, typeSwitchError = S7PayloadUserDataParse(readBuffer, messageType, parameter)
-		_child = _childTemp.(S7PayloadChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -138,6 +134,7 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(S7PayloadChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("S7Payload"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7Payload")

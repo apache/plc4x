@@ -174,7 +174,7 @@ func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := valueSource
-	actualValue := _actualValue.(BACnetValueSource)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSource"); closeErr != nil {

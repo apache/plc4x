@@ -219,7 +219,6 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, err
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
 		_childTemp, typeSwitchError = DF1CommandRequestMessageParse(readBuffer)
-		_child = _childTemp.(DF1RequestMessageChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -227,6 +226,7 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (DF1RequestMessage, err
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(DF1RequestMessageChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("DF1RequestMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1RequestMessage")

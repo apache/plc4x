@@ -174,7 +174,7 @@ func BACnetConstructedDataMaintenanceRequiredParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := maintenanceRequired
-	actualValue := _actualValue.(BACnetMaintenanceTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaintenanceRequired"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataLightingOutputFeedbackValueParse(readBuffer utils.Read
 
 	// Virtual field
 	_actualValue := feedbackValue
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingOutputFeedbackValue"); closeErr != nil {

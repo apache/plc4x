@@ -174,7 +174,7 @@ func BACnetConstructedDataMACAddressParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := macAddress
-	actualValue := _actualValue.(BACnetApplicationTagOctetString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMACAddress"); closeErr != nil {

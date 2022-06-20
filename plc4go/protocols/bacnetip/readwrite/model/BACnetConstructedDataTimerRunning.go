@@ -174,7 +174,7 @@ func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := timerRunning
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerRunning"); closeErr != nil {

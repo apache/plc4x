@@ -174,7 +174,7 @@ func BACnetConstructedDataRequestedShedLevelParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := requestedShedLevel
-	actualValue := _actualValue.(BACnetShedLevel)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRequestedShedLevel"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer utils.R
 
 	// Virtual field
 	_actualValue := defaultSubordinateRelationship
-	actualValue := _actualValue.(BACnetRelationshipTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultSubordinateRelationship"); closeErr != nil {

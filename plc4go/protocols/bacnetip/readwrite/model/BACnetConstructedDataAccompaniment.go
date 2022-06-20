@@ -174,7 +174,7 @@ func BACnetConstructedDataAccompanimentParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := accompaniment
-	actualValue := _actualValue.(BACnetDeviceObjectReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompaniment"); closeErr != nil {

@@ -118,64 +118,44 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	switch {
 	case commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
 		_childTemp, typeSwitchError = AdsInvalidRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
 		_childTemp, typeSwitchError = AdsInvalidResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
 		_childTemp, typeSwitchError = AdsReadDeviceInfoRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
 		_childTemp, typeSwitchError = AdsReadDeviceInfoResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
 		_childTemp, typeSwitchError = AdsReadRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
 		_childTemp, typeSwitchError = AdsReadResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
 		_childTemp, typeSwitchError = AdsWriteRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
 		_childTemp, typeSwitchError = AdsWriteResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
 		_childTemp, typeSwitchError = AdsReadStateRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
 		_childTemp, typeSwitchError = AdsReadStateResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
 		_childTemp, typeSwitchError = AdsWriteControlRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
 		_childTemp, typeSwitchError = AdsWriteControlResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
 		_childTemp, typeSwitchError = AdsAddDeviceNotificationRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
 		_childTemp, typeSwitchError = AdsAddDeviceNotificationResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
 		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
 		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
 		_childTemp, typeSwitchError = AdsDeviceNotificationRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
 		_childTemp, typeSwitchError = AdsDeviceNotificationResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
 		_childTemp, typeSwitchError = AdsReadWriteRequestParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	case commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
 		_childTemp, typeSwitchError = AdsReadWriteResponseParse(readBuffer, commandId, response)
-		_child = _childTemp.(AdsDataChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -183,6 +163,7 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(AdsDataChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("AdsData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsData")

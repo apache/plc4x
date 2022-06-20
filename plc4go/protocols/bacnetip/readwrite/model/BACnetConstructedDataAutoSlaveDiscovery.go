@@ -174,7 +174,7 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := autoSlaveDiscovery
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAutoSlaveDiscovery"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_actualValue := linkSpeedAutonegotiate
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLinkSpeedAutonegotiate"); closeErr != nil {

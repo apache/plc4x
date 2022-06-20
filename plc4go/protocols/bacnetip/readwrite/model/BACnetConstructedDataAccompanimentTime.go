@@ -174,7 +174,7 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := accompanimentTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompanimentTime"); closeErr != nil {

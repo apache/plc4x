@@ -174,7 +174,7 @@ func BACnetConstructedDataIntegerValueDeadbandParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := deadband
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegerValueDeadband"); closeErr != nil {

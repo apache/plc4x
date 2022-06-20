@@ -174,7 +174,7 @@ func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := adjustValue
-	actualValue := _actualValue.(BACnetApplicationTagSignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessZoneAdjustValue"); closeErr != nil {

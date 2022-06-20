@@ -174,7 +174,7 @@ func BACnetConstructedDataTimeDelayNormalParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := timeDelayNormal
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeDelayNormal"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := reliabilityEvaluationInhibit
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliabilityEvaluationInhibit"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataLargeAnalogValueResolutionParse(readBuffer utils.ReadB
 
 	// Virtual field
 	_actualValue := resolution
-	actualValue := _actualValue.(BACnetApplicationTagDouble)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueResolution"); closeErr != nil {

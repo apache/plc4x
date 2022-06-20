@@ -159,61 +159,42 @@ func BACnetEventParameterParse(readBuffer utils.ReadBuffer) (BACnetEventParamete
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfBitstring
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfBitstringParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfState
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStateParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(2): // BACnetEventParameterChangeOfValue
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(3): // BACnetEventParameterCommandFailure
 		_childTemp, typeSwitchError = BACnetEventParameterCommandFailureParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(4): // BACnetEventParameterFloatingLimit
 		_childTemp, typeSwitchError = BACnetEventParameterFloatingLimitParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(5): // BACnetEventParameterOutOfRange
 		_childTemp, typeSwitchError = BACnetEventParameterOutOfRangeParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(8): // BACnetEventParameterChangeOfLifeSavety
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfLifeSavetyParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(9): // BACnetEventParameterExtended
 		_childTemp, typeSwitchError = BACnetEventParameterExtendedParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(10): // BACnetEventParameterBufferReady
 		_childTemp, typeSwitchError = BACnetEventParameterBufferReadyParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(11): // BACnetEventParameterUnsignedRange
 		_childTemp, typeSwitchError = BACnetEventParameterUnsignedRangeParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(13): // BACnetEventParameterAccessEvent
 		_childTemp, typeSwitchError = BACnetEventParameterAccessEventParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(14): // BACnetEventParameterDoubleOutOfRange
 		_childTemp, typeSwitchError = BACnetEventParameterDoubleOutOfRangeParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(15): // BACnetEventParameterSignedOutOfRange
 		_childTemp, typeSwitchError = BACnetEventParameterSignedOutOfRangeParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(16): // BACnetEventParameterUnsignedOutOfRange
 		_childTemp, typeSwitchError = BACnetEventParameterUnsignedOutOfRangeParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(17): // BACnetEventParameterChangeOfCharacterString
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfCharacterStringParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(18): // BACnetEventParameterChangeOfStatusFlags
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStatusFlagsParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(20): // BACnetEventParameterNone
 		_childTemp, typeSwitchError = BACnetEventParameterNoneParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(21): // BACnetEventParameterChangeOfDiscreteValue
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfDiscreteValueParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	case peekedTagNumber == uint8(22): // BACnetEventParameterChangeOfTimer
 		_childTemp, typeSwitchError = BACnetEventParameterChangeOfTimerParse(readBuffer)
-		_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -221,6 +202,7 @@ func BACnetEventParameterParse(readBuffer utils.ReadBuffer) (BACnetEventParamete
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	_child = _childTemp.(BACnetEventParameterChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventParameter")

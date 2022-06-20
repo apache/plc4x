@@ -174,7 +174,7 @@ func BACnetConstructedDataChannelPresentValueParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetChannelValue)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChannelPresentValue"); closeErr != nil {

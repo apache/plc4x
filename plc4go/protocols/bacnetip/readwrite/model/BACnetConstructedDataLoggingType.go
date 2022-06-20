@@ -174,7 +174,7 @@ func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := loggingType
-	actualValue := _actualValue.(BACnetLoggingTypeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingType"); closeErr != nil {

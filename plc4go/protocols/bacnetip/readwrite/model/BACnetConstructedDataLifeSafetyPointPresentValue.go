@@ -174,7 +174,7 @@ func BACnetConstructedDataLifeSafetyPointPresentValueParse(readBuffer utils.Read
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetLifeSafetyStateTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLifeSafetyPointPresentValue"); closeErr != nil {
