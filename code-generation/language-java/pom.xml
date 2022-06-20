@@ -107,7 +107,7 @@
     <dependency>
       <groupId>com.google.googlejavaformat</groupId>
       <artifactId>google-java-format</artifactId>
-      <version>1.11.0</version>
+      <version>1.15.0</version>
     </dependency>
 
     <!-- Make sure the dependencies of the module are built first -->
