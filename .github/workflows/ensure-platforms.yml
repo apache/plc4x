@@ -114,4 +114,4 @@ jobs:
 
       - name: Run mvnv unparallel
         if: ${{ failure() }}
-        run: /mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-c,with-go' ${{ steps.platform_opts.outputs.platform_opts }} install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-c,with-go' ${{ steps.platform_opts.outputs.platform_opts }} install
