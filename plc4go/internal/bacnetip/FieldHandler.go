@@ -33,14 +33,15 @@ type FieldHandler struct {
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
-		addressPattern: regexp.MustCompile(`^(?P<deviceIdentifier>(\d|\*))/(?P<objectType>(\d|\*))/(?P<objectInstance>(\d|\*))`),
+		addressPattern: regexp.MustCompile(`^(?P<deviceIdentifier>(\d|\*))/(?P<objectType>(\d|\*))/(?P<objectInstance>(\d|\*))/(?P<propertyIdentifier>(\d|\*))`),
 	}
 }
 
 const (
-	DEVICE_IDENTIFIER = "deviceIdentifier"
-	OBJECT_TYPE       = "objectType"
-	OBJECT_INSTANCE   = "objectInstance"
+	DEVICE_IDENTIFIER   = "deviceIdentifier"
+	OBJECT_TYPE         = "objectType"
+	OBJECT_INSTANCE     = "objectInstance"
+	PROPERTY_IDENTIFIER = "propertyIdentifier"
 )
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
@@ -82,7 +83,19 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 			}
 		}
 
-		return NewField(deviceIdentifier, objectType, objectInstance), nil
+		propertyIdentifierString := match[PROPERTY_IDENTIFIER]
+		var propertyIdentifier uint32
+		if propertyIdentifierString == "*" {
+			propertyIdentifier = 0
+		} else {
+			if parsedPropertyIdentifier, err := strconv.ParseUint(propertyIdentifierString, 10, 32); err != nil {
+				return nil, err
+			} else {
+				propertyIdentifier = uint32(parsedPropertyIdentifier)
+			}
+		}
+
+		return NewField(deviceIdentifier, objectType, objectInstance, propertyIdentifier), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)
 }
