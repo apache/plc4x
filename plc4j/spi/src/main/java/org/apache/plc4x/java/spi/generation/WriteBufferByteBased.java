@@ -170,30 +170,36 @@ public class WriteBufferByteBased implements WriteBuffer {
 
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
+        if (bitLength <= 0) {
+            throw new SerializationException("long must contain at least 1 bit");
+        }
+        if (value.compareTo(BigInteger.ZERO) < 0) {
+            throw new SerializationException("value " + value + " is below 0");
+        }
+        int actualBitLength = value.bitLength();
+        if (bitLength < actualBitLength) {
+            throw new SerializationException("bit length" + actualBitLength + " exceeds supplied bit length " + bitLength);
+        }
+        byte[] bytes = value.toByteArray();
+        int remainingBitLength = actualBitLength;
         try {
-            if (bitLength == 64) {
-                if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                        writeLong(logicalName, 32, value.longValue());
-                        writeLong(logicalName, 32, value.shiftRight(32).longValue());
-                    } else {
-                        writeLong(logicalName, bitLength, value.longValue());
-                    }
-                } else {
-                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                        writeLong(logicalName, 32, value.shiftRight(32).longValue());
-                        writeLong(logicalName, 32, value.longValue());
-                    } else {
-                        writeLong(logicalName, bitLength, value.longValue());
-                    }
+            if (byteOrder != ByteOrder.LITTLE_ENDIAN) {
+                // MSB in 0
+                for (int i = 0; i < bytes.length; i++) {
+                    int bitsToWrite = Math.min(remainingBitLength, 8);
+                    bo.writeByte(false, bitsToWrite, bytes[i]);
+                    remainingBitLength -= bitsToWrite;
                 }
-            } else if (bitLength < 64) {
-                writeUnsignedLong(logicalName, bitLength, value.longValue());
             } else {
-                throw new SerializationException("Unsigned Big Integer can only contain max 64 bits");
+                // MSB in bytes.length
+                for (int i = bytes.length - 1; i >= 0; i--) {
+                    int bitsToWrite = Math.min(remainingBitLength, 8);
+                    bo.writeByte(false, bitsToWrite, bytes[i]);
+                    remainingBitLength -= bitsToWrite;
+                }
             }
-        } catch (ArithmeticException e) {
-            throw new SerializationException("Error writing unsigned big integer", e);
+        } catch (IOException e) {
+            throw new SerializationException("Error reading", e);
         }
     }
 
@@ -268,13 +274,35 @@ public class WriteBufferByteBased implements WriteBuffer {
 
     @Override
     public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
+        if (bitLength <= 0) {
+            throw new SerializationException("long must contain at least 1 bit");
+        }
+        int actualBitLength = value.bitLength();
+        boolean negative = value.compareTo(BigInteger.ZERO) < 0;
+        int bitLengthIncludingPossibleSign = actualBitLength + (negative ? 1 : 0);
+        if (bitLength < bitLengthIncludingPossibleSign) {
+            throw new SerializationException("bit length including possible sign " + bitLengthIncludingPossibleSign + " exceeds supplied bit length " + bitLength);
+        }
+        byte[] bytes = value.toByteArray();
+        int remainingBitLength = bitLengthIncludingPossibleSign;
         try {
-            if (bitLength > 64) {
-                throw new SerializationException("Big Integer can only contain max 64 bits");
+            if (byteOrder != ByteOrder.LITTLE_ENDIAN) {
+                // MSB in 0
+                for (int i = 0; i < bytes.length; i++) {
+                    int bitsToWrite = Math.min(remainingBitLength, 8);
+                    bo.writeByte(false, bitsToWrite, bytes[i]);
+                    remainingBitLength -= bitsToWrite;
+                }
+            } else {
+                // MSB in bytes.length
+                for (int i = bytes.length - 1; i >= 0; i--) {
+                    int bitsToWrite = Math.min(remainingBitLength, 8);
+                    bo.writeByte(false, bitsToWrite, bytes[i]);
+                    remainingBitLength -= bitsToWrite;
+                }
             }
-            writeLong(logicalName, bitLength, value.longValue());
-        } catch (ArithmeticException e) {
-            throw new SerializationException("Error writing big integer", e);
+        } catch (IOException e) {
+            throw new SerializationException("Error reading", e);
         }
     }
 
