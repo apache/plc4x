@@ -174,7 +174,7 @@ func BACnetConstructedDataWriteStatusParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := writeStatus
-	actualValue := _actualValue.(BACnetWriteStatusTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWriteStatus"); closeErr != nil {

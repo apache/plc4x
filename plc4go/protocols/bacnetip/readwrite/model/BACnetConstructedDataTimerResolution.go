@@ -174,7 +174,7 @@ func BACnetConstructedDataTimerResolutionParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := resolution
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerResolution"); closeErr != nil {

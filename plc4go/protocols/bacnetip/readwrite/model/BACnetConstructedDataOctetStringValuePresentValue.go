@@ -174,7 +174,7 @@ func BACnetConstructedDataOctetStringValuePresentValueParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetApplicationTagOctetString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOctetStringValuePresentValue"); closeErr != nil {

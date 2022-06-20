@@ -174,7 +174,7 @@ func BACnetConstructedDataEscalatorModeParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := escalatorMode
-	actualValue := _actualValue.(BACnetEscalatorModeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEscalatorMode"); closeErr != nil {

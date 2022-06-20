@@ -174,7 +174,7 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := nextStoppingFloor
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNextStoppingFloor"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataAPDULengthParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := apduLength
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDULength"); closeErr != nil {

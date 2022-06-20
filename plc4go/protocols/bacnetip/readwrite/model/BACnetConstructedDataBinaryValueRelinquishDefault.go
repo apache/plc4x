@@ -174,7 +174,7 @@ func BACnetConstructedDataBinaryValueRelinquishDefaultParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := relinquishDefault
-	actualValue := _actualValue.(BACnetBinaryPVTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryValueRelinquishDefault"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataEventAlgorithmInhibitParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := eventAlgorithmInhibit
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventAlgorithmInhibit"); closeErr != nil {

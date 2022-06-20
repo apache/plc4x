@@ -174,7 +174,7 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := packetReorderTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPacketReorderTime"); closeErr != nil {

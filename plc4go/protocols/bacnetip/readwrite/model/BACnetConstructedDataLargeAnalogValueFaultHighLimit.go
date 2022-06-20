@@ -174,7 +174,7 @@ func BACnetConstructedDataLargeAnalogValueFaultHighLimitParse(readBuffer utils.R
 
 	// Virtual field
 	_actualValue := faultHighLimit
-	actualValue := _actualValue.(BACnetApplicationTagDouble)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit"); closeErr != nil {

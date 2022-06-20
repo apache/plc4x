@@ -259,17 +259,17 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_toOffnormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() interface{} { return CastBACnetTimeStamp(eventTimeStamps[0]) }, func() interface{} { return CastBACnetTimeStamp(nil) }))
-	toOffnormal := _toOffnormal.(BACnetTimeStamp)
+	toOffnormal := _toOffnormal
 	_ = toOffnormal
 
 	// Virtual field
 	_toFault := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() interface{} { return CastBACnetTimeStamp(eventTimeStamps[1]) }, func() interface{} { return CastBACnetTimeStamp(nil) }))
-	toFault := _toFault.(BACnetTimeStamp)
+	toFault := _toFault
 	_ = toFault
 
 	// Virtual field
 	_toNormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() interface{} { return CastBACnetTimeStamp(eventTimeStamps[2]) }, func() interface{} { return CastBACnetTimeStamp(nil) }))
-	toNormal := _toNormal.(BACnetTimeStamp)
+	toNormal := _toNormal
 	_ = toNormal
 
 	// Validation

@@ -174,7 +174,7 @@ func BACnetConstructedDataLocalTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Virtual field
 	_actualValue := localTime
-	actualValue := _actualValue.(BACnetApplicationTagTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLocalTime"); closeErr != nil {

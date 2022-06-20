@@ -174,7 +174,7 @@ func BACnetConstructedDataAttemptedSamplesParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := attemptedSamples
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAttemptedSamples"); closeErr != nil {

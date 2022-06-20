@@ -174,7 +174,7 @@ func BACnetConstructedDataIPDHCPEnableParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := ipDhcpEnable
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDHCPEnable"); closeErr != nil {

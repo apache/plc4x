@@ -174,7 +174,7 @@ func BACnetConstructedDataTransitionParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := transition
-	actualValue := _actualValue.(BACnetLightingTransitionTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransition"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataPositiveIntegerValueFaultLowLimitParse(readBuffer util
 
 	// Virtual field
 	_actualValue := faultLowLimit
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueFaultLowLimit"); closeErr != nil {

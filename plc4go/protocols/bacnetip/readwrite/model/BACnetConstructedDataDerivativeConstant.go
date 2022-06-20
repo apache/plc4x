@@ -174,7 +174,7 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := derivativeConstant
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDerivativeConstant"); closeErr != nil {

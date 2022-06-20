@@ -174,7 +174,7 @@ func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := networkInterfaceName
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkInterfaceName"); closeErr != nil {

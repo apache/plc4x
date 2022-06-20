@@ -174,7 +174,7 @@ func BACnetConstructedDataVarianceValueParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := varianceValue
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVarianceValue"); closeErr != nil {

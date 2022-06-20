@@ -174,7 +174,7 @@ func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadB
 
 	// Virtual field
 	_actualValue := applicationSoftwareVersion
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataApplicationSoftwareVersion"); closeErr != nil {

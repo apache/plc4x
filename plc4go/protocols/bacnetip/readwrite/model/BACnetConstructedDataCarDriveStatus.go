@@ -174,7 +174,7 @@ func BACnetConstructedDataCarDriveStatusParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := carDriveStatus
-	actualValue := _actualValue.(BACnetLiftCarDriveStatusTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarDriveStatus"); closeErr != nil {

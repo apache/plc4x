@@ -174,7 +174,7 @@ func BACnetConstructedDataAccumulatorLowLimitParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := lowLimit
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccumulatorLowLimit"); closeErr != nil {

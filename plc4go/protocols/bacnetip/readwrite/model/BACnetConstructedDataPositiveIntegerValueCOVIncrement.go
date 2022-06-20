@@ -174,7 +174,7 @@ func BACnetConstructedDataPositiveIntegerValueCOVIncrementParse(readBuffer utils
 
 	// Virtual field
 	_actualValue := covIncrement
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement"); closeErr != nil {

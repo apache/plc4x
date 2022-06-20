@@ -174,7 +174,7 @@ func BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer utils.Rea
 
 	// Virtual field
 	_actualValue := manipulatedVariableReference
-	actualValue := _actualValue.(BACnetObjectPropertyReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataManipulatedVariableReference"); closeErr != nil {

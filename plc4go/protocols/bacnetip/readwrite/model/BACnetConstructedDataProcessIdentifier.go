@@ -174,7 +174,7 @@ func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := processIdentifier
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProcessIdentifier"); closeErr != nil {

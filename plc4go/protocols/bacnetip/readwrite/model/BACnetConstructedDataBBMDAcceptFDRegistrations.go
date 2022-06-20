@@ -174,7 +174,7 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer utils.ReadBu
 
 	// Virtual field
 	_actualValue := bbmdAcceptFDRegistrations
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); closeErr != nil {

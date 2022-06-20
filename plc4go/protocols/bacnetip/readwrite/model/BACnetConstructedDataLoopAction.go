@@ -174,7 +174,7 @@ func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := action
-	actualValue := _actualValue.(BACnetActionTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoopAction"); closeErr != nil {

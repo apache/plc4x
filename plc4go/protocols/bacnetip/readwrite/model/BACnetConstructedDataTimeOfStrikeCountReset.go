@@ -174,7 +174,7 @@ func BACnetConstructedDataTimeOfStrikeCountResetParse(readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_actualValue := timeOfStrikeCountReset
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfStrikeCountReset"); closeErr != nil {

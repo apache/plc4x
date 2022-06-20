@@ -174,7 +174,7 @@ func BACnetConstructedDataSerialNumberParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := serialNumber
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSerialNumber"); closeErr != nil {

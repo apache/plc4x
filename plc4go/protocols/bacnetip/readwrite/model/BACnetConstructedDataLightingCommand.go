@@ -174,7 +174,7 @@ func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := lightingCommand
-	actualValue := _actualValue.(BACnetLightingCommand)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommand"); closeErr != nil {

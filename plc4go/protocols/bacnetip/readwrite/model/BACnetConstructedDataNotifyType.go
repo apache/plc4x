@@ -174,7 +174,7 @@ func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := notifyType
-	actualValue := _actualValue.(BACnetNotifyTypeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotifyType"); closeErr != nil {

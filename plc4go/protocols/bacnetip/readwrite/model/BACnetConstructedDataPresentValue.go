@@ -174,7 +174,7 @@ func BACnetConstructedDataPresentValueParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPresentValue"); closeErr != nil {

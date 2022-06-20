@@ -174,7 +174,7 @@ func BACnetConstructedDataDaysRemainingParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := daysRemaining
-	actualValue := _actualValue.(BACnetApplicationTagSignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDaysRemaining"); closeErr != nil {

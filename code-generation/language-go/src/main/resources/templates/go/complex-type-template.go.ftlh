@@ -1401,7 +1401,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			<#if virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 			<#else>
-	${virtualField.name} := _${virtualField.name}.(${helper.getLanguageTypeNameForTypeReference(virtualField.type)})
+	${virtualField.name} := _${virtualField.name}
 			</#if>
 	_ = ${virtualField.name}
 				<#break>

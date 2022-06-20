@@ -174,7 +174,7 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := authenticationStatus
-	actualValue := _actualValue.(BACnetAuthenticationStatusTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthenticationStatus"); closeErr != nil {

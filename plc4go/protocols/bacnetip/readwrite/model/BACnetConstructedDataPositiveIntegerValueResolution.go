@@ -174,7 +174,7 @@ func BACnetConstructedDataPositiveIntegerValueResolutionParse(readBuffer utils.R
 
 	// Virtual field
 	_actualValue := resolution
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueResolution"); closeErr != nil {

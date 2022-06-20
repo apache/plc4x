@@ -174,7 +174,7 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := lifeSafetyOperations
-	actualValue := _actualValue.(BACnetLifeSafetyOperationTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationExpected"); closeErr != nil {

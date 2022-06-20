@@ -259,17 +259,17 @@ func BACnetConstructedDataEventMessageTextsParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_toOffnormalText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(eventMessageTexts[0]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) }))
-	toOffnormalText := _toOffnormalText.(BACnetOptionalCharacterString)
+	toOffnormalText := _toOffnormalText
 	_ = toOffnormalText
 
 	// Virtual field
 	_toFaultText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(eventMessageTexts[1]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) }))
-	toFaultText := _toFaultText.(BACnetOptionalCharacterString)
+	toFaultText := _toFaultText
 	_ = toFaultText
 
 	// Virtual field
 	_toNormalText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(eventMessageTexts[2]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) }))
-	toNormalText := _toNormalText.(BACnetOptionalCharacterString)
+	toNormalText := _toNormalText
 	_ = toNormalText
 
 	// Validation

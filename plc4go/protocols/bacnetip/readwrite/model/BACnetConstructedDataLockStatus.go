@@ -174,7 +174,7 @@ func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := lockStatus
-	actualValue := _actualValue.(BACnetLockStatusTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockStatus"); closeErr != nil {

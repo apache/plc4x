@@ -174,7 +174,7 @@ func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := passbackTimeout
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackTimeout"); closeErr != nil {

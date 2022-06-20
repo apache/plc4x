@@ -174,7 +174,7 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := fDBBMDAddress
-	actualValue := _actualValue.(BACnetHostNPort)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDBBMDAddress"); closeErr != nil {

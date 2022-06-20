@@ -174,7 +174,7 @@ func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := fileAccessMethod
-	actualValue := _actualValue.(BACnetFileAccessMethodTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileAccessMethod"); closeErr != nil {

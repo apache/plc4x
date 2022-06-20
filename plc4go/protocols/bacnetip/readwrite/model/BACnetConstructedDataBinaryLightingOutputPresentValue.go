@@ -174,7 +174,7 @@ func BACnetConstructedDataBinaryLightingOutputPresentValueParse(readBuffer utils
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetBinaryLightingPVTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryLightingOutputPresentValue"); closeErr != nil {

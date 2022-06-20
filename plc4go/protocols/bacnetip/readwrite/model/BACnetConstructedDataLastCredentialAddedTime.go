@@ -174,7 +174,7 @@ func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := lastCredentialAddedTime
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCredentialAddedTime"); closeErr != nil {

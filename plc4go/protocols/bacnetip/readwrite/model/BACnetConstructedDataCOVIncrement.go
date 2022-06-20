@@ -174,7 +174,7 @@ func BACnetConstructedDataCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := covIncrement
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVIncrement"); closeErr != nil {

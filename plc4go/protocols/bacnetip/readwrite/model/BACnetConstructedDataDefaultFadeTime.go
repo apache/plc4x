@@ -174,7 +174,7 @@ func BACnetConstructedDataDefaultFadeTimeParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := defaultFadeTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultFadeTime"); closeErr != nil {

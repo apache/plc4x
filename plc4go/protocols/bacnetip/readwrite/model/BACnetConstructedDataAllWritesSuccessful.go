@@ -174,7 +174,7 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := allWritesSuccessful
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAllWritesSuccessful"); closeErr != nil {

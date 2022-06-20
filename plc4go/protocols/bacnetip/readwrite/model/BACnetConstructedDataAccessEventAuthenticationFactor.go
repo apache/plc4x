@@ -174,7 +174,7 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 
 	// Virtual field
 	_actualValue := accessEventAuthenticationFactor
-	actualValue := _actualValue.(BACnetAuthenticationFactor)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventAuthenticationFactor"); closeErr != nil {

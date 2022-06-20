@@ -174,7 +174,7 @@ func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := blinkWarnEnable
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBlinkWarnEnable"); closeErr != nil {

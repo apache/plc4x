@@ -174,7 +174,7 @@ func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := doorUnlockDelayTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorUnlockDelayTime"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataPriorityForWritingParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := priorityForWriting
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriorityForWriting"); closeErr != nil {

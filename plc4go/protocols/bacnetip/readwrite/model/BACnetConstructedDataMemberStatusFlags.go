@@ -174,7 +174,7 @@ func BACnetConstructedDataMemberStatusFlagsParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := statusFlags
-	actualValue := _actualValue.(BACnetStatusFlagsTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMemberStatusFlags"); closeErr != nil {

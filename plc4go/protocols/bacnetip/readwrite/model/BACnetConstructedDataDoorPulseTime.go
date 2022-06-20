@@ -174,7 +174,7 @@ func BACnetConstructedDataDoorPulseTimeParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := doorPulseTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorPulseTime"); closeErr != nil {

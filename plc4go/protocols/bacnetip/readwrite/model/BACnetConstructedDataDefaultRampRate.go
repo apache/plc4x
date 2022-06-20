@@ -174,7 +174,7 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := defaultRampRate
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultRampRate"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataTrackingValueParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := trackingValue
-	actualValue := _actualValue.(BACnetLifeSafetyStateTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTrackingValue"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataGroupIDParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Virtual field
 	_actualValue := groupId
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGroupID"); closeErr != nil {

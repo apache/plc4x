@@ -174,7 +174,7 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := windowSamples
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWindowSamples"); closeErr != nil {

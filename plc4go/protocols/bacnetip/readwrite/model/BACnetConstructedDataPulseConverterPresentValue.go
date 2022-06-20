@@ -174,7 +174,7 @@ func BACnetConstructedDataPulseConverterPresentValueParse(readBuffer utils.ReadB
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetApplicationTagReal)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPulseConverterPresentValue"); closeErr != nil {

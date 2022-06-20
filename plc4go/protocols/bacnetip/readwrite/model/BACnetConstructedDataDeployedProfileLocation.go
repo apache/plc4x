@@ -174,7 +174,7 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := deployedProfileLocation
-	actualValue := _actualValue.(BACnetApplicationTagCharacterString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeployedProfileLocation"); closeErr != nil {

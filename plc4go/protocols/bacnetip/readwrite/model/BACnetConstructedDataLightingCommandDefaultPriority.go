@@ -174,7 +174,7 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.R
 
 	// Virtual field
 	_actualValue := lightingCommandDefaultPriority
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommandDefaultPriority"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, t
 
 	// Virtual field
 	_actualValue := operationDirection
-	actualValue := _actualValue.(BACnetEscalatorOperationDirectionTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationDirection"); closeErr != nil {

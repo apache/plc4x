@@ -174,7 +174,7 @@ func BACnetConstructedDataThreatLevelParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := threatLevel
-	actualValue := _actualValue.(BACnetAccessThreatLevel)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataThreatLevel"); closeErr != nil {

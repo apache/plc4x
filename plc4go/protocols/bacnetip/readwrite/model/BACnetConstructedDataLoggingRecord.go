@@ -174,7 +174,7 @@ func BACnetConstructedDataLoggingRecordParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := loggingRecord
-	actualValue := _actualValue.(BACnetAccumulatorRecord)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingRecord"); closeErr != nil {

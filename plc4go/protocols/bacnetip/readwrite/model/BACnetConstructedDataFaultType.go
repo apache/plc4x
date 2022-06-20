@@ -174,7 +174,7 @@ func BACnetConstructedDataFaultTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Virtual field
 	_actualValue := faultType
-	actualValue := _actualValue.(BACnetFaultTypeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultType"); closeErr != nil {

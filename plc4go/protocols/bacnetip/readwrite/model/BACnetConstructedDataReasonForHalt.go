@@ -174,7 +174,7 @@ func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := programError
-	actualValue := _actualValue.(BACnetProgramErrorTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReasonForHalt"); closeErr != nil {

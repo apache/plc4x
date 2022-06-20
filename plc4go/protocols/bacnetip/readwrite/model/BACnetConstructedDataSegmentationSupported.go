@@ -174,7 +174,7 @@ func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := segmentationSupported
-	actualValue := _actualValue.(BACnetSegmentationTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSegmentationSupported"); closeErr != nil {

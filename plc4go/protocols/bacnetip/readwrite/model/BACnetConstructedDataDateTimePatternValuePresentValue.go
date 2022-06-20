@@ -174,7 +174,7 @@ func BACnetConstructedDataDateTimePatternValuePresentValueParse(readBuffer utils
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDateTimePatternValuePresentValue"); closeErr != nil {

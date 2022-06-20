@@ -174,7 +174,7 @@ func BACnetConstructedDataNetworkNumberQualityParse(readBuffer utils.ReadBuffer,
 
 	// Virtual field
 	_actualValue := networkNumberQuality
-	actualValue := _actualValue.(BACnetNetworkNumberQualityTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkNumberQuality"); closeErr != nil {

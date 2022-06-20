@@ -174,7 +174,7 @@ func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := lastKeyServer
-	actualValue := _actualValue.(BACnetAddressBinding)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastKeyServer"); closeErr != nil {

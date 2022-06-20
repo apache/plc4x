@@ -174,7 +174,7 @@ func BACnetConstructedDataDaylightSavingsStatusParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := daylightSavingsStatus
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDaylightSavingsStatus"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataAuthorizationModeParse(readBuffer utils.ReadBuffer, ta
 
 	// Virtual field
 	_actualValue := authorizationMode
-	actualValue := _actualValue.(BACnetAuthorizationModeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationMode"); closeErr != nil {

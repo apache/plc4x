@@ -174,7 +174,7 @@ func BACnetConstructedDataPolarityParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Virtual field
 	_actualValue := polarity
-	actualValue := _actualValue.(BACnetPolarityTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPolarity"); closeErr != nil {

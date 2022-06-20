@@ -174,7 +174,7 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := notificationThreshold
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotificationThreshold"); closeErr != nil {

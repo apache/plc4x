@@ -174,7 +174,7 @@ func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := bacnetIpv6Mode
-	actualValue := _actualValue.(BACnetIPModeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPv6Mode"); closeErr != nil {

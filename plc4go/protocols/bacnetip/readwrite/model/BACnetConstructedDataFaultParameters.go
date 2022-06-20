@@ -174,7 +174,7 @@ func BACnetConstructedDataFaultParametersParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := faultParameters
-	actualValue := _actualValue.(BACnetFaultParameter)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultParameters"); closeErr != nil {

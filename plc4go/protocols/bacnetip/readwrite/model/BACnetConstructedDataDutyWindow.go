@@ -174,7 +174,7 @@ func BACnetConstructedDataDutyWindowParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := dutyWindow
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDutyWindow"); closeErr != nil {

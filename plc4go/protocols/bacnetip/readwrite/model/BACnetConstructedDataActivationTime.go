@@ -174,7 +174,7 @@ func BACnetConstructedDataActivationTimeParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := activationTime
-	actualValue := _actualValue.(BACnetDateTime)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActivationTime"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataAckRequiredParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Virtual field
 	_actualValue := ackRequired
-	actualValue := _actualValue.(BACnetEventTransitionBitsTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAckRequired"); closeErr != nil {

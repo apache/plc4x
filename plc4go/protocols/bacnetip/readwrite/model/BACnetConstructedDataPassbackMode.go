@@ -174,7 +174,7 @@ func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Virtual field
 	_actualValue := passbackMode
-	actualValue := _actualValue.(BACnetAccessPassbackModeTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackMode"); closeErr != nil {

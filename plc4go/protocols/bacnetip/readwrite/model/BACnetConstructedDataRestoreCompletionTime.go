@@ -174,7 +174,7 @@ func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := completionTime
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestoreCompletionTime"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataCredentialDataInputPresentValueParse(readBuffer utils.
 
 	// Virtual field
 	_actualValue := presentValue
-	actualValue := _actualValue.(BACnetAuthenticationFactor)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialDataInputPresentValue"); closeErr != nil {

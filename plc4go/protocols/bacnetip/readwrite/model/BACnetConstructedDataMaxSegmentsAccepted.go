@@ -174,7 +174,7 @@ func BACnetConstructedDataMaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer, 
 
 	// Virtual field
 	_actualValue := maxSegmentsAccepted
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxSegmentsAccepted"); closeErr != nil {

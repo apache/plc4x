@@ -174,7 +174,7 @@ func BACnetConstructedDataMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Virtual field
 	_actualValue := maxInfoFrames
-	actualValue := _actualValue.(BACnetApplicationTagUnsignedInteger)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxInfoFrames"); closeErr != nil {

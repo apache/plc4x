@@ -174,7 +174,7 @@ func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Virtual field
 	_actualValue := bitString
-	actualValue := _actualValue.(BACnetApplicationTagBitString)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBitMask"); closeErr != nil {

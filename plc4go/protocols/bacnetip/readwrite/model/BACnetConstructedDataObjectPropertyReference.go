@@ -174,7 +174,7 @@ func BACnetConstructedDataObjectPropertyReferenceParse(readBuffer utils.ReadBuff
 
 	// Virtual field
 	_actualValue := propertyReference
-	actualValue := _actualValue.(BACnetDeviceObjectPropertyReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataObjectPropertyReference"); closeErr != nil {

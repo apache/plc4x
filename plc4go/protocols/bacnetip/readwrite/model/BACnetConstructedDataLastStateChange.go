@@ -174,7 +174,7 @@ func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := lastStateChange
-	actualValue := _actualValue.(BACnetTimerTransitionTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastStateChange"); closeErr != nil {

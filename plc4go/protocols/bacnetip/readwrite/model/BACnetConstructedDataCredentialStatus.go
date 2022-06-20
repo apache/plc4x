@@ -174,7 +174,7 @@ func BACnetConstructedDataCredentialStatusParse(readBuffer utils.ReadBuffer, tag
 
 	// Virtual field
 	_actualValue := binaryPv
-	actualValue := _actualValue.(BACnetBinaryPVTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCredentialStatus"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := accessEventCredential
-	actualValue := _actualValue.(BACnetDeviceObjectReference)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventCredential"); closeErr != nil {

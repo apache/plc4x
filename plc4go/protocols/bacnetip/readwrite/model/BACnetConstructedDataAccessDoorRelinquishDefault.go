@@ -174,7 +174,7 @@ func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.Read
 
 	// Virtual field
 	_actualValue := relinquishDefault
-	actualValue := _actualValue.(BACnetDoorValueTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessDoorRelinquishDefault"); closeErr != nil {

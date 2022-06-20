@@ -174,7 +174,7 @@ func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagN
 
 	// Virtual field
 	_actualValue := eventParameter
-	actualValue := _actualValue.(BACnetEventParameter)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventParameters"); closeErr != nil {

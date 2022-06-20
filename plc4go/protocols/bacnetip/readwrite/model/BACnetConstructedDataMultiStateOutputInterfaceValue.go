@@ -174,7 +174,7 @@ func BACnetConstructedDataMultiStateOutputInterfaceValueParse(readBuffer utils.R
 
 	// Virtual field
 	_actualValue := interfaceValue
-	actualValue := _actualValue.(BACnetOptionalBinaryPV)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateOutputInterfaceValue"); closeErr != nil {

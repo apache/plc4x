@@ -174,7 +174,7 @@ func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer
 
 	// Virtual field
 	_actualValue := backupAndRestoreState
-	actualValue := _actualValue.(BACnetBackupStateTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupAndRestoreState"); closeErr != nil {

@@ -174,7 +174,7 @@ func BACnetConstructedDataPassengerAlarmParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Virtual field
 	_actualValue := passengerAlarm
-	actualValue := _actualValue.(BACnetApplicationTagBoolean)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassengerAlarm"); closeErr != nil {

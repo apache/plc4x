@@ -174,7 +174,7 @@ func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Virtual field
 	_actualValue := inProgress
-	actualValue := _actualValue.(BACnetLightingInProgressTagged)
+	actualValue := _actualValue
 	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInProgress"); closeErr != nil {
