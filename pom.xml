@@ -153,7 +153,7 @@
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.6</milo.version>
     <milo.version>0.6.6</milo.version>
-    <mockito.version>4.5.1</mockito.version>
+    <mockito.version>4.6.1</mockito.version>
     <netty.version>4.1.77.Final</netty.version>
     <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
