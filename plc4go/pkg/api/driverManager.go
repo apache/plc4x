@@ -286,7 +286,8 @@ func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent),
 	// Check if we've got at least one option to restrict to certain protocols only.
 	// If there is at least one, we only check that protocol, if there are none, all
 	// available protocols are checked.
-	protocolOptions := options.FilterDiscoveryOptionsProtocol(convertToInternalOptions(discoveryOptions...))
+	internalOptions := convertToInternalOptions(discoveryOptions...)
+	protocolOptions := options.FilterDiscoveryOptionsProtocol(internalOptions)
 	discoveryDrivers := map[string]PlcDriver{}
 	if len(protocolOptions) > 0 {
 		for _, protocolOption := range protocolOptions {
@@ -301,7 +302,7 @@ func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent),
 	// Execute discovery on all selected drivers
 	for _, driver := range discoveryDrivers {
 		if driver.SupportsDiscovery() {
-			err := driver.Discover(callback, convertToInternalOptions(discoveryOptions...)...)
+			err := driver.Discover(callback, internalOptions...)
 			if err != nil {
 				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}

@@ -155,7 +155,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 							if !timeout.Stop() {
 								<-timeout.C
 							}
-							searchResponse := driverModel.CastSearchResponse(message)
+							searchResponse := message.(driverModel.SearchResponse)
 							if searchResponse != nil {
 								addr := searchResponse.GetHpaiControlEndpoint().GetIpAddress().GetAddr()
 								remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",

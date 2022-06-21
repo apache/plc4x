@@ -94,15 +94,7 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	transportInstance := NewTransportInstance(localAddress, remoteAddress, connectTimeout, &m)
-
-	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-		if transportInstance, ok := typ.(transports.TransportInstance); ok {
-			return transportInstance, nil
-		}
-		return nil, errors.New("couldn't cast to TransportInstance")
-	}
-	return castFunc(transportInstance)
+	return NewTransportInstance(localAddress, remoteAddress, connectTimeout, &m), nil
 }
 
 type TransportInstance struct {
@@ -140,8 +132,7 @@ func (m *TransportInstance) Connect() error {
 
 	// "connect" to the remote
 	var err error
-	m.udpConn, err = net.ListenUDP("udp", m.LocalAddress)
-	if err != nil {
+	if m.udpConn, err = net.ListenUDP("udp", m.LocalAddress); err != nil {
 		return errors.Wrap(err, "error connecting to remote address")
 	}
 
