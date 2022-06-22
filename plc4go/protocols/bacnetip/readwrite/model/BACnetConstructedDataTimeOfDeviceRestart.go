@@ -48,10 +48,6 @@ type BACnetConstructedDataTimeOfDeviceRestartExactly interface {
 type _BACnetConstructedDataTimeOfDeviceRestart struct {
 	*_BACnetConstructedData
 	TimeOfDeviceRestart BACnetTimeStamp
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetActualValue() BACnetTimeS
 func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfDeviceRestart {
 	_result := &_BACnetConstructedDataTimeOfDeviceRestart{
 		TimeOfDeviceRestart:    timeOfDeviceRestart,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -43,10 +43,6 @@ type BACnetConstructedDataAlertEnrollmentAllExactly interface {
 // _BACnetConstructedDataAlertEnrollmentAll is the data-structure of this message
 type _BACnetConstructedDataAlertEnrollmentAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataAlertEnrollmentAll) GetParent() BACnetConstructed
 // NewBACnetConstructedDataAlertEnrollmentAll factory function for _BACnetConstructedDataAlertEnrollmentAll
 func NewBACnetConstructedDataAlertEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlertEnrollmentAll {
 	_result := &_BACnetConstructedDataAlertEnrollmentAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

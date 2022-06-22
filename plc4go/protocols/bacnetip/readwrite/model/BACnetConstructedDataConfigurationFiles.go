@@ -53,10 +53,6 @@ type _BACnetConstructedDataConfigurationFiles struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	ConfigurationFiles   []BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataConfigurationFiles(numberOfDataElements BACnetAppli
 	_result := &_BACnetConstructedDataConfigurationFiles{
 		NumberOfDataElements:   numberOfDataElements,
 		ConfigurationFiles:     configurationFiles,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

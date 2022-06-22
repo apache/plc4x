@@ -63,9 +63,6 @@ type _BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
 	Lifetime                    BACnetContextTagUnsignedInteger
 	MonitoredPropertyIdentifier BACnetPropertyReferenceEnclosed
 	CovIncrement                BACnetContextTagReal
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +129,6 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdent
 		Lifetime:                       lifetime,
 		MonitoredPropertyIdentifier:    monitoredPropertyIdentifier,
 		CovIncrement:                   covIncrement,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

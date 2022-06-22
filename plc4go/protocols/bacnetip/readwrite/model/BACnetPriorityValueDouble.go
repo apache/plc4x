@@ -46,9 +46,6 @@ type BACnetPriorityValueDoubleExactly interface {
 type _BACnetPriorityValueDouble struct {
 	*_BACnetPriorityValue
 	DoubleValue BACnetApplicationTagDouble
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueDouble) GetDoubleValue() BACnetApplicationTagDouble
 func NewBACnetPriorityValueDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDouble {
 	_result := &_BACnetPriorityValueDouble{
 		DoubleValue:          doubleValue,
-		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

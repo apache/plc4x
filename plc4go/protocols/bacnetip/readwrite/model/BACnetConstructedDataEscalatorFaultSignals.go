@@ -46,10 +46,6 @@ type BACnetConstructedDataEscalatorFaultSignalsExactly interface {
 type _BACnetConstructedDataEscalatorFaultSignals struct {
 	*_BACnetConstructedData
 	FaultSignals []BACnetEscalatorFaultTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) GetFaultSignals() []BACnet
 func NewBACnetConstructedDataEscalatorFaultSignals(faultSignals []BACnetEscalatorFaultTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorFaultSignals {
 	_result := &_BACnetConstructedDataEscalatorFaultSignals{
 		FaultSignals:           faultSignals,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

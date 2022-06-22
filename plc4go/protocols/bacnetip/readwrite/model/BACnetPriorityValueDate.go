@@ -46,9 +46,6 @@ type BACnetPriorityValueDateExactly interface {
 type _BACnetPriorityValueDate struct {
 	*_BACnetPriorityValue
 	DateValue BACnetApplicationTagDate
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueDate) GetDateValue() BACnetApplicationTagDate {
 func NewBACnetPriorityValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDate {
 	_result := &_BACnetPriorityValueDate{
 		DateValue:            dateValue,
-		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

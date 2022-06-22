@@ -48,10 +48,6 @@ type BACnetConstructedDataExtendedTimeEnableExactly interface {
 type _BACnetConstructedDataExtendedTimeEnable struct {
 	*_BACnetConstructedData
 	ExtendedTimeEnable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetActualValue() BACnetApplic
 func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
 	_result := &_BACnetConstructedDataExtendedTimeEnable{
 		ExtendedTimeEnable:     extendedTimeEnable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

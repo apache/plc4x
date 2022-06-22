@@ -48,10 +48,6 @@ type BACnetConstructedDataAccumulatorMinPresValueExactly interface {
 type _BACnetConstructedDataAccumulatorMinPresValue struct {
 	*_BACnetConstructedData
 	MinPresValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetActualValue() BACnetA
 func NewBACnetConstructedDataAccumulatorMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorMinPresValue {
 	_result := &_BACnetConstructedDataAccumulatorMinPresValue{
 		MinPresValue:           minPresValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

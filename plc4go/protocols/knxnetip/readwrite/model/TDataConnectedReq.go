@@ -43,9 +43,6 @@ type TDataConnectedReqExactly interface {
 // _TDataConnectedReq is the data-structure of this message
 type _TDataConnectedReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_TDataConnectedReq) GetParent() CEMI {
 // NewTDataConnectedReq factory function for _TDataConnectedReq
 func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
 	_result := &_TDataConnectedReq{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

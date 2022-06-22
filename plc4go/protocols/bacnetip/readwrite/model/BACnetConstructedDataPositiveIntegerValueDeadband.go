@@ -48,10 +48,6 @@ type BACnetConstructedDataPositiveIntegerValueDeadbandExactly interface {
 type _BACnetConstructedDataPositiveIntegerValueDeadband struct {
 	*_BACnetConstructedData
 	Deadband BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetActualValue() BA
 func NewBACnetConstructedDataPositiveIntegerValueDeadband(deadband BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueDeadband {
 	_result := &_BACnetConstructedDataPositiveIntegerValueDeadband{
 		Deadband:               deadband,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

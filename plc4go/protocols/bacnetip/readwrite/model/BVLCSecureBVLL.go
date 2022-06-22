@@ -88,9 +88,8 @@ func (m *_BVLCSecureBVLL) GetSecurityWrapper() []byte {
 // NewBVLCSecureBVLL factory function for _BVLCSecureBVLL
 func NewBVLCSecureBVLL(securityWrapper []byte, bvlcPayloadLength uint16) *_BVLCSecureBVLL {
 	_result := &_BVLCSecureBVLL{
-		SecurityWrapper:   securityWrapper,
-		BvlcPayloadLength: bvlcPayloadLength,
-		_BVLC:             NewBVLC(),
+		SecurityWrapper: securityWrapper,
+		_BVLC:           NewBVLC(),
 	}
 	_result._BVLC._BVLCChildRequirements = _result
 	return _result

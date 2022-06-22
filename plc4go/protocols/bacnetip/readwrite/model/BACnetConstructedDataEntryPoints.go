@@ -46,10 +46,6 @@ type BACnetConstructedDataEntryPointsExactly interface {
 type _BACnetConstructedDataEntryPoints struct {
 	*_BACnetConstructedData
 	EntryPoints []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataEntryPoints) GetEntryPoints() []BACnetDeviceObjec
 func NewBACnetConstructedDataEntryPoints(entryPoints []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEntryPoints {
 	_result := &_BACnetConstructedDataEntryPoints{
 		EntryPoints:            entryPoints,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

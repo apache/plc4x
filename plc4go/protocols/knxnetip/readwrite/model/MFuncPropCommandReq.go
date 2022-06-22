@@ -43,9 +43,6 @@ type MFuncPropCommandReqExactly interface {
 // _MFuncPropCommandReq is the data-structure of this message
 type _MFuncPropCommandReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_MFuncPropCommandReq) GetParent() CEMI {
 // NewMFuncPropCommandReq factory function for _MFuncPropCommandReq
 func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
 	_result := &_MFuncPropCommandReq{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

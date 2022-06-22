@@ -46,9 +46,6 @@ type ApduDataExtAuthorizeResponseExactly interface {
 type _ApduDataExtAuthorizeResponse struct {
 	*_ApduDataExt
 	Level uint8
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_ApduDataExtAuthorizeResponse) GetLevel() uint8 {
 func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAuthorizeResponse {
 	_result := &_ApduDataExtAuthorizeResponse{
 		Level:        level,
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

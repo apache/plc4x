@@ -49,9 +49,6 @@ type _NLMRejectRouterToNetwork struct {
 	*_NLM
 	RejectReason              NLMRejectRouterToNetworkRejectReason
 	DestinationNetworkAddress uint16
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,7 +96,6 @@ func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReas
 	_result := &_NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
-		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

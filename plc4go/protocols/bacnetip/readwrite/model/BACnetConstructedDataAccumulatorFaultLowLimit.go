@@ -48,10 +48,6 @@ type BACnetConstructedDataAccumulatorFaultLowLimitExactly interface {
 type _BACnetConstructedDataAccumulatorFaultLowLimit struct {
 	*_BACnetConstructedData
 	FaultLowLimit BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccumulatorFaultLowLimit) GetActualValue() BACnet
 func NewBACnetConstructedDataAccumulatorFaultLowLimit(faultLowLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorFaultLowLimit {
 	_result := &_BACnetConstructedDataAccumulatorFaultLowLimit{
 		FaultLowLimit:          faultLowLimit,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

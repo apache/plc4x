@@ -48,10 +48,6 @@ type BACnetConstructedDataRequestedShedLevelExactly interface {
 type _BACnetConstructedDataRequestedShedLevel struct {
 	*_BACnetConstructedData
 	RequestedShedLevel BACnetShedLevel
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataRequestedShedLevel) GetActualValue() BACnetShedLe
 func NewBACnetConstructedDataRequestedShedLevel(requestedShedLevel BACnetShedLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequestedShedLevel {
 	_result := &_BACnetConstructedDataRequestedShedLevel{
 		RequestedShedLevel:     requestedShedLevel,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

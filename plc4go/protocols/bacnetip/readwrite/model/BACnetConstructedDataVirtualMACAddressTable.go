@@ -46,10 +46,6 @@ type BACnetConstructedDataVirtualMACAddressTableExactly interface {
 type _BACnetConstructedDataVirtualMACAddressTable struct {
 	*_BACnetConstructedData
 	VirtualMacAddressTable []BACnetVMACEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) GetVirtualMacAddressTable
 func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []BACnetVMACEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVirtualMACAddressTable {
 	_result := &_BACnetConstructedDataVirtualMACAddressTable{
 		VirtualMacAddressTable: virtualMacAddressTable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

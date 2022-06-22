@@ -43,9 +43,6 @@ type ApduDataExtNetworkParameterReadExactly interface {
 // _ApduDataExtNetworkParameterRead is the data-structure of this message
 type _ApduDataExtNetworkParameterRead struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtNetworkParameterRead) GetParent() ApduDataExt {
 // NewApduDataExtNetworkParameterRead factory function for _ApduDataExtNetworkParameterRead
 func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParameterRead {
 	_result := &_ApduDataExtNetworkParameterRead{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

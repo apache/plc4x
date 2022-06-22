@@ -48,10 +48,6 @@ type BACnetConstructedDataTransitionExactly interface {
 type _BACnetConstructedDataTransition struct {
 	*_BACnetConstructedData
 	Transition BACnetLightingTransitionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataTransition) GetActualValue() BACnetLightingTransi
 func NewBACnetConstructedDataTransition(transition BACnetLightingTransitionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
 	_result := &_BACnetConstructedDataTransition{
 		Transition:             transition,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

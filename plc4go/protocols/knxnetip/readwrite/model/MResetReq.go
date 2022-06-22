@@ -43,9 +43,6 @@ type MResetReqExactly interface {
 // _MResetReq is the data-structure of this message
 type _MResetReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_MResetReq) GetParent() CEMI {
 // NewMResetReq factory function for _MResetReq
 func NewMResetReq(size uint16) *_MResetReq {
 	_result := &_MResetReq{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

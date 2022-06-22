@@ -48,10 +48,6 @@ type BACnetConstructedDataDoorUnlockDelayTimeExactly interface {
 type _BACnetConstructedDataDoorUnlockDelayTime struct {
 	*_BACnetConstructedData
 	DoorUnlockDelayTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorUnlockDelayTime {
 	_result := &_BACnetConstructedDataDoorUnlockDelayTime{
 		DoorUnlockDelayTime:    doorUnlockDelayTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

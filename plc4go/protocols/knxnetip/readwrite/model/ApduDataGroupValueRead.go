@@ -44,9 +44,6 @@ type ApduDataGroupValueReadExactly interface {
 // _ApduDataGroupValueRead is the data-structure of this message
 type _ApduDataGroupValueRead struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,8 +69,7 @@ func (m *_ApduDataGroupValueRead) GetParent() ApduData {
 // NewApduDataGroupValueRead factory function for _ApduDataGroupValueRead
 func NewApduDataGroupValueRead(dataLength uint8) *_ApduDataGroupValueRead {
 	_result := &_ApduDataGroupValueRead{
-		DataLength: dataLength,
-		_ApduData:  NewApduData(dataLength),
+		_ApduData: NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

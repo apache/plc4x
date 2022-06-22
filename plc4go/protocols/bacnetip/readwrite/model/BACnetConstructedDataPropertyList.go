@@ -53,10 +53,6 @@ type _BACnetConstructedDataPropertyList struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	PropertyList         []BACnetPropertyIdentifierTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataPropertyList(numberOfDataElements BACnetApplication
 	_result := &_BACnetConstructedDataPropertyList{
 		NumberOfDataElements:   numberOfDataElements,
 		PropertyList:           propertyList,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

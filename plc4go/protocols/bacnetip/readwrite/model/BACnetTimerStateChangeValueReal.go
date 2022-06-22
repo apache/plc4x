@@ -46,9 +46,6 @@ type BACnetTimerStateChangeValueRealExactly interface {
 type _BACnetTimerStateChangeValueReal struct {
 	*_BACnetTimerStateChangeValue
 	RealValue BACnetApplicationTagReal
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetTimerStateChangeValueReal) GetRealValue() BACnetApplicationTagRe
 func NewBACnetTimerStateChangeValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueReal {
 	_result := &_BACnetTimerStateChangeValueReal{
 		RealValue:                    realValue,
-		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

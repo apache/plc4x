@@ -50,9 +50,6 @@ type _FirmataCommandSetDigitalPinValue struct {
 	*_FirmataCommand
 	Pin uint8
 	On  bool
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,7 +95,6 @@ func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_Fi
 	_result := &_FirmataCommandSetDigitalPinValue{
 		Pin:             pin,
 		On:              on,
-		Response:        response,
 		_FirmataCommand: NewFirmataCommand(response),
 	}
 	_result._FirmataCommand._FirmataCommandChildRequirements = _result

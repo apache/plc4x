@@ -48,10 +48,6 @@ type BACnetConstructedDataCOVPeriodExactly interface {
 type _BACnetConstructedDataCOVPeriod struct {
 	*_BACnetConstructedData
 	CovPeriod BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataCOVPeriod) GetActualValue() BACnetApplicationTagU
 func NewBACnetConstructedDataCOVPeriod(covPeriod BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVPeriod {
 	_result := &_BACnetConstructedDataCOVPeriod{
 		CovPeriod:              covPeriod,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

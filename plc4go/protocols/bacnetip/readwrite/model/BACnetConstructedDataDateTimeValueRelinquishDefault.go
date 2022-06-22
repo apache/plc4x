@@ -48,10 +48,6 @@ type BACnetConstructedDataDateTimeValueRelinquishDefaultExactly interface {
 type _BACnetConstructedDataDateTimeValueRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) GetActualValue() 
 func NewBACnetConstructedDataDateTimeValueRelinquishDefault(relinquishDefault BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
 	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
 		RelinquishDefault:      relinquishDefault,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

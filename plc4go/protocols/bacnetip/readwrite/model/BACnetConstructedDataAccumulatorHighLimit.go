@@ -48,10 +48,6 @@ type BACnetConstructedDataAccumulatorHighLimitExactly interface {
 type _BACnetConstructedDataAccumulatorHighLimit struct {
 	*_BACnetConstructedData
 	HighLimit BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccumulatorHighLimit) GetActualValue() BACnetAppl
 func NewBACnetConstructedDataAccumulatorHighLimit(highLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorHighLimit {
 	_result := &_BACnetConstructedDataAccumulatorHighLimit{
 		HighLimit:              highLimit,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

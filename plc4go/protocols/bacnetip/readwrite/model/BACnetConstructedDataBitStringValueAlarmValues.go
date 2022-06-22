@@ -53,10 +53,6 @@ type _BACnetConstructedDataBitStringValueAlarmValues struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	AlarmValues          []BACnetApplicationTagBitString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataBitStringValueAlarmValues(numberOfDataElements BACn
 	_result := &_BACnetConstructedDataBitStringValueAlarmValues{
 		NumberOfDataElements:   numberOfDataElements,
 		AlarmValues:            alarmValues,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

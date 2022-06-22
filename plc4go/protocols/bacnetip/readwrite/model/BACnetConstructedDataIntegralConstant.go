@@ -48,10 +48,6 @@ type BACnetConstructedDataIntegralConstantExactly interface {
 type _BACnetConstructedDataIntegralConstant struct {
 	*_BACnetConstructedData
 	IntegralConstant BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIntegralConstant) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataIntegralConstant(integralConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
 	_result := &_BACnetConstructedDataIntegralConstant{
 		IntegralConstant:       integralConstant,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

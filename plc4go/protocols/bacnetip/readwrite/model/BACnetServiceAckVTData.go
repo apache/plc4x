@@ -52,9 +52,6 @@ type _BACnetServiceAckVTData struct {
 	VtSessionIdentifier BACnetApplicationTagUnsignedInteger
 	VtNewData           BACnetApplicationTagOctetString
 	VtDataFlag          BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,7 +102,6 @@ func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedI
 		VtSessionIdentifier: vtSessionIdentifier,
 		VtNewData:           vtNewData,
 		VtDataFlag:          vtDataFlag,
-		ServiceAckLength:    serviceAckLength,
 		_BACnetServiceAck:   NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

@@ -84,9 +84,6 @@ type _BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 	FromState                  BACnetEventStateTagged
 	ToState                    BACnetEventStateTagged
 	EventValues                BACnetNotificationParameters
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -188,7 +185,6 @@ func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifie
 		FromState:                      fromState,
 		ToState:                        toState,
 		EventValues:                    eventValues,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

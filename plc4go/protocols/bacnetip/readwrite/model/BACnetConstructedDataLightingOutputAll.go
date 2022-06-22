@@ -43,10 +43,6 @@ type BACnetConstructedDataLightingOutputAllExactly interface {
 // _BACnetConstructedDataLightingOutputAll is the data-structure of this message
 type _BACnetConstructedDataLightingOutputAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataLightingOutputAll) GetParent() BACnetConstructedD
 // NewBACnetConstructedDataLightingOutputAll factory function for _BACnetConstructedDataLightingOutputAll
 func NewBACnetConstructedDataLightingOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputAll {
 	_result := &_BACnetConstructedDataLightingOutputAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

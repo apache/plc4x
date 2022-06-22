@@ -48,10 +48,6 @@ type BACnetConstructedDataApplicationSoftwareVersionExactly interface {
 type _BACnetConstructedDataApplicationSoftwareVersion struct {
 	*_BACnetConstructedData
 	ApplicationSoftwareVersion BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetActualValue() BACn
 func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersion BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataApplicationSoftwareVersion {
 	_result := &_BACnetConstructedDataApplicationSoftwareVersion{
 		ApplicationSoftwareVersion: applicationSoftwareVersion,
-		TagNumber:                  tagNumber,
-		ArrayIndexArgument:         arrayIndexArgument,
 		_BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

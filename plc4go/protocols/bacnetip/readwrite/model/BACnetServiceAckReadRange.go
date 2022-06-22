@@ -66,9 +66,6 @@ type _BACnetServiceAckReadRange struct {
 	ItemCount           BACnetContextTagUnsignedInteger
 	ItemData            BACnetConstructedData
 	FirstSequenceNumber BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -139,7 +136,6 @@ func NewBACnetServiceAckReadRange(objectIdentifier BACnetContextTagObjectIdentif
 		ItemCount:           itemCount,
 		ItemData:            itemData,
 		FirstSequenceNumber: firstSequenceNumber,
-		ServiceAckLength:    serviceAckLength,
 		_BACnetServiceAck:   NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

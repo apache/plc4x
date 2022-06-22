@@ -48,10 +48,6 @@ type BACnetConstructedDataManipulatedVariableReferenceExactly interface {
 type _BACnetConstructedDataManipulatedVariableReference struct {
 	*_BACnetConstructedData
 	ManipulatedVariableReference BACnetObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) GetActualValue() BA
 func NewBACnetConstructedDataManipulatedVariableReference(manipulatedVariableReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManipulatedVariableReference {
 	_result := &_BACnetConstructedDataManipulatedVariableReference{
 		ManipulatedVariableReference: manipulatedVariableReference,
-		TagNumber:                    tagNumber,
-		ArrayIndexArgument:           arrayIndexArgument,
 		_BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

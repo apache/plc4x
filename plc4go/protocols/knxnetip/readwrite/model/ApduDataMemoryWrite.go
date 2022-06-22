@@ -43,9 +43,6 @@ type ApduDataMemoryWriteExactly interface {
 // _ApduDataMemoryWrite is the data-structure of this message
 type _ApduDataMemoryWrite struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,8 +68,7 @@ func (m *_ApduDataMemoryWrite) GetParent() ApduData {
 // NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
 func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
 	_result := &_ApduDataMemoryWrite{
-		DataLength: dataLength,
-		_ApduData:  NewApduData(dataLength),
+		_ApduData: NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

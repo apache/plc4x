@@ -48,10 +48,6 @@ type BACnetConstructedDataEffectivePeriodExactly interface {
 type _BACnetConstructedDataEffectivePeriod struct {
 	*_BACnetConstructedData
 	DateRange BACnetDateRange
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetActualValue() BACnetDateRange
 func NewBACnetConstructedDataEffectivePeriod(dateRange BACnetDateRange, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
 	_result := &_BACnetConstructedDataEffectivePeriod{
 		DateRange:              dateRange,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataAccessDoorPresentValueExactly interface {
 type _BACnetConstructedDataAccessDoorPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetDoorValueTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccessDoorPresentValue) GetActualValue() BACnetDo
 func NewBACnetConstructedDataAccessDoorPresentValue(presentValue BACnetDoorValueTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorPresentValue {
 	_result := &_BACnetConstructedDataAccessDoorPresentValue{
 		PresentValue:           presentValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

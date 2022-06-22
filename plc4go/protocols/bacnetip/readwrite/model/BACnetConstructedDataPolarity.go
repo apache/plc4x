@@ -48,10 +48,6 @@ type BACnetConstructedDataPolarityExactly interface {
 type _BACnetConstructedDataPolarity struct {
 	*_BACnetConstructedData
 	Polarity BACnetPolarityTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataPolarity) GetActualValue() BACnetPolarityTagged {
 func NewBACnetConstructedDataPolarity(polarity BACnetPolarityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPolarity {
 	_result := &_BACnetConstructedDataPolarity{
 		Polarity:               polarity,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -51,9 +51,6 @@ type _BACnetConfirmedServiceRequestCreateObject struct {
 	*_BACnetConfirmedServiceRequest
 	ObjectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 	ListOfValues    BACnetPropertyValues
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,7 +97,6 @@ func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirme
 	_result := &_BACnetConfirmedServiceRequestCreateObject{
 		ObjectSpecifier:                objectSpecifier,
 		ListOfValues:                   listOfValues,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

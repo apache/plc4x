@@ -48,9 +48,6 @@ type BACnetLogRecordLogDatumAnyValueExactly interface {
 type _BACnetLogRecordLogDatumAnyValue struct {
 	*_BACnetLogRecordLogDatum
 	AnyValue BACnetConstructedData
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,7 +88,6 @@ func (m *_BACnetLogRecordLogDatumAnyValue) GetAnyValue() BACnetConstructedData {
 func NewBACnetLogRecordLogDatumAnyValue(anyValue BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumAnyValue {
 	_result := &_BACnetLogRecordLogDatumAnyValue{
 		AnyValue:                 anyValue,
-		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

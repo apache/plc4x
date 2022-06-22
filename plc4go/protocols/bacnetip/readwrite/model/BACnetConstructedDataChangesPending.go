@@ -48,10 +48,6 @@ type BACnetConstructedDataChangesPendingExactly interface {
 type _BACnetConstructedDataChangesPending struct {
 	*_BACnetConstructedData
 	ChangesPending BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataChangesPending) GetActualValue() BACnetApplicatio
 func NewBACnetConstructedDataChangesPending(changesPending BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
 	_result := &_BACnetConstructedDataChangesPending{
 		ChangesPending:         changesPending,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

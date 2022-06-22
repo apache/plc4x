@@ -43,9 +43,6 @@ type ApduDataExtLinkResponseExactly interface {
 // _ApduDataExtLinkResponse is the data-structure of this message
 type _ApduDataExtLinkResponse struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtLinkResponse) GetParent() ApduDataExt {
 // NewApduDataExtLinkResponse factory function for _ApduDataExtLinkResponse
 func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
 	_result := &_ApduDataExtLinkResponse{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

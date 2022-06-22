@@ -52,9 +52,6 @@ type _CipReadRequest struct {
 	RequestPathSize int8
 	Tag             []byte
 	ElementNb       uint16
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,7 +102,6 @@ func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16, servi
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		ElementNb:       elementNb,
-		ServiceLen:      serviceLen,
 		_CipService:     NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

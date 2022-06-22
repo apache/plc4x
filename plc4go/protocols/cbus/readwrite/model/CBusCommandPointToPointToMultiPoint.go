@@ -46,9 +46,6 @@ type CBusCommandPointToPointToMultiPointExactly interface {
 type _CBusCommandPointToPointToMultiPoint struct {
 	*_CBusCommand
 	Command CBusPointToPointToMultipointCommand
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_CBusCommandPointToPointToMultiPoint) GetCommand() CBusPointToPointToMu
 func NewCBusCommandPointToPointToMultiPoint(command CBusPointToPointToMultipointCommand, header CBusHeader, srchk bool) *_CBusCommandPointToPointToMultiPoint {
 	_result := &_CBusCommandPointToPointToMultiPoint{
 		Command:      command,
-		Srchk:        srchk,
 		_CBusCommand: NewCBusCommand(header, srchk),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result

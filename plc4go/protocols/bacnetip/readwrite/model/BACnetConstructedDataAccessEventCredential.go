@@ -48,10 +48,6 @@ type BACnetConstructedDataAccessEventCredentialExactly interface {
 type _BACnetConstructedDataAccessEventCredential struct {
 	*_BACnetConstructedData
 	AccessEventCredential BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccessEventCredential) GetActualValue() BACnetDev
 func NewBACnetConstructedDataAccessEventCredential(accessEventCredential BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventCredential {
 	_result := &_BACnetConstructedDataAccessEventCredential{
 		AccessEventCredential:  accessEventCredential,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

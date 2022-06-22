@@ -48,10 +48,6 @@ type BACnetConstructedDataProgramChangeExactly interface {
 type _BACnetConstructedDataProgramChange struct {
 	*_BACnetConstructedData
 	ProgramChange BACnetProgramRequestTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataProgramChange) GetActualValue() BACnetProgramRequ
 func NewBACnetConstructedDataProgramChange(programChange BACnetProgramRequestTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
 	_result := &_BACnetConstructedDataProgramChange{
 		ProgramChange:          programChange,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

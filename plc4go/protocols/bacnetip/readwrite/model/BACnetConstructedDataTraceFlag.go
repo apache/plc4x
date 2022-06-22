@@ -48,10 +48,6 @@ type BACnetConstructedDataTraceFlagExactly interface {
 type _BACnetConstructedDataTraceFlag struct {
 	*_BACnetConstructedData
 	TraceFlag BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataTraceFlag) GetActualValue() BACnetApplicationTagB
 func NewBACnetConstructedDataTraceFlag(traceFlag BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTraceFlag {
 	_result := &_BACnetConstructedDataTraceFlag{
 		TraceFlag:              traceFlag,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

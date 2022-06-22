@@ -48,10 +48,6 @@ type BACnetConstructedDataNotifyTypeExactly interface {
 type _BACnetConstructedDataNotifyType struct {
 	*_BACnetConstructedData
 	NotifyType BACnetNotifyTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataNotifyType) GetActualValue() BACnetNotifyTypeTagg
 func NewBACnetConstructedDataNotifyType(notifyType BACnetNotifyTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotifyType {
 	_result := &_BACnetConstructedDataNotifyType{
 		NotifyType:             notifyType,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

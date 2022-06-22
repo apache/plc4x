@@ -46,10 +46,6 @@ type BACnetConstructedDataAuthorizationExemptionsExactly interface {
 type _BACnetConstructedDataAuthorizationExemptions struct {
 	*_BACnetConstructedData
 	AuthorizationExemption []BACnetAuthorizationExemptionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetAuthorizationExemptio
 func NewBACnetConstructedDataAuthorizationExemptions(authorizationExemption []BACnetAuthorizationExemptionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
 	_result := &_BACnetConstructedDataAuthorizationExemptions{
 		AuthorizationExemption: authorizationExemption,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

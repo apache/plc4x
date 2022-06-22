@@ -61,9 +61,6 @@ type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	Timestamp                      BACnetTimeStampEnclosed
 	AcknowledgmentSource           BACnetContextTagCharacterString
 	TimeOfAcknowledgment           BACnetTimeStampEnclosed
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -130,7 +127,6 @@ func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdenti
 		Timestamp:                      timestamp,
 		AcknowledgmentSource:           acknowledgmentSource,
 		TimeOfAcknowledgment:           timeOfAcknowledgment,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

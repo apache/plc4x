@@ -46,10 +46,6 @@ type BACnetConstructedDataExitPointsExactly interface {
 type _BACnetConstructedDataExitPoints struct {
 	*_BACnetConstructedData
 	ExitPoints []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataExitPoints) GetExitPoints() []BACnetDeviceObjectR
 func NewBACnetConstructedDataExitPoints(exitPoints []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExitPoints {
 	_result := &_BACnetConstructedDataExitPoints{
 		ExitPoints:             exitPoints,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

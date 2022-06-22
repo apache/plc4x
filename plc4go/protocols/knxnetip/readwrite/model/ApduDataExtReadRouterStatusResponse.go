@@ -43,9 +43,6 @@ type ApduDataExtReadRouterStatusResponseExactly interface {
 // _ApduDataExtReadRouterStatusResponse is the data-structure of this message
 type _ApduDataExtReadRouterStatusResponse struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtReadRouterStatusResponse) GetParent() ApduDataExt {
 // NewApduDataExtReadRouterStatusResponse factory function for _ApduDataExtReadRouterStatusResponse
 func NewApduDataExtReadRouterStatusResponse(length uint8) *_ApduDataExtReadRouterStatusResponse {
 	_result := &_ApduDataExtReadRouterStatusResponse{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataLocalForwardingOnlyExactly interface {
 type _BACnetConstructedDataLocalForwardingOnly struct {
 	*_BACnetConstructedData
 	LocalForwardingOnly BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalForwardingOnly {
 	_result := &_BACnetConstructedDataLocalForwardingOnly{
 		LocalForwardingOnly:    localForwardingOnly,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

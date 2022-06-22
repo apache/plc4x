@@ -48,10 +48,6 @@ type BACnetConstructedDataLastCredentialRemovedExactly interface {
 type _BACnetConstructedDataLastCredentialRemoved struct {
 	*_BACnetConstructedData
 	LastCredentialRemoved BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) GetActualValue() BACnetDev
 func NewBACnetConstructedDataLastCredentialRemoved(lastCredentialRemoved BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialRemoved {
 	_result := &_BACnetConstructedDataLastCredentialRemoved{
 		LastCredentialRemoved:  lastCredentialRemoved,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -69,10 +69,6 @@ type _BACnetNotificationParametersAccessEvent struct {
 	AccessCredential     BACnetDeviceObjectReferenceEnclosed
 	AuthenticationFactor BACnetAuthenticationFactorTypeTagged
 	InnerClosingTag      BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -148,8 +144,6 @@ func NewBACnetNotificationParametersAccessEvent(innerOpeningTag BACnetOpeningTag
 		AccessCredential:              accessCredential,
 		AuthenticationFactor:          authenticationFactor,
 		InnerClosingTag:               innerClosingTag,
-		TagNumber:                     tagNumber,
-		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

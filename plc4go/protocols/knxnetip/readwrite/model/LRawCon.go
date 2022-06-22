@@ -43,9 +43,6 @@ type LRawConExactly interface {
 // _LRawCon is the data-structure of this message
 type _LRawCon struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_LRawCon) GetParent() CEMI {
 // NewLRawCon factory function for _LRawCon
 func NewLRawCon(size uint16) *_LRawCon {
 	_result := &_LRawCon{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

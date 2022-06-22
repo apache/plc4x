@@ -48,10 +48,6 @@ type BACnetConstructedDataTimeDelayNormalExactly interface {
 type _BACnetConstructedDataTimeDelayNormal struct {
 	*_BACnetConstructedData
 	TimeDelayNormal BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetActualValue() BACnetApplicati
 func NewBACnetConstructedDataTimeDelayNormal(timeDelayNormal BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelayNormal {
 	_result := &_BACnetConstructedDataTimeDelayNormal{
 		TimeDelayNormal:        timeDelayNormal,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

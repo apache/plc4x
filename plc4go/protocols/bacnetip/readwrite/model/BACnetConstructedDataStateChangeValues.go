@@ -53,10 +53,6 @@ type _BACnetConstructedDataStateChangeValues struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	StateChangeValues    []BACnetTimerStateChangeValue
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataStateChangeValues(numberOfDataElements BACnetApplic
 	_result := &_BACnetConstructedDataStateChangeValues{
 		NumberOfDataElements:   numberOfDataElements,
 		StateChangeValues:      stateChangeValues,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

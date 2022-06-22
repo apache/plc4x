@@ -48,10 +48,6 @@ type BACnetConstructedDataLastUseTimeExactly interface {
 type _BACnetConstructedDataLastUseTime struct {
 	*_BACnetConstructedData
 	LastUseTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLastUseTime) GetActualValue() BACnetDateTime {
 func NewBACnetConstructedDataLastUseTime(lastUseTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastUseTime {
 	_result := &_BACnetConstructedDataLastUseTime{
 		LastUseTime:            lastUseTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

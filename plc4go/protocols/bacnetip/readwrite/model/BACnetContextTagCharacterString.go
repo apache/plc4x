@@ -48,9 +48,6 @@ type BACnetContextTagCharacterStringExactly interface {
 type _BACnetContextTagCharacterString struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadCharacterString
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +103,6 @@ func (m *_BACnetContextTagCharacterString) GetValue() string {
 func NewBACnetContextTagCharacterString(payload BACnetTagPayloadCharacterString, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagCharacterString {
 	_result := &_BACnetContextTagCharacterString{
 		Payload:           payload,
-		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

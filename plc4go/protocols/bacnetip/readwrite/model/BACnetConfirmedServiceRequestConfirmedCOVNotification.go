@@ -58,9 +58,6 @@ type _BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	MonitoredObjectIdentifier   BACnetContextTagObjectIdentifier
 	LifetimeInSeconds           BACnetContextTagUnsignedInteger
 	ListOfValues                BACnetPropertyValues
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,7 +119,6 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessI
 		MonitoredObjectIdentifier:      monitoredObjectIdentifier,
 		LifetimeInSeconds:              lifetimeInSeconds,
 		ListOfValues:                   listOfValues,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

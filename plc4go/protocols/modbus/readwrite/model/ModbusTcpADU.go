@@ -56,9 +56,6 @@ type _ModbusTcpADU struct {
 	TransactionIdentifier uint16
 	UnitIdentifier        uint8
 	Pdu                   ModbusPDU
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,7 +119,6 @@ func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu Mod
 		TransactionIdentifier: transactionIdentifier,
 		UnitIdentifier:        unitIdentifier,
 		Pdu:                   pdu,
-		Response:              response,
 		_ModbusADU:            NewModbusADU(response),
 	}
 	_result._ModbusADU._ModbusADUChildRequirements = _result

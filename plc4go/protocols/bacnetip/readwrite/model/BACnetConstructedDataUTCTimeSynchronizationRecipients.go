@@ -46,10 +46,6 @@ type BACnetConstructedDataUTCTimeSynchronizationRecipientsExactly interface {
 type _BACnetConstructedDataUTCTimeSynchronizationRecipients struct {
 	*_BACnetConstructedData
 	UtcTimeSynchronizationRecipients []BACnetRecipient
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetUtcTimeSynch
 func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(utcTimeSynchronizationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
 	_result := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
 		UtcTimeSynchronizationRecipients: utcTimeSynchronizationRecipients,
-		TagNumber:                        tagNumber,
-		ArrayIndexArgument:               arrayIndexArgument,
 		_BACnetConstructedData:           NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -59,9 +59,6 @@ type _APDUSegmentAck struct {
 	OriginalInvokeId   uint8
 	SequenceNumber     uint8
 	ProposedWindowSize uint8
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,7 +119,6 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
 		OriginalInvokeId:   originalInvokeId,
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
-		ApduLength:         apduLength,
 		_APDU:              NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

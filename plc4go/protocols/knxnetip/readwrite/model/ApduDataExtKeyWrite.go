@@ -43,9 +43,6 @@ type ApduDataExtKeyWriteExactly interface {
 // _ApduDataExtKeyWrite is the data-structure of this message
 type _ApduDataExtKeyWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtKeyWrite) GetParent() ApduDataExt {
 // NewApduDataExtKeyWrite factory function for _ApduDataExtKeyWrite
 func NewApduDataExtKeyWrite(length uint8) *_ApduDataExtKeyWrite {
 	_result := &_ApduDataExtKeyWrite{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

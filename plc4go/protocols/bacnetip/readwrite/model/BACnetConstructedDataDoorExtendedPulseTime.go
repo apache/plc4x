@@ -48,10 +48,6 @@ type BACnetConstructedDataDoorExtendedPulseTimeExactly interface {
 type _BACnetConstructedDataDoorExtendedPulseTime struct {
 	*_BACnetConstructedData
 	DoorExtendedPulseTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetActualValue() BACnetApp
 func NewBACnetConstructedDataDoorExtendedPulseTime(doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
 	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
 		DoorExtendedPulseTime:  doorExtendedPulseTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

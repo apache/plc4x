@@ -48,10 +48,6 @@ type BACnetConstructedDataWriteStatusExactly interface {
 type _BACnetConstructedDataWriteStatus struct {
 	*_BACnetConstructedData
 	WriteStatus BACnetWriteStatusTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataWriteStatus) GetActualValue() BACnetWriteStatusTa
 func NewBACnetConstructedDataWriteStatus(writeStatus BACnetWriteStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
 	_result := &_BACnetConstructedDataWriteStatus{
 		WriteStatus:            writeStatus,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

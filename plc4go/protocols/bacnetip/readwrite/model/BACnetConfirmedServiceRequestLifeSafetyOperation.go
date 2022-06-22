@@ -57,9 +57,6 @@ type _BACnetConfirmedServiceRequestLifeSafetyOperation struct {
 	RequestingSource            BACnetContextTagCharacterString
 	Request                     BACnetLifeSafetyOperationTagged
 	ObjectIdentifier            BACnetContextTagObjectIdentifier
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,7 +113,6 @@ func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdenti
 		RequestingSource:               requestingSource,
 		Request:                        request,
 		ObjectIdentifier:               objectIdentifier,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

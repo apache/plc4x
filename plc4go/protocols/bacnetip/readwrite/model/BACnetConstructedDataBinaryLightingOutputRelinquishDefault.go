@@ -48,10 +48,6 @@ type BACnetConstructedDataBinaryLightingOutputRelinquishDefaultExactly interface
 type _BACnetConstructedDataBinaryLightingOutputRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetBinaryLightingPVTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) GetActualV
 func NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault(relinquishDefault BACnetBinaryLightingPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
 	_result := &_BACnetConstructedDataBinaryLightingOutputRelinquishDefault{
 		RelinquishDefault:      relinquishDefault,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

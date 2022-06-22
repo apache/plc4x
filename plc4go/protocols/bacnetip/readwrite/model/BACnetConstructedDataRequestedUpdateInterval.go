@@ -48,10 +48,6 @@ type BACnetConstructedDataRequestedUpdateIntervalExactly interface {
 type _BACnetConstructedDataRequestedUpdateInterval struct {
 	*_BACnetConstructedData
 	RequestedUpdateInterval BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataRequestedUpdateInterval) GetActualValue() BACnetA
 func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequestedUpdateInterval {
 	_result := &_BACnetConstructedDataRequestedUpdateInterval{
 		RequestedUpdateInterval: requestedUpdateInterval,
-		TagNumber:               tagNumber,
-		ArrayIndexArgument:      arrayIndexArgument,
 		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

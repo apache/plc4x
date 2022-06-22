@@ -48,10 +48,6 @@ type BACnetConstructedDataTimeOfActiveTimeResetExactly interface {
 type _BACnetConstructedDataTimeOfActiveTimeReset struct {
 	*_BACnetConstructedData
 	TimeOfActiveTimeReset BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) GetActualValue() BACnetDat
 func NewBACnetConstructedDataTimeOfActiveTimeReset(timeOfActiveTimeReset BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfActiveTimeReset {
 	_result := &_BACnetConstructedDataTimeOfActiveTimeReset{
 		TimeOfActiveTimeReset:  timeOfActiveTimeReset,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

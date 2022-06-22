@@ -43,9 +43,6 @@ type ApduDataIndividualAddressResponseExactly interface {
 // _ApduDataIndividualAddressResponse is the data-structure of this message
 type _ApduDataIndividualAddressResponse struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,8 +68,7 @@ func (m *_ApduDataIndividualAddressResponse) GetParent() ApduData {
 // NewApduDataIndividualAddressResponse factory function for _ApduDataIndividualAddressResponse
 func NewApduDataIndividualAddressResponse(dataLength uint8) *_ApduDataIndividualAddressResponse {
 	_result := &_ApduDataIndividualAddressResponse{
-		DataLength: dataLength,
-		_ApduData:  NewApduData(dataLength),
+		_ApduData: NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

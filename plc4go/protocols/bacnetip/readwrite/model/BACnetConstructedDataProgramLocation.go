@@ -48,10 +48,6 @@ type BACnetConstructedDataProgramLocationExactly interface {
 type _BACnetConstructedDataProgramLocation struct {
 	*_BACnetConstructedData
 	ProgramLocation BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataProgramLocation) GetActualValue() BACnetApplicati
 func NewBACnetConstructedDataProgramLocation(programLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
 	_result := &_BACnetConstructedDataProgramLocation{
 		ProgramLocation:        programLocation,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

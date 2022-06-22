@@ -58,9 +58,6 @@ type _ApduDataExtPropertyValueWrite struct {
 	Count       uint8
 	Index       uint16
 	Data        []byte
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,7 +118,6 @@ func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count
 		Count:        count,
 		Index:        index,
 		Data:         data,
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

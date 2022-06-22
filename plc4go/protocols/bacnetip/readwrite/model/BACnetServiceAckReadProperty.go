@@ -57,9 +57,6 @@ type _BACnetServiceAckReadProperty struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	Values             BACnetConstructedData
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,7 +112,6 @@ func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIden
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		Values:             values,
-		ServiceAckLength:   serviceAckLength,
 		_BACnetServiceAck:  NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

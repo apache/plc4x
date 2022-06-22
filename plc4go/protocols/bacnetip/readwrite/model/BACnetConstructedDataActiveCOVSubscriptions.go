@@ -46,10 +46,6 @@ type BACnetConstructedDataActiveCOVSubscriptionsExactly interface {
 type _BACnetConstructedDataActiveCOVSubscriptions struct {
 	*_BACnetConstructedData
 	ActiveCOVSubscriptions []BACnetCOVSubscription
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetActiveCOVSubscriptions
 func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []BACnetCOVSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
 	_result := &_BACnetConstructedDataActiveCOVSubscriptions{
 		ActiveCOVSubscriptions: activeCOVSubscriptions,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

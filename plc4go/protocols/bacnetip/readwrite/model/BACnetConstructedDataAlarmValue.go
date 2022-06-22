@@ -48,10 +48,6 @@ type BACnetConstructedDataAlarmValueExactly interface {
 type _BACnetConstructedDataAlarmValue struct {
 	*_BACnetConstructedData
 	BinaryPv BACnetBinaryPVTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAlarmValue) GetActualValue() BACnetBinaryPVTagged
 func NewBACnetConstructedDataAlarmValue(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
 	_result := &_BACnetConstructedDataAlarmValue{
 		BinaryPv:               binaryPv,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

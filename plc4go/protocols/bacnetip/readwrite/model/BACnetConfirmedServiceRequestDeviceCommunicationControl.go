@@ -54,9 +54,6 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 	TimeDuration  BACnetContextTagUnsignedInteger
 	EnableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 	Password      BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -108,7 +105,6 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BAC
 		TimeDuration:                   timeDuration,
 		EnableDisable:                  enableDisable,
 		Password:                       password,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

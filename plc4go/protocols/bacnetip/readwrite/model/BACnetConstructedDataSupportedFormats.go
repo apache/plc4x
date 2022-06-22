@@ -53,10 +53,6 @@ type _BACnetConstructedDataSupportedFormats struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	SupportedFormats     []BACnetAuthenticationFactorFormat
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataSupportedFormats(numberOfDataElements BACnetApplica
 	_result := &_BACnetConstructedDataSupportedFormats{
 		NumberOfDataElements:   numberOfDataElements,
 		SupportedFormats:       supportedFormats,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

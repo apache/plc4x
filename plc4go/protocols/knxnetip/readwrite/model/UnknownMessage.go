@@ -89,7 +89,6 @@ func (m *_UnknownMessage) GetUnknownData() []byte {
 func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage {
 	_result := &_UnknownMessage{
 		UnknownData:      unknownData,
-		TotalLength:      totalLength,
 		_KnxNetIpMessage: NewKnxNetIpMessage(),
 	}
 	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result

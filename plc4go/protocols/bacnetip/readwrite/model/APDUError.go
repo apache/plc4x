@@ -53,9 +53,6 @@ type _APDUError struct {
 	OriginalInvokeId uint8
 	ErrorChoice      BACnetConfirmedServiceChoice
 	Error            BACnetError
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +103,6 @@ func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoi
 		OriginalInvokeId: originalInvokeId,
 		ErrorChoice:      errorChoice,
 		Error:            error,
-		ApduLength:       apduLength,
 		_APDU:            NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

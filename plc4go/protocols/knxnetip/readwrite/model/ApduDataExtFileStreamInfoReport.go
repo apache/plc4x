@@ -43,9 +43,6 @@ type ApduDataExtFileStreamInfoReportExactly interface {
 // _ApduDataExtFileStreamInfoReport is the data-structure of this message
 type _ApduDataExtFileStreamInfoReport struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtFileStreamInfoReport) GetParent() ApduDataExt {
 // NewApduDataExtFileStreamInfoReport factory function for _ApduDataExtFileStreamInfoReport
 func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInfoReport {
 	_result := &_ApduDataExtFileStreamInfoReport{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

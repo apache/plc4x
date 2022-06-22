@@ -88,9 +88,8 @@ func (m *_BVLCReadBroadcastDistributionTableAck) GetTable() []BVLCBroadcastDistr
 // NewBVLCReadBroadcastDistributionTableAck factory function for _BVLCReadBroadcastDistributionTableAck
 func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCReadBroadcastDistributionTableAck {
 	_result := &_BVLCReadBroadcastDistributionTableAck{
-		Table:             table,
-		BvlcPayloadLength: bvlcPayloadLength,
-		_BVLC:             NewBVLC(),
+		Table: table,
+		_BVLC: NewBVLC(),
 	}
 	_result._BVLC._BVLCChildRequirements = _result
 	return _result

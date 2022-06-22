@@ -53,10 +53,6 @@ type _BACnetConstructedDataElevatorGroupGroupMembers struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	GroupMembers         []BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataElevatorGroupGroupMembers(numberOfDataElements BACn
 	_result := &_BACnetConstructedDataElevatorGroupGroupMembers{
 		NumberOfDataElements:   numberOfDataElements,
 		GroupMembers:           groupMembers,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

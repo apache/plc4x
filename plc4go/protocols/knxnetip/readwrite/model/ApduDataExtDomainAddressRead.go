@@ -43,9 +43,6 @@ type ApduDataExtDomainAddressReadExactly interface {
 // _ApduDataExtDomainAddressRead is the data-structure of this message
 type _ApduDataExtDomainAddressRead struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtDomainAddressRead) GetParent() ApduDataExt {
 // NewApduDataExtDomainAddressRead factory function for _ApduDataExtDomainAddressRead
 func NewApduDataExtDomainAddressRead(length uint8) *_ApduDataExtDomainAddressRead {
 	_result := &_ApduDataExtDomainAddressRead{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

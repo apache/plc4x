@@ -48,10 +48,6 @@ type BACnetConstructedDataFailedAttemptsExactly interface {
 type _BACnetConstructedDataFailedAttempts struct {
 	*_BACnetConstructedData
 	FailedAttempts BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataFailedAttempts) GetActualValue() BACnetApplicatio
 func NewBACnetConstructedDataFailedAttempts(failedAttempts BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttempts {
 	_result := &_BACnetConstructedDataFailedAttempts{
 		FailedAttempts:         failedAttempts,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataFullDutyBaselineExactly interface {
 type _BACnetConstructedDataFullDutyBaseline struct {
 	*_BACnetConstructedData
 	FullDutyBaseLine BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataFullDutyBaseline) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataFullDutyBaseline(fullDutyBaseLine BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFullDutyBaseline {
 	_result := &_BACnetConstructedDataFullDutyBaseline{
 		FullDutyBaseLine:       fullDutyBaseLine,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -46,9 +46,6 @@ type BACnetTimerStateChangeValueUnsignedExactly interface {
 type _BACnetTimerStateChangeValueUnsigned struct {
 	*_BACnetTimerStateChangeValue
 	UnsignedValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetUnsignedValue() BACnetApplicat
 func NewBACnetTimerStateChangeValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
 	_result := &_BACnetTimerStateChangeValueUnsigned{
 		UnsignedValue:                unsignedValue,
-		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

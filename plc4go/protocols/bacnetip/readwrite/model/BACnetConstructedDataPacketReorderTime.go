@@ -48,10 +48,6 @@ type BACnetConstructedDataPacketReorderTimeExactly interface {
 type _BACnetConstructedDataPacketReorderTime struct {
 	*_BACnetConstructedData
 	PacketReorderTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetActualValue() BACnetApplica
 func NewBACnetConstructedDataPacketReorderTime(packetReorderTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
 	_result := &_BACnetConstructedDataPacketReorderTime{
 		PacketReorderTime:      packetReorderTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

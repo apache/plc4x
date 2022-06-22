@@ -48,10 +48,6 @@ type BACnetConstructedDataDaysRemainingExactly interface {
 type _BACnetConstructedDataDaysRemaining struct {
 	*_BACnetConstructedData
 	DaysRemaining BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDaysRemaining) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataDaysRemaining(daysRemaining BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
 	_result := &_BACnetConstructedDataDaysRemaining{
 		DaysRemaining:          daysRemaining,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

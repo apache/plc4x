@@ -46,10 +46,6 @@ type BACnetConstructedDataRestartNotificationRecipientsExactly interface {
 type _BACnetConstructedDataRestartNotificationRecipients struct {
 	*_BACnetConstructedData
 	RestartNotificationRecipients []BACnetRecipient
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetRestartNotifica
 func NewBACnetConstructedDataRestartNotificationRecipients(restartNotificationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
 	_result := &_BACnetConstructedDataRestartNotificationRecipients{
 		RestartNotificationRecipients: restartNotificationRecipients,
-		TagNumber:                     tagNumber,
-		ArrayIndexArgument:            arrayIndexArgument,
 		_BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

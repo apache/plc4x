@@ -49,9 +49,6 @@ type _NLMInitalizeRoutingTable struct {
 	*_NLM
 	NumberOfPorts uint8
 	PortMappings  []NLMInitalizeRoutingTablePortMapping
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,7 +96,6 @@ func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []NLMInitaliz
 	_result := &_NLMInitalizeRoutingTable{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		ApduLength:    apduLength,
 		_NLM:          NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

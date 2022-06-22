@@ -48,10 +48,6 @@ type BACnetConstructedDataIntegerValuePresentValueExactly interface {
 type _BACnetConstructedDataIntegerValuePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) GetActualValue() BACnet
 func NewBACnetConstructedDataIntegerValuePresentValue(presentValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValuePresentValue {
 	_result := &_BACnetConstructedDataIntegerValuePresentValue{
 		PresentValue:           presentValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

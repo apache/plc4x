@@ -59,10 +59,6 @@ type _BACnetConstructedDataEventMessageTextsConfig struct {
 	*_BACnetConstructedData
 	NumberOfDataElements    BACnetApplicationTagUnsignedInteger
 	EventMessageTextsConfig []BACnetOptionalCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -149,8 +145,6 @@ func NewBACnetConstructedDataEventMessageTextsConfig(numberOfDataElements BACnet
 	_result := &_BACnetConstructedDataEventMessageTextsConfig{
 		NumberOfDataElements:    numberOfDataElements,
 		EventMessageTextsConfig: eventMessageTextsConfig,
-		TagNumber:               tagNumber,
-		ArrayIndexArgument:      arrayIndexArgument,
 		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

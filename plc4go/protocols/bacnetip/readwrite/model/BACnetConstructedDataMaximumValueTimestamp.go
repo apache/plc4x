@@ -48,10 +48,6 @@ type BACnetConstructedDataMaximumValueTimestampExactly interface {
 type _BACnetConstructedDataMaximumValueTimestamp struct {
 	*_BACnetConstructedData
 	MaximumValueTimestamp BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) GetActualValue() BACnetDat
 func NewBACnetConstructedDataMaximumValueTimestamp(maximumValueTimestamp BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValueTimestamp {
 	_result := &_BACnetConstructedDataMaximumValueTimestamp{
 		MaximumValueTimestamp:  maximumValueTimestamp,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

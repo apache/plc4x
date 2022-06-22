@@ -46,10 +46,6 @@ type BACnetConstructedDataBBMDForeignDeviceTableExactly interface {
 type _BACnetConstructedDataBBMDForeignDeviceTable struct {
 	*_BACnetConstructedData
 	BbmdForeignDeviceTable []BACnetBDTEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) GetBbmdForeignDeviceTable
 func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []BACnetBDTEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDForeignDeviceTable {
 	_result := &_BACnetConstructedDataBBMDForeignDeviceTable{
 		BbmdForeignDeviceTable: bbmdForeignDeviceTable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

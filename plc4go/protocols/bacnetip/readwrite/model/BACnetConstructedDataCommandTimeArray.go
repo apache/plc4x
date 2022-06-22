@@ -53,10 +53,6 @@ type _BACnetConstructedDataCommandTimeArray struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	CommandTimeArray     []BACnetTimeStamp
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataCommandTimeArray(numberOfDataElements BACnetApplica
 	_result := &_BACnetConstructedDataCommandTimeArray{
 		NumberOfDataElements:   numberOfDataElements,
 		CommandTimeArray:       commandTimeArray,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

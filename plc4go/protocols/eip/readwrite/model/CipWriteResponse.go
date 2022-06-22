@@ -50,9 +50,6 @@ type _CipWriteResponse struct {
 	*_CipService
 	Status    uint8
 	ExtStatus uint8
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,7 +95,6 @@ func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_Cip
 	_result := &_CipWriteResponse{
 		Status:      status,
 		ExtStatus:   extStatus,
-		ServiceLen:  serviceLen,
 		_CipService: NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

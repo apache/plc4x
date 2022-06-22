@@ -43,9 +43,6 @@ type ApduDataExtWriteRouterMemoryRequestExactly interface {
 // _ApduDataExtWriteRouterMemoryRequest is the data-structure of this message
 type _ApduDataExtWriteRouterMemoryRequest struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtWriteRouterMemoryRequest) GetParent() ApduDataExt {
 // NewApduDataExtWriteRouterMemoryRequest factory function for _ApduDataExtWriteRouterMemoryRequest
 func NewApduDataExtWriteRouterMemoryRequest(length uint8) *_ApduDataExtWriteRouterMemoryRequest {
 	_result := &_ApduDataExtWriteRouterMemoryRequest{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

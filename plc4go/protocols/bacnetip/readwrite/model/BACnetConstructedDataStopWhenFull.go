@@ -48,10 +48,6 @@ type BACnetConstructedDataStopWhenFullExactly interface {
 type _BACnetConstructedDataStopWhenFull struct {
 	*_BACnetConstructedData
 	StopWhenFull BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataStopWhenFull) GetActualValue() BACnetApplicationT
 func NewBACnetConstructedDataStopWhenFull(stopWhenFull BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopWhenFull {
 	_result := &_BACnetConstructedDataStopWhenFull{
 		StopWhenFull:           stopWhenFull,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

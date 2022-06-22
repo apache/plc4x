@@ -57,9 +57,6 @@ type _BACnetConfirmedServiceRequestReadRange struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	PropertyArrayIndex BACnetContextTagUnsignedInteger
 	ReadRange          BACnetConfirmedServiceRequestReadRangeRange
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,7 +113,6 @@ func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier BACnetContextTag
 		PropertyIdentifier:             propertyIdentifier,
 		PropertyArrayIndex:             propertyArrayIndex,
 		ReadRange:                      readRange,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

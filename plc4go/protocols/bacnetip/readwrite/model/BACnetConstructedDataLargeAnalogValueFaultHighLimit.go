@@ -48,10 +48,6 @@ type BACnetConstructedDataLargeAnalogValueFaultHighLimitExactly interface {
 type _BACnetConstructedDataLargeAnalogValueFaultHighLimit struct {
 	*_BACnetConstructedData
 	FaultHighLimit BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) GetActualValue() 
 func NewBACnetConstructedDataLargeAnalogValueFaultHighLimit(faultHighLimit BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueFaultHighLimit {
 	_result := &_BACnetConstructedDataLargeAnalogValueFaultHighLimit{
 		FaultHighLimit:         faultHighLimit,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

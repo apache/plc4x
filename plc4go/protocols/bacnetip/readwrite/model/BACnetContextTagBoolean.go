@@ -51,9 +51,6 @@ type _BACnetContextTagBoolean struct {
 	*_BACnetContextTag
 	Value   uint8
 	Payload BACnetTagPayloadBoolean
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -114,7 +111,6 @@ func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, he
 	_result := &_BACnetContextTagBoolean{
 		Value:             value,
 		Payload:           payload,
-		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

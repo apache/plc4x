@@ -48,7 +48,6 @@ type _BACnetServiceAckReadPropertyMultiple struct {
 	Data []BACnetReadAccessResult
 
 	// Arguments.
-	ServiceAckLength        uint16
 	ServiceAckPayloadLength uint16
 }
 
@@ -89,10 +88,8 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetData() []BACnetReadAccessResu
 // NewBACnetServiceAckReadPropertyMultiple factory function for _BACnetServiceAckReadPropertyMultiple
 func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckReadPropertyMultiple {
 	_result := &_BACnetServiceAckReadPropertyMultiple{
-		Data:                    data,
-		ServiceAckLength:        serviceAckLength,
-		ServiceAckPayloadLength: serviceAckPayloadLength,
-		_BACnetServiceAck:       NewBACnetServiceAck(serviceAckLength),
+		Data:              data,
+		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
 	return _result

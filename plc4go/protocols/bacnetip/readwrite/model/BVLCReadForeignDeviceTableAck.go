@@ -88,9 +88,8 @@ func (m *_BVLCReadForeignDeviceTableAck) GetTable() []BVLCForeignDeviceTableEntr
 // NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
 func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
 	_result := &_BVLCReadForeignDeviceTableAck{
-		Table:             table,
-		BvlcPayloadLength: bvlcPayloadLength,
-		_BVLC:             NewBVLC(),
+		Table: table,
+		_BVLC: NewBVLC(),
 	}
 	_result._BVLC._BVLCChildRequirements = _result
 	return _result

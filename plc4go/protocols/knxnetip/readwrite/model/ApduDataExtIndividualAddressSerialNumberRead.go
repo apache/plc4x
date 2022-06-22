@@ -43,9 +43,6 @@ type ApduDataExtIndividualAddressSerialNumberReadExactly interface {
 // _ApduDataExtIndividualAddressSerialNumberRead is the data-structure of this message
 type _ApduDataExtIndividualAddressSerialNumberRead struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtIndividualAddressSerialNumberRead) GetParent() ApduDataExt 
 // NewApduDataExtIndividualAddressSerialNumberRead factory function for _ApduDataExtIndividualAddressSerialNumberRead
 func NewApduDataExtIndividualAddressSerialNumberRead(length uint8) *_ApduDataExtIndividualAddressSerialNumberRead {
 	_result := &_ApduDataExtIndividualAddressSerialNumberRead{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

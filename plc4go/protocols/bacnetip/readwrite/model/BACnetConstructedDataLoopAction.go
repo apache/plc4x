@@ -48,10 +48,6 @@ type BACnetConstructedDataLoopActionExactly interface {
 type _BACnetConstructedDataLoopAction struct {
 	*_BACnetConstructedData
 	Action BACnetActionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLoopAction) GetActualValue() BACnetActionTagged {
 func NewBACnetConstructedDataLoopAction(action BACnetActionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAction {
 	_result := &_BACnetConstructedDataLoopAction{
 		Action:                 action,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

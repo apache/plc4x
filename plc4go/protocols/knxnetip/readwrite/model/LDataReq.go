@@ -52,9 +52,6 @@ type _LDataReq struct {
 	AdditionalInformationLength uint8
 	AdditionalInformation       []CEMIAdditionalInformation
 	DataFrame                   LDataFrame
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,7 +102,6 @@ func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMI
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		Size:                        size,
 		_CEMI:                       NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

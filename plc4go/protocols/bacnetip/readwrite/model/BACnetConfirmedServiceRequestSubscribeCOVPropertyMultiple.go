@@ -60,9 +60,6 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 	Lifetime                            BACnetContextTagUnsignedInteger
 	MaxNotificationDelay                BACnetContextTagUnsignedInteger
 	ListOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -124,7 +121,6 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProc
 		Lifetime:                            lifetime,
 		MaxNotificationDelay:                maxNotificationDelay,
 		ListOfCovSubscriptionSpecifications: listOfCovSubscriptionSpecifications,
-		ServiceRequestLength:                serviceRequestLength,
 		_BACnetConfirmedServiceRequest:      NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

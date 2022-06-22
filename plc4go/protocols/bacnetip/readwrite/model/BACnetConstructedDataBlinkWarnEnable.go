@@ -48,10 +48,6 @@ type BACnetConstructedDataBlinkWarnEnableExactly interface {
 type _BACnetConstructedDataBlinkWarnEnable struct {
 	*_BACnetConstructedData
 	BlinkWarnEnable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetActualValue() BACnetApplicati
 func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBlinkWarnEnable {
 	_result := &_BACnetConstructedDataBlinkWarnEnable{
 		BlinkWarnEnable:        blinkWarnEnable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

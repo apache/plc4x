@@ -48,10 +48,6 @@ type BACnetConstructedDataIPv6PrefixLengthExactly interface {
 type _BACnetConstructedDataIPv6PrefixLength struct {
 	*_BACnetConstructedData
 	Ipv6PrefixLength BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
 	_result := &_BACnetConstructedDataIPv6PrefixLength{
 		Ipv6PrefixLength:       ipv6PrefixLength,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

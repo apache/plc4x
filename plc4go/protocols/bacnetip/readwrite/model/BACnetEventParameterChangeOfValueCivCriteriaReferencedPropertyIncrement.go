@@ -46,9 +46,6 @@ type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementExac
 type _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement struct {
 	*_BACnetEventParameterChangeOfValueCivCriteria
 	ReferencedPropertyIncrement BACnetContextTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,8 +85,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 // NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement factory function for _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(referencedPropertyIncrement BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
 	_result := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
-		ReferencedPropertyIncrement: referencedPropertyIncrement,
-		TagNumber:                   tagNumber,
+		ReferencedPropertyIncrement:                   referencedPropertyIncrement,
 		_BACnetEventParameterChangeOfValueCivCriteria: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetEventParameterChangeOfValueCivCriteria._BACnetEventParameterChangeOfValueCivCriteriaChildRequirements = _result

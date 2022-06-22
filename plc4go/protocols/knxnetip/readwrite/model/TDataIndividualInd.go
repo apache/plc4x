@@ -43,9 +43,6 @@ type TDataIndividualIndExactly interface {
 // _TDataIndividualInd is the data-structure of this message
 type _TDataIndividualInd struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_TDataIndividualInd) GetParent() CEMI {
 // NewTDataIndividualInd factory function for _TDataIndividualInd
 func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
 	_result := &_TDataIndividualInd{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

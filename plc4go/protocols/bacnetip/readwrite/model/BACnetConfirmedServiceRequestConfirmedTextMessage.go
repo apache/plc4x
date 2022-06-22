@@ -57,9 +57,6 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 	MessageClass            BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	MessagePriority         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	Message                 BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,7 +113,6 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevic
 		MessageClass:                   messageClass,
 		MessagePriority:                messagePriority,
 		Message:                        message,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

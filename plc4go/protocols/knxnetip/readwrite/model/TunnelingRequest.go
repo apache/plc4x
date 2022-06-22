@@ -97,7 +97,6 @@ func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, ce
 	_result := &_TunnelingRequest{
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
 		Cemi:                      cemi,
-		TotalLength:               totalLength,
 		_KnxNetIpMessage:          NewKnxNetIpMessage(),
 	}
 	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result

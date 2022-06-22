@@ -49,9 +49,6 @@ type _ApduDataGroupValueWrite struct {
 	*_ApduData
 	DataFirstByte int8
 	Data          []byte
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint
 	_result := &_ApduDataGroupValueWrite{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		DataLength:    dataLength,
 		_ApduData:     NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result

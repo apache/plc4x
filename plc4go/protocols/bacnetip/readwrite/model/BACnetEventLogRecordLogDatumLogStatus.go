@@ -46,9 +46,6 @@ type BACnetEventLogRecordLogDatumLogStatusExactly interface {
 type _BACnetEventLogRecordLogDatumLogStatus struct {
 	*_BACnetEventLogRecordLogDatum
 	LogStatus BACnetLogStatusTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLogStatus() BACnetLogStatusT
 func NewBACnetEventLogRecordLogDatumLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumLogStatus {
 	_result := &_BACnetEventLogRecordLogDatumLogStatus{
 		LogStatus:                     logStatus,
-		TagNumber:                     tagNumber,
 		_BACnetEventLogRecordLogDatum: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _result

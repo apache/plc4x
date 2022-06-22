@@ -53,10 +53,6 @@ type _BACnetConstructedDataWeeklySchedule struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	WeeklySchedule       []BACnetDailySchedule
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataWeeklySchedule(numberOfDataElements BACnetApplicati
 	_result := &_BACnetConstructedDataWeeklySchedule{
 		NumberOfDataElements:   numberOfDataElements,
 		WeeklySchedule:         weeklySchedule,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

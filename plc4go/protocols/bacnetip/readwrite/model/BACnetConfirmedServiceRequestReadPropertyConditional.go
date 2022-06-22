@@ -48,7 +48,6 @@ type _BACnetConfirmedServiceRequestReadPropertyConditional struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceRequestLength        uint16
 	ServiceRequestPayloadLength uint16
 }
 
@@ -91,8 +90,6 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetBytesOfRemove
 func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedService []byte, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestReadPropertyConditional {
 	_result := &_BACnetConfirmedServiceRequestReadPropertyConditional{
 		BytesOfRemovedService:          bytesOfRemovedService,
-		ServiceRequestLength:           serviceRequestLength,
-		ServiceRequestPayloadLength:    serviceRequestPayloadLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

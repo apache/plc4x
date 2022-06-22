@@ -48,10 +48,6 @@ type BACnetConstructedDataEnergyMeterRefExactly interface {
 type _BACnetConstructedDataEnergyMeterRef struct {
 	*_BACnetConstructedData
 	EnergyMeterRef BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataEnergyMeterRef) GetActualValue() BACnetDeviceObje
 func NewBACnetConstructedDataEnergyMeterRef(energyMeterRef BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeterRef {
 	_result := &_BACnetConstructedDataEnergyMeterRef{
 		EnergyMeterRef:         energyMeterRef,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

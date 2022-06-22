@@ -46,9 +46,6 @@ type BACnetPriorityValueRealExactly interface {
 type _BACnetPriorityValueReal struct {
 	*_BACnetPriorityValue
 	RealValue BACnetApplicationTagReal
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueReal) GetRealValue() BACnetApplicationTagReal {
 func NewBACnetPriorityValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
 	_result := &_BACnetPriorityValueReal{
 		RealValue:            realValue,
-		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

@@ -46,10 +46,6 @@ type BACnetConstructedDataAccessDoorFaultValuesExactly interface {
 type _BACnetConstructedDataAccessDoorFaultValues struct {
 	*_BACnetConstructedData
 	FaultValues []BACnetDoorAlarmStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataAccessDoorFaultValues) GetFaultValues() []BACnetD
 func NewBACnetConstructedDataAccessDoorFaultValues(faultValues []BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorFaultValues {
 	_result := &_BACnetConstructedDataAccessDoorFaultValues{
 		FaultValues:            faultValues,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

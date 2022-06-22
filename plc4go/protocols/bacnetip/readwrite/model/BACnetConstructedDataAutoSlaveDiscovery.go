@@ -48,10 +48,6 @@ type BACnetConstructedDataAutoSlaveDiscoveryExactly interface {
 type _BACnetConstructedDataAutoSlaveDiscovery struct {
 	*_BACnetConstructedData
 	AutoSlaveDiscovery BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetActualValue() BACnetApplic
 func NewBACnetConstructedDataAutoSlaveDiscovery(autoSlaveDiscovery BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAutoSlaveDiscovery {
 	_result := &_BACnetConstructedDataAutoSlaveDiscovery{
 		AutoSlaveDiscovery:     autoSlaveDiscovery,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

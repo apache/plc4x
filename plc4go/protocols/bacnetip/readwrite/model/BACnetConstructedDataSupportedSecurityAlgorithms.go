@@ -46,10 +46,6 @@ type BACnetConstructedDataSupportedSecurityAlgorithmsExactly interface {
 type _BACnetConstructedDataSupportedSecurityAlgorithms struct {
 	*_BACnetConstructedData
 	SupportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetSupportedSecurity
 func NewBACnetConstructedDataSupportedSecurityAlgorithms(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedSecurityAlgorithms {
 	_result := &_BACnetConstructedDataSupportedSecurityAlgorithms{
 		SupportedSecurityAlgorithms: supportedSecurityAlgorithms,
-		TagNumber:                   tagNumber,
-		ArrayIndexArgument:          arrayIndexArgument,
 		_BACnetConstructedData:      NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

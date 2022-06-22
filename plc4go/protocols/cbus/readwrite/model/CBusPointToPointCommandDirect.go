@@ -47,9 +47,6 @@ type CBusPointToPointCommandDirectExactly interface {
 type _CBusPointToPointCommandDirect struct {
 	*_CBusPointToPointCommand
 	UnitAddress UnitAddress
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,7 +89,6 @@ func (m *_CBusPointToPointCommandDirect) GetUnitAddress() UnitAddress {
 func NewCBusPointToPointCommandDirect(unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, peekAlpha byte, alpha Alpha, srchk bool) *_CBusPointToPointCommandDirect {
 	_result := &_CBusPointToPointCommandDirect{
 		UnitAddress:              unitAddress,
-		Srchk:                    srchk,
 		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, peekAlpha, alpha, srchk),
 	}
 	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result

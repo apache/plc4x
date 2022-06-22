@@ -48,10 +48,6 @@ type BACnetConstructedDataCountBeforeChangeExactly interface {
 type _BACnetConstructedDataCountBeforeChange struct {
 	*_BACnetConstructedData
 	CountBeforeChange BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataCountBeforeChange) GetActualValue() BACnetApplica
 func NewBACnetConstructedDataCountBeforeChange(countBeforeChange BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
 	_result := &_BACnetConstructedDataCountBeforeChange{
 		CountBeforeChange:      countBeforeChange,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

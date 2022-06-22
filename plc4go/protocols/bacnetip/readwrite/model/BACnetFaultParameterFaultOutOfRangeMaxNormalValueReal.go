@@ -46,9 +46,6 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealExactly interface {
 type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal struct {
 	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	RealValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetRealValue() 
 func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(realValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal{
 		RealValue: realValue,
-		TagNumber: tagNumber,
 		_BACnetFaultParameterFaultOutOfRangeMaxNormalValue: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetFaultParameterFaultOutOfRangeMaxNormalValue._BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildRequirements = _result

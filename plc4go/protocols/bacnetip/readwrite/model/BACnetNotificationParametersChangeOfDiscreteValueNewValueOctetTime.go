@@ -46,9 +46,6 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeExactly i
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	TimeValue BACnetApplicationTagTime
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Ge
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(timeValue BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
 		TimeValue: timeValue,
-		TagNumber: tagNumber,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _result

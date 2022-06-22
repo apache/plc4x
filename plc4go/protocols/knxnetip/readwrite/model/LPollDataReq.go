@@ -43,9 +43,6 @@ type LPollDataReqExactly interface {
 // _LPollDataReq is the data-structure of this message
 type _LPollDataReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_LPollDataReq) GetParent() CEMI {
 // NewLPollDataReq factory function for _LPollDataReq
 func NewLPollDataReq(size uint16) *_LPollDataReq {
 	_result := &_LPollDataReq{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

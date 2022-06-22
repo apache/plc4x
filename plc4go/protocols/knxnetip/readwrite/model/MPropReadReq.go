@@ -58,9 +58,6 @@ type _MPropReadReq struct {
 	PropertyId          uint8
 	NumberOfElements    uint8
 	StartIndex          uint16
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,7 +118,6 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		Size:                size,
 		_CEMI:               NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

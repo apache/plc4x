@@ -43,10 +43,6 @@ type BACnetConstructedDataBinaryInputAllExactly interface {
 // _BACnetConstructedDataBinaryInputAll is the data-structure of this message
 type _BACnetConstructedDataBinaryInputAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataBinaryInputAll) GetParent() BACnetConstructedData
 // NewBACnetConstructedDataBinaryInputAll factory function for _BACnetConstructedDataBinaryInputAll
 func NewBACnetConstructedDataBinaryInputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryInputAll {
 	_result := &_BACnetConstructedDataBinaryInputAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

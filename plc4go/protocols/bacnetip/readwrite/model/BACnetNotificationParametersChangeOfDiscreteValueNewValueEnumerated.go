@@ -46,9 +46,6 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedExactly 
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	EnumeratedValue BACnetApplicationTagEnumerated
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) G
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{
 		EnumeratedValue: enumeratedValue,
-		TagNumber:       tagNumber,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _result

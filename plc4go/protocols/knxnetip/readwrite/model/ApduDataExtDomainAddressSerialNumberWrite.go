@@ -43,9 +43,6 @@ type ApduDataExtDomainAddressSerialNumberWriteExactly interface {
 // _ApduDataExtDomainAddressSerialNumberWrite is the data-structure of this message
 type _ApduDataExtDomainAddressSerialNumberWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtDomainAddressSerialNumberWrite) GetParent() ApduDataExt {
 // NewApduDataExtDomainAddressSerialNumberWrite factory function for _ApduDataExtDomainAddressSerialNumberWrite
 func NewApduDataExtDomainAddressSerialNumberWrite(length uint8) *_ApduDataExtDomainAddressSerialNumberWrite {
 	_result := &_ApduDataExtDomainAddressSerialNumberWrite{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

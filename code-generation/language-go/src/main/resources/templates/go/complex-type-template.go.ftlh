@@ -131,11 +131,12 @@ type _${type.name} struct {
 </#if>
 <#if parserArguments?has_content>
     <#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name) && !type.getPropertyFieldFromThisOrParentByName(arg.name).isPresent())>
+	<#assign filteredParserArgumentsLocalToType=filteredParserArguments?filter(arg->type.getParentType().isEmpty()||(type.getParentType().orElseThrow().getAllParserArguments().isEmpty()||!type.getParentType().orElseThrow().isParserArgument(arg.name)))>
 </#if>
-<#if filteredParserArguments?has_content>
+<#if filteredParserArgumentsLocalToType?has_content>
 
 	// Arguments.
-    <#list filteredParserArguments as parserArgument>
+    <#list filteredParserArgumentsLocalToType as parserArgument>
         ${parserArgument.name?cap_first} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
     </#list>
 </#if>
@@ -345,11 +346,6 @@ func New${type.name}(
 	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
-    <#if filteredParserArguments?has_content>
-        <#list filteredParserArguments as parserArgument>
-		${parserArgument.name?cap_first}: ${parserArgument.name},
-        </#list>
-    </#if>
     	_${type.parentType.orElseThrow().name}: New${type.parentType.orElseThrow().name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
 	}
 	_result._${type.parentType.orElseThrow().name}._${type.parentType.orElseThrow().name}ChildRequirements = _result

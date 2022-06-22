@@ -46,9 +46,6 @@ type BACnetPriorityValueObjectidentifierExactly interface {
 type _BACnetPriorityValueObjectidentifier struct {
 	*_BACnetPriorityValue
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueObjectidentifier) GetObjectidentifierValue() BACnet
 func NewBACnetPriorityValueObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueObjectidentifier {
 	_result := &_BACnetPriorityValueObjectidentifier{
 		ObjectidentifierValue: objectidentifierValue,
-		ObjectTypeArgument:    objectTypeArgument,
 		_BACnetPriorityValue:  NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

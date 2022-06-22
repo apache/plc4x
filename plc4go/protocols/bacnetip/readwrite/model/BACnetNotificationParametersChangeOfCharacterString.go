@@ -58,10 +58,6 @@ type _BACnetNotificationParametersChangeOfCharacterString struct {
 	StatusFlags     BACnetStatusFlagsTagged
 	AlarmValue      BACnetContextTagCharacterString
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,8 +118,6 @@ func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag BACn
 		StatusFlags:                   statusFlags,
 		AlarmValue:                    alarmValue,
 		InnerClosingTag:               innerClosingTag,
-		TagNumber:                     tagNumber,
-		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

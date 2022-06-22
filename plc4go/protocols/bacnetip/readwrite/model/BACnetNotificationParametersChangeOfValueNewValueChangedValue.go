@@ -46,9 +46,6 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValueExactly interf
 type _BACnetNotificationParametersChangeOfValueNewValueChangedValue struct {
 	*_BACnetNotificationParametersChangeOfValueNewValue
 	ChangedValue BACnetContextTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetChan
 func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedValue BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValueChangedValue {
 	_result := &_BACnetNotificationParametersChangeOfValueNewValueChangedValue{
 		ChangedValue: changedValue,
-		TagNumber:    tagNumber,
 		_BACnetNotificationParametersChangeOfValueNewValue: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetNotificationParametersChangeOfValueNewValue._BACnetNotificationParametersChangeOfValueNewValueChildRequirements = _result

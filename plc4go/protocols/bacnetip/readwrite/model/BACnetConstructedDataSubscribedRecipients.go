@@ -46,10 +46,6 @@ type BACnetConstructedDataSubscribedRecipientsExactly interface {
 type _BACnetConstructedDataSubscribedRecipients struct {
 	*_BACnetConstructedData
 	SubscribedRecipients []BACnetEventNotificationSubscription
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetSubscribedRecipients() [
 func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []BACnetEventNotificationSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubscribedRecipients {
 	_result := &_BACnetConstructedDataSubscribedRecipients{
 		SubscribedRecipients:   subscribedRecipients,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

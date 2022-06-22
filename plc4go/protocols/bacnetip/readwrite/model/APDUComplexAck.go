@@ -73,9 +73,6 @@ type _APDUComplexAck struct {
 	ServiceAck           BACnetServiceAck
 	SegmentServiceChoice *uint8
 	Segment              []byte
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +181,6 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 		ServiceAck:           serviceAck,
 		SegmentServiceChoice: segmentServiceChoice,
 		Segment:              segment,
-		ApduLength:           apduLength,
 		_APDU:                NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

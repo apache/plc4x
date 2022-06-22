@@ -48,10 +48,6 @@ type BACnetConstructedDataDoNotHideExactly interface {
 type _BACnetConstructedDataDoNotHide struct {
 	*_BACnetConstructedData
 	DoNotHide BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDoNotHide) GetActualValue() BACnetApplicationTagB
 func NewBACnetConstructedDataDoNotHide(doNotHide BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoNotHide {
 	_result := &_BACnetConstructedDataDoNotHide{
 		DoNotHide:              doNotHide,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

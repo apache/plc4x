@@ -43,10 +43,6 @@ type BACnetConstructedDataTrendLogAllExactly interface {
 // _BACnetConstructedDataTrendLogAll is the data-structure of this message
 type _BACnetConstructedDataTrendLogAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataTrendLogAll) GetParent() BACnetConstructedData {
 // NewBACnetConstructedDataTrendLogAll factory function for _BACnetConstructedDataTrendLogAll
 func NewBACnetConstructedDataTrendLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogAll {
 	_result := &_BACnetConstructedDataTrendLogAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

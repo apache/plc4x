@@ -43,9 +43,6 @@ type MPropWriteReqExactly interface {
 // _MPropWriteReq is the data-structure of this message
 type _MPropWriteReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_MPropWriteReq) GetParent() CEMI {
 // NewMPropWriteReq factory function for _MPropWriteReq
 func NewMPropWriteReq(size uint16) *_MPropWriteReq {
 	_result := &_MPropWriteReq{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

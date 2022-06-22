@@ -48,10 +48,6 @@ type BACnetConstructedDataAccompanimentExactly interface {
 type _BACnetConstructedDataAccompaniment struct {
 	*_BACnetConstructedData
 	Accompaniment BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccompaniment) GetActualValue() BACnetDeviceObjec
 func NewBACnetConstructedDataAccompaniment(accompaniment BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompaniment {
 	_result := &_BACnetConstructedDataAccompaniment{
 		Accompaniment:          accompaniment,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

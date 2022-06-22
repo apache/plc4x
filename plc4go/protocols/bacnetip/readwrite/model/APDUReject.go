@@ -50,9 +50,6 @@ type _APDUReject struct {
 	*_APDU
 	OriginalInvokeId uint8
 	RejectReason     BACnetRejectReasonTagged
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,7 +95,6 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged
 	_result := &_APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		ApduLength:       apduLength,
 		_APDU:            NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

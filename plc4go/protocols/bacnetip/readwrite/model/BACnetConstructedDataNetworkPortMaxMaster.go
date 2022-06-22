@@ -48,10 +48,6 @@ type BACnetConstructedDataNetworkPortMaxMasterExactly interface {
 type _BACnetConstructedDataNetworkPortMaxMaster struct {
 	*_BACnetConstructedData
 	MaxMaster BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetActualValue() BACnetAppl
 func NewBACnetConstructedDataNetworkPortMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxMaster {
 	_result := &_BACnetConstructedDataNetworkPortMaxMaster{
 		MaxMaster:              maxMaster,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

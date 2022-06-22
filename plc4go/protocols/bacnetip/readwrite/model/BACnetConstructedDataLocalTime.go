@@ -48,10 +48,6 @@ type BACnetConstructedDataLocalTimeExactly interface {
 type _BACnetConstructedDataLocalTime struct {
 	*_BACnetConstructedData
 	LocalTime BACnetApplicationTagTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLocalTime) GetActualValue() BACnetApplicationTagT
 func NewBACnetConstructedDataLocalTime(localTime BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
 	_result := &_BACnetConstructedDataLocalTime{
 		LocalTime:              localTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

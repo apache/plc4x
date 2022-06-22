@@ -46,9 +46,6 @@ type ApduControlContainerExactly interface {
 type _ApduControlContainer struct {
 	*_Apdu
 	ControlApdu ApduControl
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,7 +89,6 @@ func (m *_ApduControlContainer) GetControlApdu() ApduControl {
 func NewApduControlContainer(controlApdu ApduControl, numbered bool, counter uint8, dataLength uint8) *_ApduControlContainer {
 	_result := &_ApduControlContainer{
 		ControlApdu: controlApdu,
-		DataLength:  dataLength,
 		_Apdu:       NewApdu(numbered, counter, dataLength),
 	}
 	_result._Apdu._ApduChildRequirements = _result

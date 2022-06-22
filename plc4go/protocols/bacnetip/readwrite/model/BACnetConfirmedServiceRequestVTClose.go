@@ -48,7 +48,6 @@ type _BACnetConfirmedServiceRequestVTClose struct {
 	ListOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	ServiceRequestLength        uint16
 	ServiceRequestPayloadLength uint16
 }
 
@@ -91,8 +90,6 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetListOfRemoteVtSessionIdentifi
 func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestVTClose {
 	_result := &_BACnetConfirmedServiceRequestVTClose{
 		ListOfRemoteVtSessionIdentifiers: listOfRemoteVtSessionIdentifiers,
-		ServiceRequestLength:             serviceRequestLength,
-		ServiceRequestPayloadLength:      serviceRequestPayloadLength,
 		_BACnetConfirmedServiceRequest:   NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

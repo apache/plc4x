@@ -61,9 +61,6 @@ type _CBusPointToMultiPointCommandStatus struct {
 	Crc           Checksum
 	PeekAlpha     byte
 	Alpha         Alpha
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -130,7 +127,6 @@ func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, crc Chec
 		Crc:                           crc,
 		PeekAlpha:                     peekAlpha,
 		Alpha:                         alpha,
-		Srchk:                         srchk,
 		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, srchk),
 	}
 	_result._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _result

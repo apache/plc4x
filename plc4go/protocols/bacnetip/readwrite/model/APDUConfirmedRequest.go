@@ -82,9 +82,6 @@ type _APDUConfirmedRequest struct {
 	ServiceRequest            BACnetConfirmedServiceRequest
 	SegmentServiceChoice      *uint8
 	Segment                   []byte
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -208,7 +205,6 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 		ServiceRequest:            serviceRequest,
 		SegmentServiceChoice:      segmentServiceChoice,
 		Segment:                   segment,
-		ApduLength:                apduLength,
 		_APDU:                     NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

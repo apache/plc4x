@@ -53,10 +53,6 @@ type _BACnetConstructedDataCharacterStringValueFaultValues struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	FaultValues          []BACnetOptionalCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataCharacterStringValueFaultValues(numberOfDataElement
 	_result := &_BACnetConstructedDataCharacterStringValueFaultValues{
 		NumberOfDataElements:   numberOfDataElements,
 		FaultValues:            faultValues,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

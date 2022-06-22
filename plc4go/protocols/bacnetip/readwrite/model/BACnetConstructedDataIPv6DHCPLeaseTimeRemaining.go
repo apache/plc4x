@@ -48,10 +48,6 @@ type BACnetConstructedDataIPv6DHCPLeaseTimeRemainingExactly interface {
 type _BACnetConstructedDataIPv6DHCPLeaseTimeRemaining struct {
 	*_BACnetConstructedData
 	Ipv6DhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) GetActualValue() BACn
 func NewBACnetConstructedDataIPv6DHCPLeaseTimeRemaining(ipv6DhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining {
 	_result := &_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining{
 		Ipv6DhcpLeaseTimeRemaining: ipv6DhcpLeaseTimeRemaining,
-		TagNumber:                  tagNumber,
-		ArrayIndexArgument:         arrayIndexArgument,
 		_BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

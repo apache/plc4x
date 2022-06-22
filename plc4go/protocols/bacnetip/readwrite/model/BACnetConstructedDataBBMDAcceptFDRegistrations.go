@@ -48,10 +48,6 @@ type BACnetConstructedDataBBMDAcceptFDRegistrationsExactly interface {
 type _BACnetConstructedDataBBMDAcceptFDRegistrations struct {
 	*_BACnetConstructedData
 	BbmdAcceptFDRegistrations BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetActualValue() BACne
 func NewBACnetConstructedDataBBMDAcceptFDRegistrations(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
 	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
 		BbmdAcceptFDRegistrations: bbmdAcceptFDRegistrations,
-		TagNumber:                 tagNumber,
-		ArrayIndexArgument:        arrayIndexArgument,
 		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

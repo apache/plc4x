@@ -48,10 +48,6 @@ type BACnetConstructedDataTimerRunningExactly interface {
 type _BACnetConstructedDataTimerRunning struct {
 	*_BACnetConstructedData
 	TimerRunning BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataTimerRunning) GetActualValue() BACnetApplicationT
 func NewBACnetConstructedDataTimerRunning(timerRunning BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerRunning {
 	_result := &_BACnetConstructedDataTimerRunning{
 		TimerRunning:           timerRunning,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

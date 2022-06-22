@@ -48,10 +48,6 @@ type BACnetConstructedDataMemberStatusFlagsExactly interface {
 type _BACnetConstructedDataMemberStatusFlags struct {
 	*_BACnetConstructedData
 	StatusFlags BACnetStatusFlagsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataMemberStatusFlags) GetActualValue() BACnetStatusF
 func NewBACnetConstructedDataMemberStatusFlags(statusFlags BACnetStatusFlagsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberStatusFlags {
 	_result := &_BACnetConstructedDataMemberStatusFlags{
 		StatusFlags:            statusFlags,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

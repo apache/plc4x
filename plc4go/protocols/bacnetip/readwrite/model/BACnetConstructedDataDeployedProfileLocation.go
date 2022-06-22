@@ -48,10 +48,6 @@ type BACnetConstructedDataDeployedProfileLocationExactly interface {
 type _BACnetConstructedDataDeployedProfileLocation struct {
 	*_BACnetConstructedData
 	DeployedProfileLocation BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetActualValue() BACnetA
 func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
 	_result := &_BACnetConstructedDataDeployedProfileLocation{
 		DeployedProfileLocation: deployedProfileLocation,
-		TagNumber:               tagNumber,
-		ArrayIndexArgument:      arrayIndexArgument,
 		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

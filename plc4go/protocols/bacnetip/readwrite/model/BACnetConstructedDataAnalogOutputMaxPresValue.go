@@ -48,10 +48,6 @@ type BACnetConstructedDataAnalogOutputMaxPresValueExactly interface {
 type _BACnetConstructedDataAnalogOutputMaxPresValue struct {
 	*_BACnetConstructedData
 	MaxPresValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAnalogOutputMaxPresValue) GetActualValue() BACnet
 func NewBACnetConstructedDataAnalogOutputMaxPresValue(maxPresValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogOutputMaxPresValue {
 	_result := &_BACnetConstructedDataAnalogOutputMaxPresValue{
 		MaxPresValue:           maxPresValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

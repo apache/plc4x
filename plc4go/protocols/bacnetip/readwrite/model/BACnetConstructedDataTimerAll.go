@@ -43,10 +43,6 @@ type BACnetConstructedDataTimerAllExactly interface {
 // _BACnetConstructedDataTimerAll is the data-structure of this message
 type _BACnetConstructedDataTimerAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataTimerAll) GetParent() BACnetConstructedData {
 // NewBACnetConstructedDataTimerAll factory function for _BACnetConstructedDataTimerAll
 func NewBACnetConstructedDataTimerAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerAll {
 	_result := &_BACnetConstructedDataTimerAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

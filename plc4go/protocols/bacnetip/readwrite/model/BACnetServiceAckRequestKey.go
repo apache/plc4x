@@ -48,7 +48,6 @@ type _BACnetServiceAckRequestKey struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckLength        uint16
 	ServiceAckPayloadLength uint16
 }
 
@@ -89,10 +88,8 @@ func (m *_BACnetServiceAckRequestKey) GetBytesOfRemovedService() []byte {
 // NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
 func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckRequestKey {
 	_result := &_BACnetServiceAckRequestKey{
-		BytesOfRemovedService:   bytesOfRemovedService,
-		ServiceAckLength:        serviceAckLength,
-		ServiceAckPayloadLength: serviceAckPayloadLength,
-		_BACnetServiceAck:       NewBACnetServiceAck(serviceAckLength),
+		BytesOfRemovedService: bytesOfRemovedService,
+		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
 	return _result

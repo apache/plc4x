@@ -43,9 +43,6 @@ type ApduDataExtNetworkParameterWriteExactly interface {
 // _ApduDataExtNetworkParameterWrite is the data-structure of this message
 type _ApduDataExtNetworkParameterWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtNetworkParameterWrite) GetParent() ApduDataExt {
 // NewApduDataExtNetworkParameterWrite factory function for _ApduDataExtNetworkParameterWrite
 func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParameterWrite {
 	_result := &_ApduDataExtNetworkParameterWrite{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

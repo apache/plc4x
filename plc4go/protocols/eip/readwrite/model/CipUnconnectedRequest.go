@@ -57,9 +57,6 @@ type _CipUnconnectedRequest struct {
 	UnconnectedService CipService
 	BackPlane          int8
 	Slot               int8
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -123,7 +120,6 @@ func NewCipUnconnectedRequest(unconnectedService CipService, backPlane int8, slo
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		ServiceLen:         serviceLen,
 		_CipService:        NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

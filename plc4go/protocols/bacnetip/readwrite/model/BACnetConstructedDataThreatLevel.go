@@ -48,10 +48,6 @@ type BACnetConstructedDataThreatLevelExactly interface {
 type _BACnetConstructedDataThreatLevel struct {
 	*_BACnetConstructedData
 	ThreatLevel BACnetAccessThreatLevel
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataThreatLevel) GetActualValue() BACnetAccessThreatL
 func NewBACnetConstructedDataThreatLevel(threatLevel BACnetAccessThreatLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
 	_result := &_BACnetConstructedDataThreatLevel{
 		ThreatLevel:            threatLevel,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -43,9 +43,6 @@ type ApduDataExtMemoryBitWriteExactly interface {
 // _ApduDataExtMemoryBitWrite is the data-structure of this message
 type _ApduDataExtMemoryBitWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtMemoryBitWrite) GetParent() ApduDataExt {
 // NewApduDataExtMemoryBitWrite factory function for _ApduDataExtMemoryBitWrite
 func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
 	_result := &_ApduDataExtMemoryBitWrite{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

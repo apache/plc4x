@@ -51,9 +51,6 @@ type MultipleServiceRequestExactly interface {
 type _MultipleServiceRequest struct {
 	*_CipService
 	Data Services
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,7 +108,6 @@ func (m *_MultipleServiceRequest) GetRequestPath() uint32 {
 func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
 	_result := &_MultipleServiceRequest{
 		Data:        data,
-		ServiceLen:  serviceLen,
 		_CipService: NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

@@ -46,9 +46,6 @@ type BACnetPriorityValueOctetStringExactly interface {
 type _BACnetPriorityValueOctetString struct {
 	*_BACnetPriorityValue
 	OctetStringValue BACnetApplicationTagOctetString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueOctetString) GetOctetStringValue() BACnetApplicatio
 func NewBACnetPriorityValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
 	_result := &_BACnetPriorityValueOctetString{
 		OctetStringValue:     octetStringValue,
-		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

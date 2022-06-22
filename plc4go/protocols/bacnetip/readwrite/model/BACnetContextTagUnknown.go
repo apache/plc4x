@@ -48,8 +48,7 @@ type _BACnetContextTagUnknown struct {
 	UnknownData []byte
 
 	// Arguments.
-	TagNumberArgument uint8
-	ActualLength      uint32
+	ActualLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,8 +91,6 @@ func (m *_BACnetContextTagUnknown) GetUnknownData() []byte {
 func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, tagNumberArgument uint8, actualLength uint32) *_BACnetContextTagUnknown {
 	_result := &_BACnetContextTagUnknown{
 		UnknownData:       unknownData,
-		TagNumberArgument: tagNumberArgument,
-		ActualLength:      actualLength,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

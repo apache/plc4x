@@ -53,10 +53,6 @@ type _BACnetConstructedDataNetworkAccessSecurityPolicies struct {
 	*_BACnetConstructedData
 	NumberOfDataElements          BACnetApplicationTagUnsignedInteger
 	NetworkAccessSecurityPolicies []BACnetNetworkSecurityPolicy
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataNetworkAccessSecurityPolicies(numberOfDataElements 
 	_result := &_BACnetConstructedDataNetworkAccessSecurityPolicies{
 		NumberOfDataElements:          numberOfDataElements,
 		NetworkAccessSecurityPolicies: networkAccessSecurityPolicies,
-		TagNumber:                     tagNumber,
-		ArrayIndexArgument:            arrayIndexArgument,
 		_BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

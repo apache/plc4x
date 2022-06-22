@@ -48,10 +48,6 @@ type BACnetConstructedDataEventEnableExactly interface {
 type _BACnetConstructedDataEventEnable struct {
 	*_BACnetConstructedData
 	EventEnable BACnetEventTransitionBitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataEventEnable) GetActualValue() BACnetEventTransiti
 func NewBACnetConstructedDataEventEnable(eventEnable BACnetEventTransitionBitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnable {
 	_result := &_BACnetConstructedDataEventEnable{
 		EventEnable:            eventEnable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

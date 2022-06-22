@@ -46,11 +46,6 @@ type BACnetPropertyAccessResultAccessResultPropertyAccessErrorExactly interface 
 type _BACnetPropertyAccessResultAccessResultPropertyAccessError struct {
 	*_BACnetPropertyAccessResultAccessResult
 	PropertyAccessError ErrorEnclosed
-
-	// Arguments.
-	ObjectTypeArgument         BACnetObjectType
-	PropertyIdentifierArgument BACnetPropertyIdentifier
-	PropertyArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,9 +84,6 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetProperty
 func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(propertyAccessError ErrorEnclosed, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyAccessError {
 	_result := &_BACnetPropertyAccessResultAccessResultPropertyAccessError{
 		PropertyAccessError:                     propertyAccessError,
-		ObjectTypeArgument:                      objectTypeArgument,
-		PropertyIdentifierArgument:              propertyIdentifierArgument,
-		PropertyArrayIndexArgument:              propertyArrayIndexArgument,
 		_BACnetPropertyAccessResultAccessResult: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
 	}
 	_result._BACnetPropertyAccessResultAccessResult._BACnetPropertyAccessResultAccessResultChildRequirements = _result

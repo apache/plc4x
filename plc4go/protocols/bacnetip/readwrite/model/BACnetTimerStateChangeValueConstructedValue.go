@@ -46,9 +46,6 @@ type BACnetTimerStateChangeValueConstructedValueExactly interface {
 type _BACnetTimerStateChangeValueConstructedValue struct {
 	*_BACnetTimerStateChangeValue
 	ConstructedValue BACnetConstructedData
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) GetConstructedValue() BAC
 func NewBACnetTimerStateChangeValueConstructedValue(constructedValue BACnetConstructedData, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueConstructedValue {
 	_result := &_BACnetTimerStateChangeValueConstructedValue{
 		ConstructedValue:             constructedValue,
-		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

@@ -46,9 +46,6 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerExactly interface {
 type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger struct {
 	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	IntegerValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetIntegerVa
 func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(integerValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger{
 		IntegerValue: integerValue,
-		TagNumber:    tagNumber,
 		_BACnetFaultParameterFaultOutOfRangeMaxNormalValue: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetFaultParameterFaultOutOfRangeMaxNormalValue._BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildRequirements = _result

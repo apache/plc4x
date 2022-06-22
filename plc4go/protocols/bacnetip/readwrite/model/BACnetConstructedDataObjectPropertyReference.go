@@ -48,10 +48,6 @@ type BACnetConstructedDataObjectPropertyReferenceExactly interface {
 type _BACnetConstructedDataObjectPropertyReference struct {
 	*_BACnetConstructedData
 	PropertyReference BACnetDeviceObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataObjectPropertyReference) GetActualValue() BACnetD
 func NewBACnetConstructedDataObjectPropertyReference(propertyReference BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectPropertyReference {
 	_result := &_BACnetConstructedDataObjectPropertyReference{
 		PropertyReference:      propertyReference,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

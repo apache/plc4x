@@ -48,10 +48,6 @@ type BACnetConstructedDataSetpointExactly interface {
 type _BACnetConstructedDataSetpoint struct {
 	*_BACnetConstructedData
 	Setpoint BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataSetpoint) GetActualValue() BACnetApplicationTagRe
 func NewBACnetConstructedDataSetpoint(setpoint BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpoint {
 	_result := &_BACnetConstructedDataSetpoint{
 		Setpoint:               setpoint,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataMinimumOnTimeExactly interface {
 type _BACnetConstructedDataMinimumOnTime struct {
 	*_BACnetConstructedData
 	MinimumOnTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataMinimumOnTime(minimumOnTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
 	_result := &_BACnetConstructedDataMinimumOnTime{
 		MinimumOnTime:          minimumOnTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

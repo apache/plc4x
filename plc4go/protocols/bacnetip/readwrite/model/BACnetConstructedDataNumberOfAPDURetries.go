@@ -48,10 +48,6 @@ type BACnetConstructedDataNumberOfAPDURetriesExactly interface {
 type _BACnetConstructedDataNumberOfAPDURetries struct {
 	*_BACnetConstructedData
 	NumberOfApduRetries BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
 	_result := &_BACnetConstructedDataNumberOfAPDURetries{
 		NumberOfApduRetries:    numberOfApduRetries,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

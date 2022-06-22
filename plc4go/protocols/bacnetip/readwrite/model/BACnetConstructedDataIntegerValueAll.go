@@ -43,10 +43,6 @@ type BACnetConstructedDataIntegerValueAllExactly interface {
 // _BACnetConstructedDataIntegerValueAll is the data-structure of this message
 type _BACnetConstructedDataIntegerValueAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataIntegerValueAll) GetParent() BACnetConstructedDat
 // NewBACnetConstructedDataIntegerValueAll factory function for _BACnetConstructedDataIntegerValueAll
 func NewBACnetConstructedDataIntegerValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueAll {
 	_result := &_BACnetConstructedDataIntegerValueAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

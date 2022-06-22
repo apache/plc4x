@@ -48,10 +48,6 @@ type BACnetConstructedDataProtocolObjectTypesSupportedExactly interface {
 type _BACnetConstructedDataProtocolObjectTypesSupported struct {
 	*_BACnetConstructedData
 	ProtocolObjectTypesSupported BACnetObjectTypesSupportedTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetActualValue() BA
 func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
 	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
 		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
-		TagNumber:                    tagNumber,
-		ArrayIndexArgument:           arrayIndexArgument,
 		_BACnetConstructedData:       NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

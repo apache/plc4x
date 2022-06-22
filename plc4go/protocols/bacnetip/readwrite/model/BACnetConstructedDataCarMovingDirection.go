@@ -48,10 +48,6 @@ type BACnetConstructedDataCarMovingDirectionExactly interface {
 type _BACnetConstructedDataCarMovingDirection struct {
 	*_BACnetConstructedData
 	CarMovingDirection BACnetLiftCarDirectionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataCarMovingDirection) GetActualValue() BACnetLiftCa
 func NewBACnetConstructedDataCarMovingDirection(carMovingDirection BACnetLiftCarDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarMovingDirection {
 	_result := &_BACnetConstructedDataCarMovingDirection{
 		CarMovingDirection:     carMovingDirection,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

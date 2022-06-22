@@ -49,9 +49,6 @@ type _ApduDataExtAuthorizeRequest struct {
 	*_ApduDataExt
 	Level uint8
 	Data  []byte
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *_Ap
 	_result := &_ApduDataExtAuthorizeRequest{
 		Level:        level,
 		Data:         data,
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

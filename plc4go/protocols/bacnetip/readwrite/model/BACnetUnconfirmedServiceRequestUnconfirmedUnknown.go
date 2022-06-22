@@ -46,9 +46,6 @@ type BACnetUnconfirmedServiceRequestUnconfirmedUnknownExactly interface {
 type _BACnetUnconfirmedServiceRequestUnconfirmedUnknown struct {
 	*_BACnetUnconfirmedServiceRequest
 	UnknownBytes []byte
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,7 +87,6 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedUnknown) GetUnknownBytes() [
 func NewBACnetUnconfirmedServiceRequestUnconfirmedUnknown(unknownBytes []byte, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedUnknown {
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedUnknown{
 		UnknownBytes:                     unknownBytes,
-		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

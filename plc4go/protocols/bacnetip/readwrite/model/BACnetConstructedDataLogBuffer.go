@@ -53,10 +53,6 @@ type _BACnetConstructedDataLogBuffer struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	FloorText            []BACnetLogRecord
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataLogBuffer(numberOfDataElements BACnetApplicationTag
 	_result := &_BACnetConstructedDataLogBuffer{
 		NumberOfDataElements:   numberOfDataElements,
 		FloorText:              floorText,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

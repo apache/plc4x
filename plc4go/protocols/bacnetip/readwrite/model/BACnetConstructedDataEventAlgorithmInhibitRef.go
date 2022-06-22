@@ -48,10 +48,6 @@ type BACnetConstructedDataEventAlgorithmInhibitRefExactly interface {
 type _BACnetConstructedDataEventAlgorithmInhibitRef struct {
 	*_BACnetConstructedData
 	EventAlgorithmInhibitRef BACnetObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetActualValue() BACnet
 func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
 	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
 		EventAlgorithmInhibitRef: eventAlgorithmInhibitRef,
-		TagNumber:                tagNumber,
-		ArrayIndexArgument:       arrayIndexArgument,
 		_BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

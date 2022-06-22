@@ -48,10 +48,6 @@ type BACnetConstructedDataAccessEventAuthenticationFactorExactly interface {
 type _BACnetConstructedDataAccessEventAuthenticationFactor struct {
 	*_BACnetConstructedData
 	AccessEventAuthenticationFactor BACnetAuthenticationFactor
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetActualValue()
 func NewBACnetConstructedDataAccessEventAuthenticationFactor(accessEventAuthenticationFactor BACnetAuthenticationFactor, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventAuthenticationFactor {
 	_result := &_BACnetConstructedDataAccessEventAuthenticationFactor{
 		AccessEventAuthenticationFactor: accessEventAuthenticationFactor,
-		TagNumber:                       tagNumber,
-		ArrayIndexArgument:              arrayIndexArgument,
 		_BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

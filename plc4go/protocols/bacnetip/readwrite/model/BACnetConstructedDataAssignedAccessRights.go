@@ -53,10 +53,6 @@ type _BACnetConstructedDataAssignedAccessRights struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	AssignedAccessRights []BACnetAssignedAccessRights
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataAssignedAccessRights(numberOfDataElements BACnetApp
 	_result := &_BACnetConstructedDataAssignedAccessRights{
 		NumberOfDataElements:   numberOfDataElements,
 		AssignedAccessRights:   assignedAccessRights,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

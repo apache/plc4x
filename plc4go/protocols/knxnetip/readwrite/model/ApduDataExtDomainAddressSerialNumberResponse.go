@@ -43,9 +43,6 @@ type ApduDataExtDomainAddressSerialNumberResponseExactly interface {
 // _ApduDataExtDomainAddressSerialNumberResponse is the data-structure of this message
 type _ApduDataExtDomainAddressSerialNumberResponse struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtDomainAddressSerialNumberResponse) GetParent() ApduDataExt 
 // NewApduDataExtDomainAddressSerialNumberResponse factory function for _ApduDataExtDomainAddressSerialNumberResponse
 func NewApduDataExtDomainAddressSerialNumberResponse(length uint8) *_ApduDataExtDomainAddressSerialNumberResponse {
 	_result := &_ApduDataExtDomainAddressSerialNumberResponse{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

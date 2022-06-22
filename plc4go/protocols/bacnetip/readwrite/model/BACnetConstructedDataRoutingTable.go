@@ -46,10 +46,6 @@ type BACnetConstructedDataRoutingTableExactly interface {
 type _BACnetConstructedDataRoutingTable struct {
 	*_BACnetConstructedData
 	RoutingTable []BACnetRouterEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataRoutingTable) GetRoutingTable() []BACnetRouterEnt
 func NewBACnetConstructedDataRoutingTable(routingTable []BACnetRouterEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRoutingTable {
 	_result := &_BACnetConstructedDataRoutingTable{
 		RoutingTable:           routingTable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -53,10 +53,6 @@ type _BACnetConstructedDataRegisteredCarCall struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	RegisteredCarCall    []BACnetLiftCarCallList
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataRegisteredCarCall(numberOfDataElements BACnetApplic
 	_result := &_BACnetConstructedDataRegisteredCarCall{
 		NumberOfDataElements:   numberOfDataElements,
 		RegisteredCarCall:      registeredCarCall,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataPriorityForWritingExactly interface {
 type _BACnetConstructedDataPriorityForWriting struct {
 	*_BACnetConstructedData
 	PriorityForWriting BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataPriorityForWriting) GetActualValue() BACnetApplic
 func NewBACnetConstructedDataPriorityForWriting(priorityForWriting BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityForWriting {
 	_result := &_BACnetConstructedDataPriorityForWriting{
 		PriorityForWriting:     priorityForWriting,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

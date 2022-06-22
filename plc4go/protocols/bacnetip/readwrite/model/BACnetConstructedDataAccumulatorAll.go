@@ -43,10 +43,6 @@ type BACnetConstructedDataAccumulatorAllExactly interface {
 // _BACnetConstructedDataAccumulatorAll is the data-structure of this message
 type _BACnetConstructedDataAccumulatorAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataAccumulatorAll) GetParent() BACnetConstructedData
 // NewBACnetConstructedDataAccumulatorAll factory function for _BACnetConstructedDataAccumulatorAll
 func NewBACnetConstructedDataAccumulatorAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorAll {
 	_result := &_BACnetConstructedDataAccumulatorAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

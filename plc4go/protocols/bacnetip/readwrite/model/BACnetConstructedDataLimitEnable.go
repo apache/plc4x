@@ -48,10 +48,6 @@ type BACnetConstructedDataLimitEnableExactly interface {
 type _BACnetConstructedDataLimitEnable struct {
 	*_BACnetConstructedData
 	LimitEnable BACnetLimitEnableTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLimitEnable) GetActualValue() BACnetLimitEnableTa
 func NewBACnetConstructedDataLimitEnable(limitEnable BACnetLimitEnableTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitEnable {
 	_result := &_BACnetConstructedDataLimitEnable{
 		LimitEnable:            limitEnable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

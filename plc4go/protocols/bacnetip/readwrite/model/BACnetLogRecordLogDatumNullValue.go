@@ -46,9 +46,6 @@ type BACnetLogRecordLogDatumNullValueExactly interface {
 type _BACnetLogRecordLogDatumNullValue struct {
 	*_BACnetLogRecordLogDatum
 	NullValue BACnetContextTagNull
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetLogRecordLogDatumNullValue) GetNullValue() BACnetContextTagNull 
 func NewBACnetLogRecordLogDatumNullValue(nullValue BACnetContextTagNull, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumNullValue {
 	_result := &_BACnetLogRecordLogDatumNullValue{
 		NullValue:                nullValue,
-		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

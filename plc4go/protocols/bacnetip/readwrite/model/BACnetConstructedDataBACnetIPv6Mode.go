@@ -48,10 +48,6 @@ type BACnetConstructedDataBACnetIPv6ModeExactly interface {
 type _BACnetConstructedDataBACnetIPv6Mode struct {
 	*_BACnetConstructedData
 	BacnetIpv6Mode BACnetIPModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) GetActualValue() BACnetIPModeTagg
 func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode BACnetIPModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6Mode {
 	_result := &_BACnetConstructedDataBACnetIPv6Mode{
 		BacnetIpv6Mode:         bacnetIpv6Mode,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

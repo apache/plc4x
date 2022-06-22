@@ -48,10 +48,6 @@ type BACnetConstructedDataStrikeCountExactly interface {
 type _BACnetConstructedDataStrikeCount struct {
 	*_BACnetConstructedData
 	StrikeCount BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataStrikeCount) GetActualValue() BACnetApplicationTa
 func NewBACnetConstructedDataStrikeCount(strikeCount BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStrikeCount {
 	_result := &_BACnetConstructedDataStrikeCount{
 		StrikeCount:            strikeCount,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

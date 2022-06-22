@@ -43,9 +43,6 @@ type BACnetContextTagNullExactly interface {
 // _BACnetContextTagNull is the data-structure of this message
 type _BACnetContextTagNull struct {
 	*_BACnetContextTag
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,7 +70,6 @@ func (m *_BACnetContextTagNull) GetParent() BACnetContextTag {
 // NewBACnetContextTagNull factory function for _BACnetContextTagNull
 func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
 	_result := &_BACnetContextTagNull{
-		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

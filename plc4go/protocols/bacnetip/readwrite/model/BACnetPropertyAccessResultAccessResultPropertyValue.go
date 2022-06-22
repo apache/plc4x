@@ -46,11 +46,6 @@ type BACnetPropertyAccessResultAccessResultPropertyValueExactly interface {
 type _BACnetPropertyAccessResultAccessResultPropertyValue struct {
 	*_BACnetPropertyAccessResultAccessResult
 	PropertyValue BACnetConstructedData
-
-	// Arguments.
-	ObjectTypeArgument         BACnetObjectType
-	PropertyIdentifierArgument BACnetPropertyIdentifier
-	PropertyArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,9 +84,6 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetPropertyValue(
 func NewBACnetPropertyAccessResultAccessResultPropertyValue(propertyValue BACnetConstructedData, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
 	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
 		PropertyValue:                           propertyValue,
-		ObjectTypeArgument:                      objectTypeArgument,
-		PropertyIdentifierArgument:              propertyIdentifierArgument,
-		PropertyArrayIndexArgument:              propertyArrayIndexArgument,
 		_BACnetPropertyAccessResultAccessResult: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
 	}
 	_result._BACnetPropertyAccessResultAccessResult._BACnetPropertyAccessResultAccessResultChildRequirements = _result

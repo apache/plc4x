@@ -48,10 +48,6 @@ type BACnetConstructedDataAccessDoorRelinquishDefaultExactly interface {
 type _BACnetConstructedDataAccessDoorRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetDoorValueTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) GetActualValue() BAC
 func NewBACnetConstructedDataAccessDoorRelinquishDefault(relinquishDefault BACnetDoorValueTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorRelinquishDefault {
 	_result := &_BACnetConstructedDataAccessDoorRelinquishDefault{
 		RelinquishDefault:      relinquishDefault,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -46,9 +46,6 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerExactly int
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	IntegerValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) GetI
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger(integerValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger {
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger{
 		IntegerValue: integerValue,
-		TagNumber:    tagNumber,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _result

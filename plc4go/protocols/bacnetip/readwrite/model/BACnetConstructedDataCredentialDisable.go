@@ -48,10 +48,6 @@ type BACnetConstructedDataCredentialDisableExactly interface {
 type _BACnetConstructedDataCredentialDisable struct {
 	*_BACnetConstructedData
 	CredentialDisable BACnetAccessCredentialDisableTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataCredentialDisable) GetActualValue() BACnetAccessC
 func NewBACnetConstructedDataCredentialDisable(credentialDisable BACnetAccessCredentialDisableTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
 	_result := &_BACnetConstructedDataCredentialDisable{
 		CredentialDisable:      credentialDisable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataBACnetIPv6MulticastAddressExactly interface {
 type _BACnetConstructedDataBACnetIPv6MulticastAddress struct {
 	*_BACnetConstructedData
 	Ipv6MulticastAddress BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetActualValue() BACn
 func NewBACnetConstructedDataBACnetIPv6MulticastAddress(ipv6MulticastAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6MulticastAddress {
 	_result := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
 		Ipv6MulticastAddress:   ipv6MulticastAddress,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

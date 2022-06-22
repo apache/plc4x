@@ -53,10 +53,6 @@ type _BACnetConstructedDataAuthenticationPolicyNames struct {
 	*_BACnetConstructedData
 	NumberOfDataElements      BACnetApplicationTagUnsignedInteger
 	AuthenticationPolicyNames []BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataAuthenticationPolicyNames(numberOfDataElements BACn
 	_result := &_BACnetConstructedDataAuthenticationPolicyNames{
 		NumberOfDataElements:      numberOfDataElements,
 		AuthenticationPolicyNames: authenticationPolicyNames,
-		TagNumber:                 tagNumber,
-		ArrayIndexArgument:        arrayIndexArgument,
 		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

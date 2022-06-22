@@ -60,9 +60,6 @@ type _BACnetConfirmedServiceRequestWriteProperty struct {
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	PropertyValue      BACnetConstructedData
 	Priority           BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -124,7 +121,6 @@ func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier BACnetContex
 		ArrayIndex:                     arrayIndex,
 		PropertyValue:                  propertyValue,
 		Priority:                       priority,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

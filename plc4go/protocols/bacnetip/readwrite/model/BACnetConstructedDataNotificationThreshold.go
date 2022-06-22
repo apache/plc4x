@@ -48,10 +48,6 @@ type BACnetConstructedDataNotificationThresholdExactly interface {
 type _BACnetConstructedDataNotificationThreshold struct {
 	*_BACnetConstructedData
 	NotificationThreshold BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetActualValue() BACnetApp
 func NewBACnetConstructedDataNotificationThreshold(notificationThreshold BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
 	_result := &_BACnetConstructedDataNotificationThreshold{
 		NotificationThreshold:  notificationThreshold,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

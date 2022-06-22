@@ -57,9 +57,6 @@ type _BACnetConfirmedServiceRequestRemoveListElement struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	ListOfElements     BACnetConstructedData
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,7 +113,6 @@ func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier BACnetCo
 		PropertyIdentifier:             propertyIdentifier,
 		ArrayIndex:                     arrayIndex,
 		ListOfElements:                 listOfElements,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

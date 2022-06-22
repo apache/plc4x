@@ -46,9 +46,6 @@ type BACnetPriorityValueBooleanExactly interface {
 type _BACnetPriorityValueBoolean struct {
 	*_BACnetPriorityValue
 	BooleanValue BACnetApplicationTagBoolean
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueBoolean) GetBooleanValue() BACnetApplicationTagBool
 func NewBACnetPriorityValueBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
 	_result := &_BACnetPriorityValueBoolean{
 		BooleanValue:         booleanValue,
-		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

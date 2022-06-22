@@ -46,10 +46,6 @@ type BACnetConstructedDataListOfObjectPropertyReferencesExactly interface {
 type _BACnetConstructedDataListOfObjectPropertyReferences struct {
 	*_BACnetConstructedData
 	References []BACnetDeviceObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) GetReferences() [
 func NewBACnetConstructedDataListOfObjectPropertyReferences(references []BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfObjectPropertyReferences {
 	_result := &_BACnetConstructedDataListOfObjectPropertyReferences{
 		References:             references,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

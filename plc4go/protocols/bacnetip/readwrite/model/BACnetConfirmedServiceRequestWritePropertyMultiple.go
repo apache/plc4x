@@ -48,7 +48,6 @@ type _BACnetConfirmedServiceRequestWritePropertyMultiple struct {
 	Data []BACnetWriteAccessSpecification
 
 	// Arguments.
-	ServiceRequestLength        uint16
 	ServiceRequestPayloadLength uint16
 }
 
@@ -91,8 +90,6 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetData() []BACnet
 func NewBACnetConfirmedServiceRequestWritePropertyMultiple(data []BACnetWriteAccessSpecification, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestWritePropertyMultiple {
 	_result := &_BACnetConfirmedServiceRequestWritePropertyMultiple{
 		Data:                           data,
-		ServiceRequestLength:           serviceRequestLength,
-		ServiceRequestPayloadLength:    serviceRequestPayloadLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

@@ -46,9 +46,6 @@ type BACnetPriorityValueNullExactly interface {
 type _BACnetPriorityValueNull struct {
 	*_BACnetPriorityValue
 	NullValue BACnetApplicationTagNull
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueNull) GetNullValue() BACnetApplicationTagNull {
 func NewBACnetPriorityValueNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
 	_result := &_BACnetPriorityValueNull{
 		NullValue:            nullValue,
-		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

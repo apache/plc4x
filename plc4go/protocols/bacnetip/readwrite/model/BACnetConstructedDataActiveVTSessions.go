@@ -46,10 +46,6 @@ type BACnetConstructedDataActiveVTSessionsExactly interface {
 type _BACnetConstructedDataActiveVTSessions struct {
 	*_BACnetConstructedData
 	ActiveVTSession []BACnetVTSession
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetActiveVTSession() []BACnetVT
 func NewBACnetConstructedDataActiveVTSessions(activeVTSession []BACnetVTSession, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
 	_result := &_BACnetConstructedDataActiveVTSessions{
 		ActiveVTSession:        activeVTSession,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

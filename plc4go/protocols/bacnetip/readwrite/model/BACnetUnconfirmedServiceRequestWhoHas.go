@@ -57,9 +57,6 @@ type _BACnetUnconfirmedServiceRequestWhoHas struct {
 	DeviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger
 	ObjectIdentifier             BACnetContextTagObjectIdentifier
 	ObjectName                   BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,7 +113,6 @@ func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnet
 		DeviceInstanceRangeHighLimit:     deviceInstanceRangeHighLimit,
 		ObjectIdentifier:                 objectIdentifier,
 		ObjectName:                       objectName,
-		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

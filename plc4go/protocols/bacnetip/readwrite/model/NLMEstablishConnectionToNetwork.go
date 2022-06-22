@@ -49,9 +49,6 @@ type _NLMEstablishConnectionToNetwork struct {
 	*_NLM
 	DestinationNetworkAddress uint16
 	TerminationTime           uint8
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,7 +96,6 @@ func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, termin
 	_result := &_NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
-		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

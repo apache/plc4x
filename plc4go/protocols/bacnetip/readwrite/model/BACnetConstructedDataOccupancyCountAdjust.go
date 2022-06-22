@@ -48,10 +48,6 @@ type BACnetConstructedDataOccupancyCountAdjustExactly interface {
 type _BACnetConstructedDataOccupancyCountAdjust struct {
 	*_BACnetConstructedData
 	OccupancyCountAdjust BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataOccupancyCountAdjust) GetActualValue() BACnetAppl
 func NewBACnetConstructedDataOccupancyCountAdjust(occupancyCountAdjust BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountAdjust {
 	_result := &_BACnetConstructedDataOccupancyCountAdjust{
 		OccupancyCountAdjust:   occupancyCountAdjust,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

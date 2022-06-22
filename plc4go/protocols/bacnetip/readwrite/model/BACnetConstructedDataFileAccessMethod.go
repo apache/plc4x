@@ -48,10 +48,6 @@ type BACnetConstructedDataFileAccessMethodExactly interface {
 type _BACnetConstructedDataFileAccessMethod struct {
 	*_BACnetConstructedData
 	FileAccessMethod BACnetFileAccessMethodTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetActualValue() BACnetFileAcce
 func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
 	_result := &_BACnetConstructedDataFileAccessMethod{
 		FileAccessMethod:       fileAccessMethod,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

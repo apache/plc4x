@@ -43,9 +43,6 @@ type ApduDataExtGroupPropertyValueWriteExactly interface {
 // _ApduDataExtGroupPropertyValueWrite is the data-structure of this message
 type _ApduDataExtGroupPropertyValueWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtGroupPropertyValueWrite) GetParent() ApduDataExt {
 // NewApduDataExtGroupPropertyValueWrite factory function for _ApduDataExtGroupPropertyValueWrite
 func NewApduDataExtGroupPropertyValueWrite(length uint8) *_ApduDataExtGroupPropertyValueWrite {
 	_result := &_ApduDataExtGroupPropertyValueWrite{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

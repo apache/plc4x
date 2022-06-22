@@ -46,9 +46,6 @@ type BACnetTimerStateChangeValueBitStringExactly interface {
 type _BACnetTimerStateChangeValueBitString struct {
 	*_BACnetTimerStateChangeValue
 	BitStringValue BACnetApplicationTagBitString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetTimerStateChangeValueBitString) GetBitStringValue() BACnetApplic
 func NewBACnetTimerStateChangeValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueBitString {
 	_result := &_BACnetTimerStateChangeValueBitString{
 		BitStringValue:               bitStringValue,
-		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

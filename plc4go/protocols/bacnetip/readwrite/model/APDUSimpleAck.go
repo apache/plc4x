@@ -50,9 +50,6 @@ type _APDUSimpleAck struct {
 	*_APDU
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,7 +95,6 @@ func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8, apduLength ui
 	_result := &_APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		ApduLength:       apduLength,
 		_APDU:            NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

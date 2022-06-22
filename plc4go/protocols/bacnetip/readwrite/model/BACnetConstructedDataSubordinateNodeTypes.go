@@ -53,10 +53,6 @@ type _BACnetConstructedDataSubordinateNodeTypes struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	SubordinateNodeTypes []BACnetNodeTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataSubordinateNodeTypes(numberOfDataElements BACnetApp
 	_result := &_BACnetConstructedDataSubordinateNodeTypes{
 		NumberOfDataElements:   numberOfDataElements,
 		SubordinateNodeTypes:   subordinateNodeTypes,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

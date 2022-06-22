@@ -46,9 +46,6 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeExactly in
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	DateTimeValue BACnetDateTimeEnclosed
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Get
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime(dateTimeValue BACnetDateTimeEnclosed, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{
 		DateTimeValue: dateTimeValue,
-		TagNumber:     tagNumber,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _result

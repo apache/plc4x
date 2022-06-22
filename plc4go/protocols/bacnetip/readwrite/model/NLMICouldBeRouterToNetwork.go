@@ -49,9 +49,6 @@ type _NLMICouldBeRouterToNetwork struct {
 	*_NLM
 	DestinationNetworkAddress uint16
 	PerformanceIndex          uint8
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,7 +96,6 @@ func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performance
 	_result := &_NLMICouldBeRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
-		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

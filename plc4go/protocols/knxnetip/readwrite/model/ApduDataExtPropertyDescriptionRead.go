@@ -52,9 +52,6 @@ type _ApduDataExtPropertyDescriptionRead struct {
 	ObjectIndex uint8
 	PropertyId  uint8
 	Index       uint8
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,7 +102,6 @@ func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, 
 		ObjectIndex:  objectIndex,
 		PropertyId:   propertyId,
 		Index:        index,
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

@@ -46,10 +46,6 @@ type BACnetConstructedDataLandingCallsExactly interface {
 type _BACnetConstructedDataLandingCalls struct {
 	*_BACnetConstructedData
 	LandingCallStatus []BACnetLandingCallStatus
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataLandingCalls) GetLandingCallStatus() []BACnetLand
 func NewBACnetConstructedDataLandingCalls(landingCallStatus []BACnetLandingCallStatus, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCalls {
 	_result := &_BACnetConstructedDataLandingCalls{
 		LandingCallStatus:      landingCallStatus,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

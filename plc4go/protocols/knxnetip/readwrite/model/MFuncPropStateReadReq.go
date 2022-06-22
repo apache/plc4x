@@ -43,9 +43,6 @@ type MFuncPropStateReadReqExactly interface {
 // _MFuncPropStateReadReq is the data-structure of this message
 type _MFuncPropStateReadReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_MFuncPropStateReadReq) GetParent() CEMI {
 // NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
 func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
 	_result := &_MFuncPropStateReadReq{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

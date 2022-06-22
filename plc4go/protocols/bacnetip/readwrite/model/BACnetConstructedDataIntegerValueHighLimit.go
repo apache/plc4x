@@ -48,10 +48,6 @@ type BACnetConstructedDataIntegerValueHighLimitExactly interface {
 type _BACnetConstructedDataIntegerValueHighLimit struct {
 	*_BACnetConstructedData
 	HighLimit BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIntegerValueHighLimit) GetActualValue() BACnetApp
 func NewBACnetConstructedDataIntegerValueHighLimit(highLimit BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueHighLimit {
 	_result := &_BACnetConstructedDataIntegerValueHighLimit{
 		HighLimit:              highLimit,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataUTCOffsetExactly interface {
 type _BACnetConstructedDataUTCOffset struct {
 	*_BACnetConstructedData
 	UtcOffset BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataUTCOffset) GetActualValue() BACnetApplicationTagS
 func NewBACnetConstructedDataUTCOffset(utcOffset BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
 	_result := &_BACnetConstructedDataUTCOffset{
 		UtcOffset:              utcOffset,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

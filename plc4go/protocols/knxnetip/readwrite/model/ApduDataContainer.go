@@ -46,9 +46,6 @@ type ApduDataContainerExactly interface {
 type _ApduDataContainer struct {
 	*_Apdu
 	DataApdu ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,9 +88,8 @@ func (m *_ApduDataContainer) GetDataApdu() ApduData {
 // NewApduDataContainer factory function for _ApduDataContainer
 func NewApduDataContainer(dataApdu ApduData, numbered bool, counter uint8, dataLength uint8) *_ApduDataContainer {
 	_result := &_ApduDataContainer{
-		DataApdu:   dataApdu,
-		DataLength: dataLength,
-		_Apdu:      NewApdu(numbered, counter, dataLength),
+		DataApdu: dataApdu,
+		_Apdu:    NewApdu(numbered, counter, dataLength),
 	}
 	_result._Apdu._ApduChildRequirements = _result
 	return _result

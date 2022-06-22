@@ -48,10 +48,6 @@ type BACnetConstructedDataReliabilityExactly interface {
 type _BACnetConstructedDataReliability struct {
 	*_BACnetConstructedData
 	Reliability BACnetReliabilityTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataReliability) GetActualValue() BACnetReliabilityTa
 func NewBACnetConstructedDataReliability(reliability BACnetReliabilityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
 	_result := &_BACnetConstructedDataReliability{
 		Reliability:            reliability,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

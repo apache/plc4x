@@ -49,9 +49,6 @@ type _BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 	*_BACnetUnconfirmedServiceRequest
 	SynchronizedDate BACnetApplicationTagDate
 	SynchronizedTime BACnetApplicationTagTime
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,7 +95,6 @@ func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACn
 	_result := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
 		SynchronizedDate:                 synchronizedDate,
 		SynchronizedTime:                 synchronizedTime,
-		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

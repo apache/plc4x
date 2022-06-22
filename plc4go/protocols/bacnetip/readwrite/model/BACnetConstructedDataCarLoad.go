@@ -48,10 +48,6 @@ type BACnetConstructedDataCarLoadExactly interface {
 type _BACnetConstructedDataCarLoad struct {
 	*_BACnetConstructedData
 	CarLoad BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataCarLoad) GetActualValue() BACnetApplicationTagRea
 func NewBACnetConstructedDataCarLoad(carLoad BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoad {
 	_result := &_BACnetConstructedDataCarLoad{
 		CarLoad:                carLoad,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

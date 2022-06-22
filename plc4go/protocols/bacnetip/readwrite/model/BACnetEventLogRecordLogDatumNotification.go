@@ -52,9 +52,6 @@ type _BACnetEventLogRecordLogDatumNotification struct {
 	InnerOpeningTag BACnetOpeningTag
 	Notification    ConfirmedEventNotificationRequest
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,7 +102,6 @@ func NewBACnetEventLogRecordLogDatumNotification(innerOpeningTag BACnetOpeningTa
 		InnerOpeningTag:               innerOpeningTag,
 		Notification:                  notification,
 		InnerClosingTag:               innerClosingTag,
-		TagNumber:                     tagNumber,
 		_BACnetEventLogRecordLogDatum: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _result

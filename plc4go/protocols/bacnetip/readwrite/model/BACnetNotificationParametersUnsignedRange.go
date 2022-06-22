@@ -58,10 +58,6 @@ type _BACnetNotificationParametersUnsignedRange struct {
 	StatusFlags     BACnetStatusFlagsTagged
 	ExceededLimit   BACnetContextTagUnsignedInteger
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,8 +118,6 @@ func NewBACnetNotificationParametersUnsignedRange(innerOpeningTag BACnetOpeningT
 		StatusFlags:                   statusFlags,
 		ExceededLimit:                 exceededLimit,
 		InnerClosingTag:               innerClosingTag,
-		TagNumber:                     tagNumber,
-		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

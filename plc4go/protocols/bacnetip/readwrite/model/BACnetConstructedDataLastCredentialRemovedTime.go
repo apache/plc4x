@@ -48,10 +48,6 @@ type BACnetConstructedDataLastCredentialRemovedTimeExactly interface {
 type _BACnetConstructedDataLastCredentialRemovedTime struct {
 	*_BACnetConstructedData
 	LastCredentialRemovedTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) GetActualValue() BACne
 func NewBACnetConstructedDataLastCredentialRemovedTime(lastCredentialRemovedTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialRemovedTime {
 	_result := &_BACnetConstructedDataLastCredentialRemovedTime{
 		LastCredentialRemovedTime: lastCredentialRemovedTime,
-		TagNumber:                 tagNumber,
-		ArrayIndexArgument:        arrayIndexArgument,
 		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -58,9 +58,6 @@ type _CipWriteRequest struct {
 	DataType        CIPDataTypeCode
 	ElementNb       uint16
 	Data            []byte
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,7 +118,6 @@ func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCo
 		DataType:        dataType,
 		ElementNb:       elementNb,
 		Data:            data,
-		ServiceLen:      serviceLen,
 		_CipService:     NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

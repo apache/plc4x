@@ -46,9 +46,6 @@ type BACnetLogRecordLogDatumIntegerValueExactly interface {
 type _BACnetLogRecordLogDatumIntegerValue struct {
 	*_BACnetLogRecordLogDatum
 	IntegerValue BACnetContextTagSignedInteger
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetLogRecordLogDatumIntegerValue) GetIntegerValue() BACnetContextTa
 func NewBACnetLogRecordLogDatumIntegerValue(integerValue BACnetContextTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumIntegerValue {
 	_result := &_BACnetLogRecordLogDatumIntegerValue{
 		IntegerValue:             integerValue,
-		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

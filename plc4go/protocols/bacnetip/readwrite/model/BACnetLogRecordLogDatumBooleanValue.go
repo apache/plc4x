@@ -46,9 +46,6 @@ type BACnetLogRecordLogDatumBooleanValueExactly interface {
 type _BACnetLogRecordLogDatumBooleanValue struct {
 	*_BACnetLogRecordLogDatum
 	BooleanValue BACnetContextTagBoolean
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) GetBooleanValue() BACnetContextTa
 func NewBACnetLogRecordLogDatumBooleanValue(booleanValue BACnetContextTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumBooleanValue {
 	_result := &_BACnetLogRecordLogDatumBooleanValue{
 		BooleanValue:             booleanValue,
-		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

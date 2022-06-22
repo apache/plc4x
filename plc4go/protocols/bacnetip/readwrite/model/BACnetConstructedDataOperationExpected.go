@@ -48,10 +48,6 @@ type BACnetConstructedDataOperationExpectedExactly interface {
 type _BACnetConstructedDataOperationExpected struct {
 	*_BACnetConstructedData
 	LifeSafetyOperations BACnetLifeSafetyOperationTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataOperationExpected) GetActualValue() BACnetLifeSaf
 func NewBACnetConstructedDataOperationExpected(lifeSafetyOperations BACnetLifeSafetyOperationTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
 	_result := &_BACnetConstructedDataOperationExpected{
 		LifeSafetyOperations:   lifeSafetyOperations,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

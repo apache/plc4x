@@ -49,9 +49,6 @@ type _FirmataCommandProtocolVersion struct {
 	*_FirmataCommand
 	MajorVersion uint8
 	MinorVersion uint8
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, re
 	_result := &_FirmataCommandProtocolVersion{
 		MajorVersion:    majorVersion,
 		MinorVersion:    minorVersion,
-		Response:        response,
 		_FirmataCommand: NewFirmataCommand(response),
 	}
 	_result._FirmataCommand._FirmataCommandChildRequirements = _result

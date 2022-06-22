@@ -48,10 +48,6 @@ type BACnetConstructedDataUserExternalIdentifierExactly interface {
 type _BACnetConstructedDataUserExternalIdentifier struct {
 	*_BACnetConstructedData
 	UserExternalIdentifier BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetActualValue() BACnetAp
 func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserExternalIdentifier {
 	_result := &_BACnetConstructedDataUserExternalIdentifier{
 		UserExternalIdentifier: userExternalIdentifier,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

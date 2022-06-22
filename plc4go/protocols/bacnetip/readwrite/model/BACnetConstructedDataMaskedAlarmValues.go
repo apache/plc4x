@@ -46,10 +46,6 @@ type BACnetConstructedDataMaskedAlarmValuesExactly interface {
 type _BACnetConstructedDataMaskedAlarmValues struct {
 	*_BACnetConstructedData
 	MaskedAlarmValues []BACnetDoorAlarmStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataMaskedAlarmValues) GetMaskedAlarmValues() []BACne
 func NewBACnetConstructedDataMaskedAlarmValues(maskedAlarmValues []BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaskedAlarmValues {
 	_result := &_BACnetConstructedDataMaskedAlarmValues{
 		MaskedAlarmValues:      maskedAlarmValues,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

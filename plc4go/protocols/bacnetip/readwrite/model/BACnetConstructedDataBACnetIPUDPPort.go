@@ -48,10 +48,6 @@ type BACnetConstructedDataBACnetIPUDPPortExactly interface {
 type _BACnetConstructedDataBACnetIPUDPPort struct {
 	*_BACnetConstructedData
 	IpUdpPort BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetActualValue() BACnetApplicati
 func NewBACnetConstructedDataBACnetIPUDPPort(ipUdpPort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPUDPPort {
 	_result := &_BACnetConstructedDataBACnetIPUDPPort{
 		IpUdpPort:              ipUdpPort,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

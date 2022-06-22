@@ -46,10 +46,6 @@ type BACnetConstructedDataTrendLogLogBufferExactly interface {
 type _BACnetConstructedDataTrendLogLogBuffer struct {
 	*_BACnetConstructedData
 	FloorText []BACnetLogRecord
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) GetFloorText() []BACnetLogReco
 func NewBACnetConstructedDataTrendLogLogBuffer(floorText []BACnetLogRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogLogBuffer {
 	_result := &_BACnetConstructedDataTrendLogLogBuffer{
 		FloorText:              floorText,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataBinaryInputInterfaceValueExactly interface {
 type _BACnetConstructedDataBinaryInputInterfaceValue struct {
 	*_BACnetConstructedData
 	InterfaceValue BACnetOptionalBinaryPV
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataBinaryInputInterfaceValue) GetActualValue() BACne
 func NewBACnetConstructedDataBinaryInputInterfaceValue(interfaceValue BACnetOptionalBinaryPV, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryInputInterfaceValue {
 	_result := &_BACnetConstructedDataBinaryInputInterfaceValue{
 		InterfaceValue:         interfaceValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

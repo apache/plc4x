@@ -48,7 +48,6 @@ type _BACnetServiceAckAuthenticate struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckLength        uint16
 	ServiceAckPayloadLength uint16
 }
 
@@ -89,10 +88,8 @@ func (m *_BACnetServiceAckAuthenticate) GetBytesOfRemovedService() []byte {
 // NewBACnetServiceAckAuthenticate factory function for _BACnetServiceAckAuthenticate
 func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckAuthenticate {
 	_result := &_BACnetServiceAckAuthenticate{
-		BytesOfRemovedService:   bytesOfRemovedService,
-		ServiceAckLength:        serviceAckLength,
-		ServiceAckPayloadLength: serviceAckPayloadLength,
-		_BACnetServiceAck:       NewBACnetServiceAck(serviceAckLength),
+		BytesOfRemovedService: bytesOfRemovedService,
+		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result
 	return _result

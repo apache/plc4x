@@ -48,10 +48,6 @@ type BACnetConstructedDataRestoreCompletionTimeExactly interface {
 type _BACnetConstructedDataRestoreCompletionTime struct {
 	*_BACnetConstructedData
 	CompletionTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetActualValue() BACnetApp
 func NewBACnetConstructedDataRestoreCompletionTime(completionTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestoreCompletionTime {
 	_result := &_BACnetConstructedDataRestoreCompletionTime{
 		CompletionTime:         completionTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

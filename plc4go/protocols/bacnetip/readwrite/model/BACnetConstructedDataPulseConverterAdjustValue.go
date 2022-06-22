@@ -48,10 +48,6 @@ type BACnetConstructedDataPulseConverterAdjustValueExactly interface {
 type _BACnetConstructedDataPulseConverterAdjustValue struct {
 	*_BACnetConstructedData
 	AdjustValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetActualValue() BACne
 func NewBACnetConstructedDataPulseConverterAdjustValue(adjustValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAdjustValue {
 	_result := &_BACnetConstructedDataPulseConverterAdjustValue{
 		AdjustValue:            adjustValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

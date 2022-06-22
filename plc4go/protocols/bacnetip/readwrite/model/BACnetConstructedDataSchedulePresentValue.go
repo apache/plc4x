@@ -48,10 +48,6 @@ type BACnetConstructedDataSchedulePresentValueExactly interface {
 type _BACnetConstructedDataSchedulePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetConstructedDataElement
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataSchedulePresentValue) GetActualValue() BACnetCons
 func NewBACnetConstructedDataSchedulePresentValue(presentValue BACnetConstructedDataElement, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSchedulePresentValue {
 	_result := &_BACnetConstructedDataSchedulePresentValue{
 		PresentValue:           presentValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

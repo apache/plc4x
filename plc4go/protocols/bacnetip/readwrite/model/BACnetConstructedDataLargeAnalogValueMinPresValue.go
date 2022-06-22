@@ -48,10 +48,6 @@ type BACnetConstructedDataLargeAnalogValueMinPresValueExactly interface {
 type _BACnetConstructedDataLargeAnalogValueMinPresValue struct {
 	*_BACnetConstructedData
 	MinPresValue BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetActualValue() BA
 func NewBACnetConstructedDataLargeAnalogValueMinPresValue(minPresValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueMinPresValue {
 	_result := &_BACnetConstructedDataLargeAnalogValueMinPresValue{
 		MinPresValue:           minPresValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

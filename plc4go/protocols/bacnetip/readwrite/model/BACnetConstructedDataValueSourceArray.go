@@ -53,10 +53,6 @@ type _BACnetConstructedDataValueSourceArray struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	VtClassesSupported   []BACnetValueSource
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataValueSourceArray(numberOfDataElements BACnetApplica
 	_result := &_BACnetConstructedDataValueSourceArray{
 		NumberOfDataElements:   numberOfDataElements,
 		VtClassesSupported:     vtClassesSupported,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

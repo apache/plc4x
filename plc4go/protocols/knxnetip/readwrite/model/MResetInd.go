@@ -43,9 +43,6 @@ type MResetIndExactly interface {
 // _MResetInd is the data-structure of this message
 type _MResetInd struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_MResetInd) GetParent() CEMI {
 // NewMResetInd factory function for _MResetInd
 func NewMResetInd(size uint16) *_MResetInd {
 	_result := &_MResetInd{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

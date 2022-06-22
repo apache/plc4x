@@ -48,9 +48,6 @@ type BACnetConfirmedServiceRequestGetEventInformationExactly interface {
 type _BACnetConfirmedServiceRequestGetEventInformation struct {
 	*_BACnetConfirmedServiceRequest
 	LastReceivedObjectIdentifier BACnetContextTagObjectIdentifier
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,7 +89,6 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLastReceivedObjec
 func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestGetEventInformation {
 	_result := &_BACnetConfirmedServiceRequestGetEventInformation{
 		LastReceivedObjectIdentifier:   lastReceivedObjectIdentifier,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

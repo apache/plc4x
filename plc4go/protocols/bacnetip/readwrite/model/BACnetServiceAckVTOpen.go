@@ -46,9 +46,6 @@ type BACnetServiceAckVTOpenExactly interface {
 type _BACnetServiceAckVTOpen struct {
 	*_BACnetServiceAck
 	RemoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetServiceAckVTOpen) GetRemoteVtSessionIdentifier() BACnetApplicati
 func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint16) *_BACnetServiceAckVTOpen {
 	_result := &_BACnetServiceAckVTOpen{
 		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
-		ServiceAckLength:          serviceAckLength,
 		_BACnetServiceAck:         NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

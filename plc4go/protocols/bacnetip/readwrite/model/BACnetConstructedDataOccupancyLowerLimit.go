@@ -48,10 +48,6 @@ type BACnetConstructedDataOccupancyLowerLimitExactly interface {
 type _BACnetConstructedDataOccupancyLowerLimit struct {
 	*_BACnetConstructedData
 	OccupancyLowerLimit BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataOccupancyLowerLimit(occupancyLowerLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimit {
 	_result := &_BACnetConstructedDataOccupancyLowerLimit{
 		OccupancyLowerLimit:    occupancyLowerLimit,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

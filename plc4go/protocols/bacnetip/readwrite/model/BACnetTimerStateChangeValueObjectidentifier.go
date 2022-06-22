@@ -46,9 +46,6 @@ type BACnetTimerStateChangeValueObjectidentifierExactly interface {
 type _BACnetTimerStateChangeValueObjectidentifier struct {
 	*_BACnetTimerStateChangeValue
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetTimerStateChangeValueObjectidentifier) GetObjectidentifierValue(
 func NewBACnetTimerStateChangeValueObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueObjectidentifier {
 	_result := &_BACnetTimerStateChangeValueObjectidentifier{
 		ObjectidentifierValue:        objectidentifierValue,
-		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataNodeTypeExactly interface {
 type _BACnetConstructedDataNodeType struct {
 	*_BACnetConstructedData
 	NodeType BACnetNodeTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataNodeType) GetActualValue() BACnetNodeTypeTagged {
 func NewBACnetConstructedDataNodeType(nodeType BACnetNodeTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeType {
 	_result := &_BACnetConstructedDataNodeType{
 		NodeType:               nodeType,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -49,9 +49,6 @@ type _ModbusAsciiADU struct {
 	*_ModbusADU
 	Address uint8
 	Pdu     ModbusPDU
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewModbusAsciiADU(address uint8, pdu ModbusPDU, response bool) *_ModbusAsci
 	_result := &_ModbusAsciiADU{
 		Address:    address,
 		Pdu:        pdu,
-		Response:   response,
 		_ModbusADU: NewModbusADU(response),
 	}
 	_result._ModbusADU._ModbusADUChildRequirements = _result

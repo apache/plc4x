@@ -49,9 +49,6 @@ type _FirmataMessageAnalogIO struct {
 	*_FirmataMessage
 	Pin  uint8
 	Data []int8
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataM
 	_result := &_FirmataMessageAnalogIO{
 		Pin:             pin,
 		Data:            data,
-		Response:        response,
 		_FirmataMessage: NewFirmataMessage(response),
 	}
 	_result._FirmataMessage._FirmataMessageChildRequirements = _result

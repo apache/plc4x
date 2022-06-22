@@ -49,9 +49,6 @@ type _ApduDataMemoryResponse struct {
 	*_ApduData
 	Address uint16
 	Data    []byte
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,10 +92,9 @@ func (m *_ApduDataMemoryResponse) GetData() []byte {
 // NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
 func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
 	_result := &_ApduDataMemoryResponse{
-		Address:    address,
-		Data:       data,
-		DataLength: dataLength,
-		_ApduData:  NewApduData(dataLength),
+		Address:   address,
+		Data:      data,
+		_ApduData: NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataNodeSubtypeExactly interface {
 type _BACnetConstructedDataNodeSubtype struct {
 	*_BACnetConstructedData
 	NodeSubType BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataNodeSubtype) GetActualValue() BACnetApplicationTa
 func NewBACnetConstructedDataNodeSubtype(nodeSubType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
 	_result := &_BACnetConstructedDataNodeSubtype{
 		NodeSubType:            nodeSubType,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

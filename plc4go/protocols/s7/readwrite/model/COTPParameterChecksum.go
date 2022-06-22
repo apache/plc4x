@@ -46,9 +46,6 @@ type COTPParameterChecksumExactly interface {
 type _COTPParameterChecksum struct {
 	*_COTPParameter
 	Crc uint8
-
-	// Arguments.
-	Rest uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_COTPParameterChecksum) GetCrc() uint8 {
 func NewCOTPParameterChecksum(crc uint8, rest uint8) *_COTPParameterChecksum {
 	_result := &_COTPParameterChecksum{
 		Crc:            crc,
-		Rest:           rest,
 		_COTPParameter: NewCOTPParameter(rest),
 	}
 	_result._COTPParameter._COTPParameterChildRequirements = _result

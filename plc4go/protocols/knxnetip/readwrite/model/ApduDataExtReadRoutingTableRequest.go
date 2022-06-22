@@ -43,9 +43,6 @@ type ApduDataExtReadRoutingTableRequestExactly interface {
 // _ApduDataExtReadRoutingTableRequest is the data-structure of this message
 type _ApduDataExtReadRoutingTableRequest struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtReadRoutingTableRequest) GetParent() ApduDataExt {
 // NewApduDataExtReadRoutingTableRequest factory function for _ApduDataExtReadRoutingTableRequest
 func NewApduDataExtReadRoutingTableRequest(length uint8) *_ApduDataExtReadRoutingTableRequest {
 	_result := &_ApduDataExtReadRoutingTableRequest{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

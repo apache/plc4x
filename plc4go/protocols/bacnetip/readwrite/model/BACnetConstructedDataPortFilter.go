@@ -53,10 +53,6 @@ type _BACnetConstructedDataPortFilter struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	PortFilter           []BACnetPortPermission
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataPortFilter(numberOfDataElements BACnetApplicationTa
 	_result := &_BACnetConstructedDataPortFilter{
 		NumberOfDataElements:   numberOfDataElements,
 		PortFilter:             portFilter,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

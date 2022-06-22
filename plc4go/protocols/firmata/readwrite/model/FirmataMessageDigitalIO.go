@@ -49,9 +49,6 @@ type _FirmataMessageDigitalIO struct {
 	*_FirmataMessage
 	PinBlock uint8
 	Data     []int8
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_Fi
 	_result := &_FirmataMessageDigitalIO{
 		PinBlock:        pinBlock,
 		Data:            data,
-		Response:        response,
 		_FirmataMessage: NewFirmataMessage(response),
 	}
 	_result._FirmataMessage._FirmataMessageChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataUserTypeExactly interface {
 type _BACnetConstructedDataUserType struct {
 	*_BACnetConstructedData
 	UserType BACnetAccessUserTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataUserType) GetActualValue() BACnetAccessUserTypeTa
 func NewBACnetConstructedDataUserType(userType BACnetAccessUserTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserType {
 	_result := &_BACnetConstructedDataUserType{
 		UserType:               userType,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

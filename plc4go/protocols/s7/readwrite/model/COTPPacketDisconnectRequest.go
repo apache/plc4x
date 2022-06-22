@@ -52,9 +52,6 @@ type _COTPPacketDisconnectRequest struct {
 	DestinationReference uint16
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
-
-	// Arguments.
-	CotpLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -108,7 +105,6 @@ func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
-		CotpLen:              cotpLen,
 		_COTPPacket:          NewCOTPPacket(parameters, payload, cotpLen),
 	}
 	_result._COTPPacket._COTPPacketChildRequirements = _result

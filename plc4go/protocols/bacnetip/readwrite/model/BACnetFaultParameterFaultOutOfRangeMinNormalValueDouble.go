@@ -46,9 +46,6 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleExactly interface {
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble struct {
 	*_BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	DoubleValue BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetDoubleValu
 func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(doubleValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
 	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
 		DoubleValue: doubleValue,
-		TagNumber:   tagNumber,
 		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataNumberOfAuthenticationPoliciesExactly interface {
 type _BACnetConstructedDataNumberOfAuthenticationPolicies struct {
 	*_BACnetConstructedData
 	NumberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetActualValue() 
 func NewBACnetConstructedDataNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
 	_result := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
 		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,
-		TagNumber:                      tagNumber,
-		ArrayIndexArgument:             arrayIndexArgument,
 		_BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

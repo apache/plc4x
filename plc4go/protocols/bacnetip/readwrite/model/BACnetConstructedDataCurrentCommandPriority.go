@@ -48,10 +48,6 @@ type BACnetConstructedDataCurrentCommandPriorityExactly interface {
 type _BACnetConstructedDataCurrentCommandPriority struct {
 	*_BACnetConstructedData
 	CurrentCommandPriority BACnetOptionalUnsigned
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetActualValue() BACnetOp
 func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority BACnetOptionalUnsigned, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
 	_result := &_BACnetConstructedDataCurrentCommandPriority{
 		CurrentCommandPriority: currentCommandPriority,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

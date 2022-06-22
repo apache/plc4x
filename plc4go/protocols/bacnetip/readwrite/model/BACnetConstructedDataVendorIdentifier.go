@@ -48,10 +48,6 @@ type BACnetConstructedDataVendorIdentifierExactly interface {
 type _BACnetConstructedDataVendorIdentifier struct {
 	*_BACnetConstructedData
 	VendorIdentifier BACnetVendorIdTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataVendorIdentifier) GetActualValue() BACnetVendorId
 func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier BACnetVendorIdTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
 	_result := &_BACnetConstructedDataVendorIdentifier{
 		VendorIdentifier:       vendorIdentifier,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -53,10 +53,6 @@ type _BACnetConstructedDataExceptionSchedule struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	ExceptionSchedule    []BACnetSpecialEvent
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataExceptionSchedule(numberOfDataElements BACnetApplic
 	_result := &_BACnetConstructedDataExceptionSchedule{
 		NumberOfDataElements:   numberOfDataElements,
 		ExceptionSchedule:      exceptionSchedule,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

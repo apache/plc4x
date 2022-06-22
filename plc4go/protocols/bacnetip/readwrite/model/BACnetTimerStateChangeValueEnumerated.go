@@ -46,9 +46,6 @@ type BACnetTimerStateChangeValueEnumeratedExactly interface {
 type _BACnetTimerStateChangeValueEnumerated struct {
 	*_BACnetTimerStateChangeValue
 	EnumeratedValue BACnetApplicationTagEnumerated
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetTimerStateChangeValueEnumerated) GetEnumeratedValue() BACnetAppl
 func NewBACnetTimerStateChangeValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueEnumerated {
 	_result := &_BACnetTimerStateChangeValueEnumerated{
 		EnumeratedValue:              enumeratedValue,
-		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

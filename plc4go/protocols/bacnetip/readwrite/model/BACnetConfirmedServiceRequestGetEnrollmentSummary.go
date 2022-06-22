@@ -63,9 +63,6 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummary struct {
 	EventTypeFilter         BACnetEventTypeTagged
 	PriorityFilter          BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 	NotificationClassFilter BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +129,6 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter B
 		EventTypeFilter:                eventTypeFilter,
 		PriorityFilter:                 priorityFilter,
 		NotificationClassFilter:        notificationClassFilter,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

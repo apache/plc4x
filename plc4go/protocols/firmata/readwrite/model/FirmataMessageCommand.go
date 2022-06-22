@@ -46,9 +46,6 @@ type FirmataMessageCommandExactly interface {
 type _FirmataMessageCommand struct {
 	*_FirmataMessage
 	Command FirmataCommand
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_FirmataMessageCommand) GetCommand() FirmataCommand {
 func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
 	_result := &_FirmataMessageCommand{
 		Command:         command,
-		Response:        response,
 		_FirmataMessage: NewFirmataMessage(response),
 	}
 	_result._FirmataMessage._FirmataMessageChildRequirements = _result

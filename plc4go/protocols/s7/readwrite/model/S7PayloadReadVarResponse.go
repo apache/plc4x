@@ -46,9 +46,6 @@ type S7PayloadReadVarResponseExactly interface {
 type _S7PayloadReadVarResponse struct {
 	*_S7Payload
 	Items []S7VarPayloadDataItem
-
-	// Arguments.
-	Parameter S7Parameter
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,7 +90,6 @@ func (m *_S7PayloadReadVarResponse) GetItems() []S7VarPayloadDataItem {
 func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadReadVarResponse {
 	_result := &_S7PayloadReadVarResponse{
 		Items:      items,
-		Parameter:  parameter,
 		_S7Payload: NewS7Payload(parameter),
 	}
 	_result._S7Payload._S7PayloadChildRequirements = _result

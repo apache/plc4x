@@ -46,9 +46,6 @@ type NLMRouterAvailableToNetworkExactly interface {
 type _NLMRouterAvailableToNetwork struct {
 	*_NLM
 	DestinationNetworkAddress []uint16
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,7 +88,6 @@ func (m *_NLMRouterAvailableToNetwork) GetDestinationNetworkAddress() []uint16 {
 func NewNLMRouterAvailableToNetwork(destinationNetworkAddress []uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMRouterAvailableToNetwork {
 	_result := &_NLMRouterAvailableToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

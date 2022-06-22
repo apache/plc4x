@@ -50,9 +50,6 @@ type _FirmataMessageSubscribeAnalogPinValue struct {
 	*_FirmataMessage
 	Pin    uint8
 	Enable bool
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,7 +95,6 @@ func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response b
 	_result := &_FirmataMessageSubscribeAnalogPinValue{
 		Pin:             pin,
 		Enable:          enable,
-		Response:        response,
 		_FirmataMessage: NewFirmataMessage(response),
 	}
 	_result._FirmataMessage._FirmataMessageChildRequirements = _result

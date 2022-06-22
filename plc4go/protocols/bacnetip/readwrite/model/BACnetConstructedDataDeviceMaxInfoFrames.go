@@ -48,10 +48,6 @@ type BACnetConstructedDataDeviceMaxInfoFramesExactly interface {
 type _BACnetConstructedDataDeviceMaxInfoFrames struct {
 	*_BACnetConstructedData
 	MaxInfoFrames BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataDeviceMaxInfoFrames(maxInfoFrames BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxInfoFrames {
 	_result := &_BACnetConstructedDataDeviceMaxInfoFrames{
 		MaxInfoFrames:          maxInfoFrames,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -53,10 +53,6 @@ type _BACnetConstructedDataKeySets struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	KeySets              []BACnetSecurityKeySet
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataKeySets(numberOfDataElements BACnetApplicationTagUn
 	_result := &_BACnetConstructedDataKeySets{
 		NumberOfDataElements:   numberOfDataElements,
 		KeySets:                keySets,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

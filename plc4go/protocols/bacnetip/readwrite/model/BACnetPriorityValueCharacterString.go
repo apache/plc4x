@@ -46,9 +46,6 @@ type BACnetPriorityValueCharacterStringExactly interface {
 type _BACnetPriorityValueCharacterString struct {
 	*_BACnetPriorityValue
 	CharacterStringValue BACnetApplicationTagCharacterString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetPriorityValueCharacterString) GetCharacterStringValue() BACnetAp
 func NewBACnetPriorityValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
 	_result := &_BACnetPriorityValueCharacterString{
 		CharacterStringValue: characterStringValue,
-		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

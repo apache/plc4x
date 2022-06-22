@@ -48,10 +48,6 @@ type BACnetConstructedDataLoggingRecordExactly interface {
 type _BACnetConstructedDataLoggingRecord struct {
 	*_BACnetConstructedData
 	LoggingRecord BACnetAccumulatorRecord
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataLoggingRecord) GetActualValue() BACnetAccumulator
 func NewBACnetConstructedDataLoggingRecord(loggingRecord BACnetAccumulatorRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingRecord {
 	_result := &_BACnetConstructedDataLoggingRecord{
 		LoggingRecord:          loggingRecord,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValueExactly interface {
 type _BACnetConstructedDataPositiveIntegerValueMinPresValue struct {
 	*_BACnetConstructedData
 	MinPresValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) GetActualValue(
 func NewBACnetConstructedDataPositiveIntegerValueMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMinPresValue {
 	_result := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
 		MinPresValue:           minPresValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

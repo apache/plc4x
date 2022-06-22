@@ -46,9 +46,6 @@ type BACnetTimerStateChangeValueDateExactly interface {
 type _BACnetTimerStateChangeValueDate struct {
 	*_BACnetTimerStateChangeValue
 	DateValue BACnetApplicationTagDate
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +84,6 @@ func (m *_BACnetTimerStateChangeValueDate) GetDateValue() BACnetApplicationTagDa
 func NewBACnetTimerStateChangeValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueDate {
 	_result := &_BACnetTimerStateChangeValueDate{
 		DateValue:                    dateValue,
-		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

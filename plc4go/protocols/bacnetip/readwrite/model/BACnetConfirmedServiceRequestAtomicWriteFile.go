@@ -60,9 +60,6 @@ type _BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	FileStartPosition BACnetApplicationTagSignedInteger
 	FileData          BACnetApplicationTagOctetString
 	ClosingTag        BACnetClosingTag
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -124,7 +121,6 @@ func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetAppl
 		FileStartPosition:              fileStartPosition,
 		FileData:                       fileData,
 		ClosingTag:                     closingTag,
-		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

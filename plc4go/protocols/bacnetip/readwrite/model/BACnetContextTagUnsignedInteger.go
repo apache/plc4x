@@ -48,9 +48,6 @@ type BACnetContextTagUnsignedIntegerExactly interface {
 type _BACnetContextTagUnsignedInteger struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadUnsignedInteger
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +103,6 @@ func (m *_BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 func NewBACnetContextTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
 	_result := &_BACnetContextTagUnsignedInteger{
 		Payload:           payload,
-		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

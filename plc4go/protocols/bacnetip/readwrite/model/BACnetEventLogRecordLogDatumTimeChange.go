@@ -46,9 +46,6 @@ type BACnetEventLogRecordLogDatumTimeChangeExactly interface {
 type _BACnetEventLogRecordLogDatumTimeChange struct {
 	*_BACnetEventLogRecordLogDatum
 	TimeChange BACnetContextTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +86,6 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) GetTimeChange() BACnetContextT
 func NewBACnetEventLogRecordLogDatumTimeChange(timeChange BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumTimeChange {
 	_result := &_BACnetEventLogRecordLogDatumTimeChange{
 		TimeChange:                    timeChange,
-		TagNumber:                     tagNumber,
 		_BACnetEventLogRecordLogDatum: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _result

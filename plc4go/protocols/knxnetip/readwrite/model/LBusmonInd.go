@@ -55,9 +55,6 @@ type _LBusmonInd struct {
 	AdditionalInformation       []CEMIAdditionalInformation
 	DataFrame                   LDataFrame
 	Crc                         *uint8
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,7 +110,6 @@ func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CE
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
-		Size:                        size,
 		_CEMI:                       NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

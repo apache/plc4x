@@ -46,10 +46,6 @@ type BACnetConstructedDataAccessTransactionEventsExactly interface {
 type _BACnetConstructedDataAccessTransactionEvents struct {
 	*_BACnetConstructedData
 	AccessTransactionEvents []BACnetAccessEventTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) GetAccessTransactionEven
 func NewBACnetConstructedDataAccessTransactionEvents(accessTransactionEvents []BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessTransactionEvents {
 	_result := &_BACnetConstructedDataAccessTransactionEvents{
 		AccessTransactionEvents: accessTransactionEvents,
-		TagNumber:               tagNumber,
-		ArrayIndexArgument:      arrayIndexArgument,
 		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

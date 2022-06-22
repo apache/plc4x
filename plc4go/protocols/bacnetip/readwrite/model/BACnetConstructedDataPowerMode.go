@@ -48,10 +48,6 @@ type BACnetConstructedDataPowerModeExactly interface {
 type _BACnetConstructedDataPowerMode struct {
 	*_BACnetConstructedData
 	PowerMode BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataPowerMode) GetActualValue() BACnetApplicationTagB
 func NewBACnetConstructedDataPowerMode(powerMode BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPowerMode {
 	_result := &_BACnetConstructedDataPowerMode{
 		PowerMode:              powerMode,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

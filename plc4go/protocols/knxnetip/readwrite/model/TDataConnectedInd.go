@@ -43,9 +43,6 @@ type TDataConnectedIndExactly interface {
 // _TDataConnectedInd is the data-structure of this message
 type _TDataConnectedInd struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_TDataConnectedInd) GetParent() CEMI {
 // NewTDataConnectedInd factory function for _TDataConnectedInd
 func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
 	_result := &_TDataConnectedInd{
-		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

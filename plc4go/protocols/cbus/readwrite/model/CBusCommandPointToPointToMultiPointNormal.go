@@ -64,9 +64,6 @@ type _CBusCommandPointToPointToMultiPointNormal struct {
 	Crc         Checksum
 	PeekAlpha   byte
 	Alpha       Alpha
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -140,7 +137,6 @@ func NewCBusCommandPointToPointToMultiPointNormal(application ApplicationIdConta
 		Crc:                                  crc,
 		PeekAlpha:                            peekAlpha,
 		Alpha:                                alpha,
-		Srchk:                                srchk,
 		_CBusPointToPointToMultipointCommand: NewCBusPointToPointToMultipointCommand(bridgeAddress, networkRoute, peekedApplication, srchk),
 	}
 	_result._CBusPointToPointToMultipointCommand._CBusPointToPointToMultipointCommandChildRequirements = _result

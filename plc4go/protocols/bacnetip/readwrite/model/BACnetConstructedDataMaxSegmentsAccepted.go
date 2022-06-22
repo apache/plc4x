@@ -48,10 +48,6 @@ type BACnetConstructedDataMaxSegmentsAcceptedExactly interface {
 type _BACnetConstructedDataMaxSegmentsAccepted struct {
 	*_BACnetConstructedData
 	MaxSegmentsAccepted BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataMaxSegmentsAccepted(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxSegmentsAccepted {
 	_result := &_BACnetConstructedDataMaxSegmentsAccepted{
 		MaxSegmentsAccepted:    maxSegmentsAccepted,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

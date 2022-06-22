@@ -49,9 +49,6 @@ type _APDUUnknown struct {
 	*_APDU
 	UnknownTypeRest uint8
 	UnknownBytes    []byte
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint1
 	_result := &_APDUUnknown{
 		UnknownTypeRest: unknownTypeRest,
 		UnknownBytes:    unknownBytes,
-		ApduLength:      apduLength,
 		_APDU:           NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

@@ -49,9 +49,6 @@ type _COTPPacketDisconnectResponse struct {
 	*_COTPPacket
 	DestinationReference uint16
 	SourceReference      uint16
-
-	// Arguments.
-	CotpLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,7 +97,6 @@ func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReferenc
 	_result := &_COTPPacketDisconnectResponse{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
-		CotpLen:              cotpLen,
 		_COTPPacket:          NewCOTPPacket(parameters, payload, cotpLen),
 	}
 	_result._COTPPacket._COTPPacketChildRequirements = _result

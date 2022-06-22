@@ -46,10 +46,6 @@ type BACnetConstructedDataManualSlaveAddressBindingExactly interface {
 type _BACnetConstructedDataManualSlaveAddressBinding struct {
 	*_BACnetConstructedData
 	ManualSlaveAddressBinding []BACnetAddressBinding
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetManualSlaveAddressB
 func NewBACnetConstructedDataManualSlaveAddressBinding(manualSlaveAddressBinding []BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManualSlaveAddressBinding {
 	_result := &_BACnetConstructedDataManualSlaveAddressBinding{
 		ManualSlaveAddressBinding: manualSlaveAddressBinding,
-		TagNumber:                 tagNumber,
-		ArrayIndexArgument:        arrayIndexArgument,
 		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -61,10 +61,6 @@ type _BACnetNotificationParametersUnsignedOutOfRange struct {
 	Deadband        BACnetContextTagUnsignedInteger
 	ExceededLimit   BACnetContextTagUnsignedInteger
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -130,8 +126,6 @@ func NewBACnetNotificationParametersUnsignedOutOfRange(innerOpeningTag BACnetOpe
 		Deadband:                      deadband,
 		ExceededLimit:                 exceededLimit,
 		InnerClosingTag:               innerClosingTag,
-		TagNumber:                     tagNumber,
-		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

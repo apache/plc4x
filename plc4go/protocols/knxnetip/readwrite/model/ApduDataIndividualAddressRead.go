@@ -43,9 +43,6 @@ type ApduDataIndividualAddressReadExactly interface {
 // _ApduDataIndividualAddressRead is the data-structure of this message
 type _ApduDataIndividualAddressRead struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,8 +68,7 @@ func (m *_ApduDataIndividualAddressRead) GetParent() ApduData {
 // NewApduDataIndividualAddressRead factory function for _ApduDataIndividualAddressRead
 func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddressRead {
 	_result := &_ApduDataIndividualAddressRead{
-		DataLength: dataLength,
-		_ApduData:  NewApduData(dataLength),
+		_ApduData: NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

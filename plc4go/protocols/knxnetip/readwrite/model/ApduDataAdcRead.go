@@ -43,9 +43,6 @@ type ApduDataAdcReadExactly interface {
 // _ApduDataAdcRead is the data-structure of this message
 type _ApduDataAdcRead struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,8 +68,7 @@ func (m *_ApduDataAdcRead) GetParent() ApduData {
 // NewApduDataAdcRead factory function for _ApduDataAdcRead
 func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
 	_result := &_ApduDataAdcRead{
-		DataLength: dataLength,
-		_ApduData:  NewApduData(dataLength),
+		_ApduData: NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

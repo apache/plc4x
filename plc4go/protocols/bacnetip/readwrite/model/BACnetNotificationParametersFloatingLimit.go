@@ -61,10 +61,6 @@ type _BACnetNotificationParametersFloatingLimit struct {
 	SetPointValue   BACnetContextTagReal
 	ErrorLimit      BACnetContextTagReal
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -130,8 +126,6 @@ func NewBACnetNotificationParametersFloatingLimit(innerOpeningTag BACnetOpeningT
 		SetPointValue:                 setPointValue,
 		ErrorLimit:                    errorLimit,
 		InnerClosingTag:               innerClosingTag,
-		TagNumber:                     tagNumber,
-		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

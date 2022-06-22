@@ -53,10 +53,6 @@ type _BACnetConstructedDataNegativeAccessRules struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	NegativeAccessRules  []BACnetAccessRule
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataNegativeAccessRules(numberOfDataElements BACnetAppl
 	_result := &_BACnetConstructedDataNegativeAccessRules{
 		NumberOfDataElements:   numberOfDataElements,
 		NegativeAccessRules:    negativeAccessRules,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

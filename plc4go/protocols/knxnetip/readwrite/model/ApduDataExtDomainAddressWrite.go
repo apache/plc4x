@@ -43,9 +43,6 @@ type ApduDataExtDomainAddressWriteExactly interface {
 // _ApduDataExtDomainAddressWrite is the data-structure of this message
 type _ApduDataExtDomainAddressWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +68,6 @@ func (m *_ApduDataExtDomainAddressWrite) GetParent() ApduDataExt {
 // NewApduDataExtDomainAddressWrite factory function for _ApduDataExtDomainAddressWrite
 func NewApduDataExtDomainAddressWrite(length uint8) *_ApduDataExtDomainAddressWrite {
 	_result := &_ApduDataExtDomainAddressWrite{
-		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

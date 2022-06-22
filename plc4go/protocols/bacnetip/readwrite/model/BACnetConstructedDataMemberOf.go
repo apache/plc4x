@@ -46,10 +46,6 @@ type BACnetConstructedDataMemberOfExactly interface {
 type _BACnetConstructedDataMemberOf struct {
 	*_BACnetConstructedData
 	Zones []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataMemberOf) GetZones() []BACnetDeviceObjectReferenc
 func NewBACnetConstructedDataMemberOf(zones []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberOf {
 	_result := &_BACnetConstructedDataMemberOf{
 		Zones:                  zones,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

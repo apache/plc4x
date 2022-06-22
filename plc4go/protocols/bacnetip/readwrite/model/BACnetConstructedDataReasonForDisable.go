@@ -46,10 +46,6 @@ type BACnetConstructedDataReasonForDisableExactly interface {
 type _BACnetConstructedDataReasonForDisable struct {
 	*_BACnetConstructedData
 	ReasonForDisable []BACnetAccessCredentialDisableReasonTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataReasonForDisable) GetReasonForDisable() []BACnetA
 func NewBACnetConstructedDataReasonForDisable(reasonForDisable []BACnetAccessCredentialDisableReasonTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
 	_result := &_BACnetConstructedDataReasonForDisable{
 		ReasonForDisable:       reasonForDisable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

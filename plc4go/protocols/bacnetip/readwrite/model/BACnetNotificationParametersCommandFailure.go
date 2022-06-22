@@ -58,10 +58,6 @@ type _BACnetNotificationParametersCommandFailure struct {
 	StatusFlags     BACnetStatusFlagsTagged
 	FeedbackValue   BACnetConstructedData
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -122,8 +118,6 @@ func NewBACnetNotificationParametersCommandFailure(innerOpeningTag BACnetOpening
 		StatusFlags:                   statusFlags,
 		FeedbackValue:                 feedbackValue,
 		InnerClosingTag:               innerClosingTag,
-		TagNumber:                     tagNumber,
-		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

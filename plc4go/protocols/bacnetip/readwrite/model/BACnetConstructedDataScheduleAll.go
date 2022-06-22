@@ -43,10 +43,6 @@ type BACnetConstructedDataScheduleAllExactly interface {
 // _BACnetConstructedDataScheduleAll is the data-structure of this message
 type _BACnetConstructedDataScheduleAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataScheduleAll) GetParent() BACnetConstructedData {
 // NewBACnetConstructedDataScheduleAll factory function for _BACnetConstructedDataScheduleAll
 func NewBACnetConstructedDataScheduleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleAll {
 	_result := &_BACnetConstructedDataScheduleAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

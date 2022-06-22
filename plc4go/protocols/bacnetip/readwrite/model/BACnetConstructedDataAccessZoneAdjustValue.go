@@ -48,10 +48,6 @@ type BACnetConstructedDataAccessZoneAdjustValueExactly interface {
 type _BACnetConstructedDataAccessZoneAdjustValue struct {
 	*_BACnetConstructedData
 	AdjustValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetActualValue() BACnetApp
 func NewBACnetConstructedDataAccessZoneAdjustValue(adjustValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
 	_result := &_BACnetConstructedDataAccessZoneAdjustValue{
 		AdjustValue:            adjustValue,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

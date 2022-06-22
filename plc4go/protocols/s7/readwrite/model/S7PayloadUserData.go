@@ -46,9 +46,6 @@ type S7PayloadUserDataExactly interface {
 type _S7PayloadUserData struct {
 	*_S7Payload
 	Items []S7PayloadUserDataItem
-
-	// Arguments.
-	Parameter S7Parameter
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,7 +90,6 @@ func (m *_S7PayloadUserData) GetItems() []S7PayloadUserDataItem {
 func NewS7PayloadUserData(items []S7PayloadUserDataItem, parameter S7Parameter) *_S7PayloadUserData {
 	_result := &_S7PayloadUserData{
 		Items:      items,
-		Parameter:  parameter,
 		_S7Payload: NewS7Payload(parameter),
 	}
 	_result._S7Payload._S7PayloadChildRequirements = _result

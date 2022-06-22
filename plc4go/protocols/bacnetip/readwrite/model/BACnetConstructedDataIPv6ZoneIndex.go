@@ -48,10 +48,6 @@ type BACnetConstructedDataIPv6ZoneIndexExactly interface {
 type _BACnetConstructedDataIPv6ZoneIndex struct {
 	*_BACnetConstructedData
 	Ipv6ZoneIndex BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6ZoneIndex {
 	_result := &_BACnetConstructedDataIPv6ZoneIndex{
 		Ipv6ZoneIndex:          ipv6ZoneIndex,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -54,9 +54,6 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	VendorId          BACnetVendorIdTagged
 	ServiceNumber     BACnetContextTagUnsignedInteger
 	ServiceParameters BACnetConstructedData
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -108,7 +105,6 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACne
 		VendorId:                         vendorId,
 		ServiceNumber:                    serviceNumber,
 		ServiceParameters:                serviceParameters,
-		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

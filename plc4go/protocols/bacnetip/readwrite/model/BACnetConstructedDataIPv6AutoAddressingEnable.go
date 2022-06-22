@@ -48,10 +48,6 @@ type BACnetConstructedDataIPv6AutoAddressingEnableExactly interface {
 type _BACnetConstructedDataIPv6AutoAddressingEnable struct {
 	*_BACnetConstructedData
 	AutoAddressingEnable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetActualValue() BACnet
 func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6AutoAddressingEnable {
 	_result := &_BACnetConstructedDataIPv6AutoAddressingEnable{
 		AutoAddressingEnable:   autoAddressingEnable,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

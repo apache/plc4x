@@ -46,10 +46,6 @@ type BACnetConstructedDataDeviceAddressBindingExactly interface {
 type _BACnetConstructedDataDeviceAddressBinding struct {
 	*_BACnetConstructedData
 	DeviceAddressBinding []BACnetAddressBinding
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) GetDeviceAddressBinding() [
 func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceAddressBinding {
 	_result := &_BACnetConstructedDataDeviceAddressBinding{
 		DeviceAddressBinding:   deviceAddressBinding,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

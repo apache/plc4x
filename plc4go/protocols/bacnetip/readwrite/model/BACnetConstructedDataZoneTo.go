@@ -48,10 +48,6 @@ type BACnetConstructedDataZoneToExactly interface {
 type _BACnetConstructedDataZoneTo struct {
 	*_BACnetConstructedData
 	ZoneTo BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataZoneTo) GetActualValue() BACnetDeviceObjectRefere
 func NewBACnetConstructedDataZoneTo(zoneTo BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
 	_result := &_BACnetConstructedDataZoneTo{
 		ZoneTo:                 zoneTo,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

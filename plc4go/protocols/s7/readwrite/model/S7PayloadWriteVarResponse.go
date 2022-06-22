@@ -46,9 +46,6 @@ type S7PayloadWriteVarResponseExactly interface {
 type _S7PayloadWriteVarResponse struct {
 	*_S7Payload
 	Items []S7VarPayloadStatusItem
-
-	// Arguments.
-	Parameter S7Parameter
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,7 +90,6 @@ func (m *_S7PayloadWriteVarResponse) GetItems() []S7VarPayloadStatusItem {
 func NewS7PayloadWriteVarResponse(items []S7VarPayloadStatusItem, parameter S7Parameter) *_S7PayloadWriteVarResponse {
 	_result := &_S7PayloadWriteVarResponse{
 		Items:      items,
-		Parameter:  parameter,
 		_S7Payload: NewS7Payload(parameter),
 	}
 	_result._S7Payload._S7PayloadChildRequirements = _result

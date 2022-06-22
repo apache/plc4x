@@ -46,9 +46,6 @@ type BACnetContextTagDateExactly interface {
 type _BACnetContextTagDate struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadDate
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,7 +88,6 @@ func (m *_BACnetContextTagDate) GetPayload() BACnetTagPayloadDate {
 func NewBACnetContextTagDate(payload BACnetTagPayloadDate, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagDate {
 	_result := &_BACnetContextTagDate{
 		Payload:           payload,
-		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataIntegerValueLowLimitExactly interface {
 type _BACnetConstructedDataIntegerValueLowLimit struct {
 	*_BACnetConstructedData
 	LowLimit BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataIntegerValueLowLimit) GetActualValue() BACnetAppl
 func NewBACnetConstructedDataIntegerValueLowLimit(lowLimit BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueLowLimit {
 	_result := &_BACnetConstructedDataIntegerValueLowLimit{
 		LowLimit:               lowLimit,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

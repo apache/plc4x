@@ -57,9 +57,6 @@ type _BACnetUnconfirmedServiceRequestWriteGroup struct {
 	WritePriority BACnetContextTagUnsignedInteger
 	ChangeList    BACnetGroupChannelValueList
 	InhibitDelay  BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,7 +113,6 @@ func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUn
 		WritePriority:                    writePriority,
 		ChangeList:                       changeList,
 		InhibitDelay:                     inhibitDelay,
-		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

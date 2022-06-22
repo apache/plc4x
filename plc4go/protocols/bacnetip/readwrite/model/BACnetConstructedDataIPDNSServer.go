@@ -53,10 +53,6 @@ type _BACnetConstructedDataIPDNSServer struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	IpDnsServer          []BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataIPDNSServer(numberOfDataElements BACnetApplicationT
 	_result := &_BACnetConstructedDataIPDNSServer{
 		NumberOfDataElements:   numberOfDataElements,
 		IpDnsServer:            ipDnsServer,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

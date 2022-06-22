@@ -48,10 +48,6 @@ type BACnetConstructedDataDaylightSavingsStatusExactly interface {
 type _BACnetConstructedDataDaylightSavingsStatus struct {
 	*_BACnetConstructedData
 	DaylightSavingsStatus BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetActualValue() BACnetApp
 func NewBACnetConstructedDataDaylightSavingsStatus(daylightSavingsStatus BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
 	_result := &_BACnetConstructedDataDaylightSavingsStatus{
 		DaylightSavingsStatus:  daylightSavingsStatus,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

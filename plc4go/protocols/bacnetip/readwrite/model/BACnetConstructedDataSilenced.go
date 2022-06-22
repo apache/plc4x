@@ -48,10 +48,6 @@ type BACnetConstructedDataSilencedExactly interface {
 type _BACnetConstructedDataSilenced struct {
 	*_BACnetConstructedData
 	Silenced BACnetSilencedStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataSilenced) GetActualValue() BACnetSilencedStateTag
 func NewBACnetConstructedDataSilenced(silenced BACnetSilencedStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
 	_result := &_BACnetConstructedDataSilenced{
 		Silenced:               silenced,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -48,10 +48,6 @@ type BACnetConstructedDataOccupancyStateExactly interface {
 type _BACnetConstructedDataOccupancyState struct {
 	*_BACnetConstructedData
 	OccupancyState BACnetAccessZoneOccupancyStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataOccupancyState) GetActualValue() BACnetAccessZone
 func NewBACnetConstructedDataOccupancyState(occupancyState BACnetAccessZoneOccupancyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyState {
 	_result := &_BACnetConstructedDataOccupancyState{
 		OccupancyState:         occupancyState,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

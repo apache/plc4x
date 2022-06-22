@@ -46,10 +46,6 @@ type BACnetConstructedDataVTClassesSupportedExactly interface {
 type _BACnetConstructedDataVTClassesSupported struct {
 	*_BACnetConstructedData
 	VtClassesSupported []BACnetVTClassTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,8 +94,6 @@ func (m *_BACnetConstructedDataVTClassesSupported) GetVtClassesSupported() []BAC
 func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []BACnetVTClassTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVTClassesSupported {
 	_result := &_BACnetConstructedDataVTClassesSupported{
 		VtClassesSupported:     vtClassesSupported,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

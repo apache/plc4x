@@ -48,10 +48,6 @@ type BACnetConstructedDataVerificationTimeExactly interface {
 type _BACnetConstructedDataVerificationTime struct {
 	*_BACnetConstructedData
 	VerificationTime BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataVerificationTime) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataVerificationTime(verificationTime BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
 	_result := &_BACnetConstructedDataVerificationTime{
 		VerificationTime:       verificationTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

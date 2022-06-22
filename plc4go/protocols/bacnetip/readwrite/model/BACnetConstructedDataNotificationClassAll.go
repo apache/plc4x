@@ -43,10 +43,6 @@ type BACnetConstructedDataNotificationClassAllExactly interface {
 // _BACnetConstructedDataNotificationClassAll is the data-structure of this message
 type _BACnetConstructedDataNotificationClassAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,6 @@ func (m *_BACnetConstructedDataNotificationClassAll) GetParent() BACnetConstruct
 // NewBACnetConstructedDataNotificationClassAll factory function for _BACnetConstructedDataNotificationClassAll
 func NewBACnetConstructedDataNotificationClassAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClassAll {
 	_result := &_BACnetConstructedDataNotificationClassAll{
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

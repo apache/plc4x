@@ -49,9 +49,6 @@ type _ApduDataGroupValueResponse struct {
 	*_ApduData
 	DataFirstByte int8
 	Data          []byte
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,7 +94,6 @@ func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength u
 	_result := &_ApduDataGroupValueResponse{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		DataLength:    dataLength,
 		_ApduData:     NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result

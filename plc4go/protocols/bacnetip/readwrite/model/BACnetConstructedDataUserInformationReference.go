@@ -48,10 +48,6 @@ type BACnetConstructedDataUserInformationReferenceExactly interface {
 type _BACnetConstructedDataUserInformationReference struct {
 	*_BACnetConstructedData
 	UserInformationReference BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataUserInformationReference) GetActualValue() BACnet
 func NewBACnetConstructedDataUserInformationReference(userInformationReference BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserInformationReference {
 	_result := &_BACnetConstructedDataUserInformationReference{
 		UserInformationReference: userInformationReference,
-		TagNumber:                tagNumber,
-		ArrayIndexArgument:       arrayIndexArgument,
 		_BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

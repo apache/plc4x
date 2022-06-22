@@ -48,10 +48,6 @@ type BACnetConstructedDataCOVIncrementExactly interface {
 type _BACnetConstructedDataCOVIncrement struct {
 	*_BACnetConstructedData
 	CovIncrement BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataCOVIncrement) GetActualValue() BACnetApplicationT
 func NewBACnetConstructedDataCOVIncrement(covIncrement BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVIncrement {
 	_result := &_BACnetConstructedDataCOVIncrement{
 		CovIncrement:           covIncrement,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

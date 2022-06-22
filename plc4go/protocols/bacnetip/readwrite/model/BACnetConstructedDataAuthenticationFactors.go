@@ -53,10 +53,6 @@ type _BACnetConstructedDataAuthenticationFactors struct {
 	*_BACnetConstructedData
 	NumberOfDataElements  BACnetApplicationTagUnsignedInteger
 	AuthenticationFactors []BACnetCredentialAuthenticationFactor
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,8 +121,6 @@ func NewBACnetConstructedDataAuthenticationFactors(numberOfDataElements BACnetAp
 	_result := &_BACnetConstructedDataAuthenticationFactors{
 		NumberOfDataElements:   numberOfDataElements,
 		AuthenticationFactors:  authenticationFactors,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

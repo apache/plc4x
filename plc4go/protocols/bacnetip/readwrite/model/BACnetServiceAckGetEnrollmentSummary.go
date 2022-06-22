@@ -60,9 +60,6 @@ type _BACnetServiceAckGetEnrollmentSummary struct {
 	EventState        BACnetEventStateTagged
 	Priority          BACnetApplicationTagUnsignedInteger
 	NotificationClass BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -123,7 +120,6 @@ func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationT
 		EventState:        eventState,
 		Priority:          priority,
 		NotificationClass: notificationClass,
-		ServiceAckLength:  serviceAckLength,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

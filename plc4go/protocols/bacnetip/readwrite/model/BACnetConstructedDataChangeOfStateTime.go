@@ -48,10 +48,6 @@ type BACnetConstructedDataChangeOfStateTimeExactly interface {
 type _BACnetConstructedDataChangeOfStateTime struct {
 	*_BACnetConstructedData
 	ChangeOfStateTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,8 +109,6 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetActualValue() BACnetDateTim
 func NewBACnetConstructedDataChangeOfStateTime(changeOfStateTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateTime {
 	_result := &_BACnetConstructedDataChangeOfStateTime{
 		ChangeOfStateTime:      changeOfStateTime,
-		TagNumber:              tagNumber,
-		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

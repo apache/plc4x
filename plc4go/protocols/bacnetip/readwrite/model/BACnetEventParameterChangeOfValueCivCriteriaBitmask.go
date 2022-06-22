@@ -46,9 +46,6 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly interface {
 type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 	*_BACnetEventParameterChangeOfValueCivCriteria
 	Bitmask BACnetContextTagBitString
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,8 +85,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetBitmask() BACn
 // NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
 func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(bitmask BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
 	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		Bitmask:   bitmask,
-		TagNumber: tagNumber,
+		Bitmask: bitmask,
 		_BACnetEventParameterChangeOfValueCivCriteria: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetEventParameterChangeOfValueCivCriteria._BACnetEventParameterChangeOfValueCivCriteriaChildRequirements = _result

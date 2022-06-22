@@ -60,9 +60,6 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple struct {
 	TimeRemaining               BACnetContextTagUnsignedInteger
 	Timestamp                   BACnetTimeStampEnclosed
 	ListOfCovNotifications      ListOfCovNotificationsList
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -124,7 +121,6 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscr
 		TimeRemaining:                    timeRemaining,
 		Timestamp:                        timestamp,
 		ListOfCovNotifications:           listOfCovNotifications,
-		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result
