@@ -152,8 +152,10 @@ func BACnetEventLogRecordLogDatumLogStatusParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventLogRecordLogDatumLogStatus{
-		LogStatus:                     logStatus,
-		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{},
+		LogStatus: logStatus,
+		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _child
 	return _child, nil

@@ -164,9 +164,11 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandProtocolVersion{
-		MajorVersion:    majorVersion,
-		MinorVersion:    minorVersion,
-		_FirmataCommand: &_FirmataCommand{},
+		MajorVersion: majorVersion,
+		MinorVersion: minorVersion,
+		_FirmataCommand: &_FirmataCommand{
+			Response: response,
+		},
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil

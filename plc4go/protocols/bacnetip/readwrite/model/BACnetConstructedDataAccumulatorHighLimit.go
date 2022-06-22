@@ -182,8 +182,11 @@ func BACnetConstructedDataAccumulatorHighLimitParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccumulatorHighLimit{
-		HighLimit:              highLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		HighLimit: highLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -118,7 +118,9 @@ func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDa
 
 	// Create a partially initialized instance
 	_child := &_ApduDataRestart{
-		_ApduData: &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

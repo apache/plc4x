@@ -232,9 +232,12 @@ func BACnetConstructedDataStructuredObjectListParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStructuredObjectList{
-		NumberOfDataElements:   numberOfDataElements,
-		StructuredObjectList:   structuredObjectList,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		StructuredObjectList: structuredObjectList,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

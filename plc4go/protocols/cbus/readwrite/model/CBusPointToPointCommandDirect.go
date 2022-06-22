@@ -172,8 +172,10 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, srchk bool)
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToPointCommandDirect{
-		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: &_CBusPointToPointCommand{},
+		UnitAddress: unitAddress,
+		_CBusPointToPointCommand: &_CBusPointToPointCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child
 	return _child, nil

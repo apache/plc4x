@@ -118,7 +118,9 @@ func ApduDataExtDomainAddressSelectiveReadParse(readBuffer utils.ReadBuffer, len
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtDomainAddressSelectiveRead{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil

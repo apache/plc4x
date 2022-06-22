@@ -153,7 +153,9 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParse(readBuffer utils
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal{
 		RealValue: realValue,
-		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{},
+		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _child
 	return _child, nil

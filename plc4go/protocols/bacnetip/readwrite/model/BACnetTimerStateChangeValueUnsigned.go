@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueUnsignedParse(readBuffer utils.ReadBuffer, objec
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueUnsigned{
-		UnsignedValue:                unsignedValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		UnsignedValue: unsignedValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil

@@ -118,7 +118,9 @@ func MFuncPropConParse(readBuffer utils.ReadBuffer, size uint16) (MFuncPropCon, 
 
 	// Create a partially initialized instance
 	_child := &_MFuncPropCon{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

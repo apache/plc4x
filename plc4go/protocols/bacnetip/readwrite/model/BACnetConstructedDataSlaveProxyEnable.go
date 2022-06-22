@@ -182,8 +182,11 @@ func BACnetConstructedDataSlaveProxyEnableParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSlaveProxyEnable{
-		SlaveProxyEnable:       slaveProxyEnable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		SlaveProxyEnable: slaveProxyEnable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

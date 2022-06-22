@@ -248,12 +248,15 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersBufferReady{
-		InnerOpeningTag:               innerOpeningTag,
-		BufferProperty:                bufferProperty,
-		PreviousNotification:          previousNotification,
-		CurrentNotification:           currentNotification,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag:      innerOpeningTag,
+		BufferProperty:       bufferProperty,
+		PreviousNotification: previousNotification,
+		CurrentNotification:  currentNotification,
+		InnerClosingTag:      innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

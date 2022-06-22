@@ -182,8 +182,11 @@ func BACnetConstructedDataMaxMasterParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaxMaster{
-		MaxMaster:              maxMaster,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxMaster: maxMaster,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

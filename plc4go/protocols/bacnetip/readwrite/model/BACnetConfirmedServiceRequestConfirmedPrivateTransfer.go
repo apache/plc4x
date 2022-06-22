@@ -214,10 +214,12 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedPrivateTransfer{
-		VendorId:                       vendorId,
-		ServiceNumber:                  serviceNumber,
-		ServiceParameters:              serviceParameters,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		VendorId:          vendorId,
+		ServiceNumber:     serviceNumber,
+		ServiceParameters: serviceParameters,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

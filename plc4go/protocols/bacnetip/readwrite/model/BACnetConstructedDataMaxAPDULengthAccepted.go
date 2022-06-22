@@ -182,8 +182,11 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaxAPDULengthAccepted{
-		MaxApduLengthAccepted:  maxApduLengthAccepted,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxApduLengthAccepted: maxApduLengthAccepted,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

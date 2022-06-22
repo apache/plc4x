@@ -238,11 +238,13 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
-		TextMessageSourceDevice:          textMessageSourceDevice,
-		MessageClass:                     messageClass,
-		MessagePriority:                  messagePriority,
-		Message:                          message,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		TextMessageSourceDevice: textMessageSourceDevice,
+		MessageClass:            messageClass,
+		MessagePriority:         messagePriority,
+		Message:                 message,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil

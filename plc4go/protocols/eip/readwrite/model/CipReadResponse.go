@@ -225,11 +225,13 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRe
 
 	// Create a partially initialized instance
 	_child := &_CipReadResponse{
-		Status:      status,
-		ExtStatus:   extStatus,
-		DataType:    dataType,
-		Data:        data,
-		_CipService: &_CipService{},
+		Status:    status,
+		ExtStatus: extStatus,
+		DataType:  dataType,
+		Data:      data,
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil

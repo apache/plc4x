@@ -184,7 +184,9 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 	_child := &_APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		_APDU:            &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil

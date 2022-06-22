@@ -241,7 +241,9 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSe
 		OriginalInvokeId:   originalInvokeId,
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
-		_APDU:              &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil

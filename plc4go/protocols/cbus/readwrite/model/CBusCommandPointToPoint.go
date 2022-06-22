@@ -150,8 +150,10 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToPoint{
-		Command:      command,
-		_CBusCommand: &_CBusCommand{},
+		Command: command,
+		_CBusCommand: &_CBusCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child
 	return _child, nil

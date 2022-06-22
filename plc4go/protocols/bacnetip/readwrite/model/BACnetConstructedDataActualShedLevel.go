@@ -182,8 +182,11 @@ func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActualShedLevel{
-		ActualShedLevel:        actualShedLevel,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ActualShedLevel: actualShedLevel,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

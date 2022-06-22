@@ -182,9 +182,11 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, res
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageSubscribeAnalogPinValue{
-		Pin:             pin,
-		Enable:          enable,
-		_FirmataMessage: &_FirmataMessage{},
+		Pin:    pin,
+		Enable: enable,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil

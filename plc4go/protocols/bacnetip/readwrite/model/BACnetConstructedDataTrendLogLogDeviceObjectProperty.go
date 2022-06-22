@@ -183,7 +183,10 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTrendLogLogDeviceObjectProperty{
 		LogDeviceObjectProperty: logDeviceObjectProperty,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -234,7 +234,10 @@ func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBu
 	_child := &_BACnetConstructedDataAuthenticationPolicyNames{
 		NumberOfDataElements:      numberOfDataElements,
 		AuthenticationPolicyNames: authenticationPolicyNames,
-		_BACnetConstructedData:    &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -156,7 +156,9 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (A
 	// Create a partially initialized instance
 	_child := &_ApduControlContainer{
 		ControlApdu: controlApdu,
-		_Apdu:       &_Apdu{},
+		_Apdu: &_Apdu{
+			DataLength: dataLength,
+		},
 	}
 	_child._Apdu._ApduChildRequirements = _child
 	return _child, nil

@@ -262,12 +262,14 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		SubscriberProcessIdentifier:      subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:       initiatingDeviceIdentifier,
-		TimeRemaining:                    timeRemaining,
-		Timestamp:                        timestamp,
-		ListOfCovNotifications:           listOfCovNotifications,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		SubscriberProcessIdentifier: subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:  initiatingDeviceIdentifier,
+		TimeRemaining:               timeRemaining,
+		Timestamp:                   timestamp,
+		ListOfCovNotifications:      listOfCovNotifications,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil

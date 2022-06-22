@@ -182,9 +182,11 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (F
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageDigitalIO{
-		PinBlock:        pinBlock,
-		Data:            data,
-		_FirmataMessage: &_FirmataMessage{},
+		PinBlock: pinBlock,
+		Data:     data,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil

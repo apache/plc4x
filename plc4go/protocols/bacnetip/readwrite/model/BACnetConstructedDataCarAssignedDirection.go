@@ -182,8 +182,11 @@ func BACnetConstructedDataCarAssignedDirectionParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCarAssignedDirection{
-		AssignedDirection:      assignedDirection,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AssignedDirection: assignedDirection,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

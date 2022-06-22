@@ -232,9 +232,12 @@ func BACnetConstructedDataSupportedFormatsParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSupportedFormats{
-		NumberOfDataElements:   numberOfDataElements,
-		SupportedFormats:       supportedFormats,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		SupportedFormats:     supportedFormats,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -224,11 +224,14 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfBitString{
-		InnerOpeningTag:               innerOpeningTag,
-		ChangeOfBitString:             changeOfBitString,
-		StatusFlags:                   statusFlags,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag:   innerOpeningTag,
+		ChangeOfBitString: changeOfBitString,
+		StatusFlags:       statusFlags,
+		InnerClosingTag:   innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

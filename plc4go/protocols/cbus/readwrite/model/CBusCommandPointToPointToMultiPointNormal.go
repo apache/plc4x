@@ -294,12 +294,14 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToPointToMultiPointNormal{
-		Application:                          application,
-		SalData:                              salData,
-		Crc:                                  crc,
-		PeekAlpha:                            peekAlpha,
-		Alpha:                                alpha,
-		_CBusPointToPointToMultipointCommand: &_CBusPointToPointToMultipointCommand{},
+		Application: application,
+		SalData:     salData,
+		Crc:         crc,
+		PeekAlpha:   peekAlpha,
+		Alpha:       alpha,
+		_CBusPointToPointToMultipointCommand: &_CBusPointToPointToMultipointCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusPointToPointToMultipointCommand._CBusPointToPointToMultipointCommandChildRequirements = _child
 	return _child, nil

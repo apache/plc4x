@@ -153,7 +153,9 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckVTOpen{
 		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
-		_BACnetServiceAck:         &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

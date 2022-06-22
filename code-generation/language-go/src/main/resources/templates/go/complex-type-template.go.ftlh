@@ -1509,7 +1509,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 		</#list>
-        _${type.parentType.orElseThrow().name}: &_${type.parentType.orElseThrow().name}{},
+        _${type.parentType.orElseThrow().name}: &_${type.parentType.orElseThrow().name}{
+		<#if filteredParserArguments?has_content>
+			<#list filteredParserArguments?filter(arg->type.getParentType().orElseThrow().isParserArgument(arg.name)) as arg>
+            ${arg.name?cap_first}: ${arg.name},
+			</#list>
+		</#if>
+		},
 	}
 	_child._${type.parentType.orElseThrow().name}._${type.parentType.orElseThrow().name}ChildRequirements = _child
 	return _child, nil

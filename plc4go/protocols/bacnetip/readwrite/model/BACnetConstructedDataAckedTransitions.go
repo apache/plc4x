@@ -182,8 +182,11 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAckedTransitions{
-		AckedTransitions:       ackedTransitions,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AckedTransitions: ackedTransitions,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

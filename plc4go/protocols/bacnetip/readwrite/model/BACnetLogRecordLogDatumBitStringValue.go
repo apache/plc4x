@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumBitStringValueParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumBitStringValue{
-		BitStringValue:           bitStringValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		BitStringValue: bitStringValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil

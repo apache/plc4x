@@ -182,8 +182,11 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAutoSlaveDiscovery{
-		AutoSlaveDiscovery:     autoSlaveDiscovery,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AutoSlaveDiscovery: autoSlaveDiscovery,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

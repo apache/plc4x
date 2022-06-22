@@ -152,8 +152,10 @@ func BACnetLogDataLogDataTimeChangeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataTimeChange{
-		TimeChange:     timeChange,
-		_BACnetLogData: &_BACnetLogData{},
+		TimeChange: timeChange,
+		_BACnetLogData: &_BACnetLogData{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogData._BACnetLogDataChildRequirements = _child
 	return _child, nil

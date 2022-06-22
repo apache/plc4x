@@ -118,7 +118,9 @@ func LRawIndParse(readBuffer utils.ReadBuffer, size uint16) (LRawInd, error) {
 
 	// Create a partially initialized instance
 	_child := &_LRawInd{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

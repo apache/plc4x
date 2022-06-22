@@ -182,8 +182,11 @@ func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPv6Mode{
-		BacnetIpv6Mode:         bacnetIpv6Mode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BacnetIpv6Mode: bacnetIpv6Mode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

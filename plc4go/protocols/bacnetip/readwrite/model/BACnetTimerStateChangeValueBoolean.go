@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueBooleanParse(readBuffer utils.ReadBuffer, object
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueBoolean{
-		BooleanValue:                 booleanValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		BooleanValue: booleanValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil

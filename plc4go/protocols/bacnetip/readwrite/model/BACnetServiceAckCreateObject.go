@@ -152,8 +152,10 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLe
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckCreateObject{
-		ObjectIdentifier:  objectIdentifier,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		ObjectIdentifier: objectIdentifier,
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

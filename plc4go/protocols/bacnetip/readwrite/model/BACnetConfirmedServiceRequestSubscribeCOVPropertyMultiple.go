@@ -289,7 +289,9 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 		Lifetime:                            lifetime,
 		MaxNotificationDelay:                maxNotificationDelay,
 		ListOfCovSubscriptionSpecifications: listOfCovSubscriptionSpecifications,
-		_BACnetConfirmedServiceRequest:      &_BACnetConfirmedServiceRequest{},
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

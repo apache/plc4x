@@ -182,8 +182,11 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessEventCredential{
-		AccessEventCredential:  accessEventCredential,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AccessEventCredential: accessEventCredential,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

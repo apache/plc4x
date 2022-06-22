@@ -153,7 +153,9 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAc
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

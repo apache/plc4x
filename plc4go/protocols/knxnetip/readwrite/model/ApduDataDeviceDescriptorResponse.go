@@ -167,7 +167,9 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 	_child := &_ApduDataDeviceDescriptorResponse{
 		DescriptorType: descriptorType,
 		Data:           data,
-		_ApduData:      &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

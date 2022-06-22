@@ -169,7 +169,9 @@ func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTP
 	_child := &_COTPPacketTpduError{
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
-		_COTPPacket:          &_COTPPacket{},
+		_COTPPacket: &_COTPPacket{
+			CotpLen: cotpLen,
+		},
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil

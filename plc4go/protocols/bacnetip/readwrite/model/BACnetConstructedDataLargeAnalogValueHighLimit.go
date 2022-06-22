@@ -182,8 +182,11 @@ func BACnetConstructedDataLargeAnalogValueHighLimitParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLargeAnalogValueHighLimit{
-		HighLimit:              highLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		HighLimit: highLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

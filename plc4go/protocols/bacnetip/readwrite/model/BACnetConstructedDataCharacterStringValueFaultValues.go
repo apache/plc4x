@@ -232,9 +232,12 @@ func BACnetConstructedDataCharacterStringValueFaultValuesParse(readBuffer utils.
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCharacterStringValueFaultValues{
-		NumberOfDataElements:   numberOfDataElements,
-		FaultValues:            faultValues,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		FaultValues:          faultValues,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

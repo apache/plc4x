@@ -165,7 +165,9 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 	// Create a partially initialized instance
 	_child := &_NLMIAmRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      &_NLM{},
+		_NLM: &_NLM{
+			ApduLength: apduLength,
+		},
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil

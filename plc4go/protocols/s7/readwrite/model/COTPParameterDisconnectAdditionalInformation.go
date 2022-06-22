@@ -147,8 +147,10 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterDisconnectAdditionalInformation{
-		Data:           data,
-		_COTPParameter: &_COTPParameter{},
+		Data: data,
+		_COTPParameter: &_COTPParameter{
+			Rest: rest,
+		},
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil

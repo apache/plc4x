@@ -182,8 +182,11 @@ func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFullDutyBaseline{
-		FullDutyBaseLine:       fullDutyBaseLine,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FullDutyBaseLine: fullDutyBaseLine,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

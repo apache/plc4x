@@ -152,8 +152,10 @@ func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (Fir
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageCommand{
-		Command:         command,
-		_FirmataMessage: &_FirmataMessage{},
+		Command: command,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil

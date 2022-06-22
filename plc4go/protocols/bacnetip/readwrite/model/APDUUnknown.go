@@ -167,7 +167,9 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnkno
 	_child := &_APDUUnknown{
 		UnknownTypeRest: unknownTypeRest,
 		UnknownBytes:    unknownBytes,
-		_APDU:           &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil

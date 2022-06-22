@@ -118,7 +118,9 @@ func ApduDataExtLinkResponseParse(readBuffer utils.ReadBuffer, length uint8) (Ap
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtLinkResponse{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil

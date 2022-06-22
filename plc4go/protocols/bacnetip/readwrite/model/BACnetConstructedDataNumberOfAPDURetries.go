@@ -182,8 +182,11 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNumberOfAPDURetries{
-		NumberOfApduRetries:    numberOfApduRetries,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfApduRetries: numberOfApduRetries,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

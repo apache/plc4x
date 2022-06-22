@@ -209,7 +209,9 @@ func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		_CEMI:                       &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

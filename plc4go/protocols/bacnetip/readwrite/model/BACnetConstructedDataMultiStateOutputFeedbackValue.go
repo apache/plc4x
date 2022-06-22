@@ -182,8 +182,11 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
-		FeedbackValue:          feedbackValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FeedbackValue: feedbackValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

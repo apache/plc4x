@@ -459,7 +459,9 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		ServiceRequest:            serviceRequest,
 		SegmentServiceChoice:      segmentServiceChoice,
 		Segment:                   segment,
-		_APDU:                     &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil

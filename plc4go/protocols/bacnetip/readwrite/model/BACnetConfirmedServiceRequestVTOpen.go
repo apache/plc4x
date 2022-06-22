@@ -177,9 +177,11 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestVTOpen{
-		VtClass:                        vtClass,
-		LocalVtSessionIdentifier:       localVtSessionIdentifier,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		VtClass:                  vtClass,
+		LocalVtSessionIdentifier: localVtSessionIdentifier,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

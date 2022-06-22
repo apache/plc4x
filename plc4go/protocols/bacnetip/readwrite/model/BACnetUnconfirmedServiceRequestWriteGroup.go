@@ -238,11 +238,13 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestWriteGroup{
-		GroupNumber:                      groupNumber,
-		WritePriority:                    writePriority,
-		ChangeList:                       changeList,
-		InhibitDelay:                     inhibitDelay,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		GroupNumber:   groupNumber,
+		WritePriority: writePriority,
+		ChangeList:    changeList,
+		InhibitDelay:  inhibitDelay,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil

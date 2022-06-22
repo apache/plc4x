@@ -279,7 +279,9 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 		Timestamp:                      timestamp,
 		AcknowledgmentSource:           acknowledgmentSource,
 		TimeOfAcknowledgment:           timeOfAcknowledgment,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

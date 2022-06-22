@@ -182,8 +182,11 @@ func BACnetConstructedDataOccupancyCountAdjustParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOccupancyCountAdjust{
-		OccupancyCountAdjust:   occupancyCountAdjust,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		OccupancyCountAdjust: occupancyCountAdjust,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

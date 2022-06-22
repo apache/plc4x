@@ -271,11 +271,13 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestWhoHas{
-		DeviceInstanceRangeLowLimit:      deviceInstanceRangeLowLimit,
-		DeviceInstanceRangeHighLimit:     deviceInstanceRangeHighLimit,
-		ObjectIdentifier:                 objectIdentifier,
-		ObjectName:                       objectName,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		DeviceInstanceRangeLowLimit:  deviceInstanceRangeLowLimit,
+		DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit,
+		ObjectIdentifier:             objectIdentifier,
+		ObjectName:                   objectName,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil

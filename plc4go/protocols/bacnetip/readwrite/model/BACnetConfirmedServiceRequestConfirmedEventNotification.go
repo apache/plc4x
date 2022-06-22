@@ -487,20 +487,22 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
-		ProcessIdentifier:              processIdentifier,
-		InitiatingDeviceIdentifier:     initiatingDeviceIdentifier,
-		EventObjectIdentifier:          eventObjectIdentifier,
-		Timestamp:                      timestamp,
-		NotificationClass:              notificationClass,
-		Priority:                       priority,
-		EventType:                      eventType,
-		MessageText:                    messageText,
-		NotifyType:                     notifyType,
-		AckRequired:                    ackRequired,
-		FromState:                      fromState,
-		ToState:                        toState,
-		EventValues:                    eventValues,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		ProcessIdentifier:          processIdentifier,
+		InitiatingDeviceIdentifier: initiatingDeviceIdentifier,
+		EventObjectIdentifier:      eventObjectIdentifier,
+		Timestamp:                  timestamp,
+		NotificationClass:          notificationClass,
+		Priority:                   priority,
+		EventType:                  eventType,
+		MessageText:                messageText,
+		NotifyType:                 notifyType,
+		AckRequired:                ackRequired,
+		FromState:                  fromState,
+		ToState:                    toState,
+		EventValues:                eventValues,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

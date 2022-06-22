@@ -171,8 +171,10 @@ func S7PayloadWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uin
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadWriteVarResponse{
-		Items:      items,
-		_S7Payload: &_S7Payload{},
+		Items: items,
+		_S7Payload: &_S7Payload{
+			Parameter: parameter,
+		},
 	}
 	_child._S7Payload._S7PayloadChildRequirements = _child
 	return _child, nil

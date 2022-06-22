@@ -118,7 +118,9 @@ func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (LRawCon, error) {
 
 	// Create a partially initialized instance
 	_child := &_LRawCon{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

@@ -152,8 +152,11 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersComplexEventType{
-		ListOfValues:                  listOfValues,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		ListOfValues: listOfValues,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil

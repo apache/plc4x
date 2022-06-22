@@ -118,7 +118,9 @@ func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength 
 
 	// Create a partially initialized instance
 	_child := &_ApduDataIndividualAddressRead{
-		_ApduData: &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

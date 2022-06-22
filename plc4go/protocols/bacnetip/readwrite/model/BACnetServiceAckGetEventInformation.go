@@ -178,7 +178,9 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	_child := &_BACnetServiceAckGetEventInformation{
 		ListOfEventSummaries: listOfEventSummaries,
 		MoreEvents:           moreEvents,
-		_BACnetServiceAck:    &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

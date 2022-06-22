@@ -171,8 +171,11 @@ func BACnetConstructedDataLandingCallsParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLandingCalls{
-		LandingCallStatus:      landingCallStatus,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LandingCallStatus: landingCallStatus,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

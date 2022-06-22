@@ -273,12 +273,14 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestAtomicWriteFile{
-		DeviceIdentifier:               deviceIdentifier,
-		OpeningTag:                     openingTag,
-		FileStartPosition:              fileStartPosition,
-		FileData:                       fileData,
-		ClosingTag:                     closingTag,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		DeviceIdentifier:  deviceIdentifier,
+		OpeningTag:        openingTag,
+		FileStartPosition: fileStartPosition,
+		FileData:          fileData,
+		ClosingTag:        closingTag,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

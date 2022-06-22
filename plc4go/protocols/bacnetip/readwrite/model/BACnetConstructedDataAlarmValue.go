@@ -182,8 +182,11 @@ func BACnetConstructedDataAlarmValueParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAlarmValue{
-		BinaryPv:               binaryPv,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BinaryPv: binaryPv,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -182,8 +182,11 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDerivativeConstant{
-		DerivativeConstant:     derivativeConstant,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DerivativeConstant: derivativeConstant,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

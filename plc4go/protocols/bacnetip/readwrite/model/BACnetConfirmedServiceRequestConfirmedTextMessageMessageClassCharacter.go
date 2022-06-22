@@ -153,7 +153,9 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
 		CharacterValue: characterValue,
-		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{},
+		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _child
 	return _child, nil

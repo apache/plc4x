@@ -182,8 +182,11 @@ func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataInstantaneousPower{
-		InstantaneousPower:     instantaneousPower,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		InstantaneousPower: instantaneousPower,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

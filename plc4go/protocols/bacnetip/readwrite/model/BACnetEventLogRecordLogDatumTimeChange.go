@@ -152,8 +152,10 @@ func BACnetEventLogRecordLogDatumTimeChangeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventLogRecordLogDatumTimeChange{
-		TimeChange:                    timeChange,
-		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{},
+		TimeChange: timeChange,
+		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _child
 	return _child, nil

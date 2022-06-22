@@ -152,8 +152,10 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (COTPPa
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterTpduSize{
-		TpduSize:       tpduSize,
-		_COTPParameter: &_COTPParameter{},
+		TpduSize: tpduSize,
+		_COTPParameter: &_COTPParameter{
+			Rest: rest,
+		},
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil

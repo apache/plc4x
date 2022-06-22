@@ -146,8 +146,10 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (COTPPa
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterChecksum{
-		Crc:            crc,
-		_COTPParameter: &_COTPParameter{},
+		Crc: crc,
+		_COTPParameter: &_COTPParameter{
+			Rest: rest,
+		},
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil

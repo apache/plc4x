@@ -152,8 +152,10 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
-		ReferencedPropertyIncrement:                   referencedPropertyIncrement,
-		_BACnetEventParameterChangeOfValueCivCriteria: &_BACnetEventParameterChangeOfValueCivCriteria{},
+		ReferencedPropertyIncrement: referencedPropertyIncrement,
+		_BACnetEventParameterChangeOfValueCivCriteria: &_BACnetEventParameterChangeOfValueCivCriteria{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventParameterChangeOfValueCivCriteria._BACnetEventParameterChangeOfValueCivCriteriaChildRequirements = _child
 	return _child, nil

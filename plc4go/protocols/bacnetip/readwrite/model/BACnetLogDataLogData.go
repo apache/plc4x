@@ -214,7 +214,9 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BA
 		InnerOpeningTag: innerOpeningTag,
 		LogData:         logData,
 		InnerClosingTag: innerClosingTag,
-		_BACnetLogData:  &_BACnetLogData{},
+		_BACnetLogData: &_BACnetLogData{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogData._BACnetLogDataChildRequirements = _child
 	return _child, nil

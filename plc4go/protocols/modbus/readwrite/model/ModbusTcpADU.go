@@ -230,7 +230,9 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 		TransactionIdentifier: transactionIdentifier,
 		UnitIdentifier:        unitIdentifier,
 		Pdu:                   pdu,
-		_ModbusADU:            &_ModbusADU{},
+		_ModbusADU: &_ModbusADU{
+			Response: response,
+		},
 	}
 	_child._ModbusADU._ModbusADUChildRequirements = _child
 	return _child, nil

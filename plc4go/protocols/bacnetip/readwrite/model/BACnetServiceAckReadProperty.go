@@ -252,7 +252,9 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceAckLe
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		Values:             values,
-		_BACnetServiceAck:  &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil

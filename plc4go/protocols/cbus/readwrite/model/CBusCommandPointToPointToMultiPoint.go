@@ -150,8 +150,10 @@ func CBusCommandPointToPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToPointToMultiPoint{
-		Command:      command,
-		_CBusCommand: &_CBusCommand{},
+		Command: command,
+		_CBusCommand: &_CBusCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child
 	return _child, nil

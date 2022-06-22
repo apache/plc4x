@@ -150,8 +150,10 @@ func BACnetPriorityValueBitStringParse(readBuffer utils.ReadBuffer, objectTypeAr
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueBitString{
-		BitStringValue:       bitStringValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		BitStringValue: bitStringValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil

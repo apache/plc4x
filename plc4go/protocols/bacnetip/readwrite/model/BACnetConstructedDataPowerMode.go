@@ -182,8 +182,11 @@ func BACnetConstructedDataPowerModeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPowerMode{
-		PowerMode:              powerMode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PowerMode: powerMode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -153,7 +153,9 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData
 	// Create a partially initialized instance
 	_child := &_ApduDataOther{
 		ExtendedApdu: extendedApdu,
-		_ApduData:    &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil

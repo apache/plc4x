@@ -242,7 +242,9 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, 
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 		Data:                data,
-		_CEMI:               &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

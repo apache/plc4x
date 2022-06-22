@@ -330,13 +330,15 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
-		AcknowledgmentFilter:           acknowledgmentFilter,
-		EnrollmentFilter:               enrollmentFilter,
-		EventStateFilter:               eventStateFilter,
-		EventTypeFilter:                eventTypeFilter,
-		PriorityFilter:                 priorityFilter,
-		NotificationClassFilter:        notificationClassFilter,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		AcknowledgmentFilter:    acknowledgmentFilter,
+		EnrollmentFilter:        enrollmentFilter,
+		EventStateFilter:        eventStateFilter,
+		EventTypeFilter:         eventTypeFilter,
+		PriorityFilter:          priorityFilter,
+		NotificationClassFilter: notificationClassFilter,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

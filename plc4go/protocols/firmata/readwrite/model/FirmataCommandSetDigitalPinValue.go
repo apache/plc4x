@@ -182,9 +182,11 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSetDigitalPinValue{
-		Pin:             pin,
-		On:              on,
-		_FirmataCommand: &_FirmataCommand{},
+		Pin: pin,
+		On:  on,
+		_FirmataCommand: &_FirmataCommand{
+			Response: response,
+		},
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil

@@ -234,7 +234,10 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.Re
 	_child := &_BACnetConstructedDataNetworkAccessSecurityPolicies{
 		NumberOfDataElements:          numberOfDataElements,
 		NetworkAccessSecurityPolicies: networkAccessSecurityPolicies,
-		_BACnetConstructedData:        &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

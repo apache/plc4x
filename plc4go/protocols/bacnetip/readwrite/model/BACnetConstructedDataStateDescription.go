@@ -182,8 +182,11 @@ func BACnetConstructedDataStateDescriptionParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStateDescription{
-		StateDescription:       stateDescription,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		StateDescription: stateDescription,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

@@ -118,7 +118,9 @@ func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (TDataInd
 
 	// Create a partially initialized instance
 	_child := &_TDataIndividualInd{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

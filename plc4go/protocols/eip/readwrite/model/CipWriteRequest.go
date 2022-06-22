@@ -231,7 +231,9 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWr
 		DataType:        dataType,
 		ElementNb:       elementNb,
 		Data:            data,
-		_CipService:     &_CipService{},
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil

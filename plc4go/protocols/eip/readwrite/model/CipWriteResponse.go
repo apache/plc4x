@@ -182,9 +182,11 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipW
 
 	// Create a partially initialized instance
 	_child := &_CipWriteResponse{
-		Status:      status,
-		ExtStatus:   extStatus,
-		_CipService: &_CipService{},
+		Status:    status,
+		ExtStatus: extStatus,
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil

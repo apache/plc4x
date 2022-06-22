@@ -118,7 +118,9 @@ func MPropWriteReqParse(readBuffer utils.ReadBuffer, size uint16) (MPropWriteReq
 
 	// Create a partially initialized instance
 	_child := &_MPropWriteReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

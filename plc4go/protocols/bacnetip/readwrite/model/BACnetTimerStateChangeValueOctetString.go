@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueOctetStringParse(readBuffer utils.ReadBuffer, ob
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueOctetString{
-		OctetStringValue:             octetStringValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		OctetStringValue: octetStringValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil

@@ -234,7 +234,10 @@ func BACnetConstructedDataSubordinateRelationshipsParse(readBuffer utils.ReadBuf
 	_child := &_BACnetConstructedDataSubordinateRelationships{
 		NumberOfDataElements:     numberOfDataElements,
 		SubordinateRelationships: subordinateRelationships,
-		_BACnetConstructedData:   &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

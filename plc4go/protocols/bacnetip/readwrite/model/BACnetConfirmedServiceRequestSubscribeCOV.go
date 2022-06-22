@@ -249,11 +249,13 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestSubscribeCOV{
-		SubscriberProcessIdentifier:    subscriberProcessIdentifier,
-		MonitoredObjectIdentifier:      monitoredObjectIdentifier,
-		IssueConfirmed:                 issueConfirmed,
-		LifetimeInSeconds:              lifetimeInSeconds,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		SubscriberProcessIdentifier: subscriberProcessIdentifier,
+		MonitoredObjectIdentifier:   monitoredObjectIdentifier,
+		IssueConfirmed:              issueConfirmed,
+		LifetimeInSeconds:           lifetimeInSeconds,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil

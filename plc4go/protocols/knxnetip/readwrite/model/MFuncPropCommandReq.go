@@ -118,7 +118,9 @@ func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (MFuncPr
 
 	// Create a partially initialized instance
 	_child := &_MFuncPropCommandReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

@@ -152,8 +152,10 @@ func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagUnknown{
-		UnknownData:       unknownData,
-		_BACnetContextTag: &_BACnetContextTag{},
+		UnknownData: unknownData,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil

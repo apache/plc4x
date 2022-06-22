@@ -233,7 +233,9 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
-		_CEMI:                       &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

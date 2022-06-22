@@ -182,8 +182,11 @@ func BACnetConstructedDataCredentialStatusParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialStatus{
-		BinaryPv:               binaryPv,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BinaryPv: binaryPv,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

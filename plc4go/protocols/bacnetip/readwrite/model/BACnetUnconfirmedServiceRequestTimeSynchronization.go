@@ -177,9 +177,11 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
-		SynchronizedDate:                 synchronizedDate,
-		SynchronizedTime:                 synchronizedTime,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		SynchronizedDate: synchronizedDate,
+		SynchronizedTime: synchronizedTime,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil

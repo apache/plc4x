@@ -118,7 +118,9 @@ func TDataConnectedIndParse(readBuffer utils.ReadBuffer, size uint16) (TDataConn
 
 	// Create a partially initialized instance
 	_child := &_TDataConnectedInd{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil

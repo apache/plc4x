@@ -182,8 +182,11 @@ func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataVendorIdentifier{
-		VendorIdentifier:       vendorIdentifier,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		VendorIdentifier: vendorIdentifier,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil

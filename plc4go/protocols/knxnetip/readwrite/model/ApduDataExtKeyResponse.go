@@ -118,7 +118,9 @@ func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer, length uint8) (Apd
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtKeyResponse{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil

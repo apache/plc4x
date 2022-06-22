@@ -125,7 +125,9 @@ func BACnetContextTagNullParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagNull{
-		_BACnetContextTag: &_BACnetContextTag{},
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
