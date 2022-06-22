@@ -44,7 +44,7 @@ type HandleError func(err error) error
 type MessageCodec interface {
 	// Connect connects this codec
 	Connect() error
-	// Disconnect Disconnects this codec
+	// Disconnect disconnects this codec
 	Disconnect() error
 	// IsRunning returns tur if the codec (workers are running)
 	IsRunning() bool

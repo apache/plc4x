@@ -141,15 +141,20 @@ func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan interface{} {
 
 func (m *defaultCodec) Connect() error {
 	log.Trace().Msg("Connecting")
-	err := m.transportInstance.Connect()
-	if err == nil {
-		if !m.running {
-			log.Debug().Msg("Message codec currently not running, starting worker now")
-			go m.Work(&m.DefaultCodecRequirements)
+	if !m.transportInstance.IsConnected() {
+		if err := m.transportInstance.Connect(); err != nil {
+			return err
 		}
-		m.running = true
+	} else {
+		log.Info().Msg("Transport instance already connected")
 	}
-	return err
+
+	if !m.running {
+		log.Debug().Msg("Message codec currently not running, starting worker now")
+		go m.Work(&m.DefaultCodecRequirements)
+	}
+	m.running = true
+	return nil
 }
 
 func (m *defaultCodec) Disconnect() error {
