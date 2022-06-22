@@ -118,6 +118,7 @@
               [simple      PathSegment('order')         connectionPathInstanceSegment]
         ]
         ['0x4E','true' CipConnectionManagerCloseResponse
+              [reserved uint    8   '0x00']
               [simple   uint    8   status]
               [simple   uint    8   additionalStatusWords]
               [simple      uint    16          connectionSerialNumber]
@@ -159,7 +160,7 @@
         ['0x52','true','true'   CipConnectedResponse
                [reserved   uint    8    '0x00']
                [simple     uint    8    status]
-               [simple     uint    8    additionalStatusSize]
+               [simple     uint    8    additionalStatusWords]
                [simple     uint    32   value]
                [simple     uint    16   tagStatus]
         ]
