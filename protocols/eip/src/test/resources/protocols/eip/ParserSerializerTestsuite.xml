@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
-                byteOrder="LITTLE_ENDIAN">
+                byteOrder="BIG_ENDIAN">
 
   <name>EIP</name>
 
@@ -347,59 +347,4 @@
       </EipPacket>
     </xml>
   </testcase>
-
-  <testcase>
-    <name>CIP Connected Read Request</name>
-    <raw>70003800c9070440000000005765277265000000000000000000000000000200a10004005942feffb10024000100520d91124b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b910370707000010000000000</raw>
-    <root-type>EipPacket</root-type>
-    <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
-    </parser-arguments>
-    <xml>
-      <EipPacket>
-        <command dataType="uint" bitLength="16">112</command>
-        <packetLength dataType="uint" bitLength="16">56</packetLength>
-        <sessionHandle dataType="uint" bitLength="32">1074005961</sessionHandle>
-        <status dataType="uint" bitLength="32">0</status>
-        <senderContext dataType="byte" bitLength="64">0x5765277265000000</senderContext>
-        <options dataType="uint" bitLength="32">0</options>
-        <SendUnitData>
-          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
-          <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
-            <TypeId>
-              <id dataType="uint" bitLength="16">161</id>
-              <ConnectedAddressItem>
-                <reserved dataType="uint" bitLength="16">4</reserved>
-                <connectionId dataType="uint" bitLength="32">4294853209</connectionId>
-              </ConnectedAddressItem>
-            </TypeId>
-            <TypeId>
-              <id dataType="uint" bitLength="16">177</id>
-              <ConnectedDataItem>
-                <packetSize dataType="uint" bitLength="16">36</packetSize>
-                <sequenceCount dataType="uint" bitLength="16">1</sequenceCount>
-                <service>
-                  <CipService>
-                    <response dataType="bit" bitLength="1">false</response>
-                    <service dataType="uint" bitLength="7">82</service>
-                    <CipConnectedRequest>
-                      <requestPathSize dataType="uint" bitLength="8">13</requestPathSize>
-                      <pathSegments dataType="byte" bitLength="208">0x91124b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b910370707000</pathSegments>
-                      <reserved dataType="uint" bitLength="16">1</reserved>
-                      <reserved dataType="uint" bitLength="32">0</reserved>
-                    </CipConnectedRequest>
-                  </CipService>
-                </service>
-              </ConnectedDataItem>
-            </TypeId>
-          </typeId>
-        </SendUnitData>
-      </EipPacket>
-    </xml>
-  </testcase>
-
-
-
 </test:testsuite>

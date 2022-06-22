@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.eip.readwrite;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
+import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class EIPDriverTestsuite extends DriverTestsuiteRunner {
+public class EIPParserSerializerLittleTest extends ParserSerializerTestsuiteRunner {
 
-    public EIPDriverTestsuite() {
-        super("/protocols/eip/DriverTestsuite.xml");
+    public EIPParserSerializerLittleTest() {
+        super("/protocols/eip/ParserSerializerTestsuiteLittle.xml");
     }
 
 }

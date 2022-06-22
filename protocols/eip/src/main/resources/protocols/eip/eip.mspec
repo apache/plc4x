@@ -156,6 +156,13 @@
                [reserved   uint    16   '0x0001']
                [reserved   uint    32   '0x00000000']
         ]
+        ['0x52','true','true'   CipConnectedResponse
+               [reserved   uint    8    '0x00']
+               [simple     uint    8    status]
+               [simple     uint    8    additionalStatusSize]
+               [simple     uint    32   value]
+               [simple     uint    16   tagStatus]
+        ]
         ['0x5B','false'     CipConnectionManagerRequest
                [implicit      int     8         requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
                [simple      PathSegment('order')         classSegment]
