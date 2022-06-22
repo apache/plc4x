@@ -241,6 +241,10 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (ExtendedFormat
 	}
 	// Count array
 	statusBytes := make([]StatusByte, uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(3)))
+	// This happens when the size is set conditional to 0
+	if len(statusBytes) == 0 {
+		statusBytes = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(statusHeader.GetNumberOfCharacterPairs())-uint16(uint16(3))); curItem++ {
 			_item, _err := StatusByteParse(readBuffer)
@@ -344,19 +348,17 @@ func (m *_ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Array Field (statusBytes)
-	if m.GetStatusBytes() != nil {
-		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusBytes")
+	if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for statusBytes")
+	}
+	for _, _element := range m.GetStatusBytes() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
 		}
-		for _, _element := range m.GetStatusBytes() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusBytes")
-		}
+	}
+	if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for statusBytes")
 	}
 
 	// Simple Field (crc)

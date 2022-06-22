@@ -219,12 +219,9 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) Serialize(writeBuffer utils.Writ
 	}
 
 	// Array Field (recordData)
-	if m.GetRecordData() != nil {
-		// Byte Array field (recordData)
-		_writeArrayErr := writeBuffer.WriteByteArray("recordData", m.GetRecordData())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'recordData' field")
-		}
+	// Byte Array field (recordData)
+	if err := writeBuffer.WriteByteArray("recordData", m.GetRecordData()); err != nil {
+		return errors.Wrap(err, "Error serializing 'recordData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusPDUWriteFileRecordResponseItem"); popErr != nil {

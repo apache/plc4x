@@ -145,7 +145,7 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer, bvlcPayload
 		return nil, errors.Wrap(pullErr, "Error pulling for table")
 	}
 	// Length array
-	table := make([]BVLCForeignDeviceTableEntry, 0)
+	var table []BVLCForeignDeviceTableEntry
 	{
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
@@ -183,19 +183,17 @@ func (m *_BVLCReadForeignDeviceTableAck) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (table)
-		if m.GetTable() != nil {
-			if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for table")
+		if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for table")
+		}
+		for _, _element := range m.GetTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'table' field")
 			}
-			for _, _element := range m.GetTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'table' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for table")
-			}
+		}
+		if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for table")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCReadForeignDeviceTableAck"); popErr != nil {

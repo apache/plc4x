@@ -160,7 +160,7 @@ func ModbusPDUReadFileRecordResponseParse(readBuffer utils.ReadBuffer, response 
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Length array
-	items := make([]ModbusPDUReadFileRecordResponseItem, 0)
+	var items []ModbusPDUReadFileRecordResponseItem
 	{
 		_itemsLength := byteCount
 		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
@@ -212,19 +212,17 @@ func (m *_ModbusPDUReadFileRecordResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (items)
-		if m.GetItems() != nil {
-			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for items")
+		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for items")
+		}
+		for _, _element := range m.GetItems() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
-			for _, _element := range m.GetItems() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'items' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for items")
-			}
+		}
+		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for items")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadFileRecordResponse"); popErr != nil {

@@ -154,7 +154,7 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 		return nil, errors.Wrap(pullErr, "Error pulling for activeVTSession")
 	}
 	// Terminated array
-	activeVTSession := make([]BACnetVTSession, 0)
+	var activeVTSession []BACnetVTSession
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVTSessionParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataActiveVTSessions) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (activeVTSession)
-		if m.GetActiveVTSession() != nil {
-			if pushErr := writeBuffer.PushContext("activeVTSession", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for activeVTSession")
+		if pushErr := writeBuffer.PushContext("activeVTSession", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for activeVTSession")
+		}
+		for _, _element := range m.GetActiveVTSession() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'activeVTSession' field")
 			}
-			for _, _element := range m.GetActiveVTSession() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'activeVTSession' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("activeVTSession", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for activeVTSession")
-			}
+		}
+		if popErr := writeBuffer.PopContext("activeVTSession", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for activeVTSession")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveVTSessions"); popErr != nil {

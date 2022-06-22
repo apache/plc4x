@@ -154,7 +154,7 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for activeCOVSubscriptions")
 	}
 	// Terminated array
-	activeCOVSubscriptions := make([]BACnetCOVSubscription, 0)
+	var activeCOVSubscriptions []BACnetCOVSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVSubscriptionParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) Serialize(writeBuffer uti
 		}
 
 		// Array Field (activeCOVSubscriptions)
-		if m.GetActiveCOVSubscriptions() != nil {
-			if pushErr := writeBuffer.PushContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for activeCOVSubscriptions")
+		if pushErr := writeBuffer.PushContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for activeCOVSubscriptions")
+		}
+		for _, _element := range m.GetActiveCOVSubscriptions() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'activeCOVSubscriptions' field")
 			}
-			for _, _element := range m.GetActiveCOVSubscriptions() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'activeCOVSubscriptions' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for activeCOVSubscriptions")
-			}
+		}
+		if popErr := writeBuffer.PopContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for activeCOVSubscriptions")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveCOVSubscriptions"); popErr != nil {

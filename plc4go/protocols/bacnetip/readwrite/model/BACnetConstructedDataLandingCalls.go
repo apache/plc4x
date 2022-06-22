@@ -154,7 +154,7 @@ func BACnetConstructedDataLandingCallsParse(readBuffer utils.ReadBuffer, tagNumb
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCallStatus")
 	}
 	// Terminated array
-	landingCallStatus := make([]BACnetLandingCallStatus, 0)
+	var landingCallStatus []BACnetLandingCallStatus
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLandingCallStatusParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataLandingCalls) Serialize(writeBuffer utils.WriteBu
 		}
 
 		// Array Field (landingCallStatus)
-		if m.GetLandingCallStatus() != nil {
-			if pushErr := writeBuffer.PushContext("landingCallStatus", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for landingCallStatus")
+		if pushErr := writeBuffer.PushContext("landingCallStatus", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for landingCallStatus")
+		}
+		for _, _element := range m.GetLandingCallStatus() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'landingCallStatus' field")
 			}
-			for _, _element := range m.GetLandingCallStatus() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'landingCallStatus' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("landingCallStatus", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for landingCallStatus")
-			}
+		}
+		if popErr := writeBuffer.PopContext("landingCallStatus", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for landingCallStatus")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLandingCalls"); popErr != nil {

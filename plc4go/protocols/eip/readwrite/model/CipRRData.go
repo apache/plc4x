@@ -49,7 +49,7 @@ type _CipRRData struct {
 	Exchange CipExchange
 
 	// Arguments.
-	Len uint16
+	PacketLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ func (m *_CipRRData) GetExchange() CipExchange {
 ///////////////////////////////////////////////////////////
 
 // NewCipRRData factory function for _CipRRData
-func NewCipRRData(exchange CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, len uint16) *_CipRRData {
+func NewCipRRData(exchange CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLength uint16) *_CipRRData {
 	_result := &_CipRRData{
 		Exchange:   exchange,
 		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
@@ -139,7 +139,7 @@ func (m *_CipRRData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (CipRRData, error) {
+func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
@@ -180,7 +180,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (CipRRData, error) 
 	if pullErr := readBuffer.PullContext("exchange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for exchange")
 	}
-	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(len)-uint16(uint16(6))))
+	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
 	if _exchangeErr != nil {
 		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field")
 	}

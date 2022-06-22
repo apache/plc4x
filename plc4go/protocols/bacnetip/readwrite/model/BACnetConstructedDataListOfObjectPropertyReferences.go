@@ -154,7 +154,7 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for references")
 	}
 	// Terminated array
-	references := make([]BACnetDeviceObjectPropertyReference, 0)
+	var references []BACnetDeviceObjectPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) Serialize(writeBu
 		}
 
 		// Array Field (references)
-		if m.GetReferences() != nil {
-			if pushErr := writeBuffer.PushContext("references", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for references")
+		if pushErr := writeBuffer.PushContext("references", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for references")
+		}
+		for _, _element := range m.GetReferences() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'references' field")
 			}
-			for _, _element := range m.GetReferences() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'references' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("references", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for references")
-			}
+		}
+		if popErr := writeBuffer.PopContext("references", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for references")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataListOfObjectPropertyReferences"); popErr != nil {

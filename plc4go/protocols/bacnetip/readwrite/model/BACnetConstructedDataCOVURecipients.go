@@ -154,7 +154,7 @@ func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for covuRecipients")
 	}
 	// Terminated array
-	covuRecipients := make([]BACnetRecipient, 0)
+	var covuRecipients []BACnetRecipient
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRecipientParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataCOVURecipients) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (covuRecipients)
-		if m.GetCovuRecipients() != nil {
-			if pushErr := writeBuffer.PushContext("covuRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for covuRecipients")
+		if pushErr := writeBuffer.PushContext("covuRecipients", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for covuRecipients")
+		}
+		for _, _element := range m.GetCovuRecipients() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'covuRecipients' field")
 			}
-			for _, _element := range m.GetCovuRecipients() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'covuRecipients' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("covuRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for covuRecipients")
-			}
+		}
+		if popErr := writeBuffer.PopContext("covuRecipients", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for covuRecipients")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCOVURecipients"); popErr != nil {

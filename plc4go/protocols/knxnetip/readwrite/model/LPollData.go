@@ -247,12 +247,9 @@ func (m *_LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (targetAddress)
-		if m.GetTargetAddress() != nil {
-			// Byte Array field (targetAddress)
-			_writeArrayErr := writeBuffer.WriteByteArray("targetAddress", m.GetTargetAddress())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'targetAddress' field")
-			}
+		// Byte Array field (targetAddress)
+		if err := writeBuffer.WriteByteArray("targetAddress", m.GetTargetAddress()); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetAddress' field")
 		}
 
 		// Reserved Field (reserved)

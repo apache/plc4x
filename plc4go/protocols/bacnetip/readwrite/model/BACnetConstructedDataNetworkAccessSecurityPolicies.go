@@ -215,7 +215,7 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for networkAccessSecurityPolicies")
 	}
 	// Terminated array
-	networkAccessSecurityPolicies := make([]BACnetNetworkSecurityPolicy, 0)
+	var networkAccessSecurityPolicies []BACnetNetworkSecurityPolicy
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNetworkSecurityPolicyParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) Serialize(writeBuf
 		}
 
 		// Array Field (networkAccessSecurityPolicies)
-		if m.GetNetworkAccessSecurityPolicies() != nil {
-			if pushErr := writeBuffer.PushContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for networkAccessSecurityPolicies")
+		if pushErr := writeBuffer.PushContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for networkAccessSecurityPolicies")
+		}
+		for _, _element := range m.GetNetworkAccessSecurityPolicies() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'networkAccessSecurityPolicies' field")
 			}
-			for _, _element := range m.GetNetworkAccessSecurityPolicies() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'networkAccessSecurityPolicies' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for networkAccessSecurityPolicies")
-			}
+		}
+		if popErr := writeBuffer.PopContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for networkAccessSecurityPolicies")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkAccessSecurityPolicies"); popErr != nil {

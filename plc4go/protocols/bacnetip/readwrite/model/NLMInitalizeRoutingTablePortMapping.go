@@ -202,12 +202,9 @@ func (m *_NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.Write
 	}
 
 	// Array Field (portInfo)
-	if m.GetPortInfo() != nil {
-		// Byte Array field (portInfo)
-		_writeArrayErr := writeBuffer.WriteByteArray("portInfo", m.GetPortInfo())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'portInfo' field")
-		}
+	// Byte Array field (portInfo)
+	if err := writeBuffer.WriteByteArray("portInfo", m.GetPortInfo()); err != nil {
+		return errors.Wrap(err, "Error serializing 'portInfo' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NLMInitalizeRoutingTablePortMapping"); popErr != nil {

@@ -215,7 +215,7 @@ func BACnetConstructedDataSupportedFormatClassesParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for supportedFormats")
 	}
 	// Terminated array
-	supportedFormats := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var supportedFormats []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataSupportedFormatClasses) Serialize(writeBuffer uti
 		}
 
 		// Array Field (supportedFormats)
-		if m.GetSupportedFormats() != nil {
-			if pushErr := writeBuffer.PushContext("supportedFormats", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for supportedFormats")
+		if pushErr := writeBuffer.PushContext("supportedFormats", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for supportedFormats")
+		}
+		for _, _element := range m.GetSupportedFormats() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'supportedFormats' field")
 			}
-			for _, _element := range m.GetSupportedFormats() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'supportedFormats' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("supportedFormats", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for supportedFormats")
-			}
+		}
+		if popErr := writeBuffer.PopContext("supportedFormats", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for supportedFormats")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSupportedFormatClasses"); popErr != nil {

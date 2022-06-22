@@ -154,7 +154,7 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for bbmdBroadcastDistributionTable")
 	}
 	// Terminated array
-	bbmdBroadcastDistributionTable := make([]BACnetBDTEntry, 0)
+	var bbmdBroadcastDistributionTable []BACnetBDTEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetBDTEntryParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize(writeBu
 		}
 
 		// Array Field (bbmdBroadcastDistributionTable)
-		if m.GetBbmdBroadcastDistributionTable() != nil {
-			if pushErr := writeBuffer.PushContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bbmdBroadcastDistributionTable")
+		if pushErr := writeBuffer.PushContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for bbmdBroadcastDistributionTable")
+		}
+		for _, _element := range m.GetBbmdBroadcastDistributionTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'bbmdBroadcastDistributionTable' field")
 			}
-			for _, _element := range m.GetBbmdBroadcastDistributionTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'bbmdBroadcastDistributionTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bbmdBroadcastDistributionTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for bbmdBroadcastDistributionTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); popErr != nil {

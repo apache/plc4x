@@ -147,7 +147,7 @@ func BACnetConfirmedServiceRequestReadPropertyMultipleParse(readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
-	data := make([]BACnetReadAccessSpecification, 0)
+	var data []BACnetReadAccessSpecification
 	{
 		_dataLength := serviceRequestPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
@@ -185,19 +185,17 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) Serialize(writeBuff
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); popErr != nil {

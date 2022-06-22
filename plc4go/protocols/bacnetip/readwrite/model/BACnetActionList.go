@@ -148,7 +148,7 @@ func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error
 		return nil, errors.Wrap(pullErr, "Error pulling for action")
 	}
 	// Terminated array
-	action := make([]BACnetActionCommand, 0)
+	var action []BACnetActionCommand
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
 			_item, _err := BACnetActionCommandParse(readBuffer)
@@ -204,19 +204,17 @@ func (m *_BACnetActionList) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (action)
-	if m.GetAction() != nil {
-		if pushErr := writeBuffer.PushContext("action", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for action")
+	if pushErr := writeBuffer.PushContext("action", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for action")
+	}
+	for _, _element := range m.GetAction() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'action' field")
 		}
-		for _, _element := range m.GetAction() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'action' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("action", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for action")
-		}
+	}
+	if popErr := writeBuffer.PopContext("action", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for action")
 	}
 
 	// Simple Field (innerClosingTag)

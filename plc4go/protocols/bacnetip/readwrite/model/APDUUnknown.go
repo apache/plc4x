@@ -192,12 +192,9 @@ func (m *_APDUUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (unknownBytes)
-		if m.GetUnknownBytes() != nil {
-			// Byte Array field (unknownBytes)
-			_writeArrayErr := writeBuffer.WriteByteArray("unknownBytes", m.GetUnknownBytes())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'unknownBytes' field")
-			}
+		// Byte Array field (unknownBytes)
+		if err := writeBuffer.WriteByteArray("unknownBytes", m.GetUnknownBytes()); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownBytes' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUUnknown"); popErr != nil {

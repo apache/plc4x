@@ -323,12 +323,9 @@ func (m *_LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (destinationAddress)
-		if m.GetDestinationAddress() != nil {
-			// Byte Array field (destinationAddress)
-			_writeArrayErr := writeBuffer.WriteByteArray("destinationAddress", m.GetDestinationAddress())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'destinationAddress' field")
-			}
+		// Byte Array field (destinationAddress)
+		if err := writeBuffer.WriteByteArray("destinationAddress", m.GetDestinationAddress()); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

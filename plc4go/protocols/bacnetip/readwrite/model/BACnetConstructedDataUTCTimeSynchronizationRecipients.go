@@ -154,7 +154,7 @@ func BACnetConstructedDataUTCTimeSynchronizationRecipientsParse(readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for utcTimeSynchronizationRecipients")
 	}
 	// Terminated array
-	utcTimeSynchronizationRecipients := make([]BACnetRecipient, 0)
+	var utcTimeSynchronizationRecipients []BACnetRecipient
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRecipientParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) Serialize(write
 		}
 
 		// Array Field (utcTimeSynchronizationRecipients)
-		if m.GetUtcTimeSynchronizationRecipients() != nil {
-			if pushErr := writeBuffer.PushContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for utcTimeSynchronizationRecipients")
+		if pushErr := writeBuffer.PushContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for utcTimeSynchronizationRecipients")
+		}
+		for _, _element := range m.GetUtcTimeSynchronizationRecipients() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'utcTimeSynchronizationRecipients' field")
 			}
-			for _, _element := range m.GetUtcTimeSynchronizationRecipients() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'utcTimeSynchronizationRecipients' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for utcTimeSynchronizationRecipients")
-			}
+		}
+		if popErr := writeBuffer.PopContext("utcTimeSynchronizationRecipients", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for utcTimeSynchronizationRecipients")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataUTCTimeSynchronizationRecipients"); popErr != nil {

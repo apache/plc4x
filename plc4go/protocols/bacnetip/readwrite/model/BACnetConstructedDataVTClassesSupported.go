@@ -154,7 +154,7 @@ func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, t
 		return nil, errors.Wrap(pullErr, "Error pulling for vtClassesSupported")
 	}
 	// Terminated array
-	vtClassesSupported := make([]BACnetVTClassTagged, 0)
+	var vtClassesSupported []BACnetVTClassTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVTClassTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataVTClassesSupported) Serialize(writeBuffer utils.W
 		}
 
 		// Array Field (vtClassesSupported)
-		if m.GetVtClassesSupported() != nil {
-			if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
+		if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
+		}
+		for _, _element := range m.GetVtClassesSupported() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'vtClassesSupported' field")
 			}
-			for _, _element := range m.GetVtClassesSupported() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'vtClassesSupported' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for vtClassesSupported")
-			}
+		}
+		if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for vtClassesSupported")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVTClassesSupported"); popErr != nil {

@@ -236,6 +236,10 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	}
 	// Count array
 	items := make([]SzlDataTreeItem, szlItemCount)
+	// This happens when the size is set conditional to 0
+	if len(items) == 0 {
+		items = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
 			_item, _err := SzlDataTreeItemParse(readBuffer)
@@ -305,19 +309,17 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(writeBuffer
 		}
 
 		// Array Field (items)
-		if m.GetItems() != nil {
-			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for items")
+		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for items")
+		}
+		for _, _element := range m.GetItems() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
-			for _, _element := range m.GetItems() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'items' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for items")
-			}
+		}
+		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for items")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); popErr != nil {

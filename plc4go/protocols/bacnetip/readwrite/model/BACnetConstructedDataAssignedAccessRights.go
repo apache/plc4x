@@ -215,7 +215,7 @@ func BACnetConstructedDataAssignedAccessRightsParse(readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(pullErr, "Error pulling for assignedAccessRights")
 	}
 	// Terminated array
-	assignedAccessRights := make([]BACnetAssignedAccessRights, 0)
+	var assignedAccessRights []BACnetAssignedAccessRights
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAssignedAccessRightsParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataAssignedAccessRights) Serialize(writeBuffer utils
 		}
 
 		// Array Field (assignedAccessRights)
-		if m.GetAssignedAccessRights() != nil {
-			if pushErr := writeBuffer.PushContext("assignedAccessRights", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for assignedAccessRights")
+		if pushErr := writeBuffer.PushContext("assignedAccessRights", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for assignedAccessRights")
+		}
+		for _, _element := range m.GetAssignedAccessRights() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'assignedAccessRights' field")
 			}
-			for _, _element := range m.GetAssignedAccessRights() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'assignedAccessRights' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("assignedAccessRights", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for assignedAccessRights")
-			}
+		}
+		if popErr := writeBuffer.PopContext("assignedAccessRights", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for assignedAccessRights")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAssignedAccessRights"); popErr != nil {

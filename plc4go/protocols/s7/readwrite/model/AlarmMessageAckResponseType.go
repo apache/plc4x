@@ -148,6 +148,10 @@ func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	}
 	// Count array
 	messageObjects := make([]uint8, numberOfObjects)
+	// This happens when the size is set conditional to 0
+	if len(messageObjects) == 0 {
+		messageObjects = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -191,19 +195,17 @@ func (m *_AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) 
 	}
 
 	// Array Field (messageObjects)
-	if m.GetMessageObjects() != nil {
-		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for messageObjects")
+	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for messageObjects")
+	}
+	for _, _element := range m.GetMessageObjects() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 		}
-		for _, _element := range m.GetMessageObjects() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for messageObjects")
-		}
+	}
+	if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for messageObjects")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageAckResponseType"); popErr != nil {

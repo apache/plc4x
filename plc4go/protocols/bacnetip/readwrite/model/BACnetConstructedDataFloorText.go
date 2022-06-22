@@ -215,7 +215,7 @@ func BACnetConstructedDataFloorTextParse(readBuffer utils.ReadBuffer, tagNumber 
 		return nil, errors.Wrap(pullErr, "Error pulling for floorText")
 	}
 	// Terminated array
-	floorText := make([]BACnetApplicationTagCharacterString, 0)
+	var floorText []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataFloorText) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Array Field (floorText)
-		if m.GetFloorText() != nil {
-			if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for floorText")
+		if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for floorText")
+		}
+		for _, _element := range m.GetFloorText() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
 			}
-			for _, _element := range m.GetFloorText() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for floorText")
-			}
+		}
+		if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for floorText")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFloorText"); popErr != nil {

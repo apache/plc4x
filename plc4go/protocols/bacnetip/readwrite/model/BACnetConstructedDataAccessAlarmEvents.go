@@ -154,7 +154,7 @@ func BACnetConstructedDataAccessAlarmEventsParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for accessAlarmEvents")
 	}
 	// Terminated array
-	accessAlarmEvents := make([]BACnetAccessEventTagged, 0)
+	var accessAlarmEvents []BACnetAccessEventTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessEventTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (accessAlarmEvents)
-		if m.GetAccessAlarmEvents() != nil {
-			if pushErr := writeBuffer.PushContext("accessAlarmEvents", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for accessAlarmEvents")
+		if pushErr := writeBuffer.PushContext("accessAlarmEvents", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for accessAlarmEvents")
+		}
+		for _, _element := range m.GetAccessAlarmEvents() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'accessAlarmEvents' field")
 			}
-			for _, _element := range m.GetAccessAlarmEvents() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'accessAlarmEvents' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("accessAlarmEvents", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for accessAlarmEvents")
-			}
+		}
+		if popErr := writeBuffer.PopContext("accessAlarmEvents", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for accessAlarmEvents")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessAlarmEvents"); popErr != nil {

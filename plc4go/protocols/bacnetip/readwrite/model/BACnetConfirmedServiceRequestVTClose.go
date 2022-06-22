@@ -147,7 +147,7 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serv
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfRemoteVtSessionIdentifiers")
 	}
 	// Length array
-	listOfRemoteVtSessionIdentifiers := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 	{
 		_listOfRemoteVtSessionIdentifiersLength := serviceRequestPayloadLength
 		_listOfRemoteVtSessionIdentifiersEndPos := positionAware.GetPos() + uint16(_listOfRemoteVtSessionIdentifiersLength)
@@ -185,19 +185,17 @@ func (m *_BACnetConfirmedServiceRequestVTClose) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (listOfRemoteVtSessionIdentifiers)
-		if m.GetListOfRemoteVtSessionIdentifiers() != nil {
-			if pushErr := writeBuffer.PushContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for listOfRemoteVtSessionIdentifiers")
+		if pushErr := writeBuffer.PushContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for listOfRemoteVtSessionIdentifiers")
+		}
+		for _, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'listOfRemoteVtSessionIdentifiers' field")
 			}
-			for _, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'listOfRemoteVtSessionIdentifiers' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for listOfRemoteVtSessionIdentifiers")
-			}
+		}
+		if popErr := writeBuffer.PopContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for listOfRemoteVtSessionIdentifiers")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestVTClose"); popErr != nil {

@@ -299,6 +299,10 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	// Count array
 	objects := make([]ModbusDeviceInformationObject, numberOfObjects)
+	// This happens when the size is set conditional to 0
+	if len(objects) == 0 {
+		objects = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := ModbusDeviceInformationObjectParse(readBuffer)
@@ -402,19 +406,17 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils
 		}
 
 		// Array Field (objects)
-		if m.GetObjects() != nil {
-			if pushErr := writeBuffer.PushContext("objects", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for objects")
+		if pushErr := writeBuffer.PushContext("objects", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for objects")
+		}
+		for _, _element := range m.GetObjects() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'objects' field")
 			}
-			for _, _element := range m.GetObjects() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'objects' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("objects", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for objects")
-			}
+		}
+		if popErr := writeBuffer.PopContext("objects", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for objects")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDeviceIdentificationResponse"); popErr != nil {

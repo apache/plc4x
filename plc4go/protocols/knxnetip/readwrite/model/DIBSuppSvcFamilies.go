@@ -142,7 +142,7 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, e
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceIds")
 	}
 	// Length array
-	serviceIds := make([]ServiceId, 0)
+	var serviceIds []ServiceId
 	{
 		_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
 		_serviceIdsEndPos := positionAware.GetPos() + uint16(_serviceIdsLength)
@@ -188,19 +188,17 @@ func (m *_DIBSuppSvcFamilies) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (serviceIds)
-	if m.GetServiceIds() != nil {
-		if pushErr := writeBuffer.PushContext("serviceIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serviceIds")
+	if pushErr := writeBuffer.PushContext("serviceIds", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for serviceIds")
+	}
+	for _, _element := range m.GetServiceIds() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
 		}
-		for _, _element := range m.GetServiceIds() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serviceIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serviceIds")
-		}
+	}
+	if popErr := writeBuffer.PopContext("serviceIds", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for serviceIds")
 	}
 
 	if popErr := writeBuffer.PopContext("DIBSuppSvcFamilies"); popErr != nil {

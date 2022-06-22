@@ -229,6 +229,10 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 	}
 	// Count array
 	offsets := make([]uint16, serviceNb)
+	// This happens when the size is set conditional to 0
+	if len(offsets) == 0 {
+		offsets = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
 			_item, _err := readBuffer.ReadUint16("", 16)
@@ -303,28 +307,23 @@ func (m *_MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		// Array Field (offsets)
-		if m.GetOffsets() != nil {
-			if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for offsets")
+		if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for offsets")
+		}
+		for _, _element := range m.GetOffsets() {
+			_elementErr := writeBuffer.WriteUint16("", 16, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
 			}
-			for _, _element := range m.GetOffsets() {
-				_elementErr := writeBuffer.WriteUint16("", 16, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("offsets", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for offsets")
-			}
+		}
+		if popErr := writeBuffer.PopContext("offsets", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for offsets")
 		}
 
 		// Array Field (servicesData)
-		if m.GetServicesData() != nil {
-			// Byte Array field (servicesData)
-			_writeArrayErr := writeBuffer.WriteByteArray("servicesData", m.GetServicesData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'servicesData' field")
-			}
+		// Byte Array field (servicesData)
+		if err := writeBuffer.WriteByteArray("servicesData", m.GetServicesData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'servicesData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MultipleServiceResponse"); popErr != nil {

@@ -154,7 +154,7 @@ func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tag
 		return nil, errors.Wrap(pullErr, "Error pulling for reasonForDisable")
 	}
 	// Terminated array
-	reasonForDisable := make([]BACnetAccessCredentialDisableReasonTagged, 0)
+	var reasonForDisable []BACnetAccessCredentialDisableReasonTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessCredentialDisableReasonTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataReasonForDisable) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (reasonForDisable)
-		if m.GetReasonForDisable() != nil {
-			if pushErr := writeBuffer.PushContext("reasonForDisable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for reasonForDisable")
+		if pushErr := writeBuffer.PushContext("reasonForDisable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for reasonForDisable")
+		}
+		for _, _element := range m.GetReasonForDisable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'reasonForDisable' field")
 			}
-			for _, _element := range m.GetReasonForDisable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'reasonForDisable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("reasonForDisable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for reasonForDisable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("reasonForDisable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for reasonForDisable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataReasonForDisable"); popErr != nil {

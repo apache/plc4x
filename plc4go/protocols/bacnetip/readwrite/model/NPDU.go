@@ -350,6 +350,10 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	}
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	// This happens when the size is set conditional to 0
+	if len(destinationAddress) == 0 {
+		destinationAddress = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -394,6 +398,10 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	}
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	// This happens when the size is set conditional to 0
+	if len(sourceAddress) == 0 {
+		sourceAddress = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -531,19 +539,17 @@ func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (destinationAddress)
-	if m.GetDestinationAddress() != nil {
-		if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for destinationAddress")
+	if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for destinationAddress")
+	}
+	for _, _element := range m.GetDestinationAddress() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 		}
-		for _, _element := range m.GetDestinationAddress() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for destinationAddress")
-		}
+	}
+	if popErr := writeBuffer.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for destinationAddress")
 	}
 	// Virtual field
 	if _destinationLengthAddonErr := writeBuffer.WriteVirtual("destinationLengthAddon", m.GetDestinationLengthAddon()); _destinationLengthAddonErr != nil {
@@ -571,19 +577,17 @@ func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (sourceAddress)
-	if m.GetSourceAddress() != nil {
-		if pushErr := writeBuffer.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
+	if pushErr := writeBuffer.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for sourceAddress")
+	}
+	for _, _element := range m.GetSourceAddress() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 		}
-		for _, _element := range m.GetSourceAddress() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("sourceAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceAddress")
-		}
+	}
+	if popErr := writeBuffer.PopContext("sourceAddress", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for sourceAddress")
 	}
 	// Virtual field
 	if _sourceLengthAddonErr := writeBuffer.WriteVirtual("sourceLengthAddon", m.GetSourceLengthAddon()); _sourceLengthAddonErr != nil {

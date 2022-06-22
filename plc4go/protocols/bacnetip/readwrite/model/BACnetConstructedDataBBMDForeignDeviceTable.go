@@ -154,7 +154,7 @@ func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for bbmdForeignDeviceTable")
 	}
 	// Terminated array
-	bbmdForeignDeviceTable := make([]BACnetBDTEntry, 0)
+	var bbmdForeignDeviceTable []BACnetBDTEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetBDTEntryParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) Serialize(writeBuffer uti
 		}
 
 		// Array Field (bbmdForeignDeviceTable)
-		if m.GetBbmdForeignDeviceTable() != nil {
-			if pushErr := writeBuffer.PushContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bbmdForeignDeviceTable")
+		if pushErr := writeBuffer.PushContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for bbmdForeignDeviceTable")
+		}
+		for _, _element := range m.GetBbmdForeignDeviceTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'bbmdForeignDeviceTable' field")
 			}
-			for _, _element := range m.GetBbmdForeignDeviceTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'bbmdForeignDeviceTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bbmdForeignDeviceTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for bbmdForeignDeviceTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDForeignDeviceTable"); popErr != nil {

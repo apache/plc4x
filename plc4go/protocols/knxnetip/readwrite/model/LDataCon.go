@@ -174,7 +174,7 @@ func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {
 		return nil, errors.Wrap(pullErr, "Error pulling for additionalInformation")
 	}
 	// Length array
-	additionalInformation := make([]CEMIAdditionalInformation, 0)
+	var additionalInformation []CEMIAdditionalInformation
 	{
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
@@ -234,19 +234,17 @@ func (m *_LDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (additionalInformation)
-		if m.GetAdditionalInformation() != nil {
-			if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for additionalInformation")
+		if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for additionalInformation")
+		}
+		for _, _element := range m.GetAdditionalInformation() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 			}
-			for _, _element := range m.GetAdditionalInformation() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for additionalInformation")
-			}
+		}
+		if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for additionalInformation")
 		}
 
 		// Simple Field (dataFrame)

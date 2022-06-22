@@ -154,7 +154,7 @@ func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(pullErr, "Error pulling for subscribedRecipients")
 	}
 	// Terminated array
-	subscribedRecipients := make([]BACnetEventNotificationSubscription, 0)
+	var subscribedRecipients []BACnetEventNotificationSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetEventNotificationSubscriptionParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataSubscribedRecipients) Serialize(writeBuffer utils
 		}
 
 		// Array Field (subscribedRecipients)
-		if m.GetSubscribedRecipients() != nil {
-			if pushErr := writeBuffer.PushContext("subscribedRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for subscribedRecipients")
+		if pushErr := writeBuffer.PushContext("subscribedRecipients", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for subscribedRecipients")
+		}
+		for _, _element := range m.GetSubscribedRecipients() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'subscribedRecipients' field")
 			}
-			for _, _element := range m.GetSubscribedRecipients() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'subscribedRecipients' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("subscribedRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for subscribedRecipients")
-			}
+		}
+		if popErr := writeBuffer.PopContext("subscribedRecipients", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for subscribedRecipients")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubscribedRecipients"); popErr != nil {

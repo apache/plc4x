@@ -282,12 +282,9 @@ func (m *_AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		// Array Field (device)
-		if m.GetDevice() != nil {
-			// Byte Array field (device)
-			_writeArrayErr := writeBuffer.WriteByteArray("device", m.GetDevice())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'device' field")
-			}
+		// Byte Array field (device)
+		if err := writeBuffer.WriteByteArray("device", m.GetDevice()); err != nil {
+			return errors.Wrap(err, "Error serializing 'device' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsReadDeviceInfoResponse"); popErr != nil {

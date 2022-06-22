@@ -148,7 +148,7 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 		return nil, errors.Wrap(pullErr, "Error pulling for daySchedule")
 	}
 	// Terminated array
-	daySchedule := make([]BACnetTimeValue, 0)
+	var daySchedule []BACnetTimeValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
 			_item, _err := BACnetTimeValueParse(readBuffer)
@@ -204,19 +204,17 @@ func (m *_BACnetDailySchedule) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (daySchedule)
-	if m.GetDaySchedule() != nil {
-		if pushErr := writeBuffer.PushContext("daySchedule", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for daySchedule")
+	if pushErr := writeBuffer.PushContext("daySchedule", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for daySchedule")
+	}
+	for _, _element := range m.GetDaySchedule() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'daySchedule' field")
 		}
-		for _, _element := range m.GetDaySchedule() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'daySchedule' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("daySchedule", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for daySchedule")
-		}
+	}
+	if popErr := writeBuffer.PopContext("daySchedule", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for daySchedule")
 	}
 
 	// Simple Field (closingTag)

@@ -215,7 +215,7 @@ func BACnetConstructedDataBitTextParse(readBuffer utils.ReadBuffer, tagNumber ui
 		return nil, errors.Wrap(pullErr, "Error pulling for bitText")
 	}
 	// Terminated array
-	bitText := make([]BACnetApplicationTagCharacterString, 0)
+	var bitText []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataBitText) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		// Array Field (bitText)
-		if m.GetBitText() != nil {
-			if pushErr := writeBuffer.PushContext("bitText", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bitText")
+		if pushErr := writeBuffer.PushContext("bitText", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for bitText")
+		}
+		for _, _element := range m.GetBitText() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'bitText' field")
 			}
-			for _, _element := range m.GetBitText() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'bitText' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("bitText", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bitText")
-			}
+		}
+		if popErr := writeBuffer.PopContext("bitText", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for bitText")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBitText"); popErr != nil {

@@ -151,7 +151,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
 	// Terminated array
-	alarmValues := make([]BACnetTimerStateTagged, 0)
+	var alarmValues []BACnetTimerStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimerStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -207,19 +207,17 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize(writeBuffer uti
 	}
 
 	// Array Field (alarmValues)
-	if m.GetAlarmValues() != nil {
-		if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmValues")
+	if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for alarmValues")
+	}
+	for _, _element := range m.GetAlarmValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
 		}
-		for _, _element := range m.GetAlarmValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for alarmValues")
 	}
 
 	// Simple Field (closingTag)

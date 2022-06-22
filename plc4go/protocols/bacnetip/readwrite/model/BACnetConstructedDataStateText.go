@@ -215,7 +215,7 @@ func BACnetConstructedDataStateTextParse(readBuffer utils.ReadBuffer, tagNumber 
 		return nil, errors.Wrap(pullErr, "Error pulling for stateText")
 	}
 	// Terminated array
-	stateText := make([]BACnetApplicationTagCharacterString, 0)
+	var stateText []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataStateText) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Array Field (stateText)
-		if m.GetStateText() != nil {
-			if pushErr := writeBuffer.PushContext("stateText", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for stateText")
+		if pushErr := writeBuffer.PushContext("stateText", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for stateText")
+		}
+		for _, _element := range m.GetStateText() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'stateText' field")
 			}
-			for _, _element := range m.GetStateText() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'stateText' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("stateText", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for stateText")
-			}
+		}
+		if popErr := writeBuffer.PopContext("stateText", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for stateText")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStateText"); popErr != nil {

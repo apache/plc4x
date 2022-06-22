@@ -215,7 +215,7 @@ func BACnetConstructedDataLinkSpeedsParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeeds")
 	}
 	// Terminated array
-	linkSpeeds := make([]BACnetApplicationTagReal, 0)
+	var linkSpeeds []BACnetApplicationTagReal
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataLinkSpeeds) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (linkSpeeds)
-		if m.GetLinkSpeeds() != nil {
-			if pushErr := writeBuffer.PushContext("linkSpeeds", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for linkSpeeds")
+		if pushErr := writeBuffer.PushContext("linkSpeeds", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for linkSpeeds")
+		}
+		for _, _element := range m.GetLinkSpeeds() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'linkSpeeds' field")
 			}
-			for _, _element := range m.GetLinkSpeeds() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'linkSpeeds' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("linkSpeeds", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for linkSpeeds")
-			}
+		}
+		if popErr := writeBuffer.PopContext("linkSpeeds", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for linkSpeeds")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLinkSpeeds"); popErr != nil {

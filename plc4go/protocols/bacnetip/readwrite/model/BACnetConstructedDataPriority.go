@@ -215,7 +215,7 @@ func BACnetConstructedDataPriorityParse(readBuffer utils.ReadBuffer, tagNumber u
 		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
 	// Terminated array
-	priority := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var priority []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -278,19 +278,17 @@ func (m *_BACnetConstructedDataPriority) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (priority)
-		if m.GetPriority() != nil {
-			if pushErr := writeBuffer.PushContext("priority", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for priority")
+		if pushErr := writeBuffer.PushContext("priority", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for priority")
+		}
+		for _, _element := range m.GetPriority() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'priority' field")
 			}
-			for _, _element := range m.GetPriority() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'priority' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("priority", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for priority")
-			}
+		}
+		if popErr := writeBuffer.PopContext("priority", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for priority")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPriority"); popErr != nil {

@@ -169,6 +169,10 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 	}
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
+	// This happens when the size is set conditional to 0
+	if len(fifoValue) == 0 {
+		fifoValue = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
 			_item, _err := readBuffer.ReadUint16("", 16)
@@ -218,19 +222,17 @@ func (m *_ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Array Field (fifoValue)
-		if m.GetFifoValue() != nil {
-			if pushErr := writeBuffer.PushContext("fifoValue", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for fifoValue")
+		if pushErr := writeBuffer.PushContext("fifoValue", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for fifoValue")
+		}
+		for _, _element := range m.GetFifoValue() {
+			_elementErr := writeBuffer.WriteUint16("", 16, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 			}
-			for _, _element := range m.GetFifoValue() {
-				_elementErr := writeBuffer.WriteUint16("", 16, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("fifoValue", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for fifoValue")
-			}
+		}
+		if popErr := writeBuffer.PopContext("fifoValue", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for fifoValue")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadFifoQueueResponse"); popErr != nil {

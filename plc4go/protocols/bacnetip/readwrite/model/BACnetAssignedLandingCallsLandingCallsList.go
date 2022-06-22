@@ -151,7 +151,7 @@ func BACnetAssignedLandingCallsLandingCallsListParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCalls")
 	}
 	// Terminated array
-	landingCalls := make([]BACnetAssignedLandingCallsLandingCallsListEntry, 0)
+	var landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) Serialize(writeBuffer util
 	}
 
 	// Array Field (landingCalls)
-	if m.GetLandingCalls() != nil {
-		if pushErr := writeBuffer.PushContext("landingCalls", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for landingCalls")
+	if pushErr := writeBuffer.PushContext("landingCalls", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for landingCalls")
+	}
+	for _, _element := range m.GetLandingCalls() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'landingCalls' field")
 		}
-		for _, _element := range m.GetLandingCalls() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'landingCalls' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("landingCalls", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for landingCalls")
-		}
+	}
+	if popErr := writeBuffer.PopContext("landingCalls", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for landingCalls")
 	}
 
 	// Simple Field (closingTag)

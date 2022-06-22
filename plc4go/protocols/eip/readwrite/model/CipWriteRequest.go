@@ -256,12 +256,9 @@ func (m *_CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (tag)
-		if m.GetTag() != nil {
-			// Byte Array field (tag)
-			_writeArrayErr := writeBuffer.WriteByteArray("tag", m.GetTag())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'tag' field")
-			}
+		// Byte Array field (tag)
+		if err := writeBuffer.WriteByteArray("tag", m.GetTag()); err != nil {
+			return errors.Wrap(err, "Error serializing 'tag' field")
 		}
 
 		// Simple Field (dataType)
@@ -284,12 +281,9 @@ func (m *_CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipWriteRequest"); popErr != nil {

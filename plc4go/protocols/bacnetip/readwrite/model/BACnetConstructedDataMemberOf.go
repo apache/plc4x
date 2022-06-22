@@ -154,7 +154,7 @@ func BACnetConstructedDataMemberOfParse(readBuffer utils.ReadBuffer, tagNumber u
 		return nil, errors.Wrap(pullErr, "Error pulling for zones")
 	}
 	// Terminated array
-	zones := make([]BACnetDeviceObjectReference, 0)
+	var zones []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataMemberOf) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (zones)
-		if m.GetZones() != nil {
-			if pushErr := writeBuffer.PushContext("zones", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for zones")
+		if pushErr := writeBuffer.PushContext("zones", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for zones")
+		}
+		for _, _element := range m.GetZones() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'zones' field")
 			}
-			for _, _element := range m.GetZones() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'zones' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("zones", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for zones")
-			}
+		}
+		if popErr := writeBuffer.PopContext("zones", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for zones")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMemberOf"); popErr != nil {

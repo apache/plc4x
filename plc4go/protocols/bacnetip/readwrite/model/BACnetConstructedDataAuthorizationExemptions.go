@@ -154,7 +154,7 @@ func BACnetConstructedDataAuthorizationExemptionsParse(readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for authorizationExemption")
 	}
 	// Terminated array
-	authorizationExemption := make([]BACnetAuthorizationExemptionTagged, 0)
+	var authorizationExemption []BACnetAuthorizationExemptionTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAuthorizationExemptionTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) Serialize(writeBuffer ut
 		}
 
 		// Array Field (authorizationExemption)
-		if m.GetAuthorizationExemption() != nil {
-			if pushErr := writeBuffer.PushContext("authorizationExemption", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authorizationExemption")
+		if pushErr := writeBuffer.PushContext("authorizationExemption", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for authorizationExemption")
+		}
+		for _, _element := range m.GetAuthorizationExemption() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'authorizationExemption' field")
 			}
-			for _, _element := range m.GetAuthorizationExemption() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'authorizationExemption' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("authorizationExemption", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authorizationExemption")
-			}
+		}
+		if popErr := writeBuffer.PopContext("authorizationExemption", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for authorizationExemption")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthorizationExemptions"); popErr != nil {

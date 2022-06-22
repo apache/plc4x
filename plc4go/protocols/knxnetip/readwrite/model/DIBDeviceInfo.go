@@ -375,12 +375,9 @@ func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (knxNetIpDeviceSerialNumber)
-	if m.GetKnxNetIpDeviceSerialNumber() != nil {
-		// Byte Array field (knxNetIpDeviceSerialNumber)
-		_writeArrayErr := writeBuffer.WriteByteArray("knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
-		}
+	// Byte Array field (knxNetIpDeviceSerialNumber)
+	if err := writeBuffer.WriteByteArray("knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber()); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
@@ -408,12 +405,9 @@ func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (deviceFriendlyName)
-	if m.GetDeviceFriendlyName() != nil {
-		// Byte Array field (deviceFriendlyName)
-		_writeArrayErr := writeBuffer.WriteByteArray("deviceFriendlyName", m.GetDeviceFriendlyName())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'deviceFriendlyName' field")
-		}
+	// Byte Array field (deviceFriendlyName)
+	if err := writeBuffer.WriteByteArray("deviceFriendlyName", m.GetDeviceFriendlyName()); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceFriendlyName' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DIBDeviceInfo"); popErr != nil {

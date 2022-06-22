@@ -151,7 +151,7 @@ func BACnetAuthenticationPolicyListParse(readBuffer utils.ReadBuffer, tagNumber 
 		return nil, errors.Wrap(pullErr, "Error pulling for entries")
 	}
 	// Terminated array
-	entries := make([]BACnetAuthenticationPolicyListEntry, 0)
+	var entries []BACnetAuthenticationPolicyListEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAuthenticationPolicyListEntryParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_BACnetAuthenticationPolicyList) Serialize(writeBuffer utils.WriteBuffe
 	}
 
 	// Array Field (entries)
-	if m.GetEntries() != nil {
-		if pushErr := writeBuffer.PushContext("entries", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for entries")
+	if pushErr := writeBuffer.PushContext("entries", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for entries")
+	}
+	for _, _element := range m.GetEntries() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'entries' field")
 		}
-		for _, _element := range m.GetEntries() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'entries' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("entries", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for entries")
-		}
+	}
+	if popErr := writeBuffer.PopContext("entries", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for entries")
 	}
 
 	// Simple Field (closingTag)

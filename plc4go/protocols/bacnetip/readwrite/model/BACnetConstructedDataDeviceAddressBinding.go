@@ -154,7 +154,7 @@ func BACnetConstructedDataDeviceAddressBindingParse(readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceAddressBinding")
 	}
 	// Terminated array
-	deviceAddressBinding := make([]BACnetAddressBinding, 0)
+	var deviceAddressBinding []BACnetAddressBinding
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAddressBindingParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) Serialize(writeBuffer utils
 		}
 
 		// Array Field (deviceAddressBinding)
-		if m.GetDeviceAddressBinding() != nil {
-			if pushErr := writeBuffer.PushContext("deviceAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for deviceAddressBinding")
+		if pushErr := writeBuffer.PushContext("deviceAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for deviceAddressBinding")
+		}
+		for _, _element := range m.GetDeviceAddressBinding() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'deviceAddressBinding' field")
 			}
-			for _, _element := range m.GetDeviceAddressBinding() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'deviceAddressBinding' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("deviceAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for deviceAddressBinding")
-			}
+		}
+		if popErr := writeBuffer.PopContext("deviceAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for deviceAddressBinding")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceAddressBinding"); popErr != nil {

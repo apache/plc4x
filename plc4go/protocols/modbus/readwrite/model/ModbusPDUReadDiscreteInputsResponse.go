@@ -188,12 +188,9 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (value)
-		if m.GetValue() != nil {
-			// Byte Array field (value)
-			_writeArrayErr := writeBuffer.WriteByteArray("value", m.GetValue())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
-			}
+		// Byte Array field (value)
+		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDiscreteInputsResponse"); popErr != nil {

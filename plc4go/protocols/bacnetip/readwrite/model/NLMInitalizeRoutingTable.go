@@ -167,6 +167,10 @@ func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint1
 	}
 	// Count array
 	portMappings := make([]NLMInitalizeRoutingTablePortMapping, numberOfPorts)
+	// This happens when the size is set conditional to 0
+	if len(portMappings) == 0 {
+		portMappings = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfPorts); curItem++ {
 			_item, _err := NLMInitalizeRoutingTablePortMappingParse(readBuffer)
@@ -210,19 +214,17 @@ func (m *_NLMInitalizeRoutingTable) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		// Array Field (portMappings)
-		if m.GetPortMappings() != nil {
-			if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for portMappings")
+		if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for portMappings")
+		}
+		for _, _element := range m.GetPortMappings() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'portMappings' field")
 			}
-			for _, _element := range m.GetPortMappings() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'portMappings' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("portMappings", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for portMappings")
-			}
+		}
+		if popErr := writeBuffer.PopContext("portMappings", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for portMappings")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMInitalizeRoutingTable"); popErr != nil {

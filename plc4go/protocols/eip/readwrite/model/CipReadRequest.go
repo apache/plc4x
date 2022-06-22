@@ -211,12 +211,9 @@ func (m *_CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (tag)
-		if m.GetTag() != nil {
-			// Byte Array field (tag)
-			_writeArrayErr := writeBuffer.WriteByteArray("tag", m.GetTag())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'tag' field")
-			}
+		// Byte Array field (tag)
+		if err := writeBuffer.WriteByteArray("tag", m.GetTag()); err != nil {
+			return errors.Wrap(err, "Error serializing 'tag' field")
 		}
 
 		// Simple Field (elementNb)

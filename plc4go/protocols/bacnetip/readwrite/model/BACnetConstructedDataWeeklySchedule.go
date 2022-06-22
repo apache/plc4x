@@ -215,7 +215,7 @@ func BACnetConstructedDataWeeklyScheduleParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for weeklySchedule")
 	}
 	// Terminated array
-	weeklySchedule := make([]BACnetDailySchedule, 0)
+	var weeklySchedule []BACnetDailySchedule
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDailyScheduleParse(readBuffer)
@@ -278,19 +278,17 @@ func (m *_BACnetConstructedDataWeeklySchedule) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (weeklySchedule)
-		if m.GetWeeklySchedule() != nil {
-			if pushErr := writeBuffer.PushContext("weeklySchedule", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for weeklySchedule")
+		if pushErr := writeBuffer.PushContext("weeklySchedule", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for weeklySchedule")
+		}
+		for _, _element := range m.GetWeeklySchedule() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'weeklySchedule' field")
 			}
-			for _, _element := range m.GetWeeklySchedule() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'weeklySchedule' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("weeklySchedule", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for weeklySchedule")
-			}
+		}
+		if popErr := writeBuffer.PopContext("weeklySchedule", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for weeklySchedule")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataWeeklySchedule"); popErr != nil {

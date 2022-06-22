@@ -215,7 +215,7 @@ func BACnetConstructedDataTagsParse(readBuffer utils.ReadBuffer, tagNumber uint8
 		return nil, errors.Wrap(pullErr, "Error pulling for tags")
 	}
 	// Terminated array
-	tags := make([]BACnetNameValue, 0)
+	var tags []BACnetNameValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNameValueParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataTags) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		// Array Field (tags)
-		if m.GetTags() != nil {
-			if pushErr := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for tags")
+		if pushErr := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for tags")
+		}
+		for _, _element := range m.GetTags() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'tags' field")
 			}
-			for _, _element := range m.GetTags() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'tags' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("tags", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for tags")
-			}
+		}
+		if popErr := writeBuffer.PopContext("tags", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for tags")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTags"); popErr != nil {

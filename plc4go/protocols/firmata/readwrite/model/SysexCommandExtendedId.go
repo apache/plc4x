@@ -145,6 +145,10 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (Sy
 	}
 	// Count array
 	id := make([]int8, uint16(2))
+	// This happens when the size is set conditional to 0
+	if len(id) == 0 {
+		id = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 			_item, _err := readBuffer.ReadInt8("", 8)
@@ -180,19 +184,17 @@ func (m *_SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		// Array Field (id)
-		if m.GetId() != nil {
-			if pushErr := writeBuffer.PushContext("id", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for id")
+		if pushErr := writeBuffer.PushContext("id", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for id")
+		}
+		for _, _element := range m.GetId() {
+			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'id' field")
 			}
-			for _, _element := range m.GetId() {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'id' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("id", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for id")
-			}
+		}
+		if popErr := writeBuffer.PopContext("id", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for id")
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandExtendedId"); popErr != nil {

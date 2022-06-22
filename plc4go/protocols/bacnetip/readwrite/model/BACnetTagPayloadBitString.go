@@ -146,6 +146,10 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	}
 	// Count array
 	data := make([]bool, uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
+	// This happens when the size is set conditional to 0
+	if len(data) == 0 {
+		data = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
 			_item, _err := readBuffer.ReadBit("")
@@ -165,6 +169,10 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	}
 	// Count array
 	unused := make([]bool, unusedBits)
+	// This happens when the size is set conditional to 0
+	if len(unused) == 0 {
+		unused = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(unusedBits); curItem++ {
 			_item, _err := readBuffer.ReadBit("")
@@ -201,35 +209,31 @@ func (m *_BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
+	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for data")
+	}
+	for _, _element := range m.GetData() {
+		_elementErr := writeBuffer.WriteBit("", _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}
-		for _, _element := range m.GetData() {
-			_elementErr := writeBuffer.WriteBit("", _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
-		}
+	}
+	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for data")
 	}
 
 	// Array Field (unused)
-	if m.GetUnused() != nil {
-		if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unused")
+	if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for unused")
+	}
+	for _, _element := range m.GetUnused() {
+		_elementErr := writeBuffer.WriteBit("", _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'unused' field")
 		}
-		for _, _element := range m.GetUnused() {
-			_elementErr := writeBuffer.WriteBit("", _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'unused' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unused")
-		}
+	}
+	if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for unused")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadBitString"); popErr != nil {

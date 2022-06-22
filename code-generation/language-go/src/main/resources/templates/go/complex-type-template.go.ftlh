@@ -790,6 +790,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#if field.isCountArrayField()>
 	// Count array
 	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+	// This happens when the size is set conditional to 0
+	if len(${arrayField.name}) == 0 {
+		${arrayField.name} = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}); curItem++ {
 						<#if (!arrayElementType.isSimpleTypeReference()) && helper.requiresVariable(arrayField, "lastItem")>
@@ -837,7 +841,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#elseif field.isLengthArrayField()>
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 	// Length array
-	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, 0)
+	var ${arrayField.name} ${helper.getLanguageTypeNameForField(field)}
 	{
 		_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
 		_${arrayField.name}EndPos := positionAware.GetPos() + uint16(_${arrayField.name}Length)
@@ -885,7 +889,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
-	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, 0)
+	var ${arrayField.name} ${helper.getLanguageTypeNameForField(field)}
 	{
 		for ;!bool(${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression, parserArguments)}); {
 						<@compress single_line=true>
@@ -1054,6 +1058,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	// Count array
 	_${manualArrayField.name}Count := ${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.loopExpression, parserArguments)}
 	${manualArrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, _${manualArrayField.name}Count)
+	// This happens when the size is set conditional to 0
+	if len(${manualArrayField.name}) == 0 {
+		${manualArrayField.name} = nil
+	}
 	for i := 0; i < _${manualArrayField.name}Count; i++ {
 		${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})
 	}
@@ -1063,7 +1071,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#if field.isLengthArrayField()>
 	// Length array
 	_${manualArrayField.name}Length := ${helper.toIntegerParseExpression(manualArrayField, 16, manualArrayField.loopExpression, parserArguments)}
-	_${manualArrayField.name}List := make(${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	var _${manualArrayField.name}List ${helper.getLanguageTypeNameForField(manualArrayField)}
 	${manualArrayField.name}EndPos := positionAware.GetPos() + _${manualArrayField.name}Length
 	for ;positionAware.GetPos() < ${manualArrayField.name}EndPos; {
 		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
@@ -1075,7 +1083,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
-	_${manualArrayField.name}List := make(${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	var _${manualArrayField.name}List ${helper.getLanguageTypeNameForField(manualArrayField)}
 	{
 		_values := &_${manualArrayField.name}List
 		_ = _values
@@ -1096,6 +1104,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				-->
 					<#if manualArrayField.type.isSimpleTypeReference()>
 	${manualArrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, len(_${manualArrayField.name}List))
+	// This happens when the size is set conditional to 0
+	if len(${manualArrayField.name}) == 0 {
+		${manualArrayField.name} = nil
+	}
 	for i := 0; i < len(_${manualArrayField.name}List); i++ {
 		${manualArrayField.name}[i] = ${helper.getLanguageTypeNameForField(field)}(_${manualArrayField.name}List[i])
 	}
@@ -1550,44 +1562,41 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#assign arrayElementType = arrayField.type.elementTypeReference>
 
 	// Array Field (${arrayField.name})
-	if m.Get${arrayField.name?cap_first}() != nil {
 					<#if arrayElementType.isByteBased()>
-		// Byte Array field (${arrayField.name})
-		_writeArrayErr := writeBuffer.WriteByteArray("${arrayField.name}", m.Get${arrayField.name?cap_first}())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
-		}
+	// Byte Array field (${arrayField.name})
+	if err := writeBuffer.WriteByteArray("${arrayField.name}", m.Get${arrayField.name?cap_first}()); err != nil {
+		return errors.Wrap(err, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
 					<#else>
-		if pushErr := writeBuffer.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
+	if pushErr := writeBuffer.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
+	}
 						<#if arrayElementType.isComplexTypeReference() && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
-		itemCount := uint16(len(m.Get${arrayField.name?cap_first}()))
-		var curItem uint16 = 0
+	itemCount := uint16(len(m.Get${arrayField.name?cap_first}()))
+	var curItem uint16 = 0
 					</#if>
-		for _, _element := range m.Get${arrayField.name?cap_first}() {
+	for _, _element := range m.Get${arrayField.name?cap_first}() {
 						<#if arrayElementType.isSimpleTypeReference()>
 							<#assign simpleTypeReference = arrayElementType.asSimpleTypeReference().orElseThrow()>
-			_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", arrayField)}
+		_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", arrayField)}
 						<#else>
 						<#assign complexTypeReference = arrayElementType>
 						<#if helper.needsVariable(arrayField, "lastItem", true)>
-			var lastItem bool = curItem == (itemCount - 1)
+		var lastItem bool = curItem == (itemCount - 1)
 						</#if>
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		_elementErr := writeBuffer.WriteSerializable(_element)
 					</#if>
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
-			}
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		}
 						<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
-			curItem++
-					</#if>
-		}
-		if popErr := writeBuffer.PopContext("${arrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
+		curItem++
 					</#if>
 	}
+	if popErr := writeBuffer.PopContext("${arrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
+	}
+					</#if>
 					<#break>
 				<#case "checksum">
 					<#assign checksumField = field.asChecksumField().orElseThrow()>
@@ -1688,17 +1697,15 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
                 	<#assign arrayElementType = manualArrayField.type.elementTypeReference>
 
 	// Manual Array Field (${manualArrayField.name})
-	if m.Get${manualArrayField.name?cap_first}() != nil {
-		if pushErr := writeBuffer.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
-		for _, m := range m.Get${manualArrayField.name?cap_first}() {
+	if pushErr := writeBuffer.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
+	}
+	for _, m := range m.Get${manualArrayField.name?cap_first}() {
 			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong therefore we substract it with substring-->
 			${helper.toSerializationExpression(manualArrayField, arrayElementType, manualArrayField.serializeExpression, parserArguments)?replace("m.","")}
-		}
-		if popErr := writeBuffer.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
+	}
+	if popErr := writeBuffer.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "manual">

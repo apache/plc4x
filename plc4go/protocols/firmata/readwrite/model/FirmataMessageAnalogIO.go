@@ -162,6 +162,10 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (Fi
 	}
 	// Count array
 	data := make([]int8, uint16(2))
+	// This happens when the size is set conditional to 0
+	if len(data) == 0 {
+		data = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 			_item, _err := readBuffer.ReadInt8("", 8)
@@ -205,19 +209,17 @@ func (m *_FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageAnalogIO"); popErr != nil {

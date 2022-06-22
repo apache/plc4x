@@ -245,7 +245,7 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for eventMessageTextsConfig")
 	}
 	// Terminated array
-	eventMessageTextsConfig := make([]BACnetOptionalCharacterString, 0)
+	var eventMessageTextsConfig []BACnetOptionalCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParse(readBuffer)
@@ -323,19 +323,17 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) Serialize(writeBuffer ut
 		}
 
 		// Array Field (eventMessageTextsConfig)
-		if m.GetEventMessageTextsConfig() != nil {
-			if pushErr := writeBuffer.PushContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventMessageTextsConfig")
+		if pushErr := writeBuffer.PushContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for eventMessageTextsConfig")
+		}
+		for _, _element := range m.GetEventMessageTextsConfig() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'eventMessageTextsConfig' field")
 			}
-			for _, _element := range m.GetEventMessageTextsConfig() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'eventMessageTextsConfig' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventMessageTextsConfig")
-			}
+		}
+		if popErr := writeBuffer.PopContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for eventMessageTextsConfig")
 		}
 		// Virtual field
 		if _toOffnormalTextConfigErr := writeBuffer.WriteVirtual("toOffnormalTextConfig", m.GetToOffnormalTextConfig()); _toOffnormalTextConfigErr != nil {

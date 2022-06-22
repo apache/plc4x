@@ -166,12 +166,9 @@ func (m *_UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (unknownData)
-		if m.GetUnknownData() != nil {
-			// Byte Array field (unknownData)
-			_writeArrayErr := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'unknownData' field")
-			}
+		// Byte Array field (unknownData)
+		if err := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnknownMessage"); popErr != nil {

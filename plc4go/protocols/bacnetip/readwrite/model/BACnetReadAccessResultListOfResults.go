@@ -152,7 +152,7 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfReadAccessProperty")
 	}
 	// Terminated array
-	listOfReadAccessProperty := make([]BACnetReadAccessProperty, 0)
+	var listOfReadAccessProperty []BACnetReadAccessProperty
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessPropertyParse(readBuffer, objectTypeArgument)
@@ -208,19 +208,17 @@ func (m *_BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.Write
 	}
 
 	// Array Field (listOfReadAccessProperty)
-	if m.GetListOfReadAccessProperty() != nil {
-		if pushErr := writeBuffer.PushContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfReadAccessProperty")
+	if pushErr := writeBuffer.PushContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfReadAccessProperty")
+	}
+	for _, _element := range m.GetListOfReadAccessProperty() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfReadAccessProperty' field")
 		}
-		for _, _element := range m.GetListOfReadAccessProperty() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfReadAccessProperty' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfReadAccessProperty")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfReadAccessProperty")
 	}
 
 	// Simple Field (closingTag)

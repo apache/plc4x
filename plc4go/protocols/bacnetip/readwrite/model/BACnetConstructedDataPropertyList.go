@@ -215,7 +215,7 @@ func BACnetConstructedDataPropertyListParse(readBuffer utils.ReadBuffer, tagNumb
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyList")
 	}
 	// Terminated array
-	propertyList := make([]BACnetPropertyIdentifierTagged, 0)
+	var propertyList []BACnetPropertyIdentifierTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataPropertyList) Serialize(writeBuffer utils.WriteBu
 		}
 
 		// Array Field (propertyList)
-		if m.GetPropertyList() != nil {
-			if pushErr := writeBuffer.PushContext("propertyList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for propertyList")
+		if pushErr := writeBuffer.PushContext("propertyList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for propertyList")
+		}
+		for _, _element := range m.GetPropertyList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'propertyList' field")
 			}
-			for _, _element := range m.GetPropertyList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'propertyList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("propertyList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for propertyList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("propertyList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for propertyList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPropertyList"); popErr != nil {

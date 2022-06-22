@@ -215,7 +215,7 @@ func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationPolicyNames")
 	}
 	// Terminated array
-	authenticationPolicyNames := make([]BACnetApplicationTagCharacterString, 0)
+	var authenticationPolicyNames []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) Serialize(writeBuffer 
 		}
 
 		// Array Field (authenticationPolicyNames)
-		if m.GetAuthenticationPolicyNames() != nil {
-			if pushErr := writeBuffer.PushContext("authenticationPolicyNames", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authenticationPolicyNames")
+		if pushErr := writeBuffer.PushContext("authenticationPolicyNames", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for authenticationPolicyNames")
+		}
+		for _, _element := range m.GetAuthenticationPolicyNames() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'authenticationPolicyNames' field")
 			}
-			for _, _element := range m.GetAuthenticationPolicyNames() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'authenticationPolicyNames' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("authenticationPolicyNames", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authenticationPolicyNames")
-			}
+		}
+		if popErr := writeBuffer.PopContext("authenticationPolicyNames", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for authenticationPolicyNames")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationPolicyNames"); popErr != nil {

@@ -154,7 +154,7 @@ func BACnetConstructedDataRecipientListParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for recipientList")
 	}
 	// Terminated array
-	recipientList := make([]BACnetDestination, 0)
+	var recipientList []BACnetDestination
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDestinationParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataRecipientList) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (recipientList)
-		if m.GetRecipientList() != nil {
-			if pushErr := writeBuffer.PushContext("recipientList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for recipientList")
+		if pushErr := writeBuffer.PushContext("recipientList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for recipientList")
+		}
+		for _, _element := range m.GetRecipientList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'recipientList' field")
 			}
-			for _, _element := range m.GetRecipientList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'recipientList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("recipientList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for recipientList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("recipientList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for recipientList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRecipientList"); popErr != nil {

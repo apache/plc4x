@@ -154,7 +154,7 @@ func BACnetConstructedDataEntryPointsParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, errors.Wrap(pullErr, "Error pulling for entryPoints")
 	}
 	// Terminated array
-	entryPoints := make([]BACnetDeviceObjectReference, 0)
+	var entryPoints []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataEntryPoints) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (entryPoints)
-		if m.GetEntryPoints() != nil {
-			if pushErr := writeBuffer.PushContext("entryPoints", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for entryPoints")
+		if pushErr := writeBuffer.PushContext("entryPoints", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for entryPoints")
+		}
+		for _, _element := range m.GetEntryPoints() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'entryPoints' field")
 			}
-			for _, _element := range m.GetEntryPoints() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'entryPoints' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("entryPoints", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for entryPoints")
-			}
+		}
+		if popErr := writeBuffer.PopContext("entryPoints", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for entryPoints")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEntryPoints"); popErr != nil {

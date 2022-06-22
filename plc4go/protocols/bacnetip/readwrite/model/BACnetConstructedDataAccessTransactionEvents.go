@@ -154,7 +154,7 @@ func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for accessTransactionEvents")
 	}
 	// Terminated array
-	accessTransactionEvents := make([]BACnetAccessEventTagged, 0)
+	var accessTransactionEvents []BACnetAccessEventTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessEventTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) Serialize(writeBuffer ut
 		}
 
 		// Array Field (accessTransactionEvents)
-		if m.GetAccessTransactionEvents() != nil {
-			if pushErr := writeBuffer.PushContext("accessTransactionEvents", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for accessTransactionEvents")
+		if pushErr := writeBuffer.PushContext("accessTransactionEvents", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for accessTransactionEvents")
+		}
+		for _, _element := range m.GetAccessTransactionEvents() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'accessTransactionEvents' field")
 			}
-			for _, _element := range m.GetAccessTransactionEvents() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'accessTransactionEvents' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("accessTransactionEvents", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for accessTransactionEvents")
-			}
+		}
+		if popErr := writeBuffer.PopContext("accessTransactionEvents", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for accessTransactionEvents")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessTransactionEvents"); popErr != nil {

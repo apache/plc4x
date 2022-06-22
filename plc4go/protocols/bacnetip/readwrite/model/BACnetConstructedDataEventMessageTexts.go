@@ -245,7 +245,7 @@ func BACnetConstructedDataEventMessageTextsParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for eventMessageTexts")
 	}
 	// Terminated array
-	eventMessageTexts := make([]BACnetOptionalCharacterString, 0)
+	var eventMessageTexts []BACnetOptionalCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParse(readBuffer)
@@ -323,19 +323,17 @@ func (m *_BACnetConstructedDataEventMessageTexts) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (eventMessageTexts)
-		if m.GetEventMessageTexts() != nil {
-			if pushErr := writeBuffer.PushContext("eventMessageTexts", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventMessageTexts")
+		if pushErr := writeBuffer.PushContext("eventMessageTexts", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for eventMessageTexts")
+		}
+		for _, _element := range m.GetEventMessageTexts() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'eventMessageTexts' field")
 			}
-			for _, _element := range m.GetEventMessageTexts() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'eventMessageTexts' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("eventMessageTexts", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventMessageTexts")
-			}
+		}
+		if popErr := writeBuffer.PopContext("eventMessageTexts", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for eventMessageTexts")
 		}
 		// Virtual field
 		if _toOffnormalTextErr := writeBuffer.WriteVirtual("toOffnormalText", m.GetToOffnormalText()); _toOffnormalTextErr != nil {

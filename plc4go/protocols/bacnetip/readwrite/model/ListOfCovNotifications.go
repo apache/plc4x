@@ -171,7 +171,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
 	// Terminated array
-	listOfValues := make([]ListOfCovNotificationsValue, 0)
+	var listOfValues []ListOfCovNotificationsValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := ListOfCovNotificationsValueParse(readBuffer, monitoredObjectIdentifier.GetObjectType())
@@ -239,19 +239,17 @@ func (m *_ListOfCovNotifications) Serialize(writeBuffer utils.WriteBuffer) error
 	}
 
 	// Array Field (listOfValues)
-	if m.GetListOfValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfValues")
+	if pushErr := writeBuffer.PushContext("listOfValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfValues")
+	}
+	for _, _element := range m.GetListOfValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfValues' field")
 		}
-		for _, _element := range m.GetListOfValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfValues")
 	}
 
 	// Simple Field (closingTag)

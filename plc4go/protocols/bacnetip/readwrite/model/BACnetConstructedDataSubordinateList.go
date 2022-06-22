@@ -215,7 +215,7 @@ func BACnetConstructedDataSubordinateListParse(readBuffer utils.ReadBuffer, tagN
 		return nil, errors.Wrap(pullErr, "Error pulling for subordinateList")
 	}
 	// Terminated array
-	subordinateList := make([]BACnetDeviceObjectReference, 0)
+	var subordinateList []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataSubordinateList) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (subordinateList)
-		if m.GetSubordinateList() != nil {
-			if pushErr := writeBuffer.PushContext("subordinateList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for subordinateList")
+		if pushErr := writeBuffer.PushContext("subordinateList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for subordinateList")
+		}
+		for _, _element := range m.GetSubordinateList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'subordinateList' field")
 			}
-			for _, _element := range m.GetSubordinateList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'subordinateList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("subordinateList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for subordinateList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("subordinateList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for subordinateList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateList"); popErr != nil {

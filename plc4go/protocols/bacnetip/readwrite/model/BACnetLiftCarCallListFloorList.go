@@ -151,7 +151,7 @@ func BACnetLiftCarCallListFloorListParse(readBuffer utils.ReadBuffer, tagNumber 
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumbers")
 	}
 	// Terminated array
-	floorNumbers := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var floorNumbers []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_BACnetLiftCarCallListFloorList) Serialize(writeBuffer utils.WriteBuffe
 	}
 
 	// Array Field (floorNumbers)
-	if m.GetFloorNumbers() != nil {
-		if pushErr := writeBuffer.PushContext("floorNumbers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floorNumbers")
+	if pushErr := writeBuffer.PushContext("floorNumbers", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for floorNumbers")
+	}
+	for _, _element := range m.GetFloorNumbers() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'floorNumbers' field")
 		}
-		for _, _element := range m.GetFloorNumbers() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'floorNumbers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("floorNumbers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floorNumbers")
-		}
+	}
+	if popErr := writeBuffer.PopContext("floorNumbers", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for floorNumbers")
 	}
 
 	// Simple Field (closingTag)

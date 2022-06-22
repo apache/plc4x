@@ -177,7 +177,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	}
 	// Manual Array Field (fileName)
 	// Terminated array
-	_fileNameList := make([]byte, 0)
+	var _fileNameList []byte
 	{
 		_values := &_fileNameList
 		_ = _values
@@ -229,16 +229,14 @@ func (m *_SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Manual Array Field (fileName)
-		if m.GetFileName() != nil {
-			if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for fileName")
-			}
-			for _, m := range m.GetFileName() {
-				SerializeSysexString(writeBuffer, m)
-			}
-			if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for fileName")
-			}
+		if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for fileName")
+		}
+		for _, m := range m.GetFileName() {
+			SerializeSysexString(writeBuffer, m)
+		}
+		if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for fileName")
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandReportFirmwareResponse"); popErr != nil {

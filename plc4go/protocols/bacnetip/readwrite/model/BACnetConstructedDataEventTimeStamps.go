@@ -245,7 +245,7 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 		return nil, errors.Wrap(pullErr, "Error pulling for eventTimeStamps")
 	}
 	// Terminated array
-	eventTimeStamps := make([]BACnetTimeStamp, 0)
+	var eventTimeStamps []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParse(readBuffer)
@@ -323,19 +323,17 @@ func (m *_BACnetConstructedDataEventTimeStamps) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (eventTimeStamps)
-		if m.GetEventTimeStamps() != nil {
-			if pushErr := writeBuffer.PushContext("eventTimeStamps", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventTimeStamps")
+		if pushErr := writeBuffer.PushContext("eventTimeStamps", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for eventTimeStamps")
+		}
+		for _, _element := range m.GetEventTimeStamps() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'eventTimeStamps' field")
 			}
-			for _, _element := range m.GetEventTimeStamps() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'eventTimeStamps' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("eventTimeStamps", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventTimeStamps")
-			}
+		}
+		if popErr := writeBuffer.PopContext("eventTimeStamps", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for eventTimeStamps")
 		}
 		// Virtual field
 		if _toOffnormalErr := writeBuffer.WriteVirtual("toOffnormal", m.GetToOffnormal()); _toOffnormalErr != nil {

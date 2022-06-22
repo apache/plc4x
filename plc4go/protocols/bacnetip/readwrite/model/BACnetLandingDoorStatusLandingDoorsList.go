@@ -151,7 +151,7 @@ func BACnetLandingDoorStatusLandingDoorsListParse(readBuffer utils.ReadBuffer, t
 		return nil, errors.Wrap(pullErr, "Error pulling for landingDoors")
 	}
 	// Terminated array
-	landingDoors := make([]BACnetLandingDoorStatusLandingDoorsListEntry, 0)
+	var landingDoors []BACnetLandingDoorStatusLandingDoorsListEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) Serialize(writeBuffer utils.W
 	}
 
 	// Array Field (landingDoors)
-	if m.GetLandingDoors() != nil {
-		if pushErr := writeBuffer.PushContext("landingDoors", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for landingDoors")
+	if pushErr := writeBuffer.PushContext("landingDoors", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for landingDoors")
+	}
+	for _, _element := range m.GetLandingDoors() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'landingDoors' field")
 		}
-		for _, _element := range m.GetLandingDoors() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'landingDoors' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("landingDoors", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for landingDoors")
-		}
+	}
+	if popErr := writeBuffer.PopContext("landingDoors", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for landingDoors")
 	}
 
 	// Simple Field (closingTag)

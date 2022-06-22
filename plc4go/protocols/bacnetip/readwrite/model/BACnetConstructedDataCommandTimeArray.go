@@ -215,7 +215,7 @@ func BACnetConstructedDataCommandTimeArrayParse(readBuffer utils.ReadBuffer, tag
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTimeArray")
 	}
 	// Terminated array
-	commandTimeArray := make([]BACnetTimeStamp, 0)
+	var commandTimeArray []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParse(readBuffer)
@@ -278,19 +278,17 @@ func (m *_BACnetConstructedDataCommandTimeArray) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (commandTimeArray)
-		if m.GetCommandTimeArray() != nil {
-			if pushErr := writeBuffer.PushContext("commandTimeArray", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for commandTimeArray")
+		if pushErr := writeBuffer.PushContext("commandTimeArray", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for commandTimeArray")
+		}
+		for _, _element := range m.GetCommandTimeArray() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'commandTimeArray' field")
 			}
-			for _, _element := range m.GetCommandTimeArray() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'commandTimeArray' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("commandTimeArray", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for commandTimeArray")
-			}
+		}
+		if popErr := writeBuffer.PopContext("commandTimeArray", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for commandTimeArray")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCommandTimeArray"); popErr != nil {

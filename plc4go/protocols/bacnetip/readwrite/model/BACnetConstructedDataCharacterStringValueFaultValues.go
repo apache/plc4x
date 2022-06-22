@@ -215,7 +215,7 @@ func BACnetConstructedDataCharacterStringValueFaultValuesParse(readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for faultValues")
 	}
 	// Terminated array
-	faultValues := make([]BACnetOptionalCharacterString, 0)
+	var faultValues []BACnetOptionalCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataCharacterStringValueFaultValues) Serialize(writeB
 		}
 
 		// Array Field (faultValues)
-		if m.GetFaultValues() != nil {
-			if pushErr := writeBuffer.PushContext("faultValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for faultValues")
+		if pushErr := writeBuffer.PushContext("faultValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for faultValues")
+		}
+		for _, _element := range m.GetFaultValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'faultValues' field")
 			}
-			for _, _element := range m.GetFaultValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'faultValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("faultValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for faultValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("faultValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for faultValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCharacterStringValueFaultValues"); popErr != nil {

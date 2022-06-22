@@ -130,12 +130,9 @@ func (m *_IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (addr)
-	if m.GetAddr() != nil {
-		// Byte Array field (addr)
-		_writeArrayErr := writeBuffer.WriteByteArray("addr", m.GetAddr())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'addr' field")
-		}
+	// Byte Array field (addr)
+	if err := writeBuffer.WriteByteArray("addr", m.GetAddr()); err != nil {
+		return errors.Wrap(err, "Error serializing 'addr' field")
 	}
 
 	if popErr := writeBuffer.PopContext("IPAddress"); popErr != nil {

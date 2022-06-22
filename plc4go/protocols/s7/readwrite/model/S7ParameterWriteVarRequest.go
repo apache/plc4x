@@ -158,6 +158,10 @@ func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType ui
 	}
 	// Count array
 	items := make([]S7VarRequestParameterItem, numItems)
+	// This happens when the size is set conditional to 0
+	if len(items) == 0 {
+		items = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 			_item, _err := S7VarRequestParameterItemParse(readBuffer)
@@ -200,19 +204,17 @@ func (m *_S7ParameterWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Array Field (items)
-		if m.GetItems() != nil {
-			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for items")
+		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for items")
+		}
+		for _, _element := range m.GetItems() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
-			for _, _element := range m.GetItems() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'items' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for items")
-			}
+		}
+		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for items")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterWriteVarRequest"); popErr != nil {

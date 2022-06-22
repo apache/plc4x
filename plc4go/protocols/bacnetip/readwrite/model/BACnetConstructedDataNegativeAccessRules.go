@@ -215,7 +215,7 @@ func BACnetConstructedDataNegativeAccessRulesParse(readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(pullErr, "Error pulling for negativeAccessRules")
 	}
 	// Terminated array
-	negativeAccessRules := make([]BACnetAccessRule, 0)
+	var negativeAccessRules []BACnetAccessRule
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessRuleParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataNegativeAccessRules) Serialize(writeBuffer utils.
 		}
 
 		// Array Field (negativeAccessRules)
-		if m.GetNegativeAccessRules() != nil {
-			if pushErr := writeBuffer.PushContext("negativeAccessRules", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for negativeAccessRules")
+		if pushErr := writeBuffer.PushContext("negativeAccessRules", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for negativeAccessRules")
+		}
+		for _, _element := range m.GetNegativeAccessRules() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'negativeAccessRules' field")
 			}
-			for _, _element := range m.GetNegativeAccessRules() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'negativeAccessRules' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("negativeAccessRules", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for negativeAccessRules")
-			}
+		}
+		if popErr := writeBuffer.PopContext("negativeAccessRules", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for negativeAccessRules")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNegativeAccessRules"); popErr != nil {

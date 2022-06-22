@@ -151,7 +151,7 @@ func ListOfCovNotificationsListParse(readBuffer utils.ReadBuffer, tagNumber uint
 		return nil, errors.Wrap(pullErr, "Error pulling for specifications")
 	}
 	// Terminated array
-	specifications := make([]ListOfCovNotifications, 0)
+	var specifications []ListOfCovNotifications
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := ListOfCovNotificationsParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_ListOfCovNotificationsList) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	// Array Field (specifications)
-	if m.GetSpecifications() != nil {
-		if pushErr := writeBuffer.PushContext("specifications", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for specifications")
+	if pushErr := writeBuffer.PushContext("specifications", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for specifications")
+	}
+	for _, _element := range m.GetSpecifications() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'specifications' field")
 		}
-		for _, _element := range m.GetSpecifications() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'specifications' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("specifications", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for specifications")
-		}
+	}
+	if popErr := writeBuffer.PopContext("specifications", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for specifications")
 	}
 
 	// Simple Field (closingTag)

@@ -215,7 +215,7 @@ func BACnetConstructedDataShedLevelDescriptionsParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for shedLevelDescriptions")
 	}
 	// Terminated array
-	shedLevelDescriptions := make([]BACnetApplicationTagCharacterString, 0)
+	var shedLevelDescriptions []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataShedLevelDescriptions) Serialize(writeBuffer util
 		}
 
 		// Array Field (shedLevelDescriptions)
-		if m.GetShedLevelDescriptions() != nil {
-			if pushErr := writeBuffer.PushContext("shedLevelDescriptions", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for shedLevelDescriptions")
+		if pushErr := writeBuffer.PushContext("shedLevelDescriptions", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for shedLevelDescriptions")
+		}
+		for _, _element := range m.GetShedLevelDescriptions() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'shedLevelDescriptions' field")
 			}
-			for _, _element := range m.GetShedLevelDescriptions() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'shedLevelDescriptions' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("shedLevelDescriptions", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for shedLevelDescriptions")
-			}
+		}
+		if popErr := writeBuffer.PopContext("shedLevelDescriptions", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for shedLevelDescriptions")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataShedLevelDescriptions"); popErr != nil {

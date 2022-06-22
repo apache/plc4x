@@ -215,7 +215,7 @@ func BACnetConstructedDataAccessDoorsParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, errors.Wrap(pullErr, "Error pulling for accessDoors")
 	}
 	// Terminated array
-	accessDoors := make([]BACnetDeviceObjectReference, 0)
+	var accessDoors []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataAccessDoors) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (accessDoors)
-		if m.GetAccessDoors() != nil {
-			if pushErr := writeBuffer.PushContext("accessDoors", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for accessDoors")
+		if pushErr := writeBuffer.PushContext("accessDoors", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for accessDoors")
+		}
+		for _, _element := range m.GetAccessDoors() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'accessDoors' field")
 			}
-			for _, _element := range m.GetAccessDoors() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'accessDoors' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("accessDoors", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for accessDoors")
-			}
+		}
+		if popErr := writeBuffer.PopContext("accessDoors", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for accessDoors")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessDoors"); popErr != nil {

@@ -154,7 +154,7 @@ func BACnetConstructedDataRoutingTableParse(readBuffer utils.ReadBuffer, tagNumb
 		return nil, errors.Wrap(pullErr, "Error pulling for routingTable")
 	}
 	// Terminated array
-	routingTable := make([]BACnetRouterEntry, 0)
+	var routingTable []BACnetRouterEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRouterEntryParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataRoutingTable) Serialize(writeBuffer utils.WriteBu
 		}
 
 		// Array Field (routingTable)
-		if m.GetRoutingTable() != nil {
-			if pushErr := writeBuffer.PushContext("routingTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for routingTable")
+		if pushErr := writeBuffer.PushContext("routingTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for routingTable")
+		}
+		for _, _element := range m.GetRoutingTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'routingTable' field")
 			}
-			for _, _element := range m.GetRoutingTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'routingTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("routingTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for routingTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("routingTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for routingTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRoutingTable"); popErr != nil {

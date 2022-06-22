@@ -215,7 +215,7 @@ func BACnetConstructedDataStructuredObjectListParse(readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(pullErr, "Error pulling for structuredObjectList")
 	}
 	// Terminated array
-	structuredObjectList := make([]BACnetApplicationTagObjectIdentifier, 0)
+	var structuredObjectList []BACnetApplicationTagObjectIdentifier
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataStructuredObjectList) Serialize(writeBuffer utils
 		}
 
 		// Array Field (structuredObjectList)
-		if m.GetStructuredObjectList() != nil {
-			if pushErr := writeBuffer.PushContext("structuredObjectList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for structuredObjectList")
+		if pushErr := writeBuffer.PushContext("structuredObjectList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for structuredObjectList")
+		}
+		for _, _element := range m.GetStructuredObjectList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'structuredObjectList' field")
 			}
-			for _, _element := range m.GetStructuredObjectList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'structuredObjectList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("structuredObjectList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for structuredObjectList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("structuredObjectList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for structuredObjectList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStructuredObjectList"); popErr != nil {

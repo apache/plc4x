@@ -151,6 +151,10 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
 	}
 	// Count array
 	adsNotificationSamples := make([]AdsNotificationSample, samples)
+	// This happens when the size is set conditional to 0
+	if len(adsNotificationSamples) == 0 {
+		adsNotificationSamples = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(samples); curItem++ {
 			_item, _err := AdsNotificationSampleParse(readBuffer)
@@ -194,19 +198,17 @@ func (m *_AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (adsNotificationSamples)
-	if m.GetAdsNotificationSamples() != nil {
-		if pushErr := writeBuffer.PushContext("adsNotificationSamples", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for adsNotificationSamples")
+	if pushErr := writeBuffer.PushContext("adsNotificationSamples", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for adsNotificationSamples")
+	}
+	for _, _element := range m.GetAdsNotificationSamples() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
 		}
-		for _, _element := range m.GetAdsNotificationSamples() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("adsNotificationSamples", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for adsNotificationSamples")
-		}
+	}
+	if popErr := writeBuffer.PopContext("adsNotificationSamples", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for adsNotificationSamples")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsStampHeader"); popErr != nil {

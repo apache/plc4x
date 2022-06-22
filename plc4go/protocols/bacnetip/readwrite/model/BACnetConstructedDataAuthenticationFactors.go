@@ -215,7 +215,7 @@ func BACnetConstructedDataAuthenticationFactorsParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactors")
 	}
 	// Terminated array
-	authenticationFactors := make([]BACnetCredentialAuthenticationFactor, 0)
+	var authenticationFactors []BACnetCredentialAuthenticationFactor
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCredentialAuthenticationFactorParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataAuthenticationFactors) Serialize(writeBuffer util
 		}
 
 		// Array Field (authenticationFactors)
-		if m.GetAuthenticationFactors() != nil {
-			if pushErr := writeBuffer.PushContext("authenticationFactors", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authenticationFactors")
+		if pushErr := writeBuffer.PushContext("authenticationFactors", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for authenticationFactors")
+		}
+		for _, _element := range m.GetAuthenticationFactors() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'authenticationFactors' field")
 			}
-			for _, _element := range m.GetAuthenticationFactors() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'authenticationFactors' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("authenticationFactors", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authenticationFactors")
-			}
+		}
+		if popErr := writeBuffer.PopContext("authenticationFactors", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for authenticationFactors")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationFactors"); popErr != nil {

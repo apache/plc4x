@@ -167,12 +167,9 @@ func (m *_BACnetServiceAckAuthenticate) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		// Array Field (bytesOfRemovedService)
-		if m.GetBytesOfRemovedService() != nil {
-			// Byte Array field (bytesOfRemovedService)
-			_writeArrayErr := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'bytesOfRemovedService' field")
-			}
+		// Byte Array field (bytesOfRemovedService)
+		if err := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService()); err != nil {
+			return errors.Wrap(err, "Error serializing 'bytesOfRemovedService' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAuthenticate"); popErr != nil {

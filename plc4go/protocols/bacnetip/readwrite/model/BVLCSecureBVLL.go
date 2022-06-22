@@ -166,12 +166,9 @@ func (m *_BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (securityWrapper)
-		if m.GetSecurityWrapper() != nil {
-			// Byte Array field (securityWrapper)
-			_writeArrayErr := writeBuffer.WriteByteArray("securityWrapper", m.GetSecurityWrapper())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'securityWrapper' field")
-			}
+		// Byte Array field (securityWrapper)
+		if err := writeBuffer.WriteByteArray("securityWrapper", m.GetSecurityWrapper()); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityWrapper' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCSecureBVLL"); popErr != nil {

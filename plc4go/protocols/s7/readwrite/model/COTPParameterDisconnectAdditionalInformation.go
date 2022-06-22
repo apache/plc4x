@@ -166,12 +166,9 @@ func (m *_COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer ut
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterDisconnectAdditionalInformation"); popErr != nil {

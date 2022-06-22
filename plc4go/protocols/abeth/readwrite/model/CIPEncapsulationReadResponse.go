@@ -48,7 +48,7 @@ type _CIPEncapsulationReadResponse struct {
 	Response DF1ResponseMessage
 
 	// Arguments.
-	Len uint16
+	PacketLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ func (m *_CIPEncapsulationReadResponse) GetResponse() DF1ResponseMessage {
 ///////////////////////////////////////////////////////////
 
 // NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
-func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, len uint16) *_CIPEncapsulationReadResponse {
+func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLen uint16) *_CIPEncapsulationReadResponse {
 	_result := &_CIPEncapsulationReadResponse{
 		Response:                response,
 		_CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
@@ -132,7 +132,7 @@ func (m *_CIPEncapsulationReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) (CIPEncapsulationReadResponse, error) {
+func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, packetLen uint16) (CIPEncapsulationReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadResponse"); pullErr != nil {
@@ -145,7 +145,7 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) 
 	if pullErr := readBuffer.PullContext("response"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for response")
 	}
-	_response, _responseErr := DF1ResponseMessageParse(readBuffer, uint16(len))
+	_response, _responseErr := DF1ResponseMessageParse(readBuffer, uint16(packetLen))
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field")
 	}

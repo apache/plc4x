@@ -154,7 +154,7 @@ func BACnetConstructedDataZoneMembersParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, errors.Wrap(pullErr, "Error pulling for members")
 	}
 	// Terminated array
-	members := make([]BACnetDeviceObjectReference, 0)
+	var members []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataZoneMembers) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (members)
-		if m.GetMembers() != nil {
-			if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for members")
+		if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for members")
+		}
+		for _, _element := range m.GetMembers() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'members' field")
 			}
-			for _, _element := range m.GetMembers() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'members' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for members")
-			}
+		}
+		if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for members")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataZoneMembers"); popErr != nil {

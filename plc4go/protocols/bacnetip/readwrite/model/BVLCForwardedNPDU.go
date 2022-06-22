@@ -166,6 +166,10 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
+	// This happens when the size is set conditional to 0
+	if len(ip) == 0 {
+		ip = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -223,19 +227,17 @@ func (m *_BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (ip)
-		if m.GetIp() != nil {
-			if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for ip")
+		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for ip")
+		}
+		for _, _element := range m.GetIp() {
+			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 			}
-			for _, _element := range m.GetIp() {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for ip")
-			}
+		}
+		if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for ip")
 		}
 
 		// Simple Field (port)

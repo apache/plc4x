@@ -180,7 +180,7 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BA
 		return nil, errors.Wrap(pullErr, "Error pulling for logData")
 	}
 	// Terminated array
-	logData := make([]BACnetLogDataLogDataEntry, 0)
+	var logData []BACnetLogDataLogDataEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetLogDataLogDataEntryParse(readBuffer)
@@ -244,19 +244,17 @@ func (m *_BACnetLogDataLogData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (logData)
-		if m.GetLogData() != nil {
-			if pushErr := writeBuffer.PushContext("logData", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for logData")
+		if pushErr := writeBuffer.PushContext("logData", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for logData")
+		}
+		for _, _element := range m.GetLogData() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'logData' field")
 			}
-			for _, _element := range m.GetLogData() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'logData' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("logData", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for logData")
-			}
+		}
+		if popErr := writeBuffer.PopContext("logData", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for logData")
 		}
 
 		// Simple Field (innerClosingTag)

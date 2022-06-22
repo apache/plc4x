@@ -140,7 +140,7 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (DF1Unprotecte
 	}
 	// Manual Array Field (data)
 	// Terminated array
-	_dataList := make([]byte, 0)
+	var _dataList []byte
 	{
 		_values := &_dataList
 		_ = _values
@@ -176,16 +176,14 @@ func (m *_DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Manual Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
-			}
-			for _, m := range m.GetData() {
-				WriteData(writeBuffer, m)
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, m := range m.GetData() {
+			WriteData(writeBuffer, m)
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1UnprotectedReadResponse"); popErr != nil {

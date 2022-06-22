@@ -204,7 +204,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	}
 	curPos = positionAware.GetPos() - startPos
 	// Length array
-	parameters := make([]COTPParameter, 0)
+	var parameters []COTPParameter
 	{
 		_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
 		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
@@ -284,19 +284,17 @@ func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTP
 	}
 
 	// Array Field (parameters)
-	if m.GetParameters() != nil {
-		if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameters")
+	if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for parameters")
+	}
+	for _, _element := range m.GetParameters() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 		}
-		for _, _element := range m.GetParameters() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameters")
-		}
+	}
+	if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for parameters")
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)

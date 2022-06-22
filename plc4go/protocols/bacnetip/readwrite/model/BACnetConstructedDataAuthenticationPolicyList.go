@@ -215,7 +215,7 @@ func BACnetConstructedDataAuthenticationPolicyListParse(readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationPolicyList")
 	}
 	// Terminated array
-	authenticationPolicyList := make([]BACnetAuthenticationPolicy, 0)
+	var authenticationPolicyList []BACnetAuthenticationPolicy
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAuthenticationPolicyParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataAuthenticationPolicyList) Serialize(writeBuffer u
 		}
 
 		// Array Field (authenticationPolicyList)
-		if m.GetAuthenticationPolicyList() != nil {
-			if pushErr := writeBuffer.PushContext("authenticationPolicyList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authenticationPolicyList")
+		if pushErr := writeBuffer.PushContext("authenticationPolicyList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for authenticationPolicyList")
+		}
+		for _, _element := range m.GetAuthenticationPolicyList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'authenticationPolicyList' field")
 			}
-			for _, _element := range m.GetAuthenticationPolicyList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'authenticationPolicyList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("authenticationPolicyList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authenticationPolicyList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("authenticationPolicyList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for authenticationPolicyList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationPolicyList"); popErr != nil {

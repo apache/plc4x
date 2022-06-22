@@ -154,7 +154,7 @@ func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for virtualMacAddressTable")
 	}
 	// Terminated array
-	virtualMacAddressTable := make([]BACnetVMACEntry, 0)
+	var virtualMacAddressTable []BACnetVMACEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVMACEntryParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) Serialize(writeBuffer uti
 		}
 
 		// Array Field (virtualMacAddressTable)
-		if m.GetVirtualMacAddressTable() != nil {
-			if pushErr := writeBuffer.PushContext("virtualMacAddressTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for virtualMacAddressTable")
+		if pushErr := writeBuffer.PushContext("virtualMacAddressTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for virtualMacAddressTable")
+		}
+		for _, _element := range m.GetVirtualMacAddressTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'virtualMacAddressTable' field")
 			}
-			for _, _element := range m.GetVirtualMacAddressTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'virtualMacAddressTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("virtualMacAddressTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for virtualMacAddressTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("virtualMacAddressTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for virtualMacAddressTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVirtualMACAddressTable"); popErr != nil {

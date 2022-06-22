@@ -215,7 +215,7 @@ func BACnetConstructedDataSubordinateRelationshipsParse(readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for subordinateRelationships")
 	}
 	// Terminated array
-	subordinateRelationships := make([]BACnetRelationshipTagged, 0)
+	var subordinateRelationships []BACnetRelationshipTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRelationshipTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataSubordinateRelationships) Serialize(writeBuffer u
 		}
 
 		// Array Field (subordinateRelationships)
-		if m.GetSubordinateRelationships() != nil {
-			if pushErr := writeBuffer.PushContext("subordinateRelationships", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for subordinateRelationships")
+		if pushErr := writeBuffer.PushContext("subordinateRelationships", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for subordinateRelationships")
+		}
+		for _, _element := range m.GetSubordinateRelationships() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'subordinateRelationships' field")
 			}
-			for _, _element := range m.GetSubordinateRelationships() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'subordinateRelationships' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("subordinateRelationships", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for subordinateRelationships")
-			}
+		}
+		if popErr := writeBuffer.PopContext("subordinateRelationships", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for subordinateRelationships")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateRelationships"); popErr != nil {

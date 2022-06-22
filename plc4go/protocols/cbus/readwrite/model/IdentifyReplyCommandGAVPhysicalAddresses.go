@@ -163,12 +163,9 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) Serialize(writeBuffer utils.
 		}
 
 		// Array Field (values)
-		if m.GetValues() != nil {
-			// Byte Array field (values)
-			_writeArrayErr := writeBuffer.WriteByteArray("values", m.GetValues())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'values' field")
-			}
+		// Byte Array field (values)
+		if err := writeBuffer.WriteByteArray("values", m.GetValues()); err != nil {
+			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandGAVPhysicalAddresses"); popErr != nil {

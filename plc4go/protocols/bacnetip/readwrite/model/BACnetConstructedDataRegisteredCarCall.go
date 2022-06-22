@@ -215,7 +215,7 @@ func BACnetConstructedDataRegisteredCarCallParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for registeredCarCall")
 	}
 	// Terminated array
-	registeredCarCall := make([]BACnetLiftCarCallList, 0)
+	var registeredCarCall []BACnetLiftCarCallList
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLiftCarCallListParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataRegisteredCarCall) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (registeredCarCall)
-		if m.GetRegisteredCarCall() != nil {
-			if pushErr := writeBuffer.PushContext("registeredCarCall", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for registeredCarCall")
+		if pushErr := writeBuffer.PushContext("registeredCarCall", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for registeredCarCall")
+		}
+		for _, _element := range m.GetRegisteredCarCall() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'registeredCarCall' field")
 			}
-			for _, _element := range m.GetRegisteredCarCall() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'registeredCarCall' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("registeredCarCall", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for registeredCarCall")
-			}
+		}
+		if popErr := writeBuffer.PopContext("registeredCarCall", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for registeredCarCall")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRegisteredCarCall"); popErr != nil {

@@ -154,7 +154,7 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for acceptedModes")
 	}
 	// Terminated array
-	acceptedModes := make([]BACnetLifeSafetyModeTagged, 0)
+	var acceptedModes []BACnetLifeSafetyModeTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataAcceptedModes) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (acceptedModes)
-		if m.GetAcceptedModes() != nil {
-			if pushErr := writeBuffer.PushContext("acceptedModes", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for acceptedModes")
+		if pushErr := writeBuffer.PushContext("acceptedModes", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for acceptedModes")
+		}
+		for _, _element := range m.GetAcceptedModes() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'acceptedModes' field")
 			}
-			for _, _element := range m.GetAcceptedModes() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'acceptedModes' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("acceptedModes", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for acceptedModes")
-			}
+		}
+		if popErr := writeBuffer.PopContext("acceptedModes", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for acceptedModes")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAcceptedModes"); popErr != nil {

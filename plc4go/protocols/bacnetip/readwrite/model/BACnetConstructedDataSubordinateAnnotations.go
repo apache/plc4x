@@ -215,7 +215,7 @@ func BACnetConstructedDataSubordinateAnnotationsParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for subordinateAnnotations")
 	}
 	// Terminated array
-	subordinateAnnotations := make([]BACnetApplicationTagCharacterString, 0)
+	var subordinateAnnotations []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) Serialize(writeBuffer uti
 		}
 
 		// Array Field (subordinateAnnotations)
-		if m.GetSubordinateAnnotations() != nil {
-			if pushErr := writeBuffer.PushContext("subordinateAnnotations", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for subordinateAnnotations")
+		if pushErr := writeBuffer.PushContext("subordinateAnnotations", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for subordinateAnnotations")
+		}
+		for _, _element := range m.GetSubordinateAnnotations() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'subordinateAnnotations' field")
 			}
-			for _, _element := range m.GetSubordinateAnnotations() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'subordinateAnnotations' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("subordinateAnnotations", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for subordinateAnnotations")
-			}
+		}
+		if popErr := writeBuffer.PopContext("subordinateAnnotations", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for subordinateAnnotations")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateAnnotations"); popErr != nil {

@@ -215,7 +215,7 @@ func BACnetConstructedDataMakingCarCallParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for makingCarCall")
 	}
 	// Terminated array
-	makingCarCall := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var makingCarCall []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataMakingCarCall) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (makingCarCall)
-		if m.GetMakingCarCall() != nil {
-			if pushErr := writeBuffer.PushContext("makingCarCall", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for makingCarCall")
+		if pushErr := writeBuffer.PushContext("makingCarCall", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for makingCarCall")
+		}
+		for _, _element := range m.GetMakingCarCall() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'makingCarCall' field")
 			}
-			for _, _element := range m.GetMakingCarCall() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'makingCarCall' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("makingCarCall", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for makingCarCall")
-			}
+		}
+		if popErr := writeBuffer.PopContext("makingCarCall", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for makingCarCall")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMakingCarCall"); popErr != nil {

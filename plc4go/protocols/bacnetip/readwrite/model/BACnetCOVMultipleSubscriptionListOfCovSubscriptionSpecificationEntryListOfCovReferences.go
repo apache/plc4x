@@ -151,7 +151,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovReferences")
 	}
 	// Terminated array
-	listOfCovReferences := make([]BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, 0)
+	var listOfCovReferences []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 	}
 
 	// Array Field (listOfCovReferences)
-	if m.GetListOfCovReferences() != nil {
-		if pushErr := writeBuffer.PushContext("listOfCovReferences", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfCovReferences")
+	if pushErr := writeBuffer.PushContext("listOfCovReferences", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfCovReferences")
+	}
+	for _, _element := range m.GetListOfCovReferences() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfCovReferences' field")
 		}
-		for _, _element := range m.GetListOfCovReferences() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfCovReferences' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfCovReferences", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfCovReferences")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfCovReferences", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfCovReferences")
 	}
 
 	// Simple Field (closingTag)

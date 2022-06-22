@@ -154,7 +154,7 @@ func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for credentialsInZone")
 	}
 	// Terminated array
-	credentialsInZone := make([]BACnetDeviceObjectReference, 0)
+	var credentialsInZone []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataCredentialsInZone) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (credentialsInZone)
-		if m.GetCredentialsInZone() != nil {
-			if pushErr := writeBuffer.PushContext("credentialsInZone", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for credentialsInZone")
+		if pushErr := writeBuffer.PushContext("credentialsInZone", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for credentialsInZone")
+		}
+		for _, _element := range m.GetCredentialsInZone() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'credentialsInZone' field")
 			}
-			for _, _element := range m.GetCredentialsInZone() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'credentialsInZone' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("credentialsInZone", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for credentialsInZone")
-			}
+		}
+		if popErr := writeBuffer.PopContext("credentialsInZone", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for credentialsInZone")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialsInZone"); popErr != nil {

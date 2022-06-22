@@ -151,7 +151,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
 	// Terminated array
-	listOfValues := make([]BACnetPropertyStates, 0)
+	var listOfValues []BACnetPropertyStates
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyStatesParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) Serialize(writeBuffer u
 	}
 
 	// Array Field (listOfValues)
-	if m.GetListOfValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfValues")
+	if pushErr := writeBuffer.PushContext("listOfValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfValues")
+	}
+	for _, _element := range m.GetListOfValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfValues' field")
 		}
-		for _, _element := range m.GetListOfValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfValues")
 	}
 
 	// Simple Field (closingTag)

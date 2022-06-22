@@ -591,12 +591,9 @@ func (m *_APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (segment)
-		if m.GetSegment() != nil {
-			// Byte Array field (segment)
-			_writeArrayErr := writeBuffer.WriteByteArray("segment", m.GetSegment())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'segment' field")
-			}
+		// Byte Array field (segment)
+		if err := writeBuffer.WriteByteArray("segment", m.GetSegment()); err != nil {
+			return errors.Wrap(err, "Error serializing 'segment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUConfirmedRequest"); popErr != nil {

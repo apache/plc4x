@@ -215,7 +215,7 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for stateChangeValues")
 	}
 	// Terminated array
-	stateChangeValues := make([]BACnetTimerStateChangeValue, 0)
+	var stateChangeValues []BACnetTimerStateChangeValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimerStateChangeValueParse(readBuffer, objectTypeArgument)
@@ -278,19 +278,17 @@ func (m *_BACnetConstructedDataStateChangeValues) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (stateChangeValues)
-		if m.GetStateChangeValues() != nil {
-			if pushErr := writeBuffer.PushContext("stateChangeValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for stateChangeValues")
+		if pushErr := writeBuffer.PushContext("stateChangeValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for stateChangeValues")
+		}
+		for _, _element := range m.GetStateChangeValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'stateChangeValues' field")
 			}
-			for _, _element := range m.GetStateChangeValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'stateChangeValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("stateChangeValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for stateChangeValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("stateChangeValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for stateChangeValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStateChangeValues"); popErr != nil {

@@ -154,7 +154,7 @@ func BACnetConstructedDataMaskedAlarmValuesParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for maskedAlarmValues")
 	}
 	// Terminated array
-	maskedAlarmValues := make([]BACnetDoorAlarmStateTagged, 0)
+	var maskedAlarmValues []BACnetDoorAlarmStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDoorAlarmStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataMaskedAlarmValues) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (maskedAlarmValues)
-		if m.GetMaskedAlarmValues() != nil {
-			if pushErr := writeBuffer.PushContext("maskedAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for maskedAlarmValues")
+		if pushErr := writeBuffer.PushContext("maskedAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for maskedAlarmValues")
+		}
+		for _, _element := range m.GetMaskedAlarmValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'maskedAlarmValues' field")
 			}
-			for _, _element := range m.GetMaskedAlarmValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'maskedAlarmValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("maskedAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for maskedAlarmValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("maskedAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for maskedAlarmValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaskedAlarmValues"); popErr != nil {

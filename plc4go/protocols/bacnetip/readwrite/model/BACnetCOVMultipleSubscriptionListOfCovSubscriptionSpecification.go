@@ -151,7 +151,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBu
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovSubscriptionSpecificationEntry")
 	}
 	// Terminated array
-	listOfCovSubscriptionSpecificationEntry := make([]BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, 0)
+	var listOfCovSubscriptionSpecificationEntry []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(readBuffer)
@@ -207,19 +207,17 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Seria
 	}
 
 	// Array Field (listOfCovSubscriptionSpecificationEntry)
-	if m.GetListOfCovSubscriptionSpecificationEntry() != nil {
-		if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecificationEntry", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecificationEntry")
+	if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecificationEntry", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecificationEntry")
+	}
+	for _, _element := range m.GetListOfCovSubscriptionSpecificationEntry() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfCovSubscriptionSpecificationEntry' field")
 		}
-		for _, _element := range m.GetListOfCovSubscriptionSpecificationEntry() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfCovSubscriptionSpecificationEntry' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecificationEntry", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecificationEntry")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecificationEntry", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecificationEntry")
 	}
 
 	// Simple Field (closingTag)

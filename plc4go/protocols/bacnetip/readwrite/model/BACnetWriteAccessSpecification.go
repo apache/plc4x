@@ -171,7 +171,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfPropertyWriteDefinition")
 	}
 	// Terminated array
-	listOfPropertyWriteDefinition := make([]BACnetPropertyWriteDefinition, 0)
+	var listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetPropertyWriteDefinitionParse(readBuffer, objectIdentifier.GetObjectType())
@@ -239,19 +239,17 @@ func (m *_BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffe
 	}
 
 	// Array Field (listOfPropertyWriteDefinition)
-	if m.GetListOfPropertyWriteDefinition() != nil {
-		if pushErr := writeBuffer.PushContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfPropertyWriteDefinition")
+	if pushErr := writeBuffer.PushContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfPropertyWriteDefinition")
+	}
+	for _, _element := range m.GetListOfPropertyWriteDefinition() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyWriteDefinition' field")
 		}
-		for _, _element := range m.GetListOfPropertyWriteDefinition() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyWriteDefinition' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfPropertyWriteDefinition")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfPropertyWriteDefinition")
 	}
 
 	// Simple Field (closingTag)

@@ -154,7 +154,7 @@ func BACnetConstructedDataDateListParse(readBuffer utils.ReadBuffer, tagNumber u
 		return nil, errors.Wrap(pullErr, "Error pulling for dateList")
 	}
 	// Terminated array
-	dateList := make([]BACnetCalendarEntry, 0)
+	var dateList []BACnetCalendarEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCalendarEntryParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataDateList) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (dateList)
-		if m.GetDateList() != nil {
-			if pushErr := writeBuffer.PushContext("dateList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for dateList")
+		if pushErr := writeBuffer.PushContext("dateList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for dateList")
+		}
+		for _, _element := range m.GetDateList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'dateList' field")
 			}
-			for _, _element := range m.GetDateList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'dateList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("dateList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for dateList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("dateList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for dateList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDateList"); popErr != nil {

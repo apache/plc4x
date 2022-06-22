@@ -154,7 +154,7 @@ func BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for manualSlaveAddressBinding")
 	}
 	// Terminated array
-	manualSlaveAddressBinding := make([]BACnetAddressBinding, 0)
+	var manualSlaveAddressBinding []BACnetAddressBinding
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAddressBindingParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) Serialize(writeBuffer 
 		}
 
 		// Array Field (manualSlaveAddressBinding)
-		if m.GetManualSlaveAddressBinding() != nil {
-			if pushErr := writeBuffer.PushContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for manualSlaveAddressBinding")
+		if pushErr := writeBuffer.PushContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for manualSlaveAddressBinding")
+		}
+		for _, _element := range m.GetManualSlaveAddressBinding() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'manualSlaveAddressBinding' field")
 			}
-			for _, _element := range m.GetManualSlaveAddressBinding() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'manualSlaveAddressBinding' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for manualSlaveAddressBinding")
-			}
+		}
+		if popErr := writeBuffer.PopContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for manualSlaveAddressBinding")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataManualSlaveAddressBinding"); popErr != nil {

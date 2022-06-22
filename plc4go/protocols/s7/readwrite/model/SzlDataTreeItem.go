@@ -205,12 +205,9 @@ func (m *_SzlDataTreeItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (mlfb)
-	if m.GetMlfb() != nil {
-		// Byte Array field (mlfb)
-		_writeArrayErr := writeBuffer.WriteByteArray("mlfb", m.GetMlfb())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'mlfb' field")
-		}
+	// Byte Array field (mlfb)
+	if err := writeBuffer.WriteByteArray("mlfb", m.GetMlfb()); err != nil {
+		return errors.Wrap(err, "Error serializing 'mlfb' field")
 	}
 
 	// Simple Field (moduleTypeId)

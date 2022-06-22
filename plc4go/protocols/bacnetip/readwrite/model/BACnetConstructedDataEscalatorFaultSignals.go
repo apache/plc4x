@@ -154,7 +154,7 @@ func BACnetConstructedDataEscalatorFaultSignalsParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for faultSignals")
 	}
 	// Terminated array
-	faultSignals := make([]BACnetEscalatorFaultTagged, 0)
+	var faultSignals []BACnetEscalatorFaultTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetEscalatorFaultTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) Serialize(writeBuffer util
 		}
 
 		// Array Field (faultSignals)
-		if m.GetFaultSignals() != nil {
-			if pushErr := writeBuffer.PushContext("faultSignals", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for faultSignals")
+		if pushErr := writeBuffer.PushContext("faultSignals", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for faultSignals")
+		}
+		for _, _element := range m.GetFaultSignals() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'faultSignals' field")
 			}
-			for _, _element := range m.GetFaultSignals() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'faultSignals' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("faultSignals", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for faultSignals")
-			}
+		}
+		if popErr := writeBuffer.PopContext("faultSignals", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for faultSignals")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEscalatorFaultSignals"); popErr != nil {

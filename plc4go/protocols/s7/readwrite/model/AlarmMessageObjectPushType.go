@@ -312,6 +312,10 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	}
 	// Count array
 	AssociatedValues := make([]AssociatedValueType, numberOfValues)
+	// This happens when the size is set conditional to 0
+	if len(AssociatedValues) == 0 {
+		AssociatedValues = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfValues); curItem++ {
 			_item, _err := AssociatedValueTypeParse(readBuffer)
@@ -428,19 +432,17 @@ func (m *_AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	// Array Field (AssociatedValues)
-	if m.GetAssociatedValues() != nil {
-		if pushErr := writeBuffer.PushContext("AssociatedValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for AssociatedValues")
+	if pushErr := writeBuffer.PushContext("AssociatedValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for AssociatedValues")
+	}
+	for _, _element := range m.GetAssociatedValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'AssociatedValues' field")
 		}
-		for _, _element := range m.GetAssociatedValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'AssociatedValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("AssociatedValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for AssociatedValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("AssociatedValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for AssociatedValues")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageObjectPushType"); popErr != nil {

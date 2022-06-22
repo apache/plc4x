@@ -215,7 +215,7 @@ func BACnetConstructedDataShedLevelsParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, errors.Wrap(pullErr, "Error pulling for shedLevels")
 	}
 	// Terminated array
-	shedLevels := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var shedLevels []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataShedLevels) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (shedLevels)
-		if m.GetShedLevels() != nil {
-			if pushErr := writeBuffer.PushContext("shedLevels", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for shedLevels")
+		if pushErr := writeBuffer.PushContext("shedLevels", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for shedLevels")
+		}
+		for _, _element := range m.GetShedLevels() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'shedLevels' field")
 			}
-			for _, _element := range m.GetShedLevels() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'shedLevels' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("shedLevels", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for shedLevels")
-			}
+		}
+		if popErr := writeBuffer.PopContext("shedLevels", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for shedLevels")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataShedLevels"); popErr != nil {

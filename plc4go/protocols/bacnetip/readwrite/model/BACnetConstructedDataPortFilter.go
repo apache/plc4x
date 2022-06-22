@@ -215,7 +215,7 @@ func BACnetConstructedDataPortFilterParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, errors.Wrap(pullErr, "Error pulling for portFilter")
 	}
 	// Terminated array
-	portFilter := make([]BACnetPortPermission, 0)
+	var portFilter []BACnetPortPermission
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPortPermissionParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (portFilter)
-		if m.GetPortFilter() != nil {
-			if pushErr := writeBuffer.PushContext("portFilter", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for portFilter")
+		if pushErr := writeBuffer.PushContext("portFilter", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for portFilter")
+		}
+		for _, _element := range m.GetPortFilter() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'portFilter' field")
 			}
-			for _, _element := range m.GetPortFilter() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'portFilter' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("portFilter", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for portFilter")
-			}
+		}
+		if popErr := writeBuffer.PopContext("portFilter", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for portFilter")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPortFilter"); popErr != nil {

@@ -154,7 +154,7 @@ func BACnetConstructedDataGroupPresentValueParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
 	// Terminated array
-	presentValue := make([]BACnetReadAccessResult, 0)
+	var presentValue []BACnetReadAccessResult
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessResultParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataGroupPresentValue) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (presentValue)
-		if m.GetPresentValue() != nil {
-			if pushErr := writeBuffer.PushContext("presentValue", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for presentValue")
+		if pushErr := writeBuffer.PushContext("presentValue", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for presentValue")
+		}
+		for _, _element := range m.GetPresentValue() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'presentValue' field")
 			}
-			for _, _element := range m.GetPresentValue() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'presentValue' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("presentValue", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for presentValue")
-			}
+		}
+		if popErr := writeBuffer.PopContext("presentValue", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for presentValue")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGroupPresentValue"); popErr != nil {

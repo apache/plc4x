@@ -215,7 +215,7 @@ func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber ui
 		return nil, errors.Wrap(pullErr, "Error pulling for keySets")
 	}
 	// Terminated array
-	keySets := make([]BACnetSecurityKeySet, 0)
+	var keySets []BACnetSecurityKeySet
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetSecurityKeySetParse(readBuffer)
@@ -278,19 +278,17 @@ func (m *_BACnetConstructedDataKeySets) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		// Array Field (keySets)
-		if m.GetKeySets() != nil {
-			if pushErr := writeBuffer.PushContext("keySets", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for keySets")
+		if pushErr := writeBuffer.PushContext("keySets", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for keySets")
+		}
+		for _, _element := range m.GetKeySets() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'keySets' field")
 			}
-			for _, _element := range m.GetKeySets() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'keySets' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("keySets", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for keySets")
-			}
+		}
+		if popErr := writeBuffer.PopContext("keySets", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for keySets")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataKeySets"); popErr != nil {

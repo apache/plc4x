@@ -154,7 +154,7 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.Read
 		return nil, errors.Wrap(pullErr, "Error pulling for supportedSecurityAlgorithms")
 	}
 	// Terminated array
-	supportedSecurityAlgorithms := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) Serialize(writeBuffe
 		}
 
 		// Array Field (supportedSecurityAlgorithms)
-		if m.GetSupportedSecurityAlgorithms() != nil {
-			if pushErr := writeBuffer.PushContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for supportedSecurityAlgorithms")
+		if pushErr := writeBuffer.PushContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for supportedSecurityAlgorithms")
+		}
+		for _, _element := range m.GetSupportedSecurityAlgorithms() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'supportedSecurityAlgorithms' field")
 			}
-			for _, _element := range m.GetSupportedSecurityAlgorithms() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'supportedSecurityAlgorithms' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for supportedSecurityAlgorithms")
-			}
+		}
+		if popErr := writeBuffer.PopContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for supportedSecurityAlgorithms")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSupportedSecurityAlgorithms"); popErr != nil {

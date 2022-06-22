@@ -215,7 +215,7 @@ func BACnetConstructedDataConfigurationFilesParse(readBuffer utils.ReadBuffer, t
 		return nil, errors.Wrap(pullErr, "Error pulling for configurationFiles")
 	}
 	// Terminated array
-	configurationFiles := make([]BACnetApplicationTagObjectIdentifier, 0)
+	var configurationFiles []BACnetApplicationTagObjectIdentifier
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -273,19 +273,17 @@ func (m *_BACnetConstructedDataConfigurationFiles) Serialize(writeBuffer utils.W
 		}
 
 		// Array Field (configurationFiles)
-		if m.GetConfigurationFiles() != nil {
-			if pushErr := writeBuffer.PushContext("configurationFiles", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for configurationFiles")
+		if pushErr := writeBuffer.PushContext("configurationFiles", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for configurationFiles")
+		}
+		for _, _element := range m.GetConfigurationFiles() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'configurationFiles' field")
 			}
-			for _, _element := range m.GetConfigurationFiles() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'configurationFiles' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("configurationFiles", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for configurationFiles")
-			}
+		}
+		if popErr := writeBuffer.PopContext("configurationFiles", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for configurationFiles")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataConfigurationFiles"); popErr != nil {

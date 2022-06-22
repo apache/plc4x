@@ -154,7 +154,7 @@ func BACnetConstructedDataRestartNotificationRecipientsParse(readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for restartNotificationRecipients")
 	}
 	// Terminated array
-	restartNotificationRecipients := make([]BACnetRecipient, 0)
+	var restartNotificationRecipients []BACnetRecipient
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRecipientParse(readBuffer)
@@ -191,19 +191,17 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) Serialize(writeBuf
 		}
 
 		// Array Field (restartNotificationRecipients)
-		if m.GetRestartNotificationRecipients() != nil {
-			if pushErr := writeBuffer.PushContext("restartNotificationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for restartNotificationRecipients")
+		if pushErr := writeBuffer.PushContext("restartNotificationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for restartNotificationRecipients")
+		}
+		for _, _element := range m.GetRestartNotificationRecipients() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'restartNotificationRecipients' field")
 			}
-			for _, _element := range m.GetRestartNotificationRecipients() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'restartNotificationRecipients' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("restartNotificationRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for restartNotificationRecipients")
-			}
+		}
+		if popErr := writeBuffer.PopContext("restartNotificationRecipients", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for restartNotificationRecipients")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRestartNotificationRecipients"); popErr != nil {

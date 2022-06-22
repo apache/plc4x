@@ -180,6 +180,10 @@ func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareTy
 	}
 	// Count array
 	comObjectDescriptors := make([]GroupObjectDescriptorRealisationType1, numEntries)
+	// This happens when the size is set conditional to 0
+	if len(comObjectDescriptors) == 0 {
+		comObjectDescriptors = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
 			_item, _err := GroupObjectDescriptorRealisationType1Parse(readBuffer)
@@ -231,19 +235,17 @@ func (m *_ComObjectTableRealisationType1) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Array Field (comObjectDescriptors)
-		if m.GetComObjectDescriptors() != nil {
-			if pushErr := writeBuffer.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
+		if pushErr := writeBuffer.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
+		}
+		for _, _element := range m.GetComObjectDescriptors() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 			}
-			for _, _element := range m.GetComObjectDescriptors() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
-			}
+		}
+		if popErr := writeBuffer.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
 		}
 
 		if popErr := writeBuffer.PopContext("ComObjectTableRealisationType1"); popErr != nil {

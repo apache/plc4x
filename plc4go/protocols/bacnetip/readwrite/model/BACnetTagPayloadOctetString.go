@@ -133,12 +133,9 @@ func (m *_BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) 
 	}
 
 	// Array Field (octets)
-	if m.GetOctets() != nil {
-		// Byte Array field (octets)
-		_writeArrayErr := writeBuffer.WriteByteArray("octets", m.GetOctets())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'octets' field")
-		}
+	// Byte Array field (octets)
+	if err := writeBuffer.WriteByteArray("octets", m.GetOctets()); err != nil {
+		return errors.Wrap(err, "Error serializing 'octets' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadOctetString"); popErr != nil {

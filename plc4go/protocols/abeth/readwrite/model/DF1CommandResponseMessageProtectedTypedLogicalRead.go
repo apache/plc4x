@@ -148,7 +148,7 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
-	data := make([]uint8, 0)
+	var data []uint8
 	{
 		_dataLength := uint16(payloadLength) - uint16(uint16(8))
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
@@ -186,19 +186,17 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuf
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); popErr != nil {

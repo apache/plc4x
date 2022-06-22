@@ -151,7 +151,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(read
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfLifeSavetyAlarmValues")
 	}
 	// Terminated array
-	listOfLifeSavetyAlarmValues := make([]BACnetLifeSafetyStateTagged, 0)
+	var listOfLifeSavetyAlarmValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -207,19 +207,17 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Ser
 	}
 
 	// Array Field (listOfLifeSavetyAlarmValues)
-	if m.GetListOfLifeSavetyAlarmValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
+	if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
+	}
+	for _, _element := range m.GetListOfLifeSavetyAlarmValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfLifeSavetyAlarmValues' field")
 		}
-		for _, _element := range m.GetListOfLifeSavetyAlarmValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfLifeSavetyAlarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
 	}
 
 	// Simple Field (closingTag)
