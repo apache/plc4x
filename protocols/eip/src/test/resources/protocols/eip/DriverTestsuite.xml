@@ -30,6 +30,9 @@
   <setup>
     <!-- First the driver is expected to send a RegisterSession connection request -->
     <outgoing-plc-message name="Send connection request">
+      <parser-arguments>
+        <byteOrder>BIG_ENDIAN</byteOrder>
+      </parser-arguments>
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>
         <len dataType="uint" bitLength="16">4</len>
@@ -54,6 +57,9 @@
     </outgoing-plc-message>
     <!-- The PLC will send the connection response with a sender context and session handle-->
     <incoming-plc-message name="Receive connection response">
+      <parser-arguments>
+        <byteOrder>BIG_ENDIAN</byteOrder>
+      </parser-arguments>
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>
         <len dataType="uint" bitLength="16">4</len>
@@ -92,6 +98,9 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send CipReadRequest to PLC">
+        <parser-arguments>
+          <byteOrder>BIG_ENDIAN</byteOrder>
+        </parser-arguments>
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
           <len dataType="uint" bitLength="16">40</len>
@@ -150,6 +159,9 @@
         </EipPacket>
       </outgoing-plc-message>
       <incoming-plc-message name="Get CipReadResponse from PLC">
+        <parser-arguments>
+          <byteOrder>BIG_ENDIAN</byteOrder>
+        </parser-arguments>
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
           <len dataType="uint" bitLength="16">26</len>

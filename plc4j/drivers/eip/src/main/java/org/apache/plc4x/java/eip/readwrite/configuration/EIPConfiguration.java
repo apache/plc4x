@@ -19,9 +19,12 @@
 package org.apache.plc4x.java.eip.readwrite.configuration;
 
 import org.apache.plc4x.java.eip.readwrite.EIPDriver;
+import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+
+import java.nio.ByteOrder;
 
 public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
 
@@ -30,6 +33,9 @@ public class EIPConfiguration implements Configuration, TcpTransportConfiguratio
 
     @ConfigurationParameter
     private int slot;
+
+    @ConfigurationParameter
+    private IntegerEncoding byteOrder = IntegerEncoding.BIG_ENDIAN;
 
     public int getBackplane() {
         return backplane;
@@ -46,6 +52,10 @@ public class EIPConfiguration implements Configuration, TcpTransportConfiguratio
     public void setSlot(int slot) {
         this.slot = slot;
     }
+
+    public IntegerEncoding getByteOrder() { return this.byteOrder; }
+
+    public void setByteOrder(IntegerEncoding byteOrder) { this.byteOrder = byteOrder; }
 
     @Override
     public int getDefaultPort(){return EIPDriver.PORT;}

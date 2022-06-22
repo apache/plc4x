@@ -97,6 +97,8 @@ public class EipField implements PlcField, Serializable {
             }
             if (!matcher.group(TYPE).isEmpty()) {
                 type = CIPDataTypeCode.valueOf(matcher.group(TYPE));
+            } else {
+                type = CIPDataTypeCode.DINT;
             }
             if (nb != 0) {
                 if (type != null) {
