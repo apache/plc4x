@@ -41,6 +41,12 @@ type BACnetConstructedDataNegativeAccessRules interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataNegativeAccessRulesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNegativeAccessRules.
+// This is useful for switch cases.
+type BACnetConstructedDataNegativeAccessRulesExactly interface {
+	isBACnetConstructedDataNegativeAccessRules() bool
+}
+
 // _BACnetConstructedDataNegativeAccessRules is the data-structure of this message
 type _BACnetConstructedDataNegativeAccessRules struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataNegativeAccessRules) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNegativeAccessRules) isBACnetConstructedDataNegativeAccessRules() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNegativeAccessRules) String() string {

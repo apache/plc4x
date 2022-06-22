@@ -37,6 +37,12 @@ type BACnetConstructedDataBACnetIPv6Mode interface {
 	GetActualValue() BACnetIPModeTagged
 }
 
+// BACnetConstructedDataBACnetIPv6ModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPv6Mode.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPv6ModeExactly interface {
+	isBACnetConstructedDataBACnetIPv6Mode() bool
+}
+
 // _BACnetConstructedDataBACnetIPv6Mode is the data-structure of this message
 type _BACnetConstructedDataBACnetIPv6Mode struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6Mode) isBACnetConstructedDataBACnetIPv6Mode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6Mode) String() string {

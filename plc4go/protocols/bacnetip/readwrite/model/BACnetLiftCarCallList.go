@@ -34,6 +34,12 @@ type BACnetLiftCarCallList interface {
 	GetFloorNumbers() BACnetLiftCarCallListFloorList
 }
 
+// BACnetLiftCarCallListExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarCallList.
+// This is useful for switch cases.
+type BACnetLiftCarCallListExactly interface {
+	isBACnetLiftCarCallList() bool
+}
+
 // _BACnetLiftCarCallList is the data-structure of this message
 type _BACnetLiftCarCallList struct {
 	FloorNumbers BACnetLiftCarCallListFloorList
@@ -143,6 +149,10 @@ func (m *_BACnetLiftCarCallList) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarCallList")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarCallList) isBACnetLiftCarCallList() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarCallList) String() string {

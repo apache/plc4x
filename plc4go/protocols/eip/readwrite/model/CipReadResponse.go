@@ -42,6 +42,12 @@ type CipReadResponse interface {
 	GetData() []byte
 }
 
+// CipReadResponseExactly can be used when we want exactly this type and not a type which fulfills CipReadResponse.
+// This is useful for switch cases.
+type CipReadResponseExactly interface {
+	isCipReadResponse() bool
+}
+
 // _CipReadResponse is the data-structure of this message
 type _CipReadResponse struct {
 	*_CipService
@@ -288,6 +294,10 @@ func (m *_CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipReadResponse) isCipReadResponse() bool {
+	return true
 }
 
 func (m *_CipReadResponse) String() string {

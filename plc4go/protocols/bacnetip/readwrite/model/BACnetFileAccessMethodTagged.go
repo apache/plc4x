@@ -36,6 +36,12 @@ type BACnetFileAccessMethodTagged interface {
 	GetValue() BACnetFileAccessMethod
 }
 
+// BACnetFileAccessMethodTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetFileAccessMethodTagged.
+// This is useful for switch cases.
+type BACnetFileAccessMethodTaggedExactly interface {
+	isBACnetFileAccessMethodTagged() bool
+}
+
 // _BACnetFileAccessMethodTagged is the data-structure of this message
 type _BACnetFileAccessMethodTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetFileAccessMethodTagged) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetFileAccessMethodTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetFileAccessMethodTagged) isBACnetFileAccessMethodTagged() bool {
+	return true
 }
 
 func (m *_BACnetFileAccessMethodTagged) String() string {

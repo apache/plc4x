@@ -50,6 +50,12 @@ type DIBDeviceInfo interface {
 	GetDeviceFriendlyName() []byte
 }
 
+// DIBDeviceInfoExactly can be used when we want exactly this type and not a type which fulfills DIBDeviceInfo.
+// This is useful for switch cases.
+type DIBDeviceInfoExactly interface {
+	isDIBDeviceInfo() bool
+}
+
 // _DIBDeviceInfo is the data-structure of this message
 type _DIBDeviceInfo struct {
 	DescriptionType                uint8
@@ -413,6 +419,10 @@ func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for DIBDeviceInfo")
 	}
 	return nil
+}
+
+func (m *_DIBDeviceInfo) isDIBDeviceInfo() bool {
+	return true
 }
 
 func (m *_DIBDeviceInfo) String() string {

@@ -36,6 +36,12 @@ type BACnetShedLevel interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevel.
+// This is useful for switch cases.
+type BACnetShedLevelExactly interface {
+	isBACnetShedLevel() bool
+}
+
 // _BACnetShedLevel is the data-structure of this message
 type _BACnetShedLevel struct {
 	_BACnetShedLevelChildRequirements
@@ -43,9 +49,9 @@ type _BACnetShedLevel struct {
 }
 
 type _BACnetShedLevelChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetShedLevelParent interface {
@@ -54,7 +60,7 @@ type BACnetShedLevelParent interface {
 }
 
 type BACnetShedLevelChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetShedLevel, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetShedLevel
 
@@ -200,6 +206,10 @@ func (pm *_BACnetShedLevel) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(popErr, "Error popping for BACnetShedLevel")
 	}
 	return nil
+}
+
+func (m *_BACnetShedLevel) isBACnetShedLevel() bool {
+	return true
 }
 
 func (m *_BACnetShedLevel) String() string {

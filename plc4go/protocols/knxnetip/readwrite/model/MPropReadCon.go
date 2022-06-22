@@ -45,6 +45,12 @@ type MPropReadCon interface {
 	GetData() uint16
 }
 
+// MPropReadConExactly can be used when we want exactly this type and not a type which fulfills MPropReadCon.
+// This is useful for switch cases.
+type MPropReadConExactly interface {
+	isMPropReadCon() bool
+}
+
 // _MPropReadCon is the data-structure of this message
 type _MPropReadCon struct {
 	*_CEMI
@@ -300,6 +306,10 @@ func (m *_MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MPropReadCon) isMPropReadCon() bool {
+	return true
 }
 
 func (m *_MPropReadCon) String() string {

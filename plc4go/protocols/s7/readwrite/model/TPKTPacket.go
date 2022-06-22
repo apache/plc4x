@@ -39,6 +39,12 @@ type TPKTPacket interface {
 	GetPayload() COTPPacket
 }
 
+// TPKTPacketExactly can be used when we want exactly this type and not a type which fulfills TPKTPacket.
+// This is useful for switch cases.
+type TPKTPacketExactly interface {
+	isTPKTPacket() bool
+}
+
 // _TPKTPacket is the data-structure of this message
 type _TPKTPacket struct {
 	Payload COTPPacket
@@ -221,6 +227,10 @@ func (m *_TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for TPKTPacket")
 	}
 	return nil
+}
+
+func (m *_TPKTPacket) isTPKTPacket() bool {
+	return true
 }
 
 func (m *_TPKTPacket) String() string {

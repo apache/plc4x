@@ -40,6 +40,12 @@ type APDUAbort interface {
 	GetAbortReason() BACnetAbortReasonTagged
 }
 
+// APDUAbortExactly can be used when we want exactly this type and not a type which fulfills APDUAbort.
+// This is useful for switch cases.
+type APDUAbortExactly interface {
+	isAPDUAbort() bool
+}
+
 // _APDUAbort is the data-structure of this message
 type _APDUAbort struct {
 	*_APDU
@@ -259,6 +265,10 @@ func (m *_APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUAbort) isAPDUAbort() bool {
+	return true
 }
 
 func (m *_APDUAbort) String() string {

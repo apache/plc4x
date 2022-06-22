@@ -36,6 +36,12 @@ type BACnetKeyIdentifier interface {
 	GetKeyId() BACnetContextTagUnsignedInteger
 }
 
+// BACnetKeyIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetKeyIdentifier.
+// This is useful for switch cases.
+type BACnetKeyIdentifierExactly interface {
+	isBACnetKeyIdentifier() bool
+}
+
 // _BACnetKeyIdentifier is the data-structure of this message
 type _BACnetKeyIdentifier struct {
 	Algorithm BACnetContextTagUnsignedInteger
@@ -178,6 +184,10 @@ func (m *_BACnetKeyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetKeyIdentifier")
 	}
 	return nil
+}
+
+func (m *_BACnetKeyIdentifier) isBACnetKeyIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetKeyIdentifier) String() string {

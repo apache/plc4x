@@ -38,6 +38,12 @@ type HPAIControlEndpoint interface {
 	GetIpPort() uint16
 }
 
+// HPAIControlEndpointExactly can be used when we want exactly this type and not a type which fulfills HPAIControlEndpoint.
+// This is useful for switch cases.
+type HPAIControlEndpointExactly interface {
+	isHPAIControlEndpoint() bool
+}
+
 // _HPAIControlEndpoint is the data-structure of this message
 type _HPAIControlEndpoint struct {
 	HostProtocolCode HostProtocolCode
@@ -219,6 +225,10 @@ func (m *_HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for HPAIControlEndpoint")
 	}
 	return nil
+}
+
+func (m *_HPAIControlEndpoint) isHPAIControlEndpoint() bool {
+	return true
 }
 
 func (m *_HPAIControlEndpoint) String() string {

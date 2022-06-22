@@ -33,6 +33,12 @@ type ApduDataRestart interface {
 	ApduData
 }
 
+// ApduDataRestartExactly can be used when we want exactly this type and not a type which fulfills ApduDataRestart.
+// This is useful for switch cases.
+type ApduDataRestartExactly interface {
+	isApduDataRestart() bool
+}
+
 // _ApduDataRestart is the data-structure of this message
 type _ApduDataRestart struct {
 	*_ApduData
@@ -134,6 +140,10 @@ func (m *_ApduDataRestart) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataRestart) isApduDataRestart() bool {
+	return true
 }
 
 func (m *_ApduDataRestart) String() string {

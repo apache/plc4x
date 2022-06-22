@@ -37,6 +37,12 @@ type BACnetConstructedDataDistributionKeyRevision interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDistributionKeyRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDistributionKeyRevision.
+// This is useful for switch cases.
+type BACnetConstructedDataDistributionKeyRevisionExactly interface {
+	isBACnetConstructedDataDistributionKeyRevision() bool
+}
+
 // _BACnetConstructedDataDistributionKeyRevision is the data-structure of this message
 type _BACnetConstructedDataDistributionKeyRevision struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDistributionKeyRevision) isBACnetConstructedDataDistributionKeyRevision() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) String() string {

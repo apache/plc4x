@@ -37,6 +37,12 @@ type BACnetConstructedDataUserType interface {
 	GetActualValue() BACnetAccessUserTypeTagged
 }
 
+// BACnetConstructedDataUserTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserType.
+// This is useful for switch cases.
+type BACnetConstructedDataUserTypeExactly interface {
+	isBACnetConstructedDataUserType() bool
+}
+
 // _BACnetConstructedDataUserType is the data-structure of this message
 type _BACnetConstructedDataUserType struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataUserType) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUserType) isBACnetConstructedDataUserType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUserType) String() string {

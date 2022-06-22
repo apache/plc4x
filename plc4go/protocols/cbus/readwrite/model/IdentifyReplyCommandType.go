@@ -35,6 +35,12 @@ type IdentifyReplyCommandType interface {
 	GetUnitType() string
 }
 
+// IdentifyReplyCommandTypeExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandType.
+// This is useful for switch cases.
+type IdentifyReplyCommandTypeExactly interface {
+	isIdentifyReplyCommandType() bool
+}
+
 // _IdentifyReplyCommandType is the data-structure of this message
 type _IdentifyReplyCommandType struct {
 	*_IdentifyReplyCommand
@@ -167,6 +173,10 @@ func (m *_IdentifyReplyCommandType) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandType) isIdentifyReplyCommandType() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandType) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataPassbackMode interface {
 	GetActualValue() BACnetAccessPassbackModeTagged
 }
 
+// BACnetConstructedDataPassbackModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPassbackMode.
+// This is useful for switch cases.
+type BACnetConstructedDataPassbackModeExactly interface {
+	isBACnetConstructedDataPassbackMode() bool
+}
+
 // _BACnetConstructedDataPassbackMode is the data-structure of this message
 type _BACnetConstructedDataPassbackMode struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPassbackMode) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPassbackMode) isBACnetConstructedDataPassbackMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPassbackMode) String() string {

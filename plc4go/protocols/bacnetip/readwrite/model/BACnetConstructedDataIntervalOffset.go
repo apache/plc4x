@@ -37,6 +37,12 @@ type BACnetConstructedDataIntervalOffset interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataIntervalOffsetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntervalOffset.
+// This is useful for switch cases.
+type BACnetConstructedDataIntervalOffsetExactly interface {
+	isBACnetConstructedDataIntervalOffset() bool
+}
+
 // _BACnetConstructedDataIntervalOffset is the data-structure of this message
 type _BACnetConstructedDataIntervalOffset struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIntervalOffset) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntervalOffset) isBACnetConstructedDataIntervalOffset() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntervalOffset) String() string {

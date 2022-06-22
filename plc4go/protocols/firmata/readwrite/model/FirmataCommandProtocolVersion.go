@@ -37,6 +37,12 @@ type FirmataCommandProtocolVersion interface {
 	GetMinorVersion() uint8
 }
 
+// FirmataCommandProtocolVersionExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandProtocolVersion.
+// This is useful for switch cases.
+type FirmataCommandProtocolVersionExactly interface {
+	isFirmataCommandProtocolVersion() bool
+}
+
 // _FirmataCommandProtocolVersion is the data-structure of this message
 type _FirmataCommandProtocolVersion struct {
 	*_FirmataCommand
@@ -196,6 +202,10 @@ func (m *_FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandProtocolVersion) isFirmataCommandProtocolVersion() bool {
+	return true
 }
 
 func (m *_FirmataCommandProtocolVersion) String() string {

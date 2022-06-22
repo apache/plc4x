@@ -36,6 +36,12 @@ type NetworkRoute interface {
 	GetAdditionalBridgeAddresses() []BridgeAddress
 }
 
+// NetworkRouteExactly can be used when we want exactly this type and not a type which fulfills NetworkRoute.
+// This is useful for switch cases.
+type NetworkRouteExactly interface {
+	isNetworkRoute() bool
+}
+
 // _NetworkRoute is the data-structure of this message
 type _NetworkRoute struct {
 	RouteType                 RouteType
@@ -193,6 +199,10 @@ func (m *_NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for NetworkRoute")
 	}
 	return nil
+}
+
+func (m *_NetworkRoute) isNetworkRoute() bool {
+	return true
 }
 
 func (m *_NetworkRoute) String() string {

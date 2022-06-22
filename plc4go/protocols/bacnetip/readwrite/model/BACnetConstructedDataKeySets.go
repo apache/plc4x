@@ -41,6 +41,12 @@ type BACnetConstructedDataKeySets interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataKeySetsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataKeySets.
+// This is useful for switch cases.
+type BACnetConstructedDataKeySetsExactly interface {
+	isBACnetConstructedDataKeySets() bool
+}
+
 // _BACnetConstructedDataKeySets is the data-structure of this message
 type _BACnetConstructedDataKeySets struct {
 	*_BACnetConstructedData
@@ -292,6 +298,10 @@ func (m *_BACnetConstructedDataKeySets) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataKeySets) isBACnetConstructedDataKeySets() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataKeySets) String() string {

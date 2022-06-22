@@ -38,6 +38,12 @@ type S7MessageObjectResponse interface {
 	GetTransportSize() DataTransportSize
 }
 
+// S7MessageObjectResponseExactly can be used when we want exactly this type and not a type which fulfills S7MessageObjectResponse.
+// This is useful for switch cases.
+type S7MessageObjectResponseExactly interface {
+	isS7MessageObjectResponse() bool
+}
+
 // _S7MessageObjectResponse is the data-structure of this message
 type _S7MessageObjectResponse struct {
 	*_S7DataAlarmMessage
@@ -241,6 +247,10 @@ func (m *_S7MessageObjectResponse) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageObjectResponse) isS7MessageObjectResponse() bool {
+	return true
 }
 
 func (m *_S7MessageObjectResponse) String() string {

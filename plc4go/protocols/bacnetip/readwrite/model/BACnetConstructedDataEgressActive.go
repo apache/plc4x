@@ -37,6 +37,12 @@ type BACnetConstructedDataEgressActive interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataEgressActiveExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEgressActive.
+// This is useful for switch cases.
+type BACnetConstructedDataEgressActiveExactly interface {
+	isBACnetConstructedDataEgressActive() bool
+}
+
 // _BACnetConstructedDataEgressActive is the data-structure of this message
 type _BACnetConstructedDataEgressActive struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEgressActive) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEgressActive) isBACnetConstructedDataEgressActive() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEgressActive) String() string {

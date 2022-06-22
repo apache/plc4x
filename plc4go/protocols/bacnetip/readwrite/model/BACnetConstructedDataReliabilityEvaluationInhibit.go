@@ -37,6 +37,12 @@ type BACnetConstructedDataReliabilityEvaluationInhibit interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataReliabilityEvaluationInhibitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReliabilityEvaluationInhibit.
+// This is useful for switch cases.
+type BACnetConstructedDataReliabilityEvaluationInhibitExactly interface {
+	isBACnetConstructedDataReliabilityEvaluationInhibit() bool
+}
+
 // _BACnetConstructedDataReliabilityEvaluationInhibit is the data-structure of this message
 type _BACnetConstructedDataReliabilityEvaluationInhibit struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) isBACnetConstructedDataReliabilityEvaluationInhibit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) String() string {

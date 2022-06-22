@@ -35,6 +35,12 @@ type BACnetScaleFloatScale interface {
 	GetFloatScale() BACnetContextTagReal
 }
 
+// BACnetScaleFloatScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScaleFloatScale.
+// This is useful for switch cases.
+type BACnetScaleFloatScaleExactly interface {
+	isBACnetScaleFloatScale() bool
+}
+
 // _BACnetScaleFloatScale is the data-structure of this message
 type _BACnetScaleFloatScale struct {
 	*_BACnetScale
@@ -176,6 +182,10 @@ func (m *_BACnetScaleFloatScale) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetScaleFloatScale) isBACnetScaleFloatScale() bool {
+	return true
 }
 
 func (m *_BACnetScaleFloatScale) String() string {

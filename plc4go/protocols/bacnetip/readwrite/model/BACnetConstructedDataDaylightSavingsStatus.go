@@ -37,6 +37,12 @@ type BACnetConstructedDataDaylightSavingsStatus interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataDaylightSavingsStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDaylightSavingsStatus.
+// This is useful for switch cases.
+type BACnetConstructedDataDaylightSavingsStatusExactly interface {
+	isBACnetConstructedDataDaylightSavingsStatus() bool
+}
+
 // _BACnetConstructedDataDaylightSavingsStatus is the data-structure of this message
 type _BACnetConstructedDataDaylightSavingsStatus struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatus) isBACnetConstructedDataDaylightSavingsStatus() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) String() string {

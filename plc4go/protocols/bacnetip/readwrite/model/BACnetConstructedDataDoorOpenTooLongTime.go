@@ -37,6 +37,12 @@ type BACnetConstructedDataDoorOpenTooLongTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDoorOpenTooLongTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorOpenTooLongTime.
+// This is useful for switch cases.
+type BACnetConstructedDataDoorOpenTooLongTimeExactly interface {
+	isBACnetConstructedDataDoorOpenTooLongTime() bool
+}
+
 // _BACnetConstructedDataDoorOpenTooLongTime is the data-structure of this message
 type _BACnetConstructedDataDoorOpenTooLongTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) isBACnetConstructedDataDoorOpenTooLongTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoorOpenTooLongTime) String() string {

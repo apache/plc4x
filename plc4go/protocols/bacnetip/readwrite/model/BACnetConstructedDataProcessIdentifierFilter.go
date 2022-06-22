@@ -37,6 +37,12 @@ type BACnetConstructedDataProcessIdentifierFilter interface {
 	GetActualValue() BACnetProcessIdSelection
 }
 
+// BACnetConstructedDataProcessIdentifierFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProcessIdentifierFilter.
+// This is useful for switch cases.
+type BACnetConstructedDataProcessIdentifierFilterExactly interface {
+	isBACnetConstructedDataProcessIdentifierFilter() bool
+}
+
 // _BACnetConstructedDataProcessIdentifierFilter is the data-structure of this message
 type _BACnetConstructedDataProcessIdentifierFilter struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilter) isBACnetConstructedDataProcessIdentifierFilter() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) String() string {

@@ -39,6 +39,12 @@ type COTPPacketConnectionRequest interface {
 	GetProtocolClass() COTPProtocolClass
 }
 
+// COTPPacketConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills COTPPacketConnectionRequest.
+// This is useful for switch cases.
+type COTPPacketConnectionRequestExactly interface {
+	isCOTPPacketConnectionRequest() bool
+}
+
 // _COTPPacketConnectionRequest is the data-structure of this message
 type _COTPPacketConnectionRequest struct {
 	*_COTPPacket
@@ -236,6 +242,10 @@ func (m *_COTPPacketConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketConnectionRequest) isCOTPPacketConnectionRequest() bool {
+	return true
 }
 
 func (m *_COTPPacketConnectionRequest) String() string {

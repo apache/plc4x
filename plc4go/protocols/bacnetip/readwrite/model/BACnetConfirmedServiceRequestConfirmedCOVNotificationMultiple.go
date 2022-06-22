@@ -45,6 +45,12 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	GetListOfCovNotifications() ListOfCovNotificationsList
 }
 
+// BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleExactly interface {
+	isBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() bool
+}
+
 // _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 	*_BACnetConfirmedServiceRequest
@@ -347,6 +353,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Seriali
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) isBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) String() string {

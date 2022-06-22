@@ -40,6 +40,12 @@ type BACnetSilencedStateTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetSilencedStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSilencedStateTagged.
+// This is useful for switch cases.
+type BACnetSilencedStateTaggedExactly interface {
+	isBACnetSilencedStateTagged() bool
+}
+
 // _BACnetSilencedStateTagged is the data-structure of this message
 type _BACnetSilencedStateTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetSilencedStateTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetSilencedStateTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetSilencedStateTagged) isBACnetSilencedStateTagged() bool {
+	return true
 }
 
 func (m *_BACnetSilencedStateTagged) String() string {

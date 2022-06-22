@@ -35,6 +35,12 @@ type BVLCRegisterForeignDevice interface {
 	GetTtl() uint16
 }
 
+// BVLCRegisterForeignDeviceExactly can be used when we want exactly this type and not a type which fulfills BVLCRegisterForeignDevice.
+// This is useful for switch cases.
+type BVLCRegisterForeignDeviceExactly interface {
+	isBVLCRegisterForeignDevice() bool
+}
+
 // _BVLCRegisterForeignDevice is the data-structure of this message
 type _BVLCRegisterForeignDevice struct {
 	*_BVLC
@@ -167,6 +173,10 @@ func (m *_BVLCRegisterForeignDevice) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCRegisterForeignDevice) isBVLCRegisterForeignDevice() bool {
+	return true
 }
 
 func (m *_BVLCRegisterForeignDevice) String() string {

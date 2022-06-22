@@ -36,6 +36,12 @@ type BACnetPropertyAccessResultAccessResult interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetPropertyAccessResultAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResultAccessResult.
+// This is useful for switch cases.
+type BACnetPropertyAccessResultAccessResultExactly interface {
+	isBACnetPropertyAccessResultAccessResult() bool
+}
+
 // _BACnetPropertyAccessResultAccessResult is the data-structure of this message
 type _BACnetPropertyAccessResultAccessResult struct {
 	_BACnetPropertyAccessResultAccessResultChildRequirements
@@ -48,9 +54,9 @@ type _BACnetPropertyAccessResultAccessResult struct {
 }
 
 type _BACnetPropertyAccessResultAccessResultChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetPropertyAccessResultAccessResultParent interface {
@@ -59,7 +65,7 @@ type BACnetPropertyAccessResultAccessResultParent interface {
 }
 
 type BACnetPropertyAccessResultAccessResultChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetPropertyAccessResultAccessResult, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetPropertyAccessResultAccessResult
 
@@ -203,6 +209,10 @@ func (pm *_BACnetPropertyAccessResultAccessResult) SerializeParent(writeBuffer u
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyAccessResultAccessResult")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyAccessResultAccessResult) isBACnetPropertyAccessResultAccessResult() bool {
+	return true
 }
 
 func (m *_BACnetPropertyAccessResultAccessResult) String() string {

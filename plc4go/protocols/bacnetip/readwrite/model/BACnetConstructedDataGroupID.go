@@ -37,6 +37,12 @@ type BACnetConstructedDataGroupID interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataGroupIDExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGroupID.
+// This is useful for switch cases.
+type BACnetConstructedDataGroupIDExactly interface {
+	isBACnetConstructedDataGroupID() bool
+}
+
 // _BACnetConstructedDataGroupID is the data-structure of this message
 type _BACnetConstructedDataGroupID struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataGroupID) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGroupID) isBACnetConstructedDataGroupID() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGroupID) String() string {

@@ -35,6 +35,12 @@ type BVLCReadForeignDeviceTableAck interface {
 	GetTable() []BVLCForeignDeviceTableEntry
 }
 
+// BVLCReadForeignDeviceTableAckExactly can be used when we want exactly this type and not a type which fulfills BVLCReadForeignDeviceTableAck.
+// This is useful for switch cases.
+type BVLCReadForeignDeviceTableAckExactly interface {
+	isBVLCReadForeignDeviceTableAck() bool
+}
+
 // _BVLCReadForeignDeviceTableAck is the data-structure of this message
 type _BVLCReadForeignDeviceTableAck struct {
 	*_BVLC
@@ -197,6 +203,10 @@ func (m *_BVLCReadForeignDeviceTableAck) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCReadForeignDeviceTableAck) isBVLCReadForeignDeviceTableAck() bool {
+	return true
 }
 
 func (m *_BVLCReadForeignDeviceTableAck) String() string {

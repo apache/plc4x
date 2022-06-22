@@ -33,6 +33,12 @@ type ApduControlAck interface {
 	ApduControl
 }
 
+// ApduControlAckExactly can be used when we want exactly this type and not a type which fulfills ApduControlAck.
+// This is useful for switch cases.
+type ApduControlAckExactly interface {
+	isApduControlAck() bool
+}
+
 // _ApduControlAck is the data-structure of this message
 type _ApduControlAck struct {
 	*_ApduControl
@@ -131,6 +137,10 @@ func (m *_ApduControlAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduControlAck) isApduControlAck() bool {
+	return true
 }
 
 func (m *_ApduControlAck) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataFileRecordCount interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataFileRecordCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileRecordCount.
+// This is useful for switch cases.
+type BACnetConstructedDataFileRecordCountExactly interface {
+	isBACnetConstructedDataFileRecordCount() bool
+}
+
 // _BACnetConstructedDataFileRecordCount is the data-structure of this message
 type _BACnetConstructedDataFileRecordCount struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFileRecordCount) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFileRecordCount) isBACnetConstructedDataFileRecordCount() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFileRecordCount) String() string {

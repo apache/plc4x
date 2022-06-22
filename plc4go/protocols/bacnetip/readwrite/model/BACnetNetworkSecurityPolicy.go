@@ -36,6 +36,12 @@ type BACnetNetworkSecurityPolicy interface {
 	GetSecurityLevel() BACnetSecurityPolicyTagged
 }
 
+// BACnetNetworkSecurityPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkSecurityPolicy.
+// This is useful for switch cases.
+type BACnetNetworkSecurityPolicyExactly interface {
+	isBACnetNetworkSecurityPolicy() bool
+}
+
 // _BACnetNetworkSecurityPolicy is the data-structure of this message
 type _BACnetNetworkSecurityPolicy struct {
 	PortId        BACnetContextTagUnsignedInteger
@@ -178,6 +184,10 @@ func (m *_BACnetNetworkSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for BACnetNetworkSecurityPolicy")
 	}
 	return nil
+}
+
+func (m *_BACnetNetworkSecurityPolicy) isBACnetNetworkSecurityPolicy() bool {
+	return true
 }
 
 func (m *_BACnetNetworkSecurityPolicy) String() string {

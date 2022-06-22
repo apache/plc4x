@@ -41,6 +41,12 @@ type ApduDataExtPropertyValueRead interface {
 	GetIndex() uint16
 }
 
+// ApduDataExtPropertyValueReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyValueRead.
+// This is useful for switch cases.
+type ApduDataExtPropertyValueReadExactly interface {
+	isApduDataExtPropertyValueRead() bool
+}
+
 // _ApduDataExtPropertyValueRead is the data-structure of this message
 type _ApduDataExtPropertyValueRead struct {
 	*_ApduDataExt
@@ -248,6 +254,10 @@ func (m *_ApduDataExtPropertyValueRead) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtPropertyValueRead) isApduDataExtPropertyValueRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtPropertyValueRead) String() string {

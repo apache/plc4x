@@ -35,6 +35,12 @@ type BACnetPriorityValueDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 }
 
+// BACnetPriorityValueDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueDouble.
+// This is useful for switch cases.
+type BACnetPriorityValueDoubleExactly interface {
+	isBACnetPriorityValueDouble() bool
+}
+
 // _BACnetPriorityValueDouble is the data-structure of this message
 type _BACnetPriorityValueDouble struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueDouble) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueDouble) isBACnetPriorityValueDouble() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueDouble) String() string {

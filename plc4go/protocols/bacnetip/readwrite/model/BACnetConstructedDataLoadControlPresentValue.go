@@ -37,6 +37,12 @@ type BACnetConstructedDataLoadControlPresentValue interface {
 	GetActualValue() BACnetShedStateTagged
 }
 
+// BACnetConstructedDataLoadControlPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoadControlPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLoadControlPresentValueExactly interface {
+	isBACnetConstructedDataLoadControlPresentValue() bool
+}
+
 // _BACnetConstructedDataLoadControlPresentValue is the data-structure of this message
 type _BACnetConstructedDataLoadControlPresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLoadControlPresentValue) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLoadControlPresentValue) isBACnetConstructedDataLoadControlPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLoadControlPresentValue) String() string {

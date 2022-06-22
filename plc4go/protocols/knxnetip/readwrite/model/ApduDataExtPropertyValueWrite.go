@@ -43,6 +43,12 @@ type ApduDataExtPropertyValueWrite interface {
 	GetData() []byte
 }
 
+// ApduDataExtPropertyValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyValueWrite.
+// This is useful for switch cases.
+type ApduDataExtPropertyValueWriteExactly interface {
+	isApduDataExtPropertyValueWrite() bool
+}
+
 // _ApduDataExtPropertyValueWrite is the data-structure of this message
 type _ApduDataExtPropertyValueWrite struct {
 	*_ApduDataExt
@@ -277,6 +283,10 @@ func (m *_ApduDataExtPropertyValueWrite) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtPropertyValueWrite) isApduDataExtPropertyValueWrite() bool {
+	return true
 }
 
 func (m *_ApduDataExtPropertyValueWrite) String() string {

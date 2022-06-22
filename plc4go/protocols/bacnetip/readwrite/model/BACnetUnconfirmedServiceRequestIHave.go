@@ -39,6 +39,12 @@ type BACnetUnconfirmedServiceRequestIHave interface {
 	GetObjectName() BACnetApplicationTagCharacterString
 }
 
+// BACnetUnconfirmedServiceRequestIHaveExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestIHave.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestIHaveExactly interface {
+	isBACnetUnconfirmedServiceRequestIHave() bool
+}
+
 // _BACnetUnconfirmedServiceRequestIHave is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestIHave struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -256,6 +262,10 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestIHave) isBACnetUnconfirmedServiceRequestIHave() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIHave) String() string {

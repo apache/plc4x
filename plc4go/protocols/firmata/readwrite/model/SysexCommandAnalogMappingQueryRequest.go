@@ -33,6 +33,12 @@ type SysexCommandAnalogMappingQueryRequest interface {
 	SysexCommand
 }
 
+// SysexCommandAnalogMappingQueryRequestExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingQueryRequest.
+// This is useful for switch cases.
+type SysexCommandAnalogMappingQueryRequestExactly interface {
+	isSysexCommandAnalogMappingQueryRequest() bool
+}
+
 // _SysexCommandAnalogMappingQueryRequest is the data-structure of this message
 type _SysexCommandAnalogMappingQueryRequest struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandAnalogMappingQueryRequest) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandAnalogMappingQueryRequest) isSysexCommandAnalogMappingQueryRequest() bool {
+	return true
 }
 
 func (m *_SysexCommandAnalogMappingQueryRequest) String() string {

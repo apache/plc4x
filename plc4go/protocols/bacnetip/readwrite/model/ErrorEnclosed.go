@@ -38,6 +38,12 @@ type ErrorEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// ErrorEnclosedExactly can be used when we want exactly this type and not a type which fulfills ErrorEnclosed.
+// This is useful for switch cases.
+type ErrorEnclosedExactly interface {
+	isErrorEnclosed() bool
+}
+
 // _ErrorEnclosed is the data-structure of this message
 type _ErrorEnclosed struct {
 	OpeningTag BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ErrorEnclosed")
 	}
 	return nil
+}
+
+func (m *_ErrorEnclosed) isErrorEnclosed() bool {
+	return true
 }
 
 func (m *_ErrorEnclosed) String() string {

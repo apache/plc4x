@@ -35,6 +35,12 @@ type BACnetProcessIdSelectionValue interface {
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetProcessIdSelectionValueExactly can be used when we want exactly this type and not a type which fulfills BACnetProcessIdSelectionValue.
+// This is useful for switch cases.
+type BACnetProcessIdSelectionValueExactly interface {
+	isBACnetProcessIdSelectionValue() bool
+}
+
 // _BACnetProcessIdSelectionValue is the data-structure of this message
 type _BACnetProcessIdSelectionValue struct {
 	*_BACnetProcessIdSelection
@@ -176,6 +182,10 @@ func (m *_BACnetProcessIdSelectionValue) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetProcessIdSelectionValue) isBACnetProcessIdSelectionValue() bool {
+	return true
 }
 
 func (m *_BACnetProcessIdSelectionValue) String() string {

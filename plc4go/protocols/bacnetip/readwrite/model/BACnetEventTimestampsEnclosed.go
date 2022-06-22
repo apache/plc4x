@@ -38,6 +38,12 @@ type BACnetEventTimestampsEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventTimestampsEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetEventTimestampsEnclosed.
+// This is useful for switch cases.
+type BACnetEventTimestampsEnclosedExactly interface {
+	isBACnetEventTimestampsEnclosed() bool
+}
+
 // _BACnetEventTimestampsEnclosed is the data-structure of this message
 type _BACnetEventTimestampsEnclosed struct {
 	OpeningTag      BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetEventTimestampsEnclosed) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetEventTimestampsEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetEventTimestampsEnclosed) isBACnetEventTimestampsEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetEventTimestampsEnclosed) String() string {

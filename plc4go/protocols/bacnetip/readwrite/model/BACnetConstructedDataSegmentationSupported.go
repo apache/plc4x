@@ -37,6 +37,12 @@ type BACnetConstructedDataSegmentationSupported interface {
 	GetActualValue() BACnetSegmentationTagged
 }
 
+// BACnetConstructedDataSegmentationSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSegmentationSupported.
+// This is useful for switch cases.
+type BACnetConstructedDataSegmentationSupportedExactly interface {
+	isBACnetConstructedDataSegmentationSupported() bool
+}
+
 // _BACnetConstructedDataSegmentationSupported is the data-structure of this message
 type _BACnetConstructedDataSegmentationSupported struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataSegmentationSupported) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSegmentationSupported) isBACnetConstructedDataSegmentationSupported() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSegmentationSupported) String() string {

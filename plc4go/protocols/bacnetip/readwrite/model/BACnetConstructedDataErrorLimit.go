@@ -37,6 +37,12 @@ type BACnetConstructedDataErrorLimit interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataErrorLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataErrorLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataErrorLimitExactly interface {
+	isBACnetConstructedDataErrorLimit() bool
+}
+
 // _BACnetConstructedDataErrorLimit is the data-structure of this message
 type _BACnetConstructedDataErrorLimit struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataErrorLimit) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataErrorLimit) isBACnetConstructedDataErrorLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataErrorLimit) String() string {

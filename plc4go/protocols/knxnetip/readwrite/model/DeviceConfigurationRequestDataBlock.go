@@ -37,6 +37,12 @@ type DeviceConfigurationRequestDataBlock interface {
 	GetSequenceCounter() uint8
 }
 
+// DeviceConfigurationRequestDataBlockExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationRequestDataBlock.
+// This is useful for switch cases.
+type DeviceConfigurationRequestDataBlockExactly interface {
+	isDeviceConfigurationRequestDataBlock() bool
+}
+
 // _DeviceConfigurationRequestDataBlock is the data-structure of this message
 type _DeviceConfigurationRequestDataBlock struct {
 	CommunicationChannelId uint8
@@ -199,6 +205,10 @@ func (m *_DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for DeviceConfigurationRequestDataBlock")
 	}
 	return nil
+}
+
+func (m *_DeviceConfigurationRequestDataBlock) isDeviceConfigurationRequestDataBlock() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationRequestDataBlock) String() string {

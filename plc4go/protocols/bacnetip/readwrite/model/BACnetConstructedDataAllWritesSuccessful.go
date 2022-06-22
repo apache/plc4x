@@ -37,6 +37,12 @@ type BACnetConstructedDataAllWritesSuccessful interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataAllWritesSuccessfulExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAllWritesSuccessful.
+// This is useful for switch cases.
+type BACnetConstructedDataAllWritesSuccessfulExactly interface {
+	isBACnetConstructedDataAllWritesSuccessful() bool
+}
+
 // _BACnetConstructedDataAllWritesSuccessful is the data-structure of this message
 type _BACnetConstructedDataAllWritesSuccessful struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessful) isBACnetConstructedDataAllWritesSuccessful() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) String() string {

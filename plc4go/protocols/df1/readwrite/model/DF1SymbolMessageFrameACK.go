@@ -33,6 +33,12 @@ type DF1SymbolMessageFrameACK interface {
 	DF1Symbol
 }
 
+// DF1SymbolMessageFrameACKExactly can be used when we want exactly this type and not a type which fulfills DF1SymbolMessageFrameACK.
+// This is useful for switch cases.
+type DF1SymbolMessageFrameACKExactly interface {
+	isDF1SymbolMessageFrameACK() bool
+}
+
 // _DF1SymbolMessageFrameACK is the data-structure of this message
 type _DF1SymbolMessageFrameACK struct {
 	*_DF1Symbol
@@ -131,6 +137,10 @@ func (m *_DF1SymbolMessageFrameACK) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1SymbolMessageFrameACK) isDF1SymbolMessageFrameACK() bool {
+	return true
 }
 
 func (m *_DF1SymbolMessageFrameACK) String() string {

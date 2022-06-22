@@ -35,6 +35,12 @@ type SearchRequest interface {
 	GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint
 }
 
+// SearchRequestExactly can be used when we want exactly this type and not a type which fulfills SearchRequest.
+// This is useful for switch cases.
+type SearchRequestExactly interface {
+	isSearchRequest() bool
+}
+
 // _SearchRequest is the data-structure of this message
 type _SearchRequest struct {
 	*_KnxNetIpMessage
@@ -178,6 +184,10 @@ func (m *_SearchRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SearchRequest) isSearchRequest() bool {
+	return true
 }
 
 func (m *_SearchRequest) String() string {

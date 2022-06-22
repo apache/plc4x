@@ -37,6 +37,12 @@ type ModbusPDUWriteMultipleCoilsResponse interface {
 	GetQuantity() uint16
 }
 
+// ModbusPDUWriteMultipleCoilsResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleCoilsResponse.
+// This is useful for switch cases.
+type ModbusPDUWriteMultipleCoilsResponseExactly interface {
+	isModbusPDUWriteMultipleCoilsResponse() bool
+}
+
 // _ModbusPDUWriteMultipleCoilsResponse is the data-structure of this message
 type _ModbusPDUWriteMultipleCoilsResponse struct {
 	*_ModbusPDU
@@ -201,6 +207,10 @@ func (m *_ModbusPDUWriteMultipleCoilsResponse) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsResponse) isModbusPDUWriteMultipleCoilsResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteMultipleCoilsResponse) String() string {

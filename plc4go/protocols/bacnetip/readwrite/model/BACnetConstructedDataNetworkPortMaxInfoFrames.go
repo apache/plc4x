@@ -37,6 +37,12 @@ type BACnetConstructedDataNetworkPortMaxInfoFrames interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataNetworkPortMaxInfoFramesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortMaxInfoFrames.
+// This is useful for switch cases.
+type BACnetConstructedDataNetworkPortMaxInfoFramesExactly interface {
+	isBACnetConstructedDataNetworkPortMaxInfoFrames() bool
+}
+
 // _BACnetConstructedDataNetworkPortMaxInfoFrames is the data-structure of this message
 type _BACnetConstructedDataNetworkPortMaxInfoFrames struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) isBACnetConstructedDataNetworkPortMaxInfoFrames() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) String() string {

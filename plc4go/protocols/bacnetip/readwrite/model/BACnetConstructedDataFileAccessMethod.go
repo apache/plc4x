@@ -37,6 +37,12 @@ type BACnetConstructedDataFileAccessMethod interface {
 	GetActualValue() BACnetFileAccessMethodTagged
 }
 
+// BACnetConstructedDataFileAccessMethodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileAccessMethod.
+// This is useful for switch cases.
+type BACnetConstructedDataFileAccessMethodExactly interface {
+	isBACnetConstructedDataFileAccessMethod() bool
+}
+
 // _BACnetConstructedDataFileAccessMethod is the data-structure of this message
 type _BACnetConstructedDataFileAccessMethod struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFileAccessMethod) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFileAccessMethod) isBACnetConstructedDataFileAccessMethod() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFileAccessMethod) String() string {

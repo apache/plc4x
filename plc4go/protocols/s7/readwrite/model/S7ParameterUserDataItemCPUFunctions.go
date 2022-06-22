@@ -49,6 +49,12 @@ type S7ParameterUserDataItemCPUFunctions interface {
 	GetErrorCode() *uint16
 }
 
+// S7ParameterUserDataItemCPUFunctionsExactly can be used when we want exactly this type and not a type which fulfills S7ParameterUserDataItemCPUFunctions.
+// This is useful for switch cases.
+type S7ParameterUserDataItemCPUFunctionsExactly interface {
+	isS7ParameterUserDataItemCPUFunctions() bool
+}
+
 // _S7ParameterUserDataItemCPUFunctions is the data-structure of this message
 type _S7ParameterUserDataItemCPUFunctions struct {
 	*_S7ParameterUserDataItem
@@ -390,6 +396,10 @@ func (m *_S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterUserDataItemCPUFunctions) isS7ParameterUserDataItemCPUFunctions() bool {
+	return true
 }
 
 func (m *_S7ParameterUserDataItemCPUFunctions) String() string {

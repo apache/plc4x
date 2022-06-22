@@ -37,6 +37,12 @@ type BACnetConstructedDataFailedAttempts interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataFailedAttemptsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFailedAttempts.
+// This is useful for switch cases.
+type BACnetConstructedDataFailedAttemptsExactly interface {
+	isBACnetConstructedDataFailedAttempts() bool
+}
+
 // _BACnetConstructedDataFailedAttempts is the data-structure of this message
 type _BACnetConstructedDataFailedAttempts struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFailedAttempts) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFailedAttempts) isBACnetConstructedDataFailedAttempts() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFailedAttempts) String() string {

@@ -40,6 +40,12 @@ type BACnetWriteAccessSpecification interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetWriteAccessSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetWriteAccessSpecification.
+// This is useful for switch cases.
+type BACnetWriteAccessSpecificationExactly interface {
+	isBACnetWriteAccessSpecification() bool
+}
+
 // _BACnetWriteAccessSpecification is the data-structure of this message
 type _BACnetWriteAccessSpecification struct {
 	ObjectIdentifier              BACnetContextTagObjectIdentifier
@@ -263,6 +269,10 @@ func (m *_BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetWriteAccessSpecification")
 	}
 	return nil
+}
+
+func (m *_BACnetWriteAccessSpecification) isBACnetWriteAccessSpecification() bool {
+	return true
 }
 
 func (m *_BACnetWriteAccessSpecification) String() string {

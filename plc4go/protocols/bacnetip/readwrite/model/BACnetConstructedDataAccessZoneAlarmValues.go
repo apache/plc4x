@@ -35,6 +35,12 @@ type BACnetConstructedDataAccessZoneAlarmValues interface {
 	GetAlarmValues() []BACnetAccessZoneOccupancyStateTagged
 }
 
+// BACnetConstructedDataAccessZoneAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessZoneAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessZoneAlarmValuesExactly interface {
+	isBACnetConstructedDataAccessZoneAlarmValues() bool
+}
+
 // _BACnetConstructedDataAccessZoneAlarmValues is the data-structure of this message
 type _BACnetConstructedDataAccessZoneAlarmValues struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) isBACnetConstructedDataAccessZoneAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessZoneAlarmValues) String() string {

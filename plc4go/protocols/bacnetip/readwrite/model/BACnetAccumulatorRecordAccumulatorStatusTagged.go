@@ -36,6 +36,12 @@ type BACnetAccumulatorRecordAccumulatorStatusTagged interface {
 	GetValue() BACnetAccumulatorRecordAccumulatorStatus
 }
 
+// BACnetAccumulatorRecordAccumulatorStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccumulatorRecordAccumulatorStatusTagged.
+// This is useful for switch cases.
+type BACnetAccumulatorRecordAccumulatorStatusTaggedExactly interface {
+	isBACnetAccumulatorRecordAccumulatorStatusTagged() bool
+}
+
 // _BACnetAccumulatorRecordAccumulatorStatusTagged is the data-structure of this message
 type _BACnetAccumulatorRecordAccumulatorStatusTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) Serialize(writeBuffer 
 		return errors.Wrap(popErr, "Error popping for BACnetAccumulatorRecordAccumulatorStatusTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) isBACnetAccumulatorRecordAccumulatorStatusTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) String() string {

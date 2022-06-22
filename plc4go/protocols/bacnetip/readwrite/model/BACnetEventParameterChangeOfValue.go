@@ -41,6 +41,12 @@ type BACnetEventParameterChangeOfValue interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterChangeOfValueExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValue.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfValueExactly interface {
+	isBACnetEventParameterChangeOfValue() bool
+}
+
 // _BACnetEventParameterChangeOfValue is the data-structure of this message
 type _BACnetEventParameterChangeOfValue struct {
 	*_BACnetEventParameter
@@ -287,6 +293,10 @@ func (m *_BACnetEventParameterChangeOfValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfValue) isBACnetEventParameterChangeOfValue() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfValue) String() string {

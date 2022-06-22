@@ -36,6 +36,12 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	GetValue() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
 }
 
+// BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedExactly interface {
+	isBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged() bool
+}
+
 // _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged is the data-structure of this message
 type _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) isBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) String() string {

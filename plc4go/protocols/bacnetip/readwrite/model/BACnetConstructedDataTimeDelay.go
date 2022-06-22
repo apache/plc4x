@@ -37,6 +37,12 @@ type BACnetConstructedDataTimeDelay interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataTimeDelayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeDelay.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeDelayExactly interface {
+	isBACnetConstructedDataTimeDelay() bool
+}
+
 // _BACnetConstructedDataTimeDelay is the data-structure of this message
 type _BACnetConstructedDataTimeDelay struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataTimeDelay) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeDelay) isBACnetConstructedDataTimeDelay() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeDelay) String() string {

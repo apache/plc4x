@@ -42,6 +42,12 @@ type EipPacket interface {
 	GetOptions() uint32
 }
 
+// EipPacketExactly can be used when we want exactly this type and not a type which fulfills EipPacket.
+// This is useful for switch cases.
+type EipPacketExactly interface {
+	isEipPacket() bool
+}
+
 // _EipPacket is the data-structure of this message
 type _EipPacket struct {
 	_EipPacketChildRequirements
@@ -52,10 +58,10 @@ type _EipPacket struct {
 }
 
 type _EipPacketChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommand() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type EipPacketParent interface {
@@ -64,7 +70,7 @@ type EipPacketParent interface {
 }
 
 type EipPacketChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
 	GetParent() *EipPacket
 
@@ -314,6 +320,10 @@ func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPa
 		return errors.Wrap(popErr, "Error popping for EipPacket")
 	}
 	return nil
+}
+
+func (m *_EipPacket) isEipPacket() bool {
+	return true
 }
 
 func (m *_EipPacket) String() string {

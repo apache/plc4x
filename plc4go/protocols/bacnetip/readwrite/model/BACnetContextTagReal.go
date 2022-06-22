@@ -37,6 +37,12 @@ type BACnetContextTagReal interface {
 	GetActualValue() float32
 }
 
+// BACnetContextTagRealExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagReal.
+// This is useful for switch cases.
+type BACnetContextTagRealExactly interface {
+	isBACnetContextTagReal() bool
+}
+
 // _BACnetContextTagReal is the data-structure of this message
 type _BACnetContextTagReal struct {
 	*_BACnetContextTag
@@ -209,6 +215,10 @@ func (m *_BACnetContextTagReal) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagReal) isBACnetContextTagReal() bool {
+	return true
 }
 
 func (m *_BACnetContextTagReal) String() string {

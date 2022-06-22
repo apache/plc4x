@@ -37,6 +37,12 @@ type BACnetConstructedDataEventDetectionEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataEventDetectionEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventDetectionEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataEventDetectionEnableExactly interface {
+	isBACnetConstructedDataEventDetectionEnable() bool
+}
+
 // _BACnetConstructedDataEventDetectionEnable is the data-structure of this message
 type _BACnetConstructedDataEventDetectionEnable struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEventDetectionEnable) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventDetectionEnable) isBACnetConstructedDataEventDetectionEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventDetectionEnable) String() string {

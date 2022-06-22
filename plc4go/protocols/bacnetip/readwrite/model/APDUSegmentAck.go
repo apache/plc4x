@@ -44,6 +44,12 @@ type APDUSegmentAck interface {
 	GetProposedWindowSize() uint8
 }
 
+// APDUSegmentAckExactly can be used when we want exactly this type and not a type which fulfills APDUSegmentAck.
+// This is useful for switch cases.
+type APDUSegmentAckExactly interface {
+	isAPDUSegmentAck() bool
+}
+
 // _APDUSegmentAck is the data-structure of this message
 type _APDUSegmentAck struct {
 	*_APDU
@@ -300,6 +306,10 @@ func (m *_APDUSegmentAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUSegmentAck) isAPDUSegmentAck() bool {
+	return true
 }
 
 func (m *_APDUSegmentAck) String() string {

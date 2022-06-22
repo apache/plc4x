@@ -37,6 +37,12 @@ type BACnetConstructedDataNumberOfStates interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataNumberOfStatesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNumberOfStates.
+// This is useful for switch cases.
+type BACnetConstructedDataNumberOfStatesExactly interface {
+	isBACnetConstructedDataNumberOfStates() bool
+}
+
 // _BACnetConstructedDataNumberOfStates is the data-structure of this message
 type _BACnetConstructedDataNumberOfStates struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataNumberOfStates) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNumberOfStates) isBACnetConstructedDataNumberOfStates() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNumberOfStates) String() string {

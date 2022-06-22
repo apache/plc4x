@@ -37,6 +37,12 @@ type BACnetConstructedDataInstallationID interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataInstallationIDExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInstallationID.
+// This is useful for switch cases.
+type BACnetConstructedDataInstallationIDExactly interface {
+	isBACnetConstructedDataInstallationID() bool
+}
+
 // _BACnetConstructedDataInstallationID is the data-structure of this message
 type _BACnetConstructedDataInstallationID struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataInstallationID) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInstallationID) isBACnetConstructedDataInstallationID() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInstallationID) String() string {

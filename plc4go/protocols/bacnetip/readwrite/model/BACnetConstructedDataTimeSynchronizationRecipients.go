@@ -35,6 +35,12 @@ type BACnetConstructedDataTimeSynchronizationRecipients interface {
 	GetTimeSynchronizationRecipients() []BACnetRecipient
 }
 
+// BACnetConstructedDataTimeSynchronizationRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeSynchronizationRecipients.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeSynchronizationRecipientsExactly interface {
+	isBACnetConstructedDataTimeSynchronizationRecipients() bool
+}
+
 // _BACnetConstructedDataTimeSynchronizationRecipients is the data-structure of this message
 type _BACnetConstructedDataTimeSynchronizationRecipients struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) isBACnetConstructedDataTimeSynchronizationRecipients() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationRecipients) String() string {

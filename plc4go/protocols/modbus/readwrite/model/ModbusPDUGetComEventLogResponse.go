@@ -41,6 +41,12 @@ type ModbusPDUGetComEventLogResponse interface {
 	GetEvents() []byte
 }
 
+// ModbusPDUGetComEventLogResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUGetComEventLogResponse.
+// This is useful for switch cases.
+type ModbusPDUGetComEventLogResponseExactly interface {
+	isModbusPDUGetComEventLogResponse() bool
+}
+
 // _ModbusPDUGetComEventLogResponse is the data-structure of this message
 type _ModbusPDUGetComEventLogResponse struct {
 	*_ModbusPDU
@@ -273,6 +279,10 @@ func (m *_ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUGetComEventLogResponse) isModbusPDUGetComEventLogResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUGetComEventLogResponse) String() string {

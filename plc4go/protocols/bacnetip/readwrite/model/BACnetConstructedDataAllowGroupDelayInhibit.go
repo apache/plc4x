@@ -37,6 +37,12 @@ type BACnetConstructedDataAllowGroupDelayInhibit interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataAllowGroupDelayInhibitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAllowGroupDelayInhibit.
+// This is useful for switch cases.
+type BACnetConstructedDataAllowGroupDelayInhibitExactly interface {
+	isBACnetConstructedDataAllowGroupDelayInhibit() bool
+}
+
 // _BACnetConstructedDataAllowGroupDelayInhibit is the data-structure of this message
 type _BACnetConstructedDataAllowGroupDelayInhibit struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) isBACnetConstructedDataAllowGroupDelayInhibit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAllowGroupDelayInhibit) String() string {

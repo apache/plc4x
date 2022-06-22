@@ -32,6 +32,12 @@ type ExclamationMark interface {
 	utils.Serializable
 }
 
+// ExclamationMarkExactly can be used when we want exactly this type and not a type which fulfills ExclamationMark.
+// This is useful for switch cases.
+type ExclamationMarkExactly interface {
+	isExclamationMark() bool
+}
+
 // _ExclamationMark is the data-structure of this message
 type _ExclamationMark struct {
 }
@@ -98,6 +104,10 @@ func (m *_ExclamationMark) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ExclamationMark")
 	}
 	return nil
+}
+
+func (m *_ExclamationMark) isExclamationMark() bool {
+	return true
 }
 
 func (m *_ExclamationMark) String() string {

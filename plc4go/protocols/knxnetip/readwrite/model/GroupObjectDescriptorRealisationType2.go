@@ -50,6 +50,12 @@ type GroupObjectDescriptorRealisationType2 interface {
 	GetValueType() ComObjectValueType
 }
 
+// GroupObjectDescriptorRealisationType2Exactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationType2.
+// This is useful for switch cases.
+type GroupObjectDescriptorRealisationType2Exactly interface {
+	isGroupObjectDescriptorRealisationType2() bool
+}
+
 // _GroupObjectDescriptorRealisationType2 is the data-structure of this message
 type _GroupObjectDescriptorRealisationType2 struct {
 	DataPointer           uint8
@@ -346,6 +352,10 @@ func (m *_GroupObjectDescriptorRealisationType2) Serialize(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for GroupObjectDescriptorRealisationType2")
 	}
 	return nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType2) isGroupObjectDescriptorRealisationType2() bool {
+	return true
 }
 
 func (m *_GroupObjectDescriptorRealisationType2) String() string {

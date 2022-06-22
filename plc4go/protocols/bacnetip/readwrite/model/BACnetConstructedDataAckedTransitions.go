@@ -37,6 +37,12 @@ type BACnetConstructedDataAckedTransitions interface {
 	GetActualValue() BACnetEventTransitionBitsTagged
 }
 
+// BACnetConstructedDataAckedTransitionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAckedTransitions.
+// This is useful for switch cases.
+type BACnetConstructedDataAckedTransitionsExactly interface {
+	isBACnetConstructedDataAckedTransitions() bool
+}
+
 // _BACnetConstructedDataAckedTransitions is the data-structure of this message
 type _BACnetConstructedDataAckedTransitions struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAckedTransitions) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAckedTransitions) isBACnetConstructedDataAckedTransitions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAckedTransitions) String() string {

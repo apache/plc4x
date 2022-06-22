@@ -37,6 +37,12 @@ type BACnetConstructedDataIPv6DHCPLeaseTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataIPv6DHCPLeaseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DHCPLeaseTime.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6DHCPLeaseTimeExactly interface {
+	isBACnetConstructedDataIPv6DHCPLeaseTime() bool
+}
+
 // _BACnetConstructedDataIPv6DHCPLeaseTime is the data-structure of this message
 type _BACnetConstructedDataIPv6DHCPLeaseTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) isBACnetConstructedDataIPv6DHCPLeaseTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) String() string {

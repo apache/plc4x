@@ -37,6 +37,12 @@ type BACnetConstructedDataDoorUnlockDelayTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDoorUnlockDelayTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorUnlockDelayTime.
+// This is useful for switch cases.
+type BACnetConstructedDataDoorUnlockDelayTimeExactly interface {
+	isBACnetConstructedDataDoorUnlockDelayTime() bool
+}
+
 // _BACnetConstructedDataDoorUnlockDelayTime is the data-structure of this message
 type _BACnetConstructedDataDoorUnlockDelayTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) isBACnetConstructedDataDoorUnlockDelayTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) String() string {

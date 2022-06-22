@@ -37,6 +37,12 @@ type BACnetConstructedDataSystemStatus interface {
 	GetActualValue() BACnetDeviceStatusTagged
 }
 
+// BACnetConstructedDataSystemStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSystemStatus.
+// This is useful for switch cases.
+type BACnetConstructedDataSystemStatusExactly interface {
+	isBACnetConstructedDataSystemStatus() bool
+}
+
 // _BACnetConstructedDataSystemStatus is the data-structure of this message
 type _BACnetConstructedDataSystemStatus struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataSystemStatus) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSystemStatus) isBACnetConstructedDataSystemStatus() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSystemStatus) String() string {

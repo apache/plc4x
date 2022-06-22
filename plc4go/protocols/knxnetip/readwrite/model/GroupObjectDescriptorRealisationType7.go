@@ -50,6 +50,12 @@ type GroupObjectDescriptorRealisationType7 interface {
 	GetValueType() ComObjectValueType
 }
 
+// GroupObjectDescriptorRealisationType7Exactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationType7.
+// This is useful for switch cases.
+type GroupObjectDescriptorRealisationType7Exactly interface {
+	isGroupObjectDescriptorRealisationType7() bool
+}
+
 // _GroupObjectDescriptorRealisationType7 is the data-structure of this message
 type _GroupObjectDescriptorRealisationType7 struct {
 	DataAddress           uint16
@@ -346,6 +352,10 @@ func (m *_GroupObjectDescriptorRealisationType7) Serialize(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for GroupObjectDescriptorRealisationType7")
 	}
 	return nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType7) isGroupObjectDescriptorRealisationType7() bool {
+	return true
 }
 
 func (m *_GroupObjectDescriptorRealisationType7) String() string {

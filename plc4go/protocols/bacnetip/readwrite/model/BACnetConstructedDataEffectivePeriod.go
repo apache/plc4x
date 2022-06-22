@@ -37,6 +37,12 @@ type BACnetConstructedDataEffectivePeriod interface {
 	GetActualValue() BACnetDateRange
 }
 
+// BACnetConstructedDataEffectivePeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEffectivePeriod.
+// This is useful for switch cases.
+type BACnetConstructedDataEffectivePeriodExactly interface {
+	isBACnetConstructedDataEffectivePeriod() bool
+}
+
 // _BACnetConstructedDataEffectivePeriod is the data-structure of this message
 type _BACnetConstructedDataEffectivePeriod struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEffectivePeriod) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEffectivePeriod) isBACnetConstructedDataEffectivePeriod() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEffectivePeriod) String() string {

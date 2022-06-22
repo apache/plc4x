@@ -38,6 +38,12 @@ type BACnetTagPayloadBoolean interface {
 	GetIsFalse() bool
 }
 
+// BACnetTagPayloadBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadBoolean.
+// This is useful for switch cases.
+type BACnetTagPayloadBooleanExactly interface {
+	isBACnetTagPayloadBoolean() bool
+}
+
 // _BACnetTagPayloadBoolean is the data-structure of this message
 type _BACnetTagPayloadBoolean struct {
 
@@ -162,6 +168,10 @@ func (m *_BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadBoolean")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadBoolean) isBACnetTagPayloadBoolean() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadBoolean) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataSetting interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataSettingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSetting.
+// This is useful for switch cases.
+type BACnetConstructedDataSettingExactly interface {
+	isBACnetConstructedDataSetting() bool
+}
+
 // _BACnetConstructedDataSetting is the data-structure of this message
 type _BACnetConstructedDataSetting struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataSetting) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSetting) isBACnetConstructedDataSetting() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSetting) String() string {

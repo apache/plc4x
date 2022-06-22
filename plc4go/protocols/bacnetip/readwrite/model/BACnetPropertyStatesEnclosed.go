@@ -38,6 +38,12 @@ type BACnetPropertyStatesEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetPropertyStatesEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEnclosed.
+// This is useful for switch cases.
+type BACnetPropertyStatesEnclosedExactly interface {
+	isBACnetPropertyStatesEnclosed() bool
+}
+
 // _BACnetPropertyStatesEnclosed is the data-structure of this message
 type _BACnetPropertyStatesEnclosed struct {
 	OpeningTag    BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetPropertyStatesEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyStatesEnclosed) isBACnetPropertyStatesEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEnclosed) String() string {

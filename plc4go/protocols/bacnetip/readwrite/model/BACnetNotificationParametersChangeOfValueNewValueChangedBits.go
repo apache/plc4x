@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
 	GetChangedBits() BACnetContextTagBitString
 }
 
+// BACnetNotificationParametersChangeOfValueNewValueChangedBitsExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfValueNewValueChangedBits.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfValueNewValueChangedBitsExactly interface {
+	isBACnetNotificationParametersChangeOfValueNewValueChangedBits() bool
+}
+
 // _BACnetNotificationParametersChangeOfValueNewValueChangedBits is the data-structure of this message
 type _BACnetNotificationParametersChangeOfValueNewValueChangedBits struct {
 	*_BACnetNotificationParametersChangeOfValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) Serializ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) isBACnetNotificationParametersChangeOfValueNewValueChangedBits() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) String() string {

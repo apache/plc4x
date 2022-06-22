@@ -37,6 +37,12 @@ type BACnetConstructedDataLinkSpeedAutonegotiate interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataLinkSpeedAutonegotiateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLinkSpeedAutonegotiate.
+// This is useful for switch cases.
+type BACnetConstructedDataLinkSpeedAutonegotiateExactly interface {
+	isBACnetConstructedDataLinkSpeedAutonegotiate() bool
+}
+
 // _BACnetConstructedDataLinkSpeedAutonegotiate is the data-structure of this message
 type _BACnetConstructedDataLinkSpeedAutonegotiate struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) isBACnetConstructedDataLinkSpeedAutonegotiate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) String() string {

@@ -40,6 +40,12 @@ type BACnetVTClassTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetVTClassTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetVTClassTagged.
+// This is useful for switch cases.
+type BACnetVTClassTaggedExactly interface {
+	isBACnetVTClassTagged() bool
+}
+
 // _BACnetVTClassTagged is the data-structure of this message
 type _BACnetVTClassTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetVTClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetVTClassTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetVTClassTagged) isBACnetVTClassTagged() bool {
+	return true
 }
 
 func (m *_BACnetVTClassTagged) String() string {

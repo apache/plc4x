@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned interface
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) Ser
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) isBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) String() string {

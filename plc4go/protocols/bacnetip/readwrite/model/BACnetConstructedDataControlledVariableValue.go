@@ -37,6 +37,12 @@ type BACnetConstructedDataControlledVariableValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataControlledVariableValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataControlledVariableValue.
+// This is useful for switch cases.
+type BACnetConstructedDataControlledVariableValueExactly interface {
+	isBACnetConstructedDataControlledVariableValue() bool
+}
+
 // _BACnetConstructedDataControlledVariableValue is the data-structure of this message
 type _BACnetConstructedDataControlledVariableValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataControlledVariableValue) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataControlledVariableValue) isBACnetConstructedDataControlledVariableValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataControlledVariableValue) String() string {

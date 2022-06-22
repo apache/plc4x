@@ -35,6 +35,12 @@ type BACnetPropertyStatesAuthenticationStatus interface {
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
 }
 
+// BACnetPropertyStatesAuthenticationStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAuthenticationStatus.
+// This is useful for switch cases.
+type BACnetPropertyStatesAuthenticationStatusExactly interface {
+	isBACnetPropertyStatesAuthenticationStatus() bool
+}
+
 // _BACnetPropertyStatesAuthenticationStatus is the data-structure of this message
 type _BACnetPropertyStatesAuthenticationStatus struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesAuthenticationStatus) isBACnetPropertyStatesAuthenticationStatus() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesAuthenticationStatus) String() string {

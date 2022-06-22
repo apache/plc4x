@@ -41,6 +41,12 @@ type BACnetFaultParameterFaultOutOfRange interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetFaultParameterFaultOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRange.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeExactly interface {
+	isBACnetFaultParameterFaultOutOfRange() bool
+}
+
 // _BACnetFaultParameterFaultOutOfRange is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRange struct {
 	*_BACnetFaultParameter
@@ -287,6 +293,10 @@ func (m *_BACnetFaultParameterFaultOutOfRange) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRange) isBACnetFaultParameterFaultOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRange) String() string {

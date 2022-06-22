@@ -37,6 +37,12 @@ type BACnetConstructedDataLargeAnalogValueRelinquishDefault interface {
 	GetActualValue() BACnetApplicationTagDouble
 }
 
+// BACnetConstructedDataLargeAnalogValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueRelinquishDefaultExactly interface {
+	isBACnetConstructedDataLargeAnalogValueRelinquishDefault() bool
+}
+
 // _BACnetConstructedDataLargeAnalogValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueRelinquishDefault struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) Serialize(writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) isBACnetConstructedDataLargeAnalogValueRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataMachineRoomID interface {
 	GetActualValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetConstructedDataMachineRoomIDExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMachineRoomID.
+// This is useful for switch cases.
+type BACnetConstructedDataMachineRoomIDExactly interface {
+	isBACnetConstructedDataMachineRoomID() bool
+}
+
 // _BACnetConstructedDataMachineRoomID is the data-structure of this message
 type _BACnetConstructedDataMachineRoomID struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMachineRoomID) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMachineRoomID) isBACnetConstructedDataMachineRoomID() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMachineRoomID) String() string {

@@ -47,6 +47,12 @@ type BACnetConstructedDataEventTimeStamps interface {
 	GetToNormal() BACnetTimeStamp
 }
 
+// BACnetConstructedDataEventTimeStampsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventTimeStamps.
+// This is useful for switch cases.
+type BACnetConstructedDataEventTimeStampsExactly interface {
+	isBACnetConstructedDataEventTimeStamps() bool
+}
+
 // _BACnetConstructedDataEventTimeStamps is the data-structure of this message
 type _BACnetConstructedDataEventTimeStamps struct {
 	*_BACnetConstructedData
@@ -349,6 +355,10 @@ func (m *_BACnetConstructedDataEventTimeStamps) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventTimeStamps) isBACnetConstructedDataEventTimeStamps() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) String() string {

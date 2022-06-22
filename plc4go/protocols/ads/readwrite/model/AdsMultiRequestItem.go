@@ -34,16 +34,22 @@ type AdsMultiRequestItem interface {
 	GetIndexGroup() uint32
 }
 
+// AdsMultiRequestItemExactly can be used when we want exactly this type and not a type which fulfills AdsMultiRequestItem.
+// This is useful for switch cases.
+type AdsMultiRequestItemExactly interface {
+	isAdsMultiRequestItem() bool
+}
+
 // _AdsMultiRequestItem is the data-structure of this message
 type _AdsMultiRequestItem struct {
 	_AdsMultiRequestItemChildRequirements
 }
 
 type _AdsMultiRequestItemChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetIndexGroup() uint32
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type AdsMultiRequestItemParent interface {
@@ -52,7 +58,7 @@ type AdsMultiRequestItemParent interface {
 }
 
 type AdsMultiRequestItemChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent AdsMultiRequestItem)
 	GetParent() *AdsMultiRequestItem
 
@@ -152,6 +158,10 @@ func (pm *_AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(popErr, "Error popping for AdsMultiRequestItem")
 	}
 	return nil
+}
+
+func (m *_AdsMultiRequestItem) isAdsMultiRequestItem() bool {
+	return true
 }
 
 func (m *_AdsMultiRequestItem) String() string {

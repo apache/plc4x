@@ -37,6 +37,12 @@ type BACnetConstructedDataIPv6Address interface {
 	GetActualValue() BACnetApplicationTagOctetString
 }
 
+// BACnetConstructedDataIPv6AddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6Address.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6AddressExactly interface {
+	isBACnetConstructedDataIPv6Address() bool
+}
+
 // _BACnetConstructedDataIPv6Address is the data-structure of this message
 type _BACnetConstructedDataIPv6Address struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6Address) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6Address) isBACnetConstructedDataIPv6Address() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6Address) String() string {

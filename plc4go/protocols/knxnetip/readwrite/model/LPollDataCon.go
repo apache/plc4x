@@ -33,6 +33,12 @@ type LPollDataCon interface {
 	CEMI
 }
 
+// LPollDataConExactly can be used when we want exactly this type and not a type which fulfills LPollDataCon.
+// This is useful for switch cases.
+type LPollDataConExactly interface {
+	isLPollDataCon() bool
+}
+
 // _LPollDataCon is the data-structure of this message
 type _LPollDataCon struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_LPollDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LPollDataCon) isLPollDataCon() bool {
+	return true
 }
 
 func (m *_LPollDataCon) String() string {

@@ -40,6 +40,12 @@ type BACnetEscalatorModeTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetEscalatorModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEscalatorModeTagged.
+// This is useful for switch cases.
+type BACnetEscalatorModeTaggedExactly interface {
+	isBACnetEscalatorModeTagged() bool
+}
+
 // _BACnetEscalatorModeTagged is the data-structure of this message
 type _BACnetEscalatorModeTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetEscalatorModeTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetEscalatorModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetEscalatorModeTagged) isBACnetEscalatorModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetEscalatorModeTagged) String() string {

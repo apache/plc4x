@@ -36,6 +36,12 @@ type CipRRData interface {
 	GetExchange() CipExchange
 }
 
+// CipRRDataExactly can be used when we want exactly this type and not a type which fulfills CipRRData.
+// This is useful for switch cases.
+type CipRRDataExactly interface {
+	isCipRRData() bool
+}
+
 // _CipRRData is the data-structure of this message
 type _CipRRData struct {
 	*_EipPacket
@@ -237,6 +243,10 @@ func (m *_CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipRRData) isCipRRData() bool {
+	return true
 }
 
 func (m *_CipRRData) String() string {

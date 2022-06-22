@@ -46,6 +46,12 @@ type S7AddressAny interface {
 	GetBitAddress() uint8
 }
 
+// S7AddressAnyExactly can be used when we want exactly this type and not a type which fulfills S7AddressAny.
+// This is useful for switch cases.
+type S7AddressAnyExactly interface {
+	isS7AddressAny() bool
+}
+
 // _S7AddressAny is the data-structure of this message
 type _S7AddressAny struct {
 	*_S7Address
@@ -348,6 +354,10 @@ func (m *_S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7AddressAny) isS7AddressAny() bool {
+	return true
 }
 
 func (m *_S7AddressAny) String() string {

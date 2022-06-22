@@ -35,6 +35,12 @@ type BACnetProcessIdSelectionNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetProcessIdSelectionNullExactly can be used when we want exactly this type and not a type which fulfills BACnetProcessIdSelectionNull.
+// This is useful for switch cases.
+type BACnetProcessIdSelectionNullExactly interface {
+	isBACnetProcessIdSelectionNull() bool
+}
+
 // _BACnetProcessIdSelectionNull is the data-structure of this message
 type _BACnetProcessIdSelectionNull struct {
 	*_BACnetProcessIdSelection
@@ -176,6 +182,10 @@ func (m *_BACnetProcessIdSelectionNull) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetProcessIdSelectionNull) isBACnetProcessIdSelectionNull() bool {
+	return true
 }
 
 func (m *_BACnetProcessIdSelectionNull) String() string {

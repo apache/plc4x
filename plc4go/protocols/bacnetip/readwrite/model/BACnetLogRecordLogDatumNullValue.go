@@ -35,6 +35,12 @@ type BACnetLogRecordLogDatumNullValue interface {
 	GetNullValue() BACnetContextTagNull
 }
 
+// BACnetLogRecordLogDatumNullValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumNullValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumNullValueExactly interface {
+	isBACnetLogRecordLogDatumNullValue() bool
+}
+
 // _BACnetLogRecordLogDatumNullValue is the data-structure of this message
 type _BACnetLogRecordLogDatumNullValue struct {
 	*_BACnetLogRecordLogDatum
@@ -181,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumNullValue) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumNullValue) isBACnetLogRecordLogDatumNullValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumNullValue) String() string {

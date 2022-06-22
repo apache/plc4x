@@ -34,16 +34,22 @@ type CEMIAdditionalInformation interface {
 	GetAdditionalInformationType() uint8
 }
 
+// CEMIAdditionalInformationExactly can be used when we want exactly this type and not a type which fulfills CEMIAdditionalInformation.
+// This is useful for switch cases.
+type CEMIAdditionalInformationExactly interface {
+	isCEMIAdditionalInformation() bool
+}
+
 // _CEMIAdditionalInformation is the data-structure of this message
 type _CEMIAdditionalInformation struct {
 	_CEMIAdditionalInformationChildRequirements
 }
 
 type _CEMIAdditionalInformationChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetAdditionalInformationType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CEMIAdditionalInformationParent interface {
@@ -52,7 +58,7 @@ type CEMIAdditionalInformationParent interface {
 }
 
 type CEMIAdditionalInformationChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CEMIAdditionalInformation)
 	GetParent() *CEMIAdditionalInformation
 
@@ -166,6 +172,10 @@ func (pm *_CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuf
 		return errors.Wrap(popErr, "Error popping for CEMIAdditionalInformation")
 	}
 	return nil
+}
+
+func (m *_CEMIAdditionalInformation) isCEMIAdditionalInformation() bool {
+	return true
 }
 
 func (m *_CEMIAdditionalInformation) String() string {

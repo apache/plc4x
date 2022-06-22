@@ -33,6 +33,12 @@ type ApduDataExtOpenRoutingTableRequest interface {
 	ApduDataExt
 }
 
+// ApduDataExtOpenRoutingTableRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtOpenRoutingTableRequest.
+// This is useful for switch cases.
+type ApduDataExtOpenRoutingTableRequestExactly interface {
+	isApduDataExtOpenRoutingTableRequest() bool
+}
+
 // _ApduDataExtOpenRoutingTableRequest is the data-structure of this message
 type _ApduDataExtOpenRoutingTableRequest struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtOpenRoutingTableRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtOpenRoutingTableRequest) isApduDataExtOpenRoutingTableRequest() bool {
+	return true
 }
 
 func (m *_ApduDataExtOpenRoutingTableRequest) String() string {

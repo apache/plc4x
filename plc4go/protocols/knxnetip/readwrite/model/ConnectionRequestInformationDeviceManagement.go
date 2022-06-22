@@ -33,6 +33,12 @@ type ConnectionRequestInformationDeviceManagement interface {
 	ConnectionRequestInformation
 }
 
+// ConnectionRequestInformationDeviceManagementExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequestInformationDeviceManagement.
+// This is useful for switch cases.
+type ConnectionRequestInformationDeviceManagementExactly interface {
+	isConnectionRequestInformationDeviceManagement() bool
+}
+
 // _ConnectionRequestInformationDeviceManagement is the data-structure of this message
 type _ConnectionRequestInformationDeviceManagement struct {
 	*_ConnectionRequestInformation
@@ -132,6 +138,10 @@ func (m *_ConnectionRequestInformationDeviceManagement) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionRequestInformationDeviceManagement) isConnectionRequestInformationDeviceManagement() bool {
+	return true
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) String() string {

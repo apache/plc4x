@@ -35,6 +35,12 @@ type BACnetPropertyStatesLiftGroupMode interface {
 	GetLiftGroupMode() BACnetLiftGroupModeTagged
 }
 
+// BACnetPropertyStatesLiftGroupModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftGroupMode.
+// This is useful for switch cases.
+type BACnetPropertyStatesLiftGroupModeExactly interface {
+	isBACnetPropertyStatesLiftGroupMode() bool
+}
+
 // _BACnetPropertyStatesLiftGroupMode is the data-structure of this message
 type _BACnetPropertyStatesLiftGroupMode struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesLiftGroupMode) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLiftGroupMode) isBACnetPropertyStatesLiftGroupMode() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLiftGroupMode) String() string {

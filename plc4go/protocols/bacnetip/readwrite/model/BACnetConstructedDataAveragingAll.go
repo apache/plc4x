@@ -33,6 +33,12 @@ type BACnetConstructedDataAveragingAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataAveragingAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAveragingAll.
+// This is useful for switch cases.
+type BACnetConstructedDataAveragingAllExactly interface {
+	isBACnetConstructedDataAveragingAll() bool
+}
+
 // _BACnetConstructedDataAveragingAll is the data-structure of this message
 type _BACnetConstructedDataAveragingAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataAveragingAll) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAveragingAll) isBACnetConstructedDataAveragingAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAveragingAll) String() string {

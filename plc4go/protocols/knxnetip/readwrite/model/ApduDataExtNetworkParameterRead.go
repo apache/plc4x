@@ -33,6 +33,12 @@ type ApduDataExtNetworkParameterRead interface {
 	ApduDataExt
 }
 
+// ApduDataExtNetworkParameterReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtNetworkParameterRead.
+// This is useful for switch cases.
+type ApduDataExtNetworkParameterReadExactly interface {
+	isApduDataExtNetworkParameterRead() bool
+}
+
 // _ApduDataExtNetworkParameterRead is the data-structure of this message
 type _ApduDataExtNetworkParameterRead struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtNetworkParameterRead) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtNetworkParameterRead) isApduDataExtNetworkParameterRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtNetworkParameterRead) String() string {

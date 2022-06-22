@@ -43,6 +43,12 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 }
 
+// BACnetConfirmedServiceRequestLifeSafetyOperationExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestLifeSafetyOperation.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestLifeSafetyOperationExactly interface {
+	isBACnetConfirmedServiceRequestLifeSafetyOperation() bool
+}
+
 // _BACnetConfirmedServiceRequestLifeSafetyOperation is the data-structure of this message
 type _BACnetConfirmedServiceRequestLifeSafetyOperation struct {
 	*_BACnetConfirmedServiceRequest
@@ -310,6 +316,10 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) isBACnetConfirmedServiceRequestLifeSafetyOperation() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) String() string {

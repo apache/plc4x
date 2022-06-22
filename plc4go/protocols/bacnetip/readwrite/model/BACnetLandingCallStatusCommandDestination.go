@@ -35,6 +35,12 @@ type BACnetLandingCallStatusCommandDestination interface {
 	GetDestination() BACnetContextTagUnsignedInteger
 }
 
+// BACnetLandingCallStatusCommandDestinationExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommandDestination.
+// This is useful for switch cases.
+type BACnetLandingCallStatusCommandDestinationExactly interface {
+	isBACnetLandingCallStatusCommandDestination() bool
+}
+
 // _BACnetLandingCallStatusCommandDestination is the data-structure of this message
 type _BACnetLandingCallStatusCommandDestination struct {
 	*_BACnetLandingCallStatusCommand
@@ -176,6 +182,10 @@ func (m *_BACnetLandingCallStatusCommandDestination) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLandingCallStatusCommandDestination) isBACnetLandingCallStatusCommandDestination() bool {
+	return true
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) String() string {

@@ -40,6 +40,12 @@ type BACnetLifeSafetyStateTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetLifeSafetyStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLifeSafetyStateTagged.
+// This is useful for switch cases.
+type BACnetLifeSafetyStateTaggedExactly interface {
+	isBACnetLifeSafetyStateTagged() bool
+}
+
 // _BACnetLifeSafetyStateTagged is the data-structure of this message
 type _BACnetLifeSafetyStateTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetLifeSafetyStateTagged) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for BACnetLifeSafetyStateTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLifeSafetyStateTagged) isBACnetLifeSafetyStateTagged() bool {
+	return true
 }
 
 func (m *_BACnetLifeSafetyStateTagged) String() string {

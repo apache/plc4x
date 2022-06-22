@@ -37,6 +37,12 @@ type BACnetConstructedDataLastKeyServer interface {
 	GetActualValue() BACnetAddressBinding
 }
 
+// BACnetConstructedDataLastKeyServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastKeyServer.
+// This is useful for switch cases.
+type BACnetConstructedDataLastKeyServerExactly interface {
+	isBACnetConstructedDataLastKeyServer() bool
+}
+
 // _BACnetConstructedDataLastKeyServer is the data-structure of this message
 type _BACnetConstructedDataLastKeyServer struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastKeyServer) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastKeyServer) isBACnetConstructedDataLastKeyServer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastKeyServer) String() string {

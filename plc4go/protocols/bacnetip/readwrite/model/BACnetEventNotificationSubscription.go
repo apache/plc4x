@@ -42,6 +42,12 @@ type BACnetEventNotificationSubscription interface {
 	GetTimeRemaining() BACnetContextTagUnsignedInteger
 }
 
+// BACnetEventNotificationSubscriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetEventNotificationSubscription.
+// This is useful for switch cases.
+type BACnetEventNotificationSubscriptionExactly interface {
+	isBACnetEventNotificationSubscription() bool
+}
+
 // _BACnetEventNotificationSubscription is the data-structure of this message
 type _BACnetEventNotificationSubscription struct {
 	Recipient                   BACnetRecipientEnclosed
@@ -265,6 +271,10 @@ func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetEventNotificationSubscription")
 	}
 	return nil
+}
+
+func (m *_BACnetEventNotificationSubscription) isBACnetEventNotificationSubscription() bool {
+	return true
 }
 
 func (m *_BACnetEventNotificationSubscription) String() string {

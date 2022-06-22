@@ -37,6 +37,12 @@ type BACnetConstructedDataUpdateKeySetTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataUpdateKeySetTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateKeySetTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataUpdateKeySetTimeoutExactly interface {
+	isBACnetConstructedDataUpdateKeySetTimeout() bool
+}
+
 // _BACnetConstructedDataUpdateKeySetTimeout is the data-structure of this message
 type _BACnetConstructedDataUpdateKeySetTimeout struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) isBACnetConstructedDataUpdateKeySetTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) String() string {

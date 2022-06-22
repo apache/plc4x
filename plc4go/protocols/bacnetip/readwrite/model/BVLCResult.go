@@ -35,6 +35,12 @@ type BVLCResult interface {
 	GetCode() BVLCResultCode
 }
 
+// BVLCResultExactly can be used when we want exactly this type and not a type which fulfills BVLCResult.
+// This is useful for switch cases.
+type BVLCResultExactly interface {
+	isBVLCResult() bool
+}
+
 // _BVLCResult is the data-structure of this message
 type _BVLCResult struct {
 	*_BVLC
@@ -178,6 +184,10 @@ func (m *_BVLCResult) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCResult) isBVLCResult() bool {
+	return true
 }
 
 func (m *_BVLCResult) String() string {

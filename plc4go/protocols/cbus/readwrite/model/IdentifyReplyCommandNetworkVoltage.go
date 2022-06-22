@@ -42,6 +42,12 @@ type IdentifyReplyCommandNetworkVoltage interface {
 	GetVoltsDecimalPlace() string
 }
 
+// IdentifyReplyCommandNetworkVoltageExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandNetworkVoltage.
+// This is useful for switch cases.
+type IdentifyReplyCommandNetworkVoltageExactly interface {
+	isIdentifyReplyCommandNetworkVoltage() bool
+}
+
 // _IdentifyReplyCommandNetworkVoltage is the data-structure of this message
 type _IdentifyReplyCommandNetworkVoltage struct {
 	*_IdentifyReplyCommand
@@ -251,6 +257,10 @@ func (m *_IdentifyReplyCommandNetworkVoltage) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltage) isIdentifyReplyCommandNetworkVoltage() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) String() string {

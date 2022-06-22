@@ -40,6 +40,12 @@ type ErrorCodeTagged interface {
 	GetIsProprietary() bool
 }
 
+// ErrorCodeTaggedExactly can be used when we want exactly this type and not a type which fulfills ErrorCodeTagged.
+// This is useful for switch cases.
+type ErrorCodeTaggedExactly interface {
+	isErrorCodeTagged() bool
+}
+
 // _ErrorCodeTagged is the data-structure of this message
 type _ErrorCodeTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_ErrorCodeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ErrorCodeTagged")
 	}
 	return nil
+}
+
+func (m *_ErrorCodeTagged) isErrorCodeTagged() bool {
+	return true
 }
 
 func (m *_ErrorCodeTagged) String() string {

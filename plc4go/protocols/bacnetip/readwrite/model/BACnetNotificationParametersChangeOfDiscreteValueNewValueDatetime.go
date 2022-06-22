@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime interface
 	GetDateTimeValue() BACnetDateTimeEnclosed
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Ser
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) isBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) String() string {

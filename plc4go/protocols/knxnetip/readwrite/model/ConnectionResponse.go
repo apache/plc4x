@@ -43,6 +43,12 @@ type ConnectionResponse interface {
 	GetConnectionResponseDataBlock() ConnectionResponseDataBlock
 }
 
+// ConnectionResponseExactly can be used when we want exactly this type and not a type which fulfills ConnectionResponse.
+// This is useful for switch cases.
+type ConnectionResponseExactly interface {
+	isConnectionResponse() bool
+}
+
 // _ConnectionResponse is the data-structure of this message
 type _ConnectionResponse struct {
 	*_KnxNetIpMessage
@@ -310,6 +316,10 @@ func (m *_ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionResponse) isConnectionResponse() bool {
+	return true
 }
 
 func (m *_ConnectionResponse) String() string {

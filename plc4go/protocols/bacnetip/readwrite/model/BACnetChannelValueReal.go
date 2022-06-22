@@ -35,6 +35,12 @@ type BACnetChannelValueReal interface {
 	GetRealValue() BACnetApplicationTagReal
 }
 
+// BACnetChannelValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueReal.
+// This is useful for switch cases.
+type BACnetChannelValueRealExactly interface {
+	isBACnetChannelValueReal() bool
+}
+
 // _BACnetChannelValueReal is the data-structure of this message
 type _BACnetChannelValueReal struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueReal) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueReal) isBACnetChannelValueReal() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueReal) String() string {

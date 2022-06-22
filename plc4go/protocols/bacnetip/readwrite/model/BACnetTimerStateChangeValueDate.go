@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueDate interface {
 	GetDateValue() BACnetApplicationTagDate
 }
 
+// BACnetTimerStateChangeValueDateExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueDate.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueDateExactly interface {
+	isBACnetTimerStateChangeValueDate() bool
+}
+
 // _BACnetTimerStateChangeValueDate is the data-structure of this message
 type _BACnetTimerStateChangeValueDate struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueDate) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueDate) isBACnetTimerStateChangeValueDate() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueDate) String() string {

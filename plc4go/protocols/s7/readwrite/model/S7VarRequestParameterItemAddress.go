@@ -35,6 +35,12 @@ type S7VarRequestParameterItemAddress interface {
 	GetAddress() S7Address
 }
 
+// S7VarRequestParameterItemAddressExactly can be used when we want exactly this type and not a type which fulfills S7VarRequestParameterItemAddress.
+// This is useful for switch cases.
+type S7VarRequestParameterItemAddressExactly interface {
+	isS7VarRequestParameterItemAddress() bool
+}
+
 // _S7VarRequestParameterItemAddress is the data-structure of this message
 type _S7VarRequestParameterItemAddress struct {
 	*_S7VarRequestParameterItem
@@ -195,6 +201,10 @@ func (m *_S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7VarRequestParameterItemAddress) isS7VarRequestParameterItemAddress() bool {
+	return true
 }
 
 func (m *_S7VarRequestParameterItemAddress) String() string {

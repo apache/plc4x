@@ -35,6 +35,12 @@ type BACnetLogRecordLogDatumBooleanValue interface {
 	GetBooleanValue() BACnetContextTagBoolean
 }
 
+// BACnetLogRecordLogDatumBooleanValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumBooleanValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumBooleanValueExactly interface {
+	isBACnetLogRecordLogDatumBooleanValue() bool
+}
+
 // _BACnetLogRecordLogDatumBooleanValue is the data-structure of this message
 type _BACnetLogRecordLogDatumBooleanValue struct {
 	*_BACnetLogRecordLogDatum
@@ -181,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumBooleanValue) isBACnetLogRecordLogDatumBooleanValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumBooleanValue) String() string {

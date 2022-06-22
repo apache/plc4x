@@ -46,6 +46,12 @@ type BACnetEventSummary interface {
 	GetEventPriorities() BACnetEventPriorities
 }
 
+// BACnetEventSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetEventSummary.
+// This is useful for switch cases.
+type BACnetEventSummaryExactly interface {
+	isBACnetEventSummary() bool
+}
+
 // _BACnetEventSummary is the data-structure of this message
 type _BACnetEventSummary struct {
 	ObjectIdentifier        BACnetContextTagObjectIdentifier
@@ -353,6 +359,10 @@ func (m *_BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetEventSummary")
 	}
 	return nil
+}
+
+func (m *_BACnetEventSummary) isBACnetEventSummary() bool {
+	return true
 }
 
 func (m *_BACnetEventSummary) String() string {

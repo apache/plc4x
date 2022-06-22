@@ -40,6 +40,12 @@ type BACnetGroupChannelValue interface {
 	GetValue() BACnetChannelValue
 }
 
+// BACnetGroupChannelValueExactly can be used when we want exactly this type and not a type which fulfills BACnetGroupChannelValue.
+// This is useful for switch cases.
+type BACnetGroupChannelValueExactly interface {
+	isBACnetGroupChannelValue() bool
+}
+
 // _BACnetGroupChannelValue is the data-structure of this message
 type _BACnetGroupChannelValue struct {
 	Channel            BACnetContextTagUnsignedInteger
@@ -230,6 +236,10 @@ func (m *_BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetGroupChannelValue")
 	}
 	return nil
+}
+
+func (m *_BACnetGroupChannelValue) isBACnetGroupChannelValue() bool {
+	return true
 }
 
 func (m *_BACnetGroupChannelValue) String() string {

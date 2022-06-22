@@ -35,6 +35,12 @@ type NLMIAmRouterToNetwork interface {
 	GetDestinationNetworkAddress() []uint16
 }
 
+// NLMIAmRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMIAmRouterToNetwork.
+// This is useful for switch cases.
+type NLMIAmRouterToNetworkExactly interface {
+	isNLMIAmRouterToNetwork() bool
+}
+
 // _NLMIAmRouterToNetwork is the data-structure of this message
 type _NLMIAmRouterToNetwork struct {
 	*_NLM
@@ -197,6 +203,10 @@ func (m *_NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMIAmRouterToNetwork) isNLMIAmRouterToNetwork() bool {
+	return true
 }
 
 func (m *_NLMIAmRouterToNetwork) String() string {

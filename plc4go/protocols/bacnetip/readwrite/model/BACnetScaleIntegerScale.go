@@ -35,6 +35,12 @@ type BACnetScaleIntegerScale interface {
 	GetIntegerScale() BACnetContextTagSignedInteger
 }
 
+// BACnetScaleIntegerScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScaleIntegerScale.
+// This is useful for switch cases.
+type BACnetScaleIntegerScaleExactly interface {
+	isBACnetScaleIntegerScale() bool
+}
+
 // _BACnetScaleIntegerScale is the data-structure of this message
 type _BACnetScaleIntegerScale struct {
 	*_BACnetScale
@@ -176,6 +182,10 @@ func (m *_BACnetScaleIntegerScale) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetScaleIntegerScale) isBACnetScaleIntegerScale() bool {
+	return true
 }
 
 func (m *_BACnetScaleIntegerScale) String() string {

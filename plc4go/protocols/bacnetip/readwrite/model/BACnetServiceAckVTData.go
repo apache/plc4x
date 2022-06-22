@@ -39,6 +39,12 @@ type BACnetServiceAckVTData interface {
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetServiceAckVTDataExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckVTData.
+// This is useful for switch cases.
+type BACnetServiceAckVTDataExactly interface {
+	isBACnetServiceAckVTData() bool
+}
+
 // _BACnetServiceAckVTData is the data-structure of this message
 type _BACnetServiceAckVTData struct {
 	*_BACnetServiceAck
@@ -255,6 +261,10 @@ func (m *_BACnetServiceAckVTData) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckVTData) isBACnetServiceAckVTData() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckVTData) String() string {

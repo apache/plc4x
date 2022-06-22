@@ -40,6 +40,12 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetConfirmedServiceRequestReadRangeRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRange.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeExactly interface {
+	isBACnetConfirmedServiceRequestReadRangeRange() bool
+}
+
 // _BACnetConfirmedServiceRequestReadRangeRange is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRange struct {
 	_BACnetConfirmedServiceRequestReadRangeRangeChildRequirements
@@ -49,9 +55,9 @@ type _BACnetConfirmedServiceRequestReadRangeRange struct {
 }
 
 type _BACnetConfirmedServiceRequestReadRangeRangeChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestReadRangeRangeParent interface {
@@ -60,7 +66,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeParent interface {
 }
 
 type BACnetConfirmedServiceRequestReadRangeRangeChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConfirmedServiceRequestReadRangeRange, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag)
 	GetParent() *BACnetConfirmedServiceRequestReadRangeRange
 
@@ -270,6 +276,10 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuf
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestReadRangeRange")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) isBACnetConfirmedServiceRequestReadRangeRange() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) String() string {

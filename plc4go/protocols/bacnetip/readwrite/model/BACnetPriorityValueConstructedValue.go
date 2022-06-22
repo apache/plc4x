@@ -35,6 +35,12 @@ type BACnetPriorityValueConstructedValue interface {
 	GetConstructedValue() BACnetConstructedData
 }
 
+// BACnetPriorityValueConstructedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueConstructedValue.
+// This is useful for switch cases.
+type BACnetPriorityValueConstructedValueExactly interface {
+	isBACnetPriorityValueConstructedValue() bool
+}
+
 // _BACnetPriorityValueConstructedValue is the data-structure of this message
 type _BACnetPriorityValueConstructedValue struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueConstructedValue) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueConstructedValue) isBACnetPriorityValueConstructedValue() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueConstructedValue) String() string {

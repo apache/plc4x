@@ -40,6 +40,12 @@ type BACnetLoggingTypeTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetLoggingTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLoggingTypeTagged.
+// This is useful for switch cases.
+type BACnetLoggingTypeTaggedExactly interface {
+	isBACnetLoggingTypeTagged() bool
+}
+
 // _BACnetLoggingTypeTagged is the data-structure of this message
 type _BACnetLoggingTypeTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetLoggingTypeTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetLoggingTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLoggingTypeTagged) isBACnetLoggingTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetLoggingTypeTagged) String() string {

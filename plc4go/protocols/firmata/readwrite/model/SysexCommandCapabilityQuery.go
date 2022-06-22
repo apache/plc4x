@@ -33,6 +33,12 @@ type SysexCommandCapabilityQuery interface {
 	SysexCommand
 }
 
+// SysexCommandCapabilityQueryExactly can be used when we want exactly this type and not a type which fulfills SysexCommandCapabilityQuery.
+// This is useful for switch cases.
+type SysexCommandCapabilityQueryExactly interface {
+	isSysexCommandCapabilityQuery() bool
+}
+
 // _SysexCommandCapabilityQuery is the data-structure of this message
 type _SysexCommandCapabilityQuery struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandCapabilityQuery) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandCapabilityQuery) isSysexCommandCapabilityQuery() bool {
+	return true
 }
 
 func (m *_SysexCommandCapabilityQuery) String() string {

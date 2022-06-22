@@ -37,6 +37,12 @@ type BACnetConstructedDataCarMode interface {
 	GetActualValue() BACnetLiftCarModeTagged
 }
 
+// BACnetConstructedDataCarModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarMode.
+// This is useful for switch cases.
+type BACnetConstructedDataCarModeExactly interface {
+	isBACnetConstructedDataCarMode() bool
+}
+
 // _BACnetConstructedDataCarMode is the data-structure of this message
 type _BACnetConstructedDataCarMode struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCarMode) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarMode) isBACnetConstructedDataCarMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarMode) String() string {

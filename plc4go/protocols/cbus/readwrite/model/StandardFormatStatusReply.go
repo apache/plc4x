@@ -47,6 +47,12 @@ type StandardFormatStatusReply interface {
 	GetCrc() Checksum
 }
 
+// StandardFormatStatusReplyExactly can be used when we want exactly this type and not a type which fulfills StandardFormatStatusReply.
+// This is useful for switch cases.
+type StandardFormatStatusReplyExactly interface {
+	isStandardFormatStatusReply() bool
+}
+
 // _StandardFormatStatusReply is the data-structure of this message
 type _StandardFormatStatusReply struct {
 	StatusHeader StatusHeader
@@ -345,6 +351,10 @@ func (m *_StandardFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for StandardFormatStatusReply")
 	}
 	return nil
+}
+
+func (m *_StandardFormatStatusReply) isStandardFormatStatusReply() bool {
+	return true
 }
 
 func (m *_StandardFormatStatusReply) String() string {

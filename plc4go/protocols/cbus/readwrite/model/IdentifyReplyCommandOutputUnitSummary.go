@@ -33,6 +33,12 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 	IdentifyReplyCommand
 }
 
+// IdentifyReplyCommandOutputUnitSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandOutputUnitSummary.
+// This is useful for switch cases.
+type IdentifyReplyCommandOutputUnitSummaryExactly interface {
+	isIdentifyReplyCommandOutputUnitSummary() bool
+}
+
 // _IdentifyReplyCommandOutputUnitSummary is the data-structure of this message
 type _IdentifyReplyCommandOutputUnitSummary struct {
 	*_IdentifyReplyCommand
@@ -131,6 +137,10 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) isIdentifyReplyCommandOutputUnitSummary() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) String() string {

@@ -34,16 +34,22 @@ type IdentifyReplyCommand interface {
 	GetAttribute() Attribute
 }
 
+// IdentifyReplyCommandExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommand.
+// This is useful for switch cases.
+type IdentifyReplyCommandExactly interface {
+	isIdentifyReplyCommand() bool
+}
+
 // _IdentifyReplyCommand is the data-structure of this message
 type _IdentifyReplyCommand struct {
 	_IdentifyReplyCommandChildRequirements
 }
 
 type _IdentifyReplyCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetAttribute() Attribute
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type IdentifyReplyCommandParent interface {
@@ -52,7 +58,7 @@ type IdentifyReplyCommandParent interface {
 }
 
 type IdentifyReplyCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent IdentifyReplyCommand)
 	GetParent() *IdentifyReplyCommand
 
@@ -182,6 +188,10 @@ func (pm *_IdentifyReplyCommand) SerializeParent(writeBuffer utils.WriteBuffer, 
 		return errors.Wrap(popErr, "Error popping for IdentifyReplyCommand")
 	}
 	return nil
+}
+
+func (m *_IdentifyReplyCommand) isIdentifyReplyCommand() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommand) String() string {

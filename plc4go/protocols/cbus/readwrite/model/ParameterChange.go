@@ -39,6 +39,12 @@ type ParameterChange interface {
 	utils.Serializable
 }
 
+// ParameterChangeExactly can be used when we want exactly this type and not a type which fulfills ParameterChange.
+// This is useful for switch cases.
+type ParameterChangeExactly interface {
+	isParameterChange() bool
+}
+
 // _ParameterChange is the data-structure of this message
 type _ParameterChange struct {
 }
@@ -203,6 +209,10 @@ func (m *_ParameterChange) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ParameterChange")
 	}
 	return nil
+}
+
+func (m *_ParameterChange) isParameterChange() bool {
+	return true
 }
 
 func (m *_ParameterChange) String() string {

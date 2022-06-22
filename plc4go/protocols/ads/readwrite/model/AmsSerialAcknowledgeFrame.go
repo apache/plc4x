@@ -44,6 +44,12 @@ type AmsSerialAcknowledgeFrame interface {
 	GetCrc() uint16
 }
 
+// AmsSerialAcknowledgeFrameExactly can be used when we want exactly this type and not a type which fulfills AmsSerialAcknowledgeFrame.
+// This is useful for switch cases.
+type AmsSerialAcknowledgeFrameExactly interface {
+	isAmsSerialAcknowledgeFrame() bool
+}
+
 // _AmsSerialAcknowledgeFrame is the data-structure of this message
 type _AmsSerialAcknowledgeFrame struct {
 	MagicCookie        uint16
@@ -252,6 +258,10 @@ func (m *_AmsSerialAcknowledgeFrame) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for AmsSerialAcknowledgeFrame")
 	}
 	return nil
+}
+
+func (m *_AmsSerialAcknowledgeFrame) isAmsSerialAcknowledgeFrame() bool {
+	return true
 }
 
 func (m *_AmsSerialAcknowledgeFrame) String() string {

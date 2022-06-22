@@ -37,6 +37,12 @@ type BACnetConstructedDataAckRequired interface {
 	GetActualValue() BACnetEventTransitionBitsTagged
 }
 
+// BACnetConstructedDataAckRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAckRequired.
+// This is useful for switch cases.
+type BACnetConstructedDataAckRequiredExactly interface {
+	isBACnetConstructedDataAckRequired() bool
+}
+
 // _BACnetConstructedDataAckRequired is the data-structure of this message
 type _BACnetConstructedDataAckRequired struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAckRequired) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAckRequired) isBACnetConstructedDataAckRequired() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAckRequired) String() string {

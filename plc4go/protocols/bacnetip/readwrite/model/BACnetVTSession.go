@@ -38,6 +38,12 @@ type BACnetVTSession interface {
 	GetRemoteVtAddress() BACnetAddress
 }
 
+// BACnetVTSessionExactly can be used when we want exactly this type and not a type which fulfills BACnetVTSession.
+// This is useful for switch cases.
+type BACnetVTSessionExactly interface {
+	isBACnetVTSession() bool
+}
+
 // _BACnetVTSession is the data-structure of this message
 type _BACnetVTSession struct {
 	LocalVtSessionId  BACnetApplicationTagUnsignedInteger
@@ -213,6 +219,10 @@ func (m *_BACnetVTSession) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetVTSession")
 	}
 	return nil
+}
+
+func (m *_BACnetVTSession) isBACnetVTSession() bool {
+	return true
 }
 
 func (m *_BACnetVTSession) String() string {

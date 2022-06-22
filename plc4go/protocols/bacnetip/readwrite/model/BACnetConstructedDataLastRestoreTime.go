@@ -37,6 +37,12 @@ type BACnetConstructedDataLastRestoreTime interface {
 	GetActualValue() BACnetTimeStamp
 }
 
+// BACnetConstructedDataLastRestoreTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastRestoreTime.
+// This is useful for switch cases.
+type BACnetConstructedDataLastRestoreTimeExactly interface {
+	isBACnetConstructedDataLastRestoreTime() bool
+}
+
 // _BACnetConstructedDataLastRestoreTime is the data-structure of this message
 type _BACnetConstructedDataLastRestoreTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastRestoreTime) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastRestoreTime) isBACnetConstructedDataLastRestoreTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastRestoreTime) String() string {

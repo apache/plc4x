@@ -35,6 +35,12 @@ type BACnetPriorityValueEnumerated interface {
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 }
 
+// BACnetPriorityValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueEnumerated.
+// This is useful for switch cases.
+type BACnetPriorityValueEnumeratedExactly interface {
+	isBACnetPriorityValueEnumerated() bool
+}
+
 // _BACnetPriorityValueEnumerated is the data-structure of this message
 type _BACnetPriorityValueEnumerated struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueEnumerated) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueEnumerated) isBACnetPriorityValueEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueEnumerated) String() string {

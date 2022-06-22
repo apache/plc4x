@@ -33,6 +33,12 @@ type BACnetConstructedDataNetworkPortAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataNetworkPortAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortAll.
+// This is useful for switch cases.
+type BACnetConstructedDataNetworkPortAllExactly interface {
+	isBACnetConstructedDataNetworkPortAll() bool
+}
+
 // _BACnetConstructedDataNetworkPortAll is the data-structure of this message
 type _BACnetConstructedDataNetworkPortAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataNetworkPortAll) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNetworkPortAll) isBACnetConstructedDataNetworkPortAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNetworkPortAll) String() string {

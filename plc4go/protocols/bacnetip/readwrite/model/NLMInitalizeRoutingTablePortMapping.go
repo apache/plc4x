@@ -40,6 +40,12 @@ type NLMInitalizeRoutingTablePortMapping interface {
 	GetPortInfo() []byte
 }
 
+// NLMInitalizeRoutingTablePortMappingExactly can be used when we want exactly this type and not a type which fulfills NLMInitalizeRoutingTablePortMapping.
+// This is useful for switch cases.
+type NLMInitalizeRoutingTablePortMappingExactly interface {
+	isNLMInitalizeRoutingTablePortMapping() bool
+}
+
 // _NLMInitalizeRoutingTablePortMapping is the data-structure of this message
 type _NLMInitalizeRoutingTablePortMapping struct {
 	DestinationNetworkAddress uint16
@@ -207,6 +213,10 @@ func (m *_NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for NLMInitalizeRoutingTablePortMapping")
 	}
 	return nil
+}
+
+func (m *_NLMInitalizeRoutingTablePortMapping) isNLMInitalizeRoutingTablePortMapping() bool {
+	return true
 }
 
 func (m *_NLMInitalizeRoutingTablePortMapping) String() string {

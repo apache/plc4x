@@ -37,6 +37,12 @@ type BACnetConstructedDataRelinquishDefault interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataRelinquishDefaultExactly interface {
+	isBACnetConstructedDataRelinquishDefault() bool
+}
+
 // _BACnetConstructedDataRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataRelinquishDefault struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataRelinquishDefault) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRelinquishDefault) isBACnetConstructedDataRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRelinquishDefault) String() string {

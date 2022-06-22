@@ -37,6 +37,12 @@ type BACnetConstructedDataLastCredentialAdded interface {
 	GetActualValue() BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataLastCredentialAddedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCredentialAdded.
+// This is useful for switch cases.
+type BACnetConstructedDataLastCredentialAddedExactly interface {
+	isBACnetConstructedDataLastCredentialAdded() bool
+}
+
 // _BACnetConstructedDataLastCredentialAdded is the data-structure of this message
 type _BACnetConstructedDataLastCredentialAdded struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastCredentialAdded) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastCredentialAdded) isBACnetConstructedDataLastCredentialAdded() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastCredentialAdded) String() string {

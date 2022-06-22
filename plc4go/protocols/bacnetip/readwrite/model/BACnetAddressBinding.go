@@ -36,6 +36,12 @@ type BACnetAddressBinding interface {
 	GetDeviceAddress() BACnetAddress
 }
 
+// BACnetAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetAddressBinding.
+// This is useful for switch cases.
+type BACnetAddressBindingExactly interface {
+	isBACnetAddressBinding() bool
+}
+
 // _BACnetAddressBinding is the data-structure of this message
 type _BACnetAddressBinding struct {
 	DeviceIdentifier BACnetApplicationTagObjectIdentifier
@@ -178,6 +184,10 @@ func (m *_BACnetAddressBinding) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetAddressBinding")
 	}
 	return nil
+}
+
+func (m *_BACnetAddressBinding) isBACnetAddressBinding() bool {
+	return true
 }
 
 func (m *_BACnetAddressBinding) String() string {

@@ -43,6 +43,12 @@ type MPropReadReq interface {
 	GetStartIndex() uint16
 }
 
+// MPropReadReqExactly can be used when we want exactly this type and not a type which fulfills MPropReadReq.
+// This is useful for switch cases.
+type MPropReadReqExactly interface {
+	isMPropReadReq() bool
+}
+
 // _MPropReadReq is the data-structure of this message
 type _MPropReadReq struct {
 	*_CEMI
@@ -274,6 +280,10 @@ func (m *_MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MPropReadReq) isMPropReadReq() bool {
+	return true
 }
 
 func (m *_MPropReadReq) String() string {

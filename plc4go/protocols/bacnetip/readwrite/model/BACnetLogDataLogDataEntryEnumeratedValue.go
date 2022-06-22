@@ -35,6 +35,12 @@ type BACnetLogDataLogDataEntryEnumeratedValue interface {
 	GetEnumeratedValue() BACnetContextTagEnumerated
 }
 
+// BACnetLogDataLogDataEntryEnumeratedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryEnumeratedValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryEnumeratedValueExactly interface {
+	isBACnetLogDataLogDataEntryEnumeratedValue() bool
+}
+
 // _BACnetLogDataLogDataEntryEnumeratedValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryEnumeratedValue struct {
 	*_BACnetLogDataLogDataEntry
@@ -176,6 +182,10 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) isBACnetLogDataLogDataEntryEnumeratedValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) String() string {

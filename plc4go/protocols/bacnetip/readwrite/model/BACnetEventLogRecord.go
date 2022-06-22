@@ -36,6 +36,12 @@ type BACnetEventLogRecord interface {
 	GetLogDatum() BACnetEventLogRecordLogDatum
 }
 
+// BACnetEventLogRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecord.
+// This is useful for switch cases.
+type BACnetEventLogRecordExactly interface {
+	isBACnetEventLogRecord() bool
+}
+
 // _BACnetEventLogRecord is the data-structure of this message
 type _BACnetEventLogRecord struct {
 	Timestamp BACnetDateTimeEnclosed
@@ -178,6 +184,10 @@ func (m *_BACnetEventLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetEventLogRecord")
 	}
 	return nil
+}
+
+func (m *_BACnetEventLogRecord) isBACnetEventLogRecord() bool {
+	return true
 }
 
 func (m *_BACnetEventLogRecord) String() string {

@@ -48,6 +48,12 @@ type AlarmMessageAckObjectPushType interface {
 	GetAckStateComing() State
 }
 
+// AlarmMessageAckObjectPushTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageAckObjectPushType.
+// This is useful for switch cases.
+type AlarmMessageAckObjectPushTypeExactly interface {
+	isAlarmMessageAckObjectPushType() bool
+}
+
 // _AlarmMessageAckObjectPushType is the data-structure of this message
 type _AlarmMessageAckObjectPushType struct {
 	LengthSpec     uint8
@@ -320,6 +326,10 @@ func (m *_AlarmMessageAckObjectPushType) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for AlarmMessageAckObjectPushType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageAckObjectPushType) isAlarmMessageAckObjectPushType() bool {
+	return true
 }
 
 func (m *_AlarmMessageAckObjectPushType) String() string {

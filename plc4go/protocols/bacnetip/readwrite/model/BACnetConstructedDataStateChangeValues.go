@@ -41,6 +41,12 @@ type BACnetConstructedDataStateChangeValues interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataStateChangeValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStateChangeValues.
+// This is useful for switch cases.
+type BACnetConstructedDataStateChangeValuesExactly interface {
+	isBACnetConstructedDataStateChangeValues() bool
+}
+
 // _BACnetConstructedDataStateChangeValues is the data-structure of this message
 type _BACnetConstructedDataStateChangeValues struct {
 	*_BACnetConstructedData
@@ -292,6 +298,10 @@ func (m *_BACnetConstructedDataStateChangeValues) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStateChangeValues) isBACnetConstructedDataStateChangeValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStateChangeValues) String() string {

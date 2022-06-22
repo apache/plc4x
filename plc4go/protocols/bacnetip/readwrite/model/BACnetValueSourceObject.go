@@ -35,6 +35,12 @@ type BACnetValueSourceObject interface {
 	GetObject() BACnetDeviceObjectReferenceEnclosed
 }
 
+// BACnetValueSourceObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSourceObject.
+// This is useful for switch cases.
+type BACnetValueSourceObjectExactly interface {
+	isBACnetValueSourceObject() bool
+}
+
 // _BACnetValueSourceObject is the data-structure of this message
 type _BACnetValueSourceObject struct {
 	*_BACnetValueSource
@@ -176,6 +182,10 @@ func (m *_BACnetValueSourceObject) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetValueSourceObject) isBACnetValueSourceObject() bool {
+	return true
 }
 
 func (m *_BACnetValueSourceObject) String() string {

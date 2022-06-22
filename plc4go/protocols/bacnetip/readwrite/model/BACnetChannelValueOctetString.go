@@ -35,6 +35,12 @@ type BACnetChannelValueOctetString interface {
 	GetOctetStringValue() BACnetApplicationTagOctetString
 }
 
+// BACnetChannelValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueOctetString.
+// This is useful for switch cases.
+type BACnetChannelValueOctetStringExactly interface {
+	isBACnetChannelValueOctetString() bool
+}
+
 // _BACnetChannelValueOctetString is the data-structure of this message
 type _BACnetChannelValueOctetString struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueOctetString) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueOctetString) isBACnetChannelValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueOctetString) String() string {

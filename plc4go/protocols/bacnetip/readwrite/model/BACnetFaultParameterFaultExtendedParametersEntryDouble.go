@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryDouble.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryDoubleExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryDouble() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryDouble is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryDouble struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) Serialize(writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) isBACnetFaultParameterFaultExtendedParametersEntryDouble() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) String() string {

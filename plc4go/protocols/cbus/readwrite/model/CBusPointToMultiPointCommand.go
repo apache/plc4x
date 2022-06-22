@@ -34,6 +34,12 @@ type CBusPointToMultiPointCommand interface {
 	GetPeekedApplication() byte
 }
 
+// CBusPointToMultiPointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommand.
+// This is useful for switch cases.
+type CBusPointToMultiPointCommandExactly interface {
+	isCBusPointToMultiPointCommand() bool
+}
+
 // _CBusPointToMultiPointCommand is the data-structure of this message
 type _CBusPointToMultiPointCommand struct {
 	_CBusPointToMultiPointCommandChildRequirements
@@ -44,9 +50,9 @@ type _CBusPointToMultiPointCommand struct {
 }
 
 type _CBusPointToMultiPointCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CBusPointToMultiPointCommandParent interface {
@@ -55,7 +61,7 @@ type CBusPointToMultiPointCommandParent interface {
 }
 
 type CBusPointToMultiPointCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CBusPointToMultiPointCommand, peekedApplication byte)
 	GetParent() *CBusPointToMultiPointCommand
 
@@ -176,6 +182,10 @@ func (pm *_CBusPointToMultiPointCommand) SerializeParent(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for CBusPointToMultiPointCommand")
 	}
 	return nil
+}
+
+func (m *_CBusPointToMultiPointCommand) isCBusPointToMultiPointCommand() bool {
+	return true
 }
 
 func (m *_CBusPointToMultiPointCommand) String() string {

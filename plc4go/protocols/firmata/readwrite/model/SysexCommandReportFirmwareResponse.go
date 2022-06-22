@@ -39,6 +39,12 @@ type SysexCommandReportFirmwareResponse interface {
 	GetFileName() []byte
 }
 
+// SysexCommandReportFirmwareResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandReportFirmwareResponse.
+// This is useful for switch cases.
+type SysexCommandReportFirmwareResponseExactly interface {
+	isSysexCommandReportFirmwareResponse() bool
+}
+
 // _SysexCommandReportFirmwareResponse is the data-structure of this message
 type _SysexCommandReportFirmwareResponse struct {
 	*_SysexCommand
@@ -240,6 +246,10 @@ func (m *_SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandReportFirmwareResponse) isSysexCommandReportFirmwareResponse() bool {
+	return true
 }
 
 func (m *_SysexCommandReportFirmwareResponse) String() string {

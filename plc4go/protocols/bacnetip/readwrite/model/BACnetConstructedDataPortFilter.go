@@ -41,6 +41,12 @@ type BACnetConstructedDataPortFilter interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataPortFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPortFilter.
+// This is useful for switch cases.
+type BACnetConstructedDataPortFilterExactly interface {
+	isBACnetConstructedDataPortFilter() bool
+}
+
 // _BACnetConstructedDataPortFilter is the data-structure of this message
 type _BACnetConstructedDataPortFilter struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPortFilter) isBACnetConstructedDataPortFilter() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPortFilter) String() string {

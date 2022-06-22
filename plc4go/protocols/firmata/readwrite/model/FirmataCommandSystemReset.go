@@ -33,6 +33,12 @@ type FirmataCommandSystemReset interface {
 	FirmataCommand
 }
 
+// FirmataCommandSystemResetExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSystemReset.
+// This is useful for switch cases.
+type FirmataCommandSystemResetExactly interface {
+	isFirmataCommandSystemReset() bool
+}
+
 // _FirmataCommandSystemReset is the data-structure of this message
 type _FirmataCommandSystemReset struct {
 	*_FirmataCommand
@@ -134,6 +140,10 @@ func (m *_FirmataCommandSystemReset) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSystemReset) isFirmataCommandSystemReset() bool {
+	return true
 }
 
 func (m *_FirmataCommandSystemReset) String() string {

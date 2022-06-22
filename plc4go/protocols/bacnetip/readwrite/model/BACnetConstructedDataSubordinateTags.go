@@ -41,6 +41,12 @@ type BACnetConstructedDataSubordinateTags interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataSubordinateTagsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubordinateTags.
+// This is useful for switch cases.
+type BACnetConstructedDataSubordinateTagsExactly interface {
+	isBACnetConstructedDataSubordinateTags() bool
+}
+
 // _BACnetConstructedDataSubordinateTags is the data-structure of this message
 type _BACnetConstructedDataSubordinateTags struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataSubordinateTags) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSubordinateTags) isBACnetConstructedDataSubordinateTags() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSubordinateTags) String() string {

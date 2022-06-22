@@ -37,6 +37,12 @@ type BACnetConstructedDataLastCredentialRemovedTime interface {
 	GetActualValue() BACnetDateTime
 }
 
+// BACnetConstructedDataLastCredentialRemovedTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCredentialRemovedTime.
+// This is useful for switch cases.
+type BACnetConstructedDataLastCredentialRemovedTimeExactly interface {
+	isBACnetConstructedDataLastCredentialRemovedTime() bool
+}
+
 // _BACnetConstructedDataLastCredentialRemovedTime is the data-structure of this message
 type _BACnetConstructedDataLastCredentialRemovedTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemovedTime) isBACnetConstructedDataLastCredentialRemovedTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemovedTime) String() string {

@@ -43,6 +43,12 @@ type DF1RequestProtectedTypedLogicalRead interface {
 	GetSubElementNumber() uint8
 }
 
+// DF1RequestProtectedTypedLogicalReadExactly can be used when we want exactly this type and not a type which fulfills DF1RequestProtectedTypedLogicalRead.
+// This is useful for switch cases.
+type DF1RequestProtectedTypedLogicalReadExactly interface {
+	isDF1RequestProtectedTypedLogicalRead() bool
+}
+
 // _DF1RequestProtectedTypedLogicalRead is the data-structure of this message
 type _DF1RequestProtectedTypedLogicalRead struct {
 	*_DF1RequestCommand
@@ -271,6 +277,10 @@ func (m *_DF1RequestProtectedTypedLogicalRead) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1RequestProtectedTypedLogicalRead) isDF1RequestProtectedTypedLogicalRead() bool {
+	return true
 }
 
 func (m *_DF1RequestProtectedTypedLogicalRead) String() string {

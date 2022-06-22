@@ -37,6 +37,12 @@ type BACnetConstructedDataDefaultStepIncrement interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataDefaultStepIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultStepIncrement.
+// This is useful for switch cases.
+type BACnetConstructedDataDefaultStepIncrementExactly interface {
+	isBACnetConstructedDataDefaultStepIncrement() bool
+}
+
 // _BACnetConstructedDataDefaultStepIncrement is the data-structure of this message
 type _BACnetConstructedDataDefaultStepIncrement struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDefaultStepIncrement) isBACnetConstructedDataDefaultStepIncrement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) String() string {

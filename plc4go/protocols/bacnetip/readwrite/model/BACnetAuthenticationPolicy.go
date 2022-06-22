@@ -38,6 +38,12 @@ type BACnetAuthenticationPolicy interface {
 	GetTimeout() BACnetContextTagUnsignedInteger
 }
 
+// BACnetAuthenticationPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicy.
+// This is useful for switch cases.
+type BACnetAuthenticationPolicyExactly interface {
+	isBACnetAuthenticationPolicy() bool
+}
+
 // _BACnetAuthenticationPolicy is the data-structure of this message
 type _BACnetAuthenticationPolicy struct {
 	Policy        BACnetAuthenticationPolicyList
@@ -213,6 +219,10 @@ func (m *_BACnetAuthenticationPolicy) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationPolicy")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationPolicy) isBACnetAuthenticationPolicy() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationPolicy) String() string {

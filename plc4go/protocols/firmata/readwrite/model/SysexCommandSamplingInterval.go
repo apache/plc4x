@@ -33,6 +33,12 @@ type SysexCommandSamplingInterval interface {
 	SysexCommand
 }
 
+// SysexCommandSamplingIntervalExactly can be used when we want exactly this type and not a type which fulfills SysexCommandSamplingInterval.
+// This is useful for switch cases.
+type SysexCommandSamplingIntervalExactly interface {
+	isSysexCommandSamplingInterval() bool
+}
+
 // _SysexCommandSamplingInterval is the data-structure of this message
 type _SysexCommandSamplingInterval struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandSamplingInterval) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandSamplingInterval) isSysexCommandSamplingInterval() bool {
+	return true
 }
 
 func (m *_SysexCommandSamplingInterval) String() string {

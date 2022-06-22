@@ -37,6 +37,12 @@ type BACnetConfirmedServiceRequestReadRangeRangeByPosition interface {
 	GetCount() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConfirmedServiceRequestReadRangeRangeByPositionExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeByPosition.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeByPositionExactly interface {
+	isBACnetConfirmedServiceRequestReadRangeRangeByPosition() bool
+}
+
 // _BACnetConfirmedServiceRequestReadRangeRangeByPosition is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRangeByPosition struct {
 	*_BACnetConfirmedServiceRequestReadRangeRange
@@ -215,6 +221,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) isBACnetConfirmedServiceRequestReadRangeRangeByPosition() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) String() string {

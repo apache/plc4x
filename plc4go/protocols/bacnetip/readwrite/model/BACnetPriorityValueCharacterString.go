@@ -35,6 +35,12 @@ type BACnetPriorityValueCharacterString interface {
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetPriorityValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueCharacterString.
+// This is useful for switch cases.
+type BACnetPriorityValueCharacterStringExactly interface {
+	isBACnetPriorityValueCharacterString() bool
+}
+
 // _BACnetPriorityValueCharacterString is the data-structure of this message
 type _BACnetPriorityValueCharacterString struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueCharacterString) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueCharacterString) isBACnetPriorityValueCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueCharacterString) String() string {

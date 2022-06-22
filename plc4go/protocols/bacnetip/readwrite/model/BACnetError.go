@@ -34,16 +34,22 @@ type BACnetError interface {
 	GetErrorChoice() BACnetConfirmedServiceChoice
 }
 
+// BACnetErrorExactly can be used when we want exactly this type and not a type which fulfills BACnetError.
+// This is useful for switch cases.
+type BACnetErrorExactly interface {
+	isBACnetError() bool
+}
+
 // _BACnetError is the data-structure of this message
 type _BACnetError struct {
 	_BACnetErrorChildRequirements
 }
 
 type _BACnetErrorChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetErrorChoice() BACnetConfirmedServiceChoice
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetErrorParent interface {
@@ -52,7 +58,7 @@ type BACnetErrorParent interface {
 }
 
 type BACnetErrorChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetError)
 	GetParent() *BACnetError
 
@@ -162,6 +168,10 @@ func (pm *_BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child BAC
 		return errors.Wrap(popErr, "Error popping for BACnetError")
 	}
 	return nil
+}
+
+func (m *_BACnetError) isBACnetError() bool {
+	return true
 }
 
 func (m *_BACnetError) String() string {

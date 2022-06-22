@@ -40,6 +40,12 @@ type ModbusPDUWriteFileRecordRequestItem interface {
 	GetRecordData() []byte
 }
 
+// ModbusPDUWriteFileRecordRequestItemExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteFileRecordRequestItem.
+// This is useful for switch cases.
+type ModbusPDUWriteFileRecordRequestItemExactly interface {
+	isModbusPDUWriteFileRecordRequestItem() bool
+}
+
 // _ModbusPDUWriteFileRecordRequestItem is the data-structure of this message
 type _ModbusPDUWriteFileRecordRequestItem struct {
 	ReferenceType uint8
@@ -224,6 +230,10 @@ func (m *_ModbusPDUWriteFileRecordRequestItem) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for ModbusPDUWriteFileRecordRequestItem")
 	}
 	return nil
+}
+
+func (m *_ModbusPDUWriteFileRecordRequestItem) isModbusPDUWriteFileRecordRequestItem() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteFileRecordRequestItem) String() string {

@@ -42,6 +42,12 @@ type BACnetAddress interface {
 	GetIsBroadcast() bool
 }
 
+// BACnetAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetAddress.
+// This is useful for switch cases.
+type BACnetAddressExactly interface {
+	isBACnetAddress() bool
+}
+
 // _BACnetAddress is the data-structure of this message
 type _BACnetAddress struct {
 	NetworkNumber BACnetApplicationTagUnsignedInteger
@@ -238,6 +244,10 @@ func (m *_BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetAddress")
 	}
 	return nil
+}
+
+func (m *_BACnetAddress) isBACnetAddress() bool {
+	return true
 }
 
 func (m *_BACnetAddress) String() string {

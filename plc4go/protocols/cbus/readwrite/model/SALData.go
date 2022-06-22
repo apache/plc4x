@@ -36,6 +36,12 @@ type SALData interface {
 	GetCommandType() SALCommandType
 }
 
+// SALDataExactly can be used when we want exactly this type and not a type which fulfills SALData.
+// This is useful for switch cases.
+type SALDataExactly interface {
+	isSALData() bool
+}
+
 // _SALData is the data-structure of this message
 type _SALData struct {
 	_SALDataChildRequirements
@@ -43,9 +49,9 @@ type _SALData struct {
 }
 
 type _SALDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type SALDataParent interface {
@@ -54,7 +60,7 @@ type SALDataParent interface {
 }
 
 type SALDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent SALData, commandTypeContainer SALCommandTypeContainer)
 	GetParent() *SALData
 
@@ -222,6 +228,10 @@ func (pm *_SALData) SerializeParent(writeBuffer utils.WriteBuffer, child SALData
 		return errors.Wrap(popErr, "Error popping for SALData")
 	}
 	return nil
+}
+
+func (m *_SALData) isSALData() bool {
+	return true
 }
 
 func (m *_SALData) String() string {

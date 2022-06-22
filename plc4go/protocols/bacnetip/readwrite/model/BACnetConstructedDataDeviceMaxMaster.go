@@ -37,6 +37,12 @@ type BACnetConstructedDataDeviceMaxMaster interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDeviceMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceMaxMaster.
+// This is useful for switch cases.
+type BACnetConstructedDataDeviceMaxMasterExactly interface {
+	isBACnetConstructedDataDeviceMaxMaster() bool
+}
+
 // _BACnetConstructedDataDeviceMaxMaster is the data-structure of this message
 type _BACnetConstructedDataDeviceMaxMaster struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeviceMaxMaster) isBACnetConstructedDataDeviceMaxMaster() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeviceMaxMaster) String() string {

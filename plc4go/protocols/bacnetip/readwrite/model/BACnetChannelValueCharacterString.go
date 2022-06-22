@@ -35,6 +35,12 @@ type BACnetChannelValueCharacterString interface {
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetChannelValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueCharacterString.
+// This is useful for switch cases.
+type BACnetChannelValueCharacterStringExactly interface {
+	isBACnetChannelValueCharacterString() bool
+}
+
 // _BACnetChannelValueCharacterString is the data-structure of this message
 type _BACnetChannelValueCharacterString struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueCharacterString) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueCharacterString) isBACnetChannelValueCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueCharacterString) String() string {

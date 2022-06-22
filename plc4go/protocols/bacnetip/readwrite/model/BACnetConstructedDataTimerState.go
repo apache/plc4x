@@ -37,6 +37,12 @@ type BACnetConstructedDataTimerState interface {
 	GetActualValue() BACnetTimerStateTagged
 }
 
+// BACnetConstructedDataTimerStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerState.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerStateExactly interface {
+	isBACnetConstructedDataTimerState() bool
+}
+
 // _BACnetConstructedDataTimerState is the data-structure of this message
 type _BACnetConstructedDataTimerState struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataTimerState) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerState) isBACnetConstructedDataTimerState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerState) String() string {

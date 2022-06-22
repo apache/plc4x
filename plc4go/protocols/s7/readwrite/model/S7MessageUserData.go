@@ -33,6 +33,12 @@ type S7MessageUserData interface {
 	S7Message
 }
 
+// S7MessageUserDataExactly can be used when we want exactly this type and not a type which fulfills S7MessageUserData.
+// This is useful for switch cases.
+type S7MessageUserDataExactly interface {
+	isS7MessageUserData() bool
+}
+
 // _S7MessageUserData is the data-structure of this message
 type _S7MessageUserData struct {
 	*_S7Message
@@ -135,6 +141,10 @@ func (m *_S7MessageUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageUserData) isS7MessageUserData() bool {
+	return true
 }
 
 func (m *_S7MessageUserData) String() string {

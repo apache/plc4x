@@ -40,6 +40,12 @@ type BACnetReadAccessSpecification interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetReadAccessSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessSpecification.
+// This is useful for switch cases.
+type BACnetReadAccessSpecificationExactly interface {
+	isBACnetReadAccessSpecification() bool
+}
+
 // _BACnetReadAccessSpecification is the data-structure of this message
 type _BACnetReadAccessSpecification struct {
 	ObjectIdentifier         BACnetContextTagObjectIdentifier
@@ -263,6 +269,10 @@ func (m *_BACnetReadAccessSpecification) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetReadAccessSpecification")
 	}
 	return nil
+}
+
+func (m *_BACnetReadAccessSpecification) isBACnetReadAccessSpecification() bool {
+	return true
 }
 
 func (m *_BACnetReadAccessSpecification) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataLargeAnalogValueDeadband interface {
 	GetActualValue() BACnetApplicationTagDouble
 }
 
+// BACnetConstructedDataLargeAnalogValueDeadbandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueDeadband.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueDeadbandExactly interface {
+	isBACnetConstructedDataLargeAnalogValueDeadband() bool
+}
+
 // _BACnetConstructedDataLargeAnalogValueDeadband is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueDeadband struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueDeadband) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) isBACnetConstructedDataLargeAnalogValueDeadband() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueDeadband) String() string {

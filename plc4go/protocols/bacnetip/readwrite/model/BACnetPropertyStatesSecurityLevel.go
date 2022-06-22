@@ -35,6 +35,12 @@ type BACnetPropertyStatesSecurityLevel interface {
 	GetSecurityLevel() BACnetSecurityLevelTagged
 }
 
+// BACnetPropertyStatesSecurityLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesSecurityLevel.
+// This is useful for switch cases.
+type BACnetPropertyStatesSecurityLevelExactly interface {
+	isBACnetPropertyStatesSecurityLevel() bool
+}
+
 // _BACnetPropertyStatesSecurityLevel is the data-structure of this message
 type _BACnetPropertyStatesSecurityLevel struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesSecurityLevel) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesSecurityLevel) isBACnetPropertyStatesSecurityLevel() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesSecurityLevel) String() string {

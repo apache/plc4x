@@ -33,6 +33,12 @@ type SysexCommandSysexNonRealtime interface {
 	SysexCommand
 }
 
+// SysexCommandSysexNonRealtimeExactly can be used when we want exactly this type and not a type which fulfills SysexCommandSysexNonRealtime.
+// This is useful for switch cases.
+type SysexCommandSysexNonRealtimeExactly interface {
+	isSysexCommandSysexNonRealtime() bool
+}
+
 // _SysexCommandSysexNonRealtime is the data-structure of this message
 type _SysexCommandSysexNonRealtime struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandSysexNonRealtime) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandSysexNonRealtime) isSysexCommandSysexNonRealtime() bool {
+	return true
 }
 
 func (m *_SysexCommandSysexNonRealtime) String() string {

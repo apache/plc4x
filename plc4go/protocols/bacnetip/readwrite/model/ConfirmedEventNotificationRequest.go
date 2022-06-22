@@ -60,6 +60,12 @@ type ConfirmedEventNotificationRequest interface {
 	GetEventValues() BACnetNotificationParameters
 }
 
+// ConfirmedEventNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills ConfirmedEventNotificationRequest.
+// This is useful for switch cases.
+type ConfirmedEventNotificationRequestExactly interface {
+	isConfirmedEventNotificationRequest() bool
+}
+
 // _ConfirmedEventNotificationRequest is the data-structure of this message
 type _ConfirmedEventNotificationRequest struct {
 	ProcessIdentifier          BACnetContextTagUnsignedInteger
@@ -625,6 +631,10 @@ func (m *_ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBu
 		return errors.Wrap(popErr, "Error popping for ConfirmedEventNotificationRequest")
 	}
 	return nil
+}
+
+func (m *_ConfirmedEventNotificationRequest) isConfirmedEventNotificationRequest() bool {
+	return true
 }
 
 func (m *_ConfirmedEventNotificationRequest) String() string {

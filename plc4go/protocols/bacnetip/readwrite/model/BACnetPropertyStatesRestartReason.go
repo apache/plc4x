@@ -35,6 +35,12 @@ type BACnetPropertyStatesRestartReason interface {
 	GetRestartReason() BACnetRestartReasonTagged
 }
 
+// BACnetPropertyStatesRestartReasonExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesRestartReason.
+// This is useful for switch cases.
+type BACnetPropertyStatesRestartReasonExactly interface {
+	isBACnetPropertyStatesRestartReason() bool
+}
+
 // _BACnetPropertyStatesRestartReason is the data-structure of this message
 type _BACnetPropertyStatesRestartReason struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesRestartReason) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesRestartReason) isBACnetPropertyStatesRestartReason() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesRestartReason) String() string {

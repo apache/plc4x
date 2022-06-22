@@ -36,6 +36,12 @@ type BACnetAccessPassbackModeTagged interface {
 	GetValue() BACnetAccessPassbackMode
 }
 
+// BACnetAccessPassbackModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessPassbackModeTagged.
+// This is useful for switch cases.
+type BACnetAccessPassbackModeTaggedExactly interface {
+	isBACnetAccessPassbackModeTagged() bool
+}
+
 // _BACnetAccessPassbackModeTagged is the data-structure of this message
 type _BACnetAccessPassbackModeTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetAccessPassbackModeTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetAccessPassbackModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessPassbackModeTagged) isBACnetAccessPassbackModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessPassbackModeTagged) String() string {

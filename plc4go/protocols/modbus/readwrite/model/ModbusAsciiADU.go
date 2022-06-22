@@ -37,6 +37,12 @@ type ModbusAsciiADU interface {
 	GetPdu() ModbusPDU
 }
 
+// ModbusAsciiADUExactly can be used when we want exactly this type and not a type which fulfills ModbusAsciiADU.
+// This is useful for switch cases.
+type ModbusAsciiADUExactly interface {
+	isModbusAsciiADU() bool
+}
+
 // _ModbusAsciiADU is the data-structure of this message
 type _ModbusAsciiADU struct {
 	*_ModbusADU
@@ -237,6 +243,10 @@ func (m *_ModbusAsciiADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusAsciiADU) isModbusAsciiADU() bool {
+	return true
 }
 
 func (m *_ModbusAsciiADU) String() string {

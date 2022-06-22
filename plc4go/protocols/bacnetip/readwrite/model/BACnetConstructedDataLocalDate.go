@@ -37,6 +37,12 @@ type BACnetConstructedDataLocalDate interface {
 	GetActualValue() BACnetApplicationTagDate
 }
 
+// BACnetConstructedDataLocalDateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocalDate.
+// This is useful for switch cases.
+type BACnetConstructedDataLocalDateExactly interface {
+	isBACnetConstructedDataLocalDate() bool
+}
+
 // _BACnetConstructedDataLocalDate is the data-structure of this message
 type _BACnetConstructedDataLocalDate struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLocalDate) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLocalDate) isBACnetConstructedDataLocalDate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLocalDate) String() string {

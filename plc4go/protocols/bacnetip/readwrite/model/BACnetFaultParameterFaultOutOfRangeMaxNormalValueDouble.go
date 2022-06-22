@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 }
 
+// BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleExactly interface {
+	isBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble() bool
+}
+
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble struct {
 	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue
@@ -181,6 +187,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) isBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) String() string {

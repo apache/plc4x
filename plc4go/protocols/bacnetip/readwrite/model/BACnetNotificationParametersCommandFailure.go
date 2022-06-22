@@ -43,6 +43,12 @@ type BACnetNotificationParametersCommandFailure interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersCommandFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersCommandFailure.
+// This is useful for switch cases.
+type BACnetNotificationParametersCommandFailureExactly interface {
+	isBACnetNotificationParametersCommandFailure() bool
+}
+
 // _BACnetNotificationParametersCommandFailure is the data-structure of this message
 type _BACnetNotificationParametersCommandFailure struct {
 	*_BACnetNotificationParameters
@@ -330,6 +336,10 @@ func (m *_BACnetNotificationParametersCommandFailure) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersCommandFailure) isBACnetNotificationParametersCommandFailure() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersCommandFailure) String() string {

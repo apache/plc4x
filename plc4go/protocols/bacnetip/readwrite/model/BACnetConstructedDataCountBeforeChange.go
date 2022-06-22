@@ -37,6 +37,12 @@ type BACnetConstructedDataCountBeforeChange interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataCountBeforeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCountBeforeChange.
+// This is useful for switch cases.
+type BACnetConstructedDataCountBeforeChangeExactly interface {
+	isBACnetConstructedDataCountBeforeChange() bool
+}
+
 // _BACnetConstructedDataCountBeforeChange is the data-structure of this message
 type _BACnetConstructedDataCountBeforeChange struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCountBeforeChange) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCountBeforeChange) isBACnetConstructedDataCountBeforeChange() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCountBeforeChange) String() string {

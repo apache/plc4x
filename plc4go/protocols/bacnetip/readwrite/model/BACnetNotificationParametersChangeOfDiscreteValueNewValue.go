@@ -42,6 +42,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
 	GetPeekedIsContextTag() bool
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValue.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValue() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValue is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 	_BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements
@@ -54,9 +60,9 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 }
 
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueParent interface {
@@ -65,7 +71,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueParent interface {
 }
 
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetNotificationParametersChangeOfDiscreteValueNewValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetNotificationParametersChangeOfDiscreteValueNewValue
 
@@ -309,6 +315,10 @@ func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) SerializeP
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) isBACnetNotificationParametersChangeOfDiscreteValueNewValue() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) String() string {

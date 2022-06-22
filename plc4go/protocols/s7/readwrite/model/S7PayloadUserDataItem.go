@@ -42,6 +42,12 @@ type S7PayloadUserDataItem interface {
 	GetTransportSize() DataTransportSize
 }
 
+// S7PayloadUserDataItemExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItem.
+// This is useful for switch cases.
+type S7PayloadUserDataItemExactly interface {
+	isS7PayloadUserDataItem() bool
+}
+
 // _S7PayloadUserDataItem is the data-structure of this message
 type _S7PayloadUserDataItem struct {
 	_S7PayloadUserDataItemChildRequirements
@@ -50,12 +56,12 @@ type _S7PayloadUserDataItem struct {
 }
 
 type _S7PayloadUserDataItemChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCpuFunctionType() uint8
 	GetCpuSubfunction() uint8
 	GetDataLength() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7PayloadUserDataItemParent interface {
@@ -64,7 +70,7 @@ type S7PayloadUserDataItemParent interface {
 }
 
 type S7PayloadUserDataItemChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize)
 	GetParent() *S7PayloadUserDataItem
 
@@ -285,6 +291,10 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer,
 		return errors.Wrap(popErr, "Error popping for S7PayloadUserDataItem")
 	}
 	return nil
+}
+
+func (m *_S7PayloadUserDataItem) isS7PayloadUserDataItem() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItem) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataResolution interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataResolutionExactly interface {
+	isBACnetConstructedDataResolution() bool
+}
+
 // _BACnetConstructedDataResolution is the data-structure of this message
 type _BACnetConstructedDataResolution struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataResolution) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataResolution) isBACnetConstructedDataResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataResolution) String() string {

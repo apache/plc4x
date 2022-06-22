@@ -37,6 +37,12 @@ type BACnetConstructedDataLimitMonitoringInterval interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataLimitMonitoringIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLimitMonitoringInterval.
+// This is useful for switch cases.
+type BACnetConstructedDataLimitMonitoringIntervalExactly interface {
+	isBACnetConstructedDataLimitMonitoringInterval() bool
+}
+
 // _BACnetConstructedDataLimitMonitoringInterval is the data-structure of this message
 type _BACnetConstructedDataLimitMonitoringInterval struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLimitMonitoringInterval) isBACnetConstructedDataLimitMonitoringInterval() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) String() string {

@@ -39,6 +39,12 @@ type BACnetFaultParameterFaultState interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetFaultParameterFaultStateExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultState.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultStateExactly interface {
+	isBACnetFaultParameterFaultState() bool
+}
+
 // _BACnetFaultParameterFaultState is the data-structure of this message
 type _BACnetFaultParameterFaultState struct {
 	*_BACnetFaultParameter
@@ -250,6 +256,10 @@ func (m *_BACnetFaultParameterFaultState) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultState) isBACnetFaultParameterFaultState() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultState) String() string {

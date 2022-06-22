@@ -35,6 +35,12 @@ type BACnetErrorGeneral interface {
 	GetError() Error
 }
 
+// BACnetErrorGeneralExactly can be used when we want exactly this type and not a type which fulfills BACnetErrorGeneral.
+// This is useful for switch cases.
+type BACnetErrorGeneralExactly interface {
+	isBACnetErrorGeneral() bool
+}
+
 // _BACnetErrorGeneral is the data-structure of this message
 type _BACnetErrorGeneral struct {
 	*_BACnetError
@@ -178,6 +184,10 @@ func (m *_BACnetErrorGeneral) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetErrorGeneral) isBACnetErrorGeneral() bool {
+	return true
 }
 
 func (m *_BACnetErrorGeneral) String() string {

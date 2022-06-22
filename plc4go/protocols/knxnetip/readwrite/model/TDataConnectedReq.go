@@ -33,6 +33,12 @@ type TDataConnectedReq interface {
 	CEMI
 }
 
+// TDataConnectedReqExactly can be used when we want exactly this type and not a type which fulfills TDataConnectedReq.
+// This is useful for switch cases.
+type TDataConnectedReqExactly interface {
+	isTDataConnectedReq() bool
+}
+
 // _TDataConnectedReq is the data-structure of this message
 type _TDataConnectedReq struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_TDataConnectedReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TDataConnectedReq) isTDataConnectedReq() bool {
+	return true
 }
 
 func (m *_TDataConnectedReq) String() string {

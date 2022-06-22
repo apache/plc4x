@@ -35,6 +35,12 @@ type DeviceStatus interface {
 	GetProgramMode() bool
 }
 
+// DeviceStatusExactly can be used when we want exactly this type and not a type which fulfills DeviceStatus.
+// This is useful for switch cases.
+type DeviceStatusExactly interface {
+	isDeviceStatus() bool
+}
+
 // _DeviceStatus is the data-structure of this message
 type _DeviceStatus struct {
 	ProgramMode bool
@@ -158,6 +164,10 @@ func (m *_DeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for DeviceStatus")
 	}
 	return nil
+}
+
+func (m *_DeviceStatus) isDeviceStatus() bool {
+	return true
 }
 
 func (m *_DeviceStatus) String() string {

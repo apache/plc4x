@@ -35,6 +35,12 @@ type BACnetLogRecordLogDatumEnumeratedValue interface {
 	GetEnumeratedValue() BACnetContextTagEnumerated
 }
 
+// BACnetLogRecordLogDatumEnumeratedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumEnumeratedValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumEnumeratedValueExactly interface {
+	isBACnetLogRecordLogDatumEnumeratedValue() bool
+}
+
 // _BACnetLogRecordLogDatumEnumeratedValue is the data-structure of this message
 type _BACnetLogRecordLogDatumEnumeratedValue struct {
 	*_BACnetLogRecordLogDatum
@@ -181,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) isBACnetLogRecordLogDatumEnumeratedValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumEnumeratedValue) String() string {

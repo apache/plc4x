@@ -43,6 +43,12 @@ type BACnetNotificationParametersUnsignedRange interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersUnsignedRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersUnsignedRange.
+// This is useful for switch cases.
+type BACnetNotificationParametersUnsignedRangeExactly interface {
+	isBACnetNotificationParametersUnsignedRange() bool
+}
+
 // _BACnetNotificationParametersUnsignedRange is the data-structure of this message
 type _BACnetNotificationParametersUnsignedRange struct {
 	*_BACnetNotificationParameters
@@ -330,6 +336,10 @@ func (m *_BACnetNotificationParametersUnsignedRange) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersUnsignedRange) isBACnetNotificationParametersUnsignedRange() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersUnsignedRange) String() string {

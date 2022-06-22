@@ -35,6 +35,12 @@ type BACnetLogDataLogDataEntryBitStringValue interface {
 	GetBitStringValue() BACnetContextTagBitString
 }
 
+// BACnetLogDataLogDataEntryBitStringValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryBitStringValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryBitStringValueExactly interface {
+	isBACnetLogDataLogDataEntryBitStringValue() bool
+}
+
 // _BACnetLogDataLogDataEntryBitStringValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryBitStringValue struct {
 	*_BACnetLogDataLogDataEntry
@@ -176,6 +182,10 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) isBACnetLogDataLogDataEntryBitStringValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) String() string {

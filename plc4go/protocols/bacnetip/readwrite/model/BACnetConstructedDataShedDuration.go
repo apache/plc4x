@@ -37,6 +37,12 @@ type BACnetConstructedDataShedDuration interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataShedDurationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataShedDuration.
+// This is useful for switch cases.
+type BACnetConstructedDataShedDurationExactly interface {
+	isBACnetConstructedDataShedDuration() bool
+}
+
 // _BACnetConstructedDataShedDuration is the data-structure of this message
 type _BACnetConstructedDataShedDuration struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataShedDuration) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataShedDuration) isBACnetConstructedDataShedDuration() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataShedDuration) String() string {

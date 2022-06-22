@@ -42,6 +42,12 @@ type ListOfCovNotificationsValue interface {
 	GetTimeOfChange() BACnetContextTagTime
 }
 
+// ListOfCovNotificationsValueExactly can be used when we want exactly this type and not a type which fulfills ListOfCovNotificationsValue.
+// This is useful for switch cases.
+type ListOfCovNotificationsValueExactly interface {
+	isListOfCovNotificationsValue() bool
+}
+
 // _ListOfCovNotificationsValue is the data-structure of this message
 type _ListOfCovNotificationsValue struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
@@ -283,6 +289,10 @@ func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for ListOfCovNotificationsValue")
 	}
 	return nil
+}
+
+func (m *_ListOfCovNotificationsValue) isListOfCovNotificationsValue() bool {
+	return true
 }
 
 func (m *_ListOfCovNotificationsValue) String() string {

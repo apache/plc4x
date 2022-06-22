@@ -49,6 +49,12 @@ type ExtendedFormatStatusReply interface {
 	GetCrc() Checksum
 }
 
+// ExtendedFormatStatusReplyExactly can be used when we want exactly this type and not a type which fulfills ExtendedFormatStatusReply.
+// This is useful for switch cases.
+type ExtendedFormatStatusReplyExactly interface {
+	isExtendedFormatStatusReply() bool
+}
+
 // _ExtendedFormatStatusReply is the data-structure of this message
 type _ExtendedFormatStatusReply struct {
 	StatusHeader ExtendedStatusHeader
@@ -380,6 +386,10 @@ func (m *_ExtendedFormatStatusReply) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for ExtendedFormatStatusReply")
 	}
 	return nil
+}
+
+func (m *_ExtendedFormatStatusReply) isExtendedFormatStatusReply() bool {
+	return true
 }
 
 func (m *_ExtendedFormatStatusReply) String() string {

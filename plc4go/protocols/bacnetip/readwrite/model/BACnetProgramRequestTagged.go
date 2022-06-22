@@ -36,6 +36,12 @@ type BACnetProgramRequestTagged interface {
 	GetValue() BACnetProgramRequest
 }
 
+// BACnetProgramRequestTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetProgramRequestTagged.
+// This is useful for switch cases.
+type BACnetProgramRequestTaggedExactly interface {
+	isBACnetProgramRequestTagged() bool
+}
+
 // _BACnetProgramRequestTagged is the data-structure of this message
 type _BACnetProgramRequestTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetProgramRequestTagged) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetProgramRequestTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetProgramRequestTagged) isBACnetProgramRequestTagged() bool {
+	return true
 }
 
 func (m *_BACnetProgramRequestTagged) String() string {

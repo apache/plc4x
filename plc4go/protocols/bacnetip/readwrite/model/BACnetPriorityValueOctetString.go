@@ -35,6 +35,12 @@ type BACnetPriorityValueOctetString interface {
 	GetOctetStringValue() BACnetApplicationTagOctetString
 }
 
+// BACnetPriorityValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueOctetString.
+// This is useful for switch cases.
+type BACnetPriorityValueOctetStringExactly interface {
+	isBACnetPriorityValueOctetString() bool
+}
+
 // _BACnetPriorityValueOctetString is the data-structure of this message
 type _BACnetPriorityValueOctetString struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueOctetString) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueOctetString) isBACnetPriorityValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueOctetString) String() string {

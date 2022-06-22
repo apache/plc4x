@@ -35,6 +35,12 @@ type BACnetApplicationTagTime interface {
 	GetPayload() BACnetTagPayloadTime
 }
 
+// BACnetApplicationTagTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagTime.
+// This is useful for switch cases.
+type BACnetApplicationTagTimeExactly interface {
+	isBACnetApplicationTagTime() bool
+}
+
 // _BACnetApplicationTagTime is the data-structure of this message
 type _BACnetApplicationTagTime struct {
 	*_BACnetApplicationTag
@@ -176,6 +182,10 @@ func (m *_BACnetApplicationTagTime) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagTime) isBACnetApplicationTagTime() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagTime) String() string {

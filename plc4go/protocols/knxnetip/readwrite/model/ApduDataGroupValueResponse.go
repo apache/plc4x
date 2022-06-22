@@ -37,6 +37,12 @@ type ApduDataGroupValueResponse interface {
 	GetData() []byte
 }
 
+// ApduDataGroupValueResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueResponse.
+// This is useful for switch cases.
+type ApduDataGroupValueResponseExactly interface {
+	isApduDataGroupValueResponse() bool
+}
+
 // _ApduDataGroupValueResponse is the data-structure of this message
 type _ApduDataGroupValueResponse struct {
 	*_ApduData
@@ -199,6 +205,10 @@ func (m *_ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataGroupValueResponse) isApduDataGroupValueResponse() bool {
+	return true
 }
 
 func (m *_ApduDataGroupValueResponse) String() string {

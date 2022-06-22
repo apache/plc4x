@@ -50,6 +50,12 @@ type BACnetConstructedDataElement interface {
 	GetIsContextTag() bool
 }
 
+// BACnetConstructedDataElementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElement.
+// This is useful for switch cases.
+type BACnetConstructedDataElementExactly interface {
+	isBACnetConstructedDataElement() bool
+}
+
 // _BACnetConstructedDataElement is the data-structure of this message
 type _BACnetConstructedDataElement struct {
 	PeekedTagHeader BACnetTagHeader
@@ -391,6 +397,10 @@ func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetConstructedDataElement")
 	}
 	return nil
+}
+
+func (m *_BACnetConstructedDataElement) isBACnetConstructedDataElement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataElement) String() string {

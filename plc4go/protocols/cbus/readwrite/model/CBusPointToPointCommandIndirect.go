@@ -39,6 +39,12 @@ type CBusPointToPointCommandIndirect interface {
 	GetUnitAddress() UnitAddress
 }
 
+// CBusPointToPointCommandIndirectExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommandIndirect.
+// This is useful for switch cases.
+type CBusPointToPointCommandIndirectExactly interface {
+	isCBusPointToPointCommandIndirect() bool
+}
+
 // _CBusPointToPointCommandIndirect is the data-structure of this message
 type _CBusPointToPointCommandIndirect struct {
 	*_CBusPointToPointCommand
@@ -257,6 +263,10 @@ func (m *_CBusPointToPointCommandIndirect) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusPointToPointCommandIndirect) isCBusPointToPointCommandIndirect() bool {
+	return true
 }
 
 func (m *_CBusPointToPointCommandIndirect) String() string {

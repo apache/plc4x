@@ -42,6 +42,12 @@ type SzlDataTreeItem interface {
 	GetAusbe() uint16
 }
 
+// SzlDataTreeItemExactly can be used when we want exactly this type and not a type which fulfills SzlDataTreeItem.
+// This is useful for switch cases.
+type SzlDataTreeItemExactly interface {
+	isSzlDataTreeItem() bool
+}
+
 // _SzlDataTreeItem is the data-structure of this message
 type _SzlDataTreeItem struct {
 	ItemIndex    uint16
@@ -231,6 +237,10 @@ func (m *_SzlDataTreeItem) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for SzlDataTreeItem")
 	}
 	return nil
+}
+
+func (m *_SzlDataTreeItem) isSzlDataTreeItem() bool {
+	return true
 }
 
 func (m *_SzlDataTreeItem) String() string {

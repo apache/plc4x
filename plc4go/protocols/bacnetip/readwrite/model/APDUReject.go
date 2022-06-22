@@ -38,6 +38,12 @@ type APDUReject interface {
 	GetRejectReason() BACnetRejectReasonTagged
 }
 
+// APDURejectExactly can be used when we want exactly this type and not a type which fulfills APDUReject.
+// This is useful for switch cases.
+type APDURejectExactly interface {
+	isAPDUReject() bool
+}
+
 // _APDUReject is the data-structure of this message
 type _APDUReject struct {
 	*_APDU
@@ -233,6 +239,10 @@ func (m *_APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUReject) isAPDUReject() bool {
+	return true
 }
 
 func (m *_APDUReject) String() string {

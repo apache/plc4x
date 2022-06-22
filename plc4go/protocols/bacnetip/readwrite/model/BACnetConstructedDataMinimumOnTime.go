@@ -37,6 +37,12 @@ type BACnetConstructedDataMinimumOnTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataMinimumOnTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumOnTime.
+// This is useful for switch cases.
+type BACnetConstructedDataMinimumOnTimeExactly interface {
+	isBACnetConstructedDataMinimumOnTime() bool
+}
+
 // _BACnetConstructedDataMinimumOnTime is the data-structure of this message
 type _BACnetConstructedDataMinimumOnTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMinimumOnTime) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMinimumOnTime) isBACnetConstructedDataMinimumOnTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMinimumOnTime) String() string {

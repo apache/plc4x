@@ -37,6 +37,12 @@ type BACnetConstructedDataAccessZoneAdjustValue interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConstructedDataAccessZoneAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessZoneAdjustValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessZoneAdjustValueExactly interface {
+	isBACnetConstructedDataAccessZoneAdjustValue() bool
+}
+
 // _BACnetConstructedDataAccessZoneAdjustValue is the data-structure of this message
 type _BACnetConstructedDataAccessZoneAdjustValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) isBACnetConstructedDataAccessZoneAdjustValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessZoneAdjustValue) String() string {

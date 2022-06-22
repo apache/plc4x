@@ -39,6 +39,12 @@ type BACnetFaultParameterFaultCharacterString interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetFaultParameterFaultCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultCharacterString.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultCharacterStringExactly interface {
+	isBACnetFaultParameterFaultCharacterString() bool
+}
+
 // _BACnetFaultParameterFaultCharacterString is the data-structure of this message
 type _BACnetFaultParameterFaultCharacterString struct {
 	*_BACnetFaultParameter
@@ -250,6 +256,10 @@ func (m *_BACnetFaultParameterFaultCharacterString) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultCharacterString) isBACnetFaultParameterFaultCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultCharacterString) String() string {

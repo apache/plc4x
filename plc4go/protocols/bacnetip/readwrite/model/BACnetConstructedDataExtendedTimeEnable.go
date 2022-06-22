@@ -37,6 +37,12 @@ type BACnetConstructedDataExtendedTimeEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataExtendedTimeEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExtendedTimeEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataExtendedTimeEnableExactly interface {
+	isBACnetConstructedDataExtendedTimeEnable() bool
+}
+
 // _BACnetConstructedDataExtendedTimeEnable is the data-structure of this message
 type _BACnetConstructedDataExtendedTimeEnable struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataExtendedTimeEnable) isBACnetConstructedDataExtendedTimeEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) String() string {

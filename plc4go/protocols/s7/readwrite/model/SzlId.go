@@ -38,6 +38,12 @@ type SzlId interface {
 	GetSublistList() SzlSublist
 }
 
+// SzlIdExactly can be used when we want exactly this type and not a type which fulfills SzlId.
+// This is useful for switch cases.
+type SzlIdExactly interface {
+	isSzlId() bool
+}
+
 // _SzlId is the data-structure of this message
 type _SzlId struct {
 	TypeClass      SzlModuleTypeClass
@@ -202,6 +208,10 @@ func (m *_SzlId) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for SzlId")
 	}
 	return nil
+}
+
+func (m *_SzlId) isSzlId() bool {
+	return true
 }
 
 func (m *_SzlId) String() string {

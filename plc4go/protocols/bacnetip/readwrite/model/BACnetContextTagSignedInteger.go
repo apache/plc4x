@@ -37,6 +37,12 @@ type BACnetContextTagSignedInteger interface {
 	GetActualValue() uint64
 }
 
+// BACnetContextTagSignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagSignedInteger.
+// This is useful for switch cases.
+type BACnetContextTagSignedIntegerExactly interface {
+	isBACnetContextTagSignedInteger() bool
+}
+
 // _BACnetContextTagSignedInteger is the data-structure of this message
 type _BACnetContextTagSignedInteger struct {
 	*_BACnetContextTag
@@ -209,6 +215,10 @@ func (m *_BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagSignedInteger) isBACnetContextTagSignedInteger() bool {
+	return true
 }
 
 func (m *_BACnetContextTagSignedInteger) String() string {

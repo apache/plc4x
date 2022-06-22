@@ -36,6 +36,12 @@ type BACnetAssignedAccessRights interface {
 	GetEnable() BACnetContextTagBoolean
 }
 
+// BACnetAssignedAccessRightsExactly can be used when we want exactly this type and not a type which fulfills BACnetAssignedAccessRights.
+// This is useful for switch cases.
+type BACnetAssignedAccessRightsExactly interface {
+	isBACnetAssignedAccessRights() bool
+}
+
 // _BACnetAssignedAccessRights is the data-structure of this message
 type _BACnetAssignedAccessRights struct {
 	AssignedAccessRights BACnetDeviceObjectReferenceEnclosed
@@ -178,6 +184,10 @@ func (m *_BACnetAssignedAccessRights) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetAssignedAccessRights")
 	}
 	return nil
+}
+
+func (m *_BACnetAssignedAccessRights) isBACnetAssignedAccessRights() bool {
+	return true
 }
 
 func (m *_BACnetAssignedAccessRights) String() string {

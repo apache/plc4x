@@ -49,6 +49,12 @@ type CALReplyLong interface {
 	GetIsUnitAddress() bool
 }
 
+// CALReplyLongExactly can be used when we want exactly this type and not a type which fulfills CALReplyLong.
+// This is useful for switch cases.
+type CALReplyLongExactly interface {
+	isCALReplyLong() bool
+}
+
 // _CALReplyLong is the data-structure of this message
 type _CALReplyLong struct {
 	*_CALReply
@@ -451,6 +457,10 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALReplyLong) isCALReplyLong() bool {
+	return true
 }
 
 func (m *_CALReplyLong) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataMultiStateOutputFeedbackValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataMultiStateOutputFeedbackValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateOutputFeedbackValue.
+// This is useful for switch cases.
+type BACnetConstructedDataMultiStateOutputFeedbackValueExactly interface {
+	isBACnetConstructedDataMultiStateOutputFeedbackValue() bool
+}
+
 // _BACnetConstructedDataMultiStateOutputFeedbackValue is the data-structure of this message
 type _BACnetConstructedDataMultiStateOutputFeedbackValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) isBACnetConstructedDataMultiStateOutputFeedbackValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) String() string {

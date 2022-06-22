@@ -40,6 +40,12 @@ type StatusByte interface {
 	GetGav0() GAVState
 }
 
+// StatusByteExactly can be used when we want exactly this type and not a type which fulfills StatusByte.
+// This is useful for switch cases.
+type StatusByteExactly interface {
+	isStatusByte() bool
+}
+
 // _StatusByte is the data-structure of this message
 type _StatusByte struct {
 	Gav3 GAVState
@@ -248,6 +254,10 @@ func (m *_StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for StatusByte")
 	}
 	return nil
+}
+
+func (m *_StatusByte) isStatusByte() bool {
+	return true
 }
 
 func (m *_StatusByte) String() string {

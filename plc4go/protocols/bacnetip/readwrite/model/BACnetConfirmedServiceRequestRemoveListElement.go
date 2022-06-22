@@ -43,6 +43,12 @@ type BACnetConfirmedServiceRequestRemoveListElement interface {
 	GetListOfElements() BACnetConstructedData
 }
 
+// BACnetConfirmedServiceRequestRemoveListElementExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestRemoveListElement.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestRemoveListElementExactly interface {
+	isBACnetConfirmedServiceRequestRemoveListElement() bool
+}
+
 // _BACnetConfirmedServiceRequestRemoveListElement is the data-structure of this message
 type _BACnetConfirmedServiceRequestRemoveListElement struct {
 	*_BACnetConfirmedServiceRequest
@@ -325,6 +331,10 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestRemoveListElement) isBACnetConfirmedServiceRequestRemoveListElement() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestRemoveListElement) String() string {

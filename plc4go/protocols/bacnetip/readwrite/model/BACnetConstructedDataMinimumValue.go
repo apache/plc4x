@@ -37,6 +37,12 @@ type BACnetConstructedDataMinimumValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataMinimumValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumValue.
+// This is useful for switch cases.
+type BACnetConstructedDataMinimumValueExactly interface {
+	isBACnetConstructedDataMinimumValue() bool
+}
+
 // _BACnetConstructedDataMinimumValue is the data-structure of this message
 type _BACnetConstructedDataMinimumValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMinimumValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMinimumValue) isBACnetConstructedDataMinimumValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMinimumValue) String() string {

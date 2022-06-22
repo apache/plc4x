@@ -37,6 +37,12 @@ type WritePropertyMultipleError interface {
 	GetFirstFailedWriteAttempt() BACnetObjectPropertyReferenceEnclosed
 }
 
+// WritePropertyMultipleErrorExactly can be used when we want exactly this type and not a type which fulfills WritePropertyMultipleError.
+// This is useful for switch cases.
+type WritePropertyMultipleErrorExactly interface {
+	isWritePropertyMultipleError() bool
+}
+
 // _WritePropertyMultipleError is the data-structure of this message
 type _WritePropertyMultipleError struct {
 	*_BACnetError
@@ -215,6 +221,10 @@ func (m *_WritePropertyMultipleError) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_WritePropertyMultipleError) isWritePropertyMultipleError() bool {
+	return true
 }
 
 func (m *_WritePropertyMultipleError) String() string {

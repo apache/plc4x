@@ -37,6 +37,12 @@ type COTPPacketTpduError interface {
 	GetRejectCause() uint8
 }
 
+// COTPPacketTpduErrorExactly can be used when we want exactly this type and not a type which fulfills COTPPacketTpduError.
+// This is useful for switch cases.
+type COTPPacketTpduErrorExactly interface {
+	isCOTPPacketTpduError() bool
+}
+
 // _COTPPacketTpduError is the data-structure of this message
 type _COTPPacketTpduError struct {
 	*_COTPPacket
@@ -199,6 +205,10 @@ func (m *_COTPPacketTpduError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketTpduError) isCOTPPacketTpduError() bool {
+	return true
 }
 
 func (m *_COTPPacketTpduError) String() string {

@@ -41,6 +41,12 @@ type BACnetConstructedDataGroupMembers interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataGroupMembersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGroupMembers.
+// This is useful for switch cases.
+type BACnetConstructedDataGroupMembersExactly interface {
+	isBACnetConstructedDataGroupMembers() bool
+}
+
 // _BACnetConstructedDataGroupMembers is the data-structure of this message
 type _BACnetConstructedDataGroupMembers struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataGroupMembers) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGroupMembers) isBACnetConstructedDataGroupMembers() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGroupMembers) String() string {

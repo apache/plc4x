@@ -36,6 +36,12 @@ type StatusRequestBinaryState interface {
 	GetApplication() byte
 }
 
+// StatusRequestBinaryStateExactly can be used when we want exactly this type and not a type which fulfills StatusRequestBinaryState.
+// This is useful for switch cases.
+type StatusRequestBinaryStateExactly interface {
+	isStatusRequestBinaryState() bool
+}
+
 // _StatusRequestBinaryState is the data-structure of this message
 type _StatusRequestBinaryState struct {
 	*_StatusRequest
@@ -216,6 +222,10 @@ func (m *_StatusRequestBinaryState) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_StatusRequestBinaryState) isStatusRequestBinaryState() bool {
+	return true
 }
 
 func (m *_StatusRequestBinaryState) String() string {

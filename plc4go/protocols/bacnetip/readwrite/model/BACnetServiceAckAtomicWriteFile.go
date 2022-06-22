@@ -35,6 +35,12 @@ type BACnetServiceAckAtomicWriteFile interface {
 	GetFileStartPosition() BACnetContextTagSignedInteger
 }
 
+// BACnetServiceAckAtomicWriteFileExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicWriteFile.
+// This is useful for switch cases.
+type BACnetServiceAckAtomicWriteFileExactly interface {
+	isBACnetServiceAckAtomicWriteFile() bool
+}
+
 // _BACnetServiceAckAtomicWriteFile is the data-structure of this message
 type _BACnetServiceAckAtomicWriteFile struct {
 	*_BACnetServiceAck
@@ -181,6 +187,10 @@ func (m *_BACnetServiceAckAtomicWriteFile) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckAtomicWriteFile) isBACnetServiceAckAtomicWriteFile() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) String() string {

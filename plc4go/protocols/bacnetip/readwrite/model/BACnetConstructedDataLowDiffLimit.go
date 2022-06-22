@@ -37,6 +37,12 @@ type BACnetConstructedDataLowDiffLimit interface {
 	GetActualValue() BACnetOptionalREAL
 }
 
+// BACnetConstructedDataLowDiffLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLowDiffLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataLowDiffLimitExactly interface {
+	isBACnetConstructedDataLowDiffLimit() bool
+}
+
 // _BACnetConstructedDataLowDiffLimit is the data-structure of this message
 type _BACnetConstructedDataLowDiffLimit struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLowDiffLimit) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLowDiffLimit) isBACnetConstructedDataLowDiffLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLowDiffLimit) String() string {

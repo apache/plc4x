@@ -36,6 +36,12 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	GetValue() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 }
 
+// BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedExactly interface {
+	isBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() bool
+}
+
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged is the data-structure of this message
 type _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) isBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) String() string {

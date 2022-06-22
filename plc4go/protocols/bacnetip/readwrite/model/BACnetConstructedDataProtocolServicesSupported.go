@@ -37,6 +37,12 @@ type BACnetConstructedDataProtocolServicesSupported interface {
 	GetActualValue() BACnetServicesSupportedTagged
 }
 
+// BACnetConstructedDataProtocolServicesSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolServicesSupported.
+// This is useful for switch cases.
+type BACnetConstructedDataProtocolServicesSupportedExactly interface {
+	isBACnetConstructedDataProtocolServicesSupported() bool
+}
+
 // _BACnetConstructedDataProtocolServicesSupported is the data-structure of this message
 type _BACnetConstructedDataProtocolServicesSupported struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupported) isBACnetConstructedDataProtocolServicesSupported() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) String() string {

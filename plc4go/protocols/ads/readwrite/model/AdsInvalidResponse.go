@@ -33,6 +33,12 @@ type AdsInvalidResponse interface {
 	AdsData
 }
 
+// AdsInvalidResponseExactly can be used when we want exactly this type and not a type which fulfills AdsInvalidResponse.
+// This is useful for switch cases.
+type AdsInvalidResponseExactly interface {
+	isAdsInvalidResponse() bool
+}
+
 // _AdsInvalidResponse is the data-structure of this message
 type _AdsInvalidResponse struct {
 	*_AdsData
@@ -135,6 +141,10 @@ func (m *_AdsInvalidResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsInvalidResponse) isAdsInvalidResponse() bool {
+	return true
 }
 
 func (m *_AdsInvalidResponse) String() string {

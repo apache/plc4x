@@ -37,6 +37,12 @@ type ModbusPDUWriteSingleRegisterRequest interface {
 	GetValue() uint16
 }
 
+// ModbusPDUWriteSingleRegisterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteSingleRegisterRequest.
+// This is useful for switch cases.
+type ModbusPDUWriteSingleRegisterRequestExactly interface {
+	isModbusPDUWriteSingleRegisterRequest() bool
+}
+
 // _ModbusPDUWriteSingleRegisterRequest is the data-structure of this message
 type _ModbusPDUWriteSingleRegisterRequest struct {
 	*_ModbusPDU
@@ -201,6 +207,10 @@ func (m *_ModbusPDUWriteSingleRegisterRequest) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteSingleRegisterRequest) isModbusPDUWriteSingleRegisterRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteSingleRegisterRequest) String() string {

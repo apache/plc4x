@@ -33,6 +33,12 @@ type SysexCommandCapabilityResponse interface {
 	SysexCommand
 }
 
+// SysexCommandCapabilityResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandCapabilityResponse.
+// This is useful for switch cases.
+type SysexCommandCapabilityResponseExactly interface {
+	isSysexCommandCapabilityResponse() bool
+}
+
 // _SysexCommandCapabilityResponse is the data-structure of this message
 type _SysexCommandCapabilityResponse struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandCapabilityResponse) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandCapabilityResponse) isSysexCommandCapabilityResponse() bool {
+	return true
 }
 
 func (m *_SysexCommandCapabilityResponse) String() string {

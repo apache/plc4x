@@ -36,6 +36,12 @@ type BACnetLiftGroupModeTagged interface {
 	GetValue() BACnetLiftGroupMode
 }
 
+// BACnetLiftGroupModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftGroupModeTagged.
+// This is useful for switch cases.
+type BACnetLiftGroupModeTaggedExactly interface {
+	isBACnetLiftGroupModeTagged() bool
+}
+
 // _BACnetLiftGroupModeTagged is the data-structure of this message
 type _BACnetLiftGroupModeTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetLiftGroupModeTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetLiftGroupModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftGroupModeTagged) isBACnetLiftGroupModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftGroupModeTagged) String() string {

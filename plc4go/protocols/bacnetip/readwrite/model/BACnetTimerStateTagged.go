@@ -36,6 +36,12 @@ type BACnetTimerStateTagged interface {
 	GetValue() BACnetTimerState
 }
 
+// BACnetTimerStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateTagged.
+// This is useful for switch cases.
+type BACnetTimerStateTaggedExactly interface {
+	isBACnetTimerStateTagged() bool
+}
+
 // _BACnetTimerStateTagged is the data-structure of this message
 type _BACnetTimerStateTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetTimerStateTagged) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetTimerStateTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetTimerStateTagged) isBACnetTimerStateTagged() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateTagged) String() string {

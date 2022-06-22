@@ -43,6 +43,12 @@ type BACnetUnconfirmedServiceRequestWhoHas interface {
 	GetObjectName() BACnetContextTagCharacterString
 }
 
+// BACnetUnconfirmedServiceRequestWhoHasExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWhoHas.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestWhoHasExactly interface {
+	isBACnetUnconfirmedServiceRequestWhoHas() bool
+}
+
 // _BACnetUnconfirmedServiceRequestWhoHas is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestWhoHas struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -355,6 +361,10 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) isBACnetUnconfirmedServiceRequestWhoHas() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHas) String() string {

@@ -38,6 +38,12 @@ type BACnetTagPayloadCharacterString interface {
 	GetActualLengthInBit() uint16
 }
 
+// BACnetTagPayloadCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadCharacterString.
+// This is useful for switch cases.
+type BACnetTagPayloadCharacterStringExactly interface {
+	isBACnetTagPayloadCharacterString() bool
+}
+
 // _BACnetTagPayloadCharacterString is the data-structure of this message
 type _BACnetTagPayloadCharacterString struct {
 	Encoding BACnetCharacterEncoding
@@ -196,6 +202,10 @@ func (m *_BACnetTagPayloadCharacterString) Serialize(writeBuffer utils.WriteBuff
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadCharacterString")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadCharacterString) isBACnetTagPayloadCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadCharacterString) String() string {

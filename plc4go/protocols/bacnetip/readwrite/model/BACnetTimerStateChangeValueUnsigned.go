@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueUnsigned interface {
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetTimerStateChangeValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueUnsigned.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueUnsignedExactly interface {
+	isBACnetTimerStateChangeValueUnsigned() bool
+}
+
 // _BACnetTimerStateChangeValueUnsigned is the data-structure of this message
 type _BACnetTimerStateChangeValueUnsigned struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueUnsigned) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueUnsigned) isBACnetTimerStateChangeValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueUnsigned) String() string {

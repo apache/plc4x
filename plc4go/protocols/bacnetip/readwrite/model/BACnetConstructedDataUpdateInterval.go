@@ -37,6 +37,12 @@ type BACnetConstructedDataUpdateInterval interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataUpdateIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateInterval.
+// This is useful for switch cases.
+type BACnetConstructedDataUpdateIntervalExactly interface {
+	isBACnetConstructedDataUpdateInterval() bool
+}
+
 // _BACnetConstructedDataUpdateInterval is the data-structure of this message
 type _BACnetConstructedDataUpdateInterval struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataUpdateInterval) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUpdateInterval) isBACnetConstructedDataUpdateInterval() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUpdateInterval) String() string {

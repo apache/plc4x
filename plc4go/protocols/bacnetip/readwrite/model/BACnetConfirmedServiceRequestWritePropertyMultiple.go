@@ -35,6 +35,12 @@ type BACnetConfirmedServiceRequestWritePropertyMultiple interface {
 	GetData() []BACnetWriteAccessSpecification
 }
 
+// BACnetConfirmedServiceRequestWritePropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestWritePropertyMultiple.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestWritePropertyMultipleExactly interface {
+	isBACnetConfirmedServiceRequestWritePropertyMultiple() bool
+}
+
 // _BACnetConfirmedServiceRequestWritePropertyMultiple is the data-structure of this message
 type _BACnetConfirmedServiceRequestWritePropertyMultiple struct {
 	*_BACnetConfirmedServiceRequest
@@ -199,6 +205,10 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) isBACnetConfirmedServiceRequestWritePropertyMultiple() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) String() string {

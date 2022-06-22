@@ -35,6 +35,12 @@ type BACnetPriorityValueUnsigned interface {
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetPriorityValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueUnsigned.
+// This is useful for switch cases.
+type BACnetPriorityValueUnsignedExactly interface {
+	isBACnetPriorityValueUnsigned() bool
+}
+
 // _BACnetPriorityValueUnsigned is the data-structure of this message
 type _BACnetPriorityValueUnsigned struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueUnsigned) isBACnetPriorityValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueUnsigned) String() string {

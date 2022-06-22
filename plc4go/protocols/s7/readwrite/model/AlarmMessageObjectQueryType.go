@@ -53,6 +53,12 @@ type AlarmMessageObjectQueryType interface {
 	GetValueGoing() AssociatedValueType
 }
 
+// AlarmMessageObjectQueryTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageObjectQueryType.
+// This is useful for switch cases.
+type AlarmMessageObjectQueryTypeExactly interface {
+	isAlarmMessageObjectQueryType() bool
+}
+
 // _AlarmMessageObjectQueryType is the data-structure of this message
 type _AlarmMessageObjectQueryType struct {
 	LengthDataset  uint8
@@ -438,6 +444,10 @@ func (m *_AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for AlarmMessageObjectQueryType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageObjectQueryType) isAlarmMessageObjectQueryType() bool {
+	return true
 }
 
 func (m *_AlarmMessageObjectQueryType) String() string {

@@ -36,6 +36,12 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged inte
 	GetValue() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
 }
 
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedExactly interface {
+	isBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged() bool
+}
+
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) isBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) String() string {

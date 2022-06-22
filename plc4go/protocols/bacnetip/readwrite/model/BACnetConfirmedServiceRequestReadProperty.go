@@ -41,6 +41,12 @@ type BACnetConfirmedServiceRequestReadProperty interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestReadPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadProperty.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadPropertyExactly interface {
+	isBACnetConfirmedServiceRequestReadProperty() bool
+}
+
 // _BACnetConfirmedServiceRequestReadProperty is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadProperty struct {
 	*_BACnetConfirmedServiceRequest
@@ -273,6 +279,10 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadProperty) isBACnetConfirmedServiceRequestReadProperty() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadProperty) String() string {

@@ -35,6 +35,12 @@ type BVLCSecureBVLL interface {
 	GetSecurityWrapper() []byte
 }
 
+// BVLCSecureBVLLExactly can be used when we want exactly this type and not a type which fulfills BVLCSecureBVLL.
+// This is useful for switch cases.
+type BVLCSecureBVLLExactly interface {
+	isBVLCSecureBVLL() bool
+}
+
 // _BVLCSecureBVLL is the data-structure of this message
 type _BVLCSecureBVLL struct {
 	*_BVLC
@@ -173,6 +179,10 @@ func (m *_BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCSecureBVLL) isBVLCSecureBVLL() bool {
+	return true
 }
 
 func (m *_BVLCSecureBVLL) String() string {

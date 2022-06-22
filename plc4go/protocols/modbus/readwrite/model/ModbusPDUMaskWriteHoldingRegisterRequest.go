@@ -39,6 +39,12 @@ type ModbusPDUMaskWriteHoldingRegisterRequest interface {
 	GetOrMask() uint16
 }
 
+// ModbusPDUMaskWriteHoldingRegisterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUMaskWriteHoldingRegisterRequest.
+// This is useful for switch cases.
+type ModbusPDUMaskWriteHoldingRegisterRequestExactly interface {
+	isModbusPDUMaskWriteHoldingRegisterRequest() bool
+}
+
 // _ModbusPDUMaskWriteHoldingRegisterRequest is the data-structure of this message
 type _ModbusPDUMaskWriteHoldingRegisterRequest struct {
 	*_ModbusPDU
@@ -227,6 +233,10 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) isModbusPDUMaskWriteHoldingRegisterRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) String() string {

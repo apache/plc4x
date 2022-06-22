@@ -34,6 +34,12 @@ type ApduDataExt interface {
 	GetExtApciType() uint8
 }
 
+// ApduDataExtExactly can be used when we want exactly this type and not a type which fulfills ApduDataExt.
+// This is useful for switch cases.
+type ApduDataExtExactly interface {
+	isApduDataExt() bool
+}
+
 // _ApduDataExt is the data-structure of this message
 type _ApduDataExt struct {
 	_ApduDataExtChildRequirements
@@ -43,10 +49,10 @@ type _ApduDataExt struct {
 }
 
 type _ApduDataExtChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetExtApciType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ApduDataExtParent interface {
@@ -55,7 +61,7 @@ type ApduDataExtParent interface {
 }
 
 type ApduDataExtChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ApduDataExt)
 	GetParent() *ApduDataExt
 
@@ -247,6 +253,10 @@ func (pm *_ApduDataExt) SerializeParent(writeBuffer utils.WriteBuffer, child Apd
 		return errors.Wrap(popErr, "Error popping for ApduDataExt")
 	}
 	return nil
+}
+
+func (m *_ApduDataExt) isApduDataExt() bool {
+	return true
 }
 
 func (m *_ApduDataExt) String() string {

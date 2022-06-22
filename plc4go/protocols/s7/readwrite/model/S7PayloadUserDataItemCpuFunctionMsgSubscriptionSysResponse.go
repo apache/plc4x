@@ -37,6 +37,12 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 	GetReserved01() uint8
 }
 
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseExactly interface {
+	isS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() bool
+}
+
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse struct {
 	*_S7PayloadUserDataItem
@@ -204,6 +210,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) Serialize(
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) isS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() string {

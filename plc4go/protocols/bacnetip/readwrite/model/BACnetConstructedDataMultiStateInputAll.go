@@ -33,6 +33,12 @@ type BACnetConstructedDataMultiStateInputAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataMultiStateInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateInputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataMultiStateInputAllExactly interface {
+	isBACnetConstructedDataMultiStateInputAll() bool
+}
+
 // _BACnetConstructedDataMultiStateInputAll is the data-structure of this message
 type _BACnetConstructedDataMultiStateInputAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataMultiStateInputAll) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAll) isBACnetConstructedDataMultiStateInputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMultiStateInputAll) String() string {

@@ -34,6 +34,12 @@ type BACnetOpeningTag interface {
 	GetHeader() BACnetTagHeader
 }
 
+// BACnetOpeningTagExactly can be used when we want exactly this type and not a type which fulfills BACnetOpeningTag.
+// This is useful for switch cases.
+type BACnetOpeningTagExactly interface {
+	isBACnetOpeningTag() bool
+}
+
 // _BACnetOpeningTag is the data-structure of this message
 type _BACnetOpeningTag struct {
 	Header BACnetTagHeader
@@ -161,6 +167,10 @@ func (m *_BACnetOpeningTag) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetOpeningTag")
 	}
 	return nil
+}
+
+func (m *_BACnetOpeningTag) isBACnetOpeningTag() bool {
+	return true
 }
 
 func (m *_BACnetOpeningTag) String() string {

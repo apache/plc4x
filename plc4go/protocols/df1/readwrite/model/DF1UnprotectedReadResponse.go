@@ -35,6 +35,12 @@ type DF1UnprotectedReadResponse interface {
 	GetData() []byte
 }
 
+// DF1UnprotectedReadResponseExactly can be used when we want exactly this type and not a type which fulfills DF1UnprotectedReadResponse.
+// This is useful for switch cases.
+type DF1UnprotectedReadResponseExactly interface {
+	isDF1UnprotectedReadResponse() bool
+}
+
 // _DF1UnprotectedReadResponse is the data-structure of this message
 type _DF1UnprotectedReadResponse struct {
 	*_DF1Command
@@ -187,6 +193,10 @@ func (m *_DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1UnprotectedReadResponse) isDF1UnprotectedReadResponse() bool {
+	return true
 }
 
 func (m *_DF1UnprotectedReadResponse) String() string {

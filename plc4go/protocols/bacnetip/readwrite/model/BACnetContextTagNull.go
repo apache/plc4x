@@ -33,6 +33,12 @@ type BACnetContextTagNull interface {
 	BACnetContextTag
 }
 
+// BACnetContextTagNullExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagNull.
+// This is useful for switch cases.
+type BACnetContextTagNullExactly interface {
+	isBACnetContextTagNull() bool
+}
+
 // _BACnetContextTagNull is the data-structure of this message
 type _BACnetContextTagNull struct {
 	*_BACnetContextTag
@@ -141,6 +147,10 @@ func (m *_BACnetContextTagNull) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagNull) isBACnetContextTagNull() bool {
+	return true
 }
 
 func (m *_BACnetContextTagNull) String() string {

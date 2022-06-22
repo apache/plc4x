@@ -33,6 +33,12 @@ type MPropWriteCon interface {
 	CEMI
 }
 
+// MPropWriteConExactly can be used when we want exactly this type and not a type which fulfills MPropWriteCon.
+// This is useful for switch cases.
+type MPropWriteConExactly interface {
+	isMPropWriteCon() bool
+}
+
 // _MPropWriteCon is the data-structure of this message
 type _MPropWriteCon struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_MPropWriteCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MPropWriteCon) isMPropWriteCon() bool {
+	return true
 }
 
 func (m *_MPropWriteCon) String() string {

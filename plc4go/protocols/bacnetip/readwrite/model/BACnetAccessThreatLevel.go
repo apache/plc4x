@@ -34,6 +34,12 @@ type BACnetAccessThreatLevel interface {
 	GetThreatLevel() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetAccessThreatLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessThreatLevel.
+// This is useful for switch cases.
+type BACnetAccessThreatLevelExactly interface {
+	isBACnetAccessThreatLevel() bool
+}
+
 // _BACnetAccessThreatLevel is the data-structure of this message
 type _BACnetAccessThreatLevel struct {
 	ThreatLevel BACnetApplicationTagUnsignedInteger
@@ -143,6 +149,10 @@ func (m *_BACnetAccessThreatLevel) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetAccessThreatLevel")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessThreatLevel) isBACnetAccessThreatLevel() bool {
+	return true
 }
 
 func (m *_BACnetAccessThreatLevel) String() string {

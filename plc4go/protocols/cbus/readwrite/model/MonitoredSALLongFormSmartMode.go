@@ -49,6 +49,12 @@ type MonitoredSALLongFormSmartMode interface {
 	GetIsUnitAddress() bool
 }
 
+// MonitoredSALLongFormSmartModeExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALLongFormSmartMode.
+// This is useful for switch cases.
+type MonitoredSALLongFormSmartModeExactly interface {
+	isMonitoredSALLongFormSmartMode() bool
+}
+
 // _MonitoredSALLongFormSmartMode is the data-structure of this message
 type _MonitoredSALLongFormSmartMode struct {
 	*_MonitoredSAL
@@ -451,6 +457,10 @@ func (m *_MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MonitoredSALLongFormSmartMode) isMonitoredSALLongFormSmartMode() bool {
+	return true
 }
 
 func (m *_MonitoredSALLongFormSmartMode) String() string {

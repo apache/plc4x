@@ -35,6 +35,12 @@ type BACnetLogDataLogDataEntryRealValue interface {
 	GetRealValue() BACnetContextTagReal
 }
 
+// BACnetLogDataLogDataEntryRealValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryRealValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryRealValueExactly interface {
+	isBACnetLogDataLogDataEntryRealValue() bool
+}
+
 // _BACnetLogDataLogDataEntryRealValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryRealValue struct {
 	*_BACnetLogDataLogDataEntry
@@ -176,6 +182,10 @@ func (m *_BACnetLogDataLogDataEntryRealValue) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryRealValue) isBACnetLogDataLogDataEntryRealValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryRealValue) String() string {

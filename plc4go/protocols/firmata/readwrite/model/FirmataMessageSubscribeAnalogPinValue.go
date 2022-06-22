@@ -38,6 +38,12 @@ type FirmataMessageSubscribeAnalogPinValue interface {
 	GetEnable() bool
 }
 
+// FirmataMessageSubscribeAnalogPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageSubscribeAnalogPinValue.
+// This is useful for switch cases.
+type FirmataMessageSubscribeAnalogPinValueExactly interface {
+	isFirmataMessageSubscribeAnalogPinValue() bool
+}
+
 // _FirmataMessageSubscribeAnalogPinValue is the data-structure of this message
 type _FirmataMessageSubscribeAnalogPinValue struct {
 	*_FirmataMessage
@@ -222,6 +228,10 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageSubscribeAnalogPinValue) isFirmataMessageSubscribeAnalogPinValue() bool {
+	return true
 }
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) String() string {

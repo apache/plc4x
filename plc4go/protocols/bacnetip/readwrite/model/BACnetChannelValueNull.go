@@ -35,6 +35,12 @@ type BACnetChannelValueNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetChannelValueNullExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueNull.
+// This is useful for switch cases.
+type BACnetChannelValueNullExactly interface {
+	isBACnetChannelValueNull() bool
+}
+
 // _BACnetChannelValueNull is the data-structure of this message
 type _BACnetChannelValueNull struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueNull) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueNull) isBACnetChannelValueNull() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueNull) String() string {

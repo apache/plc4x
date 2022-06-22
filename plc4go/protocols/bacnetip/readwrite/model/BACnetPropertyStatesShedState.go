@@ -35,6 +35,12 @@ type BACnetPropertyStatesShedState interface {
 	GetShedState() BACnetShedStateTagged
 }
 
+// BACnetPropertyStatesShedStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesShedState.
+// This is useful for switch cases.
+type BACnetPropertyStatesShedStateExactly interface {
+	isBACnetPropertyStatesShedState() bool
+}
+
 // _BACnetPropertyStatesShedState is the data-structure of this message
 type _BACnetPropertyStatesShedState struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesShedState) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesShedState) isBACnetPropertyStatesShedState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesShedState) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataSecurityTimeWindow interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataSecurityTimeWindowExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSecurityTimeWindow.
+// This is useful for switch cases.
+type BACnetConstructedDataSecurityTimeWindowExactly interface {
+	isBACnetConstructedDataSecurityTimeWindow() bool
+}
+
 // _BACnetConstructedDataSecurityTimeWindow is the data-structure of this message
 type _BACnetConstructedDataSecurityTimeWindow struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindow) isBACnetConstructedDataSecurityTimeWindow() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) String() string {

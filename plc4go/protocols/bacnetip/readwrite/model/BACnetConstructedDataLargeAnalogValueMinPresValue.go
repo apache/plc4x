@@ -37,6 +37,12 @@ type BACnetConstructedDataLargeAnalogValueMinPresValue interface {
 	GetActualValue() BACnetApplicationTagDouble
 }
 
+// BACnetConstructedDataLargeAnalogValueMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueMinPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueMinPresValueExactly interface {
+	isBACnetConstructedDataLargeAnalogValueMinPresValue() bool
+}
+
 // _BACnetConstructedDataLargeAnalogValueMinPresValue is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueMinPresValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) isBACnetConstructedDataLargeAnalogValueMinPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) String() string {

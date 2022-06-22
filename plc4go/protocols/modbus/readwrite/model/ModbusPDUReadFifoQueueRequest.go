@@ -35,6 +35,12 @@ type ModbusPDUReadFifoQueueRequest interface {
 	GetFifoPointerAddress() uint16
 }
 
+// ModbusPDUReadFifoQueueRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadFifoQueueRequest.
+// This is useful for switch cases.
+type ModbusPDUReadFifoQueueRequestExactly interface {
+	isModbusPDUReadFifoQueueRequest() bool
+}
+
 // _ModbusPDUReadFifoQueueRequest is the data-structure of this message
 type _ModbusPDUReadFifoQueueRequest struct {
 	*_ModbusPDU
@@ -175,6 +181,10 @@ func (m *_ModbusPDUReadFifoQueueRequest) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadFifoQueueRequest) isModbusPDUReadFifoQueueRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadFifoQueueRequest) String() string {

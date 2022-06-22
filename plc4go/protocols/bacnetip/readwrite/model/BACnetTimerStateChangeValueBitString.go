@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueBitString interface {
 	GetBitStringValue() BACnetApplicationTagBitString
 }
 
+// BACnetTimerStateChangeValueBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueBitString.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueBitStringExactly interface {
+	isBACnetTimerStateChangeValueBitString() bool
+}
+
 // _BACnetTimerStateChangeValueBitString is the data-structure of this message
 type _BACnetTimerStateChangeValueBitString struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueBitString) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueBitString) isBACnetTimerStateChangeValueBitString() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueBitString) String() string {

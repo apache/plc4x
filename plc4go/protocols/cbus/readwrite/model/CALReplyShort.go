@@ -33,6 +33,12 @@ type CALReplyShort interface {
 	CALReply
 }
 
+// CALReplyShortExactly can be used when we want exactly this type and not a type which fulfills CALReplyShort.
+// This is useful for switch cases.
+type CALReplyShortExactly interface {
+	isCALReplyShort() bool
+}
+
 // _CALReplyShort is the data-structure of this message
 type _CALReplyShort struct {
 	*_CALReply
@@ -130,6 +136,10 @@ func (m *_CALReplyShort) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALReplyShort) isCALReplyShort() bool {
+	return true
 }
 
 func (m *_CALReplyShort) String() string {

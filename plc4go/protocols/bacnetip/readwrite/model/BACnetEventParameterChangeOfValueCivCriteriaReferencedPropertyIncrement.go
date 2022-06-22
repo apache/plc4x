@@ -35,6 +35,12 @@ type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement int
 	GetReferencedPropertyIncrement() BACnetContextTagReal
 }
 
+// BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementExactly interface {
+	isBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() bool
+}
+
 // _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement struct {
 	*_BACnetEventParameterChangeOfValueCivCriteria
@@ -181,6 +187,10 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) isBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) String() string {

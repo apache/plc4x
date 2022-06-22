@@ -38,6 +38,12 @@ type BACnetEventSummariesList interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventSummariesListExactly can be used when we want exactly this type and not a type which fulfills BACnetEventSummariesList.
+// This is useful for switch cases.
+type BACnetEventSummariesListExactly interface {
+	isBACnetEventSummariesList() bool
+}
+
 // _BACnetEventSummariesList is the data-structure of this message
 type _BACnetEventSummariesList struct {
 	OpeningTag           BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetEventSummariesList) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetEventSummariesList")
 	}
 	return nil
+}
+
+func (m *_BACnetEventSummariesList) isBACnetEventSummariesList() bool {
+	return true
 }
 
 func (m *_BACnetEventSummariesList) String() string {

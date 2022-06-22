@@ -37,6 +37,12 @@ type BACnetUnconfirmedServiceRequestUTCTimeSynchronization interface {
 	GetSynchronizedTime() BACnetApplicationTagTime
 }
 
+// BACnetUnconfirmedServiceRequestUTCTimeSynchronizationExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUTCTimeSynchronization.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUTCTimeSynchronizationExactly interface {
+	isBACnetUnconfirmedServiceRequestUTCTimeSynchronization() bool
+}
+
 // _BACnetUnconfirmedServiceRequestUTCTimeSynchronization is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -219,6 +225,10 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) isBACnetUnconfirmedServiceRequestUTCTimeSynchronization() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) String() string {

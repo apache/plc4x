@@ -35,6 +35,12 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric interf
 	GetNumericValue() BACnetContextTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericExactly interface {
+	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() bool
+}
+
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric struct {
 	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
@@ -181,6 +187,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) String() string {

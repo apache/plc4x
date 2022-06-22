@@ -38,6 +38,12 @@ type BACnetNameValueCollection interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetNameValueCollectionExactly can be used when we want exactly this type and not a type which fulfills BACnetNameValueCollection.
+// This is useful for switch cases.
+type BACnetNameValueCollectionExactly interface {
+	isBACnetNameValueCollection() bool
+}
+
 // _BACnetNameValueCollection is the data-structure of this message
 type _BACnetNameValueCollection struct {
 	OpeningTag BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetNameValueCollection")
 	}
 	return nil
+}
+
+func (m *_BACnetNameValueCollection) isBACnetNameValueCollection() bool {
+	return true
 }
 
 func (m *_BACnetNameValueCollection) String() string {

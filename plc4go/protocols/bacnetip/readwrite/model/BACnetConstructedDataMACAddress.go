@@ -37,6 +37,12 @@ type BACnetConstructedDataMACAddress interface {
 	GetActualValue() BACnetApplicationTagOctetString
 }
 
+// BACnetConstructedDataMACAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMACAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataMACAddressExactly interface {
+	isBACnetConstructedDataMACAddress() bool
+}
+
 // _BACnetConstructedDataMACAddress is the data-structure of this message
 type _BACnetConstructedDataMACAddress struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMACAddress) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMACAddress) isBACnetConstructedDataMACAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMACAddress) String() string {

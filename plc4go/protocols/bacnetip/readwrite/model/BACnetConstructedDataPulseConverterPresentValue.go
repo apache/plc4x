@@ -37,6 +37,12 @@ type BACnetConstructedDataPulseConverterPresentValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataPulseConverterPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseConverterPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataPulseConverterPresentValueExactly interface {
+	isBACnetConstructedDataPulseConverterPresentValue() bool
+}
+
 // _BACnetConstructedDataPulseConverterPresentValue is the data-structure of this message
 type _BACnetConstructedDataPulseConverterPresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPulseConverterPresentValue) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPulseConverterPresentValue) isBACnetConstructedDataPulseConverterPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPulseConverterPresentValue) String() string {

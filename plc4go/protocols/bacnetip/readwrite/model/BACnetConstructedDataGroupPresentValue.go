@@ -35,6 +35,12 @@ type BACnetConstructedDataGroupPresentValue interface {
 	GetPresentValue() []BACnetReadAccessResult
 }
 
+// BACnetConstructedDataGroupPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGroupPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataGroupPresentValueExactly interface {
+	isBACnetConstructedDataGroupPresentValue() bool
+}
+
 // _BACnetConstructedDataGroupPresentValue is the data-structure of this message
 type _BACnetConstructedDataGroupPresentValue struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataGroupPresentValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGroupPresentValue) isBACnetConstructedDataGroupPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGroupPresentValue) String() string {

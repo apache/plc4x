@@ -36,6 +36,12 @@ type APDUUnconfirmedRequest interface {
 	GetServiceRequest() BACnetUnconfirmedServiceRequest
 }
 
+// APDUUnconfirmedRequestExactly can be used when we want exactly this type and not a type which fulfills APDUUnconfirmedRequest.
+// This is useful for switch cases.
+type APDUUnconfirmedRequestExactly interface {
+	isAPDUUnconfirmedRequest() bool
+}
+
 // _APDUUnconfirmedRequest is the data-structure of this message
 type _APDUUnconfirmedRequest struct {
 	*_APDU
@@ -207,6 +213,10 @@ func (m *_APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUUnconfirmedRequest) isAPDUUnconfirmedRequest() bool {
+	return true
 }
 
 func (m *_APDUUnconfirmedRequest) String() string {

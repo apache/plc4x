@@ -48,6 +48,12 @@ type State interface {
 	GetSIG_1() bool
 }
 
+// StateExactly can be used when we want exactly this type and not a type which fulfills State.
+// This is useful for switch cases.
+type StateExactly interface {
+	isState() bool
+}
+
 // _State is the data-structure of this message
 type _State struct {
 	SIG_8 bool
@@ -300,6 +306,10 @@ func (m *_State) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for State")
 	}
 	return nil
+}
+
+func (m *_State) isState() bool {
+	return true
 }
 
 func (m *_State) String() string {

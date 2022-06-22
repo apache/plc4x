@@ -35,6 +35,12 @@ type AdsWriteResponse interface {
 	GetResult() ReturnCode
 }
 
+// AdsWriteResponseExactly can be used when we want exactly this type and not a type which fulfills AdsWriteResponse.
+// This is useful for switch cases.
+type AdsWriteResponseExactly interface {
+	isAdsWriteResponse() bool
+}
+
 // _AdsWriteResponse is the data-structure of this message
 type _AdsWriteResponse struct {
 	*_AdsData
@@ -182,6 +188,10 @@ func (m *_AdsWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsWriteResponse) isAdsWriteResponse() bool {
+	return true
 }
 
 func (m *_AdsWriteResponse) String() string {

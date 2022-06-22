@@ -35,6 +35,12 @@ type BACnetOptionalREALValue interface {
 	GetRealValue() BACnetApplicationTagReal
 }
 
+// BACnetOptionalREALValueExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREALValue.
+// This is useful for switch cases.
+type BACnetOptionalREALValueExactly interface {
+	isBACnetOptionalREALValue() bool
+}
+
 // _BACnetOptionalREALValue is the data-structure of this message
 type _BACnetOptionalREALValue struct {
 	*_BACnetOptionalREAL
@@ -176,6 +182,10 @@ func (m *_BACnetOptionalREALValue) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalREALValue) isBACnetOptionalREALValue() bool {
+	return true
 }
 
 func (m *_BACnetOptionalREALValue) String() string {

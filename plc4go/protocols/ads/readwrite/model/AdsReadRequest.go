@@ -39,6 +39,12 @@ type AdsReadRequest interface {
 	GetLength() uint32
 }
 
+// AdsReadRequestExactly can be used when we want exactly this type and not a type which fulfills AdsReadRequest.
+// This is useful for switch cases.
+type AdsReadRequestExactly interface {
+	isAdsReadRequest() bool
+}
+
 // _AdsReadRequest is the data-structure of this message
 type _AdsReadRequest struct {
 	*_AdsData
@@ -223,6 +229,10 @@ func (m *_AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsReadRequest) isAdsReadRequest() bool {
+	return true
 }
 
 func (m *_AdsReadRequest) String() string {

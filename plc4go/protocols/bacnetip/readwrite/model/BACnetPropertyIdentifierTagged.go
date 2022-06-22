@@ -40,6 +40,12 @@ type BACnetPropertyIdentifierTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetPropertyIdentifierTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyIdentifierTagged.
+// This is useful for switch cases.
+type BACnetPropertyIdentifierTaggedExactly interface {
+	isBACnetPropertyIdentifierTagged() bool
+}
+
 // _BACnetPropertyIdentifierTagged is the data-structure of this message
 type _BACnetPropertyIdentifierTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetPropertyIdentifierTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyIdentifierTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyIdentifierTagged) isBACnetPropertyIdentifierTagged() bool {
+	return true
 }
 
 func (m *_BACnetPropertyIdentifierTagged) String() string {

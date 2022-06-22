@@ -37,6 +37,12 @@ type BACnetConstructedDataPositiveIntegerValueCOVIncrement interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPositiveIntegerValueCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueCOVIncrement.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueCOVIncrementExactly interface {
+	isBACnetConstructedDataPositiveIntegerValueCOVIncrement() bool
+}
+
 // _BACnetConstructedDataPositiveIntegerValueCOVIncrement is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueCOVIncrement struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) isBACnetConstructedDataPositiveIntegerValueCOVIncrement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) String() string {

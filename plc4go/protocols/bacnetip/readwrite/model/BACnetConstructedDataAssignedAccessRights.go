@@ -41,6 +41,12 @@ type BACnetConstructedDataAssignedAccessRights interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataAssignedAccessRightsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAssignedAccessRights.
+// This is useful for switch cases.
+type BACnetConstructedDataAssignedAccessRightsExactly interface {
+	isBACnetConstructedDataAssignedAccessRights() bool
+}
+
 // _BACnetConstructedDataAssignedAccessRights is the data-structure of this message
 type _BACnetConstructedDataAssignedAccessRights struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataAssignedAccessRights) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAssignedAccessRights) isBACnetConstructedDataAssignedAccessRights() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAssignedAccessRights) String() string {

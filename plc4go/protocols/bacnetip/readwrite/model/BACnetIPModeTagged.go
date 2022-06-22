@@ -36,6 +36,12 @@ type BACnetIPModeTagged interface {
 	GetValue() BACnetIPMode
 }
 
+// BACnetIPModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetIPModeTagged.
+// This is useful for switch cases.
+type BACnetIPModeTaggedExactly interface {
+	isBACnetIPModeTagged() bool
+}
+
 // _BACnetIPModeTagged is the data-structure of this message
 type _BACnetIPModeTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetIPModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetIPModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetIPModeTagged) isBACnetIPModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetIPModeTagged) String() string {

@@ -35,6 +35,12 @@ type BACnetConstructedDataAccessDoorAlarmValues interface {
 	GetAlarmValues() []BACnetDoorAlarmStateTagged
 }
 
+// BACnetConstructedDataAccessDoorAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoorAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessDoorAlarmValuesExactly interface {
+	isBACnetConstructedDataAccessDoorAlarmValues() bool
+}
+
 // _BACnetConstructedDataAccessDoorAlarmValues is the data-structure of this message
 type _BACnetConstructedDataAccessDoorAlarmValues struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataAccessDoorAlarmValues) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessDoorAlarmValues) isBACnetConstructedDataAccessDoorAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessDoorAlarmValues) String() string {

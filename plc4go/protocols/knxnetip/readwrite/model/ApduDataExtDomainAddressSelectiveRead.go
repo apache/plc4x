@@ -33,6 +33,12 @@ type ApduDataExtDomainAddressSelectiveRead interface {
 	ApduDataExt
 }
 
+// ApduDataExtDomainAddressSelectiveReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtDomainAddressSelectiveRead.
+// This is useful for switch cases.
+type ApduDataExtDomainAddressSelectiveReadExactly interface {
+	isApduDataExtDomainAddressSelectiveRead() bool
+}
+
 // _ApduDataExtDomainAddressSelectiveRead is the data-structure of this message
 type _ApduDataExtDomainAddressSelectiveRead struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtDomainAddressSelectiveRead) isApduDataExtDomainAddressSelectiveRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) String() string {

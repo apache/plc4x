@@ -37,6 +37,12 @@ type DescriptionResponse interface {
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
 }
 
+// DescriptionResponseExactly can be used when we want exactly this type and not a type which fulfills DescriptionResponse.
+// This is useful for switch cases.
+type DescriptionResponseExactly interface {
+	isDescriptionResponse() bool
+}
+
 // _DescriptionResponse is the data-structure of this message
 type _DescriptionResponse struct {
 	*_KnxNetIpMessage
@@ -215,6 +221,10 @@ func (m *_DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DescriptionResponse) isDescriptionResponse() bool {
+	return true
 }
 
 func (m *_DescriptionResponse) String() string {

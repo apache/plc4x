@@ -40,6 +40,12 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassExactly interface {
+	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() bool
+}
+
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements
@@ -52,9 +58,9 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 }
 
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParent interface {
@@ -63,7 +69,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParent interfa
 }
 
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 
@@ -271,6 +277,10 @@ func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) Serial
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) String() string {

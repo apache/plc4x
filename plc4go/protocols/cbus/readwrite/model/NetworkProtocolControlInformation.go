@@ -37,6 +37,12 @@ type NetworkProtocolControlInformation interface {
 	GetStackDepth() uint8
 }
 
+// NetworkProtocolControlInformationExactly can be used when we want exactly this type and not a type which fulfills NetworkProtocolControlInformation.
+// This is useful for switch cases.
+type NetworkProtocolControlInformationExactly interface {
+	isNetworkProtocolControlInformation() bool
+}
+
 // _NetworkProtocolControlInformation is the data-structure of this message
 type _NetworkProtocolControlInformation struct {
 	StackCounter uint8
@@ -182,6 +188,10 @@ func (m *_NetworkProtocolControlInformation) Serialize(writeBuffer utils.WriteBu
 		return errors.Wrap(popErr, "Error popping for NetworkProtocolControlInformation")
 	}
 	return nil
+}
+
+func (m *_NetworkProtocolControlInformation) isNetworkProtocolControlInformation() bool {
+	return true
 }
 
 func (m *_NetworkProtocolControlInformation) String() string {

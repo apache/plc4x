@@ -37,6 +37,12 @@ type BACnetConstructedDataMaxMaster interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaxMaster.
+// This is useful for switch cases.
+type BACnetConstructedDataMaxMasterExactly interface {
+	isBACnetConstructedDataMaxMaster() bool
+}
+
 // _BACnetConstructedDataMaxMaster is the data-structure of this message
 type _BACnetConstructedDataMaxMaster struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMaxMaster) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaxMaster) isBACnetConstructedDataMaxMaster() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaxMaster) String() string {

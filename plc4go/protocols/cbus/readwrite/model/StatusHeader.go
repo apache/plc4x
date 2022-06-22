@@ -35,6 +35,12 @@ type StatusHeader interface {
 	GetNumberOfCharacterPairs() uint8
 }
 
+// StatusHeaderExactly can be used when we want exactly this type and not a type which fulfills StatusHeader.
+// This is useful for switch cases.
+type StatusHeaderExactly interface {
+	isStatusHeader() bool
+}
+
 // _StatusHeader is the data-structure of this message
 type _StatusHeader struct {
 	NumberOfCharacterPairs uint8
@@ -158,6 +164,10 @@ func (m *_StatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for StatusHeader")
 	}
 	return nil
+}
+
+func (m *_StatusHeader) isStatusHeader() bool {
+	return true
 }
 
 func (m *_StatusHeader) String() string {

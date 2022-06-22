@@ -35,6 +35,12 @@ type BACnetConstructedDataBBMDForeignDeviceTable interface {
 	GetBbmdForeignDeviceTable() []BACnetBDTEntry
 }
 
+// BACnetConstructedDataBBMDForeignDeviceTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBBMDForeignDeviceTable.
+// This is useful for switch cases.
+type BACnetConstructedDataBBMDForeignDeviceTableExactly interface {
+	isBACnetConstructedDataBBMDForeignDeviceTable() bool
+}
+
 // _BACnetConstructedDataBBMDForeignDeviceTable is the data-structure of this message
 type _BACnetConstructedDataBBMDForeignDeviceTable struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBBMDForeignDeviceTable) isBACnetConstructedDataBBMDForeignDeviceTable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBBMDForeignDeviceTable) String() string {

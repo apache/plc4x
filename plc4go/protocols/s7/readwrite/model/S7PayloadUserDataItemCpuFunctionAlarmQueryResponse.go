@@ -43,6 +43,12 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 	GetPudicftransportSize() DataTransportSize
 }
 
+// S7PayloadUserDataItemCpuFunctionAlarmQueryResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionAlarmQueryResponseExactly interface {
+	isS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() bool
+}
+
 // _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 	*_S7PayloadUserDataItem
@@ -310,6 +316,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) isS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {

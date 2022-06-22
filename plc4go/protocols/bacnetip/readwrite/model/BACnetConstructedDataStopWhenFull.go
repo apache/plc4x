@@ -37,6 +37,12 @@ type BACnetConstructedDataStopWhenFull interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataStopWhenFullExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStopWhenFull.
+// This is useful for switch cases.
+type BACnetConstructedDataStopWhenFullExactly interface {
+	isBACnetConstructedDataStopWhenFull() bool
+}
+
 // _BACnetConstructedDataStopWhenFull is the data-structure of this message
 type _BACnetConstructedDataStopWhenFull struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataStopWhenFull) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStopWhenFull) isBACnetConstructedDataStopWhenFull() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStopWhenFull) String() string {

@@ -38,6 +38,12 @@ type AlarmMessageAckResponseType interface {
 	GetMessageObjects() []uint8
 }
 
+// AlarmMessageAckResponseTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageAckResponseType.
+// This is useful for switch cases.
+type AlarmMessageAckResponseTypeExactly interface {
+	isAlarmMessageAckResponseType() bool
+}
+
 // _AlarmMessageAckResponseType is the data-structure of this message
 type _AlarmMessageAckResponseType struct {
 	FunctionId      uint8
@@ -203,6 +209,10 @@ func (m *_AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for AlarmMessageAckResponseType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageAckResponseType) isAlarmMessageAckResponseType() bool {
+	return true
 }
 
 func (m *_AlarmMessageAckResponseType) String() string {

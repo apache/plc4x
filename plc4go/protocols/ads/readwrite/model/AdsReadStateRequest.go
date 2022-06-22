@@ -33,6 +33,12 @@ type AdsReadStateRequest interface {
 	AdsData
 }
 
+// AdsReadStateRequestExactly can be used when we want exactly this type and not a type which fulfills AdsReadStateRequest.
+// This is useful for switch cases.
+type AdsReadStateRequestExactly interface {
+	isAdsReadStateRequest() bool
+}
+
 // _AdsReadStateRequest is the data-structure of this message
 type _AdsReadStateRequest struct {
 	*_AdsData
@@ -135,6 +141,10 @@ func (m *_AdsReadStateRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsReadStateRequest) isAdsReadStateRequest() bool {
+	return true
 }
 
 func (m *_AdsReadStateRequest) String() string {

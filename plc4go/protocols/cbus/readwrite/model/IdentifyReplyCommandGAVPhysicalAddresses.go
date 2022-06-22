@@ -35,6 +35,12 @@ type IdentifyReplyCommandGAVPhysicalAddresses interface {
 	GetValues() []byte
 }
 
+// IdentifyReplyCommandGAVPhysicalAddressesExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandGAVPhysicalAddresses.
+// This is useful for switch cases.
+type IdentifyReplyCommandGAVPhysicalAddressesExactly interface {
+	isIdentifyReplyCommandGAVPhysicalAddresses() bool
+}
+
 // _IdentifyReplyCommandGAVPhysicalAddresses is the data-structure of this message
 type _IdentifyReplyCommandGAVPhysicalAddresses struct {
 	*_IdentifyReplyCommand
@@ -170,6 +176,10 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandGAVPhysicalAddresses) isIdentifyReplyCommandGAVPhysicalAddresses() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandGAVPhysicalAddresses) String() string {

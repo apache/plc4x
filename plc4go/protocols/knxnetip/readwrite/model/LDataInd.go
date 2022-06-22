@@ -39,6 +39,12 @@ type LDataInd interface {
 	GetDataFrame() LDataFrame
 }
 
+// LDataIndExactly can be used when we want exactly this type and not a type which fulfills LDataInd.
+// This is useful for switch cases.
+type LDataIndExactly interface {
+	isLDataInd() bool
+}
+
 // _LDataInd is the data-structure of this message
 type _LDataInd struct {
 	*_CEMI
@@ -260,6 +266,10 @@ func (m *_LDataInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LDataInd) isLDataInd() bool {
+	return true
 }
 
 func (m *_LDataInd) String() string {

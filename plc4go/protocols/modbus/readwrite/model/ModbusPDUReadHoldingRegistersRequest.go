@@ -37,6 +37,12 @@ type ModbusPDUReadHoldingRegistersRequest interface {
 	GetQuantity() uint16
 }
 
+// ModbusPDUReadHoldingRegistersRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadHoldingRegistersRequest.
+// This is useful for switch cases.
+type ModbusPDUReadHoldingRegistersRequestExactly interface {
+	isModbusPDUReadHoldingRegistersRequest() bool
+}
+
 // _ModbusPDUReadHoldingRegistersRequest is the data-structure of this message
 type _ModbusPDUReadHoldingRegistersRequest struct {
 	*_ModbusPDU
@@ -201,6 +207,10 @@ func (m *_ModbusPDUReadHoldingRegistersRequest) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadHoldingRegistersRequest) isModbusPDUReadHoldingRegistersRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadHoldingRegistersRequest) String() string {

@@ -38,16 +38,22 @@ type KnxNetIpMessage interface {
 	GetMsgType() uint16
 }
 
+// KnxNetIpMessageExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpMessage.
+// This is useful for switch cases.
+type KnxNetIpMessageExactly interface {
+	isKnxNetIpMessage() bool
+}
+
 // _KnxNetIpMessage is the data-structure of this message
 type _KnxNetIpMessage struct {
 	_KnxNetIpMessageChildRequirements
 }
 
 type _KnxNetIpMessageChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMsgType() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type KnxNetIpMessageParent interface {
@@ -56,7 +62,7 @@ type KnxNetIpMessageParent interface {
 }
 
 type KnxNetIpMessageChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent KnxNetIpMessage)
 	GetParent() *KnxNetIpMessage
 
@@ -264,6 +270,10 @@ func (pm *_KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(popErr, "Error popping for KnxNetIpMessage")
 	}
 	return nil
+}
+
+func (m *_KnxNetIpMessage) isKnxNetIpMessage() bool {
+	return true
 }
 
 func (m *_KnxNetIpMessage) String() string {

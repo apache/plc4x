@@ -35,6 +35,12 @@ type BACnetConstructedDataAuthorizationExemptions interface {
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
 }
 
+// BACnetConstructedDataAuthorizationExemptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthorizationExemptions.
+// This is useful for switch cases.
+type BACnetConstructedDataAuthorizationExemptionsExactly interface {
+	isBACnetConstructedDataAuthorizationExemptions() bool
+}
+
 // _BACnetConstructedDataAuthorizationExemptions is the data-structure of this message
 type _BACnetConstructedDataAuthorizationExemptions struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptions) isBACnetConstructedDataAuthorizationExemptions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) String() string {

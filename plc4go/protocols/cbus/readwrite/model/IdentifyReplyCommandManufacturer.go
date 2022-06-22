@@ -35,6 +35,12 @@ type IdentifyReplyCommandManufacturer interface {
 	GetManufacturerName() string
 }
 
+// IdentifyReplyCommandManufacturerExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandManufacturer.
+// This is useful for switch cases.
+type IdentifyReplyCommandManufacturerExactly interface {
+	isIdentifyReplyCommandManufacturer() bool
+}
+
 // _IdentifyReplyCommandManufacturer is the data-structure of this message
 type _IdentifyReplyCommandManufacturer struct {
 	*_IdentifyReplyCommand
@@ -167,6 +173,10 @@ func (m *_IdentifyReplyCommandManufacturer) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandManufacturer) isIdentifyReplyCommandManufacturer() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandManufacturer) String() string {

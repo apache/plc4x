@@ -37,6 +37,12 @@ type BACnetConstructedDataLockout interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataLockoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLockout.
+// This is useful for switch cases.
+type BACnetConstructedDataLockoutExactly interface {
+	isBACnetConstructedDataLockout() bool
+}
+
 // _BACnetConstructedDataLockout is the data-structure of this message
 type _BACnetConstructedDataLockout struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLockout) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLockout) isBACnetConstructedDataLockout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLockout) String() string {

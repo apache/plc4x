@@ -39,6 +39,12 @@ type COTPPacketDisconnectRequest interface {
 	GetProtocolClass() COTPProtocolClass
 }
 
+// COTPPacketDisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills COTPPacketDisconnectRequest.
+// This is useful for switch cases.
+type COTPPacketDisconnectRequestExactly interface {
+	isCOTPPacketDisconnectRequest() bool
+}
+
 // _COTPPacketDisconnectRequest is the data-structure of this message
 type _COTPPacketDisconnectRequest struct {
 	*_COTPPacket
@@ -236,6 +242,10 @@ func (m *_COTPPacketDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketDisconnectRequest) isCOTPPacketDisconnectRequest() bool {
+	return true
 }
 
 func (m *_COTPPacketDisconnectRequest) String() string {

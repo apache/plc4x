@@ -37,6 +37,12 @@ type BACnetConstructedDataAccessEventAuthenticationFactor interface {
 	GetActualValue() BACnetAuthenticationFactor
 }
 
+// BACnetConstructedDataAccessEventAuthenticationFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEventAuthenticationFactor.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessEventAuthenticationFactorExactly interface {
+	isBACnetConstructedDataAccessEventAuthenticationFactor() bool
+}
+
 // _BACnetConstructedDataAccessEventAuthenticationFactor is the data-structure of this message
 type _BACnetConstructedDataAccessEventAuthenticationFactor struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) isBACnetConstructedDataAccessEventAuthenticationFactor() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataUTCOffset interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConstructedDataUTCOffsetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUTCOffset.
+// This is useful for switch cases.
+type BACnetConstructedDataUTCOffsetExactly interface {
+	isBACnetConstructedDataUTCOffset() bool
+}
+
 // _BACnetConstructedDataUTCOffset is the data-structure of this message
 type _BACnetConstructedDataUTCOffset struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataUTCOffset) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUTCOffset) isBACnetConstructedDataUTCOffset() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUTCOffset) String() string {

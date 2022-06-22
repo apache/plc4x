@@ -35,6 +35,12 @@ type BACnetContextTagUnknown interface {
 	GetUnknownData() []byte
 }
 
+// BACnetContextTagUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagUnknown.
+// This is useful for switch cases.
+type BACnetContextTagUnknownExactly interface {
+	isBACnetContextTagUnknown() bool
+}
+
 // _BACnetContextTagUnknown is the data-structure of this message
 type _BACnetContextTagUnknown struct {
 	*_BACnetContextTag
@@ -176,6 +182,10 @@ func (m *_BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagUnknown) isBACnetContextTagUnknown() bool {
+	return true
 }
 
 func (m *_BACnetContextTagUnknown) String() string {

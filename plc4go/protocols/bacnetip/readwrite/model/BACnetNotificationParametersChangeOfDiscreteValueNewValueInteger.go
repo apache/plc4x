@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger interface 
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) Seri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) isBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) String() string {

@@ -36,6 +36,12 @@ type BACnetCalendarEntry interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetCalendarEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntry.
+// This is useful for switch cases.
+type BACnetCalendarEntryExactly interface {
+	isBACnetCalendarEntry() bool
+}
+
 // _BACnetCalendarEntry is the data-structure of this message
 type _BACnetCalendarEntry struct {
 	_BACnetCalendarEntryChildRequirements
@@ -43,9 +49,9 @@ type _BACnetCalendarEntry struct {
 }
 
 type _BACnetCalendarEntryChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetCalendarEntryParent interface {
@@ -54,7 +60,7 @@ type BACnetCalendarEntryParent interface {
 }
 
 type BACnetCalendarEntryChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetCalendarEntry, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetCalendarEntry
 
@@ -205,6 +211,10 @@ func (pm *_BACnetCalendarEntry) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(popErr, "Error popping for BACnetCalendarEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetCalendarEntry) isBACnetCalendarEntry() bool {
+	return true
 }
 
 func (m *_BACnetCalendarEntry) String() string {

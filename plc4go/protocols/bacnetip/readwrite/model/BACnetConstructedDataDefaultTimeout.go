@@ -37,6 +37,12 @@ type BACnetConstructedDataDefaultTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDefaultTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataDefaultTimeoutExactly interface {
+	isBACnetConstructedDataDefaultTimeout() bool
+}
+
 // _BACnetConstructedDataDefaultTimeout is the data-structure of this message
 type _BACnetConstructedDataDefaultTimeout struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDefaultTimeout) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDefaultTimeout) isBACnetConstructedDataDefaultTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDefaultTimeout) String() string {

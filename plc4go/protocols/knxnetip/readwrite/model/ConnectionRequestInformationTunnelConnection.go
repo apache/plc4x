@@ -36,6 +36,12 @@ type ConnectionRequestInformationTunnelConnection interface {
 	GetKnxLayer() KnxLayer
 }
 
+// ConnectionRequestInformationTunnelConnectionExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequestInformationTunnelConnection.
+// This is useful for switch cases.
+type ConnectionRequestInformationTunnelConnectionExactly interface {
+	isConnectionRequestInformationTunnelConnection() bool
+}
+
 // _ConnectionRequestInformationTunnelConnection is the data-structure of this message
 type _ConnectionRequestInformationTunnelConnection struct {
 	*_ConnectionRequestInformation
@@ -205,6 +211,10 @@ func (m *_ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionRequestInformationTunnelConnection) isConnectionRequestInformationTunnelConnection() bool {
+	return true
 }
 
 func (m *_ConnectionRequestInformationTunnelConnection) String() string {

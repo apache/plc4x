@@ -43,6 +43,12 @@ type AdsReadDeviceInfoResponse interface {
 	GetDevice() []byte
 }
 
+// AdsReadDeviceInfoResponseExactly can be used when we want exactly this type and not a type which fulfills AdsReadDeviceInfoResponse.
+// This is useful for switch cases.
+type AdsReadDeviceInfoResponseExactly interface {
+	isAdsReadDeviceInfoResponse() bool
+}
+
 // _AdsReadDeviceInfoResponse is the data-structure of this message
 type _AdsReadDeviceInfoResponse struct {
 	*_AdsData
@@ -289,6 +295,10 @@ func (m *_AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsReadDeviceInfoResponse) isAdsReadDeviceInfoResponse() bool {
+	return true
 }
 
 func (m *_AdsReadDeviceInfoResponse) String() string {

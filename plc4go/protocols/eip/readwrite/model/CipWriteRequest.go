@@ -43,6 +43,12 @@ type CipWriteRequest interface {
 	GetData() []byte
 }
 
+// CipWriteRequestExactly can be used when we want exactly this type and not a type which fulfills CipWriteRequest.
+// This is useful for switch cases.
+type CipWriteRequestExactly interface {
+	isCipWriteRequest() bool
+}
+
 // _CipWriteRequest is the data-structure of this message
 type _CipWriteRequest struct {
 	*_CipService
@@ -291,6 +297,10 @@ func (m *_CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipWriteRequest) isCipWriteRequest() bool {
+	return true
 }
 
 func (m *_CipWriteRequest) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataMaxSegmentsAccepted interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataMaxSegmentsAcceptedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaxSegmentsAccepted.
+// This is useful for switch cases.
+type BACnetConstructedDataMaxSegmentsAcceptedExactly interface {
+	isBACnetConstructedDataMaxSegmentsAccepted() bool
+}
+
 // _BACnetConstructedDataMaxSegmentsAccepted is the data-structure of this message
 type _BACnetConstructedDataMaxSegmentsAccepted struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) isBACnetConstructedDataMaxSegmentsAccepted() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaxSegmentsAccepted) String() string {

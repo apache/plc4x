@@ -40,6 +40,12 @@ type BACnetLightingTransitionTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetLightingTransitionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLightingTransitionTagged.
+// This is useful for switch cases.
+type BACnetLightingTransitionTaggedExactly interface {
+	isBACnetLightingTransitionTagged() bool
+}
+
 // _BACnetLightingTransitionTagged is the data-structure of this message
 type _BACnetLightingTransitionTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetLightingTransitionTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLightingTransitionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLightingTransitionTagged) isBACnetLightingTransitionTagged() bool {
+	return true
 }
 
 func (m *_BACnetLightingTransitionTagged) String() string {

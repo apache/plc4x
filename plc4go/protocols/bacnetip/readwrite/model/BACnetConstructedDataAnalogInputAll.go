@@ -33,6 +33,12 @@ type BACnetConstructedDataAnalogInputAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataAnalogInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogInputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataAnalogInputAllExactly interface {
+	isBACnetConstructedDataAnalogInputAll() bool
+}
+
 // _BACnetConstructedDataAnalogInputAll is the data-structure of this message
 type _BACnetConstructedDataAnalogInputAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataAnalogInputAll) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAnalogInputAll) isBACnetConstructedDataAnalogInputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAnalogInputAll) String() string {

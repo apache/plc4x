@@ -43,6 +43,12 @@ type CIPEncapsulationPacket interface {
 	GetOptions() uint32
 }
 
+// CIPEncapsulationPacketExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationPacket.
+// This is useful for switch cases.
+type CIPEncapsulationPacketExactly interface {
+	isCIPEncapsulationPacket() bool
+}
+
 // _CIPEncapsulationPacket is the data-structure of this message
 type _CIPEncapsulationPacket struct {
 	_CIPEncapsulationPacketChildRequirements
@@ -53,10 +59,10 @@ type _CIPEncapsulationPacket struct {
 }
 
 type _CIPEncapsulationPacketChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandType() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CIPEncapsulationPacketParent interface {
@@ -65,7 +71,7 @@ type CIPEncapsulationPacketParent interface {
 }
 
 type CIPEncapsulationPacketChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
 	GetParent() *CIPEncapsulationPacket
 
@@ -342,6 +348,10 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for CIPEncapsulationPacket")
 	}
 	return nil
+}
+
+func (m *_CIPEncapsulationPacket) isCIPEncapsulationPacket() bool {
+	return true
 }
 
 func (m *_CIPEncapsulationPacket) String() string {

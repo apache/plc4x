@@ -62,6 +62,12 @@ type BACnetTagPayloadDate interface {
 	GetDayOfWeekIsWildcard() bool
 }
 
+// BACnetTagPayloadDateExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadDate.
+// This is useful for switch cases.
+type BACnetTagPayloadDateExactly interface {
+	isBACnetTagPayloadDate() bool
+}
+
 // _BACnetTagPayloadDate is the data-structure of this message
 type _BACnetTagPayloadDate struct {
 	YearMinus1900 uint8
@@ -400,6 +406,10 @@ func (m *_BACnetTagPayloadDate) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadDate")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadDate) isBACnetTagPayloadDate() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadDate) String() string {

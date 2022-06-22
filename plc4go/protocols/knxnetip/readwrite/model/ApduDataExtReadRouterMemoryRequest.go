@@ -33,6 +33,12 @@ type ApduDataExtReadRouterMemoryRequest interface {
 	ApduDataExt
 }
 
+// ApduDataExtReadRouterMemoryRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtReadRouterMemoryRequest.
+// This is useful for switch cases.
+type ApduDataExtReadRouterMemoryRequestExactly interface {
+	isApduDataExtReadRouterMemoryRequest() bool
+}
+
 // _ApduDataExtReadRouterMemoryRequest is the data-structure of this message
 type _ApduDataExtReadRouterMemoryRequest struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtReadRouterMemoryRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtReadRouterMemoryRequest) isApduDataExtReadRouterMemoryRequest() bool {
+	return true
 }
 
 func (m *_ApduDataExtReadRouterMemoryRequest) String() string {

@@ -45,6 +45,12 @@ type BACnetNotificationParametersFloatingLimit interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersFloatingLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersFloatingLimit.
+// This is useful for switch cases.
+type BACnetNotificationParametersFloatingLimitExactly interface {
+	isBACnetNotificationParametersFloatingLimit() bool
+}
+
 // _BACnetNotificationParametersFloatingLimit is the data-structure of this message
 type _BACnetNotificationParametersFloatingLimit struct {
 	*_BACnetNotificationParameters
@@ -367,6 +373,10 @@ func (m *_BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersFloatingLimit) isBACnetNotificationParametersFloatingLimit() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersFloatingLimit) String() string {

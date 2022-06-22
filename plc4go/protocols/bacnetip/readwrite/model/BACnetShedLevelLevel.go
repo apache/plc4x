@@ -35,6 +35,12 @@ type BACnetShedLevelLevel interface {
 	GetLevel() BACnetContextTagUnsignedInteger
 }
 
+// BACnetShedLevelLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevelLevel.
+// This is useful for switch cases.
+type BACnetShedLevelLevelExactly interface {
+	isBACnetShedLevelLevel() bool
+}
+
 // _BACnetShedLevelLevel is the data-structure of this message
 type _BACnetShedLevelLevel struct {
 	*_BACnetShedLevel
@@ -176,6 +182,10 @@ func (m *_BACnetShedLevelLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetShedLevelLevel) isBACnetShedLevelLevel() bool {
+	return true
 }
 
 func (m *_BACnetShedLevelLevel) String() string {

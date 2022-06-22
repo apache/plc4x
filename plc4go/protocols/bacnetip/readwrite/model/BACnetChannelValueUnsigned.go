@@ -35,6 +35,12 @@ type BACnetChannelValueUnsigned interface {
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetChannelValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueUnsigned.
+// This is useful for switch cases.
+type BACnetChannelValueUnsignedExactly interface {
+	isBACnetChannelValueUnsigned() bool
+}
+
 // _BACnetChannelValueUnsigned is the data-structure of this message
 type _BACnetChannelValueUnsigned struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueUnsigned) isBACnetChannelValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueUnsigned) String() string {

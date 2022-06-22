@@ -35,6 +35,12 @@ type BACnetChannelValueDate interface {
 	GetDateValue() BACnetApplicationTagDate
 }
 
+// BACnetChannelValueDateExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueDate.
+// This is useful for switch cases.
+type BACnetChannelValueDateExactly interface {
+	isBACnetChannelValueDate() bool
+}
+
 // _BACnetChannelValueDate is the data-structure of this message
 type _BACnetChannelValueDate struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueDate) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueDate) isBACnetChannelValueDate() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueDate) String() string {

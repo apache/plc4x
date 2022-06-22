@@ -37,6 +37,12 @@ type S7PayloadUserDataItemCpuFunctionAlarmAck interface {
 	GetMessageObjects() []AlarmMessageObjectAckType
 }
 
+// S7PayloadUserDataItemCpuFunctionAlarmAckExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmAck.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionAlarmAckExactly interface {
+	isS7PayloadUserDataItemCpuFunctionAlarmAck() bool
+}
+
 // _S7PayloadUserDataItemCpuFunctionAlarmAck is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionAlarmAck struct {
 	*_S7PayloadUserDataItem
@@ -247,6 +253,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAck) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAck) isS7PayloadUserDataItemCpuFunctionAlarmAck() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAck) String() string {

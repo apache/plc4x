@@ -38,6 +38,12 @@ type BACnetAbortReasonTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetAbortReasonTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAbortReasonTagged.
+// This is useful for switch cases.
+type BACnetAbortReasonTaggedExactly interface {
+	isBACnetAbortReasonTagged() bool
+}
+
 // _BACnetAbortReasonTagged is the data-structure of this message
 type _BACnetAbortReasonTagged struct {
 	Value            BACnetAbortReason
@@ -183,6 +189,10 @@ func (m *_BACnetAbortReasonTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetAbortReasonTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAbortReasonTagged) isBACnetAbortReasonTagged() bool {
+	return true
 }
 
 func (m *_BACnetAbortReasonTagged) String() string {

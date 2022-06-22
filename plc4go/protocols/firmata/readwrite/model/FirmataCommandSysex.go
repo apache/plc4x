@@ -36,6 +36,12 @@ type FirmataCommandSysex interface {
 	GetCommand() SysexCommand
 }
 
+// FirmataCommandSysexExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSysex.
+// This is useful for switch cases.
+type FirmataCommandSysexExactly interface {
+	isFirmataCommandSysex() bool
+}
+
 // _FirmataCommandSysex is the data-structure of this message
 type _FirmataCommandSysex struct {
 	*_FirmataCommand
@@ -207,6 +213,10 @@ func (m *_FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSysex) isFirmataCommandSysex() bool {
+	return true
 }
 
 func (m *_FirmataCommandSysex) String() string {

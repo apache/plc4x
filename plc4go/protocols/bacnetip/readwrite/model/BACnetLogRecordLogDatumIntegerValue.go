@@ -35,6 +35,12 @@ type BACnetLogRecordLogDatumIntegerValue interface {
 	GetIntegerValue() BACnetContextTagSignedInteger
 }
 
+// BACnetLogRecordLogDatumIntegerValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumIntegerValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumIntegerValueExactly interface {
+	isBACnetLogRecordLogDatumIntegerValue() bool
+}
+
 // _BACnetLogRecordLogDatumIntegerValue is the data-structure of this message
 type _BACnetLogRecordLogDatumIntegerValue struct {
 	*_BACnetLogRecordLogDatum
@@ -181,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumIntegerValue) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumIntegerValue) isBACnetLogRecordLogDatumIntegerValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumIntegerValue) String() string {

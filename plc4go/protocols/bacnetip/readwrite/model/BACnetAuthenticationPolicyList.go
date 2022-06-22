@@ -38,6 +38,12 @@ type BACnetAuthenticationPolicyList interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetAuthenticationPolicyListExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicyList.
+// This is useful for switch cases.
+type BACnetAuthenticationPolicyListExactly interface {
+	isBACnetAuthenticationPolicyList() bool
+}
+
 // _BACnetAuthenticationPolicyList is the data-structure of this message
 type _BACnetAuthenticationPolicyList struct {
 	OpeningTag BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetAuthenticationPolicyList) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationPolicyList")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationPolicyList) isBACnetAuthenticationPolicyList() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationPolicyList) String() string {

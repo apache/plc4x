@@ -35,6 +35,12 @@ type KnxGroupAddressFreeLevel interface {
 	GetSubGroup() uint16
 }
 
+// KnxGroupAddressFreeLevelExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddressFreeLevel.
+// This is useful for switch cases.
+type KnxGroupAddressFreeLevelExactly interface {
+	isKnxGroupAddressFreeLevel() bool
+}
+
 // _KnxGroupAddressFreeLevel is the data-structure of this message
 type _KnxGroupAddressFreeLevel struct {
 	*_KnxGroupAddress
@@ -167,6 +173,10 @@ func (m *_KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxGroupAddressFreeLevel) isKnxGroupAddressFreeLevel() bool {
+	return true
 }
 
 func (m *_KnxGroupAddressFreeLevel) String() string {

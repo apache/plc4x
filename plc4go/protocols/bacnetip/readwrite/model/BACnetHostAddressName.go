@@ -35,6 +35,12 @@ type BACnetHostAddressName interface {
 	GetName() BACnetContextTagCharacterString
 }
 
+// BACnetHostAddressNameExactly can be used when we want exactly this type and not a type which fulfills BACnetHostAddressName.
+// This is useful for switch cases.
+type BACnetHostAddressNameExactly interface {
+	isBACnetHostAddressName() bool
+}
+
 // _BACnetHostAddressName is the data-structure of this message
 type _BACnetHostAddressName struct {
 	*_BACnetHostAddress
@@ -176,6 +182,10 @@ func (m *_BACnetHostAddressName) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetHostAddressName) isBACnetHostAddressName() bool {
+	return true
 }
 
 func (m *_BACnetHostAddressName) String() string {

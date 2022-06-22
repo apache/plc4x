@@ -40,6 +40,12 @@ type BACnetLiftCarDriveStatusTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetLiftCarDriveStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDriveStatusTagged.
+// This is useful for switch cases.
+type BACnetLiftCarDriveStatusTaggedExactly interface {
+	isBACnetLiftCarDriveStatusTagged() bool
+}
+
 // _BACnetLiftCarDriveStatusTagged is the data-structure of this message
 type _BACnetLiftCarDriveStatusTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetLiftCarDriveStatusTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarDriveStatusTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarDriveStatusTagged) isBACnetLiftCarDriveStatusTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarDriveStatusTagged) String() string {

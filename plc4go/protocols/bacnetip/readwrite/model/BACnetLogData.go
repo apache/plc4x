@@ -40,6 +40,12 @@ type BACnetLogData interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetLogDataExactly can be used when we want exactly this type and not a type which fulfills BACnetLogData.
+// This is useful for switch cases.
+type BACnetLogDataExactly interface {
+	isBACnetLogData() bool
+}
+
 // _BACnetLogData is the data-structure of this message
 type _BACnetLogData struct {
 	_BACnetLogDataChildRequirements
@@ -52,9 +58,9 @@ type _BACnetLogData struct {
 }
 
 type _BACnetLogDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLogDataParent interface {
@@ -63,7 +69,7 @@ type BACnetLogDataParent interface {
 }
 
 type BACnetLogDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetLogData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetLogData
 
@@ -273,6 +279,10 @@ func (pm *_BACnetLogData) SerializeParent(writeBuffer utils.WriteBuffer, child B
 		return errors.Wrap(popErr, "Error popping for BACnetLogData")
 	}
 	return nil
+}
+
+func (m *_BACnetLogData) isBACnetLogData() bool {
+	return true
 }
 
 func (m *_BACnetLogData) String() string {

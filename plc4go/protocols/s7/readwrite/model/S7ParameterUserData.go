@@ -35,6 +35,12 @@ type S7ParameterUserData interface {
 	GetItems() []S7ParameterUserDataItem
 }
 
+// S7ParameterUserDataExactly can be used when we want exactly this type and not a type which fulfills S7ParameterUserData.
+// This is useful for switch cases.
+type S7ParameterUserDataExactly interface {
+	isS7ParameterUserData() bool
+}
+
 // _S7ParameterUserData is the data-structure of this message
 type _S7ParameterUserData struct {
 	*_S7Parameter
@@ -214,6 +220,10 @@ func (m *_S7ParameterUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterUserData) isS7ParameterUserData() bool {
+	return true
 }
 
 func (m *_S7ParameterUserData) String() string {

@@ -38,6 +38,12 @@ type EipConnectionRequest interface {
 	EipPacket
 }
 
+// EipConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills EipConnectionRequest.
+// This is useful for switch cases.
+type EipConnectionRequestExactly interface {
+	isEipConnectionRequest() bool
+}
+
 // _EipConnectionRequest is the data-structure of this message
 type _EipConnectionRequest struct {
 	*_EipPacket
@@ -195,6 +201,10 @@ func (m *_EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_EipConnectionRequest) isEipConnectionRequest() bool {
+	return true
 }
 
 func (m *_EipConnectionRequest) String() string {

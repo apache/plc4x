@@ -35,6 +35,12 @@ type ModbusPDUReadDiscreteInputsResponse interface {
 	GetValue() []byte
 }
 
+// ModbusPDUReadDiscreteInputsResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDiscreteInputsResponse.
+// This is useful for switch cases.
+type ModbusPDUReadDiscreteInputsResponseExactly interface {
+	isModbusPDUReadDiscreteInputsResponse() bool
+}
+
 // _ModbusPDUReadDiscreteInputsResponse is the data-structure of this message
 type _ModbusPDUReadDiscreteInputsResponse struct {
 	*_ModbusPDU
@@ -195,6 +201,10 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadDiscreteInputsResponse) isModbusPDUReadDiscreteInputsResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadDiscreteInputsResponse) String() string {

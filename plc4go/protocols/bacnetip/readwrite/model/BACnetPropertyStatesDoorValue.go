@@ -35,6 +35,12 @@ type BACnetPropertyStatesDoorValue interface {
 	GetDoorValue() BACnetDoorValueTagged
 }
 
+// BACnetPropertyStatesDoorValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesDoorValue.
+// This is useful for switch cases.
+type BACnetPropertyStatesDoorValueExactly interface {
+	isBACnetPropertyStatesDoorValue() bool
+}
+
 // _BACnetPropertyStatesDoorValue is the data-structure of this message
 type _BACnetPropertyStatesDoorValue struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesDoorValue) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesDoorValue) isBACnetPropertyStatesDoorValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesDoorValue) String() string {

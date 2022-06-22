@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueReal interface {
 	GetRealValue() BACnetApplicationTagReal
 }
 
+// BACnetTimerStateChangeValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueReal.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueRealExactly interface {
+	isBACnetTimerStateChangeValueReal() bool
+}
+
 // _BACnetTimerStateChangeValueReal is the data-structure of this message
 type _BACnetTimerStateChangeValueReal struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueReal) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueReal) isBACnetTimerStateChangeValueReal() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueReal) String() string {

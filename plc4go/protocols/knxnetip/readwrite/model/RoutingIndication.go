@@ -33,6 +33,12 @@ type RoutingIndication interface {
 	KnxNetIpMessage
 }
 
+// RoutingIndicationExactly can be used when we want exactly this type and not a type which fulfills RoutingIndication.
+// This is useful for switch cases.
+type RoutingIndicationExactly interface {
+	isRoutingIndication() bool
+}
+
 // _RoutingIndication is the data-structure of this message
 type _RoutingIndication struct {
 	*_KnxNetIpMessage
@@ -131,6 +137,10 @@ func (m *_RoutingIndication) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_RoutingIndication) isRoutingIndication() bool {
+	return true
 }
 
 func (m *_RoutingIndication) String() string {

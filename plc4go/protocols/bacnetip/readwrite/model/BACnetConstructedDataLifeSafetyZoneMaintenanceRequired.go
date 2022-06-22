@@ -37,6 +37,12 @@ type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyZoneMaintenanceRequired.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly interface {
+	isBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() bool
+}
+
 // _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) Serialize(writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) isBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) String() string {

@@ -40,6 +40,12 @@ type BACnetRestartReasonTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetRestartReasonTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRestartReasonTagged.
+// This is useful for switch cases.
+type BACnetRestartReasonTaggedExactly interface {
+	isBACnetRestartReasonTagged() bool
+}
+
 // _BACnetRestartReasonTagged is the data-structure of this message
 type _BACnetRestartReasonTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetRestartReasonTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetRestartReasonTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetRestartReasonTagged) isBACnetRestartReasonTagged() bool {
+	return true
 }
 
 func (m *_BACnetRestartReasonTagged) String() string {

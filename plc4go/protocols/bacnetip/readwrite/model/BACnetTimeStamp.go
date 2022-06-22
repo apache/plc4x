@@ -36,6 +36,12 @@ type BACnetTimeStamp interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetTimeStampExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStamp.
+// This is useful for switch cases.
+type BACnetTimeStampExactly interface {
+	isBACnetTimeStamp() bool
+}
+
 // _BACnetTimeStamp is the data-structure of this message
 type _BACnetTimeStamp struct {
 	_BACnetTimeStampChildRequirements
@@ -43,9 +49,9 @@ type _BACnetTimeStamp struct {
 }
 
 type _BACnetTimeStampChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetTimeStampParent interface {
@@ -54,7 +60,7 @@ type BACnetTimeStampParent interface {
 }
 
 type BACnetTimeStampChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetTimeStamp, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetTimeStamp
 
@@ -200,6 +206,10 @@ func (pm *_BACnetTimeStamp) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(popErr, "Error popping for BACnetTimeStamp")
 	}
 	return nil
+}
+
+func (m *_BACnetTimeStamp) isBACnetTimeStamp() bool {
+	return true
 }
 
 func (m *_BACnetTimeStamp) String() string {

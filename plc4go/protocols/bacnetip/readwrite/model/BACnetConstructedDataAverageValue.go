@@ -37,6 +37,12 @@ type BACnetConstructedDataAverageValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataAverageValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAverageValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAverageValueExactly interface {
+	isBACnetConstructedDataAverageValue() bool
+}
+
 // _BACnetConstructedDataAverageValue is the data-structure of this message
 type _BACnetConstructedDataAverageValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAverageValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAverageValue) isBACnetConstructedDataAverageValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAverageValue) String() string {

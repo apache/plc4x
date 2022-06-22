@@ -40,6 +40,12 @@ type BACnetAccessCredentialDisableTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetAccessCredentialDisableTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessCredentialDisableTagged.
+// This is useful for switch cases.
+type BACnetAccessCredentialDisableTaggedExactly interface {
+	isBACnetAccessCredentialDisableTagged() bool
+}
+
 // _BACnetAccessCredentialDisableTagged is the data-structure of this message
 type _BACnetAccessCredentialDisableTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetAccessCredentialDisableTagged) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetAccessCredentialDisableTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessCredentialDisableTagged) isBACnetAccessCredentialDisableTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessCredentialDisableTagged) String() string {

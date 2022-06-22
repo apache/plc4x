@@ -40,6 +40,12 @@ type COTPPacket interface {
 	GetPayload() S7Message
 }
 
+// COTPPacketExactly can be used when we want exactly this type and not a type which fulfills COTPPacket.
+// This is useful for switch cases.
+type COTPPacketExactly interface {
+	isCOTPPacket() bool
+}
+
 // _COTPPacket is the data-structure of this message
 type _COTPPacket struct {
 	_COTPPacketChildRequirements
@@ -51,10 +57,10 @@ type _COTPPacket struct {
 }
 
 type _COTPPacketChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetTpduCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type COTPPacketParent interface {
@@ -63,7 +69,7 @@ type COTPPacketParent interface {
 }
 
 type COTPPacketChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent COTPPacket, parameters []COTPParameter, payload S7Message)
 	GetParent() *COTPPacket
 
@@ -312,6 +318,10 @@ func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTP
 		return errors.Wrap(popErr, "Error popping for COTPPacket")
 	}
 	return nil
+}
+
+func (m *_COTPPacket) isCOTPPacket() bool {
+	return true
 }
 
 func (m *_COTPPacket) String() string {

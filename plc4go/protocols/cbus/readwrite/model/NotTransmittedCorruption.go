@@ -33,6 +33,12 @@ type NotTransmittedCorruption interface {
 	Confirmation
 }
 
+// NotTransmittedCorruptionExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedCorruption.
+// This is useful for switch cases.
+type NotTransmittedCorruptionExactly interface {
+	isNotTransmittedCorruption() bool
+}
+
 // _NotTransmittedCorruption is the data-structure of this message
 type _NotTransmittedCorruption struct {
 	*_Confirmation
@@ -133,6 +139,10 @@ func (m *_NotTransmittedCorruption) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NotTransmittedCorruption) isNotTransmittedCorruption() bool {
+	return true
 }
 
 func (m *_NotTransmittedCorruption) String() string {

@@ -36,6 +36,12 @@ type BACnetProtocolLevelTagged interface {
 	GetValue() BACnetProtocolLevel
 }
 
+// BACnetProtocolLevelTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetProtocolLevelTagged.
+// This is useful for switch cases.
+type BACnetProtocolLevelTaggedExactly interface {
+	isBACnetProtocolLevelTagged() bool
+}
+
 // _BACnetProtocolLevelTagged is the data-structure of this message
 type _BACnetProtocolLevelTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetProtocolLevelTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetProtocolLevelTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetProtocolLevelTagged) isBACnetProtocolLevelTagged() bool {
+	return true
 }
 
 func (m *_BACnetProtocolLevelTagged) String() string {

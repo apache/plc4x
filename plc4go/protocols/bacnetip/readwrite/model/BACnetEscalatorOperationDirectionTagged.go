@@ -40,6 +40,12 @@ type BACnetEscalatorOperationDirectionTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetEscalatorOperationDirectionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEscalatorOperationDirectionTagged.
+// This is useful for switch cases.
+type BACnetEscalatorOperationDirectionTaggedExactly interface {
+	isBACnetEscalatorOperationDirectionTagged() bool
+}
+
 // _BACnetEscalatorOperationDirectionTagged is the data-structure of this message
 type _BACnetEscalatorOperationDirectionTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetEscalatorOperationDirectionTagged) Serialize(writeBuffer utils.W
 		return errors.Wrap(popErr, "Error popping for BACnetEscalatorOperationDirectionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetEscalatorOperationDirectionTagged) isBACnetEscalatorOperationDirectionTagged() bool {
+	return true
 }
 
 func (m *_BACnetEscalatorOperationDirectionTagged) String() string {

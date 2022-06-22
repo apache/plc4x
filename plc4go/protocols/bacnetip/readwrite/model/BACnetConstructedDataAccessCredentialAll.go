@@ -33,6 +33,12 @@ type BACnetConstructedDataAccessCredentialAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataAccessCredentialAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessCredentialAll.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessCredentialAllExactly interface {
+	isBACnetConstructedDataAccessCredentialAll() bool
+}
+
 // _BACnetConstructedDataAccessCredentialAll is the data-structure of this message
 type _BACnetConstructedDataAccessCredentialAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataAccessCredentialAll) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessCredentialAll) isBACnetConstructedDataAccessCredentialAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessCredentialAll) String() string {

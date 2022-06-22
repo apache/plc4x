@@ -33,6 +33,12 @@ type NotTransmittedToManyReTransmissions interface {
 	Confirmation
 }
 
+// NotTransmittedToManyReTransmissionsExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedToManyReTransmissions.
+// This is useful for switch cases.
+type NotTransmittedToManyReTransmissionsExactly interface {
+	isNotTransmittedToManyReTransmissions() bool
+}
+
 // _NotTransmittedToManyReTransmissions is the data-structure of this message
 type _NotTransmittedToManyReTransmissions struct {
 	*_Confirmation
@@ -133,6 +139,10 @@ func (m *_NotTransmittedToManyReTransmissions) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NotTransmittedToManyReTransmissions) isNotTransmittedToManyReTransmissions() bool {
+	return true
 }
 
 func (m *_NotTransmittedToManyReTransmissions) String() string {

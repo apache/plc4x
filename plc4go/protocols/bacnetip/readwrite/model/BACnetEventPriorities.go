@@ -42,6 +42,12 @@ type BACnetEventPriorities interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventPrioritiesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventPriorities.
+// This is useful for switch cases.
+type BACnetEventPrioritiesExactly interface {
+	isBACnetEventPriorities() bool
+}
+
 // _BACnetEventPriorities is the data-structure of this message
 type _BACnetEventPriorities struct {
 	OpeningTag  BACnetOpeningTag
@@ -286,6 +292,10 @@ func (m *_BACnetEventPriorities) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetEventPriorities")
 	}
 	return nil
+}
+
+func (m *_BACnetEventPriorities) isBACnetEventPriorities() bool {
+	return true
 }
 
 func (m *_BACnetEventPriorities) String() string {

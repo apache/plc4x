@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueBoolean interface {
 	GetBooleanValue() BACnetApplicationTagBoolean
 }
 
+// BACnetTimerStateChangeValueBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueBoolean.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueBooleanExactly interface {
+	isBACnetTimerStateChangeValueBoolean() bool
+}
+
 // _BACnetTimerStateChangeValueBoolean is the data-structure of this message
 type _BACnetTimerStateChangeValueBoolean struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueBoolean) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueBoolean) isBACnetTimerStateChangeValueBoolean() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueBoolean) String() string {

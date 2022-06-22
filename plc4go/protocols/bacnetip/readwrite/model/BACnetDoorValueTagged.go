@@ -36,6 +36,12 @@ type BACnetDoorValueTagged interface {
 	GetValue() BACnetDoorValue
 }
 
+// BACnetDoorValueTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDoorValueTagged.
+// This is useful for switch cases.
+type BACnetDoorValueTaggedExactly interface {
+	isBACnetDoorValueTagged() bool
+}
+
 // _BACnetDoorValueTagged is the data-structure of this message
 type _BACnetDoorValueTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetDoorValueTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetDoorValueTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetDoorValueTagged) isBACnetDoorValueTagged() bool {
+	return true
 }
 
 func (m *_BACnetDoorValueTagged) String() string {

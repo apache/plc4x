@@ -35,6 +35,12 @@ type BACnetConstructedDataEventLogLogBuffer interface {
 	GetFloorText() []BACnetEventLogRecord
 }
 
+// BACnetConstructedDataEventLogLogBufferExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventLogLogBuffer.
+// This is useful for switch cases.
+type BACnetConstructedDataEventLogLogBufferExactly interface {
+	isBACnetConstructedDataEventLogLogBuffer() bool
+}
+
 // _BACnetConstructedDataEventLogLogBuffer is the data-structure of this message
 type _BACnetConstructedDataEventLogLogBuffer struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataEventLogLogBuffer) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventLogLogBuffer) isBACnetConstructedDataEventLogLogBuffer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventLogLogBuffer) String() string {

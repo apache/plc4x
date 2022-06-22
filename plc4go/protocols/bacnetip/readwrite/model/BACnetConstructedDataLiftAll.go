@@ -33,6 +33,12 @@ type BACnetConstructedDataLiftAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataLiftAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLiftAll.
+// This is useful for switch cases.
+type BACnetConstructedDataLiftAllExactly interface {
+	isBACnetConstructedDataLiftAll() bool
+}
+
 // _BACnetConstructedDataLiftAll is the data-structure of this message
 type _BACnetConstructedDataLiftAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataLiftAll) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLiftAll) isBACnetConstructedDataLiftAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLiftAll) String() string {

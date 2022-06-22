@@ -37,6 +37,12 @@ type BACnetConstructedDataReferencePort interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataReferencePortExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReferencePort.
+// This is useful for switch cases.
+type BACnetConstructedDataReferencePortExactly interface {
+	isBACnetConstructedDataReferencePort() bool
+}
+
 // _BACnetConstructedDataReferencePort is the data-structure of this message
 type _BACnetConstructedDataReferencePort struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataReferencePort) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReferencePort) isBACnetConstructedDataReferencePort() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReferencePort) String() string {

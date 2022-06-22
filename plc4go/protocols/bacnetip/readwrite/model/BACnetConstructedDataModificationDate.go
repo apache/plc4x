@@ -37,6 +37,12 @@ type BACnetConstructedDataModificationDate interface {
 	GetActualValue() BACnetDateTime
 }
 
+// BACnetConstructedDataModificationDateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataModificationDate.
+// This is useful for switch cases.
+type BACnetConstructedDataModificationDateExactly interface {
+	isBACnetConstructedDataModificationDate() bool
+}
+
 // _BACnetConstructedDataModificationDate is the data-structure of this message
 type _BACnetConstructedDataModificationDate struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataModificationDate) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataModificationDate) isBACnetConstructedDataModificationDate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataModificationDate) String() string {

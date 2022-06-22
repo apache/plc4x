@@ -35,6 +35,12 @@ type NLMDisconnectConnectionToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 }
 
+// NLMDisconnectConnectionToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMDisconnectConnectionToNetwork.
+// This is useful for switch cases.
+type NLMDisconnectConnectionToNetworkExactly interface {
+	isNLMDisconnectConnectionToNetwork() bool
+}
+
 // _NLMDisconnectConnectionToNetwork is the data-structure of this message
 type _NLMDisconnectConnectionToNetwork struct {
 	*_NLM
@@ -172,6 +178,10 @@ func (m *_NLMDisconnectConnectionToNetwork) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMDisconnectConnectionToNetwork) isNLMDisconnectConnectionToNetwork() bool {
+	return true
 }
 
 func (m *_NLMDisconnectConnectionToNetwork) String() string {

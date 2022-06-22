@@ -37,6 +37,12 @@ type BACnetConstructedDataLocalForwardingOnly interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataLocalForwardingOnlyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocalForwardingOnly.
+// This is useful for switch cases.
+type BACnetConstructedDataLocalForwardingOnlyExactly interface {
+	isBACnetConstructedDataLocalForwardingOnly() bool
+}
+
 // _BACnetConstructedDataLocalForwardingOnly is the data-structure of this message
 type _BACnetConstructedDataLocalForwardingOnly struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLocalForwardingOnly) isBACnetConstructedDataLocalForwardingOnly() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLocalForwardingOnly) String() string {

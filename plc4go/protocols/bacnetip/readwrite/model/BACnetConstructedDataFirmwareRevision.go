@@ -37,6 +37,12 @@ type BACnetConstructedDataFirmwareRevision interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataFirmwareRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFirmwareRevision.
+// This is useful for switch cases.
+type BACnetConstructedDataFirmwareRevisionExactly interface {
+	isBACnetConstructedDataFirmwareRevision() bool
+}
+
 // _BACnetConstructedDataFirmwareRevision is the data-structure of this message
 type _BACnetConstructedDataFirmwareRevision struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFirmwareRevision) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFirmwareRevision) isBACnetConstructedDataFirmwareRevision() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFirmwareRevision) String() string {

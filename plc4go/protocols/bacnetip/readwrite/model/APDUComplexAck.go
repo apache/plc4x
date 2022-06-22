@@ -55,6 +55,12 @@ type APDUComplexAck interface {
 	GetSegmentReduction() uint16
 }
 
+// APDUComplexAckExactly can be used when we want exactly this type and not a type which fulfills APDUComplexAck.
+// This is useful for switch cases.
+type APDUComplexAckExactly interface {
+	isAPDUComplexAck() bool
+}
+
 // _APDUComplexAck is the data-structure of this message
 type _APDUComplexAck struct {
 	*_APDU
@@ -498,6 +504,10 @@ func (m *_APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUComplexAck) isAPDUComplexAck() bool {
+	return true
 }
 
 func (m *_APDUComplexAck) String() string {

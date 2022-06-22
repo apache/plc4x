@@ -48,6 +48,12 @@ type CBusOptions interface {
 	GetPcn() bool
 }
 
+// CBusOptionsExactly can be used when we want exactly this type and not a type which fulfills CBusOptions.
+// This is useful for switch cases.
+type CBusOptionsExactly interface {
+	isCBusOptions() bool
+}
+
 // _CBusOptions is the data-structure of this message
 type _CBusOptions struct {
 	Connect bool
@@ -300,6 +306,10 @@ func (m *_CBusOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CBusOptions")
 	}
 	return nil
+}
+
+func (m *_CBusOptions) isCBusOptions() bool {
+	return true
 }
 
 func (m *_CBusOptions) String() string {

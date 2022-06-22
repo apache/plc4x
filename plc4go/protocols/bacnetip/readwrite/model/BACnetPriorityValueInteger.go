@@ -35,6 +35,12 @@ type BACnetPriorityValueInteger interface {
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetPriorityValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueInteger.
+// This is useful for switch cases.
+type BACnetPriorityValueIntegerExactly interface {
+	isBACnetPriorityValueInteger() bool
+}
+
 // _BACnetPriorityValueInteger is the data-structure of this message
 type _BACnetPriorityValueInteger struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueInteger) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueInteger) isBACnetPriorityValueInteger() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueInteger) String() string {

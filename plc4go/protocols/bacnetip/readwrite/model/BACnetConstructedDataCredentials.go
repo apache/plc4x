@@ -35,6 +35,12 @@ type BACnetConstructedDataCredentials interface {
 	GetCredentials() []BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataCredentialsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentials.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialsExactly interface {
+	isBACnetConstructedDataCredentials() bool
+}
+
 // _BACnetConstructedDataCredentials is the data-structure of this message
 type _BACnetConstructedDataCredentials struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataCredentials) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentials) isBACnetConstructedDataCredentials() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentials) String() string {

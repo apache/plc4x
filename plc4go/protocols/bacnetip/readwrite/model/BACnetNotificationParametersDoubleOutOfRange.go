@@ -45,6 +45,12 @@ type BACnetNotificationParametersDoubleOutOfRange interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersDoubleOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersDoubleOutOfRange.
+// This is useful for switch cases.
+type BACnetNotificationParametersDoubleOutOfRangeExactly interface {
+	isBACnetNotificationParametersDoubleOutOfRange() bool
+}
+
 // _BACnetNotificationParametersDoubleOutOfRange is the data-structure of this message
 type _BACnetNotificationParametersDoubleOutOfRange struct {
 	*_BACnetNotificationParameters
@@ -367,6 +373,10 @@ func (m *_BACnetNotificationParametersDoubleOutOfRange) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersDoubleOutOfRange) isBACnetNotificationParametersDoubleOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersDoubleOutOfRange) String() string {

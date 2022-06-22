@@ -35,6 +35,12 @@ type IdentifyReplyCommandFirmwareVersion interface {
 	GetFirmwareVersion() string
 }
 
+// IdentifyReplyCommandFirmwareVersionExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandFirmwareVersion.
+// This is useful for switch cases.
+type IdentifyReplyCommandFirmwareVersionExactly interface {
+	isIdentifyReplyCommandFirmwareVersion() bool
+}
+
 // _IdentifyReplyCommandFirmwareVersion is the data-structure of this message
 type _IdentifyReplyCommandFirmwareVersion struct {
 	*_IdentifyReplyCommand
@@ -167,6 +173,10 @@ func (m *_IdentifyReplyCommandFirmwareVersion) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersion) isIdentifyReplyCommandFirmwareVersion() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandFirmwareVersion) String() string {

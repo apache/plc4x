@@ -38,6 +38,12 @@ type BACnetSpecialEvent interface {
 	GetEventPriority() BACnetContextTagUnsignedInteger
 }
 
+// BACnetSpecialEventExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEvent.
+// This is useful for switch cases.
+type BACnetSpecialEventExactly interface {
+	isBACnetSpecialEvent() bool
+}
+
 // _BACnetSpecialEvent is the data-structure of this message
 type _BACnetSpecialEvent struct {
 	Period           BACnetSpecialEventPeriod
@@ -213,6 +219,10 @@ func (m *_BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetSpecialEvent")
 	}
 	return nil
+}
+
+func (m *_BACnetSpecialEvent) isBACnetSpecialEvent() bool {
+	return true
 }
 
 func (m *_BACnetSpecialEvent) String() string {

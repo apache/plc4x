@@ -36,6 +36,12 @@ type BACnetNetworkNumberQualityTagged interface {
 	GetValue() BACnetNetworkNumberQuality
 }
 
+// BACnetNetworkNumberQualityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkNumberQualityTagged.
+// This is useful for switch cases.
+type BACnetNetworkNumberQualityTaggedExactly interface {
+	isBACnetNetworkNumberQualityTagged() bool
+}
+
 // _BACnetNetworkNumberQualityTagged is the data-structure of this message
 type _BACnetNetworkNumberQualityTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetNetworkNumberQualityTagged) Serialize(writeBuffer utils.WriteBuf
 		return errors.Wrap(popErr, "Error popping for BACnetNetworkNumberQualityTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetNetworkNumberQualityTagged) isBACnetNetworkNumberQualityTagged() bool {
+	return true
 }
 
 func (m *_BACnetNetworkNumberQualityTagged) String() string {

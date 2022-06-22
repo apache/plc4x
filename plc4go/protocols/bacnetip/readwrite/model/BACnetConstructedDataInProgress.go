@@ -37,6 +37,12 @@ type BACnetConstructedDataInProgress interface {
 	GetActualValue() BACnetLightingInProgressTagged
 }
 
+// BACnetConstructedDataInProgressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInProgress.
+// This is useful for switch cases.
+type BACnetConstructedDataInProgressExactly interface {
+	isBACnetConstructedDataInProgress() bool
+}
+
 // _BACnetConstructedDataInProgress is the data-structure of this message
 type _BACnetConstructedDataInProgress struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataInProgress) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInProgress) isBACnetConstructedDataInProgress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInProgress) String() string {

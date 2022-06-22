@@ -36,6 +36,12 @@ type BACnetFaultTypeTagged interface {
 	GetValue() BACnetFaultType
 }
 
+// BACnetFaultTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultTypeTagged.
+// This is useful for switch cases.
+type BACnetFaultTypeTaggedExactly interface {
+	isBACnetFaultTypeTagged() bool
+}
+
 // _BACnetFaultTypeTagged is the data-structure of this message
 type _BACnetFaultTypeTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetFaultTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetFaultTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultTypeTagged) isBACnetFaultTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetFaultTypeTagged) String() string {

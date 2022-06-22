@@ -37,6 +37,12 @@ type BACnetConstructedDataFaultParameters interface {
 	GetActualValue() BACnetFaultParameter
 }
 
+// BACnetConstructedDataFaultParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFaultParameters.
+// This is useful for switch cases.
+type BACnetConstructedDataFaultParametersExactly interface {
+	isBACnetConstructedDataFaultParameters() bool
+}
+
 // _BACnetConstructedDataFaultParameters is the data-structure of this message
 type _BACnetConstructedDataFaultParameters struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFaultParameters) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFaultParameters) isBACnetConstructedDataFaultParameters() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFaultParameters) String() string {

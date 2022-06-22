@@ -37,6 +37,12 @@ type BACnetConstructedDataCarPosition interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataCarPositionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarPosition.
+// This is useful for switch cases.
+type BACnetConstructedDataCarPositionExactly interface {
+	isBACnetConstructedDataCarPosition() bool
+}
+
 // _BACnetConstructedDataCarPosition is the data-structure of this message
 type _BACnetConstructedDataCarPosition struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCarPosition) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarPosition) isBACnetConstructedDataCarPosition() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarPosition) String() string {

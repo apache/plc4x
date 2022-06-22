@@ -41,6 +41,12 @@ type BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty.
+// This is useful for switch cases.
+type BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyExactly interface {
+	isBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty() bool
+}
+
 // _BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty is the data-structure of this message
 type _BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) Serializ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) isBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) String() string {

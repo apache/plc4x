@@ -38,6 +38,12 @@ type BACnetBDTEntry interface {
 	GetBroadcastMask() BACnetContextTagOctetString
 }
 
+// BACnetBDTEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetBDTEntry.
+// This is useful for switch cases.
+type BACnetBDTEntryExactly interface {
+	isBACnetBDTEntry() bool
+}
+
 // _BACnetBDTEntry is the data-structure of this message
 type _BACnetBDTEntry struct {
 	BbmdAddress   BACnetHostNPortEnclosed
@@ -195,6 +201,10 @@ func (m *_BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetBDTEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetBDTEntry) isBACnetBDTEntry() bool {
+	return true
 }
 
 func (m *_BACnetBDTEntry) String() string {

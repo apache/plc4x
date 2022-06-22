@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryNullExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryNull.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryNullExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryNull() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryNull is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryNull struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) isBACnetFaultParameterFaultExtendedParametersEntryNull() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) String() string {

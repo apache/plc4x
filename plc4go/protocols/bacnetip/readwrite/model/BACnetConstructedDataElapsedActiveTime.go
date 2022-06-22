@@ -37,6 +37,12 @@ type BACnetConstructedDataElapsedActiveTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataElapsedActiveTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElapsedActiveTime.
+// This is useful for switch cases.
+type BACnetConstructedDataElapsedActiveTimeExactly interface {
+	isBACnetConstructedDataElapsedActiveTime() bool
+}
+
 // _BACnetConstructedDataElapsedActiveTime is the data-structure of this message
 type _BACnetConstructedDataElapsedActiveTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataElapsedActiveTime) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataElapsedActiveTime) isBACnetConstructedDataElapsedActiveTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataElapsedActiveTime) String() string {

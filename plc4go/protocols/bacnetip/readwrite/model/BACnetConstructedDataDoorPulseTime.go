@@ -37,6 +37,12 @@ type BACnetConstructedDataDoorPulseTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDoorPulseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorPulseTime.
+// This is useful for switch cases.
+type BACnetConstructedDataDoorPulseTimeExactly interface {
+	isBACnetConstructedDataDoorPulseTime() bool
+}
+
 // _BACnetConstructedDataDoorPulseTime is the data-structure of this message
 type _BACnetConstructedDataDoorPulseTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDoorPulseTime) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoorPulseTime) isBACnetConstructedDataDoorPulseTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoorPulseTime) String() string {

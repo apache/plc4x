@@ -37,6 +37,12 @@ type BACnetConstructedDataMaintenanceRequired interface {
 	GetActualValue() BACnetMaintenanceTagged
 }
 
+// BACnetConstructedDataMaintenanceRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaintenanceRequired.
+// This is useful for switch cases.
+type BACnetConstructedDataMaintenanceRequiredExactly interface {
+	isBACnetConstructedDataMaintenanceRequired() bool
+}
+
 // _BACnetConstructedDataMaintenanceRequired is the data-structure of this message
 type _BACnetConstructedDataMaintenanceRequired struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMaintenanceRequired) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaintenanceRequired) isBACnetConstructedDataMaintenanceRequired() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaintenanceRequired) String() string {

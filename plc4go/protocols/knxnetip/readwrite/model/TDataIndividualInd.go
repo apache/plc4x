@@ -33,6 +33,12 @@ type TDataIndividualInd interface {
 	CEMI
 }
 
+// TDataIndividualIndExactly can be used when we want exactly this type and not a type which fulfills TDataIndividualInd.
+// This is useful for switch cases.
+type TDataIndividualIndExactly interface {
+	isTDataIndividualInd() bool
+}
+
 // _TDataIndividualInd is the data-structure of this message
 type _TDataIndividualInd struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_TDataIndividualInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TDataIndividualInd) isTDataIndividualInd() bool {
+	return true
 }
 
 func (m *_TDataIndividualInd) String() string {

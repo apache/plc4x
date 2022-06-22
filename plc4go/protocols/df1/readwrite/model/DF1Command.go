@@ -38,6 +38,12 @@ type DF1Command interface {
 	GetTransactionCounter() uint16
 }
 
+// DF1CommandExactly can be used when we want exactly this type and not a type which fulfills DF1Command.
+// This is useful for switch cases.
+type DF1CommandExactly interface {
+	isDF1Command() bool
+}
+
 // _DF1Command is the data-structure of this message
 type _DF1Command struct {
 	_DF1CommandChildRequirements
@@ -46,10 +52,10 @@ type _DF1Command struct {
 }
 
 type _DF1CommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1CommandParent interface {
@@ -58,7 +64,7 @@ type DF1CommandParent interface {
 }
 
 type DF1CommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent DF1Command, status uint8, transactionCounter uint16)
 	GetParent() *DF1Command
 
@@ -224,6 +230,10 @@ func (pm *_DF1Command) SerializeParent(writeBuffer utils.WriteBuffer, child DF1C
 		return errors.Wrap(popErr, "Error popping for DF1Command")
 	}
 	return nil
+}
+
+func (m *_DF1Command) isDF1Command() bool {
+	return true
 }
 
 func (m *_DF1Command) String() string {

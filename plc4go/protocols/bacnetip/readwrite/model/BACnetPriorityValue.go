@@ -38,6 +38,12 @@ type BACnetPriorityValue interface {
 	GetPeekedIsContextTag() bool
 }
 
+// BACnetPriorityValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValue.
+// This is useful for switch cases.
+type BACnetPriorityValueExactly interface {
+	isBACnetPriorityValue() bool
+}
+
 // _BACnetPriorityValue is the data-structure of this message
 type _BACnetPriorityValue struct {
 	_BACnetPriorityValueChildRequirements
@@ -48,9 +54,9 @@ type _BACnetPriorityValue struct {
 }
 
 type _BACnetPriorityValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetPriorityValueParent interface {
@@ -59,7 +65,7 @@ type BACnetPriorityValueParent interface {
 }
 
 type BACnetPriorityValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetPriorityValue, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetPriorityValue
 
@@ -249,6 +255,10 @@ func (pm *_BACnetPriorityValue) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(popErr, "Error popping for BACnetPriorityValue")
 	}
 	return nil
+}
+
+func (m *_BACnetPriorityValue) isBACnetPriorityValue() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValue) String() string {

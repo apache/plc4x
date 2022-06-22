@@ -37,6 +37,12 @@ type BACnetConstructedDataDerivativeConstantUnits interface {
 	GetActualValue() BACnetEngineeringUnitsTagged
 }
 
+// BACnetConstructedDataDerivativeConstantUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDerivativeConstantUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataDerivativeConstantUnitsExactly interface {
+	isBACnetConstructedDataDerivativeConstantUnits() bool
+}
+
 // _BACnetConstructedDataDerivativeConstantUnits is the data-structure of this message
 type _BACnetConstructedDataDerivativeConstantUnits struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDerivativeConstantUnits) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantUnits) isBACnetConstructedDataDerivativeConstantUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDerivativeConstantUnits) String() string {

@@ -36,6 +36,12 @@ type BACnetTagPayloadEnumerated interface {
 	GetActualValue() uint32
 }
 
+// BACnetTagPayloadEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadEnumerated.
+// This is useful for switch cases.
+type BACnetTagPayloadEnumeratedExactly interface {
+	isBACnetTagPayloadEnumerated() bool
+}
+
 // _BACnetTagPayloadEnumerated is the data-structure of this message
 type _BACnetTagPayloadEnumerated struct {
 	Data []byte
@@ -164,6 +170,10 @@ func (m *_BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadEnumerated")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadEnumerated) isBACnetTagPayloadEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadEnumerated) String() string {

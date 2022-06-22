@@ -50,6 +50,12 @@ type AmsPacket interface {
 	GetData() AdsData
 }
 
+// AmsPacketExactly can be used when we want exactly this type and not a type which fulfills AmsPacket.
+// This is useful for switch cases.
+type AmsPacketExactly interface {
+	isAmsPacket() bool
+}
+
 // _AmsPacket is the data-structure of this message
 type _AmsPacket struct {
 	TargetAmsNetId AmsNetId
@@ -396,6 +402,10 @@ func (m *_AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsPacket")
 	}
 	return nil
+}
+
+func (m *_AmsPacket) isAmsPacket() bool {
+	return true
 }
 
 func (m *_AmsPacket) String() string {

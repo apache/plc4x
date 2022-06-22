@@ -35,6 +35,12 @@ type BACnetChannelValueLightingCommand interface {
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
 }
 
+// BACnetChannelValueLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueLightingCommand.
+// This is useful for switch cases.
+type BACnetChannelValueLightingCommandExactly interface {
+	isBACnetChannelValueLightingCommand() bool
+}
+
 // _BACnetChannelValueLightingCommand is the data-structure of this message
 type _BACnetChannelValueLightingCommand struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueLightingCommand) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueLightingCommand) isBACnetChannelValueLightingCommand() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueLightingCommand) String() string {

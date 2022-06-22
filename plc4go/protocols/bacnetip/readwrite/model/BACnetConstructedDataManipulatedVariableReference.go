@@ -37,6 +37,12 @@ type BACnetConstructedDataManipulatedVariableReference interface {
 	GetActualValue() BACnetObjectPropertyReference
 }
 
+// BACnetConstructedDataManipulatedVariableReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataManipulatedVariableReference.
+// This is useful for switch cases.
+type BACnetConstructedDataManipulatedVariableReferenceExactly interface {
+	isBACnetConstructedDataManipulatedVariableReference() bool
+}
+
 // _BACnetConstructedDataManipulatedVariableReference is the data-structure of this message
 type _BACnetConstructedDataManipulatedVariableReference struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataManipulatedVariableReference) isBACnetConstructedDataManipulatedVariableReference() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataManipulatedVariableReference) String() string {

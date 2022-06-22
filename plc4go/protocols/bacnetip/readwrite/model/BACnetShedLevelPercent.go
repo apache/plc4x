@@ -35,6 +35,12 @@ type BACnetShedLevelPercent interface {
 	GetPercent() BACnetContextTagUnsignedInteger
 }
 
+// BACnetShedLevelPercentExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevelPercent.
+// This is useful for switch cases.
+type BACnetShedLevelPercentExactly interface {
+	isBACnetShedLevelPercent() bool
+}
+
 // _BACnetShedLevelPercent is the data-structure of this message
 type _BACnetShedLevelPercent struct {
 	*_BACnetShedLevel
@@ -176,6 +182,10 @@ func (m *_BACnetShedLevelPercent) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetShedLevelPercent) isBACnetShedLevelPercent() bool {
+	return true
 }
 
 func (m *_BACnetShedLevelPercent) String() string {

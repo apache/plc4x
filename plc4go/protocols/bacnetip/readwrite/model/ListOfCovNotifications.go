@@ -40,6 +40,12 @@ type ListOfCovNotifications interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// ListOfCovNotificationsExactly can be used when we want exactly this type and not a type which fulfills ListOfCovNotifications.
+// This is useful for switch cases.
+type ListOfCovNotificationsExactly interface {
+	isListOfCovNotifications() bool
+}
+
 // _ListOfCovNotifications is the data-structure of this message
 type _ListOfCovNotifications struct {
 	MonitoredObjectIdentifier BACnetContextTagObjectIdentifier
@@ -263,6 +269,10 @@ func (m *_ListOfCovNotifications) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for ListOfCovNotifications")
 	}
 	return nil
+}
+
+func (m *_ListOfCovNotifications) isListOfCovNotifications() bool {
+	return true
 }
 
 func (m *_ListOfCovNotifications) String() string {

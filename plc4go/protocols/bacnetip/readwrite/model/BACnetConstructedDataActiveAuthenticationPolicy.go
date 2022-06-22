@@ -37,6 +37,12 @@ type BACnetConstructedDataActiveAuthenticationPolicy interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataActiveAuthenticationPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveAuthenticationPolicy.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveAuthenticationPolicyExactly interface {
+	isBACnetConstructedDataActiveAuthenticationPolicy() bool
+}
+
 // _BACnetConstructedDataActiveAuthenticationPolicy is the data-structure of this message
 type _BACnetConstructedDataActiveAuthenticationPolicy struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataActiveAuthenticationPolicy) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveAuthenticationPolicy) isBACnetConstructedDataActiveAuthenticationPolicy() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveAuthenticationPolicy) String() string {

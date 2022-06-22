@@ -47,6 +47,12 @@ type BACnetConstructedDataEventMessageTexts interface {
 	GetToNormalText() BACnetOptionalCharacterString
 }
 
+// BACnetConstructedDataEventMessageTextsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventMessageTexts.
+// This is useful for switch cases.
+type BACnetConstructedDataEventMessageTextsExactly interface {
+	isBACnetConstructedDataEventMessageTexts() bool
+}
+
 // _BACnetConstructedDataEventMessageTexts is the data-structure of this message
 type _BACnetConstructedDataEventMessageTexts struct {
 	*_BACnetConstructedData
@@ -349,6 +355,10 @@ func (m *_BACnetConstructedDataEventMessageTexts) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventMessageTexts) isBACnetConstructedDataEventMessageTexts() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventMessageTexts) String() string {

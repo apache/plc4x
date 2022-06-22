@@ -35,6 +35,12 @@ type BACnetLogDataLogDataEntryUnsignedValue interface {
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
 }
 
+// BACnetLogDataLogDataEntryUnsignedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryUnsignedValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryUnsignedValueExactly interface {
+	isBACnetLogDataLogDataEntryUnsignedValue() bool
+}
+
 // _BACnetLogDataLogDataEntryUnsignedValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryUnsignedValue struct {
 	*_BACnetLogDataLogDataEntry
@@ -176,6 +182,10 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) isBACnetLogDataLogDataEntryUnsignedValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryUnsignedValue) String() string {

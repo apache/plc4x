@@ -47,6 +47,12 @@ type BACnetEventParameterFloatingLimit interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterFloatingLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterFloatingLimit.
+// This is useful for switch cases.
+type BACnetEventParameterFloatingLimitExactly interface {
+	isBACnetEventParameterFloatingLimit() bool
+}
+
 // _BACnetEventParameterFloatingLimit is the data-structure of this message
 type _BACnetEventParameterFloatingLimit struct {
 	*_BACnetEventParameter
@@ -398,6 +404,10 @@ func (m *_BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterFloatingLimit) isBACnetEventParameterFloatingLimit() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterFloatingLimit) String() string {

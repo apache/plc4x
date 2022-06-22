@@ -38,6 +38,12 @@ type BACnetSpecialEventListOfTimeValues interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetSpecialEventListOfTimeValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventListOfTimeValues.
+// This is useful for switch cases.
+type BACnetSpecialEventListOfTimeValuesExactly interface {
+	isBACnetSpecialEventListOfTimeValues() bool
+}
+
 // _BACnetSpecialEventListOfTimeValues is the data-structure of this message
 type _BACnetSpecialEventListOfTimeValues struct {
 	OpeningTag       BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetSpecialEventListOfTimeValues) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetSpecialEventListOfTimeValues")
 	}
 	return nil
+}
+
+func (m *_BACnetSpecialEventListOfTimeValues) isBACnetSpecialEventListOfTimeValues() bool {
+	return true
 }
 
 func (m *_BACnetSpecialEventListOfTimeValues) String() string {

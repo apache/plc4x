@@ -39,6 +39,12 @@ type BACnetUnconfirmedServiceRequestWhoIs interface {
 	GetDeviceInstanceRangeHighLimit() BACnetContextTagUnsignedInteger
 }
 
+// BACnetUnconfirmedServiceRequestWhoIsExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWhoIs.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestWhoIsExactly interface {
+	isBACnetUnconfirmedServiceRequestWhoIs() bool
+}
+
 // _BACnetUnconfirmedServiceRequestWhoIs is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestWhoIs struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -251,6 +257,10 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) isBACnetUnconfirmedServiceRequestWhoIs() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoIs) String() string {

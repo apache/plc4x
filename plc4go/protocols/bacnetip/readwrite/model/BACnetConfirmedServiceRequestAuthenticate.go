@@ -35,6 +35,12 @@ type BACnetConfirmedServiceRequestAuthenticate interface {
 	GetBytesOfRemovedService() []byte
 }
 
+// BACnetConfirmedServiceRequestAuthenticateExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAuthenticate.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAuthenticateExactly interface {
+	isBACnetConfirmedServiceRequestAuthenticate() bool
+}
+
 // _BACnetConfirmedServiceRequestAuthenticate is the data-structure of this message
 type _BACnetConfirmedServiceRequestAuthenticate struct {
 	*_BACnetConfirmedServiceRequest
@@ -175,6 +181,10 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAuthenticate) isBACnetConfirmedServiceRequestAuthenticate() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAuthenticate) String() string {

@@ -37,6 +37,12 @@ type BACnetConfirmedServiceRequestAtomicReadFileStream interface {
 	GetRequestOctetCount() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestAtomicReadFileStreamExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFileStream.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAtomicReadFileStreamExactly interface {
+	isBACnetConfirmedServiceRequestAtomicReadFileStream() bool
+}
+
 // _BACnetConfirmedServiceRequestAtomicReadFileStream is the data-structure of this message
 type _BACnetConfirmedServiceRequestAtomicReadFileStream struct {
 	*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
@@ -215,6 +221,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) isBACnetConfirmedServiceRequestAtomicReadFileStream() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) String() string {

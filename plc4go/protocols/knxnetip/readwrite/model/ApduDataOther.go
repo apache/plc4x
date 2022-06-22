@@ -35,6 +35,12 @@ type ApduDataOther interface {
 	GetExtendedApdu() ApduDataExt
 }
 
+// ApduDataOtherExactly can be used when we want exactly this type and not a type which fulfills ApduDataOther.
+// This is useful for switch cases.
+type ApduDataOtherExactly interface {
+	isApduDataOther() bool
+}
+
 // _ApduDataOther is the data-structure of this message
 type _ApduDataOther struct {
 	*_ApduData
@@ -181,6 +187,10 @@ func (m *_ApduDataOther) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataOther) isApduDataOther() bool {
+	return true
 }
 
 func (m *_ApduDataOther) String() string {

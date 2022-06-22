@@ -43,6 +43,12 @@ type MonitoredSAL interface {
 	GetSalData() SALData
 }
 
+// MonitoredSALExactly can be used when we want exactly this type and not a type which fulfills MonitoredSAL.
+// This is useful for switch cases.
+type MonitoredSALExactly interface {
+	isMonitoredSAL() bool
+}
+
 // _MonitoredSAL is the data-structure of this message
 type _MonitoredSAL struct {
 	_MonitoredSALChildRequirements
@@ -51,9 +57,9 @@ type _MonitoredSAL struct {
 }
 
 type _MonitoredSALChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type MonitoredSALParent interface {
@@ -62,7 +68,7 @@ type MonitoredSALParent interface {
 }
 
 type MonitoredSALChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent MonitoredSAL, salType byte, salData SALData)
 	GetParent() *MonitoredSAL
 
@@ -283,6 +289,10 @@ func (pm *_MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child Mo
 		return errors.Wrap(popErr, "Error popping for MonitoredSAL")
 	}
 	return nil
+}
+
+func (m *_MonitoredSAL) isMonitoredSAL() bool {
+	return true
 }
 
 func (m *_MonitoredSAL) String() string {

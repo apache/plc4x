@@ -34,6 +34,12 @@ type MACAddress interface {
 	GetAddr() []byte
 }
 
+// MACAddressExactly can be used when we want exactly this type and not a type which fulfills MACAddress.
+// This is useful for switch cases.
+type MACAddressExactly interface {
+	isMACAddress() bool
+}
+
 // _MACAddress is the data-structure of this message
 type _MACAddress struct {
 	Addr []byte
@@ -135,6 +141,10 @@ func (m *_MACAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for MACAddress")
 	}
 	return nil
+}
+
+func (m *_MACAddress) isMACAddress() bool {
+	return true
 }
 
 func (m *_MACAddress) String() string {

@@ -46,6 +46,12 @@ type AmsSerialFrame interface {
 	GetCrc() uint16
 }
 
+// AmsSerialFrameExactly can be used when we want exactly this type and not a type which fulfills AmsSerialFrame.
+// This is useful for switch cases.
+type AmsSerialFrameExactly interface {
+	isAmsSerialFrame() bool
+}
+
 // _AmsSerialFrame is the data-structure of this message
 type _AmsSerialFrame struct {
 	MagicCookie        uint16
@@ -287,6 +293,10 @@ func (m *_AmsSerialFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsSerialFrame")
 	}
 	return nil
+}
+
+func (m *_AmsSerialFrame) isAmsSerialFrame() bool {
+	return true
 }
 
 func (m *_AmsSerialFrame) String() string {

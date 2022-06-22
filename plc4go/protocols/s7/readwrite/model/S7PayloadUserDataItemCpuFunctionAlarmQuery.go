@@ -47,6 +47,12 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 	GetAlarmType() AlarmType
 }
 
+// S7PayloadUserDataItemCpuFunctionAlarmQueryExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmQuery.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionAlarmQueryExactly interface {
+	isS7PayloadUserDataItemCpuFunctionAlarmQuery() bool
+}
+
 // _S7PayloadUserDataItemCpuFunctionAlarmQuery is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 	*_S7PayloadUserDataItem
@@ -418,6 +424,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) isS7PayloadUserDataItemCpuFunctionAlarmQuery() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) String() string {

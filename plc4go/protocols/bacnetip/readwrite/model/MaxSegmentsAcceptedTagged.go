@@ -36,6 +36,12 @@ type MaxSegmentsAcceptedTagged interface {
 	GetValue() MaxSegmentsAccepted
 }
 
+// MaxSegmentsAcceptedTaggedExactly can be used when we want exactly this type and not a type which fulfills MaxSegmentsAcceptedTagged.
+// This is useful for switch cases.
+type MaxSegmentsAcceptedTaggedExactly interface {
+	isMaxSegmentsAcceptedTagged() bool
+}
+
 // _MaxSegmentsAcceptedTagged is the data-structure of this message
 type _MaxSegmentsAcceptedTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_MaxSegmentsAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for MaxSegmentsAcceptedTagged")
 	}
 	return nil
+}
+
+func (m *_MaxSegmentsAcceptedTagged) isMaxSegmentsAcceptedTagged() bool {
+	return true
 }
 
 func (m *_MaxSegmentsAcceptedTagged) String() string {

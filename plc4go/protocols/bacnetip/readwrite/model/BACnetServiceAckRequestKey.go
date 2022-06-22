@@ -35,6 +35,12 @@ type BACnetServiceAckRequestKey interface {
 	GetBytesOfRemovedService() []byte
 }
 
+// BACnetServiceAckRequestKeyExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckRequestKey.
+// This is useful for switch cases.
+type BACnetServiceAckRequestKeyExactly interface {
+	isBACnetServiceAckRequestKey() bool
+}
+
 // _BACnetServiceAckRequestKey is the data-structure of this message
 type _BACnetServiceAckRequestKey struct {
 	*_BACnetServiceAck
@@ -174,6 +180,10 @@ func (m *_BACnetServiceAckRequestKey) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckRequestKey) isBACnetServiceAckRequestKey() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckRequestKey) String() string {

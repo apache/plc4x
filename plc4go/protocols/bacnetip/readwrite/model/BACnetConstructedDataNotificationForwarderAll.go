@@ -33,6 +33,12 @@ type BACnetConstructedDataNotificationForwarderAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataNotificationForwarderAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotificationForwarderAll.
+// This is useful for switch cases.
+type BACnetConstructedDataNotificationForwarderAllExactly interface {
+	isBACnetConstructedDataNotificationForwarderAll() bool
+}
+
 // _BACnetConstructedDataNotificationForwarderAll is the data-structure of this message
 type _BACnetConstructedDataNotificationForwarderAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataNotificationForwarderAll) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAll) isBACnetConstructedDataNotificationForwarderAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNotificationForwarderAll) String() string {

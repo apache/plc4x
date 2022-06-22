@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString interf
 	GetOctetStringValue() BACnetApplicationTagOctetString
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) String() string {

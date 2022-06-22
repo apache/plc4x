@@ -37,6 +37,12 @@ type BACnetConstructedDataBACnetIPGlobalAddress interface {
 	GetActualValue() BACnetHostNPort
 }
 
+// BACnetConstructedDataBACnetIPGlobalAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPGlobalAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPGlobalAddressExactly interface {
+	isBACnetConstructedDataBACnetIPGlobalAddress() bool
+}
+
 // _BACnetConstructedDataBACnetIPGlobalAddress is the data-structure of this message
 type _BACnetConstructedDataBACnetIPGlobalAddress struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) isBACnetConstructedDataBACnetIPGlobalAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) String() string {

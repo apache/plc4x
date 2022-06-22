@@ -38,18 +38,24 @@ type ModbusPDU interface {
 	GetResponse() bool
 }
 
+// ModbusPDUExactly can be used when we want exactly this type and not a type which fulfills ModbusPDU.
+// This is useful for switch cases.
+type ModbusPDUExactly interface {
+	isModbusPDU() bool
+}
+
 // _ModbusPDU is the data-structure of this message
 type _ModbusPDU struct {
 	_ModbusPDUChildRequirements
 }
 
 type _ModbusPDUChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetErrorFlag() bool
 	GetFunctionFlag() uint8
 	GetResponse() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ModbusPDUParent interface {
@@ -58,7 +64,7 @@ type ModbusPDUParent interface {
 }
 
 type ModbusPDUChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ModbusPDU)
 	GetParent() *ModbusPDU
 
@@ -262,6 +268,10 @@ func (pm *_ModbusPDU) SerializeParent(writeBuffer utils.WriteBuffer, child Modbu
 		return errors.Wrap(popErr, "Error popping for ModbusPDU")
 	}
 	return nil
+}
+
+func (m *_ModbusPDU) isModbusPDU() bool {
+	return true
 }
 
 func (m *_ModbusPDU) String() string {

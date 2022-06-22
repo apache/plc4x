@@ -37,6 +37,12 @@ type BACnetConstructedDataAccompaniment interface {
 	GetActualValue() BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataAccompanimentExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccompaniment.
+// This is useful for switch cases.
+type BACnetConstructedDataAccompanimentExactly interface {
+	isBACnetConstructedDataAccompaniment() bool
+}
+
 // _BACnetConstructedDataAccompaniment is the data-structure of this message
 type _BACnetConstructedDataAccompaniment struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAccompaniment) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccompaniment) isBACnetConstructedDataAccompaniment() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccompaniment) String() string {

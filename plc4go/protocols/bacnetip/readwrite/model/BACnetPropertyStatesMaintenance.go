@@ -35,6 +35,12 @@ type BACnetPropertyStatesMaintenance interface {
 	GetMaintenance() BACnetMaintenanceTagged
 }
 
+// BACnetPropertyStatesMaintenanceExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesMaintenance.
+// This is useful for switch cases.
+type BACnetPropertyStatesMaintenanceExactly interface {
+	isBACnetPropertyStatesMaintenance() bool
+}
+
 // _BACnetPropertyStatesMaintenance is the data-structure of this message
 type _BACnetPropertyStatesMaintenance struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesMaintenance) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesMaintenance) isBACnetPropertyStatesMaintenance() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesMaintenance) String() string {

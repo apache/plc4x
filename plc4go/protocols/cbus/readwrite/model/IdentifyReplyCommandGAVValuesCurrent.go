@@ -35,6 +35,12 @@ type IdentifyReplyCommandGAVValuesCurrent interface {
 	GetValues() []byte
 }
 
+// IdentifyReplyCommandGAVValuesCurrentExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandGAVValuesCurrent.
+// This is useful for switch cases.
+type IdentifyReplyCommandGAVValuesCurrentExactly interface {
+	isIdentifyReplyCommandGAVValuesCurrent() bool
+}
+
 // _IdentifyReplyCommandGAVValuesCurrent is the data-structure of this message
 type _IdentifyReplyCommandGAVValuesCurrent struct {
 	*_IdentifyReplyCommand
@@ -170,6 +176,10 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrent) isIdentifyReplyCommandGAVValuesCurrent() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) String() string {

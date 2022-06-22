@@ -36,6 +36,12 @@ type BACnetPolarityTagged interface {
 	GetValue() BACnetPolarity
 }
 
+// BACnetPolarityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetPolarityTagged.
+// This is useful for switch cases.
+type BACnetPolarityTaggedExactly interface {
+	isBACnetPolarityTagged() bool
+}
+
 // _BACnetPolarityTagged is the data-structure of this message
 type _BACnetPolarityTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetPolarityTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPolarityTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetPolarityTagged) isBACnetPolarityTagged() bool {
+	return true
 }
 
 func (m *_BACnetPolarityTagged) String() string {

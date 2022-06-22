@@ -35,6 +35,12 @@ type BACnetConstructedDataEscalatorFaultSignals interface {
 	GetFaultSignals() []BACnetEscalatorFaultTagged
 }
 
+// BACnetConstructedDataEscalatorFaultSignalsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEscalatorFaultSignals.
+// This is useful for switch cases.
+type BACnetConstructedDataEscalatorFaultSignalsExactly interface {
+	isBACnetConstructedDataEscalatorFaultSignals() bool
+}
+
 // _BACnetConstructedDataEscalatorFaultSignals is the data-structure of this message
 type _BACnetConstructedDataEscalatorFaultSignals struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignals) isBACnetConstructedDataEscalatorFaultSignals() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEscalatorFaultSignals) String() string {

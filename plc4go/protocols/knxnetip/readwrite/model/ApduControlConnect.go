@@ -33,6 +33,12 @@ type ApduControlConnect interface {
 	ApduControl
 }
 
+// ApduControlConnectExactly can be used when we want exactly this type and not a type which fulfills ApduControlConnect.
+// This is useful for switch cases.
+type ApduControlConnectExactly interface {
+	isApduControlConnect() bool
+}
+
 // _ApduControlConnect is the data-structure of this message
 type _ApduControlConnect struct {
 	*_ApduControl
@@ -131,6 +137,10 @@ func (m *_ApduControlConnect) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduControlConnect) isApduControlConnect() bool {
+	return true
 }
 
 func (m *_ApduControlConnect) String() string {

@@ -35,6 +35,12 @@ type BACnetLogRecordLogDatumLogStatus interface {
 	GetLogStatus() BACnetLogStatusTagged
 }
 
+// BACnetLogRecordLogDatumLogStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumLogStatus.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumLogStatusExactly interface {
+	isBACnetLogRecordLogDatumLogStatus() bool
+}
+
 // _BACnetLogRecordLogDatumLogStatus is the data-structure of this message
 type _BACnetLogRecordLogDatumLogStatus struct {
 	*_BACnetLogRecordLogDatum
@@ -181,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumLogStatus) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatus) isBACnetLogRecordLogDatumLogStatus() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumLogStatus) String() string {

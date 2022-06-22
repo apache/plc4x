@@ -35,6 +35,12 @@ type BACnetConstructedDataVirtualMACAddressTable interface {
 	GetVirtualMacAddressTable() []BACnetVMACEntry
 }
 
+// BACnetConstructedDataVirtualMACAddressTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVirtualMACAddressTable.
+// This is useful for switch cases.
+type BACnetConstructedDataVirtualMACAddressTableExactly interface {
+	isBACnetConstructedDataVirtualMACAddressTable() bool
+}
+
 // _BACnetConstructedDataVirtualMACAddressTable is the data-structure of this message
 type _BACnetConstructedDataVirtualMACAddressTable struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataVirtualMACAddressTable) isBACnetConstructedDataVirtualMACAddressTable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataVirtualMACAddressTable) String() string {

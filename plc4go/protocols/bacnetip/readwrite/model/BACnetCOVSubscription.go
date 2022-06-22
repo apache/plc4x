@@ -44,6 +44,12 @@ type BACnetCOVSubscription interface {
 	GetCovIncrement() BACnetContextTagReal
 }
 
+// BACnetCOVSubscriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVSubscription.
+// This is useful for switch cases.
+type BACnetCOVSubscriptionExactly interface {
+	isBACnetCOVSubscription() bool
+}
+
 // _BACnetCOVSubscription is the data-structure of this message
 type _BACnetCOVSubscription struct {
 	Recipient                   BACnetRecipientProcessEnclosed
@@ -300,6 +306,10 @@ func (m *_BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetCOVSubscription")
 	}
 	return nil
+}
+
+func (m *_BACnetCOVSubscription) isBACnetCOVSubscription() bool {
+	return true
 }
 
 func (m *_BACnetCOVSubscription) String() string {

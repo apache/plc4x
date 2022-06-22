@@ -35,6 +35,12 @@ type BACnetTimeStampDateTime interface {
 	GetDateTimeValue() BACnetDateTimeEnclosed
 }
 
+// BACnetTimeStampDateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampDateTime.
+// This is useful for switch cases.
+type BACnetTimeStampDateTimeExactly interface {
+	isBACnetTimeStampDateTime() bool
+}
+
 // _BACnetTimeStampDateTime is the data-structure of this message
 type _BACnetTimeStampDateTime struct {
 	*_BACnetTimeStamp
@@ -176,6 +182,10 @@ func (m *_BACnetTimeStampDateTime) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimeStampDateTime) isBACnetTimeStampDateTime() bool {
+	return true
 }
 
 func (m *_BACnetTimeStampDateTime) String() string {

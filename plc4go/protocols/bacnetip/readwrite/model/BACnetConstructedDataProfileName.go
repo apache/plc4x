@@ -37,6 +37,12 @@ type BACnetConstructedDataProfileName interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataProfileNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProfileName.
+// This is useful for switch cases.
+type BACnetConstructedDataProfileNameExactly interface {
+	isBACnetConstructedDataProfileName() bool
+}
+
 // _BACnetConstructedDataProfileName is the data-structure of this message
 type _BACnetConstructedDataProfileName struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataProfileName) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProfileName) isBACnetConstructedDataProfileName() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProfileName) String() string {

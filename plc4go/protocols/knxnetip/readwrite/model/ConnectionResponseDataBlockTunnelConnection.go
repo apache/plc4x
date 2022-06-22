@@ -35,6 +35,12 @@ type ConnectionResponseDataBlockTunnelConnection interface {
 	GetKnxAddress() KnxAddress
 }
 
+// ConnectionResponseDataBlockTunnelConnectionExactly can be used when we want exactly this type and not a type which fulfills ConnectionResponseDataBlockTunnelConnection.
+// This is useful for switch cases.
+type ConnectionResponseDataBlockTunnelConnectionExactly interface {
+	isConnectionResponseDataBlockTunnelConnection() bool
+}
+
 // _ConnectionResponseDataBlockTunnelConnection is the data-structure of this message
 type _ConnectionResponseDataBlockTunnelConnection struct {
 	*_ConnectionResponseDataBlock
@@ -179,6 +185,10 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnection) isConnectionResponseDataBlockTunnelConnection() bool {
+	return true
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) String() string {

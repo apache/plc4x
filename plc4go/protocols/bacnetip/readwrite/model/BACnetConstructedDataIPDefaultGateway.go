@@ -37,6 +37,12 @@ type BACnetConstructedDataIPDefaultGateway interface {
 	GetActualValue() BACnetApplicationTagOctetString
 }
 
+// BACnetConstructedDataIPDefaultGatewayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDefaultGateway.
+// This is useful for switch cases.
+type BACnetConstructedDataIPDefaultGatewayExactly interface {
+	isBACnetConstructedDataIPDefaultGateway() bool
+}
+
 // _BACnetConstructedDataIPDefaultGateway is the data-structure of this message
 type _BACnetConstructedDataIPDefaultGateway struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPDefaultGateway) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPDefaultGateway) isBACnetConstructedDataIPDefaultGateway() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPDefaultGateway) String() string {

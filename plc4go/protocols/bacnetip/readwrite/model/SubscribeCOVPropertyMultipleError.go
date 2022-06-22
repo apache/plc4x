@@ -37,6 +37,12 @@ type SubscribeCOVPropertyMultipleError interface {
 	GetFirstFailedSubscription() SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
 }
 
+// SubscribeCOVPropertyMultipleErrorExactly can be used when we want exactly this type and not a type which fulfills SubscribeCOVPropertyMultipleError.
+// This is useful for switch cases.
+type SubscribeCOVPropertyMultipleErrorExactly interface {
+	isSubscribeCOVPropertyMultipleError() bool
+}
+
 // _SubscribeCOVPropertyMultipleError is the data-structure of this message
 type _SubscribeCOVPropertyMultipleError struct {
 	*_BACnetError
@@ -215,6 +221,10 @@ func (m *_SubscribeCOVPropertyMultipleError) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SubscribeCOVPropertyMultipleError) isSubscribeCOVPropertyMultipleError() bool {
+	return true
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) String() string {

@@ -36,6 +36,12 @@ type BACnetSetpointReference interface {
 	GetSetPointReference() BACnetObjectPropertyReferenceEnclosed
 }
 
+// BACnetSetpointReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetSetpointReference.
+// This is useful for switch cases.
+type BACnetSetpointReferenceExactly interface {
+	isBACnetSetpointReference() bool
+}
+
 // _BACnetSetpointReference is the data-structure of this message
 type _BACnetSetpointReference struct {
 	SetPointReference BACnetObjectPropertyReferenceEnclosed
@@ -160,6 +166,10 @@ func (m *_BACnetSetpointReference) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetSetpointReference")
 	}
 	return nil
+}
+
+func (m *_BACnetSetpointReference) isBACnetSetpointReference() bool {
+	return true
 }
 
 func (m *_BACnetSetpointReference) String() string {

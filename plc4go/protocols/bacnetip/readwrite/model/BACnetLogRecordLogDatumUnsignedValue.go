@@ -35,6 +35,12 @@ type BACnetLogRecordLogDatumUnsignedValue interface {
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
 }
 
+// BACnetLogRecordLogDatumUnsignedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumUnsignedValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumUnsignedValueExactly interface {
+	isBACnetLogRecordLogDatumUnsignedValue() bool
+}
+
 // _BACnetLogRecordLogDatumUnsignedValue is the data-structure of this message
 type _BACnetLogRecordLogDatumUnsignedValue struct {
 	*_BACnetLogRecordLogDatum
@@ -181,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumUnsignedValue) isBACnetLogRecordLogDatumUnsignedValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) String() string {

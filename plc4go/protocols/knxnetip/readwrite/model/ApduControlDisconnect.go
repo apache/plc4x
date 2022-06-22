@@ -33,6 +33,12 @@ type ApduControlDisconnect interface {
 	ApduControl
 }
 
+// ApduControlDisconnectExactly can be used when we want exactly this type and not a type which fulfills ApduControlDisconnect.
+// This is useful for switch cases.
+type ApduControlDisconnectExactly interface {
+	isApduControlDisconnect() bool
+}
+
 // _ApduControlDisconnect is the data-structure of this message
 type _ApduControlDisconnect struct {
 	*_ApduControl
@@ -131,6 +137,10 @@ func (m *_ApduControlDisconnect) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduControlDisconnect) isApduControlDisconnect() bool {
+	return true
 }
 
 func (m *_ApduControlDisconnect) String() string {

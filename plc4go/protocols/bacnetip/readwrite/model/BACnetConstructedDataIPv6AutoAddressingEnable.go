@@ -37,6 +37,12 @@ type BACnetConstructedDataIPv6AutoAddressingEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataIPv6AutoAddressingEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6AutoAddressingEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6AutoAddressingEnableExactly interface {
+	isBACnetConstructedDataIPv6AutoAddressingEnable() bool
+}
+
 // _BACnetConstructedDataIPv6AutoAddressingEnable is the data-structure of this message
 type _BACnetConstructedDataIPv6AutoAddressingEnable struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) isBACnetConstructedDataIPv6AutoAddressingEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) String() string {

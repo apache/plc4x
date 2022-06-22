@@ -37,6 +37,12 @@ type BACnetConstructedDataTimeOfStateCountReset interface {
 	GetActualValue() BACnetDateTime
 }
 
+// BACnetConstructedDataTimeOfStateCountResetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeOfStateCountReset.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeOfStateCountResetExactly interface {
+	isBACnetConstructedDataTimeOfStateCountReset() bool
+}
+
 // _BACnetConstructedDataTimeOfStateCountReset is the data-structure of this message
 type _BACnetConstructedDataTimeOfStateCountReset struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataTimeOfStateCountReset) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeOfStateCountReset) isBACnetConstructedDataTimeOfStateCountReset() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeOfStateCountReset) String() string {

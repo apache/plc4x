@@ -36,6 +36,12 @@ type BACnetHostNPort interface {
 	GetPort() BACnetContextTagUnsignedInteger
 }
 
+// BACnetHostNPortExactly can be used when we want exactly this type and not a type which fulfills BACnetHostNPort.
+// This is useful for switch cases.
+type BACnetHostNPortExactly interface {
+	isBACnetHostNPort() bool
+}
+
 // _BACnetHostNPort is the data-structure of this message
 type _BACnetHostNPort struct {
 	Host BACnetHostAddressEnclosed
@@ -178,6 +184,10 @@ func (m *_BACnetHostNPort) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetHostNPort")
 	}
 	return nil
+}
+
+func (m *_BACnetHostNPort) isBACnetHostNPort() bool {
+	return true
 }
 
 func (m *_BACnetHostNPort) String() string {

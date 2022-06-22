@@ -37,6 +37,12 @@ type BACnetConstructedDataAnalogOutputPresentValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataAnalogOutputPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogOutputPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAnalogOutputPresentValueExactly interface {
+	isBACnetConstructedDataAnalogOutputPresentValue() bool
+}
+
 // _BACnetConstructedDataAnalogOutputPresentValue is the data-structure of this message
 type _BACnetConstructedDataAnalogOutputPresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAnalogOutputPresentValue) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAnalogOutputPresentValue) isBACnetConstructedDataAnalogOutputPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAnalogOutputPresentValue) String() string {

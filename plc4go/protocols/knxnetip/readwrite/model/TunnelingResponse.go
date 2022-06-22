@@ -35,6 +35,12 @@ type TunnelingResponse interface {
 	GetTunnelingResponseDataBlock() TunnelingResponseDataBlock
 }
 
+// TunnelingResponseExactly can be used when we want exactly this type and not a type which fulfills TunnelingResponse.
+// This is useful for switch cases.
+type TunnelingResponseExactly interface {
+	isTunnelingResponse() bool
+}
+
 // _TunnelingResponse is the data-structure of this message
 type _TunnelingResponse struct {
 	*_KnxNetIpMessage
@@ -178,6 +184,10 @@ func (m *_TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TunnelingResponse) isTunnelingResponse() bool {
+	return true
 }
 
 func (m *_TunnelingResponse) String() string {

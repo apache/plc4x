@@ -36,6 +36,12 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry interf
 	GetListOfCovReferences() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
 }
 
+// BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry.
+// This is useful for switch cases.
+type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryExactly interface {
+	isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() bool
+}
+
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is the data-structure of this message
 type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry struct {
 	MonitoredObjectIdentifier BACnetContextTagObjectIdentifier
@@ -178,6 +184,10 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 		return errors.Wrap(popErr, "Error popping for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() bool {
+	return true
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) String() string {

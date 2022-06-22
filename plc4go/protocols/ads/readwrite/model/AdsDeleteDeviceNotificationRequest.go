@@ -35,6 +35,12 @@ type AdsDeleteDeviceNotificationRequest interface {
 	GetNotificationHandle() uint32
 }
 
+// AdsDeleteDeviceNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills AdsDeleteDeviceNotificationRequest.
+// This is useful for switch cases.
+type AdsDeleteDeviceNotificationRequestExactly interface {
+	isAdsDeleteDeviceNotificationRequest() bool
+}
+
 // _AdsDeleteDeviceNotificationRequest is the data-structure of this message
 type _AdsDeleteDeviceNotificationRequest struct {
 	*_AdsData
@@ -171,6 +177,10 @@ func (m *_AdsDeleteDeviceNotificationRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsDeleteDeviceNotificationRequest) isAdsDeleteDeviceNotificationRequest() bool {
+	return true
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) String() string {

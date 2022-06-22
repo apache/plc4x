@@ -37,6 +37,12 @@ type BACnetConstructedDataInstanceOf interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataInstanceOfExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInstanceOf.
+// This is useful for switch cases.
+type BACnetConstructedDataInstanceOfExactly interface {
+	isBACnetConstructedDataInstanceOf() bool
+}
+
 // _BACnetConstructedDataInstanceOf is the data-structure of this message
 type _BACnetConstructedDataInstanceOf struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataInstanceOf) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInstanceOf) isBACnetConstructedDataInstanceOf() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInstanceOf) String() string {

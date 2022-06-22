@@ -38,6 +38,12 @@ type BACnetDailySchedule interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetDailyScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetDailySchedule.
+// This is useful for switch cases.
+type BACnetDailyScheduleExactly interface {
+	isBACnetDailySchedule() bool
+}
+
 // _BACnetDailySchedule is the data-structure of this message
 type _BACnetDailySchedule struct {
 	OpeningTag  BACnetOpeningTag
@@ -228,6 +234,10 @@ func (m *_BACnetDailySchedule) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetDailySchedule")
 	}
 	return nil
+}
+
+func (m *_BACnetDailySchedule) isBACnetDailySchedule() bool {
+	return true
 }
 
 func (m *_BACnetDailySchedule) String() string {

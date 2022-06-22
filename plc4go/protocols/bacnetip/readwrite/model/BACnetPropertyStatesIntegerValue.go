@@ -35,6 +35,12 @@ type BACnetPropertyStatesIntegerValue interface {
 	GetIntegerValue() BACnetContextTagSignedInteger
 }
 
+// BACnetPropertyStatesIntegerValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesIntegerValue.
+// This is useful for switch cases.
+type BACnetPropertyStatesIntegerValueExactly interface {
+	isBACnetPropertyStatesIntegerValue() bool
+}
+
 // _BACnetPropertyStatesIntegerValue is the data-structure of this message
 type _BACnetPropertyStatesIntegerValue struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesIntegerValue) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesIntegerValue) isBACnetPropertyStatesIntegerValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesIntegerValue) String() string {

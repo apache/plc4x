@@ -33,6 +33,12 @@ type BACnetConstructedDataLoadControlAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataLoadControlAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoadControlAll.
+// This is useful for switch cases.
+type BACnetConstructedDataLoadControlAllExactly interface {
+	isBACnetConstructedDataLoadControlAll() bool
+}
+
 // _BACnetConstructedDataLoadControlAll is the data-structure of this message
 type _BACnetConstructedDataLoadControlAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataLoadControlAll) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLoadControlAll) isBACnetConstructedDataLoadControlAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLoadControlAll) String() string {

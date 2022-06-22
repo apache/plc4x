@@ -56,6 +56,12 @@ type BACnetTagHeader interface {
 	GetActualLength() uint32
 }
 
+// BACnetTagHeaderExactly can be used when we want exactly this type and not a type which fulfills BACnetTagHeader.
+// This is useful for switch cases.
+type BACnetTagHeaderExactly interface {
+	isBACnetTagHeader() bool
+}
+
 // _BACnetTagHeader is the data-structure of this message
 type _BACnetTagHeader struct {
 	TagNumber       uint8
@@ -461,6 +467,10 @@ func (m *_BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetTagHeader")
 	}
 	return nil
+}
+
+func (m *_BACnetTagHeader) isBACnetTagHeader() bool {
+	return true
 }
 
 func (m *_BACnetTagHeader) String() string {

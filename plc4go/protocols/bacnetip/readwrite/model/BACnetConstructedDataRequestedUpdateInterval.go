@@ -37,6 +37,12 @@ type BACnetConstructedDataRequestedUpdateInterval interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataRequestedUpdateIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRequestedUpdateInterval.
+// This is useful for switch cases.
+type BACnetConstructedDataRequestedUpdateIntervalExactly interface {
+	isBACnetConstructedDataRequestedUpdateInterval() bool
+}
+
 // _BACnetConstructedDataRequestedUpdateInterval is the data-structure of this message
 type _BACnetConstructedDataRequestedUpdateInterval struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataRequestedUpdateInterval) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRequestedUpdateInterval) isBACnetConstructedDataRequestedUpdateInterval() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRequestedUpdateInterval) String() string {

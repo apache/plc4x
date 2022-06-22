@@ -38,6 +38,12 @@ type BACnetLightingCommandEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetLightingCommandEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetLightingCommandEnclosed.
+// This is useful for switch cases.
+type BACnetLightingCommandEnclosedExactly interface {
+	isBACnetLightingCommandEnclosed() bool
+}
+
 // _BACnetLightingCommandEnclosed is the data-structure of this message
 type _BACnetLightingCommandEnclosed struct {
 	OpeningTag      BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetLightingCommandEnclosed) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetLightingCommandEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetLightingCommandEnclosed) isBACnetLightingCommandEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetLightingCommandEnclosed) String() string {

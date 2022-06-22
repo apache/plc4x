@@ -48,6 +48,12 @@ type GroupObjectDescriptorRealisationTypeB interface {
 	GetValueType() ComObjectValueType
 }
 
+// GroupObjectDescriptorRealisationTypeBExactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationTypeB.
+// This is useful for switch cases.
+type GroupObjectDescriptorRealisationTypeBExactly interface {
+	isGroupObjectDescriptorRealisationTypeB() bool
+}
+
 // _GroupObjectDescriptorRealisationTypeB is the data-structure of this message
 type _GroupObjectDescriptorRealisationTypeB struct {
 	UpdateEnable          bool
@@ -322,6 +328,10 @@ func (m *_GroupObjectDescriptorRealisationTypeB) Serialize(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for GroupObjectDescriptorRealisationTypeB")
 	}
 	return nil
+}
+
+func (m *_GroupObjectDescriptorRealisationTypeB) isGroupObjectDescriptorRealisationTypeB() bool {
+	return true
 }
 
 func (m *_GroupObjectDescriptorRealisationTypeB) String() string {

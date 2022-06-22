@@ -40,6 +40,12 @@ type BACnetLandingCallStatus interface {
 	GetFloorText() BACnetContextTagCharacterString
 }
 
+// BACnetLandingCallStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatus.
+// This is useful for switch cases.
+type BACnetLandingCallStatusExactly interface {
+	isBACnetLandingCallStatus() bool
+}
+
 // _BACnetLandingCallStatus is the data-structure of this message
 type _BACnetLandingCallStatus struct {
 	FloorNumber BACnetContextTagUnsignedInteger
@@ -230,6 +236,10 @@ func (m *_BACnetLandingCallStatus) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetLandingCallStatus")
 	}
 	return nil
+}
+
+func (m *_BACnetLandingCallStatus) isBACnetLandingCallStatus() bool {
+	return true
 }
 
 func (m *_BACnetLandingCallStatus) String() string {

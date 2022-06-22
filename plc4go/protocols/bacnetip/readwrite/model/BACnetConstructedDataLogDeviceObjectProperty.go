@@ -37,6 +37,12 @@ type BACnetConstructedDataLogDeviceObjectProperty interface {
 	GetActualValue() BACnetDeviceObjectPropertyReference
 }
 
+// BACnetConstructedDataLogDeviceObjectPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLogDeviceObjectProperty.
+// This is useful for switch cases.
+type BACnetConstructedDataLogDeviceObjectPropertyExactly interface {
+	isBACnetConstructedDataLogDeviceObjectProperty() bool
+}
+
 // _BACnetConstructedDataLogDeviceObjectProperty is the data-structure of this message
 type _BACnetConstructedDataLogDeviceObjectProperty struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) isBACnetConstructedDataLogDeviceObjectProperty() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLogDeviceObjectProperty) String() string {

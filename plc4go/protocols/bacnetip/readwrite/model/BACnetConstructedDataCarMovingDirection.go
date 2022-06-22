@@ -37,6 +37,12 @@ type BACnetConstructedDataCarMovingDirection interface {
 	GetActualValue() BACnetLiftCarDirectionTagged
 }
 
+// BACnetConstructedDataCarMovingDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarMovingDirection.
+// This is useful for switch cases.
+type BACnetConstructedDataCarMovingDirectionExactly interface {
+	isBACnetConstructedDataCarMovingDirection() bool
+}
+
 // _BACnetConstructedDataCarMovingDirection is the data-structure of this message
 type _BACnetConstructedDataCarMovingDirection struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCarMovingDirection) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarMovingDirection) isBACnetConstructedDataCarMovingDirection() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarMovingDirection) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataNetworkPortMaxMaster interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataNetworkPortMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortMaxMaster.
+// This is useful for switch cases.
+type BACnetConstructedDataNetworkPortMaxMasterExactly interface {
+	isBACnetConstructedDataNetworkPortMaxMaster() bool
+}
+
 // _BACnetConstructedDataNetworkPortMaxMaster is the data-structure of this message
 type _BACnetConstructedDataNetworkPortMaxMaster struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) isBACnetConstructedDataNetworkPortMaxMaster() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) String() string {

@@ -35,6 +35,12 @@ type BACnetRecipientDevice interface {
 	GetDeviceValue() BACnetContextTagObjectIdentifier
 }
 
+// BACnetRecipientDeviceExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientDevice.
+// This is useful for switch cases.
+type BACnetRecipientDeviceExactly interface {
+	isBACnetRecipientDevice() bool
+}
+
 // _BACnetRecipientDevice is the data-structure of this message
 type _BACnetRecipientDevice struct {
 	*_BACnetRecipient
@@ -176,6 +182,10 @@ func (m *_BACnetRecipientDevice) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetRecipientDevice) isBACnetRecipientDevice() bool {
+	return true
 }
 
 func (m *_BACnetRecipientDevice) String() string {

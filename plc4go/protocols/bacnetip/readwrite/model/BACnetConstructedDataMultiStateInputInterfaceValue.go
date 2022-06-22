@@ -37,6 +37,12 @@ type BACnetConstructedDataMultiStateInputInterfaceValue interface {
 	GetActualValue() BACnetOptionalBinaryPV
 }
 
+// BACnetConstructedDataMultiStateInputInterfaceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateInputInterfaceValue.
+// This is useful for switch cases.
+type BACnetConstructedDataMultiStateInputInterfaceValueExactly interface {
+	isBACnetConstructedDataMultiStateInputInterfaceValue() bool
+}
+
 // _BACnetConstructedDataMultiStateInputInterfaceValue is the data-structure of this message
 type _BACnetConstructedDataMultiStateInputInterfaceValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) isBACnetConstructedDataMultiStateInputInterfaceValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) String() string {

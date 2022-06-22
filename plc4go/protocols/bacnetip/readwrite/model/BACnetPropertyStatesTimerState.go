@@ -35,6 +35,12 @@ type BACnetPropertyStatesTimerState interface {
 	GetTimerState() BACnetTimerStateTagged
 }
 
+// BACnetPropertyStatesTimerStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesTimerState.
+// This is useful for switch cases.
+type BACnetPropertyStatesTimerStateExactly interface {
+	isBACnetPropertyStatesTimerState() bool
+}
+
 // _BACnetPropertyStatesTimerState is the data-structure of this message
 type _BACnetPropertyStatesTimerState struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesTimerState) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesTimerState) isBACnetPropertyStatesTimerState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesTimerState) String() string {

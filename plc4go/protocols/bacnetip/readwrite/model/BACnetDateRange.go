@@ -36,6 +36,12 @@ type BACnetDateRange interface {
 	GetEndDate() BACnetApplicationTagDate
 }
 
+// BACnetDateRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetDateRange.
+// This is useful for switch cases.
+type BACnetDateRangeExactly interface {
+	isBACnetDateRange() bool
+}
+
 // _BACnetDateRange is the data-structure of this message
 type _BACnetDateRange struct {
 	StartDate BACnetApplicationTagDate
@@ -178,6 +184,10 @@ func (m *_BACnetDateRange) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetDateRange")
 	}
 	return nil
+}
+
+func (m *_BACnetDateRange) isBACnetDateRange() bool {
+	return true
 }
 
 func (m *_BACnetDateRange) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataLastNotifyRecord interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataLastNotifyRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastNotifyRecord.
+// This is useful for switch cases.
+type BACnetConstructedDataLastNotifyRecordExactly interface {
+	isBACnetConstructedDataLastNotifyRecord() bool
+}
+
 // _BACnetConstructedDataLastNotifyRecord is the data-structure of this message
 type _BACnetConstructedDataLastNotifyRecord struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastNotifyRecord) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecord) isBACnetConstructedDataLastNotifyRecord() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastNotifyRecord) String() string {

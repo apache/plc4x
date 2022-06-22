@@ -37,6 +37,12 @@ type CALDataRequestRecall interface {
 	GetCount() uint8
 }
 
+// CALDataRequestRecallExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestRecall.
+// This is useful for switch cases.
+type CALDataRequestRecallExactly interface {
+	isCALDataRequestRecall() bool
+}
+
 // _CALDataRequestRecall is the data-structure of this message
 type _CALDataRequestRecall struct {
 	*_CALData
@@ -191,6 +197,10 @@ func (m *_CALDataRequestRecall) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataRequestRecall) isCALDataRequestRecall() bool {
+	return true
 }
 
 func (m *_CALDataRequestRecall) String() string {

@@ -36,6 +36,12 @@ type BACnetActionTagged interface {
 	GetValue() BACnetAction
 }
 
+// BACnetActionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetActionTagged.
+// This is useful for switch cases.
+type BACnetActionTaggedExactly interface {
+	isBACnetActionTagged() bool
+}
+
 // _BACnetActionTagged is the data-structure of this message
 type _BACnetActionTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetActionTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetActionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetActionTagged) isBACnetActionTagged() bool {
+	return true
 }
 
 func (m *_BACnetActionTagged) String() string {

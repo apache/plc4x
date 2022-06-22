@@ -41,6 +41,12 @@ type CALDataReplyStatusExtended interface {
 	GetData() []byte
 }
 
+// CALDataReplyStatusExtendedExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyStatusExtended.
+// This is useful for switch cases.
+type CALDataReplyStatusExtendedExactly interface {
+	isCALDataReplyStatusExtended() bool
+}
+
 // _CALDataReplyStatusExtended is the data-structure of this message
 type _CALDataReplyStatusExtended struct {
 	*_CALData
@@ -257,6 +263,10 @@ func (m *_CALDataReplyStatusExtended) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataReplyStatusExtended) isCALDataReplyStatusExtended() bool {
+	return true
 }
 
 func (m *_CALDataReplyStatusExtended) String() string {

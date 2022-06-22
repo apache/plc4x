@@ -36,6 +36,12 @@ type BACnetAccessRuleLocationSpecifierTagged interface {
 	GetValue() BACnetAccessRuleLocationSpecifier
 }
 
+// BACnetAccessRuleLocationSpecifierTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessRuleLocationSpecifierTagged.
+// This is useful for switch cases.
+type BACnetAccessRuleLocationSpecifierTaggedExactly interface {
+	isBACnetAccessRuleLocationSpecifierTagged() bool
+}
+
 // _BACnetAccessRuleLocationSpecifierTagged is the data-structure of this message
 type _BACnetAccessRuleLocationSpecifierTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) Serialize(writeBuffer utils.W
 		return errors.Wrap(popErr, "Error popping for BACnetAccessRuleLocationSpecifierTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessRuleLocationSpecifierTagged) isBACnetAccessRuleLocationSpecifierTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessRuleLocationSpecifierTagged) String() string {

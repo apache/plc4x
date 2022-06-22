@@ -37,6 +37,12 @@ type BACnetConstructedDataIntegerValueLowLimit interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConstructedDataIntegerValueLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueLowLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueLowLimitExactly interface {
+	isBACnetConstructedDataIntegerValueLowLimit() bool
+}
+
 // _BACnetConstructedDataIntegerValueLowLimit is the data-structure of this message
 type _BACnetConstructedDataIntegerValueLowLimit struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIntegerValueLowLimit) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueLowLimit) isBACnetConstructedDataIntegerValueLowLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueLowLimit) String() string {

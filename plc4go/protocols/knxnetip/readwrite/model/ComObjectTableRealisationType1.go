@@ -39,6 +39,12 @@ type ComObjectTableRealisationType1 interface {
 	GetComObjectDescriptors() []GroupObjectDescriptorRealisationType1
 }
 
+// ComObjectTableRealisationType1Exactly can be used when we want exactly this type and not a type which fulfills ComObjectTableRealisationType1.
+// This is useful for switch cases.
+type ComObjectTableRealisationType1Exactly interface {
+	isComObjectTableRealisationType1() bool
+}
+
 // _ComObjectTableRealisationType1 is the data-structure of this message
 type _ComObjectTableRealisationType1 struct {
 	*_ComObjectTable
@@ -245,6 +251,10 @@ func (m *_ComObjectTableRealisationType1) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ComObjectTableRealisationType1) isComObjectTableRealisationType1() bool {
+	return true
 }
 
 func (m *_ComObjectTableRealisationType1) String() string {

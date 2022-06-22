@@ -35,6 +35,12 @@ type BACnetNotificationParametersComplexEventType interface {
 	GetListOfValues() BACnetPropertyValues
 }
 
+// BACnetNotificationParametersComplexEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersComplexEventType.
+// This is useful for switch cases.
+type BACnetNotificationParametersComplexEventTypeExactly interface {
+	isBACnetNotificationParametersComplexEventType() bool
+}
+
 // _BACnetNotificationParametersComplexEventType is the data-structure of this message
 type _BACnetNotificationParametersComplexEventType struct {
 	*_BACnetNotificationParameters
@@ -182,6 +188,10 @@ func (m *_BACnetNotificationParametersComplexEventType) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersComplexEventType) isBACnetNotificationParametersComplexEventType() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) String() string {

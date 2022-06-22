@@ -37,6 +37,12 @@ type BACnetConstructedDataActualShedLevel interface {
 	GetActualValue() BACnetShedLevel
 }
 
+// BACnetConstructedDataActualShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActualShedLevel.
+// This is useful for switch cases.
+type BACnetConstructedDataActualShedLevelExactly interface {
+	isBACnetConstructedDataActualShedLevel() bool
+}
+
 // _BACnetConstructedDataActualShedLevel is the data-structure of this message
 type _BACnetConstructedDataActualShedLevel struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataActualShedLevel) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActualShedLevel) isBACnetConstructedDataActualShedLevel() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActualShedLevel) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataLocation interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocation.
+// This is useful for switch cases.
+type BACnetConstructedDataLocationExactly interface {
+	isBACnetConstructedDataLocation() bool
+}
+
 // _BACnetConstructedDataLocation is the data-structure of this message
 type _BACnetConstructedDataLocation struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLocation) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLocation) isBACnetConstructedDataLocation() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLocation) String() string {

@@ -41,6 +41,12 @@ type BACnetConstructedDataPriority interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPriority.
+// This is useful for switch cases.
+type BACnetConstructedDataPriorityExactly interface {
+	isBACnetConstructedDataPriority() bool
+}
+
 // _BACnetConstructedDataPriority is the data-structure of this message
 type _BACnetConstructedDataPriority struct {
 	*_BACnetConstructedData
@@ -292,6 +298,10 @@ func (m *_BACnetConstructedDataPriority) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPriority) isBACnetConstructedDataPriority() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPriority) String() string {

@@ -36,6 +36,12 @@ type BACnetDoorSecuredStatusTagged interface {
 	GetValue() BACnetDoorSecuredStatus
 }
 
+// BACnetDoorSecuredStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDoorSecuredStatusTagged.
+// This is useful for switch cases.
+type BACnetDoorSecuredStatusTaggedExactly interface {
+	isBACnetDoorSecuredStatusTagged() bool
+}
+
 // _BACnetDoorSecuredStatusTagged is the data-structure of this message
 type _BACnetDoorSecuredStatusTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetDoorSecuredStatusTagged) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetDoorSecuredStatusTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetDoorSecuredStatusTagged) isBACnetDoorSecuredStatusTagged() bool {
+	return true
 }
 
 func (m *_BACnetDoorSecuredStatusTagged) String() string {

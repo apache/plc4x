@@ -42,6 +42,12 @@ type BACnetReadAccessPropertyReadResult interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetReadAccessPropertyReadResultExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessPropertyReadResult.
+// This is useful for switch cases.
+type BACnetReadAccessPropertyReadResultExactly interface {
+	isBACnetReadAccessPropertyReadResult() bool
+}
+
 // _BACnetReadAccessPropertyReadResult is the data-structure of this message
 type _BACnetReadAccessPropertyReadResult struct {
 	PeekedTagHeader     BACnetTagHeader
@@ -275,6 +281,10 @@ func (m *_BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetReadAccessPropertyReadResult")
 	}
 	return nil
+}
+
+func (m *_BACnetReadAccessPropertyReadResult) isBACnetReadAccessPropertyReadResult() bool {
+	return true
 }
 
 func (m *_BACnetReadAccessPropertyReadResult) String() string {

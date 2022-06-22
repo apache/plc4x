@@ -40,6 +40,12 @@ type BACnetServiceAckAtomicReadFileStreamOrRecord interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetServiceAckAtomicReadFileStreamOrRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFileStreamOrRecord.
+// This is useful for switch cases.
+type BACnetServiceAckAtomicReadFileStreamOrRecordExactly interface {
+	isBACnetServiceAckAtomicReadFileStreamOrRecord() bool
+}
+
 // _BACnetServiceAckAtomicReadFileStreamOrRecord is the data-structure of this message
 type _BACnetServiceAckAtomicReadFileStreamOrRecord struct {
 	_BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements
@@ -49,9 +55,9 @@ type _BACnetServiceAckAtomicReadFileStreamOrRecord struct {
 }
 
 type _BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetServiceAckAtomicReadFileStreamOrRecordParent interface {
@@ -60,7 +66,7 @@ type BACnetServiceAckAtomicReadFileStreamOrRecordParent interface {
 }
 
 type BACnetServiceAckAtomicReadFileStreamOrRecordChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag)
 	GetParent() *BACnetServiceAckAtomicReadFileStreamOrRecord
 
@@ -268,6 +274,10 @@ func (pm *_BACnetServiceAckAtomicReadFileStreamOrRecord) SerializeParent(writeBu
 		return errors.Wrap(popErr, "Error popping for BACnetServiceAckAtomicReadFileStreamOrRecord")
 	}
 	return nil
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) isBACnetServiceAckAtomicReadFileStreamOrRecord() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) String() string {

@@ -34,6 +34,12 @@ type CommandHeader interface {
 	GetValue() byte
 }
 
+// CommandHeaderExactly can be used when we want exactly this type and not a type which fulfills CommandHeader.
+// This is useful for switch cases.
+type CommandHeaderExactly interface {
+	isCommandHeader() bool
+}
+
 // _CommandHeader is the data-structure of this message
 type _CommandHeader struct {
 	Value byte
@@ -132,6 +138,10 @@ func (m *_CommandHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CommandHeader")
 	}
 	return nil
+}
+
+func (m *_CommandHeader) isCommandHeader() bool {
+	return true
 }
 
 func (m *_CommandHeader) String() string {

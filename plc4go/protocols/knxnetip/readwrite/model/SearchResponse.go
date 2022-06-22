@@ -39,6 +39,12 @@ type SearchResponse interface {
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
 }
 
+// SearchResponseExactly can be used when we want exactly this type and not a type which fulfills SearchResponse.
+// This is useful for switch cases.
+type SearchResponseExactly interface {
+	isSearchResponse() bool
+}
+
 // _SearchResponse is the data-structure of this message
 type _SearchResponse struct {
 	*_KnxNetIpMessage
@@ -252,6 +258,10 @@ func (m *_SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SearchResponse) isSearchResponse() bool {
+	return true
 }
 
 func (m *_SearchResponse) String() string {

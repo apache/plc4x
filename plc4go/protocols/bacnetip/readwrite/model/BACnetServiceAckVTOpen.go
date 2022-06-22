@@ -35,6 +35,12 @@ type BACnetServiceAckVTOpen interface {
 	GetRemoteVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetServiceAckVTOpenExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckVTOpen.
+// This is useful for switch cases.
+type BACnetServiceAckVTOpenExactly interface {
+	isBACnetServiceAckVTOpen() bool
+}
+
 // _BACnetServiceAckVTOpen is the data-structure of this message
 type _BACnetServiceAckVTOpen struct {
 	*_BACnetServiceAck
@@ -181,6 +187,10 @@ func (m *_BACnetServiceAckVTOpen) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckVTOpen) isBACnetServiceAckVTOpen() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckVTOpen) String() string {

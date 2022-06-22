@@ -37,6 +37,12 @@ type BACnetConstructedDataBackupFailureTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataBackupFailureTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBackupFailureTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataBackupFailureTimeoutExactly interface {
+	isBACnetConstructedDataBackupFailureTimeout() bool
+}
+
 // _BACnetConstructedDataBackupFailureTimeout is the data-structure of this message
 type _BACnetConstructedDataBackupFailureTimeout struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeout) isBACnetConstructedDataBackupFailureTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) String() string {

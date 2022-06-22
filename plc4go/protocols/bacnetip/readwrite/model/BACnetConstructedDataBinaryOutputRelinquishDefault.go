@@ -37,6 +37,12 @@ type BACnetConstructedDataBinaryOutputRelinquishDefault interface {
 	GetActualValue() BACnetBinaryPVTagged
 }
 
+// BACnetConstructedDataBinaryOutputRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryOutputRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryOutputRelinquishDefaultExactly interface {
+	isBACnetConstructedDataBinaryOutputRelinquishDefault() bool
+}
+
 // _BACnetConstructedDataBinaryOutputRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataBinaryOutputRelinquishDefault struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) isBACnetConstructedDataBinaryOutputRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) String() string {

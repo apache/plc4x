@@ -49,6 +49,12 @@ type CBusPointToMultiPointCommandNormal interface {
 	GetAlpha() Alpha
 }
 
+// CBusPointToMultiPointCommandNormalExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommandNormal.
+// This is useful for switch cases.
+type CBusPointToMultiPointCommandNormalExactly interface {
+	isCBusPointToMultiPointCommandNormal() bool
+}
+
 // _CBusPointToMultiPointCommandNormal is the data-structure of this message
 type _CBusPointToMultiPointCommandNormal struct {
 	*_CBusPointToMultiPointCommand
@@ -400,6 +406,10 @@ func (m *_CBusPointToMultiPointCommandNormal) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusPointToMultiPointCommandNormal) isCBusPointToMultiPointCommandNormal() bool {
+	return true
 }
 
 func (m *_CBusPointToMultiPointCommandNormal) String() string {

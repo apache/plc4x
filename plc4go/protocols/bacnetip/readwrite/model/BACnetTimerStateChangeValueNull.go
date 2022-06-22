@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetTimerStateChangeValueNullExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueNull.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueNullExactly interface {
+	isBACnetTimerStateChangeValueNull() bool
+}
+
 // _BACnetTimerStateChangeValueNull is the data-structure of this message
 type _BACnetTimerStateChangeValueNull struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueNull) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueNull) isBACnetTimerStateChangeValueNull() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueNull) String() string {

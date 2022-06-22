@@ -45,6 +45,12 @@ type S7MessageObjectRequest interface {
 	GetAlarmType() AlarmType
 }
 
+// S7MessageObjectRequestExactly can be used when we want exactly this type and not a type which fulfills S7MessageObjectRequest.
+// This is useful for switch cases.
+type S7MessageObjectRequestExactly interface {
+	isS7MessageObjectRequest() bool
+}
+
 // _S7MessageObjectRequest is the data-structure of this message
 type _S7MessageObjectRequest struct {
 	*_S7DataAlarmMessage
@@ -361,6 +367,10 @@ func (m *_S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageObjectRequest) isS7MessageObjectRequest() bool {
+	return true
 }
 
 func (m *_S7MessageObjectRequest) String() string {

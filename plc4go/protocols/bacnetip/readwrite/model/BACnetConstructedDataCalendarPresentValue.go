@@ -37,6 +37,12 @@ type BACnetConstructedDataCalendarPresentValue interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataCalendarPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCalendarPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataCalendarPresentValueExactly interface {
+	isBACnetConstructedDataCalendarPresentValue() bool
+}
+
 // _BACnetConstructedDataCalendarPresentValue is the data-structure of this message
 type _BACnetConstructedDataCalendarPresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCalendarPresentValue) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCalendarPresentValue) isBACnetConstructedDataCalendarPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCalendarPresentValue) String() string {

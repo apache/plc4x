@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier i
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentif
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier) isBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier) String() string {

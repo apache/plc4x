@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueLightingCommand interface {
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
 }
 
+// BACnetTimerStateChangeValueLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueLightingCommand.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueLightingCommandExactly interface {
+	isBACnetTimerStateChangeValueLightingCommand() bool
+}
+
 // _BACnetTimerStateChangeValueLightingCommand is the data-structure of this message
 type _BACnetTimerStateChangeValueLightingCommand struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueLightingCommand) isBACnetTimerStateChangeValueLightingCommand() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueLightingCommand) String() string {

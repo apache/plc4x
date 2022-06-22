@@ -52,6 +52,12 @@ type DeviceDescriptorType2 interface {
 	GetChannelInfo4() ChannelInformation
 }
 
+// DeviceDescriptorType2Exactly can be used when we want exactly this type and not a type which fulfills DeviceDescriptorType2.
+// This is useful for switch cases.
+type DeviceDescriptorType2Exactly interface {
+	isDeviceDescriptorType2() bool
+}
+
 // _DeviceDescriptorType2 is the data-structure of this message
 type _DeviceDescriptorType2 struct {
 	ManufacturerId uint16
@@ -392,6 +398,10 @@ func (m *_DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for DeviceDescriptorType2")
 	}
 	return nil
+}
+
+func (m *_DeviceDescriptorType2) isDeviceDescriptorType2() bool {
+	return true
 }
 
 func (m *_DeviceDescriptorType2) String() string {

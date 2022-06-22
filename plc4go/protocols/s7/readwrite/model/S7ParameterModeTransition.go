@@ -44,6 +44,12 @@ type S7ParameterModeTransition interface {
 	GetSequenceNumber() uint8
 }
 
+// S7ParameterModeTransitionExactly can be used when we want exactly this type and not a type which fulfills S7ParameterModeTransition.
+// This is useful for switch cases.
+type S7ParameterModeTransitionExactly interface {
+	isS7ParameterModeTransition() bool
+}
+
 // _S7ParameterModeTransition is the data-structure of this message
 type _S7ParameterModeTransition struct {
 	*_S7Parameter
@@ -318,6 +324,10 @@ func (m *_S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterModeTransition) isS7ParameterModeTransition() bool {
+	return true
 }
 
 func (m *_S7ParameterModeTransition) String() string {

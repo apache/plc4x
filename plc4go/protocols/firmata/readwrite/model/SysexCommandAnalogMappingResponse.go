@@ -33,6 +33,12 @@ type SysexCommandAnalogMappingResponse interface {
 	SysexCommand
 }
 
+// SysexCommandAnalogMappingResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingResponse.
+// This is useful for switch cases.
+type SysexCommandAnalogMappingResponseExactly interface {
+	isSysexCommandAnalogMappingResponse() bool
+}
+
 // _SysexCommandAnalogMappingResponse is the data-structure of this message
 type _SysexCommandAnalogMappingResponse struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandAnalogMappingResponse) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandAnalogMappingResponse) isSysexCommandAnalogMappingResponse() bool {
+	return true
 }
 
 func (m *_SysexCommandAnalogMappingResponse) String() string {

@@ -37,6 +37,12 @@ type CBusHeader interface {
 	GetDestinationAddressType() DestinationAddressType
 }
 
+// CBusHeaderExactly can be used when we want exactly this type and not a type which fulfills CBusHeader.
+// This is useful for switch cases.
+type CBusHeaderExactly interface {
+	isCBusHeader() bool
+}
+
 // _CBusHeader is the data-structure of this message
 type _CBusHeader struct {
 	PriorityClass          PriorityClass
@@ -229,6 +235,10 @@ func (m *_CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CBusHeader")
 	}
 	return nil
+}
+
+func (m *_CBusHeader) isCBusHeader() bool {
+	return true
 }
 
 func (m *_CBusHeader) String() string {

@@ -35,6 +35,12 @@ type S7PayloadUserData interface {
 	GetItems() []S7PayloadUserDataItem
 }
 
+// S7PayloadUserDataExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserData.
+// This is useful for switch cases.
+type S7PayloadUserDataExactly interface {
+	isS7PayloadUserData() bool
+}
+
 // _S7PayloadUserData is the data-structure of this message
 type _S7PayloadUserData struct {
 	*_S7Payload
@@ -200,6 +206,10 @@ func (m *_S7PayloadUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserData) isS7PayloadUserData() bool {
+	return true
 }
 
 func (m *_S7PayloadUserData) String() string {

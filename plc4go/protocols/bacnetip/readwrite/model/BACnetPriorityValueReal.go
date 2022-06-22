@@ -35,6 +35,12 @@ type BACnetPriorityValueReal interface {
 	GetRealValue() BACnetApplicationTagReal
 }
 
+// BACnetPriorityValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueReal.
+// This is useful for switch cases.
+type BACnetPriorityValueRealExactly interface {
+	isBACnetPriorityValueReal() bool
+}
+
 // _BACnetPriorityValueReal is the data-structure of this message
 type _BACnetPriorityValueReal struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueReal) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueReal) isBACnetPriorityValueReal() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueReal) String() string {

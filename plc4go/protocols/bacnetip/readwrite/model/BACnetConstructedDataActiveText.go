@@ -37,6 +37,12 @@ type BACnetConstructedDataActiveText interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataActiveTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveText.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveTextExactly interface {
+	isBACnetConstructedDataActiveText() bool
+}
+
 // _BACnetConstructedDataActiveText is the data-structure of this message
 type _BACnetConstructedDataActiveText struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataActiveText) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveText) isBACnetConstructedDataActiveText() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveText) String() string {

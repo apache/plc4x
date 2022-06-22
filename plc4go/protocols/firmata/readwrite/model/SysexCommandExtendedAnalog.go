@@ -33,6 +33,12 @@ type SysexCommandExtendedAnalog interface {
 	SysexCommand
 }
 
+// SysexCommandExtendedAnalogExactly can be used when we want exactly this type and not a type which fulfills SysexCommandExtendedAnalog.
+// This is useful for switch cases.
+type SysexCommandExtendedAnalogExactly interface {
+	isSysexCommandExtendedAnalog() bool
+}
+
 // _SysexCommandExtendedAnalog is the data-structure of this message
 type _SysexCommandExtendedAnalog struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandExtendedAnalog) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandExtendedAnalog) isSysexCommandExtendedAnalog() bool {
+	return true
 }
 
 func (m *_SysexCommandExtendedAnalog) String() string {

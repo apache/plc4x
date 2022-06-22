@@ -37,6 +37,12 @@ type BACnetConstructedDataDefaultFadeTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDefaultFadeTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultFadeTime.
+// This is useful for switch cases.
+type BACnetConstructedDataDefaultFadeTimeExactly interface {
+	isBACnetConstructedDataDefaultFadeTime() bool
+}
+
 // _BACnetConstructedDataDefaultFadeTime is the data-structure of this message
 type _BACnetConstructedDataDefaultFadeTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDefaultFadeTime) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDefaultFadeTime) isBACnetConstructedDataDefaultFadeTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDefaultFadeTime) String() string {

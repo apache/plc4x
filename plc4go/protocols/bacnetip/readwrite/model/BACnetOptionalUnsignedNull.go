@@ -35,6 +35,12 @@ type BACnetOptionalUnsignedNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetOptionalUnsignedNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsignedNull.
+// This is useful for switch cases.
+type BACnetOptionalUnsignedNullExactly interface {
+	isBACnetOptionalUnsignedNull() bool
+}
+
 // _BACnetOptionalUnsignedNull is the data-structure of this message
 type _BACnetOptionalUnsignedNull struct {
 	*_BACnetOptionalUnsigned
@@ -176,6 +182,10 @@ func (m *_BACnetOptionalUnsignedNull) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalUnsignedNull) isBACnetOptionalUnsignedNull() bool {
+	return true
 }
 
 func (m *_BACnetOptionalUnsignedNull) String() string {

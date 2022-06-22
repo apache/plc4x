@@ -43,6 +43,12 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	GetListOfValues() BACnetPropertyValues
 }
 
+// BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationExactly interface {
+	isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() bool
+}
+
 // _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -330,6 +336,10 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() string {

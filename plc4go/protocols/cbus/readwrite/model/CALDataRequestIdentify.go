@@ -35,6 +35,12 @@ type CALDataRequestIdentify interface {
 	GetAttribute() Attribute
 }
 
+// CALDataRequestIdentifyExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestIdentify.
+// This is useful for switch cases.
+type CALDataRequestIdentifyExactly interface {
+	isCALDataRequestIdentify() bool
+}
+
 // _CALDataRequestIdentify is the data-structure of this message
 type _CALDataRequestIdentify struct {
 	*_CALData
@@ -176,6 +182,10 @@ func (m *_CALDataRequestIdentify) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataRequestIdentify) isCALDataRequestIdentify() bool {
+	return true
 }
 
 func (m *_CALDataRequestIdentify) String() string {

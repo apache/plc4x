@@ -33,6 +33,12 @@ type IdentifyReplyCommandCurrentSenseLevels interface {
 	IdentifyReplyCommand
 }
 
+// IdentifyReplyCommandCurrentSenseLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandCurrentSenseLevels.
+// This is useful for switch cases.
+type IdentifyReplyCommandCurrentSenseLevelsExactly interface {
+	isIdentifyReplyCommandCurrentSenseLevels() bool
+}
+
 // _IdentifyReplyCommandCurrentSenseLevels is the data-structure of this message
 type _IdentifyReplyCommandCurrentSenseLevels struct {
 	*_IdentifyReplyCommand
@@ -131,6 +137,10 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandCurrentSenseLevels) isIdentifyReplyCommandCurrentSenseLevels() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) String() string {

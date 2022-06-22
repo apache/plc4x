@@ -44,6 +44,12 @@ type BACnetConstructedData interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetConstructedDataExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedData.
+// This is useful for switch cases.
+type BACnetConstructedDataExactly interface {
+	isBACnetConstructedData() bool
+}
+
 // _BACnetConstructedData is the data-structure of this message
 type _BACnetConstructedData struct {
 	_BACnetConstructedDataChildRequirements
@@ -57,11 +63,11 @@ type _BACnetConstructedData struct {
 }
 
 type _BACnetConstructedDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetObjectTypeArgument() BACnetObjectType
 	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConstructedDataParent interface {
@@ -70,7 +76,7 @@ type BACnetConstructedDataParent interface {
 }
 
 type BACnetConstructedDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetConstructedData
 
@@ -1590,6 +1596,10 @@ func (pm *_BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer,
 		return errors.Wrap(popErr, "Error popping for BACnetConstructedData")
 	}
 	return nil
+}
+
+func (m *_BACnetConstructedData) isBACnetConstructedData() bool {
+	return true
 }
 
 func (m *_BACnetConstructedData) String() string {

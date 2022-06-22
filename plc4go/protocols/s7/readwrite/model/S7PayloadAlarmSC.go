@@ -35,6 +35,12 @@ type S7PayloadAlarmSC interface {
 	GetAlarmMessage() AlarmMessagePushType
 }
 
+// S7PayloadAlarmSCExactly can be used when we want exactly this type and not a type which fulfills S7PayloadAlarmSC.
+// This is useful for switch cases.
+type S7PayloadAlarmSCExactly interface {
+	isS7PayloadAlarmSC() bool
+}
+
 // _S7PayloadAlarmSC is the data-structure of this message
 type _S7PayloadAlarmSC struct {
 	*_S7PayloadUserDataItem
@@ -189,6 +195,10 @@ func (m *_S7PayloadAlarmSC) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadAlarmSC) isS7PayloadAlarmSC() bool {
+	return true
 }
 
 func (m *_S7PayloadAlarmSC) String() string {

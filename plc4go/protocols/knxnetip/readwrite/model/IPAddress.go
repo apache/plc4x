@@ -34,6 +34,12 @@ type IPAddress interface {
 	GetAddr() []byte
 }
 
+// IPAddressExactly can be used when we want exactly this type and not a type which fulfills IPAddress.
+// This is useful for switch cases.
+type IPAddressExactly interface {
+	isIPAddress() bool
+}
+
 // _IPAddress is the data-structure of this message
 type _IPAddress struct {
 	Addr []byte
@@ -135,6 +141,10 @@ func (m *_IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for IPAddress")
 	}
 	return nil
+}
+
+func (m *_IPAddress) isIPAddress() bool {
+	return true
 }
 
 func (m *_IPAddress) String() string {

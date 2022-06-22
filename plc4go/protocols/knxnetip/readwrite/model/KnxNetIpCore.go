@@ -35,6 +35,12 @@ type KnxNetIpCore interface {
 	GetVersion() uint8
 }
 
+// KnxNetIpCoreExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpCore.
+// This is useful for switch cases.
+type KnxNetIpCoreExactly interface {
+	isKnxNetIpCore() bool
+}
+
 // _KnxNetIpCore is the data-structure of this message
 type _KnxNetIpCore struct {
 	*_ServiceId
@@ -167,6 +173,10 @@ func (m *_KnxNetIpCore) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetIpCore) isKnxNetIpCore() bool {
+	return true
 }
 
 func (m *_KnxNetIpCore) String() string {

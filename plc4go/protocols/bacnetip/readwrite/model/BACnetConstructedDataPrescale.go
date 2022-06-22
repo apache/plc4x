@@ -37,6 +37,12 @@ type BACnetConstructedDataPrescale interface {
 	GetActualValue() BACnetPrescale
 }
 
+// BACnetConstructedDataPrescaleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPrescale.
+// This is useful for switch cases.
+type BACnetConstructedDataPrescaleExactly interface {
+	isBACnetConstructedDataPrescale() bool
+}
+
 // _BACnetConstructedDataPrescale is the data-structure of this message
 type _BACnetConstructedDataPrescale struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPrescale) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPrescale) isBACnetConstructedDataPrescale() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPrescale) String() string {

@@ -33,6 +33,12 @@ type ModbusPDUReportServerIdRequest interface {
 	ModbusPDU
 }
 
+// ModbusPDUReportServerIdRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReportServerIdRequest.
+// This is useful for switch cases.
+type ModbusPDUReportServerIdRequestExactly interface {
+	isModbusPDUReportServerIdRequest() bool
+}
+
 // _ModbusPDUReportServerIdRequest is the data-structure of this message
 type _ModbusPDUReportServerIdRequest struct {
 	*_ModbusPDU
@@ -139,6 +145,10 @@ func (m *_ModbusPDUReportServerIdRequest) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReportServerIdRequest) isModbusPDUReportServerIdRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReportServerIdRequest) String() string {

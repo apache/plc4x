@@ -35,6 +35,12 @@ type NLMRouterBusyToNetwork interface {
 	GetDestinationNetworkAddress() []uint16
 }
 
+// NLMRouterBusyToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRouterBusyToNetwork.
+// This is useful for switch cases.
+type NLMRouterBusyToNetworkExactly interface {
+	isNLMRouterBusyToNetwork() bool
+}
+
 // _NLMRouterBusyToNetwork is the data-structure of this message
 type _NLMRouterBusyToNetwork struct {
 	*_NLM
@@ -197,6 +203,10 @@ func (m *_NLMRouterBusyToNetwork) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMRouterBusyToNetwork) isNLMRouterBusyToNetwork() bool {
+	return true
 }
 
 func (m *_NLMRouterBusyToNetwork) String() string {

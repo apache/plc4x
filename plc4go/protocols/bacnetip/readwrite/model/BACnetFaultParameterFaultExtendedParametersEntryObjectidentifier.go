@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface 
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Seri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) isBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) String() string {

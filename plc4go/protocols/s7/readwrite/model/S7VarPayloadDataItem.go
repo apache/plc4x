@@ -39,6 +39,12 @@ type S7VarPayloadDataItem interface {
 	GetData() []byte
 }
 
+// S7VarPayloadDataItemExactly can be used when we want exactly this type and not a type which fulfills S7VarPayloadDataItem.
+// This is useful for switch cases.
+type S7VarPayloadDataItemExactly interface {
+	isS7VarPayloadDataItem() bool
+}
+
 // _S7VarPayloadDataItem is the data-structure of this message
 type _S7VarPayloadDataItem struct {
 	ReturnCode    DataTransportErrorCode
@@ -267,6 +273,10 @@ func (m *_S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for S7VarPayloadDataItem")
 	}
 	return nil
+}
+
+func (m *_S7VarPayloadDataItem) isS7VarPayloadDataItem() bool {
+	return true
 }
 
 func (m *_S7VarPayloadDataItem) String() string {

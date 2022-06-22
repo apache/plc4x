@@ -38,6 +38,12 @@ type BACnetSecurityKeySetKeyIds interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetSecurityKeySetKeyIdsExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityKeySetKeyIds.
+// This is useful for switch cases.
+type BACnetSecurityKeySetKeyIdsExactly interface {
+	isBACnetSecurityKeySetKeyIds() bool
+}
+
 // _BACnetSecurityKeySetKeyIds is the data-structure of this message
 type _BACnetSecurityKeySetKeyIds struct {
 	OpeningTag BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetSecurityKeySetKeyIds) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetSecurityKeySetKeyIds")
 	}
 	return nil
+}
+
+func (m *_BACnetSecurityKeySetKeyIds) isBACnetSecurityKeySetKeyIds() bool {
+	return true
 }
 
 func (m *_BACnetSecurityKeySetKeyIds) String() string {

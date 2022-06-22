@@ -37,6 +37,12 @@ type BACnetConstructedDataElevatorGroup interface {
 	GetActualValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetConstructedDataElevatorGroupExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElevatorGroup.
+// This is useful for switch cases.
+type BACnetConstructedDataElevatorGroupExactly interface {
+	isBACnetConstructedDataElevatorGroup() bool
+}
+
 // _BACnetConstructedDataElevatorGroup is the data-structure of this message
 type _BACnetConstructedDataElevatorGroup struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataElevatorGroup) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataElevatorGroup) isBACnetConstructedDataElevatorGroup() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataElevatorGroup) String() string {

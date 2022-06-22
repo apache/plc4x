@@ -53,6 +53,12 @@ type IdentifyReplyCommandDSIStatus interface {
 	GetDimmingUCRevisionNumber() byte
 }
 
+// IdentifyReplyCommandDSIStatusExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandDSIStatus.
+// This is useful for switch cases.
+type IdentifyReplyCommandDSIStatusExactly interface {
+	isIdentifyReplyCommandDSIStatus() bool
+}
+
 // _IdentifyReplyCommandDSIStatus is the data-structure of this message
 type _IdentifyReplyCommandDSIStatus struct {
 	*_IdentifyReplyCommand
@@ -500,6 +506,10 @@ func (m *_IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandDSIStatus) isIdentifyReplyCommandDSIStatus() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandDSIStatus) String() string {

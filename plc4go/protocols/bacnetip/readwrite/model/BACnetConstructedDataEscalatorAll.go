@@ -33,6 +33,12 @@ type BACnetConstructedDataEscalatorAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataEscalatorAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEscalatorAll.
+// This is useful for switch cases.
+type BACnetConstructedDataEscalatorAllExactly interface {
+	isBACnetConstructedDataEscalatorAll() bool
+}
+
 // _BACnetConstructedDataEscalatorAll is the data-structure of this message
 type _BACnetConstructedDataEscalatorAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataEscalatorAll) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEscalatorAll) isBACnetConstructedDataEscalatorAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEscalatorAll) String() string {

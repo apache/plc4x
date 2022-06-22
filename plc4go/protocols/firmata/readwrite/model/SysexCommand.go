@@ -36,17 +36,23 @@ type SysexCommand interface {
 	GetResponse() bool
 }
 
+// SysexCommandExactly can be used when we want exactly this type and not a type which fulfills SysexCommand.
+// This is useful for switch cases.
+type SysexCommandExactly interface {
+	isSysexCommand() bool
+}
+
 // _SysexCommand is the data-structure of this message
 type _SysexCommand struct {
 	_SysexCommandChildRequirements
 }
 
 type _SysexCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandType() uint8
 	GetResponse() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type SysexCommandParent interface {
@@ -55,7 +61,7 @@ type SysexCommandParent interface {
 }
 
 type SysexCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent SysexCommand)
 	GetParent() *SysexCommand
 
@@ -195,6 +201,10 @@ func (pm *_SysexCommand) SerializeParent(writeBuffer utils.WriteBuffer, child Sy
 		return errors.Wrap(popErr, "Error popping for SysexCommand")
 	}
 	return nil
+}
+
+func (m *_SysexCommand) isSysexCommand() bool {
+	return true
 }
 
 func (m *_SysexCommand) String() string {

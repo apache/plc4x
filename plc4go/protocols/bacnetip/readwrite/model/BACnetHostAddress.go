@@ -36,6 +36,12 @@ type BACnetHostAddress interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetHostAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetHostAddress.
+// This is useful for switch cases.
+type BACnetHostAddressExactly interface {
+	isBACnetHostAddress() bool
+}
+
 // _BACnetHostAddress is the data-structure of this message
 type _BACnetHostAddress struct {
 	_BACnetHostAddressChildRequirements
@@ -43,9 +49,9 @@ type _BACnetHostAddress struct {
 }
 
 type _BACnetHostAddressChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetHostAddressParent interface {
@@ -54,7 +60,7 @@ type BACnetHostAddressParent interface {
 }
 
 type BACnetHostAddressChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetHostAddress, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetHostAddress
 
@@ -200,6 +206,10 @@ func (pm *_BACnetHostAddress) SerializeParent(writeBuffer utils.WriteBuffer, chi
 		return errors.Wrap(popErr, "Error popping for BACnetHostAddress")
 	}
 	return nil
+}
+
+func (m *_BACnetHostAddress) isBACnetHostAddress() bool {
+	return true
 }
 
 func (m *_BACnetHostAddress) String() string {

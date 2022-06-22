@@ -35,6 +35,12 @@ type SALDataOn interface {
 	GetGroup() byte
 }
 
+// SALDataOnExactly can be used when we want exactly this type and not a type which fulfills SALDataOn.
+// This is useful for switch cases.
+type SALDataOnExactly interface {
+	isSALDataOn() bool
+}
+
 // _SALDataOn is the data-structure of this message
 type _SALDataOn struct {
 	*_SALData
@@ -165,6 +171,10 @@ func (m *_SALDataOn) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SALDataOn) isSALDataOn() bool {
+	return true
 }
 
 func (m *_SALDataOn) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataIPDHCPLeaseTimeRemaining interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataIPDHCPLeaseTimeRemainingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPLeaseTimeRemaining.
+// This is useful for switch cases.
+type BACnetConstructedDataIPDHCPLeaseTimeRemainingExactly interface {
+	isBACnetConstructedDataIPDHCPLeaseTimeRemaining() bool
+}
+
 // _BACnetConstructedDataIPDHCPLeaseTimeRemaining is the data-structure of this message
 type _BACnetConstructedDataIPDHCPLeaseTimeRemaining struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) isBACnetConstructedDataIPDHCPLeaseTimeRemaining() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) String() string {

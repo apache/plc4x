@@ -35,6 +35,12 @@ type BACnetConstructedDataManualSlaveAddressBinding interface {
 	GetManualSlaveAddressBinding() []BACnetAddressBinding
 }
 
+// BACnetConstructedDataManualSlaveAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataManualSlaveAddressBinding.
+// This is useful for switch cases.
+type BACnetConstructedDataManualSlaveAddressBindingExactly interface {
+	isBACnetConstructedDataManualSlaveAddressBinding() bool
+}
+
 // _BACnetConstructedDataManualSlaveAddressBinding is the data-structure of this message
 type _BACnetConstructedDataManualSlaveAddressBinding struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) isBACnetConstructedDataManualSlaveAddressBinding() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataManualSlaveAddressBinding) String() string {

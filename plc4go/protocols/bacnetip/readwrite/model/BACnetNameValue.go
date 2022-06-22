@@ -38,6 +38,12 @@ type BACnetNameValue interface {
 	GetValue() BACnetConstructedData
 }
 
+// BACnetNameValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNameValue.
+// This is useful for switch cases.
+type BACnetNameValueExactly interface {
+	isBACnetNameValue() bool
+}
+
 // _BACnetNameValue is the data-structure of this message
 type _BACnetNameValue struct {
 	Name  BACnetContextTagCharacterString
@@ -195,6 +201,10 @@ func (m *_BACnetNameValue) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetNameValue")
 	}
 	return nil
+}
+
+func (m *_BACnetNameValue) isBACnetNameValue() bool {
+	return true
 }
 
 func (m *_BACnetNameValue) String() string {

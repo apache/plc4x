@@ -40,6 +40,12 @@ type BVLCForeignDeviceTableEntry interface {
 	GetSecondRemainingBeforePurge() uint16
 }
 
+// BVLCForeignDeviceTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCForeignDeviceTableEntry.
+// This is useful for switch cases.
+type BVLCForeignDeviceTableEntryExactly interface {
+	isBVLCForeignDeviceTableEntry() bool
+}
+
 // _BVLCForeignDeviceTableEntry is the data-structure of this message
 type _BVLCForeignDeviceTableEntry struct {
 	Ip                         []uint8
@@ -227,6 +233,10 @@ func (m *_BVLCForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for BVLCForeignDeviceTableEntry")
 	}
 	return nil
+}
+
+func (m *_BVLCForeignDeviceTableEntry) isBVLCForeignDeviceTableEntry() bool {
+	return true
 }
 
 func (m *_BVLCForeignDeviceTableEntry) String() string {

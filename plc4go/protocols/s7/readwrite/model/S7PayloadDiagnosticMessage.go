@@ -47,6 +47,12 @@ type S7PayloadDiagnosticMessage interface {
 	GetTimeStamp() DateAndTime
 }
 
+// S7PayloadDiagnosticMessageExactly can be used when we want exactly this type and not a type which fulfills S7PayloadDiagnosticMessage.
+// This is useful for switch cases.
+type S7PayloadDiagnosticMessageExactly interface {
+	isS7PayloadDiagnosticMessage() bool
+}
+
 // _S7PayloadDiagnosticMessage is the data-structure of this message
 type _S7PayloadDiagnosticMessage struct {
 	*_S7PayloadUserDataItem
@@ -345,6 +351,10 @@ func (m *_S7PayloadDiagnosticMessage) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadDiagnosticMessage) isS7PayloadDiagnosticMessage() bool {
+	return true
 }
 
 func (m *_S7PayloadDiagnosticMessage) String() string {

@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger interface {
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerExactly interface {
+	isBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger() bool
+}
+
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger struct {
 	*_BACnetFaultParameterFaultOutOfRangeMinNormalValue
@@ -181,6 +187,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger) Serialize(wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger) isBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger) String() string {

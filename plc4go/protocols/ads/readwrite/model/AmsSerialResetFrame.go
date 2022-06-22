@@ -44,6 +44,12 @@ type AmsSerialResetFrame interface {
 	GetCrc() uint16
 }
 
+// AmsSerialResetFrameExactly can be used when we want exactly this type and not a type which fulfills AmsSerialResetFrame.
+// This is useful for switch cases.
+type AmsSerialResetFrameExactly interface {
+	isAmsSerialResetFrame() bool
+}
+
 // _AmsSerialResetFrame is the data-structure of this message
 type _AmsSerialResetFrame struct {
 	MagicCookie        uint16
@@ -252,6 +258,10 @@ func (m *_AmsSerialResetFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsSerialResetFrame")
 	}
 	return nil
+}
+
+func (m *_AmsSerialResetFrame) isAmsSerialResetFrame() bool {
+	return true
 }
 
 func (m *_AmsSerialResetFrame) String() string {

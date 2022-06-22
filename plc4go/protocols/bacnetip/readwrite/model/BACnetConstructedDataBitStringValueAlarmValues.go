@@ -41,6 +41,12 @@ type BACnetConstructedDataBitStringValueAlarmValues interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataBitStringValueAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitStringValueAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataBitStringValueAlarmValuesExactly interface {
+	isBACnetConstructedDataBitStringValueAlarmValues() bool
+}
+
 // _BACnetConstructedDataBitStringValueAlarmValues is the data-structure of this message
 type _BACnetConstructedDataBitStringValueAlarmValues struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) isBACnetConstructedDataBitStringValueAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBitStringValueAlarmValues) String() string {

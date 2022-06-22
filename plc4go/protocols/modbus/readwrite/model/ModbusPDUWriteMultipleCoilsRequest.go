@@ -39,6 +39,12 @@ type ModbusPDUWriteMultipleCoilsRequest interface {
 	GetValue() []byte
 }
 
+// ModbusPDUWriteMultipleCoilsRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleCoilsRequest.
+// This is useful for switch cases.
+type ModbusPDUWriteMultipleCoilsRequestExactly interface {
+	isModbusPDUWriteMultipleCoilsRequest() bool
+}
+
 // _ModbusPDUWriteMultipleCoilsRequest is the data-structure of this message
 type _ModbusPDUWriteMultipleCoilsRequest struct {
 	*_ModbusPDU
@@ -247,6 +253,10 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsRequest) isModbusPDUWriteMultipleCoilsRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) String() string {

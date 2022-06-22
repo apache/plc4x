@@ -37,6 +37,12 @@ type BACnetConstructedDataLimitEnable interface {
 	GetActualValue() BACnetLimitEnableTagged
 }
 
+// BACnetConstructedDataLimitEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLimitEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataLimitEnableExactly interface {
+	isBACnetConstructedDataLimitEnable() bool
+}
+
 // _BACnetConstructedDataLimitEnable is the data-structure of this message
 type _BACnetConstructedDataLimitEnable struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLimitEnable) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLimitEnable) isBACnetConstructedDataLimitEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLimitEnable) String() string {

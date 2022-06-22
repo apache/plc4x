@@ -46,6 +46,12 @@ type BACnetLightingCommand interface {
 	GetPriority() BACnetContextTagUnsignedInteger
 }
 
+// BACnetLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetLightingCommand.
+// This is useful for switch cases.
+type BACnetLightingCommandExactly interface {
+	isBACnetLightingCommand() bool
+}
+
 // _BACnetLightingCommand is the data-structure of this message
 type _BACnetLightingCommand struct {
 	LightningOperation BACnetLightingOperationTagged
@@ -395,6 +401,10 @@ func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetLightingCommand")
 	}
 	return nil
+}
+
+func (m *_BACnetLightingCommand) isBACnetLightingCommand() bool {
+	return true
 }
 
 func (m *_BACnetLightingCommand) String() string {

@@ -39,6 +39,12 @@ type CALDataReplyStatus interface {
 	GetData() []byte
 }
 
+// CALDataReplyStatusExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyStatus.
+// This is useful for switch cases.
+type CALDataReplyStatusExactly interface {
+	isCALDataReplyStatus() bool
+}
+
 // _CALDataReplyStatus is the data-structure of this message
 type _CALDataReplyStatus struct {
 	*_CALData
@@ -231,6 +237,10 @@ func (m *_CALDataReplyStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataReplyStatus) isCALDataReplyStatus() bool {
+	return true
 }
 
 func (m *_CALDataReplyStatus) String() string {

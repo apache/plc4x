@@ -37,6 +37,12 @@ type BACnetConstructedDataRestorePreparationTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataRestorePreparationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestorePreparationTime.
+// This is useful for switch cases.
+type BACnetConstructedDataRestorePreparationTimeExactly interface {
+	isBACnetConstructedDataRestorePreparationTime() bool
+}
+
 // _BACnetConstructedDataRestorePreparationTime is the data-structure of this message
 type _BACnetConstructedDataRestorePreparationTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataRestorePreparationTime) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTime) isBACnetConstructedDataRestorePreparationTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) String() string {

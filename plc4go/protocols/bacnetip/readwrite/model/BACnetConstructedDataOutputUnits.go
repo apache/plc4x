@@ -37,6 +37,12 @@ type BACnetConstructedDataOutputUnits interface {
 	GetActualValue() BACnetEngineeringUnitsTagged
 }
 
+// BACnetConstructedDataOutputUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOutputUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataOutputUnitsExactly interface {
+	isBACnetConstructedDataOutputUnits() bool
+}
+
 // _BACnetConstructedDataOutputUnits is the data-structure of this message
 type _BACnetConstructedDataOutputUnits struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOutputUnits) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOutputUnits) isBACnetConstructedDataOutputUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOutputUnits) String() string {

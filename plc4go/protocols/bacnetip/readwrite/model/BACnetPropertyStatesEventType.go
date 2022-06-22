@@ -35,6 +35,12 @@ type BACnetPropertyStatesEventType interface {
 	GetEventType() BACnetEventTypeTagged
 }
 
+// BACnetPropertyStatesEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEventType.
+// This is useful for switch cases.
+type BACnetPropertyStatesEventTypeExactly interface {
+	isBACnetPropertyStatesEventType() bool
+}
+
 // _BACnetPropertyStatesEventType is the data-structure of this message
 type _BACnetPropertyStatesEventType struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesEventType) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesEventType) isBACnetPropertyStatesEventType() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEventType) String() string {

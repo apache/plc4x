@@ -37,6 +37,12 @@ type BACnetServiceAckGetEventInformation interface {
 	GetMoreEvents() BACnetContextTagBoolean
 }
 
+// BACnetServiceAckGetEventInformationExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetEventInformation.
+// This is useful for switch cases.
+type BACnetServiceAckGetEventInformationExactly interface {
+	isBACnetServiceAckGetEventInformation() bool
+}
+
 // _BACnetServiceAckGetEventInformation is the data-structure of this message
 type _BACnetServiceAckGetEventInformation struct {
 	*_BACnetServiceAck
@@ -218,6 +224,10 @@ func (m *_BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckGetEventInformation) isBACnetServiceAckGetEventInformation() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckGetEventInformation) String() string {

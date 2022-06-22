@@ -35,6 +35,12 @@ type BACnetPropertyStatesSystemStatus interface {
 	GetSystemStatus() BACnetDeviceStatusTagged
 }
 
+// BACnetPropertyStatesSystemStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesSystemStatus.
+// This is useful for switch cases.
+type BACnetPropertyStatesSystemStatusExactly interface {
+	isBACnetPropertyStatesSystemStatus() bool
+}
+
 // _BACnetPropertyStatesSystemStatus is the data-structure of this message
 type _BACnetPropertyStatesSystemStatus struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesSystemStatus) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesSystemStatus) isBACnetPropertyStatesSystemStatus() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesSystemStatus) String() string {

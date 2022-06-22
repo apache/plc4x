@@ -37,6 +37,12 @@ type BACnetConstructedDataAttemptedSamples interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataAttemptedSamplesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAttemptedSamples.
+// This is useful for switch cases.
+type BACnetConstructedDataAttemptedSamplesExactly interface {
+	isBACnetConstructedDataAttemptedSamples() bool
+}
+
 // _BACnetConstructedDataAttemptedSamples is the data-structure of this message
 type _BACnetConstructedDataAttemptedSamples struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAttemptedSamples) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAttemptedSamples) isBACnetConstructedDataAttemptedSamples() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAttemptedSamples) String() string {

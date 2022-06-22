@@ -37,6 +37,12 @@ type ApduDataMemoryRead interface {
 	GetAddress() uint16
 }
 
+// ApduDataMemoryReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryRead.
+// This is useful for switch cases.
+type ApduDataMemoryReadExactly interface {
+	isApduDataMemoryRead() bool
+}
+
 // _ApduDataMemoryRead is the data-structure of this message
 type _ApduDataMemoryRead struct {
 	*_ApduData
@@ -196,6 +202,10 @@ func (m *_ApduDataMemoryRead) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataMemoryRead) isApduDataMemoryRead() bool {
+	return true
 }
 
 func (m *_ApduDataMemoryRead) String() string {

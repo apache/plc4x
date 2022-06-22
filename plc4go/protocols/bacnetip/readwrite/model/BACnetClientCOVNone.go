@@ -35,6 +35,12 @@ type BACnetClientCOVNone interface {
 	GetDefaultIncrement() BACnetApplicationTagNull
 }
 
+// BACnetClientCOVNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOVNone.
+// This is useful for switch cases.
+type BACnetClientCOVNoneExactly interface {
+	isBACnetClientCOVNone() bool
+}
+
 // _BACnetClientCOVNone is the data-structure of this message
 type _BACnetClientCOVNone struct {
 	*_BACnetClientCOV
@@ -176,6 +182,10 @@ func (m *_BACnetClientCOVNone) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetClientCOVNone) isBACnetClientCOVNone() bool {
+	return true
 }
 
 func (m *_BACnetClientCOVNone) String() string {

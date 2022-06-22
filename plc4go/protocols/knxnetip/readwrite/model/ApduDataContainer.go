@@ -35,6 +35,12 @@ type ApduDataContainer interface {
 	GetDataApdu() ApduData
 }
 
+// ApduDataContainerExactly can be used when we want exactly this type and not a type which fulfills ApduDataContainer.
+// This is useful for switch cases.
+type ApduDataContainerExactly interface {
+	isApduDataContainer() bool
+}
+
 // _ApduDataContainer is the data-structure of this message
 type _ApduDataContainer struct {
 	*_Apdu
@@ -184,6 +190,10 @@ func (m *_ApduDataContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataContainer) isApduDataContainer() bool {
+	return true
 }
 
 func (m *_ApduDataContainer) String() string {

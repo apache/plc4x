@@ -37,6 +37,12 @@ type BACnetConstructedDataThreatAuthority interface {
 	GetActualValue() BACnetAccessThreatLevel
 }
 
+// BACnetConstructedDataThreatAuthorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataThreatAuthority.
+// This is useful for switch cases.
+type BACnetConstructedDataThreatAuthorityExactly interface {
+	isBACnetConstructedDataThreatAuthority() bool
+}
+
 // _BACnetConstructedDataThreatAuthority is the data-structure of this message
 type _BACnetConstructedDataThreatAuthority struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataThreatAuthority) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataThreatAuthority) isBACnetConstructedDataThreatAuthority() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataThreatAuthority) String() string {

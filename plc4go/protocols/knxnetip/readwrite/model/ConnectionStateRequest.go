@@ -38,6 +38,12 @@ type ConnectionStateRequest interface {
 	GetHpaiControlEndpoint() HPAIControlEndpoint
 }
 
+// ConnectionStateRequestExactly can be used when we want exactly this type and not a type which fulfills ConnectionStateRequest.
+// This is useful for switch cases.
+type ConnectionStateRequestExactly interface {
+	isConnectionStateRequest() bool
+}
+
 // _ConnectionStateRequest is the data-structure of this message
 type _ConnectionStateRequest struct {
 	*_KnxNetIpMessage
@@ -230,6 +236,10 @@ func (m *_ConnectionStateRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionStateRequest) isConnectionStateRequest() bool {
+	return true
 }
 
 func (m *_ConnectionStateRequest) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataAccompanimentTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataAccompanimentTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccompanimentTime.
+// This is useful for switch cases.
+type BACnetConstructedDataAccompanimentTimeExactly interface {
+	isBACnetConstructedDataAccompanimentTime() bool
+}
+
 // _BACnetConstructedDataAccompanimentTime is the data-structure of this message
 type _BACnetConstructedDataAccompanimentTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAccompanimentTime) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccompanimentTime) isBACnetConstructedDataAccompanimentTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) String() string {

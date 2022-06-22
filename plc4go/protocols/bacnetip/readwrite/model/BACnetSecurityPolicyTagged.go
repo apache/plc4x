@@ -36,6 +36,12 @@ type BACnetSecurityPolicyTagged interface {
 	GetValue() BACnetSecurityPolicy
 }
 
+// BACnetSecurityPolicyTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityPolicyTagged.
+// This is useful for switch cases.
+type BACnetSecurityPolicyTaggedExactly interface {
+	isBACnetSecurityPolicyTagged() bool
+}
+
 // _BACnetSecurityPolicyTagged is the data-structure of this message
 type _BACnetSecurityPolicyTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetSecurityPolicyTagged) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetSecurityPolicyTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetSecurityPolicyTagged) isBACnetSecurityPolicyTagged() bool {
+	return true
 }
 
 func (m *_BACnetSecurityPolicyTagged) String() string {

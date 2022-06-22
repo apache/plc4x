@@ -38,6 +38,12 @@ type BACnetEventParameterChangeOfTimerAlarmValue interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterChangeOfTimerAlarmValueExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfTimerAlarmValue.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfTimerAlarmValueExactly interface {
+	isBACnetEventParameterChangeOfTimerAlarmValue() bool
+}
+
 // _BACnetEventParameterChangeOfTimerAlarmValue is the data-structure of this message
 type _BACnetEventParameterChangeOfTimerAlarmValue struct {
 	OpeningTag  BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize(writeBuffer uti
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfTimerAlarmValue")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) isBACnetEventParameterChangeOfTimerAlarmValue() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) String() string {

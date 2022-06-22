@@ -37,6 +37,12 @@ type BACnetConstructedDataAutoSlaveDiscovery interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataAutoSlaveDiscoveryExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAutoSlaveDiscovery.
+// This is useful for switch cases.
+type BACnetConstructedDataAutoSlaveDiscoveryExactly interface {
+	isBACnetConstructedDataAutoSlaveDiscovery() bool
+}
+
 // _BACnetConstructedDataAutoSlaveDiscovery is the data-structure of this message
 type _BACnetConstructedDataAutoSlaveDiscovery struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) isBACnetConstructedDataAutoSlaveDiscovery() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAutoSlaveDiscovery) String() string {

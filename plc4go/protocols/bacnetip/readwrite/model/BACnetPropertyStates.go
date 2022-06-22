@@ -36,6 +36,12 @@ type BACnetPropertyStates interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetPropertyStatesExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStates.
+// This is useful for switch cases.
+type BACnetPropertyStatesExactly interface {
+	isBACnetPropertyStates() bool
+}
+
 // _BACnetPropertyStates is the data-structure of this message
 type _BACnetPropertyStates struct {
 	_BACnetPropertyStatesChildRequirements
@@ -43,9 +49,9 @@ type _BACnetPropertyStates struct {
 }
 
 type _BACnetPropertyStatesChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetPropertyStatesParent interface {
@@ -54,7 +60,7 @@ type BACnetPropertyStatesParent interface {
 }
 
 type BACnetPropertyStatesChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetPropertyStates, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetPropertyStates
 
@@ -312,6 +318,10 @@ func (pm *_BACnetPropertyStates) SerializeParent(writeBuffer utils.WriteBuffer, 
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyStates")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyStates) isBACnetPropertyStates() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStates) String() string {

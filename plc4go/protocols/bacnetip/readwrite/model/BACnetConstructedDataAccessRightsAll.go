@@ -33,6 +33,12 @@ type BACnetConstructedDataAccessRightsAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataAccessRightsAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessRightsAll.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessRightsAllExactly interface {
+	isBACnetConstructedDataAccessRightsAll() bool
+}
+
 // _BACnetConstructedDataAccessRightsAll is the data-structure of this message
 type _BACnetConstructedDataAccessRightsAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataAccessRightsAll) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessRightsAll) isBACnetConstructedDataAccessRightsAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessRightsAll) String() string {

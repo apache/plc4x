@@ -35,6 +35,12 @@ type BACnetConfirmedServiceRequestConfirmedUnknown interface {
 	GetUnknownBytes() []byte
 }
 
+// BACnetConfirmedServiceRequestConfirmedUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedUnknown.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedUnknownExactly interface {
+	isBACnetConfirmedServiceRequestConfirmedUnknown() bool
+}
+
 // _BACnetConfirmedServiceRequestConfirmedUnknown is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedUnknown struct {
 	*_BACnetConfirmedServiceRequest
@@ -175,6 +181,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedUnknown) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedUnknown) isBACnetConfirmedServiceRequestConfirmedUnknown() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedUnknown) String() string {

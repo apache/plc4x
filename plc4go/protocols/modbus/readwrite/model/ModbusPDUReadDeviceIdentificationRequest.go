@@ -41,6 +41,12 @@ type ModbusPDUReadDeviceIdentificationRequest interface {
 	GetObjectId() uint8
 }
 
+// ModbusPDUReadDeviceIdentificationRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDeviceIdentificationRequest.
+// This is useful for switch cases.
+type ModbusPDUReadDeviceIdentificationRequestExactly interface {
+	isModbusPDUReadDeviceIdentificationRequest() bool
+}
+
 // _ModbusPDUReadDeviceIdentificationRequest is the data-structure of this message
 type _ModbusPDUReadDeviceIdentificationRequest struct {
 	*_ModbusPDU
@@ -247,6 +253,10 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequest) isModbusPDUReadDeviceIdentificationRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) String() string {

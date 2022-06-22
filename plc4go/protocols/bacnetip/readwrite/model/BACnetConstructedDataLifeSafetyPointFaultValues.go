@@ -35,6 +35,12 @@ type BACnetConstructedDataLifeSafetyPointFaultValues interface {
 	GetFaultValues() []BACnetLifeSafetyStateTagged
 }
 
+// BACnetConstructedDataLifeSafetyPointFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyPointFaultValues.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyPointFaultValuesExactly interface {
+	isBACnetConstructedDataLifeSafetyPointFaultValues() bool
+}
+
 // _BACnetConstructedDataLifeSafetyPointFaultValues is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyPointFaultValues struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) isBACnetConstructedDataLifeSafetyPointFaultValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) String() string {

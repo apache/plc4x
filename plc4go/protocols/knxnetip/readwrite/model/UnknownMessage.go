@@ -35,6 +35,12 @@ type UnknownMessage interface {
 	GetUnknownData() []byte
 }
 
+// UnknownMessageExactly can be used when we want exactly this type and not a type which fulfills UnknownMessage.
+// This is useful for switch cases.
+type UnknownMessageExactly interface {
+	isUnknownMessage() bool
+}
+
 // _UnknownMessage is the data-structure of this message
 type _UnknownMessage struct {
 	*_KnxNetIpMessage
@@ -173,6 +179,10 @@ func (m *_UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_UnknownMessage) isUnknownMessage() bool {
+	return true
 }
 
 func (m *_UnknownMessage) String() string {

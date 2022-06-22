@@ -36,6 +36,12 @@ type BACnetLandingDoorStatusLandingDoorsListEntry interface {
 	GetDoorStatus() BACnetDoorStatusTagged
 }
 
+// BACnetLandingDoorStatusLandingDoorsListEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingDoorStatusLandingDoorsListEntry.
+// This is useful for switch cases.
+type BACnetLandingDoorStatusLandingDoorsListEntryExactly interface {
+	isBACnetLandingDoorStatusLandingDoorsListEntry() bool
+}
+
 // _BACnetLandingDoorStatusLandingDoorsListEntry is the data-structure of this message
 type _BACnetLandingDoorStatusLandingDoorsListEntry struct {
 	FloorNumber BACnetContextTagUnsignedInteger
@@ -178,6 +184,10 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) Serialize(writeBuffer ut
 		return errors.Wrap(popErr, "Error popping for BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) isBACnetLandingDoorStatusLandingDoorsListEntry() bool {
+	return true
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) String() string {

@@ -41,6 +41,12 @@ type BACnetConstructedDataStructuredObjectList interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataStructuredObjectListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStructuredObjectList.
+// This is useful for switch cases.
+type BACnetConstructedDataStructuredObjectListExactly interface {
+	isBACnetConstructedDataStructuredObjectList() bool
+}
+
 // _BACnetConstructedDataStructuredObjectList is the data-structure of this message
 type _BACnetConstructedDataStructuredObjectList struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataStructuredObjectList) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStructuredObjectList) isBACnetConstructedDataStructuredObjectList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStructuredObjectList) String() string {

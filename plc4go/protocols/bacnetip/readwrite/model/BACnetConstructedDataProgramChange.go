@@ -37,6 +37,12 @@ type BACnetConstructedDataProgramChange interface {
 	GetActualValue() BACnetProgramRequestTagged
 }
 
+// BACnetConstructedDataProgramChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProgramChange.
+// This is useful for switch cases.
+type BACnetConstructedDataProgramChangeExactly interface {
+	isBACnetConstructedDataProgramChange() bool
+}
+
 // _BACnetConstructedDataProgramChange is the data-structure of this message
 type _BACnetConstructedDataProgramChange struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataProgramChange) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProgramChange) isBACnetConstructedDataProgramChange() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProgramChange) String() string {

@@ -37,6 +37,12 @@ type COTPPacketDisconnectResponse interface {
 	GetSourceReference() uint16
 }
 
+// COTPPacketDisconnectResponseExactly can be used when we want exactly this type and not a type which fulfills COTPPacketDisconnectResponse.
+// This is useful for switch cases.
+type COTPPacketDisconnectResponseExactly interface {
+	isCOTPPacketDisconnectResponse() bool
+}
+
 // _COTPPacketDisconnectResponse is the data-structure of this message
 type _COTPPacketDisconnectResponse struct {
 	*_COTPPacket
@@ -199,6 +205,10 @@ func (m *_COTPPacketDisconnectResponse) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketDisconnectResponse) isCOTPPacketDisconnectResponse() bool {
+	return true
 }
 
 func (m *_COTPPacketDisconnectResponse) String() string {

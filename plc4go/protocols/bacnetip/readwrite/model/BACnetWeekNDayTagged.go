@@ -68,6 +68,12 @@ type BACnetWeekNDayTagged interface {
 	GetAnyDayOfWeek() bool
 }
 
+// BACnetWeekNDayTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetWeekNDayTagged.
+// This is useful for switch cases.
+type BACnetWeekNDayTaggedExactly interface {
+	isBACnetWeekNDayTagged() bool
+}
+
 // _BACnetWeekNDayTagged is the data-structure of this message
 type _BACnetWeekNDayTagged struct {
 	Header      BACnetTagHeader
@@ -481,6 +487,10 @@ func (m *_BACnetWeekNDayTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetWeekNDayTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetWeekNDayTagged) isBACnetWeekNDayTagged() bool {
+	return true
 }
 
 func (m *_BACnetWeekNDayTagged) String() string {

@@ -35,6 +35,12 @@ type BACnetPropertyStatesEscalatorOperationDirection interface {
 	GetEscalatorOperationDirection() BACnetEscalatorOperationDirectionTagged
 }
 
+// BACnetPropertyStatesEscalatorOperationDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEscalatorOperationDirection.
+// This is useful for switch cases.
+type BACnetPropertyStatesEscalatorOperationDirectionExactly interface {
+	isBACnetPropertyStatesEscalatorOperationDirection() bool
+}
+
 // _BACnetPropertyStatesEscalatorOperationDirection is the data-structure of this message
 type _BACnetPropertyStatesEscalatorOperationDirection struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) isBACnetPropertyStatesEscalatorOperationDirection() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) String() string {

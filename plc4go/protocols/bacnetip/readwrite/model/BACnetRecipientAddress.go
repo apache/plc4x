@@ -35,6 +35,12 @@ type BACnetRecipientAddress interface {
 	GetAddressValue() BACnetAddressEnclosed
 }
 
+// BACnetRecipientAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientAddress.
+// This is useful for switch cases.
+type BACnetRecipientAddressExactly interface {
+	isBACnetRecipientAddress() bool
+}
+
 // _BACnetRecipientAddress is the data-structure of this message
 type _BACnetRecipientAddress struct {
 	*_BACnetRecipient
@@ -176,6 +182,10 @@ func (m *_BACnetRecipientAddress) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetRecipientAddress) isBACnetRecipientAddress() bool {
+	return true
 }
 
 func (m *_BACnetRecipientAddress) String() string {

@@ -39,6 +39,12 @@ type LDataReq interface {
 	GetDataFrame() LDataFrame
 }
 
+// LDataReqExactly can be used when we want exactly this type and not a type which fulfills LDataReq.
+// This is useful for switch cases.
+type LDataReqExactly interface {
+	isLDataReq() bool
+}
+
 // _LDataReq is the data-structure of this message
 type _LDataReq struct {
 	*_CEMI
@@ -260,6 +266,10 @@ func (m *_LDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LDataReq) isLDataReq() bool {
+	return true
 }
 
 func (m *_LDataReq) String() string {

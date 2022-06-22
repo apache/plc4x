@@ -37,6 +37,12 @@ type ApduDataMemoryResponse interface {
 	GetData() []byte
 }
 
+// ApduDataMemoryResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryResponse.
+// This is useful for switch cases.
+type ApduDataMemoryResponseExactly interface {
+	isApduDataMemoryResponse() bool
+}
+
 // _ApduDataMemoryResponse is the data-structure of this message
 type _ApduDataMemoryResponse struct {
 	*_ApduData
@@ -216,6 +222,10 @@ func (m *_ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataMemoryResponse) isApduDataMemoryResponse() bool {
+	return true
 }
 
 func (m *_ApduDataMemoryResponse) String() string {

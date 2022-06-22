@@ -35,6 +35,12 @@ type BACnetPropertyStatesAccessCredentialDisableReason interface {
 	GetAccessCredentialDisableReason() BACnetAccessCredentialDisableReasonTagged
 }
 
+// BACnetPropertyStatesAccessCredentialDisableReasonExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAccessCredentialDisableReason.
+// This is useful for switch cases.
+type BACnetPropertyStatesAccessCredentialDisableReasonExactly interface {
+	isBACnetPropertyStatesAccessCredentialDisableReason() bool
+}
+
 // _BACnetPropertyStatesAccessCredentialDisableReason is the data-structure of this message
 type _BACnetPropertyStatesAccessCredentialDisableReason struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) isBACnetPropertyStatesAccessCredentialDisableReason() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisableReason) String() string {

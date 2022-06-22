@@ -35,6 +35,12 @@ type BACnetPropertyStatesUnits interface {
 	GetUnits() BACnetEngineeringUnitsTagged
 }
 
+// BACnetPropertyStatesUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesUnits.
+// This is useful for switch cases.
+type BACnetPropertyStatesUnitsExactly interface {
+	isBACnetPropertyStatesUnits() bool
+}
+
 // _BACnetPropertyStatesUnits is the data-structure of this message
 type _BACnetPropertyStatesUnits struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesUnits) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesUnits) isBACnetPropertyStatesUnits() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesUnits) String() string {

@@ -33,6 +33,12 @@ type TDataIndividualReq interface {
 	CEMI
 }
 
+// TDataIndividualReqExactly can be used when we want exactly this type and not a type which fulfills TDataIndividualReq.
+// This is useful for switch cases.
+type TDataIndividualReqExactly interface {
+	isTDataIndividualReq() bool
+}
+
 // _TDataIndividualReq is the data-structure of this message
 type _TDataIndividualReq struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_TDataIndividualReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TDataIndividualReq) isTDataIndividualReq() bool {
+	return true
 }
 
 func (m *_TDataIndividualReq) String() string {

@@ -37,6 +37,12 @@ type COTPPacketData interface {
 	GetTpduRef() uint8
 }
 
+// COTPPacketDataExactly can be used when we want exactly this type and not a type which fulfills COTPPacketData.
+// This is useful for switch cases.
+type COTPPacketDataExactly interface {
+	isCOTPPacketData() bool
+}
+
 // _COTPPacketData is the data-structure of this message
 type _COTPPacketData struct {
 	*_COTPPacket
@@ -199,6 +205,10 @@ func (m *_COTPPacketData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketData) isCOTPPacketData() bool {
+	return true
 }
 
 func (m *_COTPPacketData) String() string {

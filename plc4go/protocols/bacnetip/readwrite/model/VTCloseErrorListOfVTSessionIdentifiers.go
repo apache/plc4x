@@ -38,6 +38,12 @@ type VTCloseErrorListOfVTSessionIdentifiers interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// VTCloseErrorListOfVTSessionIdentifiersExactly can be used when we want exactly this type and not a type which fulfills VTCloseErrorListOfVTSessionIdentifiers.
+// This is useful for switch cases.
+type VTCloseErrorListOfVTSessionIdentifiersExactly interface {
+	isVTCloseErrorListOfVTSessionIdentifiers() bool
+}
+
 // _VTCloseErrorListOfVTSessionIdentifiers is the data-structure of this message
 type _VTCloseErrorListOfVTSessionIdentifiers struct {
 	OpeningTag                 BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.Wr
 		return errors.Wrap(popErr, "Error popping for VTCloseErrorListOfVTSessionIdentifiers")
 	}
 	return nil
+}
+
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) isVTCloseErrorListOfVTSessionIdentifiers() bool {
+	return true
 }
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) String() string {

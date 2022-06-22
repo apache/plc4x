@@ -37,6 +37,12 @@ type BACnetConstructedDataDutyWindow interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataDutyWindowExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDutyWindow.
+// This is useful for switch cases.
+type BACnetConstructedDataDutyWindowExactly interface {
+	isBACnetConstructedDataDutyWindow() bool
+}
+
 // _BACnetConstructedDataDutyWindow is the data-structure of this message
 type _BACnetConstructedDataDutyWindow struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDutyWindow) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDutyWindow) isBACnetConstructedDataDutyWindow() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDutyWindow) String() string {

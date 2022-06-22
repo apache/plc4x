@@ -33,6 +33,12 @@ type BACnetConstructedDataDatetimeValueAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataDatetimeValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDatetimeValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataDatetimeValueAllExactly interface {
+	isBACnetConstructedDataDatetimeValueAll() bool
+}
+
 // _BACnetConstructedDataDatetimeValueAll is the data-structure of this message
 type _BACnetConstructedDataDatetimeValueAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataDatetimeValueAll) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDatetimeValueAll) isBACnetConstructedDataDatetimeValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDatetimeValueAll) String() string {

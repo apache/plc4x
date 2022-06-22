@@ -35,6 +35,12 @@ type BACnetPropertyStateActionUnknown interface {
 	GetUnknownValue() BACnetContextTagUnknown
 }
 
+// BACnetPropertyStateActionUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStateActionUnknown.
+// This is useful for switch cases.
+type BACnetPropertyStateActionUnknownExactly interface {
+	isBACnetPropertyStateActionUnknown() bool
+}
+
 // _BACnetPropertyStateActionUnknown is the data-structure of this message
 type _BACnetPropertyStateActionUnknown struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStateActionUnknown) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStateActionUnknown) isBACnetPropertyStateActionUnknown() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStateActionUnknown) String() string {

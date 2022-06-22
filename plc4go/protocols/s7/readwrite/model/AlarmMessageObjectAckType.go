@@ -47,6 +47,12 @@ type AlarmMessageObjectAckType interface {
 	GetAckStateComing() State
 }
 
+// AlarmMessageObjectAckTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageObjectAckType.
+// This is useful for switch cases.
+type AlarmMessageObjectAckTypeExactly interface {
+	isAlarmMessageObjectAckType() bool
+}
+
 // _AlarmMessageObjectAckType is the data-structure of this message
 type _AlarmMessageObjectAckType struct {
 	SyntaxId       SyntaxIdType
@@ -319,6 +325,10 @@ func (m *_AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for AlarmMessageObjectAckType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageObjectAckType) isAlarmMessageObjectAckType() bool {
+	return true
 }
 
 func (m *_AlarmMessageObjectAckType) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataThreatLevel interface {
 	GetActualValue() BACnetAccessThreatLevel
 }
 
+// BACnetConstructedDataThreatLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataThreatLevel.
+// This is useful for switch cases.
+type BACnetConstructedDataThreatLevelExactly interface {
+	isBACnetConstructedDataThreatLevel() bool
+}
+
 // _BACnetConstructedDataThreatLevel is the data-structure of this message
 type _BACnetConstructedDataThreatLevel struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataThreatLevel) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataThreatLevel) isBACnetConstructedDataThreatLevel() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataThreatLevel) String() string {

@@ -40,6 +40,12 @@ type BACnetNetworkPortCommandTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetNetworkPortCommandTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkPortCommandTagged.
+// This is useful for switch cases.
+type BACnetNetworkPortCommandTaggedExactly interface {
+	isBACnetNetworkPortCommandTagged() bool
+}
+
 // _BACnetNetworkPortCommandTagged is the data-structure of this message
 type _BACnetNetworkPortCommandTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetNetworkPortCommandTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetNetworkPortCommandTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetNetworkPortCommandTagged) isBACnetNetworkPortCommandTagged() bool {
+	return true
 }
 
 func (m *_BACnetNetworkPortCommandTagged) String() string {

@@ -43,6 +43,12 @@ type BACnetNotificationParametersChangeOfCharacterString interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersChangeOfCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfCharacterString.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfCharacterStringExactly interface {
+	isBACnetNotificationParametersChangeOfCharacterString() bool
+}
+
 // _BACnetNotificationParametersChangeOfCharacterString is the data-structure of this message
 type _BACnetNotificationParametersChangeOfCharacterString struct {
 	*_BACnetNotificationParameters
@@ -330,6 +336,10 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfCharacterString) isBACnetNotificationParametersChangeOfCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfCharacterString) String() string {

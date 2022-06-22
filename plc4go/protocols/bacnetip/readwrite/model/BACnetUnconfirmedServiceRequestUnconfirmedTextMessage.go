@@ -43,6 +43,12 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
 	GetMessage() BACnetContextTagCharacterString
 }
 
+// BACnetUnconfirmedServiceRequestUnconfirmedTextMessageExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedTextMessage.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUnconfirmedTextMessageExactly interface {
+	isBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() bool
+}
+
 // _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -310,6 +316,10 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) isBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) String() string {

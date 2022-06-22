@@ -34,16 +34,22 @@ type ConnectionResponseDataBlock interface {
 	GetConnectionType() uint8
 }
 
+// ConnectionResponseDataBlockExactly can be used when we want exactly this type and not a type which fulfills ConnectionResponseDataBlock.
+// This is useful for switch cases.
+type ConnectionResponseDataBlockExactly interface {
+	isConnectionResponseDataBlock() bool
+}
+
 // _ConnectionResponseDataBlock is the data-structure of this message
 type _ConnectionResponseDataBlock struct {
 	_ConnectionResponseDataBlockChildRequirements
 }
 
 type _ConnectionResponseDataBlockChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetConnectionType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ConnectionResponseDataBlockParent interface {
@@ -52,7 +58,7 @@ type ConnectionResponseDataBlockParent interface {
 }
 
 type ConnectionResponseDataBlockChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ConnectionResponseDataBlock)
 	GetParent() *ConnectionResponseDataBlock
 
@@ -183,6 +189,10 @@ func (pm *_ConnectionResponseDataBlock) SerializeParent(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for ConnectionResponseDataBlock")
 	}
 	return nil
+}
+
+func (m *_ConnectionResponseDataBlock) isConnectionResponseDataBlock() bool {
+	return true
 }
 
 func (m *_ConnectionResponseDataBlock) String() string {

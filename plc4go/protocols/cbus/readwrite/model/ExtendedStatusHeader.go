@@ -35,6 +35,12 @@ type ExtendedStatusHeader interface {
 	GetNumberOfCharacterPairs() uint8
 }
 
+// ExtendedStatusHeaderExactly can be used when we want exactly this type and not a type which fulfills ExtendedStatusHeader.
+// This is useful for switch cases.
+type ExtendedStatusHeaderExactly interface {
+	isExtendedStatusHeader() bool
+}
+
 // _ExtendedStatusHeader is the data-structure of this message
 type _ExtendedStatusHeader struct {
 	NumberOfCharacterPairs uint8
@@ -158,6 +164,10 @@ func (m *_ExtendedStatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ExtendedStatusHeader")
 	}
 	return nil
+}
+
+func (m *_ExtendedStatusHeader) isExtendedStatusHeader() bool {
+	return true
 }
 
 func (m *_ExtendedStatusHeader) String() string {

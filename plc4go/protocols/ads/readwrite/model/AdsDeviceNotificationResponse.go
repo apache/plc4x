@@ -33,6 +33,12 @@ type AdsDeviceNotificationResponse interface {
 	AdsData
 }
 
+// AdsDeviceNotificationResponseExactly can be used when we want exactly this type and not a type which fulfills AdsDeviceNotificationResponse.
+// This is useful for switch cases.
+type AdsDeviceNotificationResponseExactly interface {
+	isAdsDeviceNotificationResponse() bool
+}
+
 // _AdsDeviceNotificationResponse is the data-structure of this message
 type _AdsDeviceNotificationResponse struct {
 	*_AdsData
@@ -135,6 +141,10 @@ func (m *_AdsDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsDeviceNotificationResponse) isAdsDeviceNotificationResponse() bool {
+	return true
 }
 
 func (m *_AdsDeviceNotificationResponse) String() string {

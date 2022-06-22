@@ -37,6 +37,12 @@ type BACnetConstructedDataOperationDirection interface {
 	GetActualValue() BACnetEscalatorOperationDirectionTagged
 }
 
+// BACnetConstructedDataOperationDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOperationDirection.
+// This is useful for switch cases.
+type BACnetConstructedDataOperationDirectionExactly interface {
+	isBACnetConstructedDataOperationDirection() bool
+}
+
 // _BACnetConstructedDataOperationDirection is the data-structure of this message
 type _BACnetConstructedDataOperationDirection struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOperationDirection) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOperationDirection) isBACnetConstructedDataOperationDirection() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOperationDirection) String() string {

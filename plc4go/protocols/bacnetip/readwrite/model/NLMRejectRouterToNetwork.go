@@ -37,6 +37,12 @@ type NLMRejectRouterToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 }
 
+// NLMRejectRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRejectRouterToNetwork.
+// This is useful for switch cases.
+type NLMRejectRouterToNetworkExactly interface {
+	isNLMRejectRouterToNetwork() bool
+}
+
 // _NLMRejectRouterToNetwork is the data-structure of this message
 type _NLMRejectRouterToNetwork struct {
 	*_NLM
@@ -209,6 +215,10 @@ func (m *_NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMRejectRouterToNetwork) isNLMRejectRouterToNetwork() bool {
+	return true
 }
 
 func (m *_NLMRejectRouterToNetwork) String() string {

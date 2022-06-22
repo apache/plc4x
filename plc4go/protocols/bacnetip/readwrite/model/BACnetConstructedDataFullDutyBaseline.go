@@ -37,6 +37,12 @@ type BACnetConstructedDataFullDutyBaseline interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataFullDutyBaselineExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFullDutyBaseline.
+// This is useful for switch cases.
+type BACnetConstructedDataFullDutyBaselineExactly interface {
+	isBACnetConstructedDataFullDutyBaseline() bool
+}
+
 // _BACnetConstructedDataFullDutyBaseline is the data-structure of this message
 type _BACnetConstructedDataFullDutyBaseline struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFullDutyBaseline) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFullDutyBaseline) isBACnetConstructedDataFullDutyBaseline() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFullDutyBaseline) String() string {

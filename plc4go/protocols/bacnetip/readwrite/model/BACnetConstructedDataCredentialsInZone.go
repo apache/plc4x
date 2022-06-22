@@ -35,6 +35,12 @@ type BACnetConstructedDataCredentialsInZone interface {
 	GetCredentialsInZone() []BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataCredentialsInZoneExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialsInZone.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialsInZoneExactly interface {
+	isBACnetConstructedDataCredentialsInZone() bool
+}
+
 // _BACnetConstructedDataCredentialsInZone is the data-structure of this message
 type _BACnetConstructedDataCredentialsInZone struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataCredentialsInZone) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialsInZone) isBACnetConstructedDataCredentialsInZone() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialsInZone) String() string {

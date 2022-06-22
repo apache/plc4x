@@ -35,6 +35,12 @@ type BACnetChannelValueInteger interface {
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetChannelValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueInteger.
+// This is useful for switch cases.
+type BACnetChannelValueIntegerExactly interface {
+	isBACnetChannelValueInteger() bool
+}
+
 // _BACnetChannelValueInteger is the data-structure of this message
 type _BACnetChannelValueInteger struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueInteger) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueInteger) isBACnetChannelValueInteger() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueInteger) String() string {

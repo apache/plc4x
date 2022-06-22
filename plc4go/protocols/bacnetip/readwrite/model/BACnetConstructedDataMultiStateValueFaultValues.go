@@ -35,6 +35,12 @@ type BACnetConstructedDataMultiStateValueFaultValues interface {
 	GetFaultValues() []BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataMultiStateValueFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateValueFaultValues.
+// This is useful for switch cases.
+type BACnetConstructedDataMultiStateValueFaultValuesExactly interface {
+	isBACnetConstructedDataMultiStateValueFaultValues() bool
+}
+
 // _BACnetConstructedDataMultiStateValueFaultValues is the data-structure of this message
 type _BACnetConstructedDataMultiStateValueFaultValues struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataMultiStateValueFaultValues) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMultiStateValueFaultValues) isBACnetConstructedDataMultiStateValueFaultValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMultiStateValueFaultValues) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataStrikeCount interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataStrikeCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStrikeCount.
+// This is useful for switch cases.
+type BACnetConstructedDataStrikeCountExactly interface {
+	isBACnetConstructedDataStrikeCount() bool
+}
+
 // _BACnetConstructedDataStrikeCount is the data-structure of this message
 type _BACnetConstructedDataStrikeCount struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataStrikeCount) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStrikeCount) isBACnetConstructedDataStrikeCount() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStrikeCount) String() string {

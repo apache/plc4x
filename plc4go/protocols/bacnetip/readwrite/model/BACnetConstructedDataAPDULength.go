@@ -37,6 +37,12 @@ type BACnetConstructedDataAPDULength interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataAPDULengthExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDULength.
+// This is useful for switch cases.
+type BACnetConstructedDataAPDULengthExactly interface {
+	isBACnetConstructedDataAPDULength() bool
+}
+
 // _BACnetConstructedDataAPDULength is the data-structure of this message
 type _BACnetConstructedDataAPDULength struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAPDULength) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAPDULength) isBACnetConstructedDataAPDULength() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAPDULength) String() string {

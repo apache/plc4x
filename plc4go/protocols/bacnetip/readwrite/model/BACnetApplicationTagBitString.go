@@ -35,6 +35,12 @@ type BACnetApplicationTagBitString interface {
 	GetPayload() BACnetTagPayloadBitString
 }
 
+// BACnetApplicationTagBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagBitString.
+// This is useful for switch cases.
+type BACnetApplicationTagBitStringExactly interface {
+	isBACnetApplicationTagBitString() bool
+}
+
 // _BACnetApplicationTagBitString is the data-structure of this message
 type _BACnetApplicationTagBitString struct {
 	*_BACnetApplicationTag
@@ -176,6 +182,10 @@ func (m *_BACnetApplicationTagBitString) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagBitString) isBACnetApplicationTagBitString() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagBitString) String() string {

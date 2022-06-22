@@ -37,6 +37,12 @@ type BACnetConstructedDataAPDUSegmentTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataAPDUSegmentTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDUSegmentTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataAPDUSegmentTimeoutExactly interface {
+	isBACnetConstructedDataAPDUSegmentTimeout() bool
+}
+
 // _BACnetConstructedDataAPDUSegmentTimeout is the data-structure of this message
 type _BACnetConstructedDataAPDUSegmentTimeout struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) isBACnetConstructedDataAPDUSegmentTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) String() string {

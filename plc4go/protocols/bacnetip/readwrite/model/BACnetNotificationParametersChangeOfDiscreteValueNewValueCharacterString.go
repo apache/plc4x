@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString in
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) isBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) String() string {

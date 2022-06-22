@@ -37,6 +37,12 @@ type BACnetConstructedDataFDBBMDAddress interface {
 	GetActualValue() BACnetHostNPort
 }
 
+// BACnetConstructedDataFDBBMDAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFDBBMDAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataFDBBMDAddressExactly interface {
+	isBACnetConstructedDataFDBBMDAddress() bool
+}
+
 // _BACnetConstructedDataFDBBMDAddress is the data-structure of this message
 type _BACnetConstructedDataFDBBMDAddress struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFDBBMDAddress) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFDBBMDAddress) isBACnetConstructedDataFDBBMDAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFDBBMDAddress) String() string {

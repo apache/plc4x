@@ -37,6 +37,12 @@ type BACnetConstructedDataTransactionNotificationClass interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataTransactionNotificationClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTransactionNotificationClass.
+// This is useful for switch cases.
+type BACnetConstructedDataTransactionNotificationClassExactly interface {
+	isBACnetConstructedDataTransactionNotificationClass() bool
+}
+
 // _BACnetConstructedDataTransactionNotificationClass is the data-structure of this message
 type _BACnetConstructedDataTransactionNotificationClass struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClass) isBACnetConstructedDataTransactionNotificationClass() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTransactionNotificationClass) String() string {

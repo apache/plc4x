@@ -35,6 +35,12 @@ type NLMRouterAvailableToNetwork interface {
 	GetDestinationNetworkAddress() []uint16
 }
 
+// NLMRouterAvailableToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRouterAvailableToNetwork.
+// This is useful for switch cases.
+type NLMRouterAvailableToNetworkExactly interface {
+	isNLMRouterAvailableToNetwork() bool
+}
+
 // _NLMRouterAvailableToNetwork is the data-structure of this message
 type _NLMRouterAvailableToNetwork struct {
 	*_NLM
@@ -197,6 +203,10 @@ func (m *_NLMRouterAvailableToNetwork) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMRouterAvailableToNetwork) isNLMRouterAvailableToNetwork() bool {
+	return true
 }
 
 func (m *_NLMRouterAvailableToNetwork) String() string {

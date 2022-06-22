@@ -35,6 +35,12 @@ type DF1CommandRequestMessage interface {
 	GetCommand() DF1RequestCommand
 }
 
+// DF1CommandRequestMessageExactly can be used when we want exactly this type and not a type which fulfills DF1CommandRequestMessage.
+// This is useful for switch cases.
+type DF1CommandRequestMessageExactly interface {
+	isDF1CommandRequestMessage() bool
+}
+
 // _DF1CommandRequestMessage is the data-structure of this message
 type _DF1CommandRequestMessage struct {
 	*_DF1RequestMessage
@@ -183,6 +189,10 @@ func (m *_DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1CommandRequestMessage) isDF1CommandRequestMessage() bool {
+	return true
 }
 
 func (m *_DF1CommandRequestMessage) String() string {

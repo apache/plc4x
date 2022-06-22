@@ -38,6 +38,12 @@ type BACnetHostNPortEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetHostNPortEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetHostNPortEnclosed.
+// This is useful for switch cases.
+type BACnetHostNPortEnclosedExactly interface {
+	isBACnetHostNPortEnclosed() bool
+}
+
 // _BACnetHostNPortEnclosed is the data-structure of this message
 type _BACnetHostNPortEnclosed struct {
 	OpeningTag      BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetHostNPortEnclosed) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetHostNPortEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetHostNPortEnclosed) isBACnetHostNPortEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetHostNPortEnclosed) String() string {

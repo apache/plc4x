@@ -36,6 +36,12 @@ type DIBSuppSvcFamilies interface {
 	GetServiceIds() []ServiceId
 }
 
+// DIBSuppSvcFamiliesExactly can be used when we want exactly this type and not a type which fulfills DIBSuppSvcFamilies.
+// This is useful for switch cases.
+type DIBSuppSvcFamiliesExactly interface {
+	isDIBSuppSvcFamilies() bool
+}
+
 // _DIBSuppSvcFamilies is the data-structure of this message
 type _DIBSuppSvcFamilies struct {
 	DescriptionType uint8
@@ -200,6 +206,10 @@ func (m *_DIBSuppSvcFamilies) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for DIBSuppSvcFamilies")
 	}
 	return nil
+}
+
+func (m *_DIBSuppSvcFamilies) isDIBSuppSvcFamilies() bool {
+	return true
 }
 
 func (m *_DIBSuppSvcFamilies) String() string {

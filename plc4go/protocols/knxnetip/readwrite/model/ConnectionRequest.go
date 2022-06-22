@@ -39,6 +39,12 @@ type ConnectionRequest interface {
 	GetConnectionRequestInformation() ConnectionRequestInformation
 }
 
+// ConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequest.
+// This is useful for switch cases.
+type ConnectionRequestExactly interface {
+	isConnectionRequest() bool
+}
+
 // _ConnectionRequest is the data-structure of this message
 type _ConnectionRequest struct {
 	*_KnxNetIpMessage
@@ -252,6 +258,10 @@ func (m *_ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionRequest) isConnectionRequest() bool {
+	return true
 }
 
 func (m *_ConnectionRequest) String() string {

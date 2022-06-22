@@ -37,6 +37,12 @@ type CALDataReplyAcknowledge interface {
 	GetCode() uint8
 }
 
+// CALDataReplyAcknowledgeExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyAcknowledge.
+// This is useful for switch cases.
+type CALDataReplyAcknowledgeExactly interface {
+	isCALDataReplyAcknowledge() bool
+}
+
 // _CALDataReplyAcknowledge is the data-structure of this message
 type _CALDataReplyAcknowledge struct {
 	*_CALData
@@ -191,6 +197,10 @@ func (m *_CALDataReplyAcknowledge) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataReplyAcknowledge) isCALDataReplyAcknowledge() bool {
+	return true
 }
 
 func (m *_CALDataReplyAcknowledge) String() string {

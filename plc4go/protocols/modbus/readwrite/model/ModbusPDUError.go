@@ -35,6 +35,12 @@ type ModbusPDUError interface {
 	GetExceptionCode() ModbusErrorCode
 }
 
+// ModbusPDUErrorExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUError.
+// This is useful for switch cases.
+type ModbusPDUErrorExactly interface {
+	isModbusPDUError() bool
+}
+
 // _ModbusPDUError is the data-structure of this message
 type _ModbusPDUError struct {
 	*_ModbusPDU
@@ -186,6 +192,10 @@ func (m *_ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUError) isModbusPDUError() bool {
+	return true
 }
 
 func (m *_ModbusPDUError) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataInactiveText interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataInactiveTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInactiveText.
+// This is useful for switch cases.
+type BACnetConstructedDataInactiveTextExactly interface {
+	isBACnetConstructedDataInactiveText() bool
+}
+
 // _BACnetConstructedDataInactiveText is the data-structure of this message
 type _BACnetConstructedDataInactiveText struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataInactiveText) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInactiveText) isBACnetConstructedDataInactiveText() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInactiveText) String() string {

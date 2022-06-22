@@ -35,6 +35,12 @@ type BACnetPropertyStatesReliability interface {
 	GetReliability() BACnetReliabilityTagged
 }
 
+// BACnetPropertyStatesReliabilityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesReliability.
+// This is useful for switch cases.
+type BACnetPropertyStatesReliabilityExactly interface {
+	isBACnetPropertyStatesReliability() bool
+}
+
 // _BACnetPropertyStatesReliability is the data-structure of this message
 type _BACnetPropertyStatesReliability struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesReliability) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesReliability) isBACnetPropertyStatesReliability() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesReliability) String() string {

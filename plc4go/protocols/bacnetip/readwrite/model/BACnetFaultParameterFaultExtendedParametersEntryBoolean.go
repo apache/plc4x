@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryBoolean interface {
 	GetBooleanValue() BACnetApplicationTagBoolean
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryBoolean.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryBooleanExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryBoolean() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryBoolean is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryBoolean struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) isBACnetFaultParameterFaultExtendedParametersEntryBoolean() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) String() string {

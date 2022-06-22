@@ -35,6 +35,12 @@ type BACnetPropertyStatesAction interface {
 	GetAction() BACnetActionTagged
 }
 
+// BACnetPropertyStatesActionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAction.
+// This is useful for switch cases.
+type BACnetPropertyStatesActionExactly interface {
+	isBACnetPropertyStatesAction() bool
+}
+
 // _BACnetPropertyStatesAction is the data-structure of this message
 type _BACnetPropertyStatesAction struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesAction) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesAction) isBACnetPropertyStatesAction() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesAction) String() string {

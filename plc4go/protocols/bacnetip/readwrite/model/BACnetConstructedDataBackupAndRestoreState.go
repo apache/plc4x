@@ -37,6 +37,12 @@ type BACnetConstructedDataBackupAndRestoreState interface {
 	GetActualValue() BACnetBackupStateTagged
 }
 
+// BACnetConstructedDataBackupAndRestoreStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBackupAndRestoreState.
+// This is useful for switch cases.
+type BACnetConstructedDataBackupAndRestoreStateExactly interface {
+	isBACnetConstructedDataBackupAndRestoreState() bool
+}
+
 // _BACnetConstructedDataBackupAndRestoreState is the data-structure of this message
 type _BACnetConstructedDataBackupAndRestoreState struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreState) isBACnetConstructedDataBackupAndRestoreState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBackupAndRestoreState) String() string {

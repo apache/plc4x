@@ -37,6 +37,12 @@ type FirmataMessageAnalogIO interface {
 	GetData() []int8
 }
 
+// FirmataMessageAnalogIOExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageAnalogIO.
+// This is useful for switch cases.
+type FirmataMessageAnalogIOExactly interface {
+	isFirmataMessageAnalogIO() bool
+}
+
 // _FirmataMessageAnalogIO is the data-structure of this message
 type _FirmataMessageAnalogIO struct {
 	*_FirmataMessage
@@ -219,6 +225,10 @@ func (m *_FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageAnalogIO) isFirmataMessageAnalogIO() bool {
+	return true
 }
 
 func (m *_FirmataMessageAnalogIO) String() string {

@@ -39,6 +39,12 @@ type CipReadRequest interface {
 	GetElementNb() uint16
 }
 
+// CipReadRequestExactly can be used when we want exactly this type and not a type which fulfills CipReadRequest.
+// This is useful for switch cases.
+type CipReadRequestExactly interface {
+	isCipReadRequest() bool
+}
+
 // _CipReadRequest is the data-structure of this message
 type _CipReadRequest struct {
 	*_CipService
@@ -225,6 +231,10 @@ func (m *_CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipReadRequest) isCipReadRequest() bool {
+	return true
 }
 
 func (m *_CipReadRequest) String() string {

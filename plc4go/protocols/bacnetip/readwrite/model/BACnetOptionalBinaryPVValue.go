@@ -35,6 +35,12 @@ type BACnetOptionalBinaryPVValue interface {
 	GetBinaryPv() BACnetBinaryPVTagged
 }
 
+// BACnetOptionalBinaryPVValueExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalBinaryPVValue.
+// This is useful for switch cases.
+type BACnetOptionalBinaryPVValueExactly interface {
+	isBACnetOptionalBinaryPVValue() bool
+}
+
 // _BACnetOptionalBinaryPVValue is the data-structure of this message
 type _BACnetOptionalBinaryPVValue struct {
 	*_BACnetOptionalBinaryPV
@@ -176,6 +182,10 @@ func (m *_BACnetOptionalBinaryPVValue) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalBinaryPVValue) isBACnetOptionalBinaryPVValue() bool {
+	return true
 }
 
 func (m *_BACnetOptionalBinaryPVValue) String() string {

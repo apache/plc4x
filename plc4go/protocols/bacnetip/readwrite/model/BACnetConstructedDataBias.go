@@ -37,6 +37,12 @@ type BACnetConstructedDataBias interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataBiasExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBias.
+// This is useful for switch cases.
+type BACnetConstructedDataBiasExactly interface {
+	isBACnetConstructedDataBias() bool
+}
+
 // _BACnetConstructedDataBias is the data-structure of this message
 type _BACnetConstructedDataBias struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBias) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBias) isBACnetConstructedDataBias() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBias) String() string {

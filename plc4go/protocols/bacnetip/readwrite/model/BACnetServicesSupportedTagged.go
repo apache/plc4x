@@ -56,6 +56,12 @@ type BACnetServicesSupportedTagged interface {
 	GetGetEventInformation() bool
 }
 
+// BACnetServicesSupportedTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetServicesSupportedTagged.
+// This is useful for switch cases.
+type BACnetServicesSupportedTaggedExactly interface {
+	isBACnetServicesSupportedTagged() bool
+}
+
 // _BACnetServicesSupportedTagged is the data-structure of this message
 type _BACnetServicesSupportedTagged struct {
 	Header  BACnetTagHeader
@@ -371,6 +377,10 @@ func (m *_BACnetServicesSupportedTagged) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetServicesSupportedTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetServicesSupportedTagged) isBACnetServicesSupportedTagged() bool {
+	return true
 }
 
 func (m *_BACnetServicesSupportedTagged) String() string {

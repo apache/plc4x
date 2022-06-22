@@ -35,6 +35,12 @@ type KnxNetRemoteLogging interface {
 	GetVersion() uint8
 }
 
+// KnxNetRemoteLoggingExactly can be used when we want exactly this type and not a type which fulfills KnxNetRemoteLogging.
+// This is useful for switch cases.
+type KnxNetRemoteLoggingExactly interface {
+	isKnxNetRemoteLogging() bool
+}
+
 // _KnxNetRemoteLogging is the data-structure of this message
 type _KnxNetRemoteLogging struct {
 	*_ServiceId
@@ -167,6 +173,10 @@ func (m *_KnxNetRemoteLogging) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetRemoteLogging) isKnxNetRemoteLogging() bool {
+	return true
 }
 
 func (m *_KnxNetRemoteLogging) String() string {

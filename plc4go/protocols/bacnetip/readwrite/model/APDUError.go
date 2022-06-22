@@ -40,6 +40,12 @@ type APDUError interface {
 	GetError() BACnetError
 }
 
+// APDUErrorExactly can be used when we want exactly this type and not a type which fulfills APDUError.
+// This is useful for switch cases.
+type APDUErrorExactly interface {
+	isAPDUError() bool
+}
+
 // _APDUError is the data-structure of this message
 type _APDUError struct {
 	*_APDU
@@ -270,6 +276,10 @@ func (m *_APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUError) isAPDUError() bool {
+	return true
 }
 
 func (m *_APDUError) String() string {

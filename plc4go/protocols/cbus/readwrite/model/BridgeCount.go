@@ -34,6 +34,12 @@ type BridgeCount interface {
 	GetCount() uint8
 }
 
+// BridgeCountExactly can be used when we want exactly this type and not a type which fulfills BridgeCount.
+// This is useful for switch cases.
+type BridgeCountExactly interface {
+	isBridgeCount() bool
+}
+
 // _BridgeCount is the data-structure of this message
 type _BridgeCount struct {
 	Count uint8
@@ -132,6 +138,10 @@ func (m *_BridgeCount) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BridgeCount")
 	}
 	return nil
+}
+
+func (m *_BridgeCount) isBridgeCount() bool {
+	return true
 }
 
 func (m *_BridgeCount) String() string {

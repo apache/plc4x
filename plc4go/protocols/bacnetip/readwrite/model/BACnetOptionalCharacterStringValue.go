@@ -35,6 +35,12 @@ type BACnetOptionalCharacterStringValue interface {
 	GetCharacterstring() BACnetApplicationTagCharacterString
 }
 
+// BACnetOptionalCharacterStringValueExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalCharacterStringValue.
+// This is useful for switch cases.
+type BACnetOptionalCharacterStringValueExactly interface {
+	isBACnetOptionalCharacterStringValue() bool
+}
+
 // _BACnetOptionalCharacterStringValue is the data-structure of this message
 type _BACnetOptionalCharacterStringValue struct {
 	*_BACnetOptionalCharacterString
@@ -176,6 +182,10 @@ func (m *_BACnetOptionalCharacterStringValue) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalCharacterStringValue) isBACnetOptionalCharacterStringValue() bool {
+	return true
 }
 
 func (m *_BACnetOptionalCharacterStringValue) String() string {

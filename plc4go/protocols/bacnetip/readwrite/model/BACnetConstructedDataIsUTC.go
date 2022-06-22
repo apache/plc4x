@@ -37,6 +37,12 @@ type BACnetConstructedDataIsUTC interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataIsUTCExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIsUTC.
+// This is useful for switch cases.
+type BACnetConstructedDataIsUTCExactly interface {
+	isBACnetConstructedDataIsUTC() bool
+}
+
 // _BACnetConstructedDataIsUTC is the data-structure of this message
 type _BACnetConstructedDataIsUTC struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIsUTC) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIsUTC) isBACnetConstructedDataIsUTC() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIsUTC) String() string {

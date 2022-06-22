@@ -38,6 +38,12 @@ type AdsNotificationSample interface {
 	GetData() []byte
 }
 
+// AdsNotificationSampleExactly can be used when we want exactly this type and not a type which fulfills AdsNotificationSample.
+// This is useful for switch cases.
+type AdsNotificationSampleExactly interface {
+	isAdsNotificationSample() bool
+}
+
 // _AdsNotificationSample is the data-structure of this message
 type _AdsNotificationSample struct {
 	NotificationHandle uint32
@@ -183,6 +189,10 @@ func (m *_AdsNotificationSample) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for AdsNotificationSample")
 	}
 	return nil
+}
+
+func (m *_AdsNotificationSample) isAdsNotificationSample() bool {
+	return true
 }
 
 func (m *_AdsNotificationSample) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataBaseDeviceSecurityPolicy interface {
 	GetActualValue() BACnetSecurityLevelTagged
 }
 
+// BACnetConstructedDataBaseDeviceSecurityPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBaseDeviceSecurityPolicy.
+// This is useful for switch cases.
+type BACnetConstructedDataBaseDeviceSecurityPolicyExactly interface {
+	isBACnetConstructedDataBaseDeviceSecurityPolicy() bool
+}
+
 // _BACnetConstructedDataBaseDeviceSecurityPolicy is the data-structure of this message
 type _BACnetConstructedDataBaseDeviceSecurityPolicy struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) isBACnetConstructedDataBaseDeviceSecurityPolicy() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) String() string {

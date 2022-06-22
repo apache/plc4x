@@ -40,6 +40,12 @@ type BACnetReadAccessProperty interface {
 	GetReadResult() BACnetReadAccessPropertyReadResult
 }
 
+// BACnetReadAccessPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessProperty.
+// This is useful for switch cases.
+type BACnetReadAccessPropertyExactly interface {
+	isBACnetReadAccessProperty() bool
+}
+
 // _BACnetReadAccessProperty is the data-structure of this message
 type _BACnetReadAccessProperty struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
@@ -248,6 +254,10 @@ func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetReadAccessProperty")
 	}
 	return nil
+}
+
+func (m *_BACnetReadAccessProperty) isBACnetReadAccessProperty() bool {
+	return true
 }
 
 func (m *_BACnetReadAccessProperty) String() string {

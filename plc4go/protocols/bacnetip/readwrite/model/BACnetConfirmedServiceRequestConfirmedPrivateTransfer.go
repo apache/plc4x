@@ -41,6 +41,12 @@ type BACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
 	GetServiceParameters() BACnetConstructedData
 }
 
+// BACnetConfirmedServiceRequestConfirmedPrivateTransferExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedPrivateTransfer.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedPrivateTransferExactly interface {
+	isBACnetConfirmedServiceRequestConfirmedPrivateTransfer() bool
+}
+
 // _BACnetConfirmedServiceRequestConfirmedPrivateTransfer is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedPrivateTransfer struct {
 	*_BACnetConfirmedServiceRequest
@@ -273,6 +279,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) isBACnetConfirmedServiceRequestConfirmedPrivateTransfer() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) String() string {

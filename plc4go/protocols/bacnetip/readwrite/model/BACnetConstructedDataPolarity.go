@@ -37,6 +37,12 @@ type BACnetConstructedDataPolarity interface {
 	GetActualValue() BACnetPolarityTagged
 }
 
+// BACnetConstructedDataPolarityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPolarity.
+// This is useful for switch cases.
+type BACnetConstructedDataPolarityExactly interface {
+	isBACnetConstructedDataPolarity() bool
+}
+
 // _BACnetConstructedDataPolarity is the data-structure of this message
 type _BACnetConstructedDataPolarity struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPolarity) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPolarity) isBACnetConstructedDataPolarity() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPolarity) String() string {

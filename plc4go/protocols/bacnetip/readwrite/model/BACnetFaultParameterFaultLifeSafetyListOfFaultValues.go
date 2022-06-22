@@ -38,6 +38,12 @@ type BACnetFaultParameterFaultLifeSafetyListOfFaultValues interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetFaultParameterFaultLifeSafetyListOfFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultLifeSafetyListOfFaultValues.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultLifeSafetyListOfFaultValuesExactly interface {
+	isBACnetFaultParameterFaultLifeSafetyListOfFaultValues() bool
+}
+
 // _BACnetFaultParameterFaultLifeSafetyListOfFaultValues is the data-structure of this message
 type _BACnetFaultParameterFaultLifeSafetyListOfFaultValues struct {
 	OpeningTag        BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) Serialize(writeB
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) isBACnetFaultParameterFaultLifeSafetyListOfFaultValues() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) String() string {

@@ -35,6 +35,12 @@ type BACnetConstructedDataListOfObjectPropertyReferences interface {
 	GetReferences() []BACnetDeviceObjectPropertyReference
 }
 
+// BACnetConstructedDataListOfObjectPropertyReferencesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataListOfObjectPropertyReferences.
+// This is useful for switch cases.
+type BACnetConstructedDataListOfObjectPropertyReferencesExactly interface {
+	isBACnetConstructedDataListOfObjectPropertyReferences() bool
+}
+
 // _BACnetConstructedDataListOfObjectPropertyReferences is the data-structure of this message
 type _BACnetConstructedDataListOfObjectPropertyReferences struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataListOfObjectPropertyReferences) isBACnetConstructedDataListOfObjectPropertyReferences() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataListOfObjectPropertyReferences) String() string {

@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryUnsigned interface {
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryUnsigned.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryUnsignedExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryUnsigned() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryUnsigned is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryUnsigned struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) Serialize(wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) isBACnetFaultParameterFaultExtendedParametersEntryUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) String() string {

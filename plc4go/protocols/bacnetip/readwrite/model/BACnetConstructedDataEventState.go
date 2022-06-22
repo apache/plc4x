@@ -37,6 +37,12 @@ type BACnetConstructedDataEventState interface {
 	GetActualValue() BACnetEventStateTagged
 }
 
+// BACnetConstructedDataEventStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventState.
+// This is useful for switch cases.
+type BACnetConstructedDataEventStateExactly interface {
+	isBACnetConstructedDataEventState() bool
+}
+
 // _BACnetConstructedDataEventState is the data-structure of this message
 type _BACnetConstructedDataEventState struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEventState) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventState) isBACnetConstructedDataEventState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventState) String() string {

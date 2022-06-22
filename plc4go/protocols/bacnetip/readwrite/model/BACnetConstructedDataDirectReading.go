@@ -37,6 +37,12 @@ type BACnetConstructedDataDirectReading interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataDirectReadingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDirectReading.
+// This is useful for switch cases.
+type BACnetConstructedDataDirectReadingExactly interface {
+	isBACnetConstructedDataDirectReading() bool
+}
+
 // _BACnetConstructedDataDirectReading is the data-structure of this message
 type _BACnetConstructedDataDirectReading struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDirectReading) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDirectReading) isBACnetConstructedDataDirectReading() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDirectReading) String() string {

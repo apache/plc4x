@@ -35,6 +35,12 @@ type BACnetPropertyStatesProtocolLevel interface {
 	GetProtocolLevel() BACnetProtocolLevelTagged
 }
 
+// BACnetPropertyStatesProtocolLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesProtocolLevel.
+// This is useful for switch cases.
+type BACnetPropertyStatesProtocolLevelExactly interface {
+	isBACnetPropertyStatesProtocolLevel() bool
+}
+
 // _BACnetPropertyStatesProtocolLevel is the data-structure of this message
 type _BACnetPropertyStatesProtocolLevel struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesProtocolLevel) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesProtocolLevel) isBACnetPropertyStatesProtocolLevel() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) String() string {

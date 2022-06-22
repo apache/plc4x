@@ -34,6 +34,12 @@ type NetworkNumber interface {
 	GetNumber() uint8
 }
 
+// NetworkNumberExactly can be used when we want exactly this type and not a type which fulfills NetworkNumber.
+// This is useful for switch cases.
+type NetworkNumberExactly interface {
+	isNetworkNumber() bool
+}
+
 // _NetworkNumber is the data-structure of this message
 type _NetworkNumber struct {
 	Number uint8
@@ -132,6 +138,10 @@ func (m *_NetworkNumber) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for NetworkNumber")
 	}
 	return nil
+}
+
+func (m *_NetworkNumber) isNetworkNumber() bool {
+	return true
 }
 
 func (m *_NetworkNumber) String() string {

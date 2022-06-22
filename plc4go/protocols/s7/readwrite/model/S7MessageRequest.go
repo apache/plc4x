@@ -33,6 +33,12 @@ type S7MessageRequest interface {
 	S7Message
 }
 
+// S7MessageRequestExactly can be used when we want exactly this type and not a type which fulfills S7MessageRequest.
+// This is useful for switch cases.
+type S7MessageRequestExactly interface {
+	isS7MessageRequest() bool
+}
+
 // _S7MessageRequest is the data-structure of this message
 type _S7MessageRequest struct {
 	*_S7Message
@@ -135,6 +141,10 @@ func (m *_S7MessageRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageRequest) isS7MessageRequest() bool {
+	return true
 }
 
 func (m *_S7MessageRequest) String() string {

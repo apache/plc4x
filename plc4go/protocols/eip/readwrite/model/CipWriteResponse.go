@@ -38,6 +38,12 @@ type CipWriteResponse interface {
 	GetExtStatus() uint8
 }
 
+// CipWriteResponseExactly can be used when we want exactly this type and not a type which fulfills CipWriteResponse.
+// This is useful for switch cases.
+type CipWriteResponseExactly interface {
+	isCipWriteResponse() bool
+}
+
 // _CipWriteResponse is the data-structure of this message
 type _CipWriteResponse struct {
 	*_CipService
@@ -222,6 +228,10 @@ func (m *_CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipWriteResponse) isCipWriteResponse() bool {
+	return true
 }
 
 func (m *_CipWriteResponse) String() string {

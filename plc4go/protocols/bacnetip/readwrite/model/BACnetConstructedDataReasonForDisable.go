@@ -35,6 +35,12 @@ type BACnetConstructedDataReasonForDisable interface {
 	GetReasonForDisable() []BACnetAccessCredentialDisableReasonTagged
 }
 
+// BACnetConstructedDataReasonForDisableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReasonForDisable.
+// This is useful for switch cases.
+type BACnetConstructedDataReasonForDisableExactly interface {
+	isBACnetConstructedDataReasonForDisable() bool
+}
+
 // _BACnetConstructedDataReasonForDisable is the data-structure of this message
 type _BACnetConstructedDataReasonForDisable struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataReasonForDisable) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReasonForDisable) isBACnetConstructedDataReasonForDisable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReasonForDisable) String() string {

@@ -41,6 +41,12 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	GetPassword() BACnetContextTagCharacterString
 }
 
+// BACnetConfirmedServiceRequestDeviceCommunicationControlExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeviceCommunicationControl.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestDeviceCommunicationControlExactly interface {
+	isBACnetConfirmedServiceRequestDeviceCommunicationControl() bool
+}
+
 // _BACnetConfirmedServiceRequestDeviceCommunicationControl is the data-structure of this message
 type _BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 	*_BACnetConfirmedServiceRequest
@@ -288,6 +294,10 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) isBACnetConfirmedServiceRequestDeviceCommunicationControl() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataControlledVariableUnits interface {
 	GetActualValue() BACnetEngineeringUnitsTagged
 }
 
+// BACnetConstructedDataControlledVariableUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataControlledVariableUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataControlledVariableUnitsExactly interface {
+	isBACnetConstructedDataControlledVariableUnits() bool
+}
+
 // _BACnetConstructedDataControlledVariableUnits is the data-structure of this message
 type _BACnetConstructedDataControlledVariableUnits struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataControlledVariableUnits) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataControlledVariableUnits) isBACnetConstructedDataControlledVariableUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataControlledVariableUnits) String() string {

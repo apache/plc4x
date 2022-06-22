@@ -45,6 +45,12 @@ type BACnetConfirmedServiceRequestWriteProperty interface {
 	GetPriority() BACnetContextTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestWritePropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestWriteProperty.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestWritePropertyExactly interface {
+	isBACnetConfirmedServiceRequestWriteProperty() bool
+}
+
 // _BACnetConfirmedServiceRequestWriteProperty is the data-structure of this message
 type _BACnetConfirmedServiceRequestWriteProperty struct {
 	*_BACnetConfirmedServiceRequest
@@ -362,6 +368,10 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestWriteProperty) isBACnetConfirmedServiceRequestWriteProperty() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestWriteProperty) String() string {

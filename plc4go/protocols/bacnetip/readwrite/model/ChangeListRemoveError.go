@@ -37,6 +37,12 @@ type ChangeListRemoveError interface {
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
 }
 
+// ChangeListRemoveErrorExactly can be used when we want exactly this type and not a type which fulfills ChangeListRemoveError.
+// This is useful for switch cases.
+type ChangeListRemoveErrorExactly interface {
+	isChangeListRemoveError() bool
+}
+
 // _ChangeListRemoveError is the data-structure of this message
 type _ChangeListRemoveError struct {
 	*_BACnetError
@@ -215,6 +221,10 @@ func (m *_ChangeListRemoveError) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ChangeListRemoveError) isChangeListRemoveError() bool {
+	return true
 }
 
 func (m *_ChangeListRemoveError) String() string {

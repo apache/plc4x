@@ -40,6 +40,12 @@ type BACnetBinaryLightingPVTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetBinaryLightingPVTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetBinaryLightingPVTagged.
+// This is useful for switch cases.
+type BACnetBinaryLightingPVTaggedExactly interface {
+	isBACnetBinaryLightingPVTagged() bool
+}
+
 // _BACnetBinaryLightingPVTagged is the data-structure of this message
 type _BACnetBinaryLightingPVTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetBinaryLightingPVTagged) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetBinaryLightingPVTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetBinaryLightingPVTagged) isBACnetBinaryLightingPVTagged() bool {
+	return true
 }
 
 func (m *_BACnetBinaryLightingPVTagged) String() string {

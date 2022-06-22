@@ -35,6 +35,12 @@ type BACnetPriorityValueNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetPriorityValueNullExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueNull.
+// This is useful for switch cases.
+type BACnetPriorityValueNullExactly interface {
+	isBACnetPriorityValueNull() bool
+}
+
 // _BACnetPriorityValueNull is the data-structure of this message
 type _BACnetPriorityValueNull struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueNull) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueNull) isBACnetPriorityValueNull() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueNull) String() string {

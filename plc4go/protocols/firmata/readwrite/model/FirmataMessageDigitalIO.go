@@ -37,6 +37,12 @@ type FirmataMessageDigitalIO interface {
 	GetData() []int8
 }
 
+// FirmataMessageDigitalIOExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageDigitalIO.
+// This is useful for switch cases.
+type FirmataMessageDigitalIOExactly interface {
+	isFirmataMessageDigitalIO() bool
+}
+
 // _FirmataMessageDigitalIO is the data-structure of this message
 type _FirmataMessageDigitalIO struct {
 	*_FirmataMessage
@@ -219,6 +225,10 @@ func (m *_FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageDigitalIO) isFirmataMessageDigitalIO() bool {
+	return true
 }
 
 func (m *_FirmataMessageDigitalIO) String() string {

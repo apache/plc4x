@@ -43,6 +43,12 @@ type BACnetNotificationParametersBufferReady interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersBufferReadyExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersBufferReady.
+// This is useful for switch cases.
+type BACnetNotificationParametersBufferReadyExactly interface {
+	isBACnetNotificationParametersBufferReady() bool
+}
+
 // _BACnetNotificationParametersBufferReady is the data-structure of this message
 type _BACnetNotificationParametersBufferReady struct {
 	*_BACnetNotificationParameters
@@ -330,6 +336,10 @@ func (m *_BACnetNotificationParametersBufferReady) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersBufferReady) isBACnetNotificationParametersBufferReady() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersBufferReady) String() string {

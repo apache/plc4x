@@ -35,6 +35,12 @@ type BACnetConstructedDataSubscribedRecipients interface {
 	GetSubscribedRecipients() []BACnetEventNotificationSubscription
 }
 
+// BACnetConstructedDataSubscribedRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubscribedRecipients.
+// This is useful for switch cases.
+type BACnetConstructedDataSubscribedRecipientsExactly interface {
+	isBACnetConstructedDataSubscribedRecipients() bool
+}
+
 // _BACnetConstructedDataSubscribedRecipients is the data-structure of this message
 type _BACnetConstructedDataSubscribedRecipients struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataSubscribedRecipients) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSubscribedRecipients) isBACnetConstructedDataSubscribedRecipients() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSubscribedRecipients) String() string {

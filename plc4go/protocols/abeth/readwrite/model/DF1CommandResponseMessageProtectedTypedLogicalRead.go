@@ -35,6 +35,12 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	GetData() []uint8
 }
 
+// DF1CommandResponseMessageProtectedTypedLogicalReadExactly can be used when we want exactly this type and not a type which fulfills DF1CommandResponseMessageProtectedTypedLogicalRead.
+// This is useful for switch cases.
+type DF1CommandResponseMessageProtectedTypedLogicalReadExactly interface {
+	isDF1CommandResponseMessageProtectedTypedLogicalRead() bool
+}
+
 // _DF1CommandResponseMessageProtectedTypedLogicalRead is the data-structure of this message
 type _DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 	*_DF1ResponseMessage
@@ -200,6 +206,10 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) isDF1CommandResponseMessageProtectedTypedLogicalRead() bool {
+	return true
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) String() string {

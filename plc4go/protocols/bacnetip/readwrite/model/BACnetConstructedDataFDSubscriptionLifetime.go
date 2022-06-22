@@ -37,6 +37,12 @@ type BACnetConstructedDataFDSubscriptionLifetime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataFDSubscriptionLifetimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFDSubscriptionLifetime.
+// This is useful for switch cases.
+type BACnetConstructedDataFDSubscriptionLifetimeExactly interface {
+	isBACnetConstructedDataFDSubscriptionLifetime() bool
+}
+
 // _BACnetConstructedDataFDSubscriptionLifetime is the data-structure of this message
 type _BACnetConstructedDataFDSubscriptionLifetime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) isBACnetConstructedDataFDSubscriptionLifetime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) String() string {

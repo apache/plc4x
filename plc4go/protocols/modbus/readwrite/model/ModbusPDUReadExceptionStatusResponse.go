@@ -35,6 +35,12 @@ type ModbusPDUReadExceptionStatusResponse interface {
 	GetValue() uint8
 }
 
+// ModbusPDUReadExceptionStatusResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadExceptionStatusResponse.
+// This is useful for switch cases.
+type ModbusPDUReadExceptionStatusResponseExactly interface {
+	isModbusPDUReadExceptionStatusResponse() bool
+}
+
 // _ModbusPDUReadExceptionStatusResponse is the data-structure of this message
 type _ModbusPDUReadExceptionStatusResponse struct {
 	*_ModbusPDU
@@ -175,6 +181,10 @@ func (m *_ModbusPDUReadExceptionStatusResponse) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadExceptionStatusResponse) isModbusPDUReadExceptionStatusResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadExceptionStatusResponse) String() string {

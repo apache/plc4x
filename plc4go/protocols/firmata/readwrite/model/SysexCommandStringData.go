@@ -33,6 +33,12 @@ type SysexCommandStringData interface {
 	SysexCommand
 }
 
+// SysexCommandStringDataExactly can be used when we want exactly this type and not a type which fulfills SysexCommandStringData.
+// This is useful for switch cases.
+type SysexCommandStringDataExactly interface {
+	isSysexCommandStringData() bool
+}
+
 // _SysexCommandStringData is the data-structure of this message
 type _SysexCommandStringData struct {
 	*_SysexCommand
@@ -135,6 +141,10 @@ func (m *_SysexCommandStringData) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandStringData) isSysexCommandStringData() bool {
+	return true
 }
 
 func (m *_SysexCommandStringData) String() string {

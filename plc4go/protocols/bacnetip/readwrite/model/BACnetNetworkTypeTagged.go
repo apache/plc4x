@@ -40,6 +40,12 @@ type BACnetNetworkTypeTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetNetworkTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkTypeTagged.
+// This is useful for switch cases.
+type BACnetNetworkTypeTaggedExactly interface {
+	isBACnetNetworkTypeTagged() bool
+}
+
 // _BACnetNetworkTypeTagged is the data-structure of this message
 type _BACnetNetworkTypeTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetNetworkTypeTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetNetworkTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetNetworkTypeTagged) isBACnetNetworkTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetNetworkTypeTagged) String() string {

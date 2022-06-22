@@ -35,6 +35,12 @@ type BACnetLogDataLogDataTimeChange interface {
 	GetTimeChange() BACnetContextTagReal
 }
 
+// BACnetLogDataLogDataTimeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataTimeChange.
+// This is useful for switch cases.
+type BACnetLogDataLogDataTimeChangeExactly interface {
+	isBACnetLogDataLogDataTimeChange() bool
+}
+
 // _BACnetLogDataLogDataTimeChange is the data-structure of this message
 type _BACnetLogDataLogDataTimeChange struct {
 	*_BACnetLogData
@@ -181,6 +187,10 @@ func (m *_BACnetLogDataLogDataTimeChange) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataTimeChange) isBACnetLogDataLogDataTimeChange() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataTimeChange) String() string {

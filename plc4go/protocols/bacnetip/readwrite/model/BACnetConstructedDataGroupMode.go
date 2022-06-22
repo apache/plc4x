@@ -37,6 +37,12 @@ type BACnetConstructedDataGroupMode interface {
 	GetActualValue() BACnetLiftGroupModeTagged
 }
 
+// BACnetConstructedDataGroupModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGroupMode.
+// This is useful for switch cases.
+type BACnetConstructedDataGroupModeExactly interface {
+	isBACnetConstructedDataGroupMode() bool
+}
+
 // _BACnetConstructedDataGroupMode is the data-structure of this message
 type _BACnetConstructedDataGroupMode struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataGroupMode) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGroupMode) isBACnetConstructedDataGroupMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGroupMode) String() string {

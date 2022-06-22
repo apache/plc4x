@@ -38,6 +38,12 @@ type DeviceConfigurationAckDataBlock interface {
 	GetStatus() Status
 }
 
+// DeviceConfigurationAckDataBlockExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationAckDataBlock.
+// This is useful for switch cases.
+type DeviceConfigurationAckDataBlockExactly interface {
+	isDeviceConfigurationAckDataBlock() bool
+}
+
 // _DeviceConfigurationAckDataBlock is the data-structure of this message
 type _DeviceConfigurationAckDataBlock struct {
 	CommunicationChannelId uint8
@@ -208,6 +214,10 @@ func (m *_DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuff
 		return errors.Wrap(popErr, "Error popping for DeviceConfigurationAckDataBlock")
 	}
 	return nil
+}
+
+func (m *_DeviceConfigurationAckDataBlock) isDeviceConfigurationAckDataBlock() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationAckDataBlock) String() string {

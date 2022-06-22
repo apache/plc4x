@@ -35,6 +35,12 @@ type BACnetPropertyStatesExtendedValue interface {
 	GetExtendedValue() BACnetContextTagUnsignedInteger
 }
 
+// BACnetPropertyStatesExtendedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesExtendedValue.
+// This is useful for switch cases.
+type BACnetPropertyStatesExtendedValueExactly interface {
+	isBACnetPropertyStatesExtendedValue() bool
+}
+
 // _BACnetPropertyStatesExtendedValue is the data-structure of this message
 type _BACnetPropertyStatesExtendedValue struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesExtendedValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesExtendedValue) isBACnetPropertyStatesExtendedValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesExtendedValue) String() string {

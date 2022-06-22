@@ -37,6 +37,12 @@ type BACnetConstructedDataUsesRemaining interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConstructedDataUsesRemainingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUsesRemaining.
+// This is useful for switch cases.
+type BACnetConstructedDataUsesRemainingExactly interface {
+	isBACnetConstructedDataUsesRemaining() bool
+}
+
 // _BACnetConstructedDataUsesRemaining is the data-structure of this message
 type _BACnetConstructedDataUsesRemaining struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataUsesRemaining) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUsesRemaining) isBACnetConstructedDataUsesRemaining() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUsesRemaining) String() string {

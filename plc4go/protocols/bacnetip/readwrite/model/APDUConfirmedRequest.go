@@ -61,6 +61,12 @@ type APDUConfirmedRequest interface {
 	GetSegmentReduction() uint16
 }
 
+// APDUConfirmedRequestExactly can be used when we want exactly this type and not a type which fulfills APDUConfirmedRequest.
+// This is useful for switch cases.
+type APDUConfirmedRequestExactly interface {
+	isAPDUConfirmedRequest() bool
+}
+
 // _APDUConfirmedRequest is the data-structure of this message
 type _APDUConfirmedRequest struct {
 	*_APDU
@@ -598,6 +604,10 @@ func (m *_APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUConfirmedRequest) isAPDUConfirmedRequest() bool {
+	return true
 }
 
 func (m *_APDUConfirmedRequest) String() string {

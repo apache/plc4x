@@ -41,6 +41,12 @@ type BACnetEventParameterChangeOfCharacterString interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterChangeOfCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfCharacterString.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfCharacterStringExactly interface {
+	isBACnetEventParameterChangeOfCharacterString() bool
+}
+
 // _BACnetEventParameterChangeOfCharacterString is the data-structure of this message
 type _BACnetEventParameterChangeOfCharacterString struct {
 	*_BACnetEventParameter
@@ -287,6 +293,10 @@ func (m *_BACnetEventParameterChangeOfCharacterString) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfCharacterString) isBACnetEventParameterChangeOfCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfCharacterString) String() string {

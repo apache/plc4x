@@ -40,6 +40,12 @@ type BACnetVendorIdTagged interface {
 	GetIsUnknownId() bool
 }
 
+// BACnetVendorIdTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetVendorIdTagged.
+// This is useful for switch cases.
+type BACnetVendorIdTaggedExactly interface {
+	isBACnetVendorIdTagged() bool
+}
+
 // _BACnetVendorIdTagged is the data-structure of this message
 type _BACnetVendorIdTagged struct {
 	Header    BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetVendorIdTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetVendorIdTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetVendorIdTagged) isBACnetVendorIdTagged() bool {
+	return true
 }
 
 func (m *_BACnetVendorIdTagged) String() string {

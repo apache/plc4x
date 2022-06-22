@@ -37,6 +37,12 @@ type FirmataCommandSetPinMode interface {
 	GetMode() PinMode
 }
 
+// FirmataCommandSetPinModeExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetPinMode.
+// This is useful for switch cases.
+type FirmataCommandSetPinModeExactly interface {
+	isFirmataCommandSetPinMode() bool
+}
+
 // _FirmataCommandSetPinMode is the data-structure of this message
 type _FirmataCommandSetPinMode struct {
 	*_FirmataCommand
@@ -207,6 +213,10 @@ func (m *_FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSetPinMode) isFirmataCommandSetPinMode() bool {
+	return true
 }
 
 func (m *_FirmataCommandSetPinMode) String() string {

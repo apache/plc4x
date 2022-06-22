@@ -37,6 +37,12 @@ type BACnetConstructedDataLandingCallControl interface {
 	GetActualValue() BACnetLandingCallStatus
 }
 
+// BACnetConstructedDataLandingCallControlExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLandingCallControl.
+// This is useful for switch cases.
+type BACnetConstructedDataLandingCallControlExactly interface {
+	isBACnetConstructedDataLandingCallControl() bool
+}
+
 // _BACnetConstructedDataLandingCallControl is the data-structure of this message
 type _BACnetConstructedDataLandingCallControl struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLandingCallControl) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLandingCallControl) isBACnetConstructedDataLandingCallControl() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLandingCallControl) String() string {

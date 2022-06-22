@@ -45,6 +45,12 @@ type BACnetEventParameterDoubleOutOfRange interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterDoubleOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterDoubleOutOfRange.
+// This is useful for switch cases.
+type BACnetEventParameterDoubleOutOfRangeExactly interface {
+	isBACnetEventParameterDoubleOutOfRange() bool
+}
+
 // _BACnetEventParameterDoubleOutOfRange is the data-structure of this message
 type _BACnetEventParameterDoubleOutOfRange struct {
 	*_BACnetEventParameter
@@ -361,6 +367,10 @@ func (m *_BACnetEventParameterDoubleOutOfRange) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterDoubleOutOfRange) isBACnetEventParameterDoubleOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterDoubleOutOfRange) String() string {

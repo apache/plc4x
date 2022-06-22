@@ -43,6 +43,12 @@ type BACnetServiceAckReadProperty interface {
 	GetValues() BACnetConstructedData
 }
 
+// BACnetServiceAckReadPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadProperty.
+// This is useful for switch cases.
+type BACnetServiceAckReadPropertyExactly interface {
+	isBACnetServiceAckReadProperty() bool
+}
+
 // _BACnetServiceAckReadProperty is the data-structure of this message
 type _BACnetServiceAckReadProperty struct {
 	*_BACnetServiceAck
@@ -324,6 +330,10 @@ func (m *_BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckReadProperty) isBACnetServiceAckReadProperty() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckReadProperty) String() string {

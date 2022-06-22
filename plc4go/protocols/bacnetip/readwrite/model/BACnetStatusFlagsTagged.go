@@ -44,6 +44,12 @@ type BACnetStatusFlagsTagged interface {
 	GetOutOfService() bool
 }
 
+// BACnetStatusFlagsTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetStatusFlagsTagged.
+// This is useful for switch cases.
+type BACnetStatusFlagsTaggedExactly interface {
+	isBACnetStatusFlagsTagged() bool
+}
+
 // _BACnetStatusFlagsTagged is the data-structure of this message
 type _BACnetStatusFlagsTagged struct {
 	Header  BACnetTagHeader
@@ -269,6 +275,10 @@ func (m *_BACnetStatusFlagsTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetStatusFlagsTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetStatusFlagsTagged) isBACnetStatusFlagsTagged() bool {
+	return true
 }
 
 func (m *_BACnetStatusFlagsTagged) String() string {

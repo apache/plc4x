@@ -37,6 +37,12 @@ type BACnetConstructedDataBitMask interface {
 	GetActualValue() BACnetApplicationTagBitString
 }
 
+// BACnetConstructedDataBitMaskExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitMask.
+// This is useful for switch cases.
+type BACnetConstructedDataBitMaskExactly interface {
+	isBACnetConstructedDataBitMask() bool
+}
+
 // _BACnetConstructedDataBitMask is the data-structure of this message
 type _BACnetConstructedDataBitMask struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBitMask) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBitMask) isBACnetConstructedDataBitMask() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBitMask) String() string {

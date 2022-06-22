@@ -37,6 +37,12 @@ type BACnetConstructedDataLargeAnalogValueResolution interface {
 	GetActualValue() BACnetApplicationTagDouble
 }
 
+// BACnetConstructedDataLargeAnalogValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueResolutionExactly interface {
+	isBACnetConstructedDataLargeAnalogValueResolution() bool
+}
+
 // _BACnetConstructedDataLargeAnalogValueResolution is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueResolution struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) isBACnetConstructedDataLargeAnalogValueResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) String() string {

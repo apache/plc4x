@@ -35,6 +35,12 @@ type BACnetConstructedDataAccessAlarmEvents interface {
 	GetAccessAlarmEvents() []BACnetAccessEventTagged
 }
 
+// BACnetConstructedDataAccessAlarmEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessAlarmEvents.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessAlarmEventsExactly interface {
+	isBACnetConstructedDataAccessAlarmEvents() bool
+}
+
 // _BACnetConstructedDataAccessAlarmEvents is the data-structure of this message
 type _BACnetConstructedDataAccessAlarmEvents struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessAlarmEvents) isBACnetConstructedDataAccessAlarmEvents() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessAlarmEvents) String() string {

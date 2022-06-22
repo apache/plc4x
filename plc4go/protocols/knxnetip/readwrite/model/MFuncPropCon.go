@@ -33,6 +33,12 @@ type MFuncPropCon interface {
 	CEMI
 }
 
+// MFuncPropConExactly can be used when we want exactly this type and not a type which fulfills MFuncPropCon.
+// This is useful for switch cases.
+type MFuncPropConExactly interface {
+	isMFuncPropCon() bool
+}
+
 // _MFuncPropCon is the data-structure of this message
 type _MFuncPropCon struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_MFuncPropCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MFuncPropCon) isMFuncPropCon() bool {
+	return true
 }
 
 func (m *_MFuncPropCon) String() string {

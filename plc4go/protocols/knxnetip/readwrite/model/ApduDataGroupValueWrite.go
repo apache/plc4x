@@ -37,6 +37,12 @@ type ApduDataGroupValueWrite interface {
 	GetData() []byte
 }
 
+// ApduDataGroupValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueWrite.
+// This is useful for switch cases.
+type ApduDataGroupValueWriteExactly interface {
+	isApduDataGroupValueWrite() bool
+}
+
 // _ApduDataGroupValueWrite is the data-structure of this message
 type _ApduDataGroupValueWrite struct {
 	*_ApduData
@@ -199,6 +205,10 @@ func (m *_ApduDataGroupValueWrite) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataGroupValueWrite) isApduDataGroupValueWrite() bool {
+	return true
 }
 
 func (m *_ApduDataGroupValueWrite) String() string {

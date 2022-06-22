@@ -37,6 +37,12 @@ type BACnetConstructedDataCharacterStringValuePresentValue interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataCharacterStringValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCharacterStringValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataCharacterStringValuePresentValueExactly interface {
+	isBACnetConstructedDataCharacterStringValuePresentValue() bool
+}
+
 // _BACnetConstructedDataCharacterStringValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataCharacterStringValuePresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCharacterStringValuePresentValue) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValue) isBACnetConstructedDataCharacterStringValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCharacterStringValuePresentValue) String() string {

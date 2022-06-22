@@ -37,6 +37,12 @@ type BACnetConstructedDataEscalatorMode interface {
 	GetActualValue() BACnetEscalatorModeTagged
 }
 
+// BACnetConstructedDataEscalatorModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEscalatorMode.
+// This is useful for switch cases.
+type BACnetConstructedDataEscalatorModeExactly interface {
+	isBACnetConstructedDataEscalatorMode() bool
+}
+
 // _BACnetConstructedDataEscalatorMode is the data-structure of this message
 type _BACnetConstructedDataEscalatorMode struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEscalatorMode) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEscalatorMode) isBACnetConstructedDataEscalatorMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEscalatorMode) String() string {

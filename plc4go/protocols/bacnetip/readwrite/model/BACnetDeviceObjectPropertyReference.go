@@ -42,6 +42,12 @@ type BACnetDeviceObjectPropertyReference interface {
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 }
 
+// BACnetDeviceObjectPropertyReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetDeviceObjectPropertyReference.
+// This is useful for switch cases.
+type BACnetDeviceObjectPropertyReferenceExactly interface {
+	isBACnetDeviceObjectPropertyReference() bool
+}
+
 // _BACnetDeviceObjectPropertyReference is the data-structure of this message
 type _BACnetDeviceObjectPropertyReference struct {
 	ObjectIdentifier   BACnetContextTagObjectIdentifier
@@ -280,6 +286,10 @@ func (m *_BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetDeviceObjectPropertyReference")
 	}
 	return nil
+}
+
+func (m *_BACnetDeviceObjectPropertyReference) isBACnetDeviceObjectPropertyReference() bool {
+	return true
 }
 
 func (m *_BACnetDeviceObjectPropertyReference) String() string {

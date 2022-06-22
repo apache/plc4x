@@ -37,6 +37,12 @@ type ApduDataDeviceDescriptorResponse interface {
 	GetData() []byte
 }
 
+// ApduDataDeviceDescriptorResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataDeviceDescriptorResponse.
+// This is useful for switch cases.
+type ApduDataDeviceDescriptorResponseExactly interface {
+	isApduDataDeviceDescriptorResponse() bool
+}
+
 // _ApduDataDeviceDescriptorResponse is the data-structure of this message
 type _ApduDataDeviceDescriptorResponse struct {
 	*_ApduData
@@ -199,6 +205,10 @@ func (m *_ApduDataDeviceDescriptorResponse) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataDeviceDescriptorResponse) isApduDataDeviceDescriptorResponse() bool {
+	return true
 }
 
 func (m *_ApduDataDeviceDescriptorResponse) String() string {

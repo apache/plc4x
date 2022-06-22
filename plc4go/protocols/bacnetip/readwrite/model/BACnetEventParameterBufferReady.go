@@ -41,6 +41,12 @@ type BACnetEventParameterBufferReady interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterBufferReadyExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterBufferReady.
+// This is useful for switch cases.
+type BACnetEventParameterBufferReadyExactly interface {
+	isBACnetEventParameterBufferReady() bool
+}
+
 // _BACnetEventParameterBufferReady is the data-structure of this message
 type _BACnetEventParameterBufferReady struct {
 	*_BACnetEventParameter
@@ -287,6 +293,10 @@ func (m *_BACnetEventParameterBufferReady) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterBufferReady) isBACnetEventParameterBufferReady() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterBufferReady) String() string {

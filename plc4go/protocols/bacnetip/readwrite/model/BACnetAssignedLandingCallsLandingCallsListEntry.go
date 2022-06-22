@@ -36,6 +36,12 @@ type BACnetAssignedLandingCallsLandingCallsListEntry interface {
 	GetDirection() BACnetLiftCarDirectionTagged
 }
 
+// BACnetAssignedLandingCallsLandingCallsListEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetAssignedLandingCallsLandingCallsListEntry.
+// This is useful for switch cases.
+type BACnetAssignedLandingCallsLandingCallsListEntryExactly interface {
+	isBACnetAssignedLandingCallsLandingCallsListEntry() bool
+}
+
 // _BACnetAssignedLandingCallsLandingCallsListEntry is the data-structure of this message
 type _BACnetAssignedLandingCallsLandingCallsListEntry struct {
 	FloorNumber BACnetContextTagUnsignedInteger
@@ -178,6 +184,10 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) Serialize(writeBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) isBACnetAssignedLandingCallsLandingCallsListEntry() bool {
+	return true
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) String() string {

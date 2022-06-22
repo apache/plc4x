@@ -37,6 +37,12 @@ type ApduDataExtAuthorizeRequest interface {
 	GetData() []byte
 }
 
+// ApduDataExtAuthorizeRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtAuthorizeRequest.
+// This is useful for switch cases.
+type ApduDataExtAuthorizeRequestExactly interface {
+	isApduDataExtAuthorizeRequest() bool
+}
+
 // _ApduDataExtAuthorizeRequest is the data-structure of this message
 type _ApduDataExtAuthorizeRequest struct {
 	*_ApduDataExt
@@ -199,6 +205,10 @@ func (m *_ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtAuthorizeRequest) isApduDataExtAuthorizeRequest() bool {
+	return true
 }
 
 func (m *_ApduDataExtAuthorizeRequest) String() string {

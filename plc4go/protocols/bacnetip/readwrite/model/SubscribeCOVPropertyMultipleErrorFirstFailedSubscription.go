@@ -42,6 +42,12 @@ type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionExactly can be used when we want exactly this type and not a type which fulfills SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.
+// This is useful for switch cases.
+type SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionExactly interface {
+	isSubscribeCOVPropertyMultipleErrorFirstFailedSubscription() bool
+}
+
 // _SubscribeCOVPropertyMultipleErrorFirstFailedSubscription is the data-structure of this message
 type _SubscribeCOVPropertyMultipleErrorFirstFailedSubscription struct {
 	OpeningTag                 BACnetOpeningTag
@@ -286,6 +292,10 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wr
 		return errors.Wrap(popErr, "Error popping for SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	return nil
+}
+
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) isSubscribeCOVPropertyMultipleErrorFirstFailedSubscription() bool {
+	return true
 }
 
 func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) String() string {

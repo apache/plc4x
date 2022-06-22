@@ -39,6 +39,12 @@ type BACnetServiceAckGetAlarmSummary interface {
 	GetAcknowledgedTransitions() BACnetEventTransitionBitsTagged
 }
 
+// BACnetServiceAckGetAlarmSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetAlarmSummary.
+// This is useful for switch cases.
+type BACnetServiceAckGetAlarmSummaryExactly interface {
+	isBACnetServiceAckGetAlarmSummary() bool
+}
+
 // _BACnetServiceAckGetAlarmSummary is the data-structure of this message
 type _BACnetServiceAckGetAlarmSummary struct {
 	*_BACnetServiceAck
@@ -255,6 +261,10 @@ func (m *_BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckGetAlarmSummary) isBACnetServiceAckGetAlarmSummary() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckGetAlarmSummary) String() string {

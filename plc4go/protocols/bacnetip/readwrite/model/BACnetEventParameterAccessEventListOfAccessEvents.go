@@ -38,6 +38,12 @@ type BACnetEventParameterAccessEventListOfAccessEvents interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterAccessEventListOfAccessEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterAccessEventListOfAccessEvents.
+// This is useful for switch cases.
+type BACnetEventParameterAccessEventListOfAccessEventsExactly interface {
+	isBACnetEventParameterAccessEventListOfAccessEvents() bool
+}
+
 // _BACnetEventParameterAccessEventListOfAccessEvents is the data-structure of this message
 type _BACnetEventParameterAccessEventListOfAccessEvents struct {
 	OpeningTag         BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) Serialize(writeBuff
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterAccessEventListOfAccessEvents")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) isBACnetEventParameterAccessEventListOfAccessEvents() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) String() string {

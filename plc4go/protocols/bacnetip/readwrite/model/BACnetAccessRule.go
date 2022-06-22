@@ -44,6 +44,12 @@ type BACnetAccessRule interface {
 	GetEnable() BACnetContextTagBoolean
 }
 
+// BACnetAccessRuleExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessRule.
+// This is useful for switch cases.
+type BACnetAccessRuleExactly interface {
+	isBACnetAccessRule() bool
+}
+
 // _BACnetAccessRule is the data-structure of this message
 type _BACnetAccessRule struct {
 	TimeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged
@@ -315,6 +321,10 @@ func (m *_BACnetAccessRule) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetAccessRule")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessRule) isBACnetAccessRule() bool {
+	return true
 }
 
 func (m *_BACnetAccessRule) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataAccessEventCredential interface {
 	GetActualValue() BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataAccessEventCredentialExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEventCredential.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessEventCredentialExactly interface {
+	isBACnetConstructedDataAccessEventCredential() bool
+}
+
 // _BACnetConstructedDataAccessEventCredential is the data-structure of this message
 type _BACnetConstructedDataAccessEventCredential struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAccessEventCredential) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessEventCredential) isBACnetConstructedDataAccessEventCredential() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessEventCredential) String() string {

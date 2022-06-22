@@ -40,6 +40,12 @@ type BACnetRelationshipTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetRelationshipTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRelationshipTagged.
+// This is useful for switch cases.
+type BACnetRelationshipTaggedExactly interface {
+	isBACnetRelationshipTagged() bool
+}
+
 // _BACnetRelationshipTagged is the data-structure of this message
 type _BACnetRelationshipTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetRelationshipTagged) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetRelationshipTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetRelationshipTagged) isBACnetRelationshipTagged() bool {
+	return true
 }
 
 func (m *_BACnetRelationshipTagged) String() string {

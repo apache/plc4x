@@ -41,6 +41,12 @@ type BACnetConstructedDataLinkSpeeds interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataLinkSpeedsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLinkSpeeds.
+// This is useful for switch cases.
+type BACnetConstructedDataLinkSpeedsExactly interface {
+	isBACnetConstructedDataLinkSpeeds() bool
+}
+
 // _BACnetConstructedDataLinkSpeeds is the data-structure of this message
 type _BACnetConstructedDataLinkSpeeds struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataLinkSpeeds) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLinkSpeeds) isBACnetConstructedDataLinkSpeeds() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLinkSpeeds) String() string {

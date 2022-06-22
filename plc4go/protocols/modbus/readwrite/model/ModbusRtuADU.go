@@ -37,6 +37,12 @@ type ModbusRtuADU interface {
 	GetPdu() ModbusPDU
 }
 
+// ModbusRtuADUExactly can be used when we want exactly this type and not a type which fulfills ModbusRtuADU.
+// This is useful for switch cases.
+type ModbusRtuADUExactly interface {
+	isModbusRtuADU() bool
+}
+
 // _ModbusRtuADU is the data-structure of this message
 type _ModbusRtuADU struct {
 	*_ModbusADU
@@ -237,6 +243,10 @@ func (m *_ModbusRtuADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusRtuADU) isModbusRtuADU() bool {
+	return true
 }
 
 func (m *_ModbusRtuADU) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataOccupancyUpperLimitEnforced interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataOccupancyUpperLimitEnforcedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyUpperLimitEnforced.
+// This is useful for switch cases.
+type BACnetConstructedDataOccupancyUpperLimitEnforcedExactly interface {
+	isBACnetConstructedDataOccupancyUpperLimitEnforced() bool
+}
+
 // _BACnetConstructedDataOccupancyUpperLimitEnforced is the data-structure of this message
 type _BACnetConstructedDataOccupancyUpperLimitEnforced struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) isBACnetConstructedDataOccupancyUpperLimitEnforced() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) String() string {

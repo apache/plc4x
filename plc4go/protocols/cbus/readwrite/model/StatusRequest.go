@@ -34,6 +34,12 @@ type StatusRequest interface {
 	GetStatusType() byte
 }
 
+// StatusRequestExactly can be used when we want exactly this type and not a type which fulfills StatusRequest.
+// This is useful for switch cases.
+type StatusRequestExactly interface {
+	isStatusRequest() bool
+}
+
 // _StatusRequest is the data-structure of this message
 type _StatusRequest struct {
 	_StatusRequestChildRequirements
@@ -41,9 +47,9 @@ type _StatusRequest struct {
 }
 
 type _StatusRequestChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type StatusRequestParent interface {
@@ -52,7 +58,7 @@ type StatusRequestParent interface {
 }
 
 type StatusRequestChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent StatusRequest, statusType byte)
 	GetParent() *StatusRequest
 
@@ -173,6 +179,10 @@ func (pm *_StatusRequest) SerializeParent(writeBuffer utils.WriteBuffer, child S
 		return errors.Wrap(popErr, "Error popping for StatusRequest")
 	}
 	return nil
+}
+
+func (m *_StatusRequest) isStatusRequest() bool {
+	return true
 }
 
 func (m *_StatusRequest) String() string {

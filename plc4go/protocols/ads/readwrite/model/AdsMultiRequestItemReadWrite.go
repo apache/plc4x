@@ -41,6 +41,12 @@ type AdsMultiRequestItemReadWrite interface {
 	GetItemWriteLength() uint32
 }
 
+// AdsMultiRequestItemReadWriteExactly can be used when we want exactly this type and not a type which fulfills AdsMultiRequestItemReadWrite.
+// This is useful for switch cases.
+type AdsMultiRequestItemReadWriteExactly interface {
+	isAdsMultiRequestItemReadWrite() bool
+}
+
 // _AdsMultiRequestItemReadWrite is the data-structure of this message
 type _AdsMultiRequestItemReadWrite struct {
 	*_AdsMultiRequestItem
@@ -245,6 +251,10 @@ func (m *_AdsMultiRequestItemReadWrite) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsMultiRequestItemReadWrite) isAdsMultiRequestItemReadWrite() bool {
+	return true
 }
 
 func (m *_AdsMultiRequestItemReadWrite) String() string {

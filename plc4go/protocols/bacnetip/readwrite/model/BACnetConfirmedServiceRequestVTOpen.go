@@ -37,6 +37,12 @@ type BACnetConfirmedServiceRequestVTOpen interface {
 	GetLocalVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestVTOpenExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTOpen.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestVTOpenExactly interface {
+	isBACnetConfirmedServiceRequestVTOpen() bool
+}
+
 // _BACnetConfirmedServiceRequestVTOpen is the data-structure of this message
 type _BACnetConfirmedServiceRequestVTOpen struct {
 	*_BACnetConfirmedServiceRequest
@@ -219,6 +225,10 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpen) isBACnetConfirmedServiceRequestVTOpen() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) String() string {

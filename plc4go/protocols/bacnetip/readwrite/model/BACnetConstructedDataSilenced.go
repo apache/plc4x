@@ -37,6 +37,12 @@ type BACnetConstructedDataSilenced interface {
 	GetActualValue() BACnetSilencedStateTagged
 }
 
+// BACnetConstructedDataSilencedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSilenced.
+// This is useful for switch cases.
+type BACnetConstructedDataSilencedExactly interface {
+	isBACnetConstructedDataSilenced() bool
+}
+
 // _BACnetConstructedDataSilenced is the data-structure of this message
 type _BACnetConstructedDataSilenced struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataSilenced) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSilenced) isBACnetConstructedDataSilenced() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSilenced) String() string {

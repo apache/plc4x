@@ -38,6 +38,12 @@ type BACnetRecipientProcessEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetRecipientProcessEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientProcessEnclosed.
+// This is useful for switch cases.
+type BACnetRecipientProcessEnclosedExactly interface {
+	isBACnetRecipientProcessEnclosed() bool
+}
+
 // _BACnetRecipientProcessEnclosed is the data-structure of this message
 type _BACnetRecipientProcessEnclosed struct {
 	OpeningTag       BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetRecipientProcessEnclosed) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetRecipientProcessEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetRecipientProcessEnclosed) isBACnetRecipientProcessEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetRecipientProcessEnclosed) String() string {

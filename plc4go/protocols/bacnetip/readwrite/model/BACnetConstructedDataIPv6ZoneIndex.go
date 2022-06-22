@@ -37,6 +37,12 @@ type BACnetConstructedDataIPv6ZoneIndex interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataIPv6ZoneIndexExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6ZoneIndex.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6ZoneIndexExactly interface {
+	isBACnetConstructedDataIPv6ZoneIndex() bool
+}
+
 // _BACnetConstructedDataIPv6ZoneIndex is the data-structure of this message
 type _BACnetConstructedDataIPv6ZoneIndex struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndex) isBACnetConstructedDataIPv6ZoneIndex() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) String() string {

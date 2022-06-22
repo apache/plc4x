@@ -37,6 +37,12 @@ type BACnetConstructedDataLowerDeck interface {
 	GetActualValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetConstructedDataLowerDeckExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLowerDeck.
+// This is useful for switch cases.
+type BACnetConstructedDataLowerDeckExactly interface {
+	isBACnetConstructedDataLowerDeck() bool
+}
+
 // _BACnetConstructedDataLowerDeck is the data-structure of this message
 type _BACnetConstructedDataLowerDeck struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLowerDeck) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLowerDeck) isBACnetConstructedDataLowerDeck() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLowerDeck) String() string {

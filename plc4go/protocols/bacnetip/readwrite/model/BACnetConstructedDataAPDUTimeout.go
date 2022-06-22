@@ -37,6 +37,12 @@ type BACnetConstructedDataAPDUTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataAPDUTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDUTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataAPDUTimeoutExactly interface {
+	isBACnetConstructedDataAPDUTimeout() bool
+}
+
 // _BACnetConstructedDataAPDUTimeout is the data-structure of this message
 type _BACnetConstructedDataAPDUTimeout struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAPDUTimeout) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAPDUTimeout) isBACnetConstructedDataAPDUTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAPDUTimeout) String() string {

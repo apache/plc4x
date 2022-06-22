@@ -35,6 +35,12 @@ type KnxNetObjectServer interface {
 	GetVersion() uint8
 }
 
+// KnxNetObjectServerExactly can be used when we want exactly this type and not a type which fulfills KnxNetObjectServer.
+// This is useful for switch cases.
+type KnxNetObjectServerExactly interface {
+	isKnxNetObjectServer() bool
+}
+
 // _KnxNetObjectServer is the data-structure of this message
 type _KnxNetObjectServer struct {
 	*_ServiceId
@@ -167,6 +173,10 @@ func (m *_KnxNetObjectServer) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetObjectServer) isKnxNetObjectServer() bool {
+	return true
 }
 
 func (m *_KnxNetObjectServer) String() string {

@@ -52,6 +52,12 @@ type BACnetActionCommand interface {
 	GetWriteSuccessful() BACnetContextTagBoolean
 }
 
+// BACnetActionCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetActionCommand.
+// This is useful for switch cases.
+type BACnetActionCommandExactly interface {
+	isBACnetActionCommand() bool
+}
+
 // _BACnetActionCommand is the data-structure of this message
 type _BACnetActionCommand struct {
 	DeviceIdentifier   BACnetContextTagObjectIdentifier
@@ -500,6 +506,10 @@ func (m *_BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetActionCommand")
 	}
 	return nil
+}
+
+func (m *_BACnetActionCommand) isBACnetActionCommand() bool {
+	return true
 }
 
 func (m *_BACnetActionCommand) String() string {

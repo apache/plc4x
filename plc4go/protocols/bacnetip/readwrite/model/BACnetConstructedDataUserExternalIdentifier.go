@@ -37,6 +37,12 @@ type BACnetConstructedDataUserExternalIdentifier interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataUserExternalIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserExternalIdentifier.
+// This is useful for switch cases.
+type BACnetConstructedDataUserExternalIdentifierExactly interface {
+	isBACnetConstructedDataUserExternalIdentifier() bool
+}
+
 // _BACnetConstructedDataUserExternalIdentifier is the data-structure of this message
 type _BACnetConstructedDataUserExternalIdentifier struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUserExternalIdentifier) isBACnetConstructedDataUserExternalIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUserExternalIdentifier) String() string {

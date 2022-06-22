@@ -35,6 +35,12 @@ type CIPEncapsulationReadRequest interface {
 	GetRequest() DF1RequestMessage
 }
 
+// CIPEncapsulationReadRequestExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationReadRequest.
+// This is useful for switch cases.
+type CIPEncapsulationReadRequestExactly interface {
+	isCIPEncapsulationReadRequest() bool
+}
+
 // _CIPEncapsulationReadRequest is the data-structure of this message
 type _CIPEncapsulationReadRequest struct {
 	*_CIPEncapsulationPacket
@@ -183,6 +189,10 @@ func (m *_CIPEncapsulationReadRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CIPEncapsulationReadRequest) isCIPEncapsulationReadRequest() bool {
+	return true
 }
 
 func (m *_CIPEncapsulationReadRequest) String() string {

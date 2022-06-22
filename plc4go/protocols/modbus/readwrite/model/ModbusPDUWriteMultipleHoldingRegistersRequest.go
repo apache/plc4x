@@ -39,6 +39,12 @@ type ModbusPDUWriteMultipleHoldingRegistersRequest interface {
 	GetValue() []byte
 }
 
+// ModbusPDUWriteMultipleHoldingRegistersRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleHoldingRegistersRequest.
+// This is useful for switch cases.
+type ModbusPDUWriteMultipleHoldingRegistersRequestExactly interface {
+	isModbusPDUWriteMultipleHoldingRegistersRequest() bool
+}
+
 // _ModbusPDUWriteMultipleHoldingRegistersRequest is the data-structure of this message
 type _ModbusPDUWriteMultipleHoldingRegistersRequest struct {
 	*_ModbusPDU
@@ -247,6 +253,10 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) isModbusPDUWriteMultipleHoldingRegistersRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) String() string {

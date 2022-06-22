@@ -37,6 +37,12 @@ type CALDataReplyReply interface {
 	GetData() []byte
 }
 
+// CALDataReplyReplyExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyReply.
+// This is useful for switch cases.
+type CALDataReplyReplyExactly interface {
+	isCALDataReplyReply() bool
+}
+
 // _CALDataReplyReply is the data-structure of this message
 type _CALDataReplyReply struct {
 	*_CALData
@@ -194,6 +200,10 @@ func (m *_CALDataReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataReplyReply) isCALDataReplyReply() bool {
+	return true
 }
 
 func (m *_CALDataReplyReply) String() string {

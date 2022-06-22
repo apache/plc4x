@@ -40,6 +40,12 @@ type BACnetNotificationParametersChangeOfValueNewValue interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetNotificationParametersChangeOfValueNewValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfValueNewValue.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfValueNewValueExactly interface {
+	isBACnetNotificationParametersChangeOfValueNewValue() bool
+}
+
 // _BACnetNotificationParametersChangeOfValueNewValue is the data-structure of this message
 type _BACnetNotificationParametersChangeOfValueNewValue struct {
 	_BACnetNotificationParametersChangeOfValueNewValueChildRequirements
@@ -52,9 +58,9 @@ type _BACnetNotificationParametersChangeOfValueNewValue struct {
 }
 
 type _BACnetNotificationParametersChangeOfValueNewValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetNotificationParametersChangeOfValueNewValueParent interface {
@@ -63,7 +69,7 @@ type BACnetNotificationParametersChangeOfValueNewValueParent interface {
 }
 
 type BACnetNotificationParametersChangeOfValueNewValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetNotificationParametersChangeOfValueNewValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetNotificationParametersChangeOfValueNewValue
 
@@ -271,6 +277,10 @@ func (pm *_BACnetNotificationParametersChangeOfValueNewValue) SerializeParent(wr
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfValueNewValue")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) isBACnetNotificationParametersChangeOfValueNewValue() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValue) String() string {

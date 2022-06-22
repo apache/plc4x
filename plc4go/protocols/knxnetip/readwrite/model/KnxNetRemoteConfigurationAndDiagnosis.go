@@ -35,6 +35,12 @@ type KnxNetRemoteConfigurationAndDiagnosis interface {
 	GetVersion() uint8
 }
 
+// KnxNetRemoteConfigurationAndDiagnosisExactly can be used when we want exactly this type and not a type which fulfills KnxNetRemoteConfigurationAndDiagnosis.
+// This is useful for switch cases.
+type KnxNetRemoteConfigurationAndDiagnosisExactly interface {
+	isKnxNetRemoteConfigurationAndDiagnosis() bool
+}
+
 // _KnxNetRemoteConfigurationAndDiagnosis is the data-structure of this message
 type _KnxNetRemoteConfigurationAndDiagnosis struct {
 	*_ServiceId
@@ -167,6 +173,10 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) isKnxNetRemoteConfigurationAndDiagnosis() bool {
+	return true
 }
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) String() string {

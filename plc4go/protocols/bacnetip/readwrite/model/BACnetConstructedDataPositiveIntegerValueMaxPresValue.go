@@ -37,6 +37,12 @@ type BACnetConstructedDataPositiveIntegerValueMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPositiveIntegerValueMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueMaxPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueMaxPresValueExactly interface {
+	isBACnetConstructedDataPositiveIntegerValueMaxPresValue() bool
+}
+
 // _BACnetConstructedDataPositiveIntegerValueMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueMaxPresValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) isBACnetConstructedDataPositiveIntegerValueMaxPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) String() string {

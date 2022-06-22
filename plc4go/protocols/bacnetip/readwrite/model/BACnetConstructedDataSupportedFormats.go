@@ -41,6 +41,12 @@ type BACnetConstructedDataSupportedFormats interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataSupportedFormatsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSupportedFormats.
+// This is useful for switch cases.
+type BACnetConstructedDataSupportedFormatsExactly interface {
+	isBACnetConstructedDataSupportedFormats() bool
+}
+
 // _BACnetConstructedDataSupportedFormats is the data-structure of this message
 type _BACnetConstructedDataSupportedFormats struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataSupportedFormats) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSupportedFormats) isBACnetConstructedDataSupportedFormats() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSupportedFormats) String() string {

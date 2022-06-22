@@ -44,6 +44,12 @@ type AmsNetId interface {
 	GetOctet6() uint8
 }
 
+// AmsNetIdExactly can be used when we want exactly this type and not a type which fulfills AmsNetId.
+// This is useful for switch cases.
+type AmsNetIdExactly interface {
+	isAmsNetId() bool
+}
+
 // _AmsNetId is the data-structure of this message
 type _AmsNetId struct {
 	Octet1 uint8
@@ -252,6 +258,10 @@ func (m *_AmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsNetId")
 	}
 	return nil
+}
+
+func (m *_AmsNetId) isAmsNetId() bool {
+	return true
 }
 
 func (m *_AmsNetId) String() string {

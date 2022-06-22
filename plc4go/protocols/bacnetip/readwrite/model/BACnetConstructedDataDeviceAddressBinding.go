@@ -35,6 +35,12 @@ type BACnetConstructedDataDeviceAddressBinding interface {
 	GetDeviceAddressBinding() []BACnetAddressBinding
 }
 
+// BACnetConstructedDataDeviceAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceAddressBinding.
+// This is useful for switch cases.
+type BACnetConstructedDataDeviceAddressBindingExactly interface {
+	isBACnetConstructedDataDeviceAddressBinding() bool
+}
+
 // _BACnetConstructedDataDeviceAddressBinding is the data-structure of this message
 type _BACnetConstructedDataDeviceAddressBinding struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBinding) isBACnetConstructedDataDeviceAddressBinding() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeviceAddressBinding) String() string {

@@ -42,6 +42,12 @@ type BACnetRouterEntry interface {
 	GetPerformanceIndex() BACnetContextTagOctetString
 }
 
+// BACnetRouterEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetRouterEntry.
+// This is useful for switch cases.
+type BACnetRouterEntryExactly interface {
+	isBACnetRouterEntry() bool
+}
+
 // _BACnetRouterEntry is the data-structure of this message
 type _BACnetRouterEntry struct {
 	NetworkNumber    BACnetContextTagUnsignedInteger
@@ -265,6 +271,10 @@ func (m *_BACnetRouterEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetRouterEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetRouterEntry) isBACnetRouterEntry() bool {
+	return true
 }
 
 func (m *_BACnetRouterEntry) String() string {

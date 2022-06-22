@@ -38,6 +38,12 @@ type KnxAddress interface {
 	GetSubGroup() uint8
 }
 
+// KnxAddressExactly can be used when we want exactly this type and not a type which fulfills KnxAddress.
+// This is useful for switch cases.
+type KnxAddressExactly interface {
+	isKnxAddress() bool
+}
+
 // _KnxAddress is the data-structure of this message
 type _KnxAddress struct {
 	MainGroup   uint8
@@ -180,6 +186,10 @@ func (m *_KnxAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for KnxAddress")
 	}
 	return nil
+}
+
+func (m *_KnxAddress) isKnxAddress() bool {
+	return true
 }
 
 func (m *_KnxAddress) String() string {

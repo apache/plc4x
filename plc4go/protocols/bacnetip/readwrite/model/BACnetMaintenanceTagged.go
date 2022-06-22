@@ -40,6 +40,12 @@ type BACnetMaintenanceTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetMaintenanceTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetMaintenanceTagged.
+// This is useful for switch cases.
+type BACnetMaintenanceTaggedExactly interface {
+	isBACnetMaintenanceTagged() bool
+}
+
 // _BACnetMaintenanceTagged is the data-structure of this message
 type _BACnetMaintenanceTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetMaintenanceTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetMaintenanceTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetMaintenanceTagged) isBACnetMaintenanceTagged() bool {
+	return true
 }
 
 func (m *_BACnetMaintenanceTagged) String() string {

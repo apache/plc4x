@@ -41,6 +41,12 @@ type BACnetConstructedDataSubordinateNodeTypes interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataSubordinateNodeTypesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubordinateNodeTypes.
+// This is useful for switch cases.
+type BACnetConstructedDataSubordinateNodeTypesExactly interface {
+	isBACnetConstructedDataSubordinateNodeTypes() bool
+}
+
 // _BACnetConstructedDataSubordinateNodeTypes is the data-structure of this message
 type _BACnetConstructedDataSubordinateNodeTypes struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataSubordinateNodeTypes) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSubordinateNodeTypes) isBACnetConstructedDataSubordinateNodeTypes() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSubordinateNodeTypes) String() string {

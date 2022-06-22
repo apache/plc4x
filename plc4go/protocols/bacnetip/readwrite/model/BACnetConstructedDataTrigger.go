@@ -37,6 +37,12 @@ type BACnetConstructedDataTrigger interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataTriggerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrigger.
+// This is useful for switch cases.
+type BACnetConstructedDataTriggerExactly interface {
+	isBACnetConstructedDataTrigger() bool
+}
+
 // _BACnetConstructedDataTrigger is the data-structure of this message
 type _BACnetConstructedDataTrigger struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataTrigger) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrigger) isBACnetConstructedDataTrigger() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrigger) String() string {

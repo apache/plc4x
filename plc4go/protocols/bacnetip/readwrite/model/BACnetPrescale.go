@@ -36,6 +36,12 @@ type BACnetPrescale interface {
 	GetModuloDivide() BACnetContextTagUnsignedInteger
 }
 
+// BACnetPrescaleExactly can be used when we want exactly this type and not a type which fulfills BACnetPrescale.
+// This is useful for switch cases.
+type BACnetPrescaleExactly interface {
+	isBACnetPrescale() bool
+}
+
 // _BACnetPrescale is the data-structure of this message
 type _BACnetPrescale struct {
 	Multiplier   BACnetContextTagUnsignedInteger
@@ -178,6 +184,10 @@ func (m *_BACnetPrescale) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPrescale")
 	}
 	return nil
+}
+
+func (m *_BACnetPrescale) isBACnetPrescale() bool {
+	return true
 }
 
 func (m *_BACnetPrescale) String() string {

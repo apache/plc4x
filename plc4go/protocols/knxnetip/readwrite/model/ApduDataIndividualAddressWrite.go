@@ -33,6 +33,12 @@ type ApduDataIndividualAddressWrite interface {
 	ApduData
 }
 
+// ApduDataIndividualAddressWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataIndividualAddressWrite.
+// This is useful for switch cases.
+type ApduDataIndividualAddressWriteExactly interface {
+	isApduDataIndividualAddressWrite() bool
+}
+
 // _ApduDataIndividualAddressWrite is the data-structure of this message
 type _ApduDataIndividualAddressWrite struct {
 	*_ApduData
@@ -134,6 +140,10 @@ func (m *_ApduDataIndividualAddressWrite) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataIndividualAddressWrite) isApduDataIndividualAddressWrite() bool {
+	return true
 }
 
 func (m *_ApduDataIndividualAddressWrite) String() string {

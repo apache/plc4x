@@ -38,6 +38,12 @@ type BACnetTagPayloadBitString interface {
 	GetUnused() []bool
 }
 
+// BACnetTagPayloadBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadBitString.
+// This is useful for switch cases.
+type BACnetTagPayloadBitStringExactly interface {
+	isBACnetTagPayloadBitString() bool
+}
+
 // _BACnetTagPayloadBitString is the data-structure of this message
 type _BACnetTagPayloadBitString struct {
 	UnusedBits uint8
@@ -229,6 +235,10 @@ func (m *_BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadBitString")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadBitString) isBACnetTagPayloadBitString() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadBitString) String() string {

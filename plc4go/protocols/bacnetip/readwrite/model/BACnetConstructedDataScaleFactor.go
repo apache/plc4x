@@ -37,6 +37,12 @@ type BACnetConstructedDataScaleFactor interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataScaleFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScaleFactor.
+// This is useful for switch cases.
+type BACnetConstructedDataScaleFactorExactly interface {
+	isBACnetConstructedDataScaleFactor() bool
+}
+
 // _BACnetConstructedDataScaleFactor is the data-structure of this message
 type _BACnetConstructedDataScaleFactor struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataScaleFactor) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataScaleFactor) isBACnetConstructedDataScaleFactor() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataScaleFactor) String() string {

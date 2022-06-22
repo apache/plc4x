@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal interface {
 	GetRealValue() BACnetApplicationTagReal
 }
 
+// BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealExactly interface {
+	isBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal() bool
+}
+
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal struct {
 	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue
@@ -181,6 +187,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) isBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) String() string {

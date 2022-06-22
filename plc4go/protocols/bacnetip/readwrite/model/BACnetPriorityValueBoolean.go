@@ -35,6 +35,12 @@ type BACnetPriorityValueBoolean interface {
 	GetBooleanValue() BACnetApplicationTagBoolean
 }
 
+// BACnetPriorityValueBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueBoolean.
+// This is useful for switch cases.
+type BACnetPriorityValueBooleanExactly interface {
+	isBACnetPriorityValueBoolean() bool
+}
+
 // _BACnetPriorityValueBoolean is the data-structure of this message
 type _BACnetPriorityValueBoolean struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueBoolean) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueBoolean) isBACnetPriorityValueBoolean() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueBoolean) String() string {

@@ -40,6 +40,12 @@ type BACnetSecurityKeySet interface {
 	GetKeyIds() BACnetSecurityKeySetKeyIds
 }
 
+// BACnetSecurityKeySetExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityKeySet.
+// This is useful for switch cases.
+type BACnetSecurityKeySetExactly interface {
+	isBACnetSecurityKeySet() bool
+}
+
 // _BACnetSecurityKeySet is the data-structure of this message
 type _BACnetSecurityKeySet struct {
 	KeyRevision    BACnetContextTagUnsignedInteger
@@ -248,6 +254,10 @@ func (m *_BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetSecurityKeySet")
 	}
 	return nil
+}
+
+func (m *_BACnetSecurityKeySet) isBACnetSecurityKeySet() bool {
+	return true
 }
 
 func (m *_BACnetSecurityKeySet) String() string {

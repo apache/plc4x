@@ -37,6 +37,12 @@ type BACnetConstructedDataPositiveIntegerValueRelinquishDefault interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPositiveIntegerValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueRelinquishDefaultExactly interface {
+	isBACnetConstructedDataPositiveIntegerValueRelinquishDefault() bool
+}
+
 // _BACnetConstructedDataPositiveIntegerValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueRelinquishDefault struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) Serialize(
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) isBACnetConstructedDataPositiveIntegerValueRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) String() string {

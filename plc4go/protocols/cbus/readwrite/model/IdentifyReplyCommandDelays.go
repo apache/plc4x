@@ -33,6 +33,12 @@ type IdentifyReplyCommandDelays interface {
 	IdentifyReplyCommand
 }
 
+// IdentifyReplyCommandDelaysExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandDelays.
+// This is useful for switch cases.
+type IdentifyReplyCommandDelaysExactly interface {
+	isIdentifyReplyCommandDelays() bool
+}
+
 // _IdentifyReplyCommandDelays is the data-structure of this message
 type _IdentifyReplyCommandDelays struct {
 	*_IdentifyReplyCommand
@@ -131,6 +137,10 @@ func (m *_IdentifyReplyCommandDelays) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandDelays) isIdentifyReplyCommandDelays() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandDelays) String() string {

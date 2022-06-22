@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean interface 
 	GetBooleanValue() BACnetApplicationTagBoolean
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) Seri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) isBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) String() string {

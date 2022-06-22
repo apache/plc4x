@@ -35,6 +35,12 @@ type BACnetConstructedDataDateList interface {
 	GetDateList() []BACnetCalendarEntry
 }
 
+// BACnetConstructedDataDateListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDateList.
+// This is useful for switch cases.
+type BACnetConstructedDataDateListExactly interface {
+	isBACnetConstructedDataDateList() bool
+}
+
 // _BACnetConstructedDataDateList is the data-structure of this message
 type _BACnetConstructedDataDateList struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataDateList) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDateList) isBACnetConstructedDataDateList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDateList) String() string {

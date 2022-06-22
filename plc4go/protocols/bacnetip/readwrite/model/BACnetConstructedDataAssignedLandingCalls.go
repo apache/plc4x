@@ -41,6 +41,12 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataAssignedLandingCallsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAssignedLandingCalls.
+// This is useful for switch cases.
+type BACnetConstructedDataAssignedLandingCallsExactly interface {
+	isBACnetConstructedDataAssignedLandingCalls() bool
+}
+
 // _BACnetConstructedDataAssignedLandingCalls is the data-structure of this message
 type _BACnetConstructedDataAssignedLandingCalls struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCalls) isBACnetConstructedDataAssignedLandingCalls() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAssignedLandingCalls) String() string {

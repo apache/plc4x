@@ -36,17 +36,23 @@ type S7Parameter interface {
 	GetParameterType() uint8
 }
 
+// S7ParameterExactly can be used when we want exactly this type and not a type which fulfills S7Parameter.
+// This is useful for switch cases.
+type S7ParameterExactly interface {
+	isS7Parameter() bool
+}
+
 // _S7Parameter is the data-structure of this message
 type _S7Parameter struct {
 	_S7ParameterChildRequirements
 }
 
 type _S7ParameterChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetParameterType() uint8
 	GetMessageType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7ParameterParent interface {
@@ -55,7 +61,7 @@ type S7ParameterParent interface {
 }
 
 type S7ParameterChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7Parameter)
 	GetParent() *S7Parameter
 
@@ -179,6 +185,10 @@ func (pm *_S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child S7P
 		return errors.Wrap(popErr, "Error popping for S7Parameter")
 	}
 	return nil
+}
+
+func (m *_S7Parameter) isS7Parameter() bool {
+	return true
 }
 
 func (m *_S7Parameter) String() string {

@@ -38,6 +38,12 @@ type BACnetRecipientProcess interface {
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
 }
 
+// BACnetRecipientProcessExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientProcess.
+// This is useful for switch cases.
+type BACnetRecipientProcessExactly interface {
+	isBACnetRecipientProcess() bool
+}
+
 // _BACnetRecipientProcess is the data-structure of this message
 type _BACnetRecipientProcess struct {
 	Recipient         BACnetRecipientEnclosed
@@ -195,6 +201,10 @@ func (m *_BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetRecipientProcess")
 	}
 	return nil
+}
+
+func (m *_BACnetRecipientProcess) isBACnetRecipientProcess() bool {
+	return true
 }
 
 func (m *_BACnetRecipientProcess) String() string {

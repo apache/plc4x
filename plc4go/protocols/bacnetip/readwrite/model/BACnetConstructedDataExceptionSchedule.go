@@ -41,6 +41,12 @@ type BACnetConstructedDataExceptionSchedule interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataExceptionScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExceptionSchedule.
+// This is useful for switch cases.
+type BACnetConstructedDataExceptionScheduleExactly interface {
+	isBACnetConstructedDataExceptionSchedule() bool
+}
+
 // _BACnetConstructedDataExceptionSchedule is the data-structure of this message
 type _BACnetConstructedDataExceptionSchedule struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataExceptionSchedule) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataExceptionSchedule) isBACnetConstructedDataExceptionSchedule() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataExceptionSchedule) String() string {

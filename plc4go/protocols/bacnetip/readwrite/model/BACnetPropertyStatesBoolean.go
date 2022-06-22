@@ -35,6 +35,12 @@ type BACnetPropertyStatesBoolean interface {
 	GetBooleanValue() BACnetContextTagBoolean
 }
 
+// BACnetPropertyStatesBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBoolean.
+// This is useful for switch cases.
+type BACnetPropertyStatesBooleanExactly interface {
+	isBACnetPropertyStatesBoolean() bool
+}
+
 // _BACnetPropertyStatesBoolean is the data-structure of this message
 type _BACnetPropertyStatesBoolean struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesBoolean) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesBoolean) isBACnetPropertyStatesBoolean() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesBoolean) String() string {

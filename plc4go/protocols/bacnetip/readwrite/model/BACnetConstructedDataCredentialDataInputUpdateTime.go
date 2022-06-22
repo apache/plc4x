@@ -37,6 +37,12 @@ type BACnetConstructedDataCredentialDataInputUpdateTime interface {
 	GetActualValue() BACnetTimeStamp
 }
 
+// BACnetConstructedDataCredentialDataInputUpdateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDataInputUpdateTime.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialDataInputUpdateTimeExactly interface {
+	isBACnetConstructedDataCredentialDataInputUpdateTime() bool
+}
+
 // _BACnetConstructedDataCredentialDataInputUpdateTime is the data-structure of this message
 type _BACnetConstructedDataCredentialDataInputUpdateTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) isBACnetConstructedDataCredentialDataInputUpdateTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) String() string {

@@ -37,6 +37,12 @@ type BACnetApplicationTagCharacterString interface {
 	GetValue() string
 }
 
+// BACnetApplicationTagCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagCharacterString.
+// This is useful for switch cases.
+type BACnetApplicationTagCharacterStringExactly interface {
+	isBACnetApplicationTagCharacterString() bool
+}
+
 // _BACnetApplicationTagCharacterString is the data-structure of this message
 type _BACnetApplicationTagCharacterString struct {
 	*_BACnetApplicationTag
@@ -202,6 +208,10 @@ func (m *_BACnetApplicationTagCharacterString) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagCharacterString) isBACnetApplicationTagCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagCharacterString) String() string {

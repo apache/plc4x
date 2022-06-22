@@ -37,6 +37,12 @@ type BACnetConstructedDataPulseConverterAdjustValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataPulseConverterAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseConverterAdjustValue.
+// This is useful for switch cases.
+type BACnetConstructedDataPulseConverterAdjustValueExactly interface {
+	isBACnetConstructedDataPulseConverterAdjustValue() bool
+}
+
 // _BACnetConstructedDataPulseConverterAdjustValue is the data-structure of this message
 type _BACnetConstructedDataPulseConverterAdjustValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) isBACnetConstructedDataPulseConverterAdjustValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) String() string {

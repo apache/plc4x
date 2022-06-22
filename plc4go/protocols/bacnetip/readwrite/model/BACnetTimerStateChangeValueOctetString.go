@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueOctetString interface {
 	GetOctetStringValue() BACnetApplicationTagOctetString
 }
 
+// BACnetTimerStateChangeValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueOctetString.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueOctetStringExactly interface {
+	isBACnetTimerStateChangeValueOctetString() bool
+}
+
 // _BACnetTimerStateChangeValueOctetString is the data-structure of this message
 type _BACnetTimerStateChangeValueOctetString struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueOctetString) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueOctetString) isBACnetTimerStateChangeValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueOctetString) String() string {

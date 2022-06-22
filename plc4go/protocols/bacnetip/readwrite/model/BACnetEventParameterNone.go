@@ -35,6 +35,12 @@ type BACnetEventParameterNone interface {
 	GetNone() BACnetContextTagNull
 }
 
+// BACnetEventParameterNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterNone.
+// This is useful for switch cases.
+type BACnetEventParameterNoneExactly interface {
+	isBACnetEventParameterNone() bool
+}
+
 // _BACnetEventParameterNone is the data-structure of this message
 type _BACnetEventParameterNone struct {
 	*_BACnetEventParameter
@@ -176,6 +182,10 @@ func (m *_BACnetEventParameterNone) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterNone) isBACnetEventParameterNone() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterNone) String() string {

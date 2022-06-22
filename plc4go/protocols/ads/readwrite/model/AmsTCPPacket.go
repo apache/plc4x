@@ -35,6 +35,12 @@ type AmsTCPPacket interface {
 	GetUserdata() AmsPacket
 }
 
+// AmsTCPPacketExactly can be used when we want exactly this type and not a type which fulfills AmsTCPPacket.
+// This is useful for switch cases.
+type AmsTCPPacketExactly interface {
+	isAmsTCPPacket() bool
+}
+
 // _AmsTCPPacket is the data-structure of this message
 type _AmsTCPPacket struct {
 	Userdata AmsPacket
@@ -186,6 +192,10 @@ func (m *_AmsTCPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsTCPPacket")
 	}
 	return nil
+}
+
+func (m *_AmsTCPPacket) isAmsTCPPacket() bool {
+	return true
 }
 
 func (m *_AmsTCPPacket) String() string {

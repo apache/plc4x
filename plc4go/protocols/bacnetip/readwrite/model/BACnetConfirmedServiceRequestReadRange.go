@@ -43,6 +43,12 @@ type BACnetConfirmedServiceRequestReadRange interface {
 	GetReadRange() BACnetConfirmedServiceRequestReadRangeRange
 }
 
+// BACnetConfirmedServiceRequestReadRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRange.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeExactly interface {
+	isBACnetConfirmedServiceRequestReadRange() bool
+}
+
 // _BACnetConfirmedServiceRequestReadRange is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRange struct {
 	*_BACnetConfirmedServiceRequest
@@ -325,6 +331,10 @@ func (m *_BACnetConfirmedServiceRequestReadRange) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRange) isBACnetConfirmedServiceRequestReadRange() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRange) String() string {

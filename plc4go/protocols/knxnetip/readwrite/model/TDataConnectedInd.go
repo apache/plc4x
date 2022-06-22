@@ -33,6 +33,12 @@ type TDataConnectedInd interface {
 	CEMI
 }
 
+// TDataConnectedIndExactly can be used when we want exactly this type and not a type which fulfills TDataConnectedInd.
+// This is useful for switch cases.
+type TDataConnectedIndExactly interface {
+	isTDataConnectedInd() bool
+}
+
 // _TDataConnectedInd is the data-structure of this message
 type _TDataConnectedInd struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_TDataConnectedInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TDataConnectedInd) isTDataConnectedInd() bool {
+	return true
 }
 
 func (m *_TDataConnectedInd) String() string {

@@ -36,6 +36,12 @@ type BACnetUnconfirmedServiceChoiceTagged interface {
 	GetValue() BACnetUnconfirmedServiceChoice
 }
 
+// BACnetUnconfirmedServiceChoiceTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceChoiceTagged.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceChoiceTaggedExactly interface {
+	isBACnetUnconfirmedServiceChoiceTagged() bool
+}
+
 // _BACnetUnconfirmedServiceChoiceTagged is the data-structure of this message
 type _BACnetUnconfirmedServiceChoiceTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) Serialize(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceChoiceTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTagged) isBACnetUnconfirmedServiceChoiceTagged() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) String() string {

@@ -41,6 +41,12 @@ type BACnetNotificationParametersChangeOfBitString interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersChangeOfBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfBitString.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfBitStringExactly interface {
+	isBACnetNotificationParametersChangeOfBitString() bool
+}
+
 // _BACnetNotificationParametersChangeOfBitString is the data-structure of this message
 type _BACnetNotificationParametersChangeOfBitString struct {
 	*_BACnetNotificationParameters
@@ -293,6 +299,10 @@ func (m *_BACnetNotificationParametersChangeOfBitString) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfBitString) isBACnetNotificationParametersChangeOfBitString() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfBitString) String() string {

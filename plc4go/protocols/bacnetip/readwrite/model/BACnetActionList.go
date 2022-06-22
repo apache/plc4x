@@ -38,6 +38,12 @@ type BACnetActionList interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetActionListExactly can be used when we want exactly this type and not a type which fulfills BACnetActionList.
+// This is useful for switch cases.
+type BACnetActionListExactly interface {
+	isBACnetActionList() bool
+}
+
 // _BACnetActionList is the data-structure of this message
 type _BACnetActionList struct {
 	InnerOpeningTag BACnetOpeningTag
@@ -228,6 +234,10 @@ func (m *_BACnetActionList) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetActionList")
 	}
 	return nil
+}
+
+func (m *_BACnetActionList) isBACnetActionList() bool {
+	return true
 }
 
 func (m *_BACnetActionList) String() string {

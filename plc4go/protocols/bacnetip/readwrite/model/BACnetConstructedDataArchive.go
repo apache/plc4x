@@ -37,6 +37,12 @@ type BACnetConstructedDataArchive interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataArchiveExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataArchive.
+// This is useful for switch cases.
+type BACnetConstructedDataArchiveExactly interface {
+	isBACnetConstructedDataArchive() bool
+}
+
 // _BACnetConstructedDataArchive is the data-structure of this message
 type _BACnetConstructedDataArchive struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataArchive) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataArchive) isBACnetConstructedDataArchive() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataArchive) String() string {

@@ -35,6 +35,12 @@ type BACnetConfirmedServiceRequestReadPropertyMultiple interface {
 	GetData() []BACnetReadAccessSpecification
 }
 
+// BACnetConfirmedServiceRequestReadPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadPropertyMultiple.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadPropertyMultipleExactly interface {
+	isBACnetConfirmedServiceRequestReadPropertyMultiple() bool
+}
+
 // _BACnetConfirmedServiceRequestReadPropertyMultiple is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 	*_BACnetConfirmedServiceRequest
@@ -199,6 +205,10 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) isBACnetConfirmedServiceRequestReadPropertyMultiple() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) String() string {

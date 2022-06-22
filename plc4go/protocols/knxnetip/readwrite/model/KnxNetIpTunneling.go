@@ -35,6 +35,12 @@ type KnxNetIpTunneling interface {
 	GetVersion() uint8
 }
 
+// KnxNetIpTunnelingExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpTunneling.
+// This is useful for switch cases.
+type KnxNetIpTunnelingExactly interface {
+	isKnxNetIpTunneling() bool
+}
+
 // _KnxNetIpTunneling is the data-structure of this message
 type _KnxNetIpTunneling struct {
 	*_ServiceId
@@ -167,6 +173,10 @@ func (m *_KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetIpTunneling) isKnxNetIpTunneling() bool {
+	return true
 }
 
 func (m *_KnxNetIpTunneling) String() string {

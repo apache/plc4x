@@ -35,6 +35,12 @@ type COTPParameterDisconnectAdditionalInformation interface {
 	GetData() []byte
 }
 
+// COTPParameterDisconnectAdditionalInformationExactly can be used when we want exactly this type and not a type which fulfills COTPParameterDisconnectAdditionalInformation.
+// This is useful for switch cases.
+type COTPParameterDisconnectAdditionalInformationExactly interface {
+	isCOTPParameterDisconnectAdditionalInformation() bool
+}
+
 // _COTPParameterDisconnectAdditionalInformation is the data-structure of this message
 type _COTPParameterDisconnectAdditionalInformation struct {
 	*_COTPParameter
@@ -173,6 +179,10 @@ func (m *_COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPParameterDisconnectAdditionalInformation) isCOTPParameterDisconnectAdditionalInformation() bool {
+	return true
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) String() string {

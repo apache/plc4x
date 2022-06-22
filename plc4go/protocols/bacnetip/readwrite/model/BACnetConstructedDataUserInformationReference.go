@@ -37,6 +37,12 @@ type BACnetConstructedDataUserInformationReference interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataUserInformationReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserInformationReference.
+// This is useful for switch cases.
+type BACnetConstructedDataUserInformationReferenceExactly interface {
+	isBACnetConstructedDataUserInformationReference() bool
+}
+
 // _BACnetConstructedDataUserInformationReference is the data-structure of this message
 type _BACnetConstructedDataUserInformationReference struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataUserInformationReference) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUserInformationReference) isBACnetConstructedDataUserInformationReference() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUserInformationReference) String() string {

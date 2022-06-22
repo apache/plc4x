@@ -37,6 +37,12 @@ type BACnetConstructedDataLockoutRelinquishTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataLockoutRelinquishTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLockoutRelinquishTime.
+// This is useful for switch cases.
+type BACnetConstructedDataLockoutRelinquishTimeExactly interface {
+	isBACnetConstructedDataLockoutRelinquishTime() bool
+}
+
 // _BACnetConstructedDataLockoutRelinquishTime is the data-structure of this message
 type _BACnetConstructedDataLockoutRelinquishTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTime) isBACnetConstructedDataLockoutRelinquishTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) String() string {

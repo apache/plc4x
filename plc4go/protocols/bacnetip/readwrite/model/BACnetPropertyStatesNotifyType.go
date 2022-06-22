@@ -35,6 +35,12 @@ type BACnetPropertyStatesNotifyType interface {
 	GetNotifyType() BACnetNotifyTypeTagged
 }
 
+// BACnetPropertyStatesNotifyTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNotifyType.
+// This is useful for switch cases.
+type BACnetPropertyStatesNotifyTypeExactly interface {
+	isBACnetPropertyStatesNotifyType() bool
+}
+
 // _BACnetPropertyStatesNotifyType is the data-structure of this message
 type _BACnetPropertyStatesNotifyType struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesNotifyType) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesNotifyType) isBACnetPropertyStatesNotifyType() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesNotifyType) String() string {

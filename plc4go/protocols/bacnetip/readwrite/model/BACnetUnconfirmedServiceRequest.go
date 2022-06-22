@@ -34,6 +34,12 @@ type BACnetUnconfirmedServiceRequest interface {
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
 }
 
+// BACnetUnconfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequest.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestExactly interface {
+	isBACnetUnconfirmedServiceRequest() bool
+}
+
 // _BACnetUnconfirmedServiceRequest is the data-structure of this message
 type _BACnetUnconfirmedServiceRequest struct {
 	_BACnetUnconfirmedServiceRequestChildRequirements
@@ -43,10 +49,10 @@ type _BACnetUnconfirmedServiceRequest struct {
 }
 
 type _BACnetUnconfirmedServiceRequestChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetUnconfirmedServiceRequestParent interface {
@@ -55,7 +61,7 @@ type BACnetUnconfirmedServiceRequestParent interface {
 }
 
 type BACnetUnconfirmedServiceRequestChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetUnconfirmedServiceRequest)
 	GetParent() *BACnetUnconfirmedServiceRequest
 
@@ -204,6 +210,10 @@ func (pm *_BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Wr
 		return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequest")
 	}
 	return nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequest) isBACnetUnconfirmedServiceRequest() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequest) String() string {

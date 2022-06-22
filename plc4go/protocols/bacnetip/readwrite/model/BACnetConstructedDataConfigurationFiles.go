@@ -41,6 +41,12 @@ type BACnetConstructedDataConfigurationFiles interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataConfigurationFilesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataConfigurationFiles.
+// This is useful for switch cases.
+type BACnetConstructedDataConfigurationFilesExactly interface {
+	isBACnetConstructedDataConfigurationFiles() bool
+}
+
 // _BACnetConstructedDataConfigurationFiles is the data-structure of this message
 type _BACnetConstructedDataConfigurationFiles struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataConfigurationFiles) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataConfigurationFiles) isBACnetConstructedDataConfigurationFiles() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataConfigurationFiles) String() string {

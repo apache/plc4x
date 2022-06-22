@@ -33,6 +33,12 @@ type LRawReq interface {
 	CEMI
 }
 
+// LRawReqExactly can be used when we want exactly this type and not a type which fulfills LRawReq.
+// This is useful for switch cases.
+type LRawReqExactly interface {
+	isLRawReq() bool
+}
+
 // _LRawReq is the data-structure of this message
 type _LRawReq struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_LRawReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LRawReq) isLRawReq() bool {
+	return true
 }
 
 func (m *_LRawReq) String() string {

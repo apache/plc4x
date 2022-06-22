@@ -43,6 +43,12 @@ type BACnetUnconfirmedServiceRequestWriteGroup interface {
 	GetInhibitDelay() BACnetContextTagUnsignedInteger
 }
 
+// BACnetUnconfirmedServiceRequestWriteGroupExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWriteGroup.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestWriteGroupExactly interface {
+	isBACnetUnconfirmedServiceRequestWriteGroup() bool
+}
+
 // _BACnetUnconfirmedServiceRequestWriteGroup is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestWriteGroup struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -310,6 +316,10 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) isBACnetUnconfirmedServiceRequestWriteGroup() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) String() string {

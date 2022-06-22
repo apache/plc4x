@@ -37,6 +37,12 @@ type BACnetConstructedDataApplicationSoftwareVersion interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataApplicationSoftwareVersionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataApplicationSoftwareVersion.
+// This is useful for switch cases.
+type BACnetConstructedDataApplicationSoftwareVersionExactly interface {
+	isBACnetConstructedDataApplicationSoftwareVersion() bool
+}
+
 // _BACnetConstructedDataApplicationSoftwareVersion is the data-structure of this message
 type _BACnetConstructedDataApplicationSoftwareVersion struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) isBACnetConstructedDataApplicationSoftwareVersion() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataApplicationSoftwareVersion) String() string {

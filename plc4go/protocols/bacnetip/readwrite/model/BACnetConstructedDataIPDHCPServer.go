@@ -37,6 +37,12 @@ type BACnetConstructedDataIPDHCPServer interface {
 	GetActualValue() BACnetApplicationTagOctetString
 }
 
+// BACnetConstructedDataIPDHCPServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPServer.
+// This is useful for switch cases.
+type BACnetConstructedDataIPDHCPServerExactly interface {
+	isBACnetConstructedDataIPDHCPServer() bool
+}
+
 // _BACnetConstructedDataIPDHCPServer is the data-structure of this message
 type _BACnetConstructedDataIPDHCPServer struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPDHCPServer) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPDHCPServer) isBACnetConstructedDataIPDHCPServer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPDHCPServer) String() string {

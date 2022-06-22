@@ -44,6 +44,12 @@ type BACnetPropertyAccessResult interface {
 	GetAccessResult() BACnetPropertyAccessResultAccessResult
 }
 
+// BACnetPropertyAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResult.
+// This is useful for switch cases.
+type BACnetPropertyAccessResultExactly interface {
+	isBACnetPropertyAccessResult() bool
+}
+
 // _BACnetPropertyAccessResult is the data-structure of this message
 type _BACnetPropertyAccessResult struct {
 	ObjectIdentifier   BACnetContextTagObjectIdentifier
@@ -315,6 +321,10 @@ func (m *_BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyAccessResult")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyAccessResult) isBACnetPropertyAccessResult() bool {
+	return true
 }
 
 func (m *_BACnetPropertyAccessResult) String() string {

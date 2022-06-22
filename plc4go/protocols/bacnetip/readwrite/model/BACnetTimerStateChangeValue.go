@@ -38,6 +38,12 @@ type BACnetTimerStateChangeValue interface {
 	GetPeekedIsContextTag() bool
 }
 
+// BACnetTimerStateChangeValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValue.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueExactly interface {
+	isBACnetTimerStateChangeValue() bool
+}
+
 // _BACnetTimerStateChangeValue is the data-structure of this message
 type _BACnetTimerStateChangeValue struct {
 	_BACnetTimerStateChangeValueChildRequirements
@@ -48,9 +54,9 @@ type _BACnetTimerStateChangeValue struct {
 }
 
 type _BACnetTimerStateChangeValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetTimerStateChangeValueParent interface {
@@ -59,7 +65,7 @@ type BACnetTimerStateChangeValueParent interface {
 }
 
 type BACnetTimerStateChangeValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetTimerStateChangeValue, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetTimerStateChangeValue
 
@@ -253,6 +259,10 @@ func (pm *_BACnetTimerStateChangeValue) SerializeParent(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetTimerStateChangeValue")
 	}
 	return nil
+}
+
+func (m *_BACnetTimerStateChangeValue) isBACnetTimerStateChangeValue() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValue) String() string {

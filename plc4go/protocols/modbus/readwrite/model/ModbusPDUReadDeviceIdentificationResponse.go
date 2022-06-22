@@ -49,6 +49,12 @@ type ModbusPDUReadDeviceIdentificationResponse interface {
 	GetObjects() []ModbusDeviceInformationObject
 }
 
+// ModbusPDUReadDeviceIdentificationResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDeviceIdentificationResponse.
+// This is useful for switch cases.
+type ModbusPDUReadDeviceIdentificationResponseExactly interface {
+	isModbusPDUReadDeviceIdentificationResponse() bool
+}
+
 // _ModbusPDUReadDeviceIdentificationResponse is the data-structure of this message
 type _ModbusPDUReadDeviceIdentificationResponse struct {
 	*_ModbusPDU
@@ -416,6 +422,10 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponse) isModbusPDUReadDeviceIdentificationResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationResponse) String() string {

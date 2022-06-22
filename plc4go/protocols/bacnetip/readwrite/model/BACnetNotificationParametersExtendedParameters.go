@@ -74,6 +74,12 @@ type BACnetNotificationParametersExtendedParameters interface {
 	GetIsClosingTag() bool
 }
 
+// BACnetNotificationParametersExtendedParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersExtendedParameters.
+// This is useful for switch cases.
+type BACnetNotificationParametersExtendedParametersExactly interface {
+	isBACnetNotificationParametersExtendedParameters() bool
+}
+
 // _BACnetNotificationParametersExtendedParameters is the data-structure of this message
 type _BACnetNotificationParametersExtendedParameters struct {
 	OpeningTag           BACnetOpeningTag
@@ -1042,6 +1048,10 @@ func (m *_BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer 
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersExtendedParameters")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParametersExtendedParameters) isBACnetNotificationParametersExtendedParameters() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersExtendedParameters) String() string {

@@ -33,6 +33,12 @@ type ApduDataUserMessage interface {
 	ApduData
 }
 
+// ApduDataUserMessageExactly can be used when we want exactly this type and not a type which fulfills ApduDataUserMessage.
+// This is useful for switch cases.
+type ApduDataUserMessageExactly interface {
+	isApduDataUserMessage() bool
+}
+
 // _ApduDataUserMessage is the data-structure of this message
 type _ApduDataUserMessage struct {
 	*_ApduData
@@ -134,6 +140,10 @@ func (m *_ApduDataUserMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataUserMessage) isApduDataUserMessage() bool {
+	return true
 }
 
 func (m *_ApduDataUserMessage) String() string {

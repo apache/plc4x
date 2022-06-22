@@ -33,6 +33,12 @@ type IdentifyReplyCommandNetworkTerminalLevels interface {
 	IdentifyReplyCommand
 }
 
+// IdentifyReplyCommandNetworkTerminalLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandNetworkTerminalLevels.
+// This is useful for switch cases.
+type IdentifyReplyCommandNetworkTerminalLevelsExactly interface {
+	isIdentifyReplyCommandNetworkTerminalLevels() bool
+}
+
 // _IdentifyReplyCommandNetworkTerminalLevels is the data-structure of this message
 type _IdentifyReplyCommandNetworkTerminalLevels struct {
 	*_IdentifyReplyCommand
@@ -131,6 +137,10 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) isIdentifyReplyCommandNetworkTerminalLevels() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) String() string {

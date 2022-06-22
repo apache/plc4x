@@ -37,6 +37,12 @@ type BACnetConstructedDataTimerMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataTimerMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerMaxPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerMaxPresValueExactly interface {
+	isBACnetConstructedDataTimerMaxPresValue() bool
+}
+
 // _BACnetConstructedDataTimerMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataTimerMaxPresValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerMaxPresValue) isBACnetConstructedDataTimerMaxPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerMaxPresValue) String() string {

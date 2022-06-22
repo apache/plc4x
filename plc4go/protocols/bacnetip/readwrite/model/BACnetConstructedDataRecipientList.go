@@ -35,6 +35,12 @@ type BACnetConstructedDataRecipientList interface {
 	GetRecipientList() []BACnetDestination
 }
 
+// BACnetConstructedDataRecipientListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRecipientList.
+// This is useful for switch cases.
+type BACnetConstructedDataRecipientListExactly interface {
+	isBACnetConstructedDataRecipientList() bool
+}
+
 // _BACnetConstructedDataRecipientList is the data-structure of this message
 type _BACnetConstructedDataRecipientList struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataRecipientList) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRecipientList) isBACnetConstructedDataRecipientList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRecipientList) String() string {

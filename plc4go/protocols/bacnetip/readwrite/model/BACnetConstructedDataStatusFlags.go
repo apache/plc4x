@@ -37,6 +37,12 @@ type BACnetConstructedDataStatusFlags interface {
 	GetActualValue() BACnetStatusFlagsTagged
 }
 
+// BACnetConstructedDataStatusFlagsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStatusFlags.
+// This is useful for switch cases.
+type BACnetConstructedDataStatusFlagsExactly interface {
+	isBACnetConstructedDataStatusFlags() bool
+}
+
 // _BACnetConstructedDataStatusFlags is the data-structure of this message
 type _BACnetConstructedDataStatusFlags struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataStatusFlags) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStatusFlags) isBACnetConstructedDataStatusFlags() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStatusFlags) String() string {

@@ -36,6 +36,12 @@ type BACnetValueSource interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetValueSourceExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSource.
+// This is useful for switch cases.
+type BACnetValueSourceExactly interface {
+	isBACnetValueSource() bool
+}
+
 // _BACnetValueSource is the data-structure of this message
 type _BACnetValueSource struct {
 	_BACnetValueSourceChildRequirements
@@ -43,9 +49,9 @@ type _BACnetValueSource struct {
 }
 
 type _BACnetValueSourceChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetValueSourceParent interface {
@@ -54,7 +60,7 @@ type BACnetValueSourceParent interface {
 }
 
 type BACnetValueSourceChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetValueSource, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetValueSource
 
@@ -200,6 +206,10 @@ func (pm *_BACnetValueSource) SerializeParent(writeBuffer utils.WriteBuffer, chi
 		return errors.Wrap(popErr, "Error popping for BACnetValueSource")
 	}
 	return nil
+}
+
+func (m *_BACnetValueSource) isBACnetValueSource() bool {
+	return true
 }
 
 func (m *_BACnetValueSource) String() string {

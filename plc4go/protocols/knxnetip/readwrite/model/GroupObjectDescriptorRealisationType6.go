@@ -32,6 +32,12 @@ type GroupObjectDescriptorRealisationType6 interface {
 	utils.Serializable
 }
 
+// GroupObjectDescriptorRealisationType6Exactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationType6.
+// This is useful for switch cases.
+type GroupObjectDescriptorRealisationType6Exactly interface {
+	isGroupObjectDescriptorRealisationType6() bool
+}
+
 // _GroupObjectDescriptorRealisationType6 is the data-structure of this message
 type _GroupObjectDescriptorRealisationType6 struct {
 }
@@ -98,6 +104,10 @@ func (m *_GroupObjectDescriptorRealisationType6) Serialize(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for GroupObjectDescriptorRealisationType6")
 	}
 	return nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType6) isGroupObjectDescriptorRealisationType6() bool {
+	return true
 }
 
 func (m *_GroupObjectDescriptorRealisationType6) String() string {

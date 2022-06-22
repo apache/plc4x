@@ -38,6 +38,12 @@ type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfCharacterStringListOfAlarmValues.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesExactly interface {
+	isBACnetEventParameterChangeOfCharacterStringListOfAlarmValues() bool
+}
+
 // _BACnetEventParameterChangeOfCharacterStringListOfAlarmValues is the data-structure of this message
 type _BACnetEventParameterChangeOfCharacterStringListOfAlarmValues struct {
 	OpeningTag        BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) Serializ
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfCharacterStringListOfAlarmValues")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) isBACnetEventParameterChangeOfCharacterStringListOfAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) String() string {

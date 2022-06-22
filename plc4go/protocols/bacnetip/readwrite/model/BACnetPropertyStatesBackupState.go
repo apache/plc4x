@@ -35,6 +35,12 @@ type BACnetPropertyStatesBackupState interface {
 	GetBackupState() BACnetBackupStateTagged
 }
 
+// BACnetPropertyStatesBackupStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBackupState.
+// This is useful for switch cases.
+type BACnetPropertyStatesBackupStateExactly interface {
+	isBACnetPropertyStatesBackupState() bool
+}
+
 // _BACnetPropertyStatesBackupState is the data-structure of this message
 type _BACnetPropertyStatesBackupState struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesBackupState) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesBackupState) isBACnetPropertyStatesBackupState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesBackupState) String() string {

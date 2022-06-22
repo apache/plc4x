@@ -37,6 +37,12 @@ type BACnetConstructedDataDatePatternValueRelinquishDefault interface {
 	GetActualValue() BACnetApplicationTagDate
 }
 
+// BACnetConstructedDataDatePatternValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDatePatternValueRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataDatePatternValueRelinquishDefaultExactly interface {
+	isBACnetConstructedDataDatePatternValueRelinquishDefault() bool
+}
+
 // _BACnetConstructedDataDatePatternValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataDatePatternValueRelinquishDefault struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDatePatternValueRelinquishDefault) Serialize(writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDatePatternValueRelinquishDefault) isBACnetConstructedDataDatePatternValueRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDatePatternValueRelinquishDefault) String() string {

@@ -38,6 +38,12 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.
+// This is useful for switch cases.
+type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationExactly interface {
+	isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification() bool
+}
+
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification is the data-structure of this message
 type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification struct {
 	OpeningTag                              BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Seria
 		return errors.Wrap(popErr, "Error popping for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification")
 	}
 	return nil
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification() bool {
+	return true
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) String() string {

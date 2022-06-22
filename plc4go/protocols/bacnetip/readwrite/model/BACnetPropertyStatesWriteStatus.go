@@ -35,6 +35,12 @@ type BACnetPropertyStatesWriteStatus interface {
 	GetWriteStatus() BACnetWriteStatusTagged
 }
 
+// BACnetPropertyStatesWriteStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesWriteStatus.
+// This is useful for switch cases.
+type BACnetPropertyStatesWriteStatusExactly interface {
+	isBACnetPropertyStatesWriteStatus() bool
+}
+
 // _BACnetPropertyStatesWriteStatus is the data-structure of this message
 type _BACnetPropertyStatesWriteStatus struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesWriteStatus) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesWriteStatus) isBACnetPropertyStatesWriteStatus() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesWriteStatus) String() string {

@@ -41,6 +41,12 @@ type BACnetConstructedDataUnspecified interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataUnspecifiedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUnspecified.
+// This is useful for switch cases.
+type BACnetConstructedDataUnspecifiedExactly interface {
+	isBACnetConstructedDataUnspecified() bool
+}
+
 // _BACnetConstructedDataUnspecified is the data-structure of this message
 type _BACnetConstructedDataUnspecified struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataUnspecified) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUnspecified) isBACnetConstructedDataUnspecified() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUnspecified) String() string {

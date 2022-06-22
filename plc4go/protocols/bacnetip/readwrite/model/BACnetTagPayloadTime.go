@@ -50,6 +50,12 @@ type BACnetTagPayloadTime interface {
 	GetFractionalIsWildcard() bool
 }
 
+// BACnetTagPayloadTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadTime.
+// This is useful for switch cases.
+type BACnetTagPayloadTimeExactly interface {
+	isBACnetTagPayloadTime() bool
+}
+
 // _BACnetTagPayloadTime is the data-structure of this message
 type _BACnetTagPayloadTime struct {
 	Hour       uint8
@@ -298,6 +304,10 @@ func (m *_BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadTime")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadTime) isBACnetTagPayloadTime() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadTime) String() string {

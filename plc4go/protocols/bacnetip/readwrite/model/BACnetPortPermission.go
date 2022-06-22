@@ -38,6 +38,12 @@ type BACnetPortPermission interface {
 	GetEnable() BACnetContextTagBoolean
 }
 
+// BACnetPortPermissionExactly can be used when we want exactly this type and not a type which fulfills BACnetPortPermission.
+// This is useful for switch cases.
+type BACnetPortPermissionExactly interface {
+	isBACnetPortPermission() bool
+}
+
 // _BACnetPortPermission is the data-structure of this message
 type _BACnetPortPermission struct {
 	Port   BACnetContextTagUnsignedInteger
@@ -195,6 +201,10 @@ func (m *_BACnetPortPermission) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPortPermission")
 	}
 	return nil
+}
+
+func (m *_BACnetPortPermission) isBACnetPortPermission() bool {
+	return true
 }
 
 func (m *_BACnetPortPermission) String() string {

@@ -40,6 +40,12 @@ type BACnetDoorAlarmStateTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetDoorAlarmStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDoorAlarmStateTagged.
+// This is useful for switch cases.
+type BACnetDoorAlarmStateTaggedExactly interface {
+	isBACnetDoorAlarmStateTagged() bool
+}
+
 // _BACnetDoorAlarmStateTagged is the data-structure of this message
 type _BACnetDoorAlarmStateTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetDoorAlarmStateTagged) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetDoorAlarmStateTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetDoorAlarmStateTagged) isBACnetDoorAlarmStateTagged() bool {
+	return true
 }
 
 func (m *_BACnetDoorAlarmStateTagged) String() string {

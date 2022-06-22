@@ -35,6 +35,12 @@ type S7PayloadNotify8 interface {
 	GetAlarmMessage() AlarmMessagePushType
 }
 
+// S7PayloadNotify8Exactly can be used when we want exactly this type and not a type which fulfills S7PayloadNotify8.
+// This is useful for switch cases.
+type S7PayloadNotify8Exactly interface {
+	isS7PayloadNotify8() bool
+}
+
 // _S7PayloadNotify8 is the data-structure of this message
 type _S7PayloadNotify8 struct {
 	*_S7PayloadUserDataItem
@@ -189,6 +195,10 @@ func (m *_S7PayloadNotify8) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadNotify8) isS7PayloadNotify8() bool {
+	return true
 }
 
 func (m *_S7PayloadNotify8) String() string {

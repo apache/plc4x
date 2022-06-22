@@ -35,6 +35,12 @@ type BACnetConstructedDataBBMDBroadcastDistributionTable interface {
 	GetBbmdBroadcastDistributionTable() []BACnetBDTEntry
 }
 
+// BACnetConstructedDataBBMDBroadcastDistributionTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBBMDBroadcastDistributionTable.
+// This is useful for switch cases.
+type BACnetConstructedDataBBMDBroadcastDistributionTableExactly interface {
+	isBACnetConstructedDataBBMDBroadcastDistributionTable() bool
+}
+
 // _BACnetConstructedDataBBMDBroadcastDistributionTable is the data-structure of this message
 type _BACnetConstructedDataBBMDBroadcastDistributionTable struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) isBACnetConstructedDataBBMDBroadcastDistributionTable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) String() string {

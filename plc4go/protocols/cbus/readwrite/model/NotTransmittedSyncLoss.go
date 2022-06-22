@@ -33,6 +33,12 @@ type NotTransmittedSyncLoss interface {
 	Confirmation
 }
 
+// NotTransmittedSyncLossExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedSyncLoss.
+// This is useful for switch cases.
+type NotTransmittedSyncLossExactly interface {
+	isNotTransmittedSyncLoss() bool
+}
+
 // _NotTransmittedSyncLoss is the data-structure of this message
 type _NotTransmittedSyncLoss struct {
 	*_Confirmation
@@ -133,6 +139,10 @@ func (m *_NotTransmittedSyncLoss) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NotTransmittedSyncLoss) isNotTransmittedSyncLoss() bool {
+	return true
 }
 
 func (m *_NotTransmittedSyncLoss) String() string {

@@ -33,6 +33,12 @@ type BACnetConstructedDataStructuredViewAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataStructuredViewAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStructuredViewAll.
+// This is useful for switch cases.
+type BACnetConstructedDataStructuredViewAllExactly interface {
+	isBACnetConstructedDataStructuredViewAll() bool
+}
+
 // _BACnetConstructedDataStructuredViewAll is the data-structure of this message
 type _BACnetConstructedDataStructuredViewAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataStructuredViewAll) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStructuredViewAll) isBACnetConstructedDataStructuredViewAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStructuredViewAll) String() string {

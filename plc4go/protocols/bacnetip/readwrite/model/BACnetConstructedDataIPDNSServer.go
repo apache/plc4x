@@ -41,6 +41,12 @@ type BACnetConstructedDataIPDNSServer interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataIPDNSServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDNSServer.
+// This is useful for switch cases.
+type BACnetConstructedDataIPDNSServerExactly interface {
+	isBACnetConstructedDataIPDNSServer() bool
+}
+
 // _BACnetConstructedDataIPDNSServer is the data-structure of this message
 type _BACnetConstructedDataIPDNSServer struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataIPDNSServer) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPDNSServer) isBACnetConstructedDataIPDNSServer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPDNSServer) String() string {

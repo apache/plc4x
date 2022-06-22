@@ -43,6 +43,12 @@ type BACnetConfirmedServiceRequestConfirmedTextMessage interface {
 	GetMessage() BACnetContextTagCharacterString
 }
 
+// BACnetConfirmedServiceRequestConfirmedTextMessageExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessage.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedTextMessageExactly interface {
+	isBACnetConfirmedServiceRequestConfirmedTextMessage() bool
+}
+
 // _BACnetConfirmedServiceRequestConfirmedTextMessage is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 	*_BACnetConfirmedServiceRequest
@@ -310,6 +316,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) isBACnetConfirmedServiceRequestConfirmedTextMessage() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) String() string {

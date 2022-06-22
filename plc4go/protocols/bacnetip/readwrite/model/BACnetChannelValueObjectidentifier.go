@@ -35,6 +35,12 @@ type BACnetChannelValueObjectidentifier interface {
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetChannelValueObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueObjectidentifier.
+// This is useful for switch cases.
+type BACnetChannelValueObjectidentifierExactly interface {
+	isBACnetChannelValueObjectidentifier() bool
+}
+
 // _BACnetChannelValueObjectidentifier is the data-structure of this message
 type _BACnetChannelValueObjectidentifier struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueObjectidentifier) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueObjectidentifier) isBACnetChannelValueObjectidentifier() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueObjectidentifier) String() string {

@@ -40,6 +40,12 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValue interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetFaultParameterFaultOutOfRangeMinNormalValueExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValue.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMinNormalValueExactly interface {
+	isBACnetFaultParameterFaultOutOfRangeMinNormalValue() bool
+}
+
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValue is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
 	_BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements
@@ -52,9 +58,9 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
 }
 
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueParent interface {
@@ -63,7 +69,7 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueParent interface {
 }
 
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetFaultParameterFaultOutOfRangeMinNormalValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetFaultParameterFaultOutOfRangeMinNormalValue
 
@@ -280,6 +286,10 @@ func (pm *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) SerializeParent(wr
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) isBACnetFaultParameterFaultOutOfRangeMinNormalValue() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) String() string {

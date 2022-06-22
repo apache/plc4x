@@ -35,6 +35,12 @@ type SysexCommandPinStateQuery interface {
 	GetPin() uint8
 }
 
+// SysexCommandPinStateQueryExactly can be used when we want exactly this type and not a type which fulfills SysexCommandPinStateQuery.
+// This is useful for switch cases.
+type SysexCommandPinStateQueryExactly interface {
+	isSysexCommandPinStateQuery() bool
+}
+
 // _SysexCommandPinStateQuery is the data-structure of this message
 type _SysexCommandPinStateQuery struct {
 	*_SysexCommand
@@ -171,6 +177,10 @@ func (m *_SysexCommandPinStateQuery) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandPinStateQuery) isSysexCommandPinStateQuery() bool {
+	return true
 }
 
 func (m *_SysexCommandPinStateQuery) String() string {

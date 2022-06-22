@@ -35,6 +35,12 @@ type BACnetConstructedDataAcceptedModes interface {
 	GetAcceptedModes() []BACnetLifeSafetyModeTagged
 }
 
+// BACnetConstructedDataAcceptedModesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAcceptedModes.
+// This is useful for switch cases.
+type BACnetConstructedDataAcceptedModesExactly interface {
+	isBACnetConstructedDataAcceptedModes() bool
+}
+
 // _BACnetConstructedDataAcceptedModes is the data-structure of this message
 type _BACnetConstructedDataAcceptedModes struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataAcceptedModes) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAcceptedModes) isBACnetConstructedDataAcceptedModes() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAcceptedModes) String() string {

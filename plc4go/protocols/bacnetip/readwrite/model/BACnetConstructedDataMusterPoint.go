@@ -37,6 +37,12 @@ type BACnetConstructedDataMusterPoint interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataMusterPointExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMusterPoint.
+// This is useful for switch cases.
+type BACnetConstructedDataMusterPointExactly interface {
+	isBACnetConstructedDataMusterPoint() bool
+}
+
 // _BACnetConstructedDataMusterPoint is the data-structure of this message
 type _BACnetConstructedDataMusterPoint struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMusterPoint) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMusterPoint) isBACnetConstructedDataMusterPoint() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMusterPoint) String() string {

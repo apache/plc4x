@@ -33,6 +33,12 @@ type BACnetConstructedDataLifeSafetyPointAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataLifeSafetyPointAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyPointAll.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyPointAllExactly interface {
+	isBACnetConstructedDataLifeSafetyPointAll() bool
+}
+
 // _BACnetConstructedDataLifeSafetyPointAll is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyPointAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataLifeSafetyPointAll) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAll) isBACnetConstructedDataLifeSafetyPointAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointAll) String() string {

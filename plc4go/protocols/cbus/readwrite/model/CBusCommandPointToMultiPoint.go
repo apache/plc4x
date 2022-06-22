@@ -35,6 +35,12 @@ type CBusCommandPointToMultiPoint interface {
 	GetCommand() CBusPointToMultiPointCommand
 }
 
+// CBusCommandPointToMultiPointExactly can be used when we want exactly this type and not a type which fulfills CBusCommandPointToMultiPoint.
+// This is useful for switch cases.
+type CBusCommandPointToMultiPointExactly interface {
+	isCBusCommandPointToMultiPoint() bool
+}
+
 // _CBusCommandPointToMultiPoint is the data-structure of this message
 type _CBusCommandPointToMultiPoint struct {
 	*_CBusCommand
@@ -179,6 +185,10 @@ func (m *_CBusCommandPointToMultiPoint) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusCommandPointToMultiPoint) isCBusCommandPointToMultiPoint() bool {
+	return true
 }
 
 func (m *_CBusCommandPointToMultiPoint) String() string {

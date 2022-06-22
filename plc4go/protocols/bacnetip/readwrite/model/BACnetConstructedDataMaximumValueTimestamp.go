@@ -37,6 +37,12 @@ type BACnetConstructedDataMaximumValueTimestamp interface {
 	GetActualValue() BACnetDateTime
 }
 
+// BACnetConstructedDataMaximumValueTimestampExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaximumValueTimestamp.
+// This is useful for switch cases.
+type BACnetConstructedDataMaximumValueTimestampExactly interface {
+	isBACnetConstructedDataMaximumValueTimestamp() bool
+}
+
 // _BACnetConstructedDataMaximumValueTimestamp is the data-structure of this message
 type _BACnetConstructedDataMaximumValueTimestamp struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaximumValueTimestamp) isBACnetConstructedDataMaximumValueTimestamp() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaximumValueTimestamp) String() string {

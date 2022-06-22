@@ -37,6 +37,12 @@ type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
 	GetCount() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberExactly interface {
+	isBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() bool
+}
+
 // _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber struct {
 	*_BACnetConfirmedServiceRequestReadRangeRange
@@ -215,6 +221,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) isBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) String() string {

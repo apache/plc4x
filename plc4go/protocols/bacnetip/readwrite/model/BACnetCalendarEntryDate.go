@@ -35,6 +35,12 @@ type BACnetCalendarEntryDate interface {
 	GetDateValue() BACnetContextTagDate
 }
 
+// BACnetCalendarEntryDateExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntryDate.
+// This is useful for switch cases.
+type BACnetCalendarEntryDateExactly interface {
+	isBACnetCalendarEntryDate() bool
+}
+
 // _BACnetCalendarEntryDate is the data-structure of this message
 type _BACnetCalendarEntryDate struct {
 	*_BACnetCalendarEntry
@@ -176,6 +182,10 @@ func (m *_BACnetCalendarEntryDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetCalendarEntryDate) isBACnetCalendarEntryDate() bool {
+	return true
 }
 
 func (m *_BACnetCalendarEntryDate) String() string {

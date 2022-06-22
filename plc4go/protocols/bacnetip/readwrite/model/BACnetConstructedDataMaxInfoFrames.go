@@ -37,6 +37,12 @@ type BACnetConstructedDataMaxInfoFrames interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataMaxInfoFramesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaxInfoFrames.
+// This is useful for switch cases.
+type BACnetConstructedDataMaxInfoFramesExactly interface {
+	isBACnetConstructedDataMaxInfoFrames() bool
+}
+
 // _BACnetConstructedDataMaxInfoFrames is the data-structure of this message
 type _BACnetConstructedDataMaxInfoFrames struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMaxInfoFrames) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaxInfoFrames) isBACnetConstructedDataMaxInfoFrames() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaxInfoFrames) String() string {

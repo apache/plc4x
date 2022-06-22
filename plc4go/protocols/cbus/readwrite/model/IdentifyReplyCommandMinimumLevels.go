@@ -33,6 +33,12 @@ type IdentifyReplyCommandMinimumLevels interface {
 	IdentifyReplyCommand
 }
 
+// IdentifyReplyCommandMinimumLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandMinimumLevels.
+// This is useful for switch cases.
+type IdentifyReplyCommandMinimumLevelsExactly interface {
+	isIdentifyReplyCommandMinimumLevels() bool
+}
+
 // _IdentifyReplyCommandMinimumLevels is the data-structure of this message
 type _IdentifyReplyCommandMinimumLevels struct {
 	*_IdentifyReplyCommand
@@ -131,6 +137,10 @@ func (m *_IdentifyReplyCommandMinimumLevels) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandMinimumLevels) isIdentifyReplyCommandMinimumLevels() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandMinimumLevels) String() string {

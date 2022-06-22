@@ -37,6 +37,12 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPositiveIntegerValueMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueMinPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueMinPresValueExactly interface {
+	isBACnetConstructedDataPositiveIntegerValueMinPresValue() bool
+}
+
 // _BACnetConstructedDataPositiveIntegerValueMinPresValue is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueMinPresValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) isBACnetConstructedDataPositiveIntegerValueMinPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) String() string {

@@ -34,6 +34,12 @@ type APDU interface {
 	GetApduType() ApduType
 }
 
+// APDUExactly can be used when we want exactly this type and not a type which fulfills APDU.
+// This is useful for switch cases.
+type APDUExactly interface {
+	isAPDU() bool
+}
+
 // _APDU is the data-structure of this message
 type _APDU struct {
 	_APDUChildRequirements
@@ -43,10 +49,10 @@ type _APDU struct {
 }
 
 type _APDUChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetApduType() ApduType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type APDUParent interface {
@@ -55,7 +61,7 @@ type APDUParent interface {
 }
 
 type APDUChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent APDU)
 	GetParent() *APDU
 
@@ -196,6 +202,10 @@ func (pm *_APDU) SerializeParent(writeBuffer utils.WriteBuffer, child APDU, seri
 		return errors.Wrap(popErr, "Error popping for APDU")
 	}
 	return nil
+}
+
+func (m *_APDU) isAPDU() bool {
+	return true
 }
 
 func (m *_APDU) String() string {

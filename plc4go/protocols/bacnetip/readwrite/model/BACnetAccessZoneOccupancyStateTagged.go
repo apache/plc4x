@@ -40,6 +40,12 @@ type BACnetAccessZoneOccupancyStateTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetAccessZoneOccupancyStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessZoneOccupancyStateTagged.
+// This is useful for switch cases.
+type BACnetAccessZoneOccupancyStateTaggedExactly interface {
+	isBACnetAccessZoneOccupancyStateTagged() bool
+}
+
 // _BACnetAccessZoneOccupancyStateTagged is the data-structure of this message
 type _BACnetAccessZoneOccupancyStateTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) Serialize(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetAccessZoneOccupancyStateTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTagged) isBACnetAccessZoneOccupancyStateTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessZoneOccupancyStateTagged) String() string {

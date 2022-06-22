@@ -35,6 +35,12 @@ type BACnetConstructedDataRestartNotificationRecipients interface {
 	GetRestartNotificationRecipients() []BACnetRecipient
 }
 
+// BACnetConstructedDataRestartNotificationRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestartNotificationRecipients.
+// This is useful for switch cases.
+type BACnetConstructedDataRestartNotificationRecipientsExactly interface {
+	isBACnetConstructedDataRestartNotificationRecipients() bool
+}
+
 // _BACnetConstructedDataRestartNotificationRecipients is the data-structure of this message
 type _BACnetConstructedDataRestartNotificationRecipients struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRestartNotificationRecipients) isBACnetConstructedDataRestartNotificationRecipients() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) String() string {

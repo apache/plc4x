@@ -33,6 +33,12 @@ type BACnetConstructedDataIntegerValueAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataIntegerValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueAllExactly interface {
+	isBACnetConstructedDataIntegerValueAll() bool
+}
+
 // _BACnetConstructedDataIntegerValueAll is the data-structure of this message
 type _BACnetConstructedDataIntegerValueAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataIntegerValueAll) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueAll) isBACnetConstructedDataIntegerValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueAll) String() string {

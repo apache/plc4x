@@ -37,6 +37,12 @@ type BACnetConstructedDataCOVIncrement interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVIncrement.
+// This is useful for switch cases.
+type BACnetConstructedDataCOVIncrementExactly interface {
+	isBACnetConstructedDataCOVIncrement() bool
+}
+
 // _BACnetConstructedDataCOVIncrement is the data-structure of this message
 type _BACnetConstructedDataCOVIncrement struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCOVIncrement) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCOVIncrement) isBACnetConstructedDataCOVIncrement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) String() string {

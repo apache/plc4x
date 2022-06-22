@@ -37,6 +37,12 @@ type BACnetConstructedDataAccessDoorRelinquishDefault interface {
 	GetActualValue() BACnetDoorValueTagged
 }
 
+// BACnetConstructedDataAccessDoorRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoorRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessDoorRelinquishDefaultExactly interface {
+	isBACnetConstructedDataAccessDoorRelinquishDefault() bool
+}
+
 // _BACnetConstructedDataAccessDoorRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataAccessDoorRelinquishDefault struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) isBACnetConstructedDataAccessDoorRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) String() string {

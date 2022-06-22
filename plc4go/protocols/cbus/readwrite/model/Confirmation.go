@@ -36,6 +36,12 @@ type Confirmation interface {
 	GetAlpha() Alpha
 }
 
+// ConfirmationExactly can be used when we want exactly this type and not a type which fulfills Confirmation.
+// This is useful for switch cases.
+type ConfirmationExactly interface {
+	isConfirmation() bool
+}
+
 // _Confirmation is the data-structure of this message
 type _Confirmation struct {
 	_ConfirmationChildRequirements
@@ -43,10 +49,10 @@ type _Confirmation struct {
 }
 
 type _ConfirmationChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetConfirmationType() byte
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ConfirmationParent interface {
@@ -55,7 +61,7 @@ type ConfirmationParent interface {
 }
 
 type ConfirmationChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent Confirmation, alpha Alpha)
 	GetParent() *Confirmation
 
@@ -217,6 +223,10 @@ func (pm *_Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child Co
 		return errors.Wrap(popErr, "Error popping for Confirmation")
 	}
 	return nil
+}
+
+func (m *_Confirmation) isConfirmation() bool {
+	return true
 }
 
 func (m *_Confirmation) String() string {

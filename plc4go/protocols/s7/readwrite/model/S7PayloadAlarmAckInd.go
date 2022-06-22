@@ -35,6 +35,12 @@ type S7PayloadAlarmAckInd interface {
 	GetAlarmMessage() AlarmMessageAckPushType
 }
 
+// S7PayloadAlarmAckIndExactly can be used when we want exactly this type and not a type which fulfills S7PayloadAlarmAckInd.
+// This is useful for switch cases.
+type S7PayloadAlarmAckIndExactly interface {
+	isS7PayloadAlarmAckInd() bool
+}
+
 // _S7PayloadAlarmAckInd is the data-structure of this message
 type _S7PayloadAlarmAckInd struct {
 	*_S7PayloadUserDataItem
@@ -189,6 +195,10 @@ func (m *_S7PayloadAlarmAckInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadAlarmAckInd) isS7PayloadAlarmAckInd() bool {
+	return true
 }
 
 func (m *_S7PayloadAlarmAckInd) String() string {

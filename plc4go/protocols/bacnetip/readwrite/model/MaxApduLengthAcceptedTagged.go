@@ -36,6 +36,12 @@ type MaxApduLengthAcceptedTagged interface {
 	GetValue() MaxApduLengthAccepted
 }
 
+// MaxApduLengthAcceptedTaggedExactly can be used when we want exactly this type and not a type which fulfills MaxApduLengthAcceptedTagged.
+// This is useful for switch cases.
+type MaxApduLengthAcceptedTaggedExactly interface {
+	isMaxApduLengthAcceptedTagged() bool
+}
+
 // _MaxApduLengthAcceptedTagged is the data-structure of this message
 type _MaxApduLengthAcceptedTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_MaxApduLengthAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for MaxApduLengthAcceptedTagged")
 	}
 	return nil
+}
+
+func (m *_MaxApduLengthAcceptedTagged) isMaxApduLengthAcceptedTagged() bool {
+	return true
 }
 
 func (m *_MaxApduLengthAcceptedTagged) String() string {

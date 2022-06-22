@@ -39,6 +39,12 @@ type LDataCon interface {
 	GetDataFrame() LDataFrame
 }
 
+// LDataConExactly can be used when we want exactly this type and not a type which fulfills LDataCon.
+// This is useful for switch cases.
+type LDataConExactly interface {
+	isLDataCon() bool
+}
+
 // _LDataCon is the data-structure of this message
 type _LDataCon struct {
 	*_CEMI
@@ -260,6 +266,10 @@ func (m *_LDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LDataCon) isLDataCon() bool {
+	return true
 }
 
 func (m *_LDataCon) String() string {

@@ -35,6 +35,12 @@ type ModbusPDUReadCoilsResponse interface {
 	GetValue() []byte
 }
 
+// ModbusPDUReadCoilsResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadCoilsResponse.
+// This is useful for switch cases.
+type ModbusPDUReadCoilsResponseExactly interface {
+	isModbusPDUReadCoilsResponse() bool
+}
+
 // _ModbusPDUReadCoilsResponse is the data-structure of this message
 type _ModbusPDUReadCoilsResponse struct {
 	*_ModbusPDU
@@ -195,6 +201,10 @@ func (m *_ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadCoilsResponse) isModbusPDUReadCoilsResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadCoilsResponse) String() string {

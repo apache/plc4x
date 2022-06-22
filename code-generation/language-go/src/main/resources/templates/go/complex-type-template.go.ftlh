@@ -108,6 +108,12 @@ type ${type.name} interface {
 </#list>
 }
 
+// ${type.name}Exactly can be used when we want exactly this type and not a type which fulfills ${type.name}.
+// This is useful for switch cases.
+type ${type.name}Exactly interface {
+	is${type.name}() bool
+}
+
 // _${type.name} is the data-structure of this message
 type _${type.name} struct {
 <#if type.parentType.isPresent()>
@@ -137,6 +143,7 @@ type _${type.name} struct {
 <#if type.isDiscriminatedParentTypeDefinition()>
 <#assign discriminatedParentType = type.asComplexTypeDefinition().orElseThrow()>
 type _${type.name}ChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
     <#list discriminatedParentType.getDiscriminatorNames() as discriminatorName>
@@ -146,7 +153,6 @@ type _${type.name}ChildRequirements interface {
 	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
         </#if>
     </#list>
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 </#if>
 
@@ -202,7 +208,7 @@ type ${type.name}Parent interface {
 }
 
 type ${type.name}Child interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 <@compress single_line=true>
 	InitializeParent(parent ${type.name}
 	<#if type.getPropertyFields()?has_content>, </#if>
@@ -1824,6 +1830,10 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 		</#if>
 	</#if>
+}
+
+func (m *_${type.name}) is${type.name}() bool {
+	return true
 }
 
 func (m *_${type.name}) String() string {

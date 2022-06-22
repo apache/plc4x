@@ -37,6 +37,12 @@ type BACnetConstructedDataTimerRunning interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataTimerRunningExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerRunning.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerRunningExactly interface {
+	isBACnetConstructedDataTimerRunning() bool
+}
+
 // _BACnetConstructedDataTimerRunning is the data-structure of this message
 type _BACnetConstructedDataTimerRunning struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataTimerRunning) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerRunning) isBACnetConstructedDataTimerRunning() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerRunning) String() string {

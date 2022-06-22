@@ -40,6 +40,12 @@ type BACnetAccessUserTypeTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetAccessUserTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessUserTypeTagged.
+// This is useful for switch cases.
+type BACnetAccessUserTypeTaggedExactly interface {
+	isBACnetAccessUserTypeTagged() bool
+}
+
 // _BACnetAccessUserTypeTagged is the data-structure of this message
 type _BACnetAccessUserTypeTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetAccessUserTypeTagged) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetAccessUserTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessUserTypeTagged) isBACnetAccessUserTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessUserTypeTagged) String() string {

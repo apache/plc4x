@@ -42,6 +42,12 @@ type BACnetPropertyWriteDefinition interface {
 	GetPriority() BACnetContextTagUnsignedInteger
 }
 
+// BACnetPropertyWriteDefinitionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyWriteDefinition.
+// This is useful for switch cases.
+type BACnetPropertyWriteDefinitionExactly interface {
+	isBACnetPropertyWriteDefinition() bool
+}
+
 // _BACnetPropertyWriteDefinition is the data-structure of this message
 type _BACnetPropertyWriteDefinition struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
@@ -298,6 +304,10 @@ func (m *_BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyWriteDefinition")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyWriteDefinition) isBACnetPropertyWriteDefinition() bool {
+	return true
 }
 
 func (m *_BACnetPropertyWriteDefinition) String() string {

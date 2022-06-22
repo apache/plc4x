@@ -37,6 +37,12 @@ type BACnetConstructedDataEventAlgorithmInhibitRef interface {
 	GetActualValue() BACnetObjectPropertyReference
 }
 
+// BACnetConstructedDataEventAlgorithmInhibitRefExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventAlgorithmInhibitRef.
+// This is useful for switch cases.
+type BACnetConstructedDataEventAlgorithmInhibitRefExactly interface {
+	isBACnetConstructedDataEventAlgorithmInhibitRef() bool
+}
+
 // _BACnetConstructedDataEventAlgorithmInhibitRef is the data-structure of this message
 type _BACnetConstructedDataEventAlgorithmInhibitRef struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) isBACnetConstructedDataEventAlgorithmInhibitRef() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) String() string {

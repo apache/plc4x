@@ -48,6 +48,12 @@ type DateAndTime interface {
 	GetDow() uint8
 }
 
+// DateAndTimeExactly can be used when we want exactly this type and not a type which fulfills DateAndTime.
+// This is useful for switch cases.
+type DateAndTimeExactly interface {
+	isDateAndTime() bool
+}
+
 // _DateAndTime is the data-structure of this message
 type _DateAndTime struct {
 	Year    uint8
@@ -293,6 +299,10 @@ func (m *_DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for DateAndTime")
 	}
 	return nil
+}
+
+func (m *_DateAndTime) isDateAndTime() bool {
+	return true
 }
 
 func (m *_DateAndTime) String() string {

@@ -40,6 +40,12 @@ type LPollData interface {
 	GetNumberExpectedPollData() uint8
 }
 
+// LPollDataExactly can be used when we want exactly this type and not a type which fulfills LPollData.
+// This is useful for switch cases.
+type LPollDataExactly interface {
+	isLPollData() bool
+}
+
 // _LPollData is the data-structure of this message
 type _LPollData struct {
 	*_LDataFrame
@@ -269,6 +275,10 @@ func (m *_LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LPollData) isLPollData() bool {
+	return true
 }
 
 func (m *_LPollData) String() string {

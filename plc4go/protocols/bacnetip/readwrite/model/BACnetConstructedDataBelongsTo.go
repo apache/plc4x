@@ -37,6 +37,12 @@ type BACnetConstructedDataBelongsTo interface {
 	GetActualValue() BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataBelongsToExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBelongsTo.
+// This is useful for switch cases.
+type BACnetConstructedDataBelongsToExactly interface {
+	isBACnetConstructedDataBelongsTo() bool
+}
+
 // _BACnetConstructedDataBelongsTo is the data-structure of this message
 type _BACnetConstructedDataBelongsTo struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBelongsTo) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBelongsTo) isBACnetConstructedDataBelongsTo() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBelongsTo) String() string {

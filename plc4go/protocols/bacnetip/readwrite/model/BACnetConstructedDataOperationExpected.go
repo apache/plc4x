@@ -37,6 +37,12 @@ type BACnetConstructedDataOperationExpected interface {
 	GetActualValue() BACnetLifeSafetyOperationTagged
 }
 
+// BACnetConstructedDataOperationExpectedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOperationExpected.
+// This is useful for switch cases.
+type BACnetConstructedDataOperationExpectedExactly interface {
+	isBACnetConstructedDataOperationExpected() bool
+}
+
 // _BACnetConstructedDataOperationExpected is the data-structure of this message
 type _BACnetConstructedDataOperationExpected struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOperationExpected) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOperationExpected) isBACnetConstructedDataOperationExpected() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOperationExpected) String() string {

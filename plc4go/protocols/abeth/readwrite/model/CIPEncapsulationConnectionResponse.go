@@ -33,6 +33,12 @@ type CIPEncapsulationConnectionResponse interface {
 	CIPEncapsulationPacket
 }
 
+// CIPEncapsulationConnectionResponseExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationConnectionResponse.
+// This is useful for switch cases.
+type CIPEncapsulationConnectionResponseExactly interface {
+	isCIPEncapsulationConnectionResponse() bool
+}
+
 // _CIPEncapsulationConnectionResponse is the data-structure of this message
 type _CIPEncapsulationConnectionResponse struct {
 	*_CIPEncapsulationPacket
@@ -136,6 +142,10 @@ func (m *_CIPEncapsulationConnectionResponse) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CIPEncapsulationConnectionResponse) isCIPEncapsulationConnectionResponse() bool {
+	return true
 }
 
 func (m *_CIPEncapsulationConnectionResponse) String() string {

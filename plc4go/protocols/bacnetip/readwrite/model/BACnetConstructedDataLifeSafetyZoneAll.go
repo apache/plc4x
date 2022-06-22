@@ -33,6 +33,12 @@ type BACnetConstructedDataLifeSafetyZoneAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataLifeSafetyZoneAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyZoneAll.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyZoneAllExactly interface {
+	isBACnetConstructedDataLifeSafetyZoneAll() bool
+}
+
 // _BACnetConstructedDataLifeSafetyZoneAll is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyZoneAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataLifeSafetyZoneAll) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) isBACnetConstructedDataLifeSafetyZoneAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneAll) String() string {

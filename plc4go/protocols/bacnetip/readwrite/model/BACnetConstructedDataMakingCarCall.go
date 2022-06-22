@@ -41,6 +41,12 @@ type BACnetConstructedDataMakingCarCall interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataMakingCarCallExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMakingCarCall.
+// This is useful for switch cases.
+type BACnetConstructedDataMakingCarCallExactly interface {
+	isBACnetConstructedDataMakingCarCall() bool
+}
+
 // _BACnetConstructedDataMakingCarCall is the data-structure of this message
 type _BACnetConstructedDataMakingCarCall struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataMakingCarCall) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMakingCarCall) isBACnetConstructedDataMakingCarCall() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMakingCarCall) String() string {

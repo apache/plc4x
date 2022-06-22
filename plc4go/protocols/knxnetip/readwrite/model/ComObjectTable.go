@@ -34,16 +34,22 @@ type ComObjectTable interface {
 	GetFirmwareType() FirmwareType
 }
 
+// ComObjectTableExactly can be used when we want exactly this type and not a type which fulfills ComObjectTable.
+// This is useful for switch cases.
+type ComObjectTableExactly interface {
+	isComObjectTable() bool
+}
+
 // _ComObjectTable is the data-structure of this message
 type _ComObjectTable struct {
 	_ComObjectTableChildRequirements
 }
 
 type _ComObjectTableChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetFirmwareType() FirmwareType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ComObjectTableParent interface {
@@ -52,7 +58,7 @@ type ComObjectTableParent interface {
 }
 
 type ComObjectTableChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ComObjectTable)
 	GetParent() *ComObjectTable
 
@@ -152,6 +158,10 @@ func (pm *_ComObjectTable) SerializeParent(writeBuffer utils.WriteBuffer, child 
 		return errors.Wrap(popErr, "Error popping for ComObjectTable")
 	}
 	return nil
+}
+
+func (m *_ComObjectTable) isComObjectTable() bool {
+	return true
 }
 
 func (m *_ComObjectTable) String() string {

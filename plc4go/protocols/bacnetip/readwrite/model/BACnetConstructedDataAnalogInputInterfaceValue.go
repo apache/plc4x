@@ -37,6 +37,12 @@ type BACnetConstructedDataAnalogInputInterfaceValue interface {
 	GetActualValue() BACnetOptionalREAL
 }
 
+// BACnetConstructedDataAnalogInputInterfaceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogInputInterfaceValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAnalogInputInterfaceValueExactly interface {
+	isBACnetConstructedDataAnalogInputInterfaceValue() bool
+}
+
 // _BACnetConstructedDataAnalogInputInterfaceValue is the data-structure of this message
 type _BACnetConstructedDataAnalogInputInterfaceValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAnalogInputInterfaceValue) isBACnetConstructedDataAnalogInputInterfaceValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAnalogInputInterfaceValue) String() string {

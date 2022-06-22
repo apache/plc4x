@@ -37,6 +37,12 @@ type BACnetApplicationTagDouble interface {
 	GetActualValue() float64
 }
 
+// BACnetApplicationTagDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagDouble.
+// This is useful for switch cases.
+type BACnetApplicationTagDoubleExactly interface {
+	isBACnetApplicationTagDouble() bool
+}
+
 // _BACnetApplicationTagDouble is the data-structure of this message
 type _BACnetApplicationTagDouble struct {
 	*_BACnetApplicationTag
@@ -202,6 +208,10 @@ func (m *_BACnetApplicationTagDouble) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagDouble) isBACnetApplicationTagDouble() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagDouble) String() string {

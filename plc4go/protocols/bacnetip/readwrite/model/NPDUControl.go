@@ -43,6 +43,12 @@ type NPDUControl interface {
 	GetNetworkPriority() NPDUNetworkPriority
 }
 
+// NPDUControlExactly can be used when we want exactly this type and not a type which fulfills NPDUControl.
+// This is useful for switch cases.
+type NPDUControlExactly interface {
+	isNPDUControl() bool
+}
+
 // _NPDUControl is the data-structure of this message
 type _NPDUControl struct {
 	MessageTypeFieldPresent bool
@@ -290,6 +296,10 @@ func (m *_NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for NPDUControl")
 	}
 	return nil
+}
+
+func (m *_NPDUControl) isNPDUControl() bool {
+	return true
 }
 
 func (m *_NPDUControl) String() string {

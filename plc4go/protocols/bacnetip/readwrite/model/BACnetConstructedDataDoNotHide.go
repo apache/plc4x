@@ -37,6 +37,12 @@ type BACnetConstructedDataDoNotHide interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataDoNotHideExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoNotHide.
+// This is useful for switch cases.
+type BACnetConstructedDataDoNotHideExactly interface {
+	isBACnetConstructedDataDoNotHide() bool
+}
+
 // _BACnetConstructedDataDoNotHide is the data-structure of this message
 type _BACnetConstructedDataDoNotHide struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDoNotHide) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoNotHide) isBACnetConstructedDataDoNotHide() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoNotHide) String() string {

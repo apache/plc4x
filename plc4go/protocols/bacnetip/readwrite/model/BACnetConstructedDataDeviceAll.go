@@ -33,6 +33,12 @@ type BACnetConstructedDataDeviceAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataDeviceAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceAll.
+// This is useful for switch cases.
+type BACnetConstructedDataDeviceAllExactly interface {
+	isBACnetConstructedDataDeviceAll() bool
+}
+
 // _BACnetConstructedDataDeviceAll is the data-structure of this message
 type _BACnetConstructedDataDeviceAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataDeviceAll) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeviceAll) isBACnetConstructedDataDeviceAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeviceAll) String() string {

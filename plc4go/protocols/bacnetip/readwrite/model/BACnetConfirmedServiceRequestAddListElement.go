@@ -43,6 +43,12 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 	GetListOfElements() BACnetConstructedData
 }
 
+// BACnetConfirmedServiceRequestAddListElementExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAddListElement.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAddListElementExactly interface {
+	isBACnetConfirmedServiceRequestAddListElement() bool
+}
+
 // _BACnetConfirmedServiceRequestAddListElement is the data-structure of this message
 type _BACnetConfirmedServiceRequestAddListElement struct {
 	*_BACnetConfirmedServiceRequest
@@ -325,6 +331,10 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAddListElement) isBACnetConfirmedServiceRequestAddListElement() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAddListElement) String() string {

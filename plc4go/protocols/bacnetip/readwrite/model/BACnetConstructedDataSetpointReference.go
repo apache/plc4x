@@ -37,6 +37,12 @@ type BACnetConstructedDataSetpointReference interface {
 	GetActualValue() BACnetSetpointReference
 }
 
+// BACnetConstructedDataSetpointReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSetpointReference.
+// This is useful for switch cases.
+type BACnetConstructedDataSetpointReferenceExactly interface {
+	isBACnetConstructedDataSetpointReference() bool
+}
+
 // _BACnetConstructedDataSetpointReference is the data-structure of this message
 type _BACnetConstructedDataSetpointReference struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataSetpointReference) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSetpointReference) isBACnetConstructedDataSetpointReference() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSetpointReference) String() string {

@@ -36,17 +36,23 @@ type AdsData interface {
 	GetResponse() bool
 }
 
+// AdsDataExactly can be used when we want exactly this type and not a type which fulfills AdsData.
+// This is useful for switch cases.
+type AdsDataExactly interface {
+	isAdsData() bool
+}
+
 // _AdsData is the data-structure of this message
 type _AdsData struct {
 	_AdsDataChildRequirements
 }
 
 type _AdsDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandId() CommandId
 	GetResponse() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type AdsDataParent interface {
@@ -55,7 +61,7 @@ type AdsDataParent interface {
 }
 
 type AdsDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent AdsData)
 	GetParent() *AdsData
 
@@ -189,6 +195,10 @@ func (pm *_AdsData) SerializeParent(writeBuffer utils.WriteBuffer, child AdsData
 		return errors.Wrap(popErr, "Error popping for AdsData")
 	}
 	return nil
+}
+
+func (m *_AdsData) isAdsData() bool {
+	return true
 }
 
 func (m *_AdsData) String() string {

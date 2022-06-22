@@ -36,6 +36,12 @@ type ProjectInstallationIdentifier interface {
 	GetInstallationNumber() uint8
 }
 
+// ProjectInstallationIdentifierExactly can be used when we want exactly this type and not a type which fulfills ProjectInstallationIdentifier.
+// This is useful for switch cases.
+type ProjectInstallationIdentifierExactly interface {
+	isProjectInstallationIdentifier() bool
+}
+
 // _ProjectInstallationIdentifier is the data-structure of this message
 type _ProjectInstallationIdentifier struct {
 	ProjectNumber      uint8
@@ -156,6 +162,10 @@ func (m *_ProjectInstallationIdentifier) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for ProjectInstallationIdentifier")
 	}
 	return nil
+}
+
+func (m *_ProjectInstallationIdentifier) isProjectInstallationIdentifier() bool {
+	return true
 }
 
 func (m *_ProjectInstallationIdentifier) String() string {

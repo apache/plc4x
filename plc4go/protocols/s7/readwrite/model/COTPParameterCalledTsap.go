@@ -35,6 +35,12 @@ type COTPParameterCalledTsap interface {
 	GetTsapId() uint16
 }
 
+// COTPParameterCalledTsapExactly can be used when we want exactly this type and not a type which fulfills COTPParameterCalledTsap.
+// This is useful for switch cases.
+type COTPParameterCalledTsapExactly interface {
+	isCOTPParameterCalledTsap() bool
+}
+
 // _COTPParameterCalledTsap is the data-structure of this message
 type _COTPParameterCalledTsap struct {
 	*_COTPParameter
@@ -170,6 +176,10 @@ func (m *_COTPParameterCalledTsap) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPParameterCalledTsap) isCOTPParameterCalledTsap() bool {
+	return true
 }
 
 func (m *_COTPParameterCalledTsap) String() string {

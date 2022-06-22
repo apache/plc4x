@@ -41,6 +41,12 @@ type BACnetConstructedDataValueSourceArray interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataValueSourceArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueSourceArray.
+// This is useful for switch cases.
+type BACnetConstructedDataValueSourceArrayExactly interface {
+	isBACnetConstructedDataValueSourceArray() bool
+}
+
 // _BACnetConstructedDataValueSourceArray is the data-structure of this message
 type _BACnetConstructedDataValueSourceArray struct {
 	*_BACnetConstructedData
@@ -292,6 +298,10 @@ func (m *_BACnetConstructedDataValueSourceArray) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataValueSourceArray) isBACnetConstructedDataValueSourceArray() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataValueSourceArray) String() string {

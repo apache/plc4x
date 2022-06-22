@@ -40,6 +40,12 @@ type S7ParameterSetupCommunication interface {
 	GetPduLength() uint16
 }
 
+// S7ParameterSetupCommunicationExactly can be used when we want exactly this type and not a type which fulfills S7ParameterSetupCommunication.
+// This is useful for switch cases.
+type S7ParameterSetupCommunicationExactly interface {
+	isS7ParameterSetupCommunication() bool
+}
+
 // _S7ParameterSetupCommunication is the data-structure of this message
 type _S7ParameterSetupCommunication struct {
 	*_S7Parameter
@@ -249,6 +255,10 @@ func (m *_S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterSetupCommunication) isS7ParameterSetupCommunication() bool {
+	return true
 }
 
 func (m *_S7ParameterSetupCommunication) String() string {

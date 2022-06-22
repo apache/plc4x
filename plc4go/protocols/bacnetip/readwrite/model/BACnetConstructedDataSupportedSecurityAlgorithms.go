@@ -35,6 +35,12 @@ type BACnetConstructedDataSupportedSecurityAlgorithms interface {
 	GetSupportedSecurityAlgorithms() []BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataSupportedSecurityAlgorithmsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSupportedSecurityAlgorithms.
+// This is useful for switch cases.
+type BACnetConstructedDataSupportedSecurityAlgorithmsExactly interface {
+	isBACnetConstructedDataSupportedSecurityAlgorithms() bool
+}
+
 // _BACnetConstructedDataSupportedSecurityAlgorithms is the data-structure of this message
 type _BACnetConstructedDataSupportedSecurityAlgorithms struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) isBACnetConstructedDataSupportedSecurityAlgorithms() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) String() string {

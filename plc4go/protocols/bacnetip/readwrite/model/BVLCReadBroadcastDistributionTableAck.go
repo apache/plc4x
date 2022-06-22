@@ -35,6 +35,12 @@ type BVLCReadBroadcastDistributionTableAck interface {
 	GetTable() []BVLCBroadcastDistributionTableEntry
 }
 
+// BVLCReadBroadcastDistributionTableAckExactly can be used when we want exactly this type and not a type which fulfills BVLCReadBroadcastDistributionTableAck.
+// This is useful for switch cases.
+type BVLCReadBroadcastDistributionTableAckExactly interface {
+	isBVLCReadBroadcastDistributionTableAck() bool
+}
+
 // _BVLCReadBroadcastDistributionTableAck is the data-structure of this message
 type _BVLCReadBroadcastDistributionTableAck struct {
 	*_BVLC
@@ -197,6 +203,10 @@ func (m *_BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCReadBroadcastDistributionTableAck) isBVLCReadBroadcastDistributionTableAck() bool {
+	return true
 }
 
 func (m *_BVLCReadBroadcastDistributionTableAck) String() string {

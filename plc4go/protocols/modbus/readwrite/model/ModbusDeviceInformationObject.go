@@ -36,6 +36,12 @@ type ModbusDeviceInformationObject interface {
 	GetData() []byte
 }
 
+// ModbusDeviceInformationObjectExactly can be used when we want exactly this type and not a type which fulfills ModbusDeviceInformationObject.
+// This is useful for switch cases.
+type ModbusDeviceInformationObjectExactly interface {
+	isModbusDeviceInformationObject() bool
+}
+
 // _ModbusDeviceInformationObject is the data-structure of this message
 type _ModbusDeviceInformationObject struct {
 	ObjectId uint8
@@ -176,6 +182,10 @@ func (m *_ModbusDeviceInformationObject) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for ModbusDeviceInformationObject")
 	}
 	return nil
+}
+
+func (m *_ModbusDeviceInformationObject) isModbusDeviceInformationObject() bool {
+	return true
 }
 
 func (m *_ModbusDeviceInformationObject) String() string {

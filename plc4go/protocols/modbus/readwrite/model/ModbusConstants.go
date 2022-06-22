@@ -36,6 +36,12 @@ type ModbusConstants interface {
 	utils.Serializable
 }
 
+// ModbusConstantsExactly can be used when we want exactly this type and not a type which fulfills ModbusConstants.
+// This is useful for switch cases.
+type ModbusConstantsExactly interface {
+	isModbusConstants() bool
+}
+
 // _ModbusConstants is the data-structure of this message
 type _ModbusConstants struct {
 }
@@ -134,6 +140,10 @@ func (m *_ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ModbusConstants")
 	}
 	return nil
+}
+
+func (m *_ModbusConstants) isModbusConstants() bool {
+	return true
 }
 
 func (m *_ModbusConstants) String() string {

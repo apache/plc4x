@@ -34,6 +34,12 @@ type RelativeTimestamp interface {
 	GetTimestamp() uint16
 }
 
+// RelativeTimestampExactly can be used when we want exactly this type and not a type which fulfills RelativeTimestamp.
+// This is useful for switch cases.
+type RelativeTimestampExactly interface {
+	isRelativeTimestamp() bool
+}
+
 // _RelativeTimestamp is the data-structure of this message
 type _RelativeTimestamp struct {
 	Timestamp uint16
@@ -132,6 +138,10 @@ func (m *_RelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for RelativeTimestamp")
 	}
 	return nil
+}
+
+func (m *_RelativeTimestamp) isRelativeTimestamp() bool {
+	return true
 }
 
 func (m *_RelativeTimestamp) String() string {

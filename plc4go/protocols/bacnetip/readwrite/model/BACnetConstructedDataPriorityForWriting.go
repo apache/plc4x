@@ -37,6 +37,12 @@ type BACnetConstructedDataPriorityForWriting interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPriorityForWritingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPriorityForWriting.
+// This is useful for switch cases.
+type BACnetConstructedDataPriorityForWritingExactly interface {
+	isBACnetConstructedDataPriorityForWriting() bool
+}
+
 // _BACnetConstructedDataPriorityForWriting is the data-structure of this message
 type _BACnetConstructedDataPriorityForWriting struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPriorityForWriting) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPriorityForWriting) isBACnetConstructedDataPriorityForWriting() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPriorityForWriting) String() string {

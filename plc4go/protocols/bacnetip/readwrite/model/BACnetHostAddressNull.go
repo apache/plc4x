@@ -35,6 +35,12 @@ type BACnetHostAddressNull interface {
 	GetNone() BACnetContextTagNull
 }
 
+// BACnetHostAddressNullExactly can be used when we want exactly this type and not a type which fulfills BACnetHostAddressNull.
+// This is useful for switch cases.
+type BACnetHostAddressNullExactly interface {
+	isBACnetHostAddressNull() bool
+}
+
 // _BACnetHostAddressNull is the data-structure of this message
 type _BACnetHostAddressNull struct {
 	*_BACnetHostAddress
@@ -176,6 +182,10 @@ func (m *_BACnetHostAddressNull) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetHostAddressNull) isBACnetHostAddressNull() bool {
+	return true
 }
 
 func (m *_BACnetHostAddressNull) String() string {

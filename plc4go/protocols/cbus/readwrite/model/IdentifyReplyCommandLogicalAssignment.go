@@ -33,6 +33,12 @@ type IdentifyReplyCommandLogicalAssignment interface {
 	IdentifyReplyCommand
 }
 
+// IdentifyReplyCommandLogicalAssignmentExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandLogicalAssignment.
+// This is useful for switch cases.
+type IdentifyReplyCommandLogicalAssignmentExactly interface {
+	isIdentifyReplyCommandLogicalAssignment() bool
+}
+
 // _IdentifyReplyCommandLogicalAssignment is the data-structure of this message
 type _IdentifyReplyCommandLogicalAssignment struct {
 	*_IdentifyReplyCommand
@@ -131,6 +137,10 @@ func (m *_IdentifyReplyCommandLogicalAssignment) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandLogicalAssignment) isIdentifyReplyCommandLogicalAssignment() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) String() string {

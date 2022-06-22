@@ -35,6 +35,12 @@ type BACnetPropertyStatesLiftFault interface {
 	GetLiftFault() BACnetLiftFaultTagged
 }
 
+// BACnetPropertyStatesLiftFaultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftFault.
+// This is useful for switch cases.
+type BACnetPropertyStatesLiftFaultExactly interface {
+	isBACnetPropertyStatesLiftFault() bool
+}
+
 // _BACnetPropertyStatesLiftFault is the data-structure of this message
 type _BACnetPropertyStatesLiftFault struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesLiftFault) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLiftFault) isBACnetPropertyStatesLiftFault() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLiftFault) String() string {

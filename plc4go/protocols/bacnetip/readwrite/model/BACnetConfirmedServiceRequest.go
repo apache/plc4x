@@ -36,6 +36,12 @@ type BACnetConfirmedServiceRequest interface {
 	GetServiceRequestPayloadLength() uint16
 }
 
+// BACnetConfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequest.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestExactly interface {
+	isBACnetConfirmedServiceRequest() bool
+}
+
 // _BACnetConfirmedServiceRequest is the data-structure of this message
 type _BACnetConfirmedServiceRequest struct {
 	_BACnetConfirmedServiceRequestChildRequirements
@@ -45,10 +51,10 @@ type _BACnetConfirmedServiceRequest struct {
 }
 
 type _BACnetConfirmedServiceRequestChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceChoice() BACnetConfirmedServiceChoice
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestParent interface {
@@ -57,7 +63,7 @@ type BACnetConfirmedServiceRequestParent interface {
 }
 
 type BACnetConfirmedServiceRequestChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConfirmedServiceRequest)
 	GetParent() *BACnetConfirmedServiceRequest
 
@@ -269,6 +275,10 @@ func (pm *_BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequest")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequest) isBACnetConfirmedServiceRequest() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequest) String() string {

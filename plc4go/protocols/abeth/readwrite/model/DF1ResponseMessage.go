@@ -43,6 +43,12 @@ type DF1ResponseMessage interface {
 	GetTransactionCounter() uint16
 }
 
+// DF1ResponseMessageExactly can be used when we want exactly this type and not a type which fulfills DF1ResponseMessage.
+// This is useful for switch cases.
+type DF1ResponseMessageExactly interface {
+	isDF1ResponseMessage() bool
+}
+
 // _DF1ResponseMessage is the data-structure of this message
 type _DF1ResponseMessage struct {
 	_DF1ResponseMessageChildRequirements
@@ -56,10 +62,10 @@ type _DF1ResponseMessage struct {
 }
 
 type _DF1ResponseMessageChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1ResponseMessageParent interface {
@@ -68,7 +74,7 @@ type DF1ResponseMessageParent interface {
 }
 
 type DF1ResponseMessageChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent DF1ResponseMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16)
 	GetParent() *DF1ResponseMessage
 
@@ -324,6 +330,10 @@ func (pm *_DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(popErr, "Error popping for DF1ResponseMessage")
 	}
 	return nil
+}
+
+func (m *_DF1ResponseMessage) isDF1ResponseMessage() bool {
+	return true
 }
 
 func (m *_DF1ResponseMessage) String() string {

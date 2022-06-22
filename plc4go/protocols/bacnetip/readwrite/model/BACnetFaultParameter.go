@@ -36,6 +36,12 @@ type BACnetFaultParameter interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetFaultParameterExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameter.
+// This is useful for switch cases.
+type BACnetFaultParameterExactly interface {
+	isBACnetFaultParameter() bool
+}
+
 // _BACnetFaultParameter is the data-structure of this message
 type _BACnetFaultParameter struct {
 	_BACnetFaultParameterChildRequirements
@@ -43,9 +49,9 @@ type _BACnetFaultParameter struct {
 }
 
 type _BACnetFaultParameterChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetFaultParameterParent interface {
@@ -54,7 +60,7 @@ type BACnetFaultParameterParent interface {
 }
 
 type BACnetFaultParameterChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetFaultParameter, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetFaultParameter
 
@@ -210,6 +216,10 @@ func (pm *_BACnetFaultParameter) SerializeParent(writeBuffer utils.WriteBuffer, 
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameter")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameter) isBACnetFaultParameter() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameter) String() string {

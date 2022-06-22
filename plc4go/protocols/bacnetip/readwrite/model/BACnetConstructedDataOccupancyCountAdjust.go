@@ -37,6 +37,12 @@ type BACnetConstructedDataOccupancyCountAdjust interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataOccupancyCountAdjustExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyCountAdjust.
+// This is useful for switch cases.
+type BACnetConstructedDataOccupancyCountAdjustExactly interface {
+	isBACnetConstructedDataOccupancyCountAdjust() bool
+}
+
 // _BACnetConstructedDataOccupancyCountAdjust is the data-structure of this message
 type _BACnetConstructedDataOccupancyCountAdjust struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOccupancyCountAdjust) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjust) isBACnetConstructedDataOccupancyCountAdjust() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOccupancyCountAdjust) String() string {

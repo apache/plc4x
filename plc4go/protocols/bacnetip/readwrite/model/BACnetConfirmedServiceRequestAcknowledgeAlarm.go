@@ -45,6 +45,12 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	GetTimeOfAcknowledgment() BACnetTimeStampEnclosed
 }
 
+// BACnetConfirmedServiceRequestAcknowledgeAlarmExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAcknowledgeAlarm.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAcknowledgeAlarmExactly interface {
+	isBACnetConfirmedServiceRequestAcknowledgeAlarm() bool
+}
+
 // _BACnetConfirmedServiceRequestAcknowledgeAlarm is the data-structure of this message
 type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	*_BACnetConfirmedServiceRequest
@@ -367,6 +373,10 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) isBACnetConfirmedServiceRequestAcknowledgeAlarm() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {

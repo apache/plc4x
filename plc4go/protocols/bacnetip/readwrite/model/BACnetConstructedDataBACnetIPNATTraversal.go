@@ -37,6 +37,12 @@ type BACnetConstructedDataBACnetIPNATTraversal interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataBACnetIPNATTraversalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPNATTraversal.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPNATTraversalExactly interface {
+	isBACnetConstructedDataBACnetIPNATTraversal() bool
+}
+
 // _BACnetConstructedDataBACnetIPNATTraversal is the data-structure of this message
 type _BACnetConstructedDataBACnetIPNATTraversal struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) isBACnetConstructedDataBACnetIPNATTraversal() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) String() string {

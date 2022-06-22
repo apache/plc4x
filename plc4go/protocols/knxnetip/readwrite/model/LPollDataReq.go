@@ -33,6 +33,12 @@ type LPollDataReq interface {
 	CEMI
 }
 
+// LPollDataReqExactly can be used when we want exactly this type and not a type which fulfills LPollDataReq.
+// This is useful for switch cases.
+type LPollDataReqExactly interface {
+	isLPollDataReq() bool
+}
+
 // _LPollDataReq is the data-structure of this message
 type _LPollDataReq struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_LPollDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LPollDataReq) isLPollDataReq() bool {
+	return true
 }
 
 func (m *_LPollDataReq) String() string {

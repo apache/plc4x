@@ -37,6 +37,12 @@ type BACnetConstructedDataDefaultRampRate interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataDefaultRampRateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultRampRate.
+// This is useful for switch cases.
+type BACnetConstructedDataDefaultRampRateExactly interface {
+	isBACnetConstructedDataDefaultRampRate() bool
+}
+
 // _BACnetConstructedDataDefaultRampRate is the data-structure of this message
 type _BACnetConstructedDataDefaultRampRate struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDefaultRampRate) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDefaultRampRate) isBACnetConstructedDataDefaultRampRate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDefaultRampRate) String() string {

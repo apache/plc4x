@@ -35,6 +35,12 @@ type BACnetValueSourceNone interface {
 	GetNone() BACnetContextTagNull
 }
 
+// BACnetValueSourceNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSourceNone.
+// This is useful for switch cases.
+type BACnetValueSourceNoneExactly interface {
+	isBACnetValueSourceNone() bool
+}
+
 // _BACnetValueSourceNone is the data-structure of this message
 type _BACnetValueSourceNone struct {
 	*_BACnetValueSource
@@ -176,6 +182,10 @@ func (m *_BACnetValueSourceNone) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetValueSourceNone) isBACnetValueSourceNone() bool {
+	return true
 }
 
 func (m *_BACnetValueSourceNone) String() string {

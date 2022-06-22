@@ -37,6 +37,12 @@ type BACnetConstructedDataIntegralConstant interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataIntegralConstantExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegralConstant.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegralConstantExactly interface {
+	isBACnetConstructedDataIntegralConstant() bool
+}
+
 // _BACnetConstructedDataIntegralConstant is the data-structure of this message
 type _BACnetConstructedDataIntegralConstant struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIntegralConstant) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegralConstant) isBACnetConstructedDataIntegralConstant() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegralConstant) String() string {

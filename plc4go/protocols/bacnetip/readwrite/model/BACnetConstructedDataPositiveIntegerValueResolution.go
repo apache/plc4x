@@ -37,6 +37,12 @@ type BACnetConstructedDataPositiveIntegerValueResolution interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPositiveIntegerValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueResolutionExactly interface {
+	isBACnetConstructedDataPositiveIntegerValueResolution() bool
+}
+
 // _BACnetConstructedDataPositiveIntegerValueResolution is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueResolution struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) isBACnetConstructedDataPositiveIntegerValueResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueResolution) String() string {

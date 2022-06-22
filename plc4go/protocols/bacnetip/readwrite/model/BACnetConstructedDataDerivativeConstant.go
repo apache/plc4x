@@ -37,6 +37,12 @@ type BACnetConstructedDataDerivativeConstant interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataDerivativeConstantExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDerivativeConstant.
+// This is useful for switch cases.
+type BACnetConstructedDataDerivativeConstantExactly interface {
+	isBACnetConstructedDataDerivativeConstant() bool
+}
+
 // _BACnetConstructedDataDerivativeConstant is the data-structure of this message
 type _BACnetConstructedDataDerivativeConstant struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDerivativeConstant) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDerivativeConstant) isBACnetConstructedDataDerivativeConstant() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDerivativeConstant) String() string {

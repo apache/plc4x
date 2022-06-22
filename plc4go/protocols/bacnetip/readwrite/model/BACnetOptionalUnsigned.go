@@ -36,6 +36,12 @@ type BACnetOptionalUnsigned interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetOptionalUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsigned.
+// This is useful for switch cases.
+type BACnetOptionalUnsignedExactly interface {
+	isBACnetOptionalUnsigned() bool
+}
+
 // _BACnetOptionalUnsigned is the data-structure of this message
 type _BACnetOptionalUnsigned struct {
 	_BACnetOptionalUnsignedChildRequirements
@@ -43,9 +49,9 @@ type _BACnetOptionalUnsigned struct {
 }
 
 type _BACnetOptionalUnsignedChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetOptionalUnsignedParent interface {
@@ -54,7 +60,7 @@ type BACnetOptionalUnsignedParent interface {
 }
 
 type BACnetOptionalUnsignedChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetOptionalUnsigned, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetOptionalUnsigned
 
@@ -198,6 +204,10 @@ func (pm *_BACnetOptionalUnsigned) SerializeParent(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetOptionalUnsigned")
 	}
 	return nil
+}
+
+func (m *_BACnetOptionalUnsigned) isBACnetOptionalUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetOptionalUnsigned) String() string {

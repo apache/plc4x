@@ -35,6 +35,12 @@ type BACnetLogDataLogDataEntryBooleanValue interface {
 	GetBooleanValue() BACnetContextTagBoolean
 }
 
+// BACnetLogDataLogDataEntryBooleanValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryBooleanValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryBooleanValueExactly interface {
+	isBACnetLogDataLogDataEntryBooleanValue() bool
+}
+
 // _BACnetLogDataLogDataEntryBooleanValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryBooleanValue struct {
 	*_BACnetLogDataLogDataEntry
@@ -176,6 +182,10 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryBooleanValue) isBACnetLogDataLogDataEntryBooleanValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) String() string {

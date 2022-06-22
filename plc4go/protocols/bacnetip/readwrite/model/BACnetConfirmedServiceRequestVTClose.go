@@ -35,6 +35,12 @@ type BACnetConfirmedServiceRequestVTClose interface {
 	GetListOfRemoteVtSessionIdentifiers() []BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestVTCloseExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTClose.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestVTCloseExactly interface {
+	isBACnetConfirmedServiceRequestVTClose() bool
+}
+
 // _BACnetConfirmedServiceRequestVTClose is the data-structure of this message
 type _BACnetConfirmedServiceRequestVTClose struct {
 	*_BACnetConfirmedServiceRequest
@@ -199,6 +205,10 @@ func (m *_BACnetConfirmedServiceRequestVTClose) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestVTClose) isBACnetConfirmedServiceRequestVTClose() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestVTClose) String() string {

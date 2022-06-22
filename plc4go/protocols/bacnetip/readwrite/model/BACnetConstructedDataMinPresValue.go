@@ -37,6 +37,12 @@ type BACnetConstructedDataMinPresValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataMinPresValueExactly interface {
+	isBACnetConstructedDataMinPresValue() bool
+}
+
 // _BACnetConstructedDataMinPresValue is the data-structure of this message
 type _BACnetConstructedDataMinPresValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataMinPresValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMinPresValue) isBACnetConstructedDataMinPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMinPresValue) String() string {

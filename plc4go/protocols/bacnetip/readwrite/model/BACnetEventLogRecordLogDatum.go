@@ -40,6 +40,12 @@ type BACnetEventLogRecordLogDatum interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetEventLogRecordLogDatumExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecordLogDatum.
+// This is useful for switch cases.
+type BACnetEventLogRecordLogDatumExactly interface {
+	isBACnetEventLogRecordLogDatum() bool
+}
+
 // _BACnetEventLogRecordLogDatum is the data-structure of this message
 type _BACnetEventLogRecordLogDatum struct {
 	_BACnetEventLogRecordLogDatumChildRequirements
@@ -52,9 +58,9 @@ type _BACnetEventLogRecordLogDatum struct {
 }
 
 type _BACnetEventLogRecordLogDatumChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetEventLogRecordLogDatumParent interface {
@@ -63,7 +69,7 @@ type BACnetEventLogRecordLogDatumParent interface {
 }
 
 type BACnetEventLogRecordLogDatumChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetEventLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetEventLogRecordLogDatum
 
@@ -273,6 +279,10 @@ func (pm *_BACnetEventLogRecordLogDatum) SerializeParent(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetEventLogRecordLogDatum")
 	}
 	return nil
+}
+
+func (m *_BACnetEventLogRecordLogDatum) isBACnetEventLogRecordLogDatum() bool {
+	return true
 }
 
 func (m *_BACnetEventLogRecordLogDatum) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataDeadband interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataDeadbandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeadband.
+// This is useful for switch cases.
+type BACnetConstructedDataDeadbandExactly interface {
+	isBACnetConstructedDataDeadband() bool
+}
+
 // _BACnetConstructedDataDeadband is the data-structure of this message
 type _BACnetConstructedDataDeadband struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDeadband) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeadband) isBACnetConstructedDataDeadband() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeadband) String() string {

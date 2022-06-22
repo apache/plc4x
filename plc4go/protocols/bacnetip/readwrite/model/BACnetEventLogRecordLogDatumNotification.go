@@ -39,6 +39,12 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetEventLogRecordLogDatumNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecordLogDatumNotification.
+// This is useful for switch cases.
+type BACnetEventLogRecordLogDatumNotificationExactly interface {
+	isBACnetEventLogRecordLogDatumNotification() bool
+}
+
 // _BACnetEventLogRecordLogDatumNotification is the data-structure of this message
 type _BACnetEventLogRecordLogDatumNotification struct {
 	*_BACnetEventLogRecordLogDatum
@@ -255,6 +261,10 @@ func (m *_BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotification) isBACnetEventLogRecordLogDatumNotification() bool {
+	return true
 }
 
 func (m *_BACnetEventLogRecordLogDatumNotification) String() string {

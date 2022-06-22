@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryReference interface {
 	GetReference() BACnetDeviceObjectPropertyReferenceEnclosed
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryReference.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryReferenceExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryReference() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryReference is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryReference struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) isBACnetFaultParameterFaultExtendedParametersEntryReference() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) String() string {

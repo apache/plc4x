@@ -37,6 +37,12 @@ type SALDataRampToLevel interface {
 	GetLevel() byte
 }
 
+// SALDataRampToLevelExactly can be used when we want exactly this type and not a type which fulfills SALDataRampToLevel.
+// This is useful for switch cases.
+type SALDataRampToLevelExactly interface {
+	isSALDataRampToLevel() bool
+}
+
 // _SALDataRampToLevel is the data-structure of this message
 type _SALDataRampToLevel struct {
 	*_SALData
@@ -191,6 +197,10 @@ func (m *_SALDataRampToLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SALDataRampToLevel) isSALDataRampToLevel() bool {
+	return true
 }
 
 func (m *_SALDataRampToLevel) String() string {

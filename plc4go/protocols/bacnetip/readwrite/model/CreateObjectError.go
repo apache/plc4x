@@ -37,6 +37,12 @@ type CreateObjectError interface {
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
 }
 
+// CreateObjectErrorExactly can be used when we want exactly this type and not a type which fulfills CreateObjectError.
+// This is useful for switch cases.
+type CreateObjectErrorExactly interface {
+	isCreateObjectError() bool
+}
+
 // _CreateObjectError is the data-structure of this message
 type _CreateObjectError struct {
 	*_BACnetError
@@ -215,6 +221,10 @@ func (m *_CreateObjectError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CreateObjectError) isCreateObjectError() bool {
+	return true
 }
 
 func (m *_CreateObjectError) String() string {

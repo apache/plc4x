@@ -35,6 +35,12 @@ type BACnetOptionalREALNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetOptionalREALNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREALNull.
+// This is useful for switch cases.
+type BACnetOptionalREALNullExactly interface {
+	isBACnetOptionalREALNull() bool
+}
+
 // _BACnetOptionalREALNull is the data-structure of this message
 type _BACnetOptionalREALNull struct {
 	*_BACnetOptionalREAL
@@ -176,6 +182,10 @@ func (m *_BACnetOptionalREALNull) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalREALNull) isBACnetOptionalREALNull() bool {
+	return true
 }
 
 func (m *_BACnetOptionalREALNull) String() string {

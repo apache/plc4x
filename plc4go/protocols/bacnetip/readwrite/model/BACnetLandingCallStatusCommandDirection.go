@@ -35,6 +35,12 @@ type BACnetLandingCallStatusCommandDirection interface {
 	GetDirection() BACnetLiftCarDirectionTagged
 }
 
+// BACnetLandingCallStatusCommandDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommandDirection.
+// This is useful for switch cases.
+type BACnetLandingCallStatusCommandDirectionExactly interface {
+	isBACnetLandingCallStatusCommandDirection() bool
+}
+
 // _BACnetLandingCallStatusCommandDirection is the data-structure of this message
 type _BACnetLandingCallStatusCommandDirection struct {
 	*_BACnetLandingCallStatusCommand
@@ -176,6 +182,10 @@ func (m *_BACnetLandingCallStatusCommandDirection) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLandingCallStatusCommandDirection) isBACnetLandingCallStatusCommandDirection() bool {
+	return true
 }
 
 func (m *_BACnetLandingCallStatusCommandDirection) String() string {

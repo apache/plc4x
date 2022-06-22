@@ -35,6 +35,12 @@ type SALDataTerminateRamp interface {
 	GetGroup() byte
 }
 
+// SALDataTerminateRampExactly can be used when we want exactly this type and not a type which fulfills SALDataTerminateRamp.
+// This is useful for switch cases.
+type SALDataTerminateRampExactly interface {
+	isSALDataTerminateRamp() bool
+}
+
 // _SALDataTerminateRamp is the data-structure of this message
 type _SALDataTerminateRamp struct {
 	*_SALData
@@ -165,6 +171,10 @@ func (m *_SALDataTerminateRamp) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SALDataTerminateRamp) isSALDataTerminateRamp() bool {
+	return true
 }
 
 func (m *_SALDataTerminateRamp) String() string {

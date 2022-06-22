@@ -41,6 +41,12 @@ type BACnetConstructedDataWeeklySchedule interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataWeeklyScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataWeeklySchedule.
+// This is useful for switch cases.
+type BACnetConstructedDataWeeklyScheduleExactly interface {
+	isBACnetConstructedDataWeeklySchedule() bool
+}
+
 // _BACnetConstructedDataWeeklySchedule is the data-structure of this message
 type _BACnetConstructedDataWeeklySchedule struct {
 	*_BACnetConstructedData
@@ -292,6 +298,10 @@ func (m *_BACnetConstructedDataWeeklySchedule) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataWeeklySchedule) isBACnetConstructedDataWeeklySchedule() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataWeeklySchedule) String() string {

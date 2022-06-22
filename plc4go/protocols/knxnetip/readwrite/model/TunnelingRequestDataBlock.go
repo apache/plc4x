@@ -37,6 +37,12 @@ type TunnelingRequestDataBlock interface {
 	GetSequenceCounter() uint8
 }
 
+// TunnelingRequestDataBlockExactly can be used when we want exactly this type and not a type which fulfills TunnelingRequestDataBlock.
+// This is useful for switch cases.
+type TunnelingRequestDataBlockExactly interface {
+	isTunnelingRequestDataBlock() bool
+}
+
 // _TunnelingRequestDataBlock is the data-structure of this message
 type _TunnelingRequestDataBlock struct {
 	CommunicationChannelId uint8
@@ -199,6 +205,10 @@ func (m *_TunnelingRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for TunnelingRequestDataBlock")
 	}
 	return nil
+}
+
+func (m *_TunnelingRequestDataBlock) isTunnelingRequestDataBlock() bool {
+	return true
 }
 
 func (m *_TunnelingRequestDataBlock) String() string {

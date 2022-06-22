@@ -37,6 +37,12 @@ type NLMInitalizeRoutingTableAck interface {
 	GetPortMappings() []NLMInitalizeRoutingTablePortMapping
 }
 
+// NLMInitalizeRoutingTableAckExactly can be used when we want exactly this type and not a type which fulfills NLMInitalizeRoutingTableAck.
+// This is useful for switch cases.
+type NLMInitalizeRoutingTableAckExactly interface {
+	isNLMInitalizeRoutingTableAck() bool
+}
+
 // _NLMInitalizeRoutingTableAck is the data-structure of this message
 type _NLMInitalizeRoutingTableAck struct {
 	*_NLM
@@ -224,6 +230,10 @@ func (m *_NLMInitalizeRoutingTableAck) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMInitalizeRoutingTableAck) isNLMInitalizeRoutingTableAck() bool {
+	return true
 }
 
 func (m *_NLMInitalizeRoutingTableAck) String() string {

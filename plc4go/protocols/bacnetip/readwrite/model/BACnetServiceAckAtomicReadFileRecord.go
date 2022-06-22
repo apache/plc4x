@@ -39,6 +39,12 @@ type BACnetServiceAckAtomicReadFileRecord interface {
 	GetFileRecordData() []BACnetApplicationTagOctetString
 }
 
+// BACnetServiceAckAtomicReadFileRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFileRecord.
+// This is useful for switch cases.
+type BACnetServiceAckAtomicReadFileRecordExactly interface {
+	isBACnetServiceAckAtomicReadFileRecord() bool
+}
+
 // _BACnetServiceAckAtomicReadFileRecord is the data-structure of this message
 type _BACnetServiceAckAtomicReadFileRecord struct {
 	*_BACnetServiceAckAtomicReadFileStreamOrRecord
@@ -267,6 +273,10 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecord) isBACnetServiceAckAtomicReadFileRecord() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) String() string {

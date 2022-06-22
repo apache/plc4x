@@ -33,6 +33,12 @@ type BACnetConstructedDataOctetstringValueAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataOctetstringValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOctetstringValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataOctetstringValueAllExactly interface {
+	isBACnetConstructedDataOctetstringValueAll() bool
+}
+
 // _BACnetConstructedDataOctetstringValueAll is the data-structure of this message
 type _BACnetConstructedDataOctetstringValueAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataOctetstringValueAll) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOctetstringValueAll) isBACnetConstructedDataOctetstringValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOctetstringValueAll) String() string {

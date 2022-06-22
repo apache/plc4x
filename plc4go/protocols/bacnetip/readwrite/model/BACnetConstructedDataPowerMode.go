@@ -37,6 +37,12 @@ type BACnetConstructedDataPowerMode interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataPowerModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPowerMode.
+// This is useful for switch cases.
+type BACnetConstructedDataPowerModeExactly interface {
+	isBACnetConstructedDataPowerMode() bool
+}
+
 // _BACnetConstructedDataPowerMode is the data-structure of this message
 type _BACnetConstructedDataPowerMode struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPowerMode) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPowerMode) isBACnetConstructedDataPowerMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPowerMode) String() string {

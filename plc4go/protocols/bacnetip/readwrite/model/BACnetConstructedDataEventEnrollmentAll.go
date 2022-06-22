@@ -33,6 +33,12 @@ type BACnetConstructedDataEventEnrollmentAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataEventEnrollmentAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventEnrollmentAll.
+// This is useful for switch cases.
+type BACnetConstructedDataEventEnrollmentAllExactly interface {
+	isBACnetConstructedDataEventEnrollmentAll() bool
+}
+
 // _BACnetConstructedDataEventEnrollmentAll is the data-structure of this message
 type _BACnetConstructedDataEventEnrollmentAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataEventEnrollmentAll) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventEnrollmentAll) isBACnetConstructedDataEventEnrollmentAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventEnrollmentAll) String() string {

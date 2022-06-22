@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryOctetString interface {
 	GetOctetStringValue() BACnetApplicationTagOctetString
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryOctetString.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryOctetStringExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryOctetString() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryOctetString is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryOctetString struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) Serialize
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) isBACnetFaultParameterFaultExtendedParametersEntryOctetString() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) String() string {

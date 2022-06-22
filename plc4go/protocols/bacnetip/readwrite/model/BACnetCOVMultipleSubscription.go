@@ -42,6 +42,12 @@ type BACnetCOVMultipleSubscription interface {
 	GetListOfCovSubscriptionSpecification() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
 }
 
+// BACnetCOVMultipleSubscriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscription.
+// This is useful for switch cases.
+type BACnetCOVMultipleSubscriptionExactly interface {
+	isBACnetCOVMultipleSubscription() bool
+}
+
 // _BACnetCOVMultipleSubscription is the data-structure of this message
 type _BACnetCOVMultipleSubscription struct {
 	Recipient                          BACnetRecipientProcessEnclosed
@@ -283,6 +289,10 @@ func (m *_BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetCOVMultipleSubscription")
 	}
 	return nil
+}
+
+func (m *_BACnetCOVMultipleSubscription) isBACnetCOVMultipleSubscription() bool {
+	return true
 }
 
 func (m *_BACnetCOVMultipleSubscription) String() string {

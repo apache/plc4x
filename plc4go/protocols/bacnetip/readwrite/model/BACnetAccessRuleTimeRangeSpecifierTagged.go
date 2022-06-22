@@ -36,6 +36,12 @@ type BACnetAccessRuleTimeRangeSpecifierTagged interface {
 	GetValue() BACnetAccessRuleTimeRangeSpecifier
 }
 
+// BACnetAccessRuleTimeRangeSpecifierTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessRuleTimeRangeSpecifierTagged.
+// This is useful for switch cases.
+type BACnetAccessRuleTimeRangeSpecifierTaggedExactly interface {
+	isBACnetAccessRuleTimeRangeSpecifierTagged() bool
+}
+
 // _BACnetAccessRuleTimeRangeSpecifierTagged is the data-structure of this message
 type _BACnetAccessRuleTimeRangeSpecifierTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) Serialize(writeBuffer utils.
 		return errors.Wrap(popErr, "Error popping for BACnetAccessRuleTimeRangeSpecifierTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) isBACnetAccessRuleTimeRangeSpecifierTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) String() string {

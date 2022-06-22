@@ -35,6 +35,12 @@ type BACnetPropertyStatesFileAccessMethod interface {
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
 }
 
+// BACnetPropertyStatesFileAccessMethodExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesFileAccessMethod.
+// This is useful for switch cases.
+type BACnetPropertyStatesFileAccessMethodExactly interface {
+	isBACnetPropertyStatesFileAccessMethod() bool
+}
+
 // _BACnetPropertyStatesFileAccessMethod is the data-structure of this message
 type _BACnetPropertyStatesFileAccessMethod struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesFileAccessMethod) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethod) isBACnetPropertyStatesFileAccessMethod() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesFileAccessMethod) String() string {

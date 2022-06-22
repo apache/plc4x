@@ -35,6 +35,12 @@ type BVLCWriteBroadcastDistributionTable interface {
 	GetTable() []BVLCBroadcastDistributionTableEntry
 }
 
+// BVLCWriteBroadcastDistributionTableExactly can be used when we want exactly this type and not a type which fulfills BVLCWriteBroadcastDistributionTable.
+// This is useful for switch cases.
+type BVLCWriteBroadcastDistributionTableExactly interface {
+	isBVLCWriteBroadcastDistributionTable() bool
+}
+
 // _BVLCWriteBroadcastDistributionTable is the data-structure of this message
 type _BVLCWriteBroadcastDistributionTable struct {
 	*_BVLC
@@ -197,6 +203,10 @@ func (m *_BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCWriteBroadcastDistributionTable) isBVLCWriteBroadcastDistributionTable() bool {
+	return true
 }
 
 func (m *_BVLCWriteBroadcastDistributionTable) String() string {

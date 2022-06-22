@@ -38,6 +38,12 @@ type BACnetFaultParameterFaultExtendedParameters interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetFaultParameterFaultExtendedParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParameters.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersExactly interface {
+	isBACnetFaultParameterFaultExtendedParameters() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParameters is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParameters struct {
 	OpeningTag BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) Serialize(writeBuffer uti
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParameters")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParameters) isBACnetFaultParameterFaultExtendedParameters() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) String() string {

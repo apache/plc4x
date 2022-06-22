@@ -39,6 +39,12 @@ type BACnetConfirmedServiceRequestCreateObject interface {
 	GetListOfValues() BACnetPropertyValues
 }
 
+// BACnetConfirmedServiceRequestCreateObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestCreateObject.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestCreateObjectExactly interface {
+	isBACnetConfirmedServiceRequestCreateObject() bool
+}
+
 // _BACnetConfirmedServiceRequestCreateObject is the data-structure of this message
 type _BACnetConfirmedServiceRequestCreateObject struct {
 	*_BACnetConfirmedServiceRequest
@@ -236,6 +242,10 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObject) isBACnetConfirmedServiceRequestCreateObject() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObject) String() string {

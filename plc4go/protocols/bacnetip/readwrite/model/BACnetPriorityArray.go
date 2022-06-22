@@ -76,6 +76,12 @@ type BACnetPriorityArray interface {
 	GetIndexEntry() BACnetPriorityValue
 }
 
+// BACnetPriorityArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityArray.
+// This is useful for switch cases.
+type BACnetPriorityArrayExactly interface {
+	isBACnetPriorityArray() bool
+}
+
 // _BACnetPriorityArray is the data-structure of this message
 type _BACnetPriorityArray struct {
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
@@ -590,6 +596,10 @@ func (m *_BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPriorityArray")
 	}
 	return nil
+}
+
+func (m *_BACnetPriorityArray) isBACnetPriorityArray() bool {
+	return true
 }
 
 func (m *_BACnetPriorityArray) String() string {

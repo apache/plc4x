@@ -35,6 +35,12 @@ type BACnetPropertyStatesProgramChange interface {
 	GetProgramState() BACnetProgramStateTagged
 }
 
+// BACnetPropertyStatesProgramChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesProgramChange.
+// This is useful for switch cases.
+type BACnetPropertyStatesProgramChangeExactly interface {
+	isBACnetPropertyStatesProgramChange() bool
+}
+
 // _BACnetPropertyStatesProgramChange is the data-structure of this message
 type _BACnetPropertyStatesProgramChange struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesProgramChange) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesProgramChange) isBACnetPropertyStatesProgramChange() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesProgramChange) String() string {

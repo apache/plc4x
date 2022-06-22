@@ -39,6 +39,12 @@ type AdsWriteControlRequest interface {
 	GetData() []byte
 }
 
+// AdsWriteControlRequestExactly can be used when we want exactly this type and not a type which fulfills AdsWriteControlRequest.
+// This is useful for switch cases.
+type AdsWriteControlRequestExactly interface {
+	isAdsWriteControlRequest() bool
+}
+
 // _AdsWriteControlRequest is the data-structure of this message
 type _AdsWriteControlRequest struct {
 	*_AdsData
@@ -243,6 +249,10 @@ func (m *_AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsWriteControlRequest) isAdsWriteControlRequest() bool {
+	return true
 }
 
 func (m *_AdsWriteControlRequest) String() string {

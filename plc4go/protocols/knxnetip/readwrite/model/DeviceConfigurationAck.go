@@ -35,6 +35,12 @@ type DeviceConfigurationAck interface {
 	GetDeviceConfigurationAckDataBlock() DeviceConfigurationAckDataBlock
 }
 
+// DeviceConfigurationAckExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationAck.
+// This is useful for switch cases.
+type DeviceConfigurationAckExactly interface {
+	isDeviceConfigurationAck() bool
+}
+
 // _DeviceConfigurationAck is the data-structure of this message
 type _DeviceConfigurationAck struct {
 	*_KnxNetIpMessage
@@ -178,6 +184,10 @@ func (m *_DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DeviceConfigurationAck) isDeviceConfigurationAck() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationAck) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataOccupancyState interface {
 	GetActualValue() BACnetAccessZoneOccupancyStateTagged
 }
 
+// BACnetConstructedDataOccupancyStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyState.
+// This is useful for switch cases.
+type BACnetConstructedDataOccupancyStateExactly interface {
+	isBACnetConstructedDataOccupancyState() bool
+}
+
 // _BACnetConstructedDataOccupancyState is the data-structure of this message
 type _BACnetConstructedDataOccupancyState struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOccupancyState) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOccupancyState) isBACnetConstructedDataOccupancyState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOccupancyState) String() string {

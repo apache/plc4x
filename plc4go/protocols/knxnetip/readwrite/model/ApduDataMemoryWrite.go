@@ -33,6 +33,12 @@ type ApduDataMemoryWrite interface {
 	ApduData
 }
 
+// ApduDataMemoryWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryWrite.
+// This is useful for switch cases.
+type ApduDataMemoryWriteExactly interface {
+	isApduDataMemoryWrite() bool
+}
+
 // _ApduDataMemoryWrite is the data-structure of this message
 type _ApduDataMemoryWrite struct {
 	*_ApduData
@@ -134,6 +140,10 @@ func (m *_ApduDataMemoryWrite) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataMemoryWrite) isApduDataMemoryWrite() bool {
+	return true
 }
 
 func (m *_ApduDataMemoryWrite) String() string {

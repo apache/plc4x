@@ -38,6 +38,12 @@ type BACnetDeviceObjectReferenceEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetDeviceObjectReferenceEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetDeviceObjectReferenceEnclosed.
+// This is useful for switch cases.
+type BACnetDeviceObjectReferenceEnclosedExactly interface {
+	isBACnetDeviceObjectReferenceEnclosed() bool
+}
+
 // _BACnetDeviceObjectReferenceEnclosed is the data-structure of this message
 type _BACnetDeviceObjectReferenceEnclosed struct {
 	OpeningTag      BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetDeviceObjectReferenceEnclosed) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetDeviceObjectReferenceEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetDeviceObjectReferenceEnclosed) isBACnetDeviceObjectReferenceEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetDeviceObjectReferenceEnclosed) String() string {

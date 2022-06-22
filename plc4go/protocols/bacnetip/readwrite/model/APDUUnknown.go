@@ -37,6 +37,12 @@ type APDUUnknown interface {
 	GetUnknownBytes() []byte
 }
 
+// APDUUnknownExactly can be used when we want exactly this type and not a type which fulfills APDUUnknown.
+// This is useful for switch cases.
+type APDUUnknownExactly interface {
+	isAPDUUnknown() bool
+}
+
 // _APDUUnknown is the data-structure of this message
 type _APDUUnknown struct {
 	*_APDU
@@ -199,6 +205,10 @@ func (m *_APDUUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUUnknown) isAPDUUnknown() bool {
+	return true
 }
 
 func (m *_APDUUnknown) String() string {

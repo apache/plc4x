@@ -40,6 +40,12 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterExactly interface {
+	isBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() bool
+}
+
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the data-structure of this message
 type _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter struct {
 	OpeningTag  BACnetOpeningTag
@@ -251,6 +257,10 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Seria
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) isBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) String() string {

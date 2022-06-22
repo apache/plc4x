@@ -35,6 +35,12 @@ type SysexCommandExtendedId interface {
 	GetId() []int8
 }
 
+// SysexCommandExtendedIdExactly can be used when we want exactly this type and not a type which fulfills SysexCommandExtendedId.
+// This is useful for switch cases.
+type SysexCommandExtendedIdExactly interface {
+	isSysexCommandExtendedId() bool
+}
+
 // _SysexCommandExtendedId is the data-structure of this message
 type _SysexCommandExtendedId struct {
 	*_SysexCommand
@@ -194,6 +200,10 @@ func (m *_SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandExtendedId) isSysexCommandExtendedId() bool {
+	return true
 }
 
 func (m *_SysexCommandExtendedId) String() string {

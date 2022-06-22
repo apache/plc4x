@@ -37,6 +37,12 @@ type BACnetConstructedDataLastUseTime interface {
 	GetActualValue() BACnetDateTime
 }
 
+// BACnetConstructedDataLastUseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastUseTime.
+// This is useful for switch cases.
+type BACnetConstructedDataLastUseTimeExactly interface {
+	isBACnetConstructedDataLastUseTime() bool
+}
+
 // _BACnetConstructedDataLastUseTime is the data-structure of this message
 type _BACnetConstructedDataLastUseTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastUseTime) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastUseTime) isBACnetConstructedDataLastUseTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastUseTime) String() string {

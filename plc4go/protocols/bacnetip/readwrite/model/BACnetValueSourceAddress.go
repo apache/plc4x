@@ -35,6 +35,12 @@ type BACnetValueSourceAddress interface {
 	GetAddress() BACnetAddressEnclosed
 }
 
+// BACnetValueSourceAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSourceAddress.
+// This is useful for switch cases.
+type BACnetValueSourceAddressExactly interface {
+	isBACnetValueSourceAddress() bool
+}
+
 // _BACnetValueSourceAddress is the data-structure of this message
 type _BACnetValueSourceAddress struct {
 	*_BACnetValueSource
@@ -176,6 +182,10 @@ func (m *_BACnetValueSourceAddress) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetValueSourceAddress) isBACnetValueSourceAddress() bool {
+	return true
 }
 
 func (m *_BACnetValueSourceAddress) String() string {

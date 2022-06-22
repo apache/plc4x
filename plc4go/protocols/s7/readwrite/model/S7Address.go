@@ -34,16 +34,22 @@ type S7Address interface {
 	GetAddressType() uint8
 }
 
+// S7AddressExactly can be used when we want exactly this type and not a type which fulfills S7Address.
+// This is useful for switch cases.
+type S7AddressExactly interface {
+	isS7Address() bool
+}
+
 // _S7Address is the data-structure of this message
 type _S7Address struct {
 	_S7AddressChildRequirements
 }
 
 type _S7AddressChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetAddressType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7AddressParent interface {
@@ -52,7 +58,7 @@ type S7AddressParent interface {
 }
 
 type S7AddressChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7Address)
 	GetParent() *S7Address
 
@@ -164,6 +170,10 @@ func (pm *_S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child S7Add
 		return errors.Wrap(popErr, "Error popping for S7Address")
 	}
 	return nil
+}
+
+func (m *_S7Address) isS7Address() bool {
+	return true
 }
 
 func (m *_S7Address) String() string {

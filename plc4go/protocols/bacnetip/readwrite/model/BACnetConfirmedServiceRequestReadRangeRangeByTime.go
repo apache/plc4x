@@ -37,6 +37,12 @@ type BACnetConfirmedServiceRequestReadRangeRangeByTime interface {
 	GetCount() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConfirmedServiceRequestReadRangeRangeByTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeByTime.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeByTimeExactly interface {
+	isBACnetConfirmedServiceRequestReadRangeRangeByTime() bool
+}
+
 // _BACnetConfirmedServiceRequestReadRangeRangeByTime is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRangeByTime struct {
 	*_BACnetConfirmedServiceRequestReadRangeRange
@@ -215,6 +221,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) isBACnetConfirmedServiceRequestReadRangeRangeByTime() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataCurrentCommandPriority interface {
 	GetActualValue() BACnetOptionalUnsigned
 }
 
+// BACnetConstructedDataCurrentCommandPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCurrentCommandPriority.
+// This is useful for switch cases.
+type BACnetConstructedDataCurrentCommandPriorityExactly interface {
+	isBACnetConstructedDataCurrentCommandPriority() bool
+}
+
 // _BACnetConstructedDataCurrentCommandPriority is the data-structure of this message
 type _BACnetConstructedDataCurrentCommandPriority struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriority) isBACnetConstructedDataCurrentCommandPriority() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) String() string {

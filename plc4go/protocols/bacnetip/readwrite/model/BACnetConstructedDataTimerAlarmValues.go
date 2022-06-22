@@ -35,6 +35,12 @@ type BACnetConstructedDataTimerAlarmValues interface {
 	GetAlarmValues() []BACnetTimerStateTagged
 }
 
+// BACnetConstructedDataTimerAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerAlarmValuesExactly interface {
+	isBACnetConstructedDataTimerAlarmValues() bool
+}
+
 // _BACnetConstructedDataTimerAlarmValues is the data-structure of this message
 type _BACnetConstructedDataTimerAlarmValues struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataTimerAlarmValues) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerAlarmValues) isBACnetConstructedDataTimerAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerAlarmValues) String() string {

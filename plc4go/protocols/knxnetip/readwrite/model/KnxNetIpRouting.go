@@ -35,6 +35,12 @@ type KnxNetIpRouting interface {
 	GetVersion() uint8
 }
 
+// KnxNetIpRoutingExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpRouting.
+// This is useful for switch cases.
+type KnxNetIpRoutingExactly interface {
+	isKnxNetIpRouting() bool
+}
+
 // _KnxNetIpRouting is the data-structure of this message
 type _KnxNetIpRouting struct {
 	*_ServiceId
@@ -167,6 +173,10 @@ func (m *_KnxNetIpRouting) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetIpRouting) isKnxNetIpRouting() bool {
+	return true
 }
 
 func (m *_KnxNetIpRouting) String() string {

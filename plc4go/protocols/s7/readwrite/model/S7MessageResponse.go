@@ -37,6 +37,12 @@ type S7MessageResponse interface {
 	GetErrorCode() uint8
 }
 
+// S7MessageResponseExactly can be used when we want exactly this type and not a type which fulfills S7MessageResponse.
+// This is useful for switch cases.
+type S7MessageResponseExactly interface {
+	isS7MessageResponse() bool
+}
+
 // _S7MessageResponse is the data-structure of this message
 type _S7MessageResponse struct {
 	*_S7Message
@@ -197,6 +203,10 @@ func (m *_S7MessageResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageResponse) isS7MessageResponse() bool {
+	return true
 }
 
 func (m *_S7MessageResponse) String() string {

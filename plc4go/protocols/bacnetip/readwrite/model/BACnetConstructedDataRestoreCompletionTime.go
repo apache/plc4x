@@ -37,6 +37,12 @@ type BACnetConstructedDataRestoreCompletionTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataRestoreCompletionTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestoreCompletionTime.
+// This is useful for switch cases.
+type BACnetConstructedDataRestoreCompletionTimeExactly interface {
+	isBACnetConstructedDataRestoreCompletionTime() bool
+}
+
 // _BACnetConstructedDataRestoreCompletionTime is the data-structure of this message
 type _BACnetConstructedDataRestoreCompletionTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTime) isBACnetConstructedDataRestoreCompletionTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) String() string {

@@ -41,6 +41,12 @@ type BACnetConstructedDataFloorText interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataFloorTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFloorText.
+// This is useful for switch cases.
+type BACnetConstructedDataFloorTextExactly interface {
+	isBACnetConstructedDataFloorText() bool
+}
+
 // _BACnetConstructedDataFloorText is the data-structure of this message
 type _BACnetConstructedDataFloorText struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataFloorText) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFloorText) isBACnetConstructedDataFloorText() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFloorText) String() string {

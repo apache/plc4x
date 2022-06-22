@@ -37,6 +37,12 @@ type BACnetLogDataLogDataEntryAnyValue interface {
 	GetAnyValue() BACnetConstructedData
 }
 
+// BACnetLogDataLogDataEntryAnyValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryAnyValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryAnyValueExactly interface {
+	isBACnetLogDataLogDataEntryAnyValue() bool
+}
+
 // _BACnetLogDataLogDataEntryAnyValue is the data-structure of this message
 type _BACnetLogDataLogDataEntryAnyValue struct {
 	*_BACnetLogDataLogDataEntry
@@ -193,6 +199,10 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValue) isBACnetLogDataLogDataEntryAnyValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) String() string {

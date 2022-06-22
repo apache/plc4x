@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryCharacterString interface {
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryCharacterString.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryCharacterStringExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryCharacterString() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryCharacterString is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryCharacterString struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) Seria
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) isBACnetFaultParameterFaultExtendedParametersEntryCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) String() string {

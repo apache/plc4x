@@ -37,6 +37,12 @@ type BACnetConstructedDataReadOnly interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataReadOnlyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReadOnly.
+// This is useful for switch cases.
+type BACnetConstructedDataReadOnlyExactly interface {
+	isBACnetConstructedDataReadOnly() bool
+}
+
 // _BACnetConstructedDataReadOnly is the data-structure of this message
 type _BACnetConstructedDataReadOnly struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataReadOnly) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReadOnly) isBACnetConstructedDataReadOnly() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReadOnly) String() string {

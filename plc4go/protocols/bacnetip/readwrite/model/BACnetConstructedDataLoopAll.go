@@ -33,6 +33,12 @@ type BACnetConstructedDataLoopAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataLoopAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoopAll.
+// This is useful for switch cases.
+type BACnetConstructedDataLoopAllExactly interface {
+	isBACnetConstructedDataLoopAll() bool
+}
+
 // _BACnetConstructedDataLoopAll is the data-structure of this message
 type _BACnetConstructedDataLoopAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataLoopAll) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLoopAll) isBACnetConstructedDataLoopAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLoopAll) String() string {

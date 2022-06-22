@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate interfac
 	GetDateValue() BACnetApplicationTagDate
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) Se
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) String() string {

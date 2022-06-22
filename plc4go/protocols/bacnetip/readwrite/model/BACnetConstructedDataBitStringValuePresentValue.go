@@ -37,6 +37,12 @@ type BACnetConstructedDataBitStringValuePresentValue interface {
 	GetActualValue() BACnetApplicationTagBitString
 }
 
+// BACnetConstructedDataBitStringValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitStringValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataBitStringValuePresentValueExactly interface {
+	isBACnetConstructedDataBitStringValuePresentValue() bool
+}
+
 // _BACnetConstructedDataBitStringValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataBitStringValuePresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBitStringValuePresentValue) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBitStringValuePresentValue) isBACnetConstructedDataBitStringValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBitStringValuePresentValue) String() string {

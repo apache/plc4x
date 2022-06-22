@@ -37,6 +37,12 @@ type BACnetConstructedDataLastStateChange interface {
 	GetActualValue() BACnetTimerTransitionTagged
 }
 
+// BACnetConstructedDataLastStateChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastStateChange.
+// This is useful for switch cases.
+type BACnetConstructedDataLastStateChangeExactly interface {
+	isBACnetConstructedDataLastStateChange() bool
+}
+
 // _BACnetConstructedDataLastStateChange is the data-structure of this message
 type _BACnetConstructedDataLastStateChange struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastStateChange) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastStateChange) isBACnetConstructedDataLastStateChange() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastStateChange) String() string {

@@ -35,6 +35,12 @@ type BACnetPropertyStatesBacnetIpMode interface {
 	GetBacnetIpMode() BACnetIPModeTagged
 }
 
+// BACnetPropertyStatesBacnetIpModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBacnetIpMode.
+// This is useful for switch cases.
+type BACnetPropertyStatesBacnetIpModeExactly interface {
+	isBACnetPropertyStatesBacnetIpMode() bool
+}
+
 // _BACnetPropertyStatesBacnetIpMode is the data-structure of this message
 type _BACnetPropertyStatesBacnetIpMode struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesBacnetIpMode) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesBacnetIpMode) isBACnetPropertyStatesBacnetIpMode() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) String() string {

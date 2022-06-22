@@ -37,6 +37,12 @@ type BACnetConstructedDataAccumulatorLowLimit interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataAccumulatorLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorLowLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataAccumulatorLowLimitExactly interface {
+	isBACnetConstructedDataAccumulatorLowLimit() bool
+}
+
 // _BACnetConstructedDataAccumulatorLowLimit is the data-structure of this message
 type _BACnetConstructedDataAccumulatorLowLimit struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccumulatorLowLimit) isBACnetConstructedDataAccumulatorLowLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccumulatorLowLimit) String() string {

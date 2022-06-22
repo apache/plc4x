@@ -33,6 +33,12 @@ type LRawInd interface {
 	CEMI
 }
 
+// LRawIndExactly can be used when we want exactly this type and not a type which fulfills LRawInd.
+// This is useful for switch cases.
+type LRawIndExactly interface {
+	isLRawInd() bool
+}
+
 // _LRawInd is the data-structure of this message
 type _LRawInd struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_LRawInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LRawInd) isLRawInd() bool {
+	return true
 }
 
 func (m *_LRawInd) String() string {

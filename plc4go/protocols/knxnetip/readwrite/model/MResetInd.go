@@ -33,6 +33,12 @@ type MResetInd interface {
 	CEMI
 }
 
+// MResetIndExactly can be used when we want exactly this type and not a type which fulfills MResetInd.
+// This is useful for switch cases.
+type MResetIndExactly interface {
+	isMResetInd() bool
+}
+
 // _MResetInd is the data-structure of this message
 type _MResetInd struct {
 	*_CEMI
@@ -134,6 +140,10 @@ func (m *_MResetInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MResetInd) isMResetInd() bool {
+	return true
 }
 
 func (m *_MResetInd) String() string {

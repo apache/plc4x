@@ -37,6 +37,12 @@ type DisconnectResponse interface {
 	GetStatus() Status
 }
 
+// DisconnectResponseExactly can be used when we want exactly this type and not a type which fulfills DisconnectResponse.
+// This is useful for switch cases.
+type DisconnectResponseExactly interface {
+	isDisconnectResponse() bool
+}
+
 // _DisconnectResponse is the data-structure of this message
 type _DisconnectResponse struct {
 	*_KnxNetIpMessage
@@ -204,6 +210,10 @@ func (m *_DisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DisconnectResponse) isDisconnectResponse() bool {
+	return true
 }
 
 func (m *_DisconnectResponse) String() string {

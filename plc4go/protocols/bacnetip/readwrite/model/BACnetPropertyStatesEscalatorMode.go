@@ -35,6 +35,12 @@ type BACnetPropertyStatesEscalatorMode interface {
 	GetEscalatorMode() BACnetEscalatorModeTagged
 }
 
+// BACnetPropertyStatesEscalatorModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEscalatorMode.
+// This is useful for switch cases.
+type BACnetPropertyStatesEscalatorModeExactly interface {
+	isBACnetPropertyStatesEscalatorMode() bool
+}
+
 // _BACnetPropertyStatesEscalatorMode is the data-structure of this message
 type _BACnetPropertyStatesEscalatorMode struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesEscalatorMode) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesEscalatorMode) isBACnetPropertyStatesEscalatorMode() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEscalatorMode) String() string {

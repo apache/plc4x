@@ -51,6 +51,12 @@ type BACnetNotificationParametersAccessEvent interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersAccessEvent.
+// This is useful for switch cases.
+type BACnetNotificationParametersAccessEventExactly interface {
+	isBACnetNotificationParametersAccessEvent() bool
+}
+
 // _BACnetNotificationParametersAccessEvent is the data-structure of this message
 type _BACnetNotificationParametersAccessEvent struct {
 	*_BACnetNotificationParameters
@@ -458,6 +464,10 @@ func (m *_BACnetNotificationParametersAccessEvent) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersAccessEvent) isBACnetNotificationParametersAccessEvent() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersAccessEvent) String() string {

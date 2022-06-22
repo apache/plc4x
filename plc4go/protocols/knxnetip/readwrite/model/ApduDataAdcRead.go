@@ -33,6 +33,12 @@ type ApduDataAdcRead interface {
 	ApduData
 }
 
+// ApduDataAdcReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataAdcRead.
+// This is useful for switch cases.
+type ApduDataAdcReadExactly interface {
+	isApduDataAdcRead() bool
+}
+
 // _ApduDataAdcRead is the data-structure of this message
 type _ApduDataAdcRead struct {
 	*_ApduData
@@ -134,6 +140,10 @@ func (m *_ApduDataAdcRead) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataAdcRead) isApduDataAdcRead() bool {
+	return true
 }
 
 func (m *_ApduDataAdcRead) String() string {

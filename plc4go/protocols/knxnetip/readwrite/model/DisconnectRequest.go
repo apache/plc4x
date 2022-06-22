@@ -38,6 +38,12 @@ type DisconnectRequest interface {
 	GetHpaiControlEndpoint() HPAIControlEndpoint
 }
 
+// DisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills DisconnectRequest.
+// This is useful for switch cases.
+type DisconnectRequestExactly interface {
+	isDisconnectRequest() bool
+}
+
 // _DisconnectRequest is the data-structure of this message
 type _DisconnectRequest struct {
 	*_KnxNetIpMessage
@@ -230,6 +236,10 @@ func (m *_DisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DisconnectRequest) isDisconnectRequest() bool {
+	return true
 }
 
 func (m *_DisconnectRequest) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataEnergyMeterRef interface {
 	GetActualValue() BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataEnergyMeterRefExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEnergyMeterRef.
+// This is useful for switch cases.
+type BACnetConstructedDataEnergyMeterRefExactly interface {
+	isBACnetConstructedDataEnergyMeterRef() bool
+}
+
 // _BACnetConstructedDataEnergyMeterRef is the data-structure of this message
 type _BACnetConstructedDataEnergyMeterRef struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEnergyMeterRef) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEnergyMeterRef) isBACnetConstructedDataEnergyMeterRef() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEnergyMeterRef) String() string {

@@ -33,6 +33,12 @@ type ApduDataExtKeyResponse interface {
 	ApduDataExt
 }
 
+// ApduDataExtKeyResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtKeyResponse.
+// This is useful for switch cases.
+type ApduDataExtKeyResponseExactly interface {
+	isApduDataExtKeyResponse() bool
+}
+
 // _ApduDataExtKeyResponse is the data-structure of this message
 type _ApduDataExtKeyResponse struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtKeyResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtKeyResponse) isApduDataExtKeyResponse() bool {
+	return true
 }
 
 func (m *_ApduDataExtKeyResponse) String() string {

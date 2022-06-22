@@ -37,6 +37,12 @@ type BACnetConstructedDataProportionalConstantUnits interface {
 	GetActualValue() BACnetEngineeringUnitsTagged
 }
 
+// BACnetConstructedDataProportionalConstantUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProportionalConstantUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataProportionalConstantUnitsExactly interface {
+	isBACnetConstructedDataProportionalConstantUnits() bool
+}
+
 // _BACnetConstructedDataProportionalConstantUnits is the data-structure of this message
 type _BACnetConstructedDataProportionalConstantUnits struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataProportionalConstantUnits) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProportionalConstantUnits) isBACnetConstructedDataProportionalConstantUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProportionalConstantUnits) String() string {

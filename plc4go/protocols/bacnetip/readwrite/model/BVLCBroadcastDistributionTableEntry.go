@@ -38,6 +38,12 @@ type BVLCBroadcastDistributionTableEntry interface {
 	GetBroadcastDistributionMap() []uint8
 }
 
+// BVLCBroadcastDistributionTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCBroadcastDistributionTableEntry.
+// This is useful for switch cases.
+type BVLCBroadcastDistributionTableEntryExactly interface {
+	isBVLCBroadcastDistributionTableEntry() bool
+}
+
 // _BVLCBroadcastDistributionTableEntry is the data-structure of this message
 type _BVLCBroadcastDistributionTableEntry struct {
 	Ip                       []uint8
@@ -226,6 +232,10 @@ func (m *_BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BVLCBroadcastDistributionTableEntry")
 	}
 	return nil
+}
+
+func (m *_BVLCBroadcastDistributionTableEntry) isBVLCBroadcastDistributionTableEntry() bool {
+	return true
 }
 
 func (m *_BVLCBroadcastDistributionTableEntry) String() string {

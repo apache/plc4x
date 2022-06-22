@@ -33,6 +33,12 @@ type BACnetConstructedDataCharacterstringValueAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataCharacterstringValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCharacterstringValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataCharacterstringValueAllExactly interface {
+	isBACnetConstructedDataCharacterstringValueAll() bool
+}
+
 // _BACnetConstructedDataCharacterstringValueAll is the data-structure of this message
 type _BACnetConstructedDataCharacterstringValueAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataCharacterstringValueAll) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCharacterstringValueAll) isBACnetConstructedDataCharacterstringValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCharacterstringValueAll) String() string {

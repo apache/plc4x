@@ -36,6 +36,12 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged 
 	GetValue() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
 }
 
+// BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedExactly interface {
+	isBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged() bool
+}
+
 // _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged is the data-structure of this message
 type _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTa
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) isBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) String() string {

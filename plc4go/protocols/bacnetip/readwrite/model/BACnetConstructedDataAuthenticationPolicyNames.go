@@ -41,6 +41,12 @@ type BACnetConstructedDataAuthenticationPolicyNames interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataAuthenticationPolicyNamesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthenticationPolicyNames.
+// This is useful for switch cases.
+type BACnetConstructedDataAuthenticationPolicyNamesExactly interface {
+	isBACnetConstructedDataAuthenticationPolicyNames() bool
+}
+
 // _BACnetConstructedDataAuthenticationPolicyNames is the data-structure of this message
 type _BACnetConstructedDataAuthenticationPolicyNames struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyNames) isBACnetConstructedDataAuthenticationPolicyNames() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAuthenticationPolicyNames) String() string {

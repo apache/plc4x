@@ -35,6 +35,12 @@ type DescriptionRequest interface {
 	GetHpaiControlEndpoint() HPAIControlEndpoint
 }
 
+// DescriptionRequestExactly can be used when we want exactly this type and not a type which fulfills DescriptionRequest.
+// This is useful for switch cases.
+type DescriptionRequestExactly interface {
+	isDescriptionRequest() bool
+}
+
 // _DescriptionRequest is the data-structure of this message
 type _DescriptionRequest struct {
 	*_KnxNetIpMessage
@@ -178,6 +184,10 @@ func (m *_DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DescriptionRequest) isDescriptionRequest() bool {
+	return true
 }
 
 func (m *_DescriptionRequest) String() string {

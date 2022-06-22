@@ -34,6 +34,12 @@ type Checksum interface {
 	GetCrc() byte
 }
 
+// ChecksumExactly can be used when we want exactly this type and not a type which fulfills Checksum.
+// This is useful for switch cases.
+type ChecksumExactly interface {
+	isChecksum() bool
+}
+
 // _Checksum is the data-structure of this message
 type _Checksum struct {
 	Crc byte
@@ -132,6 +138,10 @@ func (m *_Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for Checksum")
 	}
 	return nil
+}
+
+func (m *_Checksum) isChecksum() bool {
+	return true
 }
 
 func (m *_Checksum) String() string {

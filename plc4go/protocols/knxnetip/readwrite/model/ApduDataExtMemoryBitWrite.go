@@ -33,6 +33,12 @@ type ApduDataExtMemoryBitWrite interface {
 	ApduDataExt
 }
 
+// ApduDataExtMemoryBitWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtMemoryBitWrite.
+// This is useful for switch cases.
+type ApduDataExtMemoryBitWriteExactly interface {
+	isApduDataExtMemoryBitWrite() bool
+}
+
 // _ApduDataExtMemoryBitWrite is the data-structure of this message
 type _ApduDataExtMemoryBitWrite struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtMemoryBitWrite) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtMemoryBitWrite) isApduDataExtMemoryBitWrite() bool {
+	return true
 }
 
 func (m *_ApduDataExtMemoryBitWrite) String() string {

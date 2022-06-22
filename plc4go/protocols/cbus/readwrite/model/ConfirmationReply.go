@@ -35,6 +35,12 @@ type ConfirmationReply interface {
 	GetIsA() Confirmation
 }
 
+// ConfirmationReplyExactly can be used when we want exactly this type and not a type which fulfills ConfirmationReply.
+// This is useful for switch cases.
+type ConfirmationReplyExactly interface {
+	isConfirmationReply() bool
+}
+
 // _ConfirmationReply is the data-structure of this message
 type _ConfirmationReply struct {
 	*_Reply
@@ -176,6 +182,10 @@ func (m *_ConfirmationReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConfirmationReply) isConfirmationReply() bool {
+	return true
 }
 
 func (m *_ConfirmationReply) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataCOVPeriod interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataCOVPeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVPeriod.
+// This is useful for switch cases.
+type BACnetConstructedDataCOVPeriodExactly interface {
+	isBACnetConstructedDataCOVPeriod() bool
+}
+
 // _BACnetConstructedDataCOVPeriod is the data-structure of this message
 type _BACnetConstructedDataCOVPeriod struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCOVPeriod) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCOVPeriod) isBACnetConstructedDataCOVPeriod() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCOVPeriod) String() string {

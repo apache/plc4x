@@ -35,6 +35,12 @@ type KnxNetIpDeviceManagement interface {
 	GetVersion() uint8
 }
 
+// KnxNetIpDeviceManagementExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpDeviceManagement.
+// This is useful for switch cases.
+type KnxNetIpDeviceManagementExactly interface {
+	isKnxNetIpDeviceManagement() bool
+}
+
 // _KnxNetIpDeviceManagement is the data-structure of this message
 type _KnxNetIpDeviceManagement struct {
 	*_ServiceId
@@ -167,6 +173,10 @@ func (m *_KnxNetIpDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetIpDeviceManagement) isKnxNetIpDeviceManagement() bool {
+	return true
 }
 
 func (m *_KnxNetIpDeviceManagement) String() string {

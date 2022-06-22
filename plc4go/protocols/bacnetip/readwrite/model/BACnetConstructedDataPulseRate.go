@@ -37,6 +37,12 @@ type BACnetConstructedDataPulseRate interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPulseRateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseRate.
+// This is useful for switch cases.
+type BACnetConstructedDataPulseRateExactly interface {
+	isBACnetConstructedDataPulseRate() bool
+}
+
 // _BACnetConstructedDataPulseRate is the data-structure of this message
 type _BACnetConstructedDataPulseRate struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPulseRate) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPulseRate) isBACnetConstructedDataPulseRate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPulseRate) String() string {

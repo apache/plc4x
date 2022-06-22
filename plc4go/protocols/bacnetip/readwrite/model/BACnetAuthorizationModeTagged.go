@@ -40,6 +40,12 @@ type BACnetAuthorizationModeTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetAuthorizationModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthorizationModeTagged.
+// This is useful for switch cases.
+type BACnetAuthorizationModeTaggedExactly interface {
+	isBACnetAuthorizationModeTagged() bool
+}
+
 // _BACnetAuthorizationModeTagged is the data-structure of this message
 type _BACnetAuthorizationModeTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetAuthorizationModeTagged) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetAuthorizationModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthorizationModeTagged) isBACnetAuthorizationModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetAuthorizationModeTagged) String() string {

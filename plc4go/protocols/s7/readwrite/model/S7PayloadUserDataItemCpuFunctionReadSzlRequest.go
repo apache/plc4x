@@ -37,6 +37,12 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 	GetSzlIndex() uint16
 }
 
+// S7PayloadUserDataItemCpuFunctionReadSzlRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionReadSzlRequest.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionReadSzlRequestExactly interface {
+	isS7PayloadUserDataItemCpuFunctionReadSzlRequest() bool
+}
+
 // _S7PayloadUserDataItemCpuFunctionReadSzlRequest is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 	*_S7PayloadUserDataItem
@@ -215,6 +221,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) isS7PayloadUserDataItemCpuFunctionReadSzlRequest() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {

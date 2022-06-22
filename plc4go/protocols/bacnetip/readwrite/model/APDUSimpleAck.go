@@ -38,6 +38,12 @@ type APDUSimpleAck interface {
 	GetServiceChoice() uint8
 }
 
+// APDUSimpleAckExactly can be used when we want exactly this type and not a type which fulfills APDUSimpleAck.
+// This is useful for switch cases.
+type APDUSimpleAckExactly interface {
+	isAPDUSimpleAck() bool
+}
+
 // _APDUSimpleAck is the data-structure of this message
 type _APDUSimpleAck struct {
 	*_APDU
@@ -222,6 +228,10 @@ func (m *_APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUSimpleAck) isAPDUSimpleAck() bool {
+	return true
 }
 
 func (m *_APDUSimpleAck) String() string {

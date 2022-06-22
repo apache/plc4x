@@ -33,6 +33,12 @@ type BACnetConstructedDataOptional interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataOptionalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOptional.
+// This is useful for switch cases.
+type BACnetConstructedDataOptionalExactly interface {
+	isBACnetConstructedDataOptional() bool
+}
+
 // _BACnetConstructedDataOptional is the data-structure of this message
 type _BACnetConstructedDataOptional struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataOptional) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOptional) isBACnetConstructedDataOptional() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOptional) String() string {

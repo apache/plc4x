@@ -34,6 +34,12 @@ type CipService interface {
 	GetService() uint8
 }
 
+// CipServiceExactly can be used when we want exactly this type and not a type which fulfills CipService.
+// This is useful for switch cases.
+type CipServiceExactly interface {
+	isCipService() bool
+}
+
 // _CipService is the data-structure of this message
 type _CipService struct {
 	_CipServiceChildRequirements
@@ -43,10 +49,10 @@ type _CipService struct {
 }
 
 type _CipServiceChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetService() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CipServiceParent interface {
@@ -55,7 +61,7 @@ type CipServiceParent interface {
 }
 
 type CipServiceChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CipService)
 	GetParent() *CipService
 
@@ -179,6 +185,10 @@ func (pm *_CipService) SerializeParent(writeBuffer utils.WriteBuffer, child CipS
 		return errors.Wrap(popErr, "Error popping for CipService")
 	}
 	return nil
+}
+
+func (m *_CipService) isCipService() bool {
+	return true
 }
 
 func (m *_CipService) String() string {

@@ -37,6 +37,12 @@ type BACnetConfirmedServiceRequestGetEventInformation interface {
 	GetLastReceivedObjectIdentifier() BACnetContextTagObjectIdentifier
 }
 
+// BACnetConfirmedServiceRequestGetEventInformationExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEventInformation.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestGetEventInformationExactly interface {
+	isBACnetConfirmedServiceRequestGetEventInformation() bool
+}
+
 // _BACnetConfirmedServiceRequestGetEventInformation is the data-structure of this message
 type _BACnetConfirmedServiceRequestGetEventInformation struct {
 	*_BACnetConfirmedServiceRequest
@@ -199,6 +205,10 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) isBACnetConfirmedServiceRequestGetEventInformation() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEventInformation) String() string {

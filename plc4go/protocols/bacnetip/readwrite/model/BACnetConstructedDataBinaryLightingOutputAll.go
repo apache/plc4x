@@ -33,6 +33,12 @@ type BACnetConstructedDataBinaryLightingOutputAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataBinaryLightingOutputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryLightingOutputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryLightingOutputAllExactly interface {
+	isBACnetConstructedDataBinaryLightingOutputAll() bool
+}
+
 // _BACnetConstructedDataBinaryLightingOutputAll is the data-structure of this message
 type _BACnetConstructedDataBinaryLightingOutputAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataBinaryLightingOutputAll) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) isBACnetConstructedDataBinaryLightingOutputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputAll) String() string {

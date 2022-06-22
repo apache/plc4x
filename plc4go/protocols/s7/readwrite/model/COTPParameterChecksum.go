@@ -35,6 +35,12 @@ type COTPParameterChecksum interface {
 	GetCrc() uint8
 }
 
+// COTPParameterChecksumExactly can be used when we want exactly this type and not a type which fulfills COTPParameterChecksum.
+// This is useful for switch cases.
+type COTPParameterChecksumExactly interface {
+	isCOTPParameterChecksum() bool
+}
+
 // _COTPParameterChecksum is the data-structure of this message
 type _COTPParameterChecksum struct {
 	*_COTPParameter
@@ -170,6 +176,10 @@ func (m *_COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPParameterChecksum) isCOTPParameterChecksum() bool {
+	return true
 }
 
 func (m *_COTPParameterChecksum) String() string {

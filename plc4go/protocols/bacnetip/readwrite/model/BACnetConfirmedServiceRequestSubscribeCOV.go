@@ -43,6 +43,12 @@ type BACnetConfirmedServiceRequestSubscribeCOV interface {
 	GetLifetimeInSeconds() BACnetContextTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestSubscribeCOVExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestSubscribeCOV.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestSubscribeCOVExactly interface {
+	isBACnetConfirmedServiceRequestSubscribeCOV() bool
+}
+
 // _BACnetConfirmedServiceRequestSubscribeCOV is the data-structure of this message
 type _BACnetConfirmedServiceRequestSubscribeCOV struct {
 	*_BACnetConfirmedServiceRequest
@@ -325,6 +331,10 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) isBACnetConfirmedServiceRequestSubscribeCOV() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOV) String() string {

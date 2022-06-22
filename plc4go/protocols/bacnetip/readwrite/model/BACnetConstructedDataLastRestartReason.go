@@ -37,6 +37,12 @@ type BACnetConstructedDataLastRestartReason interface {
 	GetActualValue() BACnetRestartReasonTagged
 }
 
+// BACnetConstructedDataLastRestartReasonExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastRestartReason.
+// This is useful for switch cases.
+type BACnetConstructedDataLastRestartReasonExactly interface {
+	isBACnetConstructedDataLastRestartReason() bool
+}
+
 // _BACnetConstructedDataLastRestartReason is the data-structure of this message
 type _BACnetConstructedDataLastRestartReason struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLastRestartReason) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastRestartReason) isBACnetConstructedDataLastRestartReason() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastRestartReason) String() string {

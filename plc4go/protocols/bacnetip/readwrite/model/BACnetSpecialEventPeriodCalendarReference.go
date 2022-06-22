@@ -35,6 +35,12 @@ type BACnetSpecialEventPeriodCalendarReference interface {
 	GetCalendarReference() BACnetContextTagObjectIdentifier
 }
 
+// BACnetSpecialEventPeriodCalendarReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriodCalendarReference.
+// This is useful for switch cases.
+type BACnetSpecialEventPeriodCalendarReferenceExactly interface {
+	isBACnetSpecialEventPeriodCalendarReference() bool
+}
+
 // _BACnetSpecialEventPeriodCalendarReference is the data-structure of this message
 type _BACnetSpecialEventPeriodCalendarReference struct {
 	*_BACnetSpecialEventPeriod
@@ -176,6 +182,10 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarReference) isBACnetSpecialEventPeriodCalendarReference() bool {
+	return true
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarReference) String() string {

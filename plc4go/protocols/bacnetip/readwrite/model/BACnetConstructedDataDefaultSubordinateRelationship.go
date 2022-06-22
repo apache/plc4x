@@ -37,6 +37,12 @@ type BACnetConstructedDataDefaultSubordinateRelationship interface {
 	GetActualValue() BACnetRelationshipTagged
 }
 
+// BACnetConstructedDataDefaultSubordinateRelationshipExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultSubordinateRelationship.
+// This is useful for switch cases.
+type BACnetConstructedDataDefaultSubordinateRelationshipExactly interface {
+	isBACnetConstructedDataDefaultSubordinateRelationship() bool
+}
+
 // _BACnetConstructedDataDefaultSubordinateRelationship is the data-structure of this message
 type _BACnetConstructedDataDefaultSubordinateRelationship struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) isBACnetConstructedDataDefaultSubordinateRelationship() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) String() string {

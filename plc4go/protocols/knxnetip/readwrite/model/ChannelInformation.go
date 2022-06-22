@@ -36,6 +36,12 @@ type ChannelInformation interface {
 	GetChannelCode() uint16
 }
 
+// ChannelInformationExactly can be used when we want exactly this type and not a type which fulfills ChannelInformation.
+// This is useful for switch cases.
+type ChannelInformationExactly interface {
+	isChannelInformation() bool
+}
+
 // _ChannelInformation is the data-structure of this message
 type _ChannelInformation struct {
 	NumChannels uint8
@@ -156,6 +162,10 @@ func (m *_ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ChannelInformation")
 	}
 	return nil
+}
+
+func (m *_ChannelInformation) isChannelInformation() bool {
+	return true
 }
 
 func (m *_ChannelInformation) String() string {

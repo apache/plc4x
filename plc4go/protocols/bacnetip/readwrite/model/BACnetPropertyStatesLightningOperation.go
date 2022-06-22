@@ -35,6 +35,12 @@ type BACnetPropertyStatesLightningOperation interface {
 	GetLightningOperation() BACnetLightingOperationTagged
 }
 
+// BACnetPropertyStatesLightningOperationExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLightningOperation.
+// This is useful for switch cases.
+type BACnetPropertyStatesLightningOperationExactly interface {
+	isBACnetPropertyStatesLightningOperation() bool
+}
+
 // _BACnetPropertyStatesLightningOperation is the data-structure of this message
 type _BACnetPropertyStatesLightningOperation struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesLightningOperation) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLightningOperation) isBACnetPropertyStatesLightningOperation() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLightningOperation) String() string {

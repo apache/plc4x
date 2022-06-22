@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryReal interface {
 	GetRealValue() BACnetApplicationTagReal
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryRealExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryReal.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryRealExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryReal() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryReal is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryReal struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) isBACnetFaultParameterFaultExtendedParametersEntryReal() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) String() string {

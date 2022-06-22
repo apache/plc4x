@@ -35,6 +35,12 @@ type BACnetOptionalBinaryPVNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetOptionalBinaryPVNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalBinaryPVNull.
+// This is useful for switch cases.
+type BACnetOptionalBinaryPVNullExactly interface {
+	isBACnetOptionalBinaryPVNull() bool
+}
+
 // _BACnetOptionalBinaryPVNull is the data-structure of this message
 type _BACnetOptionalBinaryPVNull struct {
 	*_BACnetOptionalBinaryPV
@@ -176,6 +182,10 @@ func (m *_BACnetOptionalBinaryPVNull) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalBinaryPVNull) isBACnetOptionalBinaryPVNull() bool {
+	return true
 }
 
 func (m *_BACnetOptionalBinaryPVNull) String() string {

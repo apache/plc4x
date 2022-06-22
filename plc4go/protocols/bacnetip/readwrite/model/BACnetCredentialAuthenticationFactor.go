@@ -36,6 +36,12 @@ type BACnetCredentialAuthenticationFactor interface {
 	GetAuthenticationFactor() BACnetAuthenticationFactorEnclosed
 }
 
+// BACnetCredentialAuthenticationFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetCredentialAuthenticationFactor.
+// This is useful for switch cases.
+type BACnetCredentialAuthenticationFactorExactly interface {
+	isBACnetCredentialAuthenticationFactor() bool
+}
+
 // _BACnetCredentialAuthenticationFactor is the data-structure of this message
 type _BACnetCredentialAuthenticationFactor struct {
 	Disable              BACnetAccessAuthenticationFactorDisableTagged
@@ -178,6 +184,10 @@ func (m *_BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetCredentialAuthenticationFactor")
 	}
 	return nil
+}
+
+func (m *_BACnetCredentialAuthenticationFactor) isBACnetCredentialAuthenticationFactor() bool {
+	return true
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) String() string {

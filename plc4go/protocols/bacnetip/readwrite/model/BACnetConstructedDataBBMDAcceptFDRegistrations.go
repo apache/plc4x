@@ -37,6 +37,12 @@ type BACnetConstructedDataBBMDAcceptFDRegistrations interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataBBMDAcceptFDRegistrationsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBBMDAcceptFDRegistrations.
+// This is useful for switch cases.
+type BACnetConstructedDataBBMDAcceptFDRegistrationsExactly interface {
+	isBACnetConstructedDataBBMDAcceptFDRegistrations() bool
+}
+
 // _BACnetConstructedDataBBMDAcceptFDRegistrations is the data-structure of this message
 type _BACnetConstructedDataBBMDAcceptFDRegistrations struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) isBACnetConstructedDataBBMDAcceptFDRegistrations() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) String() string {

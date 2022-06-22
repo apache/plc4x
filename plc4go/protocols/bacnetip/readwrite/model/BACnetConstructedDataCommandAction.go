@@ -41,6 +41,12 @@ type BACnetConstructedDataCommandAction interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataCommandActionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCommandAction.
+// This is useful for switch cases.
+type BACnetConstructedDataCommandActionExactly interface {
+	isBACnetConstructedDataCommandAction() bool
+}
+
 // _BACnetConstructedDataCommandAction is the data-structure of this message
 type _BACnetConstructedDataCommandAction struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataCommandAction) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCommandAction) isBACnetConstructedDataCommandAction() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCommandAction) String() string {

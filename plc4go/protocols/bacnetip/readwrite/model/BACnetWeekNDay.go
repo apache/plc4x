@@ -32,6 +32,12 @@ type BACnetWeekNDay interface {
 	utils.Serializable
 }
 
+// BACnetWeekNDayExactly can be used when we want exactly this type and not a type which fulfills BACnetWeekNDay.
+// This is useful for switch cases.
+type BACnetWeekNDayExactly interface {
+	isBACnetWeekNDay() bool
+}
+
 // _BACnetWeekNDay is the data-structure of this message
 type _BACnetWeekNDay struct {
 }
@@ -103,6 +109,10 @@ func (m *_BACnetWeekNDay) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetWeekNDay")
 	}
 	return nil
+}
+
+func (m *_BACnetWeekNDay) isBACnetWeekNDay() bool {
+	return true
 }
 
 func (m *_BACnetWeekNDay) String() string {

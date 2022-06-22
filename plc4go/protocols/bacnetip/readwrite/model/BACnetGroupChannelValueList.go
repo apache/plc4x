@@ -38,6 +38,12 @@ type BACnetGroupChannelValueList interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetGroupChannelValueListExactly can be used when we want exactly this type and not a type which fulfills BACnetGroupChannelValueList.
+// This is useful for switch cases.
+type BACnetGroupChannelValueListExactly interface {
+	isBACnetGroupChannelValueList() bool
+}
+
 // _BACnetGroupChannelValueList is the data-structure of this message
 type _BACnetGroupChannelValueList struct {
 	OpeningTag           BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetGroupChannelValueList) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for BACnetGroupChannelValueList")
 	}
 	return nil
+}
+
+func (m *_BACnetGroupChannelValueList) isBACnetGroupChannelValueList() bool {
+	return true
 }
 
 func (m *_BACnetGroupChannelValueList) String() string {

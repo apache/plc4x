@@ -39,6 +39,12 @@ type BVLCForwardedNPDU interface {
 	GetNpdu() NPDU
 }
 
+// BVLCForwardedNPDUExactly can be used when we want exactly this type and not a type which fulfills BVLCForwardedNPDU.
+// This is useful for switch cases.
+type BVLCForwardedNPDUExactly interface {
+	isBVLCForwardedNPDU() bool
+}
+
 // _BVLCForwardedNPDU is the data-structure of this message
 type _BVLCForwardedNPDU struct {
 	*_BVLC
@@ -256,6 +262,10 @@ func (m *_BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCForwardedNPDU) isBVLCForwardedNPDU() bool {
+	return true
 }
 
 func (m *_BVLCForwardedNPDU) String() string {

@@ -35,6 +35,12 @@ type BACnetConstructedDataActiveVTSessions interface {
 	GetActiveVTSession() []BACnetVTSession
 }
 
+// BACnetConstructedDataActiveVTSessionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveVTSessions.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveVTSessionsExactly interface {
+	isBACnetConstructedDataActiveVTSessions() bool
+}
+
 // _BACnetConstructedDataActiveVTSessions is the data-structure of this message
 type _BACnetConstructedDataActiveVTSessions struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataActiveVTSessions) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveVTSessions) isBACnetConstructedDataActiveVTSessions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveVTSessions) String() string {

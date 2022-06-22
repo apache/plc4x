@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueEnumerated interface {
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 }
 
+// BACnetTimerStateChangeValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueEnumerated.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueEnumeratedExactly interface {
+	isBACnetTimerStateChangeValueEnumerated() bool
+}
+
 // _BACnetTimerStateChangeValueEnumerated is the data-structure of this message
 type _BACnetTimerStateChangeValueEnumerated struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueEnumerated) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueEnumerated) isBACnetTimerStateChangeValueEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueEnumerated) String() string {

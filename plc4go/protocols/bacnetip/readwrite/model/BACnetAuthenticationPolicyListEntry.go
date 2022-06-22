@@ -36,6 +36,12 @@ type BACnetAuthenticationPolicyListEntry interface {
 	GetIndex() BACnetContextTagUnsignedInteger
 }
 
+// BACnetAuthenticationPolicyListEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicyListEntry.
+// This is useful for switch cases.
+type BACnetAuthenticationPolicyListEntryExactly interface {
+	isBACnetAuthenticationPolicyListEntry() bool
+}
+
 // _BACnetAuthenticationPolicyListEntry is the data-structure of this message
 type _BACnetAuthenticationPolicyListEntry struct {
 	CredentialDataInput BACnetDeviceObjectReferenceEnclosed
@@ -178,6 +184,10 @@ func (m *_BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationPolicyListEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationPolicyListEntry) isBACnetAuthenticationPolicyListEntry() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationPolicyListEntry) String() string {

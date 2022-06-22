@@ -37,6 +37,12 @@ type BACnetConstructedDataFileSize interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataFileSizeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileSize.
+// This is useful for switch cases.
+type BACnetConstructedDataFileSizeExactly interface {
+	isBACnetConstructedDataFileSize() bool
+}
+
 // _BACnetConstructedDataFileSize is the data-structure of this message
 type _BACnetConstructedDataFileSize struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataFileSize) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFileSize) isBACnetConstructedDataFileSize() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFileSize) String() string {

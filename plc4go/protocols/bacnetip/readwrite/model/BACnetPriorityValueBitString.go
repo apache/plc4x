@@ -35,6 +35,12 @@ type BACnetPriorityValueBitString interface {
 	GetBitStringValue() BACnetApplicationTagBitString
 }
 
+// BACnetPriorityValueBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueBitString.
+// This is useful for switch cases.
+type BACnetPriorityValueBitStringExactly interface {
+	isBACnetPriorityValueBitString() bool
+}
+
 // _BACnetPriorityValueBitString is the data-structure of this message
 type _BACnetPriorityValueBitString struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueBitString) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueBitString) isBACnetPriorityValueBitString() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueBitString) String() string {

@@ -36,6 +36,12 @@ type BACnetLandingCallStatusCommand interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetLandingCallStatusCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommand.
+// This is useful for switch cases.
+type BACnetLandingCallStatusCommandExactly interface {
+	isBACnetLandingCallStatusCommand() bool
+}
+
 // _BACnetLandingCallStatusCommand is the data-structure of this message
 type _BACnetLandingCallStatusCommand struct {
 	_BACnetLandingCallStatusCommandChildRequirements
@@ -43,9 +49,9 @@ type _BACnetLandingCallStatusCommand struct {
 }
 
 type _BACnetLandingCallStatusCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLandingCallStatusCommandParent interface {
@@ -54,7 +60,7 @@ type BACnetLandingCallStatusCommandParent interface {
 }
 
 type BACnetLandingCallStatusCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetLandingCallStatusCommand, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetLandingCallStatusCommand
 
@@ -198,6 +204,10 @@ func (pm *_BACnetLandingCallStatusCommand) SerializeParent(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for BACnetLandingCallStatusCommand")
 	}
 	return nil
+}
+
+func (m *_BACnetLandingCallStatusCommand) isBACnetLandingCallStatusCommand() bool {
+	return true
 }
 
 func (m *_BACnetLandingCallStatusCommand) String() string {

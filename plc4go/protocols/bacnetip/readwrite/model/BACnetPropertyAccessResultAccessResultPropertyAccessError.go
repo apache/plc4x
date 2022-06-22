@@ -35,6 +35,12 @@ type BACnetPropertyAccessResultAccessResultPropertyAccessError interface {
 	GetPropertyAccessError() ErrorEnclosed
 }
 
+// BACnetPropertyAccessResultAccessResultPropertyAccessErrorExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResultAccessResultPropertyAccessError.
+// This is useful for switch cases.
+type BACnetPropertyAccessResultAccessResultPropertyAccessErrorExactly interface {
+	isBACnetPropertyAccessResultAccessResultPropertyAccessError() bool
+}
+
 // _BACnetPropertyAccessResultAccessResultPropertyAccessError is the data-structure of this message
 type _BACnetPropertyAccessResultAccessResultPropertyAccessError struct {
 	*_BACnetPropertyAccessResultAccessResult
@@ -181,6 +187,10 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) isBACnetPropertyAccessResultAccessResultPropertyAccessError() bool {
+	return true
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) String() string {

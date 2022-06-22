@@ -41,6 +41,12 @@ type BACnetEventParameterCommandFailure interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetEventParameterCommandFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterCommandFailure.
+// This is useful for switch cases.
+type BACnetEventParameterCommandFailureExactly interface {
+	isBACnetEventParameterCommandFailure() bool
+}
+
 // _BACnetEventParameterCommandFailure is the data-structure of this message
 type _BACnetEventParameterCommandFailure struct {
 	*_BACnetEventParameter
@@ -287,6 +293,10 @@ func (m *_BACnetEventParameterCommandFailure) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterCommandFailure) isBACnetEventParameterCommandFailure() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterCommandFailure) String() string {

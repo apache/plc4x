@@ -35,6 +35,12 @@ type BACnetOptionalCharacterStringNull interface {
 	GetNullValue() BACnetApplicationTagNull
 }
 
+// BACnetOptionalCharacterStringNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalCharacterStringNull.
+// This is useful for switch cases.
+type BACnetOptionalCharacterStringNullExactly interface {
+	isBACnetOptionalCharacterStringNull() bool
+}
+
 // _BACnetOptionalCharacterStringNull is the data-structure of this message
 type _BACnetOptionalCharacterStringNull struct {
 	*_BACnetOptionalCharacterString
@@ -176,6 +182,10 @@ func (m *_BACnetOptionalCharacterStringNull) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalCharacterStringNull) isBACnetOptionalCharacterStringNull() bool {
+	return true
 }
 
 func (m *_BACnetOptionalCharacterStringNull) String() string {

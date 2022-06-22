@@ -35,6 +35,12 @@ type BVLCOriginalUnicastNPDU interface {
 	GetNpdu() NPDU
 }
 
+// BVLCOriginalUnicastNPDUExactly can be used when we want exactly this type and not a type which fulfills BVLCOriginalUnicastNPDU.
+// This is useful for switch cases.
+type BVLCOriginalUnicastNPDUExactly interface {
+	isBVLCOriginalUnicastNPDU() bool
+}
+
 // _BVLCOriginalUnicastNPDU is the data-structure of this message
 type _BVLCOriginalUnicastNPDU struct {
 	*_BVLC
@@ -181,6 +187,10 @@ func (m *_BVLCOriginalUnicastNPDU) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCOriginalUnicastNPDU) isBVLCOriginalUnicastNPDU() bool {
+	return true
 }
 
 func (m *_BVLCOriginalUnicastNPDU) String() string {

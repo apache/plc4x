@@ -41,6 +41,12 @@ type BACnetUnconfirmedServiceRequestIAm interface {
 	GetVendorId() BACnetVendorIdTagged
 }
 
+// BACnetUnconfirmedServiceRequestIAmExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestIAm.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestIAmExactly interface {
+	isBACnetUnconfirmedServiceRequestIAm() bool
+}
+
 // _BACnetUnconfirmedServiceRequestIAm is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestIAm struct {
 	*_BACnetUnconfirmedServiceRequest
@@ -293,6 +299,10 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestIAm) isBACnetUnconfirmedServiceRequestIAm() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) String() string {

@@ -35,6 +35,12 @@ type BACnetPropertyStatesReasonForHalt interface {
 	GetReasonForHalt() BACnetProgramErrorTagged
 }
 
+// BACnetPropertyStatesReasonForHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesReasonForHalt.
+// This is useful for switch cases.
+type BACnetPropertyStatesReasonForHaltExactly interface {
+	isBACnetPropertyStatesReasonForHalt() bool
+}
+
 // _BACnetPropertyStatesReasonForHalt is the data-structure of this message
 type _BACnetPropertyStatesReasonForHalt struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesReasonForHalt) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesReasonForHalt) isBACnetPropertyStatesReasonForHalt() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesReasonForHalt) String() string {

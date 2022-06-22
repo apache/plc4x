@@ -35,6 +35,12 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
 	GetBitmask() BACnetContextTagBitString
 }
 
+// BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteriaBitmask.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly interface {
+	isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool
+}
+
 // _BACnetEventParameterChangeOfValueCivCriteriaBitmask is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 	*_BACnetEventParameterChangeOfValueCivCriteria
@@ -181,6 +187,10 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) String() string {

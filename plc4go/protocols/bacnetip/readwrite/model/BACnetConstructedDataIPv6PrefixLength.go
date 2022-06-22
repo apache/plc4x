@@ -37,6 +37,12 @@ type BACnetConstructedDataIPv6PrefixLength interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataIPv6PrefixLengthExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6PrefixLength.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6PrefixLengthExactly interface {
+	isBACnetConstructedDataIPv6PrefixLength() bool
+}
+
 // _BACnetConstructedDataIPv6PrefixLength is the data-structure of this message
 type _BACnetConstructedDataIPv6PrefixLength struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6PrefixLength) isBACnetConstructedDataIPv6PrefixLength() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) String() string {

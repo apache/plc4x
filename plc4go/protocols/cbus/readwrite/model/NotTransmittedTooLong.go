@@ -33,6 +33,12 @@ type NotTransmittedTooLong interface {
 	Confirmation
 }
 
+// NotTransmittedTooLongExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedTooLong.
+// This is useful for switch cases.
+type NotTransmittedTooLongExactly interface {
+	isNotTransmittedTooLong() bool
+}
+
 // _NotTransmittedTooLong is the data-structure of this message
 type _NotTransmittedTooLong struct {
 	*_Confirmation
@@ -133,6 +139,10 @@ func (m *_NotTransmittedTooLong) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NotTransmittedTooLong) isNotTransmittedTooLong() bool {
+	return true
 }
 
 func (m *_NotTransmittedTooLong) String() string {

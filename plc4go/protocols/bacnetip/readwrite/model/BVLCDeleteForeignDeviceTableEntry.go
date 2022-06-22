@@ -37,6 +37,12 @@ type BVLCDeleteForeignDeviceTableEntry interface {
 	GetPort() uint16
 }
 
+// BVLCDeleteForeignDeviceTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCDeleteForeignDeviceTableEntry.
+// This is useful for switch cases.
+type BVLCDeleteForeignDeviceTableEntryExactly interface {
+	isBVLCDeleteForeignDeviceTableEntry() bool
+}
+
 // _BVLCDeleteForeignDeviceTableEntry is the data-structure of this message
 type _BVLCDeleteForeignDeviceTableEntry struct {
 	*_BVLC
@@ -216,6 +222,10 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCDeleteForeignDeviceTableEntry) isBVLCDeleteForeignDeviceTableEntry() bool {
+	return true
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) String() string {

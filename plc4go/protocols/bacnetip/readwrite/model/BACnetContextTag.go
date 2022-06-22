@@ -40,6 +40,12 @@ type BACnetContextTag interface {
 	GetActualLength() uint32
 }
 
+// BACnetContextTagExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTag.
+// This is useful for switch cases.
+type BACnetContextTagExactly interface {
+	isBACnetContextTag() bool
+}
+
 // _BACnetContextTag is the data-structure of this message
 type _BACnetContextTag struct {
 	_BACnetContextTagChildRequirements
@@ -50,10 +56,10 @@ type _BACnetContextTag struct {
 }
 
 type _BACnetContextTagChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetDataType() BACnetDataType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetContextTagParent interface {
@@ -62,7 +68,7 @@ type BACnetContextTagParent interface {
 }
 
 type BACnetContextTagChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetContextTag, header BACnetTagHeader)
 	GetParent() *BACnetContextTag
 
@@ -280,6 +286,10 @@ func (pm *_BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, chil
 		return errors.Wrap(popErr, "Error popping for BACnetContextTag")
 	}
 	return nil
+}
+
+func (m *_BACnetContextTag) isBACnetContextTag() bool {
+	return true
 }
 
 func (m *_BACnetContextTag) String() string {

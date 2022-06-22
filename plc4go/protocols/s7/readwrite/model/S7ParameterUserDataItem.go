@@ -34,16 +34,22 @@ type S7ParameterUserDataItem interface {
 	GetItemType() uint8
 }
 
+// S7ParameterUserDataItemExactly can be used when we want exactly this type and not a type which fulfills S7ParameterUserDataItem.
+// This is useful for switch cases.
+type S7ParameterUserDataItemExactly interface {
+	isS7ParameterUserDataItem() bool
+}
+
 // _S7ParameterUserDataItem is the data-structure of this message
 type _S7ParameterUserDataItem struct {
 	_S7ParameterUserDataItemChildRequirements
 }
 
 type _S7ParameterUserDataItemChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetItemType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7ParameterUserDataItemParent interface {
@@ -52,7 +58,7 @@ type S7ParameterUserDataItemParent interface {
 }
 
 type S7ParameterUserDataItemChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7ParameterUserDataItem)
 	GetParent() *S7ParameterUserDataItem
 
@@ -164,6 +170,10 @@ func (pm *_S7ParameterUserDataItem) SerializeParent(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for S7ParameterUserDataItem")
 	}
 	return nil
+}
+
+func (m *_S7ParameterUserDataItem) isS7ParameterUserDataItem() bool {
+	return true
 }
 
 func (m *_S7ParameterUserDataItem) String() string {

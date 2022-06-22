@@ -33,6 +33,12 @@ type BACnetConstructedDataTrendLogAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataTrendLogAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogAll.
+// This is useful for switch cases.
+type BACnetConstructedDataTrendLogAllExactly interface {
+	isBACnetConstructedDataTrendLogAll() bool
+}
+
 // _BACnetConstructedDataTrendLogAll is the data-structure of this message
 type _BACnetConstructedDataTrendLogAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataTrendLogAll) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrendLogAll) isBACnetConstructedDataTrendLogAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrendLogAll) String() string {

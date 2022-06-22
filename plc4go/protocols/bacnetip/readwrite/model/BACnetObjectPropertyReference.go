@@ -40,6 +40,12 @@ type BACnetObjectPropertyReference interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 }
 
+// BACnetObjectPropertyReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetObjectPropertyReference.
+// This is useful for switch cases.
+type BACnetObjectPropertyReferenceExactly interface {
+	isBACnetObjectPropertyReference() bool
+}
+
 // _BACnetObjectPropertyReference is the data-structure of this message
 type _BACnetObjectPropertyReference struct {
 	ObjectIdentifier   BACnetContextTagObjectIdentifier
@@ -230,6 +236,10 @@ func (m *_BACnetObjectPropertyReference) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetObjectPropertyReference")
 	}
 	return nil
+}
+
+func (m *_BACnetObjectPropertyReference) isBACnetObjectPropertyReference() bool {
+	return true
 }
 
 func (m *_BACnetObjectPropertyReference) String() string {

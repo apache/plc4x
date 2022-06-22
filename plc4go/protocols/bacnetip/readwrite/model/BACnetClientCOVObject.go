@@ -35,6 +35,12 @@ type BACnetClientCOVObject interface {
 	GetRealIncrement() BACnetApplicationTagReal
 }
 
+// BACnetClientCOVObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOVObject.
+// This is useful for switch cases.
+type BACnetClientCOVObjectExactly interface {
+	isBACnetClientCOVObject() bool
+}
+
 // _BACnetClientCOVObject is the data-structure of this message
 type _BACnetClientCOVObject struct {
 	*_BACnetClientCOV
@@ -176,6 +182,10 @@ func (m *_BACnetClientCOVObject) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetClientCOVObject) isBACnetClientCOVObject() bool {
+	return true
 }
 
 func (m *_BACnetClientCOVObject) String() string {

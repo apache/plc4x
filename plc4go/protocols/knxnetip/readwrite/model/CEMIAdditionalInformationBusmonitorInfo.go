@@ -49,6 +49,12 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	GetSequenceNumber() uint8
 }
 
+// CEMIAdditionalInformationBusmonitorInfoExactly can be used when we want exactly this type and not a type which fulfills CEMIAdditionalInformationBusmonitorInfo.
+// This is useful for switch cases.
+type CEMIAdditionalInformationBusmonitorInfoExactly interface {
+	isCEMIAdditionalInformationBusmonitorInfo() bool
+}
+
 // _CEMIAdditionalInformationBusmonitorInfo is the data-structure of this message
 type _CEMIAdditionalInformationBusmonitorInfo struct {
 	*_CEMIAdditionalInformation
@@ -333,6 +339,10 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CEMIAdditionalInformationBusmonitorInfo) isCEMIAdditionalInformationBusmonitorInfo() bool {
+	return true
 }
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) String() string {

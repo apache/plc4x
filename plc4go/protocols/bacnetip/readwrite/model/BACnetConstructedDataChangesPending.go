@@ -37,6 +37,12 @@ type BACnetConstructedDataChangesPending interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataChangesPendingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangesPending.
+// This is useful for switch cases.
+type BACnetConstructedDataChangesPendingExactly interface {
+	isBACnetConstructedDataChangesPending() bool
+}
+
 // _BACnetConstructedDataChangesPending is the data-structure of this message
 type _BACnetConstructedDataChangesPending struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataChangesPending) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataChangesPending) isBACnetConstructedDataChangesPending() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataChangesPending) String() string {

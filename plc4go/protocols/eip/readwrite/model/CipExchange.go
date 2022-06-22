@@ -40,6 +40,12 @@ type CipExchange interface {
 	GetService() CipService
 }
 
+// CipExchangeExactly can be used when we want exactly this type and not a type which fulfills CipExchange.
+// This is useful for switch cases.
+type CipExchangeExactly interface {
+	isCipExchange() bool
+}
+
 // _CipExchange is the data-structure of this message
 type _CipExchange struct {
 	Service CipService
@@ -244,6 +250,10 @@ func (m *_CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CipExchange")
 	}
 	return nil
+}
+
+func (m *_CipExchange) isCipExchange() bool {
+	return true
 }
 
 func (m *_CipExchange) String() string {

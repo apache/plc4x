@@ -36,6 +36,12 @@ type BACnetLogMultipleRecord interface {
 	GetLogData() BACnetLogData
 }
 
+// BACnetLogMultipleRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetLogMultipleRecord.
+// This is useful for switch cases.
+type BACnetLogMultipleRecordExactly interface {
+	isBACnetLogMultipleRecord() bool
+}
+
 // _BACnetLogMultipleRecord is the data-structure of this message
 type _BACnetLogMultipleRecord struct {
 	Timestamp BACnetDateTimeEnclosed
@@ -178,6 +184,10 @@ func (m *_BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetLogMultipleRecord")
 	}
 	return nil
+}
+
+func (m *_BACnetLogMultipleRecord) isBACnetLogMultipleRecord() bool {
+	return true
 }
 
 func (m *_BACnetLogMultipleRecord) String() string {

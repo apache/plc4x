@@ -39,6 +39,12 @@ type IdentifyReplyCommandFirmwareSummary interface {
 	GetVersion() string
 }
 
+// IdentifyReplyCommandFirmwareSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandFirmwareSummary.
+// This is useful for switch cases.
+type IdentifyReplyCommandFirmwareSummaryExactly interface {
+	isIdentifyReplyCommandFirmwareSummary() bool
+}
+
 // _IdentifyReplyCommandFirmwareSummary is the data-structure of this message
 type _IdentifyReplyCommandFirmwareSummary struct {
 	*_IdentifyReplyCommand
@@ -219,6 +225,10 @@ func (m *_IdentifyReplyCommandFirmwareSummary) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandFirmwareSummary) isIdentifyReplyCommandFirmwareSummary() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandFirmwareSummary) String() string {

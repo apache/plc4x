@@ -33,6 +33,12 @@ type ApduDataExtLinkRead interface {
 	ApduDataExt
 }
 
+// ApduDataExtLinkReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtLinkRead.
+// This is useful for switch cases.
+type ApduDataExtLinkReadExactly interface {
+	isApduDataExtLinkRead() bool
+}
+
 // _ApduDataExtLinkRead is the data-structure of this message
 type _ApduDataExtLinkRead struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtLinkRead) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtLinkRead) isApduDataExtLinkRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtLinkRead) String() string {

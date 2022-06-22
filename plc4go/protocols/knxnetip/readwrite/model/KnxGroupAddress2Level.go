@@ -37,6 +37,12 @@ type KnxGroupAddress2Level interface {
 	GetSubGroup() uint16
 }
 
+// KnxGroupAddress2LevelExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddress2Level.
+// This is useful for switch cases.
+type KnxGroupAddress2LevelExactly interface {
+	isKnxGroupAddress2Level() bool
+}
+
 // _KnxGroupAddress2Level is the data-structure of this message
 type _KnxGroupAddress2Level struct {
 	*_KnxGroupAddress
@@ -193,6 +199,10 @@ func (m *_KnxGroupAddress2Level) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxGroupAddress2Level) isKnxGroupAddress2Level() bool {
+	return true
 }
 
 func (m *_KnxGroupAddress2Level) String() string {

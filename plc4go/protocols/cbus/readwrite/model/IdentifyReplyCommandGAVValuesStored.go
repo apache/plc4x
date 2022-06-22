@@ -35,6 +35,12 @@ type IdentifyReplyCommandGAVValuesStored interface {
 	GetValues() []byte
 }
 
+// IdentifyReplyCommandGAVValuesStoredExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandGAVValuesStored.
+// This is useful for switch cases.
+type IdentifyReplyCommandGAVValuesStoredExactly interface {
+	isIdentifyReplyCommandGAVValuesStored() bool
+}
+
 // _IdentifyReplyCommandGAVValuesStored is the data-structure of this message
 type _IdentifyReplyCommandGAVValuesStored struct {
 	*_IdentifyReplyCommand
@@ -170,6 +176,10 @@ func (m *_IdentifyReplyCommandGAVValuesStored) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandGAVValuesStored) isIdentifyReplyCommandGAVValuesStored() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandGAVValuesStored) String() string {

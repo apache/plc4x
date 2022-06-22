@@ -45,6 +45,12 @@ type BACnetConfirmedServiceRequestAtomicWriteFile interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetConfirmedServiceRequestAtomicWriteFileExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicWriteFile.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAtomicWriteFileExactly interface {
+	isBACnetConfirmedServiceRequestAtomicWriteFile() bool
+}
+
 // _BACnetConfirmedServiceRequestAtomicWriteFile is the data-structure of this message
 type _BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	*_BACnetConfirmedServiceRequest
@@ -362,6 +368,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) isBACnetConfirmedServiceRequestAtomicWriteFile() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) String() string {

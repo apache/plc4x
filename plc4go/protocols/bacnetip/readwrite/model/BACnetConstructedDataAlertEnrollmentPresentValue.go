@@ -37,6 +37,12 @@ type BACnetConstructedDataAlertEnrollmentPresentValue interface {
 	GetActualValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetConstructedDataAlertEnrollmentPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAlertEnrollmentPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAlertEnrollmentPresentValueExactly interface {
+	isBACnetConstructedDataAlertEnrollmentPresentValue() bool
+}
+
 // _BACnetConstructedDataAlertEnrollmentPresentValue is the data-structure of this message
 type _BACnetConstructedDataAlertEnrollmentPresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) isBACnetConstructedDataAlertEnrollmentPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) String() string {

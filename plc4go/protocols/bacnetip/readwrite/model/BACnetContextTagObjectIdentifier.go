@@ -39,6 +39,12 @@ type BACnetContextTagObjectIdentifier interface {
 	GetInstanceNumber() uint32
 }
 
+// BACnetContextTagObjectIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagObjectIdentifier.
+// This is useful for switch cases.
+type BACnetContextTagObjectIdentifierExactly interface {
+	isBACnetContextTagObjectIdentifier() bool
+}
+
 // _BACnetContextTagObjectIdentifier is the data-structure of this message
 type _BACnetContextTagObjectIdentifier struct {
 	*_BACnetContextTag
@@ -226,6 +232,10 @@ func (m *_BACnetContextTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagObjectIdentifier) isBACnetContextTagObjectIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetContextTagObjectIdentifier) String() string {

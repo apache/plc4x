@@ -35,6 +35,12 @@ type S7ParameterReadVarResponse interface {
 	GetNumItems() uint8
 }
 
+// S7ParameterReadVarResponseExactly can be used when we want exactly this type and not a type which fulfills S7ParameterReadVarResponse.
+// This is useful for switch cases.
+type S7ParameterReadVarResponseExactly interface {
+	isS7ParameterReadVarResponse() bool
+}
+
 // _S7ParameterReadVarResponse is the data-structure of this message
 type _S7ParameterReadVarResponse struct {
 	*_S7Parameter
@@ -171,6 +177,10 @@ func (m *_S7ParameterReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterReadVarResponse) isS7ParameterReadVarResponse() bool {
+	return true
 }
 
 func (m *_S7ParameterReadVarResponse) String() string {

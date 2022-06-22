@@ -35,6 +35,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated interfa
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 }
 
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedExactly interface {
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() bool
+}
+
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
@@ -181,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) S
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) isBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) String() string {

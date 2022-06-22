@@ -38,6 +38,12 @@ type BACnetDateRangeEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetDateRangeEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetDateRangeEnclosed.
+// This is useful for switch cases.
+type BACnetDateRangeEnclosedExactly interface {
+	isBACnetDateRangeEnclosed() bool
+}
+
 // _BACnetDateRangeEnclosed is the data-structure of this message
 type _BACnetDateRangeEnclosed struct {
 	OpeningTag BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetDateRangeEnclosed) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetDateRangeEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetDateRangeEnclosed) isBACnetDateRangeEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetDateRangeEnclosed) String() string {

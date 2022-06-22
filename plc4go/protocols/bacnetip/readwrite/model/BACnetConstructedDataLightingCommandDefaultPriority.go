@@ -37,6 +37,12 @@ type BACnetConstructedDataLightingCommandDefaultPriority interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataLightingCommandDefaultPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingCommandDefaultPriority.
+// This is useful for switch cases.
+type BACnetConstructedDataLightingCommandDefaultPriorityExactly interface {
+	isBACnetConstructedDataLightingCommandDefaultPriority() bool
+}
+
 // _BACnetConstructedDataLightingCommandDefaultPriority is the data-structure of this message
 type _BACnetConstructedDataLightingCommandDefaultPriority struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) isBACnetConstructedDataLightingCommandDefaultPriority() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) String() string {

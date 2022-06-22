@@ -38,6 +38,12 @@ type StatusRequestLevel interface {
 	GetStartingGroupAddressLabel() byte
 }
 
+// StatusRequestLevelExactly can be used when we want exactly this type and not a type which fulfills StatusRequestLevel.
+// This is useful for switch cases.
+type StatusRequestLevelExactly interface {
+	isStatusRequestLevel() bool
+}
+
 // _StatusRequestLevel is the data-structure of this message
 type _StatusRequestLevel struct {
 	*_StatusRequest
@@ -247,6 +253,10 @@ func (m *_StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_StatusRequestLevel) isStatusRequestLevel() bool {
+	return true
 }
 
 func (m *_StatusRequestLevel) String() string {

@@ -35,6 +35,12 @@ type BACnetPropertyStatesLiftCarMode interface {
 	GetLiftCarMode() BACnetLiftCarModeTagged
 }
 
+// BACnetPropertyStatesLiftCarModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftCarMode.
+// This is useful for switch cases.
+type BACnetPropertyStatesLiftCarModeExactly interface {
+	isBACnetPropertyStatesLiftCarMode() bool
+}
+
 // _BACnetPropertyStatesLiftCarMode is the data-structure of this message
 type _BACnetPropertyStatesLiftCarMode struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesLiftCarMode) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLiftCarMode) isBACnetPropertyStatesLiftCarMode() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLiftCarMode) String() string {

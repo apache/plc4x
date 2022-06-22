@@ -35,6 +35,12 @@ type BACnetPropertyStatesPolarity interface {
 	GetPolarity() BACnetPolarityTagged
 }
 
+// BACnetPropertyStatesPolarityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesPolarity.
+// This is useful for switch cases.
+type BACnetPropertyStatesPolarityExactly interface {
+	isBACnetPropertyStatesPolarity() bool
+}
+
 // _BACnetPropertyStatesPolarity is the data-structure of this message
 type _BACnetPropertyStatesPolarity struct {
 	*_BACnetPropertyStates
@@ -176,6 +182,10 @@ func (m *_BACnetPropertyStatesPolarity) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesPolarity) isBACnetPropertyStatesPolarity() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesPolarity) String() string {

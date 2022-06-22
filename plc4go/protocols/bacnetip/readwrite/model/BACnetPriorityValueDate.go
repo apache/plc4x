@@ -35,6 +35,12 @@ type BACnetPriorityValueDate interface {
 	GetDateValue() BACnetApplicationTagDate
 }
 
+// BACnetPriorityValueDateExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueDate.
+// This is useful for switch cases.
+type BACnetPriorityValueDateExactly interface {
+	isBACnetPriorityValueDate() bool
+}
+
 // _BACnetPriorityValueDate is the data-structure of this message
 type _BACnetPriorityValueDate struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueDate) isBACnetPriorityValueDate() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueDate) String() string {

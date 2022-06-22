@@ -38,6 +38,12 @@ type BACnetAuthenticationFactorEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetAuthenticationFactorEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationFactorEnclosed.
+// This is useful for switch cases.
+type BACnetAuthenticationFactorEnclosedExactly interface {
+	isBACnetAuthenticationFactorEnclosed() bool
+}
+
 // _BACnetAuthenticationFactorEnclosed is the data-structure of this message
 type _BACnetAuthenticationFactorEnclosed struct {
 	OpeningTag           BACnetOpeningTag
@@ -216,6 +222,10 @@ func (m *_BACnetAuthenticationFactorEnclosed) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationFactorEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationFactorEnclosed) isBACnetAuthenticationFactorEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationFactorEnclosed) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataOutOfService interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataOutOfServiceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOutOfService.
+// This is useful for switch cases.
+type BACnetConstructedDataOutOfServiceExactly interface {
+	isBACnetConstructedDataOutOfService() bool
+}
+
 // _BACnetConstructedDataOutOfService is the data-structure of this message
 type _BACnetConstructedDataOutOfService struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOutOfService) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOutOfService) isBACnetConstructedDataOutOfService() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOutOfService) String() string {

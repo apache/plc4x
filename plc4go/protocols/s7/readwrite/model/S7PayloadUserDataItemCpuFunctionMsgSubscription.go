@@ -42,6 +42,12 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscription interface {
 	GetReserve() *uint8
 }
 
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionMsgSubscription.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionExactly interface {
+	isS7PayloadUserDataItemCpuFunctionMsgSubscription() bool
+}
+
 // _S7PayloadUserDataItemCpuFunctionMsgSubscription is the data-structure of this message
 type _S7PayloadUserDataItemCpuFunctionMsgSubscription struct {
 	*_S7PayloadUserDataItem
@@ -310,6 +316,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) isS7PayloadUserDataItemCpuFunctionMsgSubscription() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) String() string {

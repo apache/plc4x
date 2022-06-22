@@ -37,6 +37,12 @@ type BACnetConstructedDataReasonForHalt interface {
 	GetActualValue() BACnetProgramErrorTagged
 }
 
+// BACnetConstructedDataReasonForHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReasonForHalt.
+// This is useful for switch cases.
+type BACnetConstructedDataReasonForHaltExactly interface {
+	isBACnetConstructedDataReasonForHalt() bool
+}
+
 // _BACnetConstructedDataReasonForHalt is the data-structure of this message
 type _BACnetConstructedDataReasonForHalt struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataReasonForHalt) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReasonForHalt) isBACnetConstructedDataReasonForHalt() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReasonForHalt) String() string {

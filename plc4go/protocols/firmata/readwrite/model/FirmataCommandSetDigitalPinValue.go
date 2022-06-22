@@ -38,6 +38,12 @@ type FirmataCommandSetDigitalPinValue interface {
 	GetOn() bool
 }
 
+// FirmataCommandSetDigitalPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetDigitalPinValue.
+// This is useful for switch cases.
+type FirmataCommandSetDigitalPinValueExactly interface {
+	isFirmataCommandSetDigitalPinValue() bool
+}
+
 // _FirmataCommandSetDigitalPinValue is the data-structure of this message
 type _FirmataCommandSetDigitalPinValue struct {
 	*_FirmataCommand
@@ -222,6 +228,10 @@ func (m *_FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSetDigitalPinValue) isFirmataCommandSetDigitalPinValue() bool {
+	return true
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) String() string {

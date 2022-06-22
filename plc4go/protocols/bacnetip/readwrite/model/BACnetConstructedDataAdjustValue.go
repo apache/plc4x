@@ -37,6 +37,12 @@ type BACnetConstructedDataAdjustValue interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConstructedDataAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAdjustValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAdjustValueExactly interface {
+	isBACnetConstructedDataAdjustValue() bool
+}
+
 // _BACnetConstructedDataAdjustValue is the data-structure of this message
 type _BACnetConstructedDataAdjustValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAdjustValue) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAdjustValue) isBACnetConstructedDataAdjustValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAdjustValue) String() string {

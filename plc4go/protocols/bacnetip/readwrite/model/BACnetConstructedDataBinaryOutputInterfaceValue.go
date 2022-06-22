@@ -37,6 +37,12 @@ type BACnetConstructedDataBinaryOutputInterfaceValue interface {
 	GetActualValue() BACnetOptionalBinaryPV
 }
 
+// BACnetConstructedDataBinaryOutputInterfaceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryOutputInterfaceValue.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryOutputInterfaceValueExactly interface {
+	isBACnetConstructedDataBinaryOutputInterfaceValue() bool
+}
+
 // _BACnetConstructedDataBinaryOutputInterfaceValue is the data-structure of this message
 type _BACnetConstructedDataBinaryOutputInterfaceValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) isBACnetConstructedDataBinaryOutputInterfaceValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) String() string {

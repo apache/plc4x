@@ -37,6 +37,12 @@ type DeviceConfigurationRequest interface {
 	GetCemi() CEMI
 }
 
+// DeviceConfigurationRequestExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationRequest.
+// This is useful for switch cases.
+type DeviceConfigurationRequestExactly interface {
+	isDeviceConfigurationRequest() bool
+}
+
 // _DeviceConfigurationRequest is the data-structure of this message
 type _DeviceConfigurationRequest struct {
 	*_KnxNetIpMessage
@@ -218,6 +224,10 @@ func (m *_DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DeviceConfigurationRequest) isDeviceConfigurationRequest() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationRequest) String() string {

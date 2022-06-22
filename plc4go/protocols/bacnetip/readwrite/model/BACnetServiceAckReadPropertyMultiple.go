@@ -35,6 +35,12 @@ type BACnetServiceAckReadPropertyMultiple interface {
 	GetData() []BACnetReadAccessResult
 }
 
+// BACnetServiceAckReadPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyMultiple.
+// This is useful for switch cases.
+type BACnetServiceAckReadPropertyMultipleExactly interface {
+	isBACnetServiceAckReadPropertyMultiple() bool
+}
+
 // _BACnetServiceAckReadPropertyMultiple is the data-structure of this message
 type _BACnetServiceAckReadPropertyMultiple struct {
 	*_BACnetServiceAck
@@ -198,6 +204,10 @@ func (m *_BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckReadPropertyMultiple) isBACnetServiceAckReadPropertyMultiple() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckReadPropertyMultiple) String() string {

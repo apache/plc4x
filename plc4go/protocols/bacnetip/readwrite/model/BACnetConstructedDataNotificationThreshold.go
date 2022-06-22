@@ -37,6 +37,12 @@ type BACnetConstructedDataNotificationThreshold interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataNotificationThresholdExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotificationThreshold.
+// This is useful for switch cases.
+type BACnetConstructedDataNotificationThresholdExactly interface {
+	isBACnetConstructedDataNotificationThreshold() bool
+}
+
 // _BACnetConstructedDataNotificationThreshold is the data-structure of this message
 type _BACnetConstructedDataNotificationThreshold struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataNotificationThreshold) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNotificationThreshold) isBACnetConstructedDataNotificationThreshold() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) String() string {

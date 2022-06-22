@@ -33,6 +33,12 @@ type ModbusPDUGetComEventCounterRequest interface {
 	ModbusPDU
 }
 
+// ModbusPDUGetComEventCounterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUGetComEventCounterRequest.
+// This is useful for switch cases.
+type ModbusPDUGetComEventCounterRequestExactly interface {
+	isModbusPDUGetComEventCounterRequest() bool
+}
+
 // _ModbusPDUGetComEventCounterRequest is the data-structure of this message
 type _ModbusPDUGetComEventCounterRequest struct {
 	*_ModbusPDU
@@ -139,6 +145,10 @@ func (m *_ModbusPDUGetComEventCounterRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUGetComEventCounterRequest) isModbusPDUGetComEventCounterRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUGetComEventCounterRequest) String() string {

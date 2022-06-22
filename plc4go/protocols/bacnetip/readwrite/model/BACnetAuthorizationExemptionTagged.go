@@ -40,6 +40,12 @@ type BACnetAuthorizationExemptionTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetAuthorizationExemptionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthorizationExemptionTagged.
+// This is useful for switch cases.
+type BACnetAuthorizationExemptionTaggedExactly interface {
+	isBACnetAuthorizationExemptionTagged() bool
+}
+
 // _BACnetAuthorizationExemptionTagged is the data-structure of this message
 type _BACnetAuthorizationExemptionTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetAuthorizationExemptionTagged) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetAuthorizationExemptionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthorizationExemptionTagged) isBACnetAuthorizationExemptionTagged() bool {
+	return true
 }
 
 func (m *_BACnetAuthorizationExemptionTagged) String() string {

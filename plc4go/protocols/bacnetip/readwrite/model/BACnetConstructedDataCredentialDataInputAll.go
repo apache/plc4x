@@ -33,6 +33,12 @@ type BACnetConstructedDataCredentialDataInputAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataCredentialDataInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDataInputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialDataInputAllExactly interface {
+	isBACnetConstructedDataCredentialDataInputAll() bool
+}
+
 // _BACnetConstructedDataCredentialDataInputAll is the data-structure of this message
 type _BACnetConstructedDataCredentialDataInputAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataCredentialDataInputAll) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputAll) isBACnetConstructedDataCredentialDataInputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputAll) String() string {

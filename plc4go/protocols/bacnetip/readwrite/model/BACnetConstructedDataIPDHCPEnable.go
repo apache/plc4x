@@ -37,6 +37,12 @@ type BACnetConstructedDataIPDHCPEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataIPDHCPEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataIPDHCPEnableExactly interface {
+	isBACnetConstructedDataIPDHCPEnable() bool
+}
+
 // _BACnetConstructedDataIPDHCPEnable is the data-structure of this message
 type _BACnetConstructedDataIPDHCPEnable struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPDHCPEnable) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPDHCPEnable) isBACnetConstructedDataIPDHCPEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPDHCPEnable) String() string {

@@ -47,6 +47,12 @@ type BACnetConfirmedServiceRequestSubscribeCOVProperty interface {
 	GetCovIncrement() BACnetContextTagReal
 }
 
+// BACnetConfirmedServiceRequestSubscribeCOVPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestSubscribeCOVProperty.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestSubscribeCOVPropertyExactly interface {
+	isBACnetConfirmedServiceRequestSubscribeCOVProperty() bool
+}
+
 // _BACnetConfirmedServiceRequestSubscribeCOVProperty is the data-structure of this message
 type _BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
 	*_BACnetConfirmedServiceRequest
@@ -414,6 +420,10 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) isBACnetConfirmedServiceRequestSubscribeCOVProperty() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) String() string {

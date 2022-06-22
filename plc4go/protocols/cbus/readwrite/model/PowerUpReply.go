@@ -35,6 +35,12 @@ type PowerUpReply interface {
 	GetIsA() PowerUp
 }
 
+// PowerUpReplyExactly can be used when we want exactly this type and not a type which fulfills PowerUpReply.
+// This is useful for switch cases.
+type PowerUpReplyExactly interface {
+	isPowerUpReply() bool
+}
+
 // _PowerUpReply is the data-structure of this message
 type _PowerUpReply struct {
 	*_Reply
@@ -176,6 +182,10 @@ func (m *_PowerUpReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_PowerUpReply) isPowerUpReply() bool {
+	return true
 }
 
 func (m *_PowerUpReply) String() string {

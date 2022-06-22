@@ -37,6 +37,12 @@ type BACnetConstructedDataIntegerValueHighLimit interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 }
 
+// BACnetConstructedDataIntegerValueHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueHighLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueHighLimitExactly interface {
+	isBACnetConstructedDataIntegerValueHighLimit() bool
+}
+
 // _BACnetConstructedDataIntegerValueHighLimit is the data-structure of this message
 type _BACnetConstructedDataIntegerValueHighLimit struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIntegerValueHighLimit) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueHighLimit) isBACnetConstructedDataIntegerValueHighLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueHighLimit) String() string {

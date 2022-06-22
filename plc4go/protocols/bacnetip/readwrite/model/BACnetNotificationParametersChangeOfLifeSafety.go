@@ -45,6 +45,12 @@ type BACnetNotificationParametersChangeOfLifeSafety interface {
 	GetInnerClosingTag() BACnetClosingTag
 }
 
+// BACnetNotificationParametersChangeOfLifeSafetyExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfLifeSafety.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfLifeSafetyExactly interface {
+	isBACnetNotificationParametersChangeOfLifeSafety() bool
+}
+
 // _BACnetNotificationParametersChangeOfLifeSafety is the data-structure of this message
 type _BACnetNotificationParametersChangeOfLifeSafety struct {
 	*_BACnetNotificationParameters
@@ -367,6 +373,10 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfLifeSafety) isBACnetNotificationParametersChangeOfLifeSafety() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfLifeSafety) String() string {

@@ -35,6 +35,12 @@ type SALDataOff interface {
 	GetGroup() byte
 }
 
+// SALDataOffExactly can be used when we want exactly this type and not a type which fulfills SALDataOff.
+// This is useful for switch cases.
+type SALDataOffExactly interface {
+	isSALDataOff() bool
+}
+
 // _SALDataOff is the data-structure of this message
 type _SALDataOff struct {
 	*_SALData
@@ -165,6 +171,10 @@ func (m *_SALDataOff) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SALDataOff) isSALDataOff() bool {
+	return true
 }
 
 func (m *_SALDataOff) String() string {

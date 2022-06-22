@@ -36,6 +36,12 @@ type BACnetOptionalBinaryPV interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetOptionalBinaryPVExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalBinaryPV.
+// This is useful for switch cases.
+type BACnetOptionalBinaryPVExactly interface {
+	isBACnetOptionalBinaryPV() bool
+}
+
 // _BACnetOptionalBinaryPV is the data-structure of this message
 type _BACnetOptionalBinaryPV struct {
 	_BACnetOptionalBinaryPVChildRequirements
@@ -43,9 +49,9 @@ type _BACnetOptionalBinaryPV struct {
 }
 
 type _BACnetOptionalBinaryPVChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetOptionalBinaryPVParent interface {
@@ -54,7 +60,7 @@ type BACnetOptionalBinaryPVParent interface {
 }
 
 type BACnetOptionalBinaryPVChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetOptionalBinaryPV, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetOptionalBinaryPV
 
@@ -198,6 +204,10 @@ func (pm *_BACnetOptionalBinaryPV) SerializeParent(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetOptionalBinaryPV")
 	}
 	return nil
+}
+
+func (m *_BACnetOptionalBinaryPV) isBACnetOptionalBinaryPV() bool {
+	return true
 }
 
 func (m *_BACnetOptionalBinaryPV) String() string {

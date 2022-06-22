@@ -37,6 +37,12 @@ type BACnetConstructedDataProtocolLevel interface {
 	GetActualValue() BACnetProtocolLevelTagged
 }
 
+// BACnetConstructedDataProtocolLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolLevel.
+// This is useful for switch cases.
+type BACnetConstructedDataProtocolLevelExactly interface {
+	isBACnetConstructedDataProtocolLevel() bool
+}
+
 // _BACnetConstructedDataProtocolLevel is the data-structure of this message
 type _BACnetConstructedDataProtocolLevel struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataProtocolLevel) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProtocolLevel) isBACnetConstructedDataProtocolLevel() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProtocolLevel) String() string {

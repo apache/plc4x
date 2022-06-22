@@ -33,6 +33,12 @@ type LDataFrameACK interface {
 	LDataFrame
 }
 
+// LDataFrameACKExactly can be used when we want exactly this type and not a type which fulfills LDataFrameACK.
+// This is useful for switch cases.
+type LDataFrameACKExactly interface {
+	isLDataFrameACK() bool
+}
+
 // _LDataFrameACK is the data-structure of this message
 type _LDataFrameACK struct {
 	*_LDataFrame
@@ -141,6 +147,10 @@ func (m *_LDataFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LDataFrameACK) isLDataFrameACK() bool {
+	return true
 }
 
 func (m *_LDataFrameACK) String() string {

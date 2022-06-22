@@ -37,6 +37,12 @@ type CALDataRequestGetStatus interface {
 	GetCount() uint8
 }
 
+// CALDataRequestGetStatusExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestGetStatus.
+// This is useful for switch cases.
+type CALDataRequestGetStatusExactly interface {
+	isCALDataRequestGetStatus() bool
+}
+
 // _CALDataRequestGetStatus is the data-structure of this message
 type _CALDataRequestGetStatus struct {
 	*_CALData
@@ -191,6 +197,10 @@ func (m *_CALDataRequestGetStatus) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataRequestGetStatus) isCALDataRequestGetStatus() bool {
+	return true
 }
 
 func (m *_CALDataRequestGetStatus) String() string {

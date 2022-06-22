@@ -35,6 +35,12 @@ type BACnetChannelValueBoolean interface {
 	GetBooleanValue() BACnetApplicationTagBoolean
 }
 
+// BACnetChannelValueBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueBoolean.
+// This is useful for switch cases.
+type BACnetChannelValueBooleanExactly interface {
+	isBACnetChannelValueBoolean() bool
+}
+
 // _BACnetChannelValueBoolean is the data-structure of this message
 type _BACnetChannelValueBoolean struct {
 	*_BACnetChannelValue
@@ -176,6 +182,10 @@ func (m *_BACnetChannelValueBoolean) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueBoolean) isBACnetChannelValueBoolean() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueBoolean) String() string {

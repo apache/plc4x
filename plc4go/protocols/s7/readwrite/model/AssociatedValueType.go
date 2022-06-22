@@ -40,6 +40,12 @@ type AssociatedValueType interface {
 	GetData() []uint8
 }
 
+// AssociatedValueTypeExactly can be used when we want exactly this type and not a type which fulfills AssociatedValueType.
+// This is useful for switch cases.
+type AssociatedValueTypeExactly interface {
+	isAssociatedValueType() bool
+}
+
 // _AssociatedValueType is the data-structure of this message
 type _AssociatedValueType struct {
 	ReturnCode    DataTransportErrorCode
@@ -248,6 +254,10 @@ func (m *_AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AssociatedValueType")
 	}
 	return nil
+}
+
+func (m *_AssociatedValueType) isAssociatedValueType() bool {
+	return true
 }
 
 func (m *_AssociatedValueType) String() string {

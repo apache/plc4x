@@ -37,6 +37,12 @@ type BACnetApplicationTagEnumerated interface {
 	GetActualValue() uint32
 }
 
+// BACnetApplicationTagEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagEnumerated.
+// This is useful for switch cases.
+type BACnetApplicationTagEnumeratedExactly interface {
+	isBACnetApplicationTagEnumerated() bool
+}
+
 // _BACnetApplicationTagEnumerated is the data-structure of this message
 type _BACnetApplicationTagEnumerated struct {
 	*_BACnetApplicationTag
@@ -202,6 +208,10 @@ func (m *_BACnetApplicationTagEnumerated) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagEnumerated) isBACnetApplicationTagEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagEnumerated) String() string {

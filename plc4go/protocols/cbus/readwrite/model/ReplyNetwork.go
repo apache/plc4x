@@ -38,6 +38,12 @@ type ReplyNetwork interface {
 	GetUnitAddress() UnitAddress
 }
 
+// ReplyNetworkExactly can be used when we want exactly this type and not a type which fulfills ReplyNetwork.
+// This is useful for switch cases.
+type ReplyNetworkExactly interface {
+	isReplyNetwork() bool
+}
+
 // _ReplyNetwork is the data-structure of this message
 type _ReplyNetwork struct {
 	RouteType                 RouteType
@@ -228,6 +234,10 @@ func (m *_ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ReplyNetwork")
 	}
 	return nil
+}
+
+func (m *_ReplyNetwork) isReplyNetwork() bool {
+	return true
 }
 
 func (m *_ReplyNetwork) String() string {

@@ -35,6 +35,12 @@ type S7PayloadReadVarResponse interface {
 	GetItems() []S7VarPayloadDataItem
 }
 
+// S7PayloadReadVarResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadReadVarResponse.
+// This is useful for switch cases.
+type S7PayloadReadVarResponseExactly interface {
+	isS7PayloadReadVarResponse() bool
+}
+
 // _S7PayloadReadVarResponse is the data-structure of this message
 type _S7PayloadReadVarResponse struct {
 	*_S7Payload
@@ -200,6 +206,10 @@ func (m *_S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadReadVarResponse) isS7PayloadReadVarResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadReadVarResponse) String() string {

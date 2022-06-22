@@ -44,6 +44,12 @@ type CipUnconnectedRequest interface {
 	GetSlot() int8
 }
 
+// CipUnconnectedRequestExactly can be used when we want exactly this type and not a type which fulfills CipUnconnectedRequest.
+// This is useful for switch cases.
+type CipUnconnectedRequestExactly interface {
+	isCipUnconnectedRequest() bool
+}
+
 // _CipUnconnectedRequest is the data-structure of this message
 type _CipUnconnectedRequest struct {
 	*_CipService
@@ -436,6 +442,10 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipUnconnectedRequest) isCipUnconnectedRequest() bool {
+	return true
 }
 
 func (m *_CipUnconnectedRequest) String() string {

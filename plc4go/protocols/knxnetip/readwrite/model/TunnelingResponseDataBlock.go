@@ -38,6 +38,12 @@ type TunnelingResponseDataBlock interface {
 	GetStatus() Status
 }
 
+// TunnelingResponseDataBlockExactly can be used when we want exactly this type and not a type which fulfills TunnelingResponseDataBlock.
+// This is useful for switch cases.
+type TunnelingResponseDataBlockExactly interface {
+	isTunnelingResponseDataBlock() bool
+}
+
 // _TunnelingResponseDataBlock is the data-structure of this message
 type _TunnelingResponseDataBlock struct {
 	CommunicationChannelId uint8
@@ -208,6 +214,10 @@ func (m *_TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for TunnelingResponseDataBlock")
 	}
 	return nil
+}
+
+func (m *_TunnelingResponseDataBlock) isTunnelingResponseDataBlock() bool {
+	return true
 }
 
 func (m *_TunnelingResponseDataBlock) String() string {

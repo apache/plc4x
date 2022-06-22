@@ -35,6 +35,12 @@ type MonitoredSALReply interface {
 	GetIsA() MonitoredSAL
 }
 
+// MonitoredSALReplyExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALReply.
+// This is useful for switch cases.
+type MonitoredSALReplyExactly interface {
+	isMonitoredSALReply() bool
+}
+
 // _MonitoredSALReply is the data-structure of this message
 type _MonitoredSALReply struct {
 	*_Reply
@@ -176,6 +182,10 @@ func (m *_MonitoredSALReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MonitoredSALReply) isMonitoredSALReply() bool {
+	return true
 }
 
 func (m *_MonitoredSALReply) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataOccupancyCount interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataOccupancyCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyCount.
+// This is useful for switch cases.
+type BACnetConstructedDataOccupancyCountExactly interface {
+	isBACnetConstructedDataOccupancyCount() bool
+}
+
 // _BACnetConstructedDataOccupancyCount is the data-structure of this message
 type _BACnetConstructedDataOccupancyCount struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataOccupancyCount) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOccupancyCount) isBACnetConstructedDataOccupancyCount() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOccupancyCount) String() string {

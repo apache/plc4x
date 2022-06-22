@@ -34,16 +34,22 @@ type KnxGroupAddress interface {
 	GetNumLevels() uint8
 }
 
+// KnxGroupAddressExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddress.
+// This is useful for switch cases.
+type KnxGroupAddressExactly interface {
+	isKnxGroupAddress() bool
+}
+
 // _KnxGroupAddress is the data-structure of this message
 type _KnxGroupAddress struct {
 	_KnxGroupAddressChildRequirements
 }
 
 type _KnxGroupAddressChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetNumLevels() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type KnxGroupAddressParent interface {
@@ -52,7 +58,7 @@ type KnxGroupAddressParent interface {
 }
 
 type KnxGroupAddressChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent KnxGroupAddress)
 	GetParent() *KnxGroupAddress
 
@@ -152,6 +158,10 @@ func (pm *_KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(popErr, "Error popping for KnxGroupAddress")
 	}
 	return nil
+}
+
+func (m *_KnxGroupAddress) isKnxGroupAddress() bool {
+	return true
 }
 
 func (m *_KnxGroupAddress) String() string {

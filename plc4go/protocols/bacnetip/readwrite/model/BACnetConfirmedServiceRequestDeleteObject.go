@@ -35,6 +35,12 @@ type BACnetConfirmedServiceRequestDeleteObject interface {
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetConfirmedServiceRequestDeleteObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeleteObject.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestDeleteObjectExactly interface {
+	isBACnetConfirmedServiceRequestDeleteObject() bool
+}
+
 // _BACnetConfirmedServiceRequestDeleteObject is the data-structure of this message
 type _BACnetConfirmedServiceRequestDeleteObject struct {
 	*_BACnetConfirmedServiceRequest
@@ -182,6 +188,10 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObject) isBACnetConfirmedServiceRequestDeleteObject() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestDeleteObject) String() string {

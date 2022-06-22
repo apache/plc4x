@@ -37,6 +37,12 @@ type BACnetConstructedDataDescription interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 }
 
+// BACnetConstructedDataDescriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDescription.
+// This is useful for switch cases.
+type BACnetConstructedDataDescriptionExactly interface {
+	isBACnetConstructedDataDescription() bool
+}
+
 // _BACnetConstructedDataDescription is the data-structure of this message
 type _BACnetConstructedDataDescription struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataDescription) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDescription) isBACnetConstructedDataDescription() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDescription) String() string {

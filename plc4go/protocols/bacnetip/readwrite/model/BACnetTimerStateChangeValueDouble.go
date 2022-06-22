@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 }
 
+// BACnetTimerStateChangeValueDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueDouble.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueDoubleExactly interface {
+	isBACnetTimerStateChangeValueDouble() bool
+}
+
 // _BACnetTimerStateChangeValueDouble is the data-structure of this message
 type _BACnetTimerStateChangeValueDouble struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueDouble) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueDouble) isBACnetTimerStateChangeValueDouble() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueDouble) String() string {

@@ -35,6 +35,12 @@ type BACnetConstructedDataActiveCOVSubscriptions interface {
 	GetActiveCOVSubscriptions() []BACnetCOVSubscription
 }
 
+// BACnetConstructedDataActiveCOVSubscriptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveCOVSubscriptions.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveCOVSubscriptionsExactly interface {
+	isBACnetConstructedDataActiveCOVSubscriptions() bool
+}
+
 // _BACnetConstructedDataActiveCOVSubscriptions is the data-structure of this message
 type _BACnetConstructedDataActiveCOVSubscriptions struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) isBACnetConstructedDataActiveCOVSubscriptions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveCOVSubscriptions) String() string {

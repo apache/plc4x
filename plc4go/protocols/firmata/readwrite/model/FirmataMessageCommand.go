@@ -35,6 +35,12 @@ type FirmataMessageCommand interface {
 	GetCommand() FirmataCommand
 }
 
+// FirmataMessageCommandExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageCommand.
+// This is useful for switch cases.
+type FirmataMessageCommandExactly interface {
+	isFirmataMessageCommand() bool
+}
+
 // _FirmataMessageCommand is the data-structure of this message
 type _FirmataMessageCommand struct {
 	*_FirmataMessage
@@ -181,6 +187,10 @@ func (m *_FirmataMessageCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageCommand) isFirmataMessageCommand() bool {
+	return true
 }
 
 func (m *_FirmataMessageCommand) String() string {

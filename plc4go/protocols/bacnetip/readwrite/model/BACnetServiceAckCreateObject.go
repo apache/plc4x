@@ -35,6 +35,12 @@ type BACnetServiceAckCreateObject interface {
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetServiceAckCreateObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckCreateObject.
+// This is useful for switch cases.
+type BACnetServiceAckCreateObjectExactly interface {
+	isBACnetServiceAckCreateObject() bool
+}
+
 // _BACnetServiceAckCreateObject is the data-structure of this message
 type _BACnetServiceAckCreateObject struct {
 	*_BACnetServiceAck
@@ -181,6 +187,10 @@ func (m *_BACnetServiceAckCreateObject) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckCreateObject) isBACnetServiceAckCreateObject() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckCreateObject) String() string {

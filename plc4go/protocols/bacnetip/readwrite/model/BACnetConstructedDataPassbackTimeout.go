@@ -37,6 +37,12 @@ type BACnetConstructedDataPassbackTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataPassbackTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPassbackTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataPassbackTimeoutExactly interface {
+	isBACnetConstructedDataPassbackTimeout() bool
+}
+
 // _BACnetConstructedDataPassbackTimeout is the data-structure of this message
 type _BACnetConstructedDataPassbackTimeout struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataPassbackTimeout) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPassbackTimeout) isBACnetConstructedDataPassbackTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPassbackTimeout) String() string {

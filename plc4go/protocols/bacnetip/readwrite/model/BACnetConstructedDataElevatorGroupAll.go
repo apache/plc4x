@@ -33,6 +33,12 @@ type BACnetConstructedDataElevatorGroupAll interface {
 	BACnetConstructedData
 }
 
+// BACnetConstructedDataElevatorGroupAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElevatorGroupAll.
+// This is useful for switch cases.
+type BACnetConstructedDataElevatorGroupAllExactly interface {
+	isBACnetConstructedDataElevatorGroupAll() bool
+}
+
 // _BACnetConstructedDataElevatorGroupAll is the data-structure of this message
 type _BACnetConstructedDataElevatorGroupAll struct {
 	*_BACnetConstructedData
@@ -148,6 +154,10 @@ func (m *_BACnetConstructedDataElevatorGroupAll) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataElevatorGroupAll) isBACnetConstructedDataElevatorGroupAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataElevatorGroupAll) String() string {

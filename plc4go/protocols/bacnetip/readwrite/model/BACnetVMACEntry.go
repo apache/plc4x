@@ -38,6 +38,12 @@ type BACnetVMACEntry interface {
 	GetNativeMacAddress() BACnetContextTagOctetString
 }
 
+// BACnetVMACEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetVMACEntry.
+// This is useful for switch cases.
+type BACnetVMACEntryExactly interface {
+	isBACnetVMACEntry() bool
+}
+
 // _BACnetVMACEntry is the data-structure of this message
 type _BACnetVMACEntry struct {
 	VirtualMacAddress BACnetContextTagOctetString
@@ -210,6 +216,10 @@ func (m *_BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetVMACEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetVMACEntry) isBACnetVMACEntry() bool {
+	return true
 }
 
 func (m *_BACnetVMACEntry) String() string {

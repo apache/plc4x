@@ -36,6 +36,12 @@ type BVLCResultCodeTagged interface {
 	GetValue() BVLCResultCode
 }
 
+// BVLCResultCodeTaggedExactly can be used when we want exactly this type and not a type which fulfills BVLCResultCodeTagged.
+// This is useful for switch cases.
+type BVLCResultCodeTaggedExactly interface {
+	isBVLCResultCodeTagged() bool
+}
+
 // _BVLCResultCodeTagged is the data-structure of this message
 type _BVLCResultCodeTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BVLCResultCodeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BVLCResultCodeTagged")
 	}
 	return nil
+}
+
+func (m *_BVLCResultCodeTagged) isBVLCResultCodeTagged() bool {
+	return true
 }
 
 func (m *_BVLCResultCodeTagged) String() string {

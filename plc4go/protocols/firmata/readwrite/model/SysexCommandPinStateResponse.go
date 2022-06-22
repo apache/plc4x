@@ -39,6 +39,12 @@ type SysexCommandPinStateResponse interface {
 	GetPinState() uint8
 }
 
+// SysexCommandPinStateResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandPinStateResponse.
+// This is useful for switch cases.
+type SysexCommandPinStateResponseExactly interface {
+	isSysexCommandPinStateResponse() bool
+}
+
 // _SysexCommandPinStateResponse is the data-structure of this message
 type _SysexCommandPinStateResponse struct {
 	*_SysexCommand
@@ -223,6 +229,10 @@ func (m *_SysexCommandPinStateResponse) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandPinStateResponse) isSysexCommandPinStateResponse() bool {
+	return true
 }
 
 func (m *_SysexCommandPinStateResponse) String() string {

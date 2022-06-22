@@ -38,6 +38,12 @@ type Services interface {
 	GetServices() []CipService
 }
 
+// ServicesExactly can be used when we want exactly this type and not a type which fulfills Services.
+// This is useful for switch cases.
+type ServicesExactly interface {
+	isServices() bool
+}
+
 // _Services is the data-structure of this message
 type _Services struct {
 	ServiceNb uint16
@@ -232,6 +238,10 @@ func (m *_Services) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for Services")
 	}
 	return nil
+}
+
+func (m *_Services) isServices() bool {
+	return true
 }
 
 func (m *_Services) String() string {

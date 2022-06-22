@@ -36,6 +36,12 @@ type BACnetLightingInProgressTagged interface {
 	GetValue() BACnetLightingInProgress
 }
 
+// BACnetLightingInProgressTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLightingInProgressTagged.
+// This is useful for switch cases.
+type BACnetLightingInProgressTaggedExactly interface {
+	isBACnetLightingInProgressTagged() bool
+}
+
 // _BACnetLightingInProgressTagged is the data-structure of this message
 type _BACnetLightingInProgressTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetLightingInProgressTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLightingInProgressTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLightingInProgressTagged) isBACnetLightingInProgressTagged() bool {
+	return true
 }
 
 func (m *_BACnetLightingInProgressTagged) String() string {

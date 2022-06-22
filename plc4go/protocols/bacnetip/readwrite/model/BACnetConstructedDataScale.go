@@ -37,6 +37,12 @@ type BACnetConstructedDataScale interface {
 	GetActualValue() BACnetScale
 }
 
+// BACnetConstructedDataScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScale.
+// This is useful for switch cases.
+type BACnetConstructedDataScaleExactly interface {
+	isBACnetConstructedDataScale() bool
+}
+
 // _BACnetConstructedDataScale is the data-structure of this message
 type _BACnetConstructedDataScale struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataScale) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataScale) isBACnetConstructedDataScale() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataScale) String() string {

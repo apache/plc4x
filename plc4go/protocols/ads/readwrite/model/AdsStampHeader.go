@@ -38,6 +38,12 @@ type AdsStampHeader interface {
 	GetAdsNotificationSamples() []AdsNotificationSample
 }
 
+// AdsStampHeaderExactly can be used when we want exactly this type and not a type which fulfills AdsStampHeader.
+// This is useful for switch cases.
+type AdsStampHeaderExactly interface {
+	isAdsStampHeader() bool
+}
+
 // _AdsStampHeader is the data-structure of this message
 type _AdsStampHeader struct {
 	Timestamp              uint64
@@ -206,6 +212,10 @@ func (m *_AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AdsStampHeader")
 	}
 	return nil
+}
+
+func (m *_AdsStampHeader) isAdsStampHeader() bool {
+	return true
 }
 
 func (m *_AdsStampHeader) String() string {

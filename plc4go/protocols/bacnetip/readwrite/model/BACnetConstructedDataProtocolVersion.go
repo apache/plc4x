@@ -37,6 +37,12 @@ type BACnetConstructedDataProtocolVersion interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataProtocolVersionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolVersion.
+// This is useful for switch cases.
+type BACnetConstructedDataProtocolVersionExactly interface {
+	isBACnetConstructedDataProtocolVersion() bool
+}
+
 // _BACnetConstructedDataProtocolVersion is the data-structure of this message
 type _BACnetConstructedDataProtocolVersion struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataProtocolVersion) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProtocolVersion) isBACnetConstructedDataProtocolVersion() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) String() string {

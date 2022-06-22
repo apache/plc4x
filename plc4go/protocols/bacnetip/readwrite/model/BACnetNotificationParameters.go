@@ -40,6 +40,12 @@ type BACnetNotificationParameters interface {
 	GetPeekedTagNumber() uint8
 }
 
+// BACnetNotificationParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParameters.
+// This is useful for switch cases.
+type BACnetNotificationParametersExactly interface {
+	isBACnetNotificationParameters() bool
+}
+
 // _BACnetNotificationParameters is the data-structure of this message
 type _BACnetNotificationParameters struct {
 	_BACnetNotificationParametersChildRequirements
@@ -53,9 +59,9 @@ type _BACnetNotificationParameters struct {
 }
 
 type _BACnetNotificationParametersChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetNotificationParametersParent interface {
@@ -64,7 +70,7 @@ type BACnetNotificationParametersParent interface {
 }
 
 type BACnetNotificationParametersChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetNotificationParameters, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetNotificationParameters
 
@@ -308,6 +314,10 @@ func (pm *_BACnetNotificationParameters) SerializeParent(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParameters")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParameters) isBACnetNotificationParameters() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParameters) String() string {

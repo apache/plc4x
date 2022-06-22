@@ -37,6 +37,12 @@ type BACnetConstructedDataBlinkWarnEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 }
 
+// BACnetConstructedDataBlinkWarnEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBlinkWarnEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataBlinkWarnEnableExactly interface {
+	isBACnetConstructedDataBlinkWarnEnable() bool
+}
+
 // _BACnetConstructedDataBlinkWarnEnable is the data-structure of this message
 type _BACnetConstructedDataBlinkWarnEnable struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnable) isBACnetConstructedDataBlinkWarnEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBlinkWarnEnable) String() string {

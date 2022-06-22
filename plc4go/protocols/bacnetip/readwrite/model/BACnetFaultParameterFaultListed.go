@@ -39,6 +39,12 @@ type BACnetFaultParameterFaultListed interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetFaultParameterFaultListedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultListed.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultListedExactly interface {
+	isBACnetFaultParameterFaultListed() bool
+}
+
 // _BACnetFaultParameterFaultListed is the data-structure of this message
 type _BACnetFaultParameterFaultListed struct {
 	*_BACnetFaultParameter
@@ -250,6 +256,10 @@ func (m *_BACnetFaultParameterFaultListed) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultListed) isBACnetFaultParameterFaultListed() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultListed) String() string {

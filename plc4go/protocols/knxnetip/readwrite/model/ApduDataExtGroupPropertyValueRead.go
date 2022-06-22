@@ -33,6 +33,12 @@ type ApduDataExtGroupPropertyValueRead interface {
 	ApduDataExt
 }
 
+// ApduDataExtGroupPropertyValueReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtGroupPropertyValueRead.
+// This is useful for switch cases.
+type ApduDataExtGroupPropertyValueReadExactly interface {
+	isApduDataExtGroupPropertyValueRead() bool
+}
+
 // _ApduDataExtGroupPropertyValueRead is the data-structure of this message
 type _ApduDataExtGroupPropertyValueRead struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtGroupPropertyValueRead) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtGroupPropertyValueRead) isApduDataExtGroupPropertyValueRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtGroupPropertyValueRead) String() string {

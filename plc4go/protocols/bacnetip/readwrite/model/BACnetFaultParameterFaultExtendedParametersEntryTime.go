@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryTime interface {
 	GetTimeValue() BACnetApplicationTagTime
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryTime.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryTimeExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryTime() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryTime is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryTime struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) isBACnetFaultParameterFaultExtendedParametersEntryTime() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) String() string {

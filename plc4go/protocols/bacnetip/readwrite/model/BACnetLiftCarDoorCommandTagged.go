@@ -36,6 +36,12 @@ type BACnetLiftCarDoorCommandTagged interface {
 	GetValue() BACnetLiftCarDoorCommand
 }
 
+// BACnetLiftCarDoorCommandTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDoorCommandTagged.
+// This is useful for switch cases.
+type BACnetLiftCarDoorCommandTaggedExactly interface {
+	isBACnetLiftCarDoorCommandTagged() bool
+}
+
 // _BACnetLiftCarDoorCommandTagged is the data-structure of this message
 type _BACnetLiftCarDoorCommandTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetLiftCarDoorCommandTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarDoorCommandTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarDoorCommandTagged) isBACnetLiftCarDoorCommandTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarDoorCommandTagged) String() string {

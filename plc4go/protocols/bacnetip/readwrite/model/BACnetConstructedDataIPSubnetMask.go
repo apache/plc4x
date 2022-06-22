@@ -37,6 +37,12 @@ type BACnetConstructedDataIPSubnetMask interface {
 	GetActualValue() BACnetApplicationTagOctetString
 }
 
+// BACnetConstructedDataIPSubnetMaskExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPSubnetMask.
+// This is useful for switch cases.
+type BACnetConstructedDataIPSubnetMaskExactly interface {
+	isBACnetConstructedDataIPSubnetMask() bool
+}
+
 // _BACnetConstructedDataIPSubnetMask is the data-structure of this message
 type _BACnetConstructedDataIPSubnetMask struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataIPSubnetMask) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPSubnetMask) isBACnetConstructedDataIPSubnetMask() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPSubnetMask) String() string {

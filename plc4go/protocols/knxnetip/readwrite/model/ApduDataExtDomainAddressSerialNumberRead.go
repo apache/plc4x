@@ -33,6 +33,12 @@ type ApduDataExtDomainAddressSerialNumberRead interface {
 	ApduDataExt
 }
 
+// ApduDataExtDomainAddressSerialNumberReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtDomainAddressSerialNumberRead.
+// This is useful for switch cases.
+type ApduDataExtDomainAddressSerialNumberReadExactly interface {
+	isApduDataExtDomainAddressSerialNumberRead() bool
+}
+
 // _ApduDataExtDomainAddressSerialNumberRead is the data-structure of this message
 type _ApduDataExtDomainAddressSerialNumberRead struct {
 	*_ApduDataExt
@@ -134,6 +140,10 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberRead) isApduDataExtDomainAddressSerialNumberRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) String() string {

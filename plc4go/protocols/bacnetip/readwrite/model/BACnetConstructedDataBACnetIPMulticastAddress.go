@@ -37,6 +37,12 @@ type BACnetConstructedDataBACnetIPMulticastAddress interface {
 	GetActualValue() BACnetApplicationTagOctetString
 }
 
+// BACnetConstructedDataBACnetIPMulticastAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPMulticastAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPMulticastAddressExactly interface {
+	isBACnetConstructedDataBACnetIPMulticastAddress() bool
+}
+
 // _BACnetConstructedDataBACnetIPMulticastAddress is the data-structure of this message
 type _BACnetConstructedDataBACnetIPMulticastAddress struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPMulticastAddress) isBACnetConstructedDataBACnetIPMulticastAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPMulticastAddress) String() string {

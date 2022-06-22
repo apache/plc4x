@@ -36,6 +36,12 @@ type BACnetSegmentationTagged interface {
 	GetValue() BACnetSegmentation
 }
 
+// BACnetSegmentationTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSegmentationTagged.
+// This is useful for switch cases.
+type BACnetSegmentationTaggedExactly interface {
+	isBACnetSegmentationTagged() bool
+}
+
 // _BACnetSegmentationTagged is the data-structure of this message
 type _BACnetSegmentationTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_BACnetSegmentationTagged) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetSegmentationTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetSegmentationTagged) isBACnetSegmentationTagged() bool {
+	return true
 }
 
 func (m *_BACnetSegmentationTagged) String() string {

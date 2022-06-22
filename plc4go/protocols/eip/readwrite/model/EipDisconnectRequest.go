@@ -33,6 +33,12 @@ type EipDisconnectRequest interface {
 	EipPacket
 }
 
+// EipDisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills EipDisconnectRequest.
+// This is useful for switch cases.
+type EipDisconnectRequestExactly interface {
+	isEipDisconnectRequest() bool
+}
+
 // _EipDisconnectRequest is the data-structure of this message
 type _EipDisconnectRequest struct {
 	*_EipPacket
@@ -136,6 +142,10 @@ func (m *_EipDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_EipDisconnectRequest) isEipDisconnectRequest() bool {
+	return true
 }
 
 func (m *_EipDisconnectRequest) String() string {

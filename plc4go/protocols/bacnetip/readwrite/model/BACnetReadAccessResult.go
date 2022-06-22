@@ -38,6 +38,12 @@ type BACnetReadAccessResult interface {
 	GetListOfResults() BACnetReadAccessResultListOfResults
 }
 
+// BACnetReadAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessResult.
+// This is useful for switch cases.
+type BACnetReadAccessResultExactly interface {
+	isBACnetReadAccessResult() bool
+}
+
 // _BACnetReadAccessResult is the data-structure of this message
 type _BACnetReadAccessResult struct {
 	ObjectIdentifier BACnetContextTagObjectIdentifier
@@ -195,6 +201,10 @@ func (m *_BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetReadAccessResult")
 	}
 	return nil
+}
+
+func (m *_BACnetReadAccessResult) isBACnetReadAccessResult() bool {
+	return true
 }
 
 func (m *_BACnetReadAccessResult) String() string {

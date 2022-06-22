@@ -35,6 +35,12 @@ type BACnetTimerStateChangeValueNoValue interface {
 	GetNoValue() BACnetContextTagNull
 }
 
+// BACnetTimerStateChangeValueNoValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueNoValue.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueNoValueExactly interface {
+	isBACnetTimerStateChangeValueNoValue() bool
+}
+
 // _BACnetTimerStateChangeValueNoValue is the data-structure of this message
 type _BACnetTimerStateChangeValueNoValue struct {
 	*_BACnetTimerStateChangeValue
@@ -179,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueNoValue) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueNoValue) isBACnetTimerStateChangeValueNoValue() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) String() string {

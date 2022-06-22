@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryDate interface {
 	GetDateValue() BACnetApplicationTagDate
 }
 
+// BACnetFaultParameterFaultExtendedParametersEntryDateExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryDate.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryDateExactly interface {
+	isBACnetFaultParameterFaultExtendedParametersEntryDate() bool
+}
+
 // _BACnetFaultParameterFaultExtendedParametersEntryDate is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntryDate struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntry
@@ -176,6 +182,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) isBACnetFaultParameterFaultExtendedParametersEntryDate() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) String() string {

@@ -37,6 +37,12 @@ type BACnetConstructedDataLightingCommand interface {
 	GetActualValue() BACnetLightingCommand
 }
 
+// BACnetConstructedDataLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingCommand.
+// This is useful for switch cases.
+type BACnetConstructedDataLightingCommandExactly interface {
+	isBACnetConstructedDataLightingCommand() bool
+}
+
 // _BACnetConstructedDataLightingCommand is the data-structure of this message
 type _BACnetConstructedDataLightingCommand struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLightingCommand) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLightingCommand) isBACnetConstructedDataLightingCommand() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLightingCommand) String() string {

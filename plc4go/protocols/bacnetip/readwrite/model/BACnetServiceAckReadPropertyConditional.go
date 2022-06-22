@@ -35,6 +35,12 @@ type BACnetServiceAckReadPropertyConditional interface {
 	GetBytesOfRemovedService() []byte
 }
 
+// BACnetServiceAckReadPropertyConditionalExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyConditional.
+// This is useful for switch cases.
+type BACnetServiceAckReadPropertyConditionalExactly interface {
+	isBACnetServiceAckReadPropertyConditional() bool
+}
+
 // _BACnetServiceAckReadPropertyConditional is the data-structure of this message
 type _BACnetServiceAckReadPropertyConditional struct {
 	*_BACnetServiceAck
@@ -174,6 +180,10 @@ func (m *_BACnetServiceAckReadPropertyConditional) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckReadPropertyConditional) isBACnetServiceAckReadPropertyConditional() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckReadPropertyConditional) String() string {

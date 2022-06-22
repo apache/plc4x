@@ -37,6 +37,12 @@ type BACnetConstructedDataGlobalIdentifier interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataGlobalIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGlobalIdentifier.
+// This is useful for switch cases.
+type BACnetConstructedDataGlobalIdentifierExactly interface {
+	isBACnetConstructedDataGlobalIdentifier() bool
+}
+
 // _BACnetConstructedDataGlobalIdentifier is the data-structure of this message
 type _BACnetConstructedDataGlobalIdentifier struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataGlobalIdentifier) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGlobalIdentifier) isBACnetConstructedDataGlobalIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGlobalIdentifier) String() string {

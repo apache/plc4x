@@ -36,6 +36,12 @@ type NPDUNetworkPriorityTagged interface {
 	GetValue() NPDUNetworkPriority
 }
 
+// NPDUNetworkPriorityTaggedExactly can be used when we want exactly this type and not a type which fulfills NPDUNetworkPriorityTagged.
+// This is useful for switch cases.
+type NPDUNetworkPriorityTaggedExactly interface {
+	isNPDUNetworkPriorityTagged() bool
+}
+
 // _NPDUNetworkPriorityTagged is the data-structure of this message
 type _NPDUNetworkPriorityTagged struct {
 	Header BACnetTagHeader
@@ -180,6 +186,10 @@ func (m *_NPDUNetworkPriorityTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for NPDUNetworkPriorityTagged")
 	}
 	return nil
+}
+
+func (m *_NPDUNetworkPriorityTagged) isNPDUNetworkPriorityTagged() bool {
+	return true
 }
 
 func (m *_NPDUNetworkPriorityTagged) String() string {

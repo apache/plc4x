@@ -37,6 +37,12 @@ type BACnetConstructedDataAnalogOutputMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataAnalogOutputMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogOutputMaxPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAnalogOutputMaxPresValueExactly interface {
+	isBACnetConstructedDataAnalogOutputMaxPresValue() bool
+}
+
 // _BACnetConstructedDataAnalogOutputMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataAnalogOutputMaxPresValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataAnalogOutputMaxPresValue) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValue) isBACnetConstructedDataAnalogOutputMaxPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAnalogOutputMaxPresValue) String() string {

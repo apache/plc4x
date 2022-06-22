@@ -35,6 +35,12 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned interface {
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedExactly interface {
+	isBACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned() bool
+}
+
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned struct {
 	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue
@@ -181,6 +187,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) isBACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) String() string {

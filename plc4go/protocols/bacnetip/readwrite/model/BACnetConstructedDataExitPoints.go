@@ -35,6 +35,12 @@ type BACnetConstructedDataExitPoints interface {
 	GetExitPoints() []BACnetDeviceObjectReference
 }
 
+// BACnetConstructedDataExitPointsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExitPoints.
+// This is useful for switch cases.
+type BACnetConstructedDataExitPointsExactly interface {
+	isBACnetConstructedDataExitPoints() bool
+}
+
 // _BACnetConstructedDataExitPoints is the data-structure of this message
 type _BACnetConstructedDataExitPoints struct {
 	*_BACnetConstructedData
@@ -205,6 +211,10 @@ func (m *_BACnetConstructedDataExitPoints) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataExitPoints) isBACnetConstructedDataExitPoints() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataExitPoints) String() string {

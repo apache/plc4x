@@ -40,6 +40,12 @@ type MultipleServiceRequest interface {
 	GetData() Services
 }
 
+// MultipleServiceRequestExactly can be used when we want exactly this type and not a type which fulfills MultipleServiceRequest.
+// This is useful for switch cases.
+type MultipleServiceRequestExactly interface {
+	isMultipleServiceRequest() bool
+}
+
 // _MultipleServiceRequest is the data-structure of this message
 type _MultipleServiceRequest struct {
 	*_CipService
@@ -239,6 +245,10 @@ func (m *_MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MultipleServiceRequest) isMultipleServiceRequest() bool {
+	return true
 }
 
 func (m *_MultipleServiceRequest) String() string {

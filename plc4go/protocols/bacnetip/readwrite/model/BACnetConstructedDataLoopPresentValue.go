@@ -37,6 +37,12 @@ type BACnetConstructedDataLoopPresentValue interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataLoopPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoopPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLoopPresentValueExactly interface {
+	isBACnetConstructedDataLoopPresentValue() bool
+}
+
 // _BACnetConstructedDataLoopPresentValue is the data-structure of this message
 type _BACnetConstructedDataLoopPresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataLoopPresentValue) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLoopPresentValue) isBACnetConstructedDataLoopPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLoopPresentValue) String() string {

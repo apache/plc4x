@@ -41,6 +41,12 @@ type BACnetConstructedDataAccessDoors interface {
 	GetZero() uint64
 }
 
+// BACnetConstructedDataAccessDoorsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoors.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessDoorsExactly interface {
+	isBACnetConstructedDataAccessDoors() bool
+}
+
 // _BACnetConstructedDataAccessDoors is the data-structure of this message
 type _BACnetConstructedDataAccessDoors struct {
 	*_BACnetConstructedData
@@ -287,6 +293,10 @@ func (m *_BACnetConstructedDataAccessDoors) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessDoors) isBACnetConstructedDataAccessDoors() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessDoors) String() string {

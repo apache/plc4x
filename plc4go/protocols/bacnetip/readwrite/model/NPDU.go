@@ -62,6 +62,12 @@ type NPDU interface {
 	GetPayloadSubtraction() uint16
 }
 
+// NPDUExactly can be used when we want exactly this type and not a type which fulfills NPDU.
+// This is useful for switch cases.
+type NPDUExactly interface {
+	isNPDU() bool
+}
+
 // _NPDU is the data-structure of this message
 type _NPDU struct {
 	ProtocolVersionNumber     uint8
@@ -633,6 +639,10 @@ func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for NPDU")
 	}
 	return nil
+}
+
+func (m *_NPDU) isNPDU() bool {
+	return true
 }
 
 func (m *_NPDU) String() string {

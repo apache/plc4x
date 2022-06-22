@@ -37,6 +37,12 @@ type BACnetConstructedDataEgressTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConstructedDataEgressTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEgressTime.
+// This is useful for switch cases.
+type BACnetConstructedDataEgressTimeExactly interface {
+	isBACnetConstructedDataEgressTime() bool
+}
+
 // _BACnetConstructedDataEgressTime is the data-structure of this message
 type _BACnetConstructedDataEgressTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataEgressTime) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEgressTime) isBACnetConstructedDataEgressTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEgressTime) String() string {

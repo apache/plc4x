@@ -40,6 +40,12 @@ type BACnetAccumulatorRecord interface {
 	GetAccumulatorStatus() BACnetAccumulatorRecordAccumulatorStatusTagged
 }
 
+// BACnetAccumulatorRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetAccumulatorRecord.
+// This is useful for switch cases.
+type BACnetAccumulatorRecordExactly interface {
+	isBACnetAccumulatorRecord() bool
+}
+
 // _BACnetAccumulatorRecord is the data-structure of this message
 type _BACnetAccumulatorRecord struct {
 	Timestamp         BACnetDateTimeEnclosed
@@ -248,6 +254,10 @@ func (m *_BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetAccumulatorRecord")
 	}
 	return nil
+}
+
+func (m *_BACnetAccumulatorRecord) isBACnetAccumulatorRecord() bool {
+	return true
 }
 
 func (m *_BACnetAccumulatorRecord) String() string {

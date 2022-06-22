@@ -40,6 +40,12 @@ type BACnetLiftFaultTagged interface {
 	GetIsProprietary() bool
 }
 
+// BACnetLiftFaultTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftFaultTagged.
+// This is useful for switch cases.
+type BACnetLiftFaultTaggedExactly interface {
+	isBACnetLiftFaultTagged() bool
+}
+
 // _BACnetLiftFaultTagged is the data-structure of this message
 type _BACnetLiftFaultTagged struct {
 	Header           BACnetTagHeader
@@ -229,6 +235,10 @@ func (m *_BACnetLiftFaultTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetLiftFaultTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftFaultTagged) isBACnetLiftFaultTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftFaultTagged) String() string {

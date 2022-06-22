@@ -38,6 +38,12 @@ type BACnetLiftCarCallListFloorList interface {
 	GetClosingTag() BACnetClosingTag
 }
 
+// BACnetLiftCarCallListFloorListExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarCallListFloorList.
+// This is useful for switch cases.
+type BACnetLiftCarCallListFloorListExactly interface {
+	isBACnetLiftCarCallListFloorList() bool
+}
+
 // _BACnetLiftCarCallListFloorList is the data-structure of this message
 type _BACnetLiftCarCallListFloorList struct {
 	OpeningTag   BACnetOpeningTag
@@ -231,6 +237,10 @@ func (m *_BACnetLiftCarCallListFloorList) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarCallListFloorList")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarCallListFloorList) isBACnetLiftCarCallListFloorList() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarCallListFloorList) String() string {

@@ -45,6 +45,12 @@ type BACnetServiceAckGetEnrollmentSummary interface {
 	GetNotificationClass() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetServiceAckGetEnrollmentSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetEnrollmentSummary.
+// This is useful for switch cases.
+type BACnetServiceAckGetEnrollmentSummaryExactly interface {
+	isBACnetServiceAckGetEnrollmentSummary() bool
+}
+
 // _BACnetServiceAckGetEnrollmentSummary is the data-structure of this message
 type _BACnetServiceAckGetEnrollmentSummary struct {
 	*_BACnetServiceAck
@@ -346,6 +352,10 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckGetEnrollmentSummary) isBACnetServiceAckGetEnrollmentSummary() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckGetEnrollmentSummary) String() string {

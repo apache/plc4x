@@ -36,6 +36,12 @@ type NLM interface {
 	GetVendorId() *BACnetVendorId
 }
 
+// NLMExactly can be used when we want exactly this type and not a type which fulfills NLM.
+// This is useful for switch cases.
+type NLMExactly interface {
+	isNLM() bool
+}
+
 // _NLM is the data-structure of this message
 type _NLM struct {
 	_NLMChildRequirements
@@ -46,10 +52,10 @@ type _NLM struct {
 }
 
 type _NLMChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type NLMParent interface {
@@ -58,7 +64,7 @@ type NLMParent interface {
 }
 
 type NLMChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent NLM, vendorId *BACnetVendorId)
 	GetParent() *NLM
 
@@ -239,6 +245,10 @@ func (pm *_NLM) SerializeParent(writeBuffer utils.WriteBuffer, child NLM, serial
 		return errors.Wrap(popErr, "Error popping for NLM")
 	}
 	return nil
+}
+
+func (m *_NLM) isNLM() bool {
+	return true
 }
 
 func (m *_NLM) String() string {

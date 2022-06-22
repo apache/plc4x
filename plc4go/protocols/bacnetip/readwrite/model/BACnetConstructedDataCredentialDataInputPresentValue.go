@@ -37,6 +37,12 @@ type BACnetConstructedDataCredentialDataInputPresentValue interface {
 	GetActualValue() BACnetAuthenticationFactor
 }
 
+// BACnetConstructedDataCredentialDataInputPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDataInputPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialDataInputPresentValueExactly interface {
+	isBACnetConstructedDataCredentialDataInputPresentValue() bool
+}
+
 // _BACnetConstructedDataCredentialDataInputPresentValue is the data-structure of this message
 type _BACnetConstructedDataCredentialDataInputPresentValue struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputPresentValue) isBACnetConstructedDataCredentialDataInputPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputPresentValue) String() string {

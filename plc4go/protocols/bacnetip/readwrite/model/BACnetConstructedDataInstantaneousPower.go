@@ -37,6 +37,12 @@ type BACnetConstructedDataInstantaneousPower interface {
 	GetActualValue() BACnetApplicationTagReal
 }
 
+// BACnetConstructedDataInstantaneousPowerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInstantaneousPower.
+// This is useful for switch cases.
+type BACnetConstructedDataInstantaneousPowerExactly interface {
+	isBACnetConstructedDataInstantaneousPower() bool
+}
+
 // _BACnetConstructedDataInstantaneousPower is the data-structure of this message
 type _BACnetConstructedDataInstantaneousPower struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataInstantaneousPower) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInstantaneousPower) isBACnetConstructedDataInstantaneousPower() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInstantaneousPower) String() string {

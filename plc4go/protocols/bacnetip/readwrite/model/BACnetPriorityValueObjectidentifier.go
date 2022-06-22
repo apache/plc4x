@@ -35,6 +35,12 @@ type BACnetPriorityValueObjectidentifier interface {
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
 }
 
+// BACnetPriorityValueObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueObjectidentifier.
+// This is useful for switch cases.
+type BACnetPriorityValueObjectidentifierExactly interface {
+	isBACnetPriorityValueObjectidentifier() bool
+}
+
 // _BACnetPriorityValueObjectidentifier is the data-structure of this message
 type _BACnetPriorityValueObjectidentifier struct {
 	*_BACnetPriorityValue
@@ -179,6 +185,10 @@ func (m *_BACnetPriorityValueObjectidentifier) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueObjectidentifier) isBACnetPriorityValueObjectidentifier() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueObjectidentifier) String() string {

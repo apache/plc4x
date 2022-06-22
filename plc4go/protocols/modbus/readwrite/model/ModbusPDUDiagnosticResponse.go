@@ -37,6 +37,12 @@ type ModbusPDUDiagnosticResponse interface {
 	GetData() uint16
 }
 
+// ModbusPDUDiagnosticResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUDiagnosticResponse.
+// This is useful for switch cases.
+type ModbusPDUDiagnosticResponseExactly interface {
+	isModbusPDUDiagnosticResponse() bool
+}
+
 // _ModbusPDUDiagnosticResponse is the data-structure of this message
 type _ModbusPDUDiagnosticResponse struct {
 	*_ModbusPDU
@@ -201,6 +207,10 @@ func (m *_ModbusPDUDiagnosticResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUDiagnosticResponse) isModbusPDUDiagnosticResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUDiagnosticResponse) String() string {

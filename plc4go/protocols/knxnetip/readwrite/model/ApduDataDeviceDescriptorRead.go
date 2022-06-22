@@ -35,6 +35,12 @@ type ApduDataDeviceDescriptorRead interface {
 	GetDescriptorType() uint8
 }
 
+// ApduDataDeviceDescriptorReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataDeviceDescriptorRead.
+// This is useful for switch cases.
+type ApduDataDeviceDescriptorReadExactly interface {
+	isApduDataDeviceDescriptorRead() bool
+}
+
 // _ApduDataDeviceDescriptorRead is the data-structure of this message
 type _ApduDataDeviceDescriptorRead struct {
 	*_ApduData
@@ -170,6 +176,10 @@ func (m *_ApduDataDeviceDescriptorRead) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataDeviceDescriptorRead) isApduDataDeviceDescriptorRead() bool {
+	return true
 }
 
 func (m *_ApduDataDeviceDescriptorRead) String() string {

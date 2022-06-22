@@ -40,6 +40,12 @@ type BACnetLimitEnableTagged interface {
 	GetHighLimitEnable() bool
 }
 
+// BACnetLimitEnableTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLimitEnableTagged.
+// This is useful for switch cases.
+type BACnetLimitEnableTaggedExactly interface {
+	isBACnetLimitEnableTagged() bool
+}
+
 // _BACnetLimitEnableTagged is the data-structure of this message
 type _BACnetLimitEnableTagged struct {
 	Header  BACnetTagHeader
@@ -235,6 +241,10 @@ func (m *_BACnetLimitEnableTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetLimitEnableTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLimitEnableTagged) isBACnetLimitEnableTagged() bool {
+	return true
 }
 
 func (m *_BACnetLimitEnableTagged) String() string {

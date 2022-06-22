@@ -39,6 +39,12 @@ type BACnetConfirmedServiceRequestVTData interface {
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
 }
 
+// BACnetConfirmedServiceRequestVTDataExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTData.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestVTDataExactly interface {
+	isBACnetConfirmedServiceRequestVTData() bool
+}
+
 // _BACnetConfirmedServiceRequestVTData is the data-structure of this message
 type _BACnetConfirmedServiceRequestVTData struct {
 	*_BACnetConfirmedServiceRequest
@@ -256,6 +262,10 @@ func (m *_BACnetConfirmedServiceRequestVTData) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestVTData) isBACnetConfirmedServiceRequestVTData() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestVTData) String() string {

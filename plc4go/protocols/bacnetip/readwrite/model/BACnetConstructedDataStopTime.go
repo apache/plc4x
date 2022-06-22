@@ -37,6 +37,12 @@ type BACnetConstructedDataStopTime interface {
 	GetActualValue() BACnetDateTime
 }
 
+// BACnetConstructedDataStopTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStopTime.
+// This is useful for switch cases.
+type BACnetConstructedDataStopTimeExactly interface {
+	isBACnetConstructedDataStopTime() bool
+}
+
 // _BACnetConstructedDataStopTime is the data-structure of this message
 type _BACnetConstructedDataStopTime struct {
 	*_BACnetConstructedData
@@ -216,6 +222,10 @@ func (m *_BACnetConstructedDataStopTime) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStopTime) isBACnetConstructedDataStopTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStopTime) String() string {

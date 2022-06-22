@@ -33,6 +33,12 @@ type CALDataRequestReset interface {
 	CALData
 }
 
+// CALDataRequestResetExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestReset.
+// This is useful for switch cases.
+type CALDataRequestResetExactly interface {
+	isCALDataRequestReset() bool
+}
+
 // _CALDataRequestReset is the data-structure of this message
 type _CALDataRequestReset struct {
 	*_CALData
@@ -129,6 +135,10 @@ func (m *_CALDataRequestReset) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataRequestReset) isCALDataRequestReset() bool {
+	return true
 }
 
 func (m *_CALDataRequestReset) String() string {

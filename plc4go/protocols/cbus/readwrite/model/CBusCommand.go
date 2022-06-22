@@ -40,6 +40,12 @@ type CBusCommand interface {
 	GetDestinationAddressType() DestinationAddressType
 }
 
+// CBusCommandExactly can be used when we want exactly this type and not a type which fulfills CBusCommand.
+// This is useful for switch cases.
+type CBusCommandExactly interface {
+	isCBusCommand() bool
+}
+
 // _CBusCommand is the data-structure of this message
 type _CBusCommand struct {
 	_CBusCommandChildRequirements
@@ -50,9 +56,9 @@ type _CBusCommand struct {
 }
 
 type _CBusCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CBusCommandParent interface {
@@ -61,7 +67,7 @@ type CBusCommandParent interface {
 }
 
 type CBusCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CBusCommand, header CBusHeader)
 	GetParent() *CBusCommand
 
@@ -258,6 +264,10 @@ func (pm *_CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBu
 		return errors.Wrap(popErr, "Error popping for CBusCommand")
 	}
 	return nil
+}
+
+func (m *_CBusCommand) isCBusCommand() bool {
+	return true
 }
 
 func (m *_CBusCommand) String() string {

@@ -34,6 +34,12 @@ type S7VarPayloadStatusItem interface {
 	GetReturnCode() DataTransportErrorCode
 }
 
+// S7VarPayloadStatusItemExactly can be used when we want exactly this type and not a type which fulfills S7VarPayloadStatusItem.
+// This is useful for switch cases.
+type S7VarPayloadStatusItemExactly interface {
+	isS7VarPayloadStatusItem() bool
+}
+
 // _S7VarPayloadStatusItem is the data-structure of this message
 type _S7VarPayloadStatusItem struct {
 	ReturnCode DataTransportErrorCode
@@ -143,6 +149,10 @@ func (m *_S7VarPayloadStatusItem) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for S7VarPayloadStatusItem")
 	}
 	return nil
+}
+
+func (m *_S7VarPayloadStatusItem) isS7VarPayloadStatusItem() bool {
+	return true
 }
 
 func (m *_S7VarPayloadStatusItem) String() string {

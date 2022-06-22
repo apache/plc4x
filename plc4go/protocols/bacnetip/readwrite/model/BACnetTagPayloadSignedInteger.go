@@ -66,6 +66,12 @@ type BACnetTagPayloadSignedInteger interface {
 	GetActualValue() uint64
 }
 
+// BACnetTagPayloadSignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadSignedInteger.
+// This is useful for switch cases.
+type BACnetTagPayloadSignedIntegerExactly interface {
+	isBACnetTagPayloadSignedInteger() bool
+}
+
 // _BACnetTagPayloadSignedInteger is the data-structure of this message
 type _BACnetTagPayloadSignedInteger struct {
 	ValueInt8  *int8
@@ -702,6 +708,10 @@ func (m *_BACnetTagPayloadSignedInteger) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadSignedInteger")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadSignedInteger) isBACnetTagPayloadSignedInteger() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadSignedInteger) String() string {
