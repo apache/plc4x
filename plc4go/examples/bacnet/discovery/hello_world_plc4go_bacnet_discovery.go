@@ -52,7 +52,7 @@ func main() {
 			panic(err)
 		}
 		// Wait for 5 seconds for incoming responses
-		time.Sleep(time.Second * 5)
+		time.Sleep(time.Second * 50)
 	} else {
 		connStr := "bacnet-ip://" + os.Args[1] + ":47808"
 		log.Info().Str("connection string", connStr).Msg("Using manually provided bacnet gateway")

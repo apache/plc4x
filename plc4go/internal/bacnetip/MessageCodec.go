@@ -46,7 +46,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message interface{}) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	bvlcPacket := model.CastBVLC(message)
+	bvlcPacket := message.(model.BVLC)
 	// Serialize the request
 	wb := utils.NewWriteBufferByteBased()
 	err := bvlcPacket.Serialize(wb)

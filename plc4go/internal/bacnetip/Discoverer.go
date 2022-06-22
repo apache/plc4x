@@ -21,14 +21,15 @@ package bacnetip
 
 import (
 	"fmt"
+	"github.com/IBM/netaddr"
+	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/libp2p/go-reuseport"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"net"
 	"net/url"
 	"strconv"
 	"time"
-
-	"github.com/IBM/netaddr"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
@@ -75,8 +76,16 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 
 	var whoIsLowLimit *uint
 	var whoIsHighLimit *uint
+	var bacNetPort *int
 	for _, protocolSpecificOption := range options.FilterDiscoveryOptionProtocolSpecific(discoveryOptions) {
 		switch protocolSpecificOption.GetKey() {
+		case "bacnet-port":
+			bacNetPortParsed, err := strconv.ParseInt(fmt.Sprintf("%v", protocolSpecificOption.GetValue()), 10, 8)
+			if err != nil {
+				return errors.Wrap(err, "Error parsing option")
+			}
+			bacNetPortParsedInt := int(bacNetPortParsed)
+			bacNetPort = &bacNetPortParsedInt
 		case "who-is-low-limit":
 			whoIsLowLimitParsed, err := strconv.ParseUint(fmt.Sprintf("%v", protocolSpecificOption.GetValue()), 10, 8)
 			if err != nil {
@@ -95,6 +104,10 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 	}
 	if whoIsLowLimit != nil && whoIsHighLimit == nil || whoIsLowLimit == nil && whoIsHighLimit != nil {
 		return errors.Errorf("who-is high-limit must be specified together")
+	}
+	if bacNetPort == nil {
+		defaultBacNetPort := 47808
+		bacNetPort = &defaultBacNetPort
 	}
 
 	var tranportInstances []transports.TransportInstance
@@ -152,7 +165,8 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 		codec := NewMessageCodec(transportInstance)
 		// Explicitly start the worker
 		if err := codec.Connect(); err != nil {
-			return errors.Wrap(err, "Error connecting")
+			log.Warn().Err(err).Msg("Error connecting")
+			continue
 		}
 
 		// Cast to the UDP transport instance so we can access information on the local port.
@@ -185,7 +199,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 			// TODO: Make this configurable
 			timeout := time.NewTimer(time.Second * 1)
 			timeout.Stop()
-			for start := time.Now(); time.Since(start) < time.Second*5; {
+			for start := time.Now(); time.Since(start) < time.Second*50; {
 				timeout.Reset(time.Second * 1)
 				select {
 				case message := <-codec.GetDefaultIncomingMessageChannel():
@@ -193,7 +207,11 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 						if !timeout.Stop() {
 							<-timeout.C
 						}
+						//bvlc := message.(driverModel.BVLC)
 						_ = message
+						println(message.(fmt.Stringer).String())
+						continue
+
 						deviceName := "todo"
 						remoteUrl, err := url.Parse("udp://todo")
 						if err != nil {
@@ -220,5 +238,35 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 			}
 		}()
 	}
+
+	// Handle undirected
+	pc, err := reuseport.ListenPacket("udp4", "192.168.178.255:47808")
+	if err != nil {
+		panic(err)
+	}
+
+	go func() {
+		defer pc.Close()
+		// Keep on reading responses till the timeout is done.
+		// TODO: Make this configurable
+		timeout := time.NewTimer(time.Second * 1)
+		timeout.Stop()
+		for start := time.Now(); time.Since(start) < time.Second*50; {
+			timeout.Reset(time.Second * 1)
+
+			buf := make([]byte, 1024)
+			n, addr, err := pc.ReadFrom(buf)
+			if err != nil {
+				panic(err)
+			}
+			parse, err := driverModel.BVLCParse(utils.NewReadBufferByteBased(buf[:n]))
+			if err != nil {
+				panic(err)
+			}
+			_ = parse
+
+			fmt.Printf("%s sent this: %s\n", addr, buf[:n])
+		}
+	}()
 	return nil
 }
