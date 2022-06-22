@@ -20,6 +20,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
@@ -29,10 +30,8 @@ import (
 	"time"
 )
 
-// TODO: not yet finished... much c&p from knx atm
 func main() {
-	// Set logging to INFO
-	logging.DebugLevel()
+	logging.InfoLevel()
 
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterBacnetDriver(driverManager)
@@ -42,7 +41,7 @@ func main() {
 		// Try to auto-find bacnet devices via broadcast-message discovery
 		if err := driverManager.Discover(func(event model.PlcDiscoveryEvent) {
 			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
-			log.Info().Str("connection string", connStr).Msg("Found Bacnet Gateway")
+			log.Info().Str("connection string", connStr).Stringer("event", event.(fmt.Stringer)).Msg("Found Bacnet Gateway")
 
 			connectionStrings = append(connectionStrings, connStr)
 		},

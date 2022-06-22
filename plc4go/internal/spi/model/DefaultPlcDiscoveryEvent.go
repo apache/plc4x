@@ -20,6 +20,7 @@
 package model
 
 import (
+	"fmt"
 	"net/url"
 )
 
@@ -56,4 +57,8 @@ func (d *DefaultPlcDiscoveryEvent) GetConnectionString() string {
 		panic("Not implemented")
 	}
 	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host
+}
+
+func (d *DefaultPlcDiscoveryEvent) String() string {
+	return fmt.Sprintf("PlcDiscoveryEvent{Name:%s,%s}", d.Name, d.GetConnectionString())
 }

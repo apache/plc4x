@@ -162,8 +162,28 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 	for {
 		select {
 		case bvlc := <-incomingBVLCChannel:
-			_ = bvlc
-			deviceName := "todo"
+			var npdu driverModel.NPDU
+			if bvlc, ok := bvlc.(interface{ GetNpdu() driverModel.NPDU }); ok {
+				npdu = bvlc.GetNpdu()
+			}
+			_ = npdu
+			if apdu := npdu.GetApdu(); apdu == nil {
+				nlm := npdu.GetNlm()
+				log.Debug().Msgf("Got nlm\n%v", nlm)
+				continue
+			}
+			apdu := npdu.GetApdu()
+			if _, ok := apdu.(driverModel.APDUConfirmedRequestExactly); ok {
+				log.Debug().Msgf("Got apdu \n%v", apdu)
+				continue
+			}
+			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequestExactly)
+			serviceRequest := apduUnconfirmedRequest.GetServiceRequest()
+			if _, ok := serviceRequest.(driverModel.BACnetUnconfirmedServiceRequestIAmExactly); !ok {
+				log.Debug().Msgf("Got serviceRequest \n%v", serviceRequest)
+				continue
+			}
+			iam := serviceRequest.(driverModel.BACnetUnconfirmedServiceRequestIAm)
 			remoteUrl, err := url.Parse("udp://todo")
 			if err != nil {
 				log.Debug().Err(err).Msg("Error parsing url")
@@ -172,8 +192,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				ProtocolCode:  "bacnet-ip",
 				TransportCode: "udp",
 				TransportUrl:  *remoteUrl,
-				Options:       nil,
-				Name:          deviceName,
+				Name:          fmt.Sprintf("device %v", iam.GetDeviceIdentifier().GetInstanceNumber()),
 			}
 
 			// Pass the event back to the callback
