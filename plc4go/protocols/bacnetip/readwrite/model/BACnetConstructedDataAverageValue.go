@@ -40,6 +40,7 @@ type BACnetConstructedDataAverageValue interface {
 // BACnetConstructedDataAverageValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAverageValue.
 // This is useful for switch cases.
 type BACnetConstructedDataAverageValueExactly interface {
+	BACnetConstructedDataAverageValue
 	isBACnetConstructedDataAverageValue() bool
 }
 

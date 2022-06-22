@@ -38,6 +38,7 @@ type SysexCommandPinStateQuery interface {
 // SysexCommandPinStateQueryExactly can be used when we want exactly this type and not a type which fulfills SysexCommandPinStateQuery.
 // This is useful for switch cases.
 type SysexCommandPinStateQueryExactly interface {
+	SysexCommandPinStateQuery
 	isSysexCommandPinStateQuery() bool
 }
 

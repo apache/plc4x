@@ -48,6 +48,7 @@ type BACnetConfirmedServiceRequestWriteProperty interface {
 // BACnetConfirmedServiceRequestWritePropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestWriteProperty.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestWritePropertyExactly interface {
+	BACnetConfirmedServiceRequestWriteProperty
 	isBACnetConfirmedServiceRequestWriteProperty() bool
 }
 

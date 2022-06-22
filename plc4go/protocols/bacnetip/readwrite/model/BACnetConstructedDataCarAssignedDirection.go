@@ -40,6 +40,7 @@ type BACnetConstructedDataCarAssignedDirection interface {
 // BACnetConstructedDataCarAssignedDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarAssignedDirection.
 // This is useful for switch cases.
 type BACnetConstructedDataCarAssignedDirectionExactly interface {
+	BACnetConstructedDataCarAssignedDirection
 	isBACnetConstructedDataCarAssignedDirection() bool
 }
 

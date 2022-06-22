@@ -40,6 +40,7 @@ type BACnetConstructedDataFileSize interface {
 // BACnetConstructedDataFileSizeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileSize.
 // This is useful for switch cases.
 type BACnetConstructedDataFileSizeExactly interface {
+	BACnetConstructedDataFileSize
 	isBACnetConstructedDataFileSize() bool
 }
 

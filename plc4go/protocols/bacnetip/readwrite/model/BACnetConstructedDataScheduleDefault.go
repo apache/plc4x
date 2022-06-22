@@ -40,6 +40,7 @@ type BACnetConstructedDataScheduleDefault interface {
 // BACnetConstructedDataScheduleDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScheduleDefault.
 // This is useful for switch cases.
 type BACnetConstructedDataScheduleDefaultExactly interface {
+	BACnetConstructedDataScheduleDefault
 	isBACnetConstructedDataScheduleDefault() bool
 }
 

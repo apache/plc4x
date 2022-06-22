@@ -39,6 +39,7 @@ type BACnetNetworkNumberQualityTagged interface {
 // BACnetNetworkNumberQualityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkNumberQualityTagged.
 // This is useful for switch cases.
 type BACnetNetworkNumberQualityTaggedExactly interface {
+	BACnetNetworkNumberQualityTagged
 	isBACnetNetworkNumberQualityTagged() bool
 }
 

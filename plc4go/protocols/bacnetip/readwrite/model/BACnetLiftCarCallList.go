@@ -37,6 +37,7 @@ type BACnetLiftCarCallList interface {
 // BACnetLiftCarCallListExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarCallList.
 // This is useful for switch cases.
 type BACnetLiftCarCallListExactly interface {
+	BACnetLiftCarCallList
 	isBACnetLiftCarCallList() bool
 }
 

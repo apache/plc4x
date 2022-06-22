@@ -38,6 +38,7 @@ type BACnetPriorityValueNull interface {
 // BACnetPriorityValueNullExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueNull.
 // This is useful for switch cases.
 type BACnetPriorityValueNullExactly interface {
+	BACnetPriorityValueNull
 	isBACnetPriorityValueNull() bool
 }
 

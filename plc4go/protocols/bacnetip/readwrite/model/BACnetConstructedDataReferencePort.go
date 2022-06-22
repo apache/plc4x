@@ -40,6 +40,7 @@ type BACnetConstructedDataReferencePort interface {
 // BACnetConstructedDataReferencePortExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReferencePort.
 // This is useful for switch cases.
 type BACnetConstructedDataReferencePortExactly interface {
+	BACnetConstructedDataReferencePort
 	isBACnetConstructedDataReferencePort() bool
 }
 

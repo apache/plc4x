@@ -40,6 +40,7 @@ type ModbusAsciiADU interface {
 // ModbusAsciiADUExactly can be used when we want exactly this type and not a type which fulfills ModbusAsciiADU.
 // This is useful for switch cases.
 type ModbusAsciiADUExactly interface {
+	ModbusAsciiADU
 	isModbusAsciiADU() bool
 }
 

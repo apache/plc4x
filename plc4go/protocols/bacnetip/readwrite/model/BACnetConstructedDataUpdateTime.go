@@ -40,6 +40,7 @@ type BACnetConstructedDataUpdateTime interface {
 // BACnetConstructedDataUpdateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateTime.
 // This is useful for switch cases.
 type BACnetConstructedDataUpdateTimeExactly interface {
+	BACnetConstructedDataUpdateTime
 	isBACnetConstructedDataUpdateTime() bool
 }
 

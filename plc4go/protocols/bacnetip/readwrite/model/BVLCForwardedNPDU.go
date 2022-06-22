@@ -42,6 +42,7 @@ type BVLCForwardedNPDU interface {
 // BVLCForwardedNPDUExactly can be used when we want exactly this type and not a type which fulfills BVLCForwardedNPDU.
 // This is useful for switch cases.
 type BVLCForwardedNPDUExactly interface {
+	BVLCForwardedNPDU
 	isBVLCForwardedNPDU() bool
 }
 

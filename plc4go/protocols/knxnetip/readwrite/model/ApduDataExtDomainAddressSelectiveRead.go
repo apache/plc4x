@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressSelectiveRead interface {
 // ApduDataExtDomainAddressSelectiveReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtDomainAddressSelectiveRead.
 // This is useful for switch cases.
 type ApduDataExtDomainAddressSelectiveReadExactly interface {
+	ApduDataExtDomainAddressSelectiveRead
 	isApduDataExtDomainAddressSelectiveRead() bool
 }
 

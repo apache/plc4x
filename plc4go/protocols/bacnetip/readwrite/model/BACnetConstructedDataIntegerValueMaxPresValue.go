@@ -40,6 +40,7 @@ type BACnetConstructedDataIntegerValueMaxPresValue interface {
 // BACnetConstructedDataIntegerValueMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueMaxPresValue.
 // This is useful for switch cases.
 type BACnetConstructedDataIntegerValueMaxPresValueExactly interface {
+	BACnetConstructedDataIntegerValueMaxPresValue
 	isBACnetConstructedDataIntegerValueMaxPresValue() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetPropertyStatesDoorSecuredStatus interface {
 // BACnetPropertyStatesDoorSecuredStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesDoorSecuredStatus.
 // This is useful for switch cases.
 type BACnetPropertyStatesDoorSecuredStatusExactly interface {
+	BACnetPropertyStatesDoorSecuredStatus
 	isBACnetPropertyStatesDoorSecuredStatus() bool
 }
 

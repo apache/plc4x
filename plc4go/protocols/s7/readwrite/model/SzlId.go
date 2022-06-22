@@ -41,6 +41,7 @@ type SzlId interface {
 // SzlIdExactly can be used when we want exactly this type and not a type which fulfills SzlId.
 // This is useful for switch cases.
 type SzlIdExactly interface {
+	SzlId
 	isSzlId() bool
 }
 

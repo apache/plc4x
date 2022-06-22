@@ -40,6 +40,7 @@ type BACnetApplicationTagCharacterString interface {
 // BACnetApplicationTagCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagCharacterString.
 // This is useful for switch cases.
 type BACnetApplicationTagCharacterStringExactly interface {
+	BACnetApplicationTagCharacterString
 	isBACnetApplicationTagCharacterString() bool
 }
 

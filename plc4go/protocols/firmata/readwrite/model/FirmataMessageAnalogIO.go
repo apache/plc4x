@@ -40,6 +40,7 @@ type FirmataMessageAnalogIO interface {
 // FirmataMessageAnalogIOExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageAnalogIO.
 // This is useful for switch cases.
 type FirmataMessageAnalogIOExactly interface {
+	FirmataMessageAnalogIO
 	isFirmataMessageAnalogIO() bool
 }
 

@@ -43,6 +43,7 @@ type BACnetLifeSafetyOperationTagged interface {
 // BACnetLifeSafetyOperationTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLifeSafetyOperationTagged.
 // This is useful for switch cases.
 type BACnetLifeSafetyOperationTaggedExactly interface {
+	BACnetLifeSafetyOperationTagged
 	isBACnetLifeSafetyOperationTagged() bool
 }
 

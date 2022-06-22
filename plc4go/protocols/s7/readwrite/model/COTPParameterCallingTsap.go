@@ -38,6 +38,7 @@ type COTPParameterCallingTsap interface {
 // COTPParameterCallingTsapExactly can be used when we want exactly this type and not a type which fulfills COTPParameterCallingTsap.
 // This is useful for switch cases.
 type COTPParameterCallingTsapExactly interface {
+	COTPParameterCallingTsap
 	isCOTPParameterCallingTsap() bool
 }
 

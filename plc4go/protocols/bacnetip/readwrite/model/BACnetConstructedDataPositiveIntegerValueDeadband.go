@@ -40,6 +40,7 @@ type BACnetConstructedDataPositiveIntegerValueDeadband interface {
 // BACnetConstructedDataPositiveIntegerValueDeadbandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueDeadband.
 // This is useful for switch cases.
 type BACnetConstructedDataPositiveIntegerValueDeadbandExactly interface {
+	BACnetConstructedDataPositiveIntegerValueDeadband
 	isBACnetConstructedDataPositiveIntegerValueDeadband() bool
 }
 

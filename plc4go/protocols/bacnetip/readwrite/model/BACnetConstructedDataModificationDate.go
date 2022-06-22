@@ -40,6 +40,7 @@ type BACnetConstructedDataModificationDate interface {
 // BACnetConstructedDataModificationDateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataModificationDate.
 // This is useful for switch cases.
 type BACnetConstructedDataModificationDateExactly interface {
+	BACnetConstructedDataModificationDate
 	isBACnetConstructedDataModificationDate() bool
 }
 

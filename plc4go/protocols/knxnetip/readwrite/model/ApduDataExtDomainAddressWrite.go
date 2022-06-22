@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressWrite interface {
 // ApduDataExtDomainAddressWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtDomainAddressWrite.
 // This is useful for switch cases.
 type ApduDataExtDomainAddressWriteExactly interface {
+	ApduDataExtDomainAddressWrite
 	isApduDataExtDomainAddressWrite() bool
 }
 

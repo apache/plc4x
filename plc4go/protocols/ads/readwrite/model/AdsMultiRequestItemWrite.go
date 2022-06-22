@@ -42,6 +42,7 @@ type AdsMultiRequestItemWrite interface {
 // AdsMultiRequestItemWriteExactly can be used when we want exactly this type and not a type which fulfills AdsMultiRequestItemWrite.
 // This is useful for switch cases.
 type AdsMultiRequestItemWriteExactly interface {
+	AdsMultiRequestItemWrite
 	isAdsMultiRequestItemWrite() bool
 }
 

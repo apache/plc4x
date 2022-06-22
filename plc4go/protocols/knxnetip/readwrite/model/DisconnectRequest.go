@@ -41,6 +41,7 @@ type DisconnectRequest interface {
 // DisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills DisconnectRequest.
 // This is useful for switch cases.
 type DisconnectRequestExactly interface {
+	DisconnectRequest
 	isDisconnectRequest() bool
 }
 

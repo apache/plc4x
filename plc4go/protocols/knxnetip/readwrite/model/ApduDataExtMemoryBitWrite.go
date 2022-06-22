@@ -36,6 +36,7 @@ type ApduDataExtMemoryBitWrite interface {
 // ApduDataExtMemoryBitWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtMemoryBitWrite.
 // This is useful for switch cases.
 type ApduDataExtMemoryBitWriteExactly interface {
+	ApduDataExtMemoryBitWrite
 	isApduDataExtMemoryBitWrite() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataIntegerValueResolution interface {
 // BACnetConstructedDataIntegerValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueResolution.
 // This is useful for switch cases.
 type BACnetConstructedDataIntegerValueResolutionExactly interface {
+	BACnetConstructedDataIntegerValueResolution
 	isBACnetConstructedDataIntegerValueResolution() bool
 }
 

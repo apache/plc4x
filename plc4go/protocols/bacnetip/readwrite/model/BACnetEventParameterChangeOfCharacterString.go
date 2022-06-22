@@ -44,6 +44,7 @@ type BACnetEventParameterChangeOfCharacterString interface {
 // BACnetEventParameterChangeOfCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfCharacterString.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfCharacterStringExactly interface {
+	BACnetEventParameterChangeOfCharacterString
 	isBACnetEventParameterChangeOfCharacterString() bool
 }
 

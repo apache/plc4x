@@ -38,6 +38,7 @@ type S7VarRequestParameterItemAddress interface {
 // S7VarRequestParameterItemAddressExactly can be used when we want exactly this type and not a type which fulfills S7VarRequestParameterItemAddress.
 // This is useful for switch cases.
 type S7VarRequestParameterItemAddressExactly interface {
+	S7VarRequestParameterItemAddress
 	isS7VarRequestParameterItemAddress() bool
 }
 

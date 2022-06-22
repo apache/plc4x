@@ -38,6 +38,7 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
 // DF1CommandResponseMessageProtectedTypedLogicalReadExactly can be used when we want exactly this type and not a type which fulfills DF1CommandResponseMessageProtectedTypedLogicalRead.
 // This is useful for switch cases.
 type DF1CommandResponseMessageProtectedTypedLogicalReadExactly interface {
+	DF1CommandResponseMessageProtectedTypedLogicalRead
 	isDF1CommandResponseMessageProtectedTypedLogicalRead() bool
 }
 

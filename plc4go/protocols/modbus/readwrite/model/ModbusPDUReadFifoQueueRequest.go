@@ -38,6 +38,7 @@ type ModbusPDUReadFifoQueueRequest interface {
 // ModbusPDUReadFifoQueueRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadFifoQueueRequest.
 // This is useful for switch cases.
 type ModbusPDUReadFifoQueueRequestExactly interface {
+	ModbusPDUReadFifoQueueRequest
 	isModbusPDUReadFifoQueueRequest() bool
 }
 

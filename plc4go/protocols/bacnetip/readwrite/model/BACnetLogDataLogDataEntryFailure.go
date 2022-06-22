@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryFailure interface {
 // BACnetLogDataLogDataEntryFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryFailure.
 // This is useful for switch cases.
 type BACnetLogDataLogDataEntryFailureExactly interface {
+	BACnetLogDataLogDataEntryFailure
 	isBACnetLogDataLogDataEntryFailure() bool
 }
 

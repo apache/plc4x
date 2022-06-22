@@ -42,6 +42,7 @@ type BACnetFaultParameterFaultStatusFlags interface {
 // BACnetFaultParameterFaultStatusFlagsExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultStatusFlags.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultStatusFlagsExactly interface {
+	BACnetFaultParameterFaultStatusFlags
 	isBACnetFaultParameterFaultStatusFlags() bool
 }
 

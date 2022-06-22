@@ -40,6 +40,7 @@ type BACnetConstructedDataLoopPresentValue interface {
 // BACnetConstructedDataLoopPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoopPresentValue.
 // This is useful for switch cases.
 type BACnetConstructedDataLoopPresentValueExactly interface {
+	BACnetConstructedDataLoopPresentValue
 	isBACnetConstructedDataLoopPresentValue() bool
 }
 

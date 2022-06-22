@@ -38,6 +38,7 @@ type BACnetPropertyStatesEventType interface {
 // BACnetPropertyStatesEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEventType.
 // This is useful for switch cases.
 type BACnetPropertyStatesEventTypeExactly interface {
+	BACnetPropertyStatesEventType
 	isBACnetPropertyStatesEventType() bool
 }
 

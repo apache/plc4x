@@ -40,6 +40,7 @@ type BACnetConstructedDataThreatAuthority interface {
 // BACnetConstructedDataThreatAuthorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataThreatAuthority.
 // This is useful for switch cases.
 type BACnetConstructedDataThreatAuthorityExactly interface {
+	BACnetConstructedDataThreatAuthority
 	isBACnetConstructedDataThreatAuthority() bool
 }
 

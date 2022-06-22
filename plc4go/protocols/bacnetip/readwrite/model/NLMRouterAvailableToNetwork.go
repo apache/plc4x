@@ -38,6 +38,7 @@ type NLMRouterAvailableToNetwork interface {
 // NLMRouterAvailableToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRouterAvailableToNetwork.
 // This is useful for switch cases.
 type NLMRouterAvailableToNetworkExactly interface {
+	NLMRouterAvailableToNetwork
 	isNLMRouterAvailableToNetwork() bool
 }
 

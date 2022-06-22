@@ -40,6 +40,7 @@ type FirmataMessageDigitalIO interface {
 // FirmataMessageDigitalIOExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageDigitalIO.
 // This is useful for switch cases.
 type FirmataMessageDigitalIOExactly interface {
+	FirmataMessageDigitalIO
 	isFirmataMessageDigitalIO() bool
 }
 

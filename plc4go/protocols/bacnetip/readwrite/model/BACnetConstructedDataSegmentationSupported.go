@@ -40,6 +40,7 @@ type BACnetConstructedDataSegmentationSupported interface {
 // BACnetConstructedDataSegmentationSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSegmentationSupported.
 // This is useful for switch cases.
 type BACnetConstructedDataSegmentationSupportedExactly interface {
+	BACnetConstructedDataSegmentationSupported
 	isBACnetConstructedDataSegmentationSupported() bool
 }
 

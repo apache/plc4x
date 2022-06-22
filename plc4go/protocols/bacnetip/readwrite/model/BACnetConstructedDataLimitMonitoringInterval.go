@@ -40,6 +40,7 @@ type BACnetConstructedDataLimitMonitoringInterval interface {
 // BACnetConstructedDataLimitMonitoringIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLimitMonitoringInterval.
 // This is useful for switch cases.
 type BACnetConstructedDataLimitMonitoringIntervalExactly interface {
+	BACnetConstructedDataLimitMonitoringInterval
 	isBACnetConstructedDataLimitMonitoringInterval() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataPulseConverterAdjustValue interface {
 // BACnetConstructedDataPulseConverterAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseConverterAdjustValue.
 // This is useful for switch cases.
 type BACnetConstructedDataPulseConverterAdjustValueExactly interface {
+	BACnetConstructedDataPulseConverterAdjustValue
 	isBACnetConstructedDataPulseConverterAdjustValue() bool
 }
 

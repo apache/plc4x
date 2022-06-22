@@ -40,6 +40,7 @@ type BACnetConstructedDataLoopAction interface {
 // BACnetConstructedDataLoopActionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoopAction.
 // This is useful for switch cases.
 type BACnetConstructedDataLoopActionExactly interface {
+	BACnetConstructedDataLoopAction
 	isBACnetConstructedDataLoopAction() bool
 }
 

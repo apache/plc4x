@@ -40,6 +40,7 @@ type SubscribeCOVPropertyMultipleError interface {
 // SubscribeCOVPropertyMultipleErrorExactly can be used when we want exactly this type and not a type which fulfills SubscribeCOVPropertyMultipleError.
 // This is useful for switch cases.
 type SubscribeCOVPropertyMultipleErrorExactly interface {
+	SubscribeCOVPropertyMultipleError
 	isSubscribeCOVPropertyMultipleError() bool
 }
 

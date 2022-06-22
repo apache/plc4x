@@ -40,6 +40,7 @@ type BACnetConstructedDataApplicationSoftwareVersion interface {
 // BACnetConstructedDataApplicationSoftwareVersionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataApplicationSoftwareVersion.
 // This is useful for switch cases.
 type BACnetConstructedDataApplicationSoftwareVersionExactly interface {
+	BACnetConstructedDataApplicationSoftwareVersion
 	isBACnetConstructedDataApplicationSoftwareVersion() bool
 }
 

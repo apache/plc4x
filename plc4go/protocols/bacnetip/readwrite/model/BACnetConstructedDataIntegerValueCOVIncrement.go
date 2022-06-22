@@ -40,6 +40,7 @@ type BACnetConstructedDataIntegerValueCOVIncrement interface {
 // BACnetConstructedDataIntegerValueCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueCOVIncrement.
 // This is useful for switch cases.
 type BACnetConstructedDataIntegerValueCOVIncrementExactly interface {
+	BACnetConstructedDataIntegerValueCOVIncrement
 	isBACnetConstructedDataIntegerValueCOVIncrement() bool
 }
 

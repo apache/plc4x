@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned interface
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned.
 // This is useful for switch cases.
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
 	isBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned() bool
 }
 

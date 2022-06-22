@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric interf
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericExactly interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
 	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() bool
 }
 

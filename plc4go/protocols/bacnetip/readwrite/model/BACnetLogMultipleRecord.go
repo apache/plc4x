@@ -39,6 +39,7 @@ type BACnetLogMultipleRecord interface {
 // BACnetLogMultipleRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetLogMultipleRecord.
 // This is useful for switch cases.
 type BACnetLogMultipleRecordExactly interface {
+	BACnetLogMultipleRecord
 	isBACnetLogMultipleRecord() bool
 }
 

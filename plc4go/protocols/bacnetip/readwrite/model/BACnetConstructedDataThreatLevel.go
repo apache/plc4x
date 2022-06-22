@@ -40,6 +40,7 @@ type BACnetConstructedDataThreatLevel interface {
 // BACnetConstructedDataThreatLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataThreatLevel.
 // This is useful for switch cases.
 type BACnetConstructedDataThreatLevelExactly interface {
+	BACnetConstructedDataThreatLevel
 	isBACnetConstructedDataThreatLevel() bool
 }
 

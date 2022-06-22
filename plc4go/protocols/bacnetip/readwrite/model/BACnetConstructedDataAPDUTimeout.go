@@ -40,6 +40,7 @@ type BACnetConstructedDataAPDUTimeout interface {
 // BACnetConstructedDataAPDUTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDUTimeout.
 // This is useful for switch cases.
 type BACnetConstructedDataAPDUTimeoutExactly interface {
+	BACnetConstructedDataAPDUTimeout
 	isBACnetConstructedDataAPDUTimeout() bool
 }
 

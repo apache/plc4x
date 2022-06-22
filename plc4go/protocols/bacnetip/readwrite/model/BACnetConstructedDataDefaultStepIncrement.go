@@ -40,6 +40,7 @@ type BACnetConstructedDataDefaultStepIncrement interface {
 // BACnetConstructedDataDefaultStepIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultStepIncrement.
 // This is useful for switch cases.
 type BACnetConstructedDataDefaultStepIncrementExactly interface {
+	BACnetConstructedDataDefaultStepIncrement
 	isBACnetConstructedDataDefaultStepIncrement() bool
 }
 

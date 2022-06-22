@@ -44,6 +44,7 @@ type BACnetConstructedDataAlarmValues interface {
 // BACnetConstructedDataAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAlarmValues.
 // This is useful for switch cases.
 type BACnetConstructedDataAlarmValuesExactly interface {
+	BACnetConstructedDataAlarmValues
 	isBACnetConstructedDataAlarmValues() bool
 }
 

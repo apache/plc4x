@@ -36,6 +36,7 @@ type IdentifyReplyCommandLogicalAssignment interface {
 // IdentifyReplyCommandLogicalAssignmentExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandLogicalAssignment.
 // This is useful for switch cases.
 type IdentifyReplyCommandLogicalAssignmentExactly interface {
+	IdentifyReplyCommandLogicalAssignment
 	isIdentifyReplyCommandLogicalAssignment() bool
 }
 

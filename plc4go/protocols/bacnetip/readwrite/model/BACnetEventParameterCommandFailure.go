@@ -44,6 +44,7 @@ type BACnetEventParameterCommandFailure interface {
 // BACnetEventParameterCommandFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterCommandFailure.
 // This is useful for switch cases.
 type BACnetEventParameterCommandFailureExactly interface {
+	BACnetEventParameterCommandFailure
 	isBACnetEventParameterCommandFailure() bool
 }
 

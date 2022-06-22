@@ -36,6 +36,7 @@ type LRawInd interface {
 // LRawIndExactly can be used when we want exactly this type and not a type which fulfills LRawInd.
 // This is useful for switch cases.
 type LRawIndExactly interface {
+	LRawInd
 	isLRawInd() bool
 }
 

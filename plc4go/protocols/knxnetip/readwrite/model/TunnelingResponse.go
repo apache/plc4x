@@ -38,6 +38,7 @@ type TunnelingResponse interface {
 // TunnelingResponseExactly can be used when we want exactly this type and not a type which fulfills TunnelingResponse.
 // This is useful for switch cases.
 type TunnelingResponseExactly interface {
+	TunnelingResponse
 	isTunnelingResponse() bool
 }
 

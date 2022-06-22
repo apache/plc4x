@@ -39,6 +39,7 @@ type BACnetAccessRuleTimeRangeSpecifierTagged interface {
 // BACnetAccessRuleTimeRangeSpecifierTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessRuleTimeRangeSpecifierTagged.
 // This is useful for switch cases.
 type BACnetAccessRuleTimeRangeSpecifierTaggedExactly interface {
+	BACnetAccessRuleTimeRangeSpecifierTagged
 	isBACnetAccessRuleTimeRangeSpecifierTagged() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataBACnetIPMode interface {
 // BACnetConstructedDataBACnetIPModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPMode.
 // This is useful for switch cases.
 type BACnetConstructedDataBACnetIPModeExactly interface {
+	BACnetConstructedDataBACnetIPMode
 	isBACnetConstructedDataBACnetIPMode() bool
 }
 

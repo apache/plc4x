@@ -40,6 +40,7 @@ type BACnetConstructedDataOccupancyCountAdjust interface {
 // BACnetConstructedDataOccupancyCountAdjustExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyCountAdjust.
 // This is useful for switch cases.
 type BACnetConstructedDataOccupancyCountAdjustExactly interface {
+	BACnetConstructedDataOccupancyCountAdjust
 	isBACnetConstructedDataOccupancyCountAdjust() bool
 }
 

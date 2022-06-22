@@ -37,6 +37,7 @@ type BACnetTagPayloadOctetString interface {
 // BACnetTagPayloadOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadOctetString.
 // This is useful for switch cases.
 type BACnetTagPayloadOctetStringExactly interface {
+	BACnetTagPayloadOctetString
 	isBACnetTagPayloadOctetString() bool
 }
 

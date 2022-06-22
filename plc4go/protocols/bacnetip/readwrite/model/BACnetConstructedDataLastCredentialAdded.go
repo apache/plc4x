@@ -40,6 +40,7 @@ type BACnetConstructedDataLastCredentialAdded interface {
 // BACnetConstructedDataLastCredentialAddedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCredentialAdded.
 // This is useful for switch cases.
 type BACnetConstructedDataLastCredentialAddedExactly interface {
+	BACnetConstructedDataLastCredentialAdded
 	isBACnetConstructedDataLastCredentialAdded() bool
 }
 

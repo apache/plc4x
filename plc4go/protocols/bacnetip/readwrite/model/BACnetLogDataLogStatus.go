@@ -38,6 +38,7 @@ type BACnetLogDataLogStatus interface {
 // BACnetLogDataLogStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogStatus.
 // This is useful for switch cases.
 type BACnetLogDataLogStatusExactly interface {
+	BACnetLogDataLogStatus
 	isBACnetLogDataLogStatus() bool
 }
 

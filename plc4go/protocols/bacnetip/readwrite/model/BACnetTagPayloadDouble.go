@@ -37,6 +37,7 @@ type BACnetTagPayloadDouble interface {
 // BACnetTagPayloadDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadDouble.
 // This is useful for switch cases.
 type BACnetTagPayloadDoubleExactly interface {
+	BACnetTagPayloadDouble
 	isBACnetTagPayloadDouble() bool
 }
 

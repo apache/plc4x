@@ -36,6 +36,7 @@ type ModbusPDUGetComEventCounterRequest interface {
 // ModbusPDUGetComEventCounterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUGetComEventCounterRequest.
 // This is useful for switch cases.
 type ModbusPDUGetComEventCounterRequestExactly interface {
+	ModbusPDUGetComEventCounterRequest
 	isModbusPDUGetComEventCounterRequest() bool
 }
 

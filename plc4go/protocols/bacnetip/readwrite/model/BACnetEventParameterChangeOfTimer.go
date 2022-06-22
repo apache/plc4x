@@ -46,6 +46,7 @@ type BACnetEventParameterChangeOfTimer interface {
 // BACnetEventParameterChangeOfTimerExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfTimer.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfTimerExactly interface {
+	BACnetEventParameterChangeOfTimer
 	isBACnetEventParameterChangeOfTimer() bool
 }
 

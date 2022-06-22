@@ -38,6 +38,7 @@ type SearchRequest interface {
 // SearchRequestExactly can be used when we want exactly this type and not a type which fulfills SearchRequest.
 // This is useful for switch cases.
 type SearchRequestExactly interface {
+	SearchRequest
 	isSearchRequest() bool
 }
 

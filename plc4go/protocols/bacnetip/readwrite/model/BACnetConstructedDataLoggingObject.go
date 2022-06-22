@@ -40,6 +40,7 @@ type BACnetConstructedDataLoggingObject interface {
 // BACnetConstructedDataLoggingObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoggingObject.
 // This is useful for switch cases.
 type BACnetConstructedDataLoggingObjectExactly interface {
+	BACnetConstructedDataLoggingObject
 	isBACnetConstructedDataLoggingObject() bool
 }
 

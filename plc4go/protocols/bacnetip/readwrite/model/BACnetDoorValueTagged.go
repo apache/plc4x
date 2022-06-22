@@ -39,6 +39,7 @@ type BACnetDoorValueTagged interface {
 // BACnetDoorValueTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDoorValueTagged.
 // This is useful for switch cases.
 type BACnetDoorValueTaggedExactly interface {
+	BACnetDoorValueTagged
 	isBACnetDoorValueTagged() bool
 }
 

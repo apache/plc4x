@@ -36,6 +36,7 @@ type BACnetConstructedDataAlertEnrollmentAll interface {
 // BACnetConstructedDataAlertEnrollmentAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAlertEnrollmentAll.
 // This is useful for switch cases.
 type BACnetConstructedDataAlertEnrollmentAllExactly interface {
+	BACnetConstructedDataAlertEnrollmentAll
 	isBACnetConstructedDataAlertEnrollmentAll() bool
 }
 

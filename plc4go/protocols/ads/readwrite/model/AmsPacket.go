@@ -53,6 +53,7 @@ type AmsPacket interface {
 // AmsPacketExactly can be used when we want exactly this type and not a type which fulfills AmsPacket.
 // This is useful for switch cases.
 type AmsPacketExactly interface {
+	AmsPacket
 	isAmsPacket() bool
 }
 

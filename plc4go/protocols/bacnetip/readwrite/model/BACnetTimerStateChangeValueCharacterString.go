@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueCharacterString interface {
 // BACnetTimerStateChangeValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueCharacterString.
 // This is useful for switch cases.
 type BACnetTimerStateChangeValueCharacterStringExactly interface {
+	BACnetTimerStateChangeValueCharacterString
 	isBACnetTimerStateChangeValueCharacterString() bool
 }
 

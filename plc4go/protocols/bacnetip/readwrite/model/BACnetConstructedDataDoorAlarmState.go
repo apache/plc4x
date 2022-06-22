@@ -40,6 +40,7 @@ type BACnetConstructedDataDoorAlarmState interface {
 // BACnetConstructedDataDoorAlarmStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorAlarmState.
 // This is useful for switch cases.
 type BACnetConstructedDataDoorAlarmStateExactly interface {
+	BACnetConstructedDataDoorAlarmState
 	isBACnetConstructedDataDoorAlarmState() bool
 }
 

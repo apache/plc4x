@@ -40,6 +40,7 @@ type BACnetConstructedDataIsUTC interface {
 // BACnetConstructedDataIsUTCExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIsUTC.
 // This is useful for switch cases.
 type BACnetConstructedDataIsUTCExactly interface {
+	BACnetConstructedDataIsUTC
 	isBACnetConstructedDataIsUTC() bool
 }
 

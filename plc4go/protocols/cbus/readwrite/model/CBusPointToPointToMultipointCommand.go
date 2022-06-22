@@ -41,6 +41,7 @@ type CBusPointToPointToMultipointCommand interface {
 // CBusPointToPointToMultipointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointToMultipointCommand.
 // This is useful for switch cases.
 type CBusPointToPointToMultipointCommandExactly interface {
+	CBusPointToPointToMultipointCommand
 	isCBusPointToPointToMultipointCommand() bool
 }
 

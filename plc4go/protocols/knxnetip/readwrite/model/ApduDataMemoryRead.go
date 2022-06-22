@@ -40,6 +40,7 @@ type ApduDataMemoryRead interface {
 // ApduDataMemoryReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryRead.
 // This is useful for switch cases.
 type ApduDataMemoryReadExactly interface {
+	ApduDataMemoryRead
 	isApduDataMemoryRead() bool
 }
 

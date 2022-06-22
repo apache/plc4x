@@ -43,6 +43,7 @@ type BACnetObjectPropertyReference interface {
 // BACnetObjectPropertyReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetObjectPropertyReference.
 // This is useful for switch cases.
 type BACnetObjectPropertyReferenceExactly interface {
+	BACnetObjectPropertyReference
 	isBACnetObjectPropertyReference() bool
 }
 

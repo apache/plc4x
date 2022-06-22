@@ -47,6 +47,7 @@ type BACnetCOVSubscription interface {
 // BACnetCOVSubscriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVSubscription.
 // This is useful for switch cases.
 type BACnetCOVSubscriptionExactly interface {
+	BACnetCOVSubscription
 	isBACnetCOVSubscription() bool
 }
 

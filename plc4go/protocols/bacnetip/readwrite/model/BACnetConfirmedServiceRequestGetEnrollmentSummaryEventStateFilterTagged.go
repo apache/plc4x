@@ -39,6 +39,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged int
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedExactly interface {
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
 	isBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged() bool
 }
 

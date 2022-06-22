@@ -40,6 +40,7 @@ type BACnetConstructedDataAccessEventCredential interface {
 // BACnetConstructedDataAccessEventCredentialExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEventCredential.
 // This is useful for switch cases.
 type BACnetConstructedDataAccessEventCredentialExactly interface {
+	BACnetConstructedDataAccessEventCredential
 	isBACnetConstructedDataAccessEventCredential() bool
 }
 

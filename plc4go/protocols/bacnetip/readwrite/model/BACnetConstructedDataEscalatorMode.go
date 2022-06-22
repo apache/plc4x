@@ -40,6 +40,7 @@ type BACnetConstructedDataEscalatorMode interface {
 // BACnetConstructedDataEscalatorModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEscalatorMode.
 // This is useful for switch cases.
 type BACnetConstructedDataEscalatorModeExactly interface {
+	BACnetConstructedDataEscalatorMode
 	isBACnetConstructedDataEscalatorMode() bool
 }
 

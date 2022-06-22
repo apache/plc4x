@@ -40,6 +40,7 @@ type BACnetConstructedDataFDSubscriptionLifetime interface {
 // BACnetConstructedDataFDSubscriptionLifetimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFDSubscriptionLifetime.
 // This is useful for switch cases.
 type BACnetConstructedDataFDSubscriptionLifetimeExactly interface {
+	BACnetConstructedDataFDSubscriptionLifetime
 	isBACnetConstructedDataFDSubscriptionLifetime() bool
 }
 

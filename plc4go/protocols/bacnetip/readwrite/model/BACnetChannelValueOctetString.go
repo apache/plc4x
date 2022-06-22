@@ -38,6 +38,7 @@ type BACnetChannelValueOctetString interface {
 // BACnetChannelValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueOctetString.
 // This is useful for switch cases.
 type BACnetChannelValueOctetStringExactly interface {
+	BACnetChannelValueOctetString
 	isBACnetChannelValueOctetString() bool
 }
 

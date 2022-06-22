@@ -38,6 +38,7 @@ type BACnetConstructedDataUTCTimeSynchronizationRecipients interface {
 // BACnetConstructedDataUTCTimeSynchronizationRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUTCTimeSynchronizationRecipients.
 // This is useful for switch cases.
 type BACnetConstructedDataUTCTimeSynchronizationRecipientsExactly interface {
+	BACnetConstructedDataUTCTimeSynchronizationRecipients
 	isBACnetConstructedDataUTCTimeSynchronizationRecipients() bool
 }
 

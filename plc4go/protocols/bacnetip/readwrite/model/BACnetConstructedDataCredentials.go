@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentials interface {
 // BACnetConstructedDataCredentialsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentials.
 // This is useful for switch cases.
 type BACnetConstructedDataCredentialsExactly interface {
+	BACnetConstructedDataCredentials
 	isBACnetConstructedDataCredentials() bool
 }
 

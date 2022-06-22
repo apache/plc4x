@@ -42,6 +42,7 @@ type ConnectionRequest interface {
 // ConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequest.
 // This is useful for switch cases.
 type ConnectionRequestExactly interface {
+	ConnectionRequest
 	isConnectionRequest() bool
 }
 

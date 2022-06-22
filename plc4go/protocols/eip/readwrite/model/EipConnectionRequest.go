@@ -41,6 +41,7 @@ type EipConnectionRequest interface {
 // EipConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills EipConnectionRequest.
 // This is useful for switch cases.
 type EipConnectionRequestExactly interface {
+	EipConnectionRequest
 	isEipConnectionRequest() bool
 }
 

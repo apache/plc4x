@@ -40,6 +40,7 @@ type BACnetConstructedDataIPv6DHCPServer interface {
 // BACnetConstructedDataIPv6DHCPServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DHCPServer.
 // This is useful for switch cases.
 type BACnetConstructedDataIPv6DHCPServerExactly interface {
+	BACnetConstructedDataIPv6DHCPServer
 	isBACnetConstructedDataIPv6DHCPServer() bool
 }
 

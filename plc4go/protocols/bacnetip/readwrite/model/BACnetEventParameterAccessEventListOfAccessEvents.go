@@ -41,6 +41,7 @@ type BACnetEventParameterAccessEventListOfAccessEvents interface {
 // BACnetEventParameterAccessEventListOfAccessEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterAccessEventListOfAccessEvents.
 // This is useful for switch cases.
 type BACnetEventParameterAccessEventListOfAccessEventsExactly interface {
+	BACnetEventParameterAccessEventListOfAccessEvents
 	isBACnetEventParameterAccessEventListOfAccessEvents() bool
 }
 

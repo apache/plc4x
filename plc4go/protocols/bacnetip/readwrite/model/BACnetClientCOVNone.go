@@ -38,6 +38,7 @@ type BACnetClientCOVNone interface {
 // BACnetClientCOVNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOVNone.
 // This is useful for switch cases.
 type BACnetClientCOVNoneExactly interface {
+	BACnetClientCOVNone
 	isBACnetClientCOVNone() bool
 }
 

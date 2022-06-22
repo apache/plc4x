@@ -40,6 +40,7 @@ type BACnetConstructedDataFileAccessMethod interface {
 // BACnetConstructedDataFileAccessMethodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileAccessMethod.
 // This is useful for switch cases.
 type BACnetConstructedDataFileAccessMethodExactly interface {
+	BACnetConstructedDataFileAccessMethod
 	isBACnetConstructedDataFileAccessMethod() bool
 }
 

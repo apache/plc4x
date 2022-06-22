@@ -41,6 +41,7 @@ type BACnetVMACEntry interface {
 // BACnetVMACEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetVMACEntry.
 // This is useful for switch cases.
 type BACnetVMACEntryExactly interface {
+	BACnetVMACEntry
 	isBACnetVMACEntry() bool
 }
 

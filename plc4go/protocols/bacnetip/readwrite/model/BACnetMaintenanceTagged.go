@@ -43,6 +43,7 @@ type BACnetMaintenanceTagged interface {
 // BACnetMaintenanceTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetMaintenanceTagged.
 // This is useful for switch cases.
 type BACnetMaintenanceTaggedExactly interface {
+	BACnetMaintenanceTagged
 	isBACnetMaintenanceTagged() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataTimeOfActiveTimeReset interface {
 // BACnetConstructedDataTimeOfActiveTimeResetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeOfActiveTimeReset.
 // This is useful for switch cases.
 type BACnetConstructedDataTimeOfActiveTimeResetExactly interface {
+	BACnetConstructedDataTimeOfActiveTimeReset
 	isBACnetConstructedDataTimeOfActiveTimeReset() bool
 }
 

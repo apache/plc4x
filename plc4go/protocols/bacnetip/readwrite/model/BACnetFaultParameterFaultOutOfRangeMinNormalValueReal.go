@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueReal interface {
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValueReal.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueRealExactly interface {
+	BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
 	isBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() bool
 }
 

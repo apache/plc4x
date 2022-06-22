@@ -38,6 +38,7 @@ type IdentifyReplyCommandFirmwareVersion interface {
 // IdentifyReplyCommandFirmwareVersionExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandFirmwareVersion.
 // This is useful for switch cases.
 type IdentifyReplyCommandFirmwareVersionExactly interface {
+	IdentifyReplyCommandFirmwareVersion
 	isIdentifyReplyCommandFirmwareVersion() bool
 }
 

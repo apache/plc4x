@@ -41,6 +41,7 @@ type BACnetEventSummariesList interface {
 // BACnetEventSummariesListExactly can be used when we want exactly this type and not a type which fulfills BACnetEventSummariesList.
 // This is useful for switch cases.
 type BACnetEventSummariesListExactly interface {
+	BACnetEventSummariesList
 	isBACnetEventSummariesList() bool
 }
 

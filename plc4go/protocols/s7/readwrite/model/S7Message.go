@@ -49,6 +49,7 @@ type S7Message interface {
 // S7MessageExactly can be used when we want exactly this type and not a type which fulfills S7Message.
 // This is useful for switch cases.
 type S7MessageExactly interface {
+	S7Message
 	isS7Message() bool
 }
 

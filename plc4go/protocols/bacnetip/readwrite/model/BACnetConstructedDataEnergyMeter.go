@@ -40,6 +40,7 @@ type BACnetConstructedDataEnergyMeter interface {
 // BACnetConstructedDataEnergyMeterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEnergyMeter.
 // This is useful for switch cases.
 type BACnetConstructedDataEnergyMeterExactly interface {
+	BACnetConstructedDataEnergyMeter
 	isBACnetConstructedDataEnergyMeter() bool
 }
 

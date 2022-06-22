@@ -40,6 +40,7 @@ type ApduDataMemoryResponse interface {
 // ApduDataMemoryResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryResponse.
 // This is useful for switch cases.
 type ApduDataMemoryResponseExactly interface {
+	ApduDataMemoryResponse
 	isApduDataMemoryResponse() bool
 }
 

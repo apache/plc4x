@@ -48,6 +48,7 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 // BACnetConfirmedServiceRequestAcknowledgeAlarmExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAcknowledgeAlarm.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestAcknowledgeAlarmExactly interface {
+	BACnetConfirmedServiceRequestAcknowledgeAlarm
 	isBACnetConfirmedServiceRequestAcknowledgeAlarm() bool
 }
 

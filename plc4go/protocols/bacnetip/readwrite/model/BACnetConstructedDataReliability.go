@@ -40,6 +40,7 @@ type BACnetConstructedDataReliability interface {
 // BACnetConstructedDataReliabilityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReliability.
 // This is useful for switch cases.
 type BACnetConstructedDataReliabilityExactly interface {
+	BACnetConstructedDataReliability
 	isBACnetConstructedDataReliability() bool
 }
 

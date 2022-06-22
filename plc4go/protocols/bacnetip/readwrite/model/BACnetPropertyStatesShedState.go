@@ -38,6 +38,7 @@ type BACnetPropertyStatesShedState interface {
 // BACnetPropertyStatesShedStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesShedState.
 // This is useful for switch cases.
 type BACnetPropertyStatesShedStateExactly interface {
+	BACnetPropertyStatesShedState
 	isBACnetPropertyStatesShedState() bool
 }
 

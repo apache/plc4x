@@ -36,6 +36,7 @@ type SysexCommandExtendedAnalog interface {
 // SysexCommandExtendedAnalogExactly can be used when we want exactly this type and not a type which fulfills SysexCommandExtendedAnalog.
 // This is useful for switch cases.
 type SysexCommandExtendedAnalogExactly interface {
+	SysexCommandExtendedAnalog
 	isSysexCommandExtendedAnalog() bool
 }
 

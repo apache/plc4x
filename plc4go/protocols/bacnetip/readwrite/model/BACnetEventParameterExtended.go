@@ -46,6 +46,7 @@ type BACnetEventParameterExtended interface {
 // BACnetEventParameterExtendedExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterExtended.
 // This is useful for switch cases.
 type BACnetEventParameterExtendedExactly interface {
+	BACnetEventParameterExtended
 	isBACnetEventParameterExtended() bool
 }
 

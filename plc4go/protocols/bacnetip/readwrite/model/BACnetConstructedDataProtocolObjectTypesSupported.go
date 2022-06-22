@@ -40,6 +40,7 @@ type BACnetConstructedDataProtocolObjectTypesSupported interface {
 // BACnetConstructedDataProtocolObjectTypesSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolObjectTypesSupported.
 // This is useful for switch cases.
 type BACnetConstructedDataProtocolObjectTypesSupportedExactly interface {
+	BACnetConstructedDataProtocolObjectTypesSupported
 	isBACnetConstructedDataProtocolObjectTypesSupported() bool
 }
 

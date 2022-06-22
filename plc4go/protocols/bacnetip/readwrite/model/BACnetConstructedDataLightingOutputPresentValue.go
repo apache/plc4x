@@ -40,6 +40,7 @@ type BACnetConstructedDataLightingOutputPresentValue interface {
 // BACnetConstructedDataLightingOutputPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingOutputPresentValue.
 // This is useful for switch cases.
 type BACnetConstructedDataLightingOutputPresentValueExactly interface {
+	BACnetConstructedDataLightingOutputPresentValue
 	isBACnetConstructedDataLightingOutputPresentValue() bool
 }
 

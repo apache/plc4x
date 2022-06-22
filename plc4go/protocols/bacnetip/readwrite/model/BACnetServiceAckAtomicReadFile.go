@@ -40,6 +40,7 @@ type BACnetServiceAckAtomicReadFile interface {
 // BACnetServiceAckAtomicReadFileExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFile.
 // This is useful for switch cases.
 type BACnetServiceAckAtomicReadFileExactly interface {
+	BACnetServiceAckAtomicReadFile
 	isBACnetServiceAckAtomicReadFile() bool
 }
 

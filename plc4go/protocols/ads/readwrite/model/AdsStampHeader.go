@@ -41,6 +41,7 @@ type AdsStampHeader interface {
 // AdsStampHeaderExactly can be used when we want exactly this type and not a type which fulfills AdsStampHeader.
 // This is useful for switch cases.
 type AdsStampHeaderExactly interface {
+	AdsStampHeader
 	isAdsStampHeader() bool
 }
 

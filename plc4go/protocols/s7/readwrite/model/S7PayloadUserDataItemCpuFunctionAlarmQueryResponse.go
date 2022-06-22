@@ -46,6 +46,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 // S7PayloadUserDataItemCpuFunctionAlarmQueryResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.
 // This is useful for switch cases.
 type S7PayloadUserDataItemCpuFunctionAlarmQueryResponseExactly interface {
+	S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 	isS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() bool
 }
 

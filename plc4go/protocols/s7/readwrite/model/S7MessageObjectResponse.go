@@ -41,6 +41,7 @@ type S7MessageObjectResponse interface {
 // S7MessageObjectResponseExactly can be used when we want exactly this type and not a type which fulfills S7MessageObjectResponse.
 // This is useful for switch cases.
 type S7MessageObjectResponseExactly interface {
+	S7MessageObjectResponse
 	isS7MessageObjectResponse() bool
 }
 

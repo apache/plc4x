@@ -63,6 +63,7 @@ type ConfirmedEventNotificationRequest interface {
 // ConfirmedEventNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills ConfirmedEventNotificationRequest.
 // This is useful for switch cases.
 type ConfirmedEventNotificationRequestExactly interface {
+	ConfirmedEventNotificationRequest
 	isConfirmedEventNotificationRequest() bool
 }
 

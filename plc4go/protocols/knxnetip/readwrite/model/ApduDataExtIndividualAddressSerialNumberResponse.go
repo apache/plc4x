@@ -36,6 +36,7 @@ type ApduDataExtIndividualAddressSerialNumberResponse interface {
 // ApduDataExtIndividualAddressSerialNumberResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtIndividualAddressSerialNumberResponse.
 // This is useful for switch cases.
 type ApduDataExtIndividualAddressSerialNumberResponseExactly interface {
+	ApduDataExtIndividualAddressSerialNumberResponse
 	isApduDataExtIndividualAddressSerialNumberResponse() bool
 }
 

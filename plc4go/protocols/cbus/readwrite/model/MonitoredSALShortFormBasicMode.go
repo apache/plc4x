@@ -48,6 +48,7 @@ type MonitoredSALShortFormBasicMode interface {
 // MonitoredSALShortFormBasicModeExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALShortFormBasicMode.
 // This is useful for switch cases.
 type MonitoredSALShortFormBasicModeExactly interface {
+	MonitoredSALShortFormBasicMode
 	isMonitoredSALShortFormBasicMode() bool
 }
 

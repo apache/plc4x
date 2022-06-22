@@ -49,6 +49,7 @@ type AlarmMessageQueryType interface {
 // AlarmMessageQueryTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageQueryType.
 // This is useful for switch cases.
 type AlarmMessageQueryTypeExactly interface {
+	AlarmMessageQueryType
 	isAlarmMessageQueryType() bool
 }
 

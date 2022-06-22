@@ -52,6 +52,7 @@ type ExtendedFormatStatusReply interface {
 // ExtendedFormatStatusReplyExactly can be used when we want exactly this type and not a type which fulfills ExtendedFormatStatusReply.
 // This is useful for switch cases.
 type ExtendedFormatStatusReplyExactly interface {
+	ExtendedFormatStatusReply
 	isExtendedFormatStatusReply() bool
 }
 

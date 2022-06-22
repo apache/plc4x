@@ -40,6 +40,7 @@ type CreateObjectError interface {
 // CreateObjectErrorExactly can be used when we want exactly this type and not a type which fulfills CreateObjectError.
 // This is useful for switch cases.
 type CreateObjectErrorExactly interface {
+	CreateObjectError
 	isCreateObjectError() bool
 }
 

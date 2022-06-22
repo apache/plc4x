@@ -46,6 +46,7 @@ type ApduDataExtPropertyValueWrite interface {
 // ApduDataExtPropertyValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyValueWrite.
 // This is useful for switch cases.
 type ApduDataExtPropertyValueWriteExactly interface {
+	ApduDataExtPropertyValueWrite
 	isApduDataExtPropertyValueWrite() bool
 }
 

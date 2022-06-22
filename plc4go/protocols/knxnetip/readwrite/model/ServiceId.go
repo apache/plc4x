@@ -37,6 +37,7 @@ type ServiceId interface {
 // ServiceIdExactly can be used when we want exactly this type and not a type which fulfills ServiceId.
 // This is useful for switch cases.
 type ServiceIdExactly interface {
+	ServiceId
 	isServiceId() bool
 }
 

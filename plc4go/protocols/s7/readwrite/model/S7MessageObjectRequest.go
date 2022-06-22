@@ -48,6 +48,7 @@ type S7MessageObjectRequest interface {
 // S7MessageObjectRequestExactly can be used when we want exactly this type and not a type which fulfills S7MessageObjectRequest.
 // This is useful for switch cases.
 type S7MessageObjectRequestExactly interface {
+	S7MessageObjectRequest
 	isS7MessageObjectRequest() bool
 }
 

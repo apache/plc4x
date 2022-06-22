@@ -36,6 +36,7 @@ type SysexCommandReportFirmwareRequest interface {
 // SysexCommandReportFirmwareRequestExactly can be used when we want exactly this type and not a type which fulfills SysexCommandReportFirmwareRequest.
 // This is useful for switch cases.
 type SysexCommandReportFirmwareRequestExactly interface {
+	SysexCommandReportFirmwareRequest
 	isSysexCommandReportFirmwareRequest() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetPropertyStatesIntegerValue interface {
 // BACnetPropertyStatesIntegerValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesIntegerValue.
 // This is useful for switch cases.
 type BACnetPropertyStatesIntegerValueExactly interface {
+	BACnetPropertyStatesIntegerValue
 	isBACnetPropertyStatesIntegerValue() bool
 }
 

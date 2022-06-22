@@ -38,6 +38,7 @@ type DeviceConfigurationAck interface {
 // DeviceConfigurationAckExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationAck.
 // This is useful for switch cases.
 type DeviceConfigurationAckExactly interface {
+	DeviceConfigurationAck
 	isDeviceConfigurationAck() bool
 }
 

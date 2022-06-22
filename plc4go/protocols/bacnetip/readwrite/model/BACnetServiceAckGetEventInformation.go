@@ -40,6 +40,7 @@ type BACnetServiceAckGetEventInformation interface {
 // BACnetServiceAckGetEventInformationExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetEventInformation.
 // This is useful for switch cases.
 type BACnetServiceAckGetEventInformationExactly interface {
+	BACnetServiceAckGetEventInformation
 	isBACnetServiceAckGetEventInformation() bool
 }
 

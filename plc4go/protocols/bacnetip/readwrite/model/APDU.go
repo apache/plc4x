@@ -37,6 +37,7 @@ type APDU interface {
 // APDUExactly can be used when we want exactly this type and not a type which fulfills APDU.
 // This is useful for switch cases.
 type APDUExactly interface {
+	APDU
 	isAPDU() bool
 }
 

@@ -40,6 +40,7 @@ type APDUUnknown interface {
 // APDUUnknownExactly can be used when we want exactly this type and not a type which fulfills APDUUnknown.
 // This is useful for switch cases.
 type APDUUnknownExactly interface {
+	APDUUnknown
 	isAPDUUnknown() bool
 }
 

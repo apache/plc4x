@@ -40,6 +40,7 @@ type BACnetConstructedDataCarDriveStatus interface {
 // BACnetConstructedDataCarDriveStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarDriveStatus.
 // This is useful for switch cases.
 type BACnetConstructedDataCarDriveStatusExactly interface {
+	BACnetConstructedDataCarDriveStatus
 	isBACnetConstructedDataCarDriveStatus() bool
 }
 

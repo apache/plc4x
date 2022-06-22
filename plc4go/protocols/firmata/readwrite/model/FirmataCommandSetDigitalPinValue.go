@@ -41,6 +41,7 @@ type FirmataCommandSetDigitalPinValue interface {
 // FirmataCommandSetDigitalPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetDigitalPinValue.
 // This is useful for switch cases.
 type FirmataCommandSetDigitalPinValueExactly interface {
+	FirmataCommandSetDigitalPinValue
 	isFirmataCommandSetDigitalPinValue() bool
 }
 

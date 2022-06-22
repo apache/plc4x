@@ -40,6 +40,7 @@ type FirmataCommandSetPinMode interface {
 // FirmataCommandSetPinModeExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetPinMode.
 // This is useful for switch cases.
 type FirmataCommandSetPinModeExactly interface {
+	FirmataCommandSetPinMode
 	isFirmataCommandSetPinMode() bool
 }
 

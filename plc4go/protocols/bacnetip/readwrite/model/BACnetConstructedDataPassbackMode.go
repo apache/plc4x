@@ -40,6 +40,7 @@ type BACnetConstructedDataPassbackMode interface {
 // BACnetConstructedDataPassbackModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPassbackMode.
 // This is useful for switch cases.
 type BACnetConstructedDataPassbackModeExactly interface {
+	BACnetConstructedDataPassbackMode
 	isBACnetConstructedDataPassbackMode() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueEnumerated interface {
 // BACnetTimerStateChangeValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueEnumerated.
 // This is useful for switch cases.
 type BACnetTimerStateChangeValueEnumeratedExactly interface {
+	BACnetTimerStateChangeValueEnumerated
 	isBACnetTimerStateChangeValueEnumerated() bool
 }
 

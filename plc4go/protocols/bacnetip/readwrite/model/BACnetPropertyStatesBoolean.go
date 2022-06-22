@@ -38,6 +38,7 @@ type BACnetPropertyStatesBoolean interface {
 // BACnetPropertyStatesBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBoolean.
 // This is useful for switch cases.
 type BACnetPropertyStatesBooleanExactly interface {
+	BACnetPropertyStatesBoolean
 	isBACnetPropertyStatesBoolean() bool
 }
 

@@ -41,6 +41,7 @@ type DeviceConfigurationAckDataBlock interface {
 // DeviceConfigurationAckDataBlockExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationAckDataBlock.
 // This is useful for switch cases.
 type DeviceConfigurationAckDataBlockExactly interface {
+	DeviceConfigurationAckDataBlock
 	isDeviceConfigurationAckDataBlock() bool
 }
 

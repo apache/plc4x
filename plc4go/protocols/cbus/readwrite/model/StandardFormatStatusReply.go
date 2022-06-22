@@ -50,6 +50,7 @@ type StandardFormatStatusReply interface {
 // StandardFormatStatusReplyExactly can be used when we want exactly this type and not a type which fulfills StandardFormatStatusReply.
 // This is useful for switch cases.
 type StandardFormatStatusReplyExactly interface {
+	StandardFormatStatusReply
 	isStandardFormatStatusReply() bool
 }
 

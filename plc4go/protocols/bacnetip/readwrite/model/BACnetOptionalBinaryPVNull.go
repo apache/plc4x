@@ -38,6 +38,7 @@ type BACnetOptionalBinaryPVNull interface {
 // BACnetOptionalBinaryPVNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalBinaryPVNull.
 // This is useful for switch cases.
 type BACnetOptionalBinaryPVNullExactly interface {
+	BACnetOptionalBinaryPVNull
 	isBACnetOptionalBinaryPVNull() bool
 }
 

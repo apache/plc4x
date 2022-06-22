@@ -38,6 +38,7 @@ type S7PayloadAlarmSC interface {
 // S7PayloadAlarmSCExactly can be used when we want exactly this type and not a type which fulfills S7PayloadAlarmSC.
 // This is useful for switch cases.
 type S7PayloadAlarmSCExactly interface {
+	S7PayloadAlarmSC
 	isS7PayloadAlarmSC() bool
 }
 

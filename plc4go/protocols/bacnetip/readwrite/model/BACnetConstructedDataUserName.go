@@ -40,6 +40,7 @@ type BACnetConstructedDataUserName interface {
 // BACnetConstructedDataUserNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserName.
 // This is useful for switch cases.
 type BACnetConstructedDataUserNameExactly interface {
+	BACnetConstructedDataUserName
 	isBACnetConstructedDataUserName() bool
 }
 

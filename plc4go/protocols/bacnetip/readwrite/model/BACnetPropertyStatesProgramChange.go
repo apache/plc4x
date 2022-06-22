@@ -38,6 +38,7 @@ type BACnetPropertyStatesProgramChange interface {
 // BACnetPropertyStatesProgramChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesProgramChange.
 // This is useful for switch cases.
 type BACnetPropertyStatesProgramChangeExactly interface {
+	BACnetPropertyStatesProgramChange
 	isBACnetPropertyStatesProgramChange() bool
 }
 

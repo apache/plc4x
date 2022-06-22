@@ -40,6 +40,7 @@ type BACnetConstructedDataIPv6PrefixLength interface {
 // BACnetConstructedDataIPv6PrefixLengthExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6PrefixLength.
 // This is useful for switch cases.
 type BACnetConstructedDataIPv6PrefixLengthExactly interface {
+	BACnetConstructedDataIPv6PrefixLength
 	isBACnetConstructedDataIPv6PrefixLength() bool
 }
 

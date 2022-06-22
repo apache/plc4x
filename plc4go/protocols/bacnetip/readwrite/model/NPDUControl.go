@@ -46,6 +46,7 @@ type NPDUControl interface {
 // NPDUControlExactly can be used when we want exactly this type and not a type which fulfills NPDUControl.
 // This is useful for switch cases.
 type NPDUControlExactly interface {
+	NPDUControl
 	isNPDUControl() bool
 }
 

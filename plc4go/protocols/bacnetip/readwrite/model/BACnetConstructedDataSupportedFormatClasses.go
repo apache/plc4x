@@ -44,6 +44,7 @@ type BACnetConstructedDataSupportedFormatClasses interface {
 // BACnetConstructedDataSupportedFormatClassesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSupportedFormatClasses.
 // This is useful for switch cases.
 type BACnetConstructedDataSupportedFormatClassesExactly interface {
+	BACnetConstructedDataSupportedFormatClasses
 	isBACnetConstructedDataSupportedFormatClasses() bool
 }
 

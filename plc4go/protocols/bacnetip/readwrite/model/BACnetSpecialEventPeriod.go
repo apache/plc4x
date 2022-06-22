@@ -39,6 +39,7 @@ type BACnetSpecialEventPeriod interface {
 // BACnetSpecialEventPeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriod.
 // This is useful for switch cases.
 type BACnetSpecialEventPeriodExactly interface {
+	BACnetSpecialEventPeriod
 	isBACnetSpecialEventPeriod() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataAccumulatorLowLimit interface {
 // BACnetConstructedDataAccumulatorLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorLowLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataAccumulatorLowLimitExactly interface {
+	BACnetConstructedDataAccumulatorLowLimit
 	isBACnetConstructedDataAccumulatorLowLimit() bool
 }
 

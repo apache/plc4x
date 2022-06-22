@@ -37,6 +37,7 @@ type DF1RequestCommand interface {
 // DF1RequestCommandExactly can be used when we want exactly this type and not a type which fulfills DF1RequestCommand.
 // This is useful for switch cases.
 type DF1RequestCommandExactly interface {
+	DF1RequestCommand
 	isDF1RequestCommand() bool
 }
 

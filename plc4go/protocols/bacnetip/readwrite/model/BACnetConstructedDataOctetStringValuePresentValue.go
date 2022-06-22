@@ -40,6 +40,7 @@ type BACnetConstructedDataOctetStringValuePresentValue interface {
 // BACnetConstructedDataOctetStringValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOctetStringValuePresentValue.
 // This is useful for switch cases.
 type BACnetConstructedDataOctetStringValuePresentValueExactly interface {
+	BACnetConstructedDataOctetStringValuePresentValue
 	isBACnetConstructedDataOctetStringValuePresentValue() bool
 }
 

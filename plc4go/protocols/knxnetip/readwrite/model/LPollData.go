@@ -43,6 +43,7 @@ type LPollData interface {
 // LPollDataExactly can be used when we want exactly this type and not a type which fulfills LPollData.
 // This is useful for switch cases.
 type LPollDataExactly interface {
+	LPollData
 	isLPollData() bool
 }
 

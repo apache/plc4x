@@ -38,6 +38,7 @@ type S7PayloadNotify8 interface {
 // S7PayloadNotify8Exactly can be used when we want exactly this type and not a type which fulfills S7PayloadNotify8.
 // This is useful for switch cases.
 type S7PayloadNotify8Exactly interface {
+	S7PayloadNotify8
 	isS7PayloadNotify8() bool
 }
 

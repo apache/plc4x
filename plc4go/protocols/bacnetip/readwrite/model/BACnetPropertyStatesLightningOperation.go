@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningOperation interface {
 // BACnetPropertyStatesLightningOperationExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLightningOperation.
 // This is useful for switch cases.
 type BACnetPropertyStatesLightningOperationExactly interface {
+	BACnetPropertyStatesLightningOperation
 	isBACnetPropertyStatesLightningOperation() bool
 }
 

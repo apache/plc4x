@@ -46,6 +46,7 @@ type BACnetEventParameterUnsignedRange interface {
 // BACnetEventParameterUnsignedRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterUnsignedRange.
 // This is useful for switch cases.
 type BACnetEventParameterUnsignedRangeExactly interface {
+	BACnetEventParameterUnsignedRange
 	isBACnetEventParameterUnsignedRange() bool
 }
 

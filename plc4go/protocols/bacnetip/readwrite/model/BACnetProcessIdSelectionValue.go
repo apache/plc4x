@@ -38,6 +38,7 @@ type BACnetProcessIdSelectionValue interface {
 // BACnetProcessIdSelectionValueExactly can be used when we want exactly this type and not a type which fulfills BACnetProcessIdSelectionValue.
 // This is useful for switch cases.
 type BACnetProcessIdSelectionValueExactly interface {
+	BACnetProcessIdSelectionValue
 	isBACnetProcessIdSelectionValue() bool
 }
 

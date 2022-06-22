@@ -36,6 +36,7 @@ type BACnetConstructedDataEventLogAll interface {
 // BACnetConstructedDataEventLogAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventLogAll.
 // This is useful for switch cases.
 type BACnetConstructedDataEventLogAllExactly interface {
+	BACnetConstructedDataEventLogAll
 	isBACnetConstructedDataEventLogAll() bool
 }
 

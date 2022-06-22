@@ -50,6 +50,7 @@ type S7PayloadDiagnosticMessage interface {
 // S7PayloadDiagnosticMessageExactly can be used when we want exactly this type and not a type which fulfills S7PayloadDiagnosticMessage.
 // This is useful for switch cases.
 type S7PayloadDiagnosticMessageExactly interface {
+	S7PayloadDiagnosticMessage
 	isS7PayloadDiagnosticMessage() bool
 }
 

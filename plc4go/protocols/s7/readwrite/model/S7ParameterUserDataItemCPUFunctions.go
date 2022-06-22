@@ -52,6 +52,7 @@ type S7ParameterUserDataItemCPUFunctions interface {
 // S7ParameterUserDataItemCPUFunctionsExactly can be used when we want exactly this type and not a type which fulfills S7ParameterUserDataItemCPUFunctions.
 // This is useful for switch cases.
 type S7ParameterUserDataItemCPUFunctionsExactly interface {
+	S7ParameterUserDataItemCPUFunctions
 	isS7ParameterUserDataItemCPUFunctions() bool
 }
 

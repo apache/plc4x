@@ -38,6 +38,7 @@ type BACnetFaultParameterNone interface {
 // BACnetFaultParameterNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterNone.
 // This is useful for switch cases.
 type BACnetFaultParameterNoneExactly interface {
+	BACnetFaultParameterNone
 	isBACnetFaultParameterNone() bool
 }
 

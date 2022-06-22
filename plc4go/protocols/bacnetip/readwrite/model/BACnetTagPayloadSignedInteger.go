@@ -69,6 +69,7 @@ type BACnetTagPayloadSignedInteger interface {
 // BACnetTagPayloadSignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadSignedInteger.
 // This is useful for switch cases.
 type BACnetTagPayloadSignedIntegerExactly interface {
+	BACnetTagPayloadSignedInteger
 	isBACnetTagPayloadSignedInteger() bool
 }
 

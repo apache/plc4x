@@ -41,6 +41,7 @@ type BACnetHostNPortEnclosed interface {
 // BACnetHostNPortEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetHostNPortEnclosed.
 // This is useful for switch cases.
 type BACnetHostNPortEnclosedExactly interface {
+	BACnetHostNPortEnclosed
 	isBACnetHostNPortEnclosed() bool
 }
 

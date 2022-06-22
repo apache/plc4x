@@ -39,6 +39,7 @@ type ModbusConstants interface {
 // ModbusConstantsExactly can be used when we want exactly this type and not a type which fulfills ModbusConstants.
 // This is useful for switch cases.
 type ModbusConstantsExactly interface {
+	ModbusConstants
 	isModbusConstants() bool
 }
 

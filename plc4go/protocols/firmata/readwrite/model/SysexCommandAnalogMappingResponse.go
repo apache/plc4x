@@ -36,6 +36,7 @@ type SysexCommandAnalogMappingResponse interface {
 // SysexCommandAnalogMappingResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingResponse.
 // This is useful for switch cases.
 type SysexCommandAnalogMappingResponseExactly interface {
+	SysexCommandAnalogMappingResponse
 	isSysexCommandAnalogMappingResponse() bool
 }
 

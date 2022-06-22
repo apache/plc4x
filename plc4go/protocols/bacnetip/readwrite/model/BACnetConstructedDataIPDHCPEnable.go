@@ -40,6 +40,7 @@ type BACnetConstructedDataIPDHCPEnable interface {
 // BACnetConstructedDataIPDHCPEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPEnable.
 // This is useful for switch cases.
 type BACnetConstructedDataIPDHCPEnableExactly interface {
+	BACnetConstructedDataIPDHCPEnable
 	isBACnetConstructedDataIPDHCPEnable() bool
 }
 

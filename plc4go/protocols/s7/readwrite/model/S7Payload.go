@@ -39,6 +39,7 @@ type S7Payload interface {
 // S7PayloadExactly can be used when we want exactly this type and not a type which fulfills S7Payload.
 // This is useful for switch cases.
 type S7PayloadExactly interface {
+	S7Payload
 	isS7Payload() bool
 }
 

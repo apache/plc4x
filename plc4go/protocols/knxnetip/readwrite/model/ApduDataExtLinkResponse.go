@@ -36,6 +36,7 @@ type ApduDataExtLinkResponse interface {
 // ApduDataExtLinkResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtLinkResponse.
 // This is useful for switch cases.
 type ApduDataExtLinkResponseExactly interface {
+	ApduDataExtLinkResponse
 	isApduDataExtLinkResponse() bool
 }
 

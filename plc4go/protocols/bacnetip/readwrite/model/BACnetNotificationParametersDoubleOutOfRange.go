@@ -48,6 +48,7 @@ type BACnetNotificationParametersDoubleOutOfRange interface {
 // BACnetNotificationParametersDoubleOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersDoubleOutOfRange.
 // This is useful for switch cases.
 type BACnetNotificationParametersDoubleOutOfRangeExactly interface {
+	BACnetNotificationParametersDoubleOutOfRange
 	isBACnetNotificationParametersDoubleOutOfRange() bool
 }
 

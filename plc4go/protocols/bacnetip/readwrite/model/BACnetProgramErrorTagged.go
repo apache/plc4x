@@ -43,6 +43,7 @@ type BACnetProgramErrorTagged interface {
 // BACnetProgramErrorTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetProgramErrorTagged.
 // This is useful for switch cases.
 type BACnetProgramErrorTaggedExactly interface {
+	BACnetProgramErrorTagged
 	isBACnetProgramErrorTagged() bool
 }
 

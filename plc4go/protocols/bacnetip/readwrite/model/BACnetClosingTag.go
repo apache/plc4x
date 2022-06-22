@@ -37,6 +37,7 @@ type BACnetClosingTag interface {
 // BACnetClosingTagExactly can be used when we want exactly this type and not a type which fulfills BACnetClosingTag.
 // This is useful for switch cases.
 type BACnetClosingTagExactly interface {
+	BACnetClosingTag
 	isBACnetClosingTag() bool
 }
 

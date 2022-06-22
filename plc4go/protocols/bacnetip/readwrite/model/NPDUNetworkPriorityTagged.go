@@ -39,6 +39,7 @@ type NPDUNetworkPriorityTagged interface {
 // NPDUNetworkPriorityTaggedExactly can be used when we want exactly this type and not a type which fulfills NPDUNetworkPriorityTagged.
 // This is useful for switch cases.
 type NPDUNetworkPriorityTaggedExactly interface {
+	NPDUNetworkPriorityTagged
 	isNPDUNetworkPriorityTagged() bool
 }
 

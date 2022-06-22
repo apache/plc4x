@@ -40,6 +40,7 @@ type BACnetConstructedDataBelongsTo interface {
 // BACnetConstructedDataBelongsToExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBelongsTo.
 // This is useful for switch cases.
 type BACnetConstructedDataBelongsToExactly interface {
+	BACnetConstructedDataBelongsTo
 	isBACnetConstructedDataBelongsTo() bool
 }
 

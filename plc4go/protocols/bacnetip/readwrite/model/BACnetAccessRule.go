@@ -47,6 +47,7 @@ type BACnetAccessRule interface {
 // BACnetAccessRuleExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessRule.
 // This is useful for switch cases.
 type BACnetAccessRuleExactly interface {
+	BACnetAccessRule
 	isBACnetAccessRule() bool
 }
 

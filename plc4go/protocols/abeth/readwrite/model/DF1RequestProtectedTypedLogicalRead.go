@@ -46,6 +46,7 @@ type DF1RequestProtectedTypedLogicalRead interface {
 // DF1RequestProtectedTypedLogicalReadExactly can be used when we want exactly this type and not a type which fulfills DF1RequestProtectedTypedLogicalRead.
 // This is useful for switch cases.
 type DF1RequestProtectedTypedLogicalReadExactly interface {
+	DF1RequestProtectedTypedLogicalRead
 	isDF1RequestProtectedTypedLogicalRead() bool
 }
 

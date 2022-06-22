@@ -38,6 +38,7 @@ type BACnetLogDataLogDataTimeChange interface {
 // BACnetLogDataLogDataTimeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataTimeChange.
 // This is useful for switch cases.
 type BACnetLogDataLogDataTimeChangeExactly interface {
+	BACnetLogDataLogDataTimeChange
 	isBACnetLogDataLogDataTimeChange() bool
 }
 

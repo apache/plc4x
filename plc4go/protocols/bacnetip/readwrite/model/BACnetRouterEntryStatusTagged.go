@@ -39,6 +39,7 @@ type BACnetRouterEntryStatusTagged interface {
 // BACnetRouterEntryStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRouterEntryStatusTagged.
 // This is useful for switch cases.
 type BACnetRouterEntryStatusTaggedExactly interface {
+	BACnetRouterEntryStatusTagged
 	isBACnetRouterEntryStatusTagged() bool
 }
 

@@ -36,6 +36,7 @@ type BACnetConstructedDataEscalatorAll interface {
 // BACnetConstructedDataEscalatorAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEscalatorAll.
 // This is useful for switch cases.
 type BACnetConstructedDataEscalatorAllExactly interface {
+	BACnetConstructedDataEscalatorAll
 	isBACnetConstructedDataEscalatorAll() bool
 }
 

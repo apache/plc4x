@@ -36,6 +36,7 @@ type MFuncPropCon interface {
 // MFuncPropConExactly can be used when we want exactly this type and not a type which fulfills MFuncPropCon.
 // This is useful for switch cases.
 type MFuncPropConExactly interface {
+	MFuncPropCon
 	isMFuncPropCon() bool
 }
 

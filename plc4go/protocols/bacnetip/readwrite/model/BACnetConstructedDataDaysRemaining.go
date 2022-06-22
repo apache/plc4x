@@ -40,6 +40,7 @@ type BACnetConstructedDataDaysRemaining interface {
 // BACnetConstructedDataDaysRemainingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDaysRemaining.
 // This is useful for switch cases.
 type BACnetConstructedDataDaysRemainingExactly interface {
+	BACnetConstructedDataDaysRemaining
 	isBACnetConstructedDataDaysRemaining() bool
 }
 

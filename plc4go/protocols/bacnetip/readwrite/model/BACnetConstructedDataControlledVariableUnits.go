@@ -40,6 +40,7 @@ type BACnetConstructedDataControlledVariableUnits interface {
 // BACnetConstructedDataControlledVariableUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataControlledVariableUnits.
 // This is useful for switch cases.
 type BACnetConstructedDataControlledVariableUnitsExactly interface {
+	BACnetConstructedDataControlledVariableUnits
 	isBACnetConstructedDataControlledVariableUnits() bool
 }
 

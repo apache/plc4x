@@ -39,6 +39,7 @@ type BVLCResultCodeTagged interface {
 // BVLCResultCodeTaggedExactly can be used when we want exactly this type and not a type which fulfills BVLCResultCodeTagged.
 // This is useful for switch cases.
 type BVLCResultCodeTaggedExactly interface {
+	BVLCResultCodeTagged
 	isBVLCResultCodeTagged() bool
 }
 

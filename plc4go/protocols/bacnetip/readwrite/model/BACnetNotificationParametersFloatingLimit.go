@@ -48,6 +48,7 @@ type BACnetNotificationParametersFloatingLimit interface {
 // BACnetNotificationParametersFloatingLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersFloatingLimit.
 // This is useful for switch cases.
 type BACnetNotificationParametersFloatingLimitExactly interface {
+	BACnetNotificationParametersFloatingLimit
 	isBACnetNotificationParametersFloatingLimit() bool
 }
 

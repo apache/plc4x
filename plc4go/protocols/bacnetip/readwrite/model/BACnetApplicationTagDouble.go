@@ -40,6 +40,7 @@ type BACnetApplicationTagDouble interface {
 // BACnetApplicationTagDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagDouble.
 // This is useful for switch cases.
 type BACnetApplicationTagDoubleExactly interface {
+	BACnetApplicationTagDouble
 	isBACnetApplicationTagDouble() bool
 }
 

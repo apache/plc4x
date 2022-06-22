@@ -40,6 +40,7 @@ type BACnetConstructedDataProgramState interface {
 // BACnetConstructedDataProgramStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProgramState.
 // This is useful for switch cases.
 type BACnetConstructedDataProgramStateExactly interface {
+	BACnetConstructedDataProgramState
 	isBACnetConstructedDataProgramState() bool
 }
 

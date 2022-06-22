@@ -42,6 +42,7 @@ type ModbusPDUMaskWriteHoldingRegisterRequest interface {
 // ModbusPDUMaskWriteHoldingRegisterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUMaskWriteHoldingRegisterRequest.
 // This is useful for switch cases.
 type ModbusPDUMaskWriteHoldingRegisterRequestExactly interface {
+	ModbusPDUMaskWriteHoldingRegisterRequest
 	isModbusPDUMaskWriteHoldingRegisterRequest() bool
 }
 

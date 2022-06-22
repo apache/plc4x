@@ -38,6 +38,7 @@ type BACnetPriorityValueUnsigned interface {
 // BACnetPriorityValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueUnsigned.
 // This is useful for switch cases.
 type BACnetPriorityValueUnsignedExactly interface {
+	BACnetPriorityValueUnsigned
 	isBACnetPriorityValueUnsigned() bool
 }
 

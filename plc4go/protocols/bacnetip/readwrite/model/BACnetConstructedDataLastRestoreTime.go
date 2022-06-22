@@ -40,6 +40,7 @@ type BACnetConstructedDataLastRestoreTime interface {
 // BACnetConstructedDataLastRestoreTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastRestoreTime.
 // This is useful for switch cases.
 type BACnetConstructedDataLastRestoreTimeExactly interface {
+	BACnetConstructedDataLastRestoreTime
 	isBACnetConstructedDataLastRestoreTime() bool
 }
 

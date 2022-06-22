@@ -40,6 +40,7 @@ type BACnetConstructedDataLastAccessEvent interface {
 // BACnetConstructedDataLastAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastAccessEvent.
 // This is useful for switch cases.
 type BACnetConstructedDataLastAccessEventExactly interface {
+	BACnetConstructedDataLastAccessEvent
 	isBACnetConstructedDataLastAccessEvent() bool
 }
 

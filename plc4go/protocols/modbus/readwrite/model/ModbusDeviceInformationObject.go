@@ -39,6 +39,7 @@ type ModbusDeviceInformationObject interface {
 // ModbusDeviceInformationObjectExactly can be used when we want exactly this type and not a type which fulfills ModbusDeviceInformationObject.
 // This is useful for switch cases.
 type ModbusDeviceInformationObjectExactly interface {
+	ModbusDeviceInformationObject
 	isModbusDeviceInformationObject() bool
 }
 

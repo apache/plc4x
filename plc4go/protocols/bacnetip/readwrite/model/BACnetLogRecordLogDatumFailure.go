@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumFailure interface {
 // BACnetLogRecordLogDatumFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumFailure.
 // This is useful for switch cases.
 type BACnetLogRecordLogDatumFailureExactly interface {
+	BACnetLogRecordLogDatumFailure
 	isBACnetLogRecordLogDatumFailure() bool
 }
 

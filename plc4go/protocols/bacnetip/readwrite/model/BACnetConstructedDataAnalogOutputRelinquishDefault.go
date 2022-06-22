@@ -40,6 +40,7 @@ type BACnetConstructedDataAnalogOutputRelinquishDefault interface {
 // BACnetConstructedDataAnalogOutputRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogOutputRelinquishDefault.
 // This is useful for switch cases.
 type BACnetConstructedDataAnalogOutputRelinquishDefaultExactly interface {
+	BACnetConstructedDataAnalogOutputRelinquishDefault
 	isBACnetConstructedDataAnalogOutputRelinquishDefault() bool
 }
 

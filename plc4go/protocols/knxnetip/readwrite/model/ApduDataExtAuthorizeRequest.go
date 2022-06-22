@@ -40,6 +40,7 @@ type ApduDataExtAuthorizeRequest interface {
 // ApduDataExtAuthorizeRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtAuthorizeRequest.
 // This is useful for switch cases.
 type ApduDataExtAuthorizeRequestExactly interface {
+	ApduDataExtAuthorizeRequest
 	isApduDataExtAuthorizeRequest() bool
 }
 

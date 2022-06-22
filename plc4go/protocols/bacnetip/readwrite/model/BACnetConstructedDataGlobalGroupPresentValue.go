@@ -44,6 +44,7 @@ type BACnetConstructedDataGlobalGroupPresentValue interface {
 // BACnetConstructedDataGlobalGroupPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGlobalGroupPresentValue.
 // This is useful for switch cases.
 type BACnetConstructedDataGlobalGroupPresentValueExactly interface {
+	BACnetConstructedDataGlobalGroupPresentValue
 	isBACnetConstructedDataGlobalGroupPresentValue() bool
 }
 

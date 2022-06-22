@@ -40,6 +40,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 // S7PayloadUserDataItemCpuFunctionReadSzlRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionReadSzlRequest.
 // This is useful for switch cases.
 type S7PayloadUserDataItemCpuFunctionReadSzlRequestExactly interface {
+	S7PayloadUserDataItemCpuFunctionReadSzlRequest
 	isS7PayloadUserDataItemCpuFunctionReadSzlRequest() bool
 }
 

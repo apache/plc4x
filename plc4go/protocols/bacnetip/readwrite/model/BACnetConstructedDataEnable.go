@@ -40,6 +40,7 @@ type BACnetConstructedDataEnable interface {
 // BACnetConstructedDataEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEnable.
 // This is useful for switch cases.
 type BACnetConstructedDataEnableExactly interface {
+	BACnetConstructedDataEnable
 	isBACnetConstructedDataEnable() bool
 }
 

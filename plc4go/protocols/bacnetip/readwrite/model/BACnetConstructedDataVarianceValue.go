@@ -40,6 +40,7 @@ type BACnetConstructedDataVarianceValue interface {
 // BACnetConstructedDataVarianceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVarianceValue.
 // This is useful for switch cases.
 type BACnetConstructedDataVarianceValueExactly interface {
+	BACnetConstructedDataVarianceValue
 	isBACnetConstructedDataVarianceValue() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataSecurityTimeWindow interface {
 // BACnetConstructedDataSecurityTimeWindowExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSecurityTimeWindow.
 // This is useful for switch cases.
 type BACnetConstructedDataSecurityTimeWindowExactly interface {
+	BACnetConstructedDataSecurityTimeWindow
 	isBACnetConstructedDataSecurityTimeWindow() bool
 }
 

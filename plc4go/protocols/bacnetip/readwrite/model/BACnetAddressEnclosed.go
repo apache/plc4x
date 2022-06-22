@@ -41,6 +41,7 @@ type BACnetAddressEnclosed interface {
 // BACnetAddressEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetAddressEnclosed.
 // This is useful for switch cases.
 type BACnetAddressEnclosedExactly interface {
+	BACnetAddressEnclosed
 	isBACnetAddressEnclosed() bool
 }
 

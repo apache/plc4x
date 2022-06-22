@@ -40,6 +40,7 @@ type BACnetConstructedDataLockoutRelinquishTime interface {
 // BACnetConstructedDataLockoutRelinquishTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLockoutRelinquishTime.
 // This is useful for switch cases.
 type BACnetConstructedDataLockoutRelinquishTimeExactly interface {
+	BACnetConstructedDataLockoutRelinquishTime
 	isBACnetConstructedDataLockoutRelinquishTime() bool
 }
 

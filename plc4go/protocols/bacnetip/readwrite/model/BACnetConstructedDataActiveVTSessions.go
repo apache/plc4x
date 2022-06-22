@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveVTSessions interface {
 // BACnetConstructedDataActiveVTSessionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveVTSessions.
 // This is useful for switch cases.
 type BACnetConstructedDataActiveVTSessionsExactly interface {
+	BACnetConstructedDataActiveVTSessions
 	isBACnetConstructedDataActiveVTSessions() bool
 }
 

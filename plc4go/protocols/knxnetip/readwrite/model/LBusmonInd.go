@@ -44,6 +44,7 @@ type LBusmonInd interface {
 // LBusmonIndExactly can be used when we want exactly this type and not a type which fulfills LBusmonInd.
 // This is useful for switch cases.
 type LBusmonIndExactly interface {
+	LBusmonInd
 	isLBusmonInd() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataDeviceMaxInfoFrames interface {
 // BACnetConstructedDataDeviceMaxInfoFramesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceMaxInfoFrames.
 // This is useful for switch cases.
 type BACnetConstructedDataDeviceMaxInfoFramesExactly interface {
+	BACnetConstructedDataDeviceMaxInfoFrames
 	isBACnetConstructedDataDeviceMaxInfoFrames() bool
 }
 

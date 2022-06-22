@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueBitString interface {
 // BACnetTimerStateChangeValueBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueBitString.
 // This is useful for switch cases.
 type BACnetTimerStateChangeValueBitStringExactly interface {
+	BACnetTimerStateChangeValueBitString
 	isBACnetTimerStateChangeValueBitString() bool
 }
 

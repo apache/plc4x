@@ -40,6 +40,7 @@ type BACnetConstructedDataCount interface {
 // BACnetConstructedDataCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCount.
 // This is useful for switch cases.
 type BACnetConstructedDataCountExactly interface {
+	BACnetConstructedDataCount
 	isBACnetConstructedDataCount() bool
 }
 

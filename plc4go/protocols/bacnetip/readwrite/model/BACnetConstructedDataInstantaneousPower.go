@@ -40,6 +40,7 @@ type BACnetConstructedDataInstantaneousPower interface {
 // BACnetConstructedDataInstantaneousPowerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInstantaneousPower.
 // This is useful for switch cases.
 type BACnetConstructedDataInstantaneousPowerExactly interface {
+	BACnetConstructedDataInstantaneousPower
 	isBACnetConstructedDataInstantaneousPower() bool
 }
 

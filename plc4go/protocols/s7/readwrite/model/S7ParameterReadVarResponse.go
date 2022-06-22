@@ -38,6 +38,7 @@ type S7ParameterReadVarResponse interface {
 // S7ParameterReadVarResponseExactly can be used when we want exactly this type and not a type which fulfills S7ParameterReadVarResponse.
 // This is useful for switch cases.
 type S7ParameterReadVarResponseExactly interface {
+	S7ParameterReadVarResponse
 	isS7ParameterReadVarResponse() bool
 }
 

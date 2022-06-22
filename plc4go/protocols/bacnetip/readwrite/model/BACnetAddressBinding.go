@@ -39,6 +39,7 @@ type BACnetAddressBinding interface {
 // BACnetAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetAddressBinding.
 // This is useful for switch cases.
 type BACnetAddressBindingExactly interface {
+	BACnetAddressBinding
 	isBACnetAddressBinding() bool
 }
 

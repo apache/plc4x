@@ -40,6 +40,7 @@ type BACnetConstructedDataDaylightSavingsStatus interface {
 // BACnetConstructedDataDaylightSavingsStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDaylightSavingsStatus.
 // This is useful for switch cases.
 type BACnetConstructedDataDaylightSavingsStatusExactly interface {
+	BACnetConstructedDataDaylightSavingsStatus
 	isBACnetConstructedDataDaylightSavingsStatus() bool
 }
 

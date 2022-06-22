@@ -44,6 +44,7 @@ type BACnetConstructedDataCarDoorStatus interface {
 // BACnetConstructedDataCarDoorStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarDoorStatus.
 // This is useful for switch cases.
 type BACnetConstructedDataCarDoorStatusExactly interface {
+	BACnetConstructedDataCarDoorStatus
 	isBACnetConstructedDataCarDoorStatus() bool
 }
 

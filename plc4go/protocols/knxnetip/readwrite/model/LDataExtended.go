@@ -48,6 +48,7 @@ type LDataExtended interface {
 // LDataExtendedExactly can be used when we want exactly this type and not a type which fulfills LDataExtended.
 // This is useful for switch cases.
 type LDataExtendedExactly interface {
+	LDataExtended
 	isLDataExtended() bool
 }
 

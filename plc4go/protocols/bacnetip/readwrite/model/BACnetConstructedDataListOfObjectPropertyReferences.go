@@ -38,6 +38,7 @@ type BACnetConstructedDataListOfObjectPropertyReferences interface {
 // BACnetConstructedDataListOfObjectPropertyReferencesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataListOfObjectPropertyReferences.
 // This is useful for switch cases.
 type BACnetConstructedDataListOfObjectPropertyReferencesExactly interface {
+	BACnetConstructedDataListOfObjectPropertyReferences
 	isBACnetConstructedDataListOfObjectPropertyReferences() bool
 }
 

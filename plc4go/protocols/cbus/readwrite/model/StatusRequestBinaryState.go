@@ -39,6 +39,7 @@ type StatusRequestBinaryState interface {
 // StatusRequestBinaryStateExactly can be used when we want exactly this type and not a type which fulfills StatusRequestBinaryState.
 // This is useful for switch cases.
 type StatusRequestBinaryStateExactly interface {
+	StatusRequestBinaryState
 	isStatusRequestBinaryState() bool
 }
 

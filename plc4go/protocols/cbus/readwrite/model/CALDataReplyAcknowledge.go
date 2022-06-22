@@ -40,6 +40,7 @@ type CALDataReplyAcknowledge interface {
 // CALDataReplyAcknowledgeExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyAcknowledge.
 // This is useful for switch cases.
 type CALDataReplyAcknowledgeExactly interface {
+	CALDataReplyAcknowledge
 	isCALDataReplyAcknowledge() bool
 }
 

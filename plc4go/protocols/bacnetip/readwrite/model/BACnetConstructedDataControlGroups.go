@@ -44,6 +44,7 @@ type BACnetConstructedDataControlGroups interface {
 // BACnetConstructedDataControlGroupsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataControlGroups.
 // This is useful for switch cases.
 type BACnetConstructedDataControlGroupsExactly interface {
+	BACnetConstructedDataControlGroups
 	isBACnetConstructedDataControlGroups() bool
 }
 

@@ -44,6 +44,7 @@ type BACnetConstructedDataLogBuffer interface {
 // BACnetConstructedDataLogBufferExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLogBuffer.
 // This is useful for switch cases.
 type BACnetConstructedDataLogBufferExactly interface {
+	BACnetConstructedDataLogBuffer
 	isBACnetConstructedDataLogBuffer() bool
 }
 

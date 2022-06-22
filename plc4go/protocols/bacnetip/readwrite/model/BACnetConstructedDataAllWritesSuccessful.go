@@ -40,6 +40,7 @@ type BACnetConstructedDataAllWritesSuccessful interface {
 // BACnetConstructedDataAllWritesSuccessfulExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAllWritesSuccessful.
 // This is useful for switch cases.
 type BACnetConstructedDataAllWritesSuccessfulExactly interface {
+	BACnetConstructedDataAllWritesSuccessful
 	isBACnetConstructedDataAllWritesSuccessful() bool
 }
 

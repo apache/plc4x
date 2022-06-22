@@ -49,6 +49,7 @@ type BACnetDestination interface {
 // BACnetDestinationExactly can be used when we want exactly this type and not a type which fulfills BACnetDestination.
 // This is useful for switch cases.
 type BACnetDestinationExactly interface {
+	BACnetDestination
 	isBACnetDestination() bool
 }
 

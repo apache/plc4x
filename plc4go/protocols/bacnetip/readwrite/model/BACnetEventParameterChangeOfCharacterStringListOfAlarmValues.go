@@ -41,6 +41,7 @@ type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues interface {
 // BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfCharacterStringListOfAlarmValues.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesExactly interface {
+	BACnetEventParameterChangeOfCharacterStringListOfAlarmValues
 	isBACnetEventParameterChangeOfCharacterStringListOfAlarmValues() bool
 }
 

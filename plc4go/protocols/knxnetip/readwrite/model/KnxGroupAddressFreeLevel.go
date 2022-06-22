@@ -38,6 +38,7 @@ type KnxGroupAddressFreeLevel interface {
 // KnxGroupAddressFreeLevelExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddressFreeLevel.
 // This is useful for switch cases.
 type KnxGroupAddressFreeLevelExactly interface {
+	KnxGroupAddressFreeLevel
 	isKnxGroupAddressFreeLevel() bool
 }
 

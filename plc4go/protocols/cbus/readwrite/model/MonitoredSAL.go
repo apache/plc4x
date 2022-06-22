@@ -46,6 +46,7 @@ type MonitoredSAL interface {
 // MonitoredSALExactly can be used when we want exactly this type and not a type which fulfills MonitoredSAL.
 // This is useful for switch cases.
 type MonitoredSALExactly interface {
+	MonitoredSAL
 	isMonitoredSAL() bool
 }
 

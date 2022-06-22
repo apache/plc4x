@@ -40,6 +40,7 @@ type ModbusPDUWriteSingleRegisterRequest interface {
 // ModbusPDUWriteSingleRegisterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteSingleRegisterRequest.
 // This is useful for switch cases.
 type ModbusPDUWriteSingleRegisterRequestExactly interface {
+	ModbusPDUWriteSingleRegisterRequest
 	isModbusPDUWriteSingleRegisterRequest() bool
 }
 

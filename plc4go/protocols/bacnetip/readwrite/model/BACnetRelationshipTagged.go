@@ -43,6 +43,7 @@ type BACnetRelationshipTagged interface {
 // BACnetRelationshipTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRelationshipTagged.
 // This is useful for switch cases.
 type BACnetRelationshipTaggedExactly interface {
+	BACnetRelationshipTagged
 	isBACnetRelationshipTagged() bool
 }
 

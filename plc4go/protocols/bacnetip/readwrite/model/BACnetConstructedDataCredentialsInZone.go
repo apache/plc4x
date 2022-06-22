@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialsInZone interface {
 // BACnetConstructedDataCredentialsInZoneExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialsInZone.
 // This is useful for switch cases.
 type BACnetConstructedDataCredentialsInZoneExactly interface {
+	BACnetConstructedDataCredentialsInZone
 	isBACnetConstructedDataCredentialsInZone() bool
 }
 

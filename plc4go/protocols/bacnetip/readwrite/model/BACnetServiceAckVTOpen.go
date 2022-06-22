@@ -38,6 +38,7 @@ type BACnetServiceAckVTOpen interface {
 // BACnetServiceAckVTOpenExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckVTOpen.
 // This is useful for switch cases.
 type BACnetServiceAckVTOpenExactly interface {
+	BACnetServiceAckVTOpen
 	isBACnetServiceAckVTOpen() bool
 }
 

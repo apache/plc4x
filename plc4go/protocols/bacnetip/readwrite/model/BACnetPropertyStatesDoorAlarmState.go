@@ -38,6 +38,7 @@ type BACnetPropertyStatesDoorAlarmState interface {
 // BACnetPropertyStatesDoorAlarmStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesDoorAlarmState.
 // This is useful for switch cases.
 type BACnetPropertyStatesDoorAlarmStateExactly interface {
+	BACnetPropertyStatesDoorAlarmState
 	isBACnetPropertyStatesDoorAlarmState() bool
 }
 

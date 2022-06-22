@@ -36,6 +36,7 @@ type NotTransmittedCorruption interface {
 // NotTransmittedCorruptionExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedCorruption.
 // This is useful for switch cases.
 type NotTransmittedCorruptionExactly interface {
+	NotTransmittedCorruption
 	isNotTransmittedCorruption() bool
 }
 

@@ -36,6 +36,7 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 // IdentifyReplyCommandOutputUnitSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandOutputUnitSummary.
 // This is useful for switch cases.
 type IdentifyReplyCommandOutputUnitSummaryExactly interface {
+	IdentifyReplyCommandOutputUnitSummary
 	isIdentifyReplyCommandOutputUnitSummary() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataLastNotifyRecord interface {
 // BACnetConstructedDataLastNotifyRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastNotifyRecord.
 // This is useful for switch cases.
 type BACnetConstructedDataLastNotifyRecordExactly interface {
+	BACnetConstructedDataLastNotifyRecord
 	isBACnetConstructedDataLastNotifyRecord() bool
 }
 

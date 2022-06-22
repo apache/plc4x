@@ -44,6 +44,7 @@ type CALReply interface {
 // CALReplyExactly can be used when we want exactly this type and not a type which fulfills CALReply.
 // This is useful for switch cases.
 type CALReplyExactly interface {
+	CALReply
 	isCALReply() bool
 }
 

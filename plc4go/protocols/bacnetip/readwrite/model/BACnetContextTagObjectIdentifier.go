@@ -42,6 +42,7 @@ type BACnetContextTagObjectIdentifier interface {
 // BACnetContextTagObjectIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagObjectIdentifier.
 // This is useful for switch cases.
 type BACnetContextTagObjectIdentifierExactly interface {
+	BACnetContextTagObjectIdentifier
 	isBACnetContextTagObjectIdentifier() bool
 }
 

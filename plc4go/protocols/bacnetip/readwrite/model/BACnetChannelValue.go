@@ -41,6 +41,7 @@ type BACnetChannelValue interface {
 // BACnetChannelValueExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValue.
 // This is useful for switch cases.
 type BACnetChannelValueExactly interface {
+	BACnetChannelValue
 	isBACnetChannelValue() bool
 }
 

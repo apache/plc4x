@@ -40,6 +40,7 @@ type BACnetConstructedDataLogDeviceObjectProperty interface {
 // BACnetConstructedDataLogDeviceObjectPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLogDeviceObjectProperty.
 // This is useful for switch cases.
 type BACnetConstructedDataLogDeviceObjectPropertyExactly interface {
+	BACnetConstructedDataLogDeviceObjectProperty
 	isBACnetConstructedDataLogDeviceObjectProperty() bool
 }
 

@@ -43,6 +43,7 @@ type BACnetLogRecordLogDatum interface {
 // BACnetLogRecordLogDatumExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatum.
 // This is useful for switch cases.
 type BACnetLogRecordLogDatumExactly interface {
+	BACnetLogRecordLogDatum
 	isBACnetLogRecordLogDatum() bool
 }
 

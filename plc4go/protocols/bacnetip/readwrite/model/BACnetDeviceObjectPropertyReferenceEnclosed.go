@@ -41,6 +41,7 @@ type BACnetDeviceObjectPropertyReferenceEnclosed interface {
 // BACnetDeviceObjectPropertyReferenceEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetDeviceObjectPropertyReferenceEnclosed.
 // This is useful for switch cases.
 type BACnetDeviceObjectPropertyReferenceEnclosedExactly interface {
+	BACnetDeviceObjectPropertyReferenceEnclosed
 	isBACnetDeviceObjectPropertyReferenceEnclosed() bool
 }
 

@@ -42,6 +42,7 @@ type BACnetConfirmedServiceRequestReinitializeDevice interface {
 // BACnetConfirmedServiceRequestReinitializeDeviceExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReinitializeDevice.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestReinitializeDeviceExactly interface {
+	BACnetConfirmedServiceRequestReinitializeDevice
 	isBACnetConfirmedServiceRequestReinitializeDevice() bool
 }
 

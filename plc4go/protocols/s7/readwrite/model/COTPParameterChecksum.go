@@ -38,6 +38,7 @@ type COTPParameterChecksum interface {
 // COTPParameterChecksumExactly can be used when we want exactly this type and not a type which fulfills COTPParameterChecksum.
 // This is useful for switch cases.
 type COTPParameterChecksumExactly interface {
+	COTPParameterChecksum
 	isCOTPParameterChecksum() bool
 }
 

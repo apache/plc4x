@@ -41,6 +41,7 @@ type BACnetTimeStampsEnclosed interface {
 // BACnetTimeStampsEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampsEnclosed.
 // This is useful for switch cases.
 type BACnetTimeStampsEnclosedExactly interface {
+	BACnetTimeStampsEnclosed
 	isBACnetTimeStampsEnclosed() bool
 }
 

@@ -51,6 +51,7 @@ type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
 // BACnetConfirmedServiceRequestCreateObjectObjectSpecifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestCreateObjectObjectSpecifierExactly interface {
+	BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 	isBACnetConfirmedServiceRequestCreateObjectObjectSpecifier() bool
 }
 

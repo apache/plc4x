@@ -42,6 +42,7 @@ type S7DataAlarmMessage interface {
 // S7DataAlarmMessageExactly can be used when we want exactly this type and not a type which fulfills S7DataAlarmMessage.
 // This is useful for switch cases.
 type S7DataAlarmMessageExactly interface {
+	S7DataAlarmMessage
 	isS7DataAlarmMessage() bool
 }
 

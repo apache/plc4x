@@ -38,6 +38,7 @@ type StatusHeader interface {
 // StatusHeaderExactly can be used when we want exactly this type and not a type which fulfills StatusHeader.
 // This is useful for switch cases.
 type StatusHeaderExactly interface {
+	StatusHeader
 	isStatusHeader() bool
 }
 

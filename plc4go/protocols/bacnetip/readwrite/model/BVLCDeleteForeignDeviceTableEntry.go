@@ -40,6 +40,7 @@ type BVLCDeleteForeignDeviceTableEntry interface {
 // BVLCDeleteForeignDeviceTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCDeleteForeignDeviceTableEntry.
 // This is useful for switch cases.
 type BVLCDeleteForeignDeviceTableEntryExactly interface {
+	BVLCDeleteForeignDeviceTableEntry
 	isBVLCDeleteForeignDeviceTableEntry() bool
 }
 

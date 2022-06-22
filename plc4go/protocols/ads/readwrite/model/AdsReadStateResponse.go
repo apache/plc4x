@@ -42,6 +42,7 @@ type AdsReadStateResponse interface {
 // AdsReadStateResponseExactly can be used when we want exactly this type and not a type which fulfills AdsReadStateResponse.
 // This is useful for switch cases.
 type AdsReadStateResponseExactly interface {
+	AdsReadStateResponse
 	isAdsReadStateResponse() bool
 }
 

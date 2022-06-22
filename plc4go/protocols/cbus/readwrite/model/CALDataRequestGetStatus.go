@@ -40,6 +40,7 @@ type CALDataRequestGetStatus interface {
 // CALDataRequestGetStatusExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestGetStatus.
 // This is useful for switch cases.
 type CALDataRequestGetStatusExactly interface {
+	CALDataRequestGetStatus
 	isCALDataRequestGetStatus() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataChangesPending interface {
 // BACnetConstructedDataChangesPendingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangesPending.
 // This is useful for switch cases.
 type BACnetConstructedDataChangesPendingExactly interface {
+	BACnetConstructedDataChangesPending
 	isBACnetConstructedDataChangesPending() bool
 }
 

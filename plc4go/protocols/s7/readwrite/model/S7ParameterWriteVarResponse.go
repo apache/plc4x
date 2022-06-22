@@ -38,6 +38,7 @@ type S7ParameterWriteVarResponse interface {
 // S7ParameterWriteVarResponseExactly can be used when we want exactly this type and not a type which fulfills S7ParameterWriteVarResponse.
 // This is useful for switch cases.
 type S7ParameterWriteVarResponseExactly interface {
+	S7ParameterWriteVarResponse
 	isS7ParameterWriteVarResponse() bool
 }
 

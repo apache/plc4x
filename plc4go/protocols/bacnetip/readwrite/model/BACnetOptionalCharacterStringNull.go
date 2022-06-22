@@ -38,6 +38,7 @@ type BACnetOptionalCharacterStringNull interface {
 // BACnetOptionalCharacterStringNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalCharacterStringNull.
 // This is useful for switch cases.
 type BACnetOptionalCharacterStringNullExactly interface {
+	BACnetOptionalCharacterStringNull
 	isBACnetOptionalCharacterStringNull() bool
 }
 

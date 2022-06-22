@@ -43,6 +43,7 @@ type BACnetSecurityKeySet interface {
 // BACnetSecurityKeySetExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityKeySet.
 // This is useful for switch cases.
 type BACnetSecurityKeySetExactly interface {
+	BACnetSecurityKeySet
 	isBACnetSecurityKeySet() bool
 }
 

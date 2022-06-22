@@ -38,6 +38,7 @@ type BACnetPriorityValueOctetString interface {
 // BACnetPriorityValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueOctetString.
 // This is useful for switch cases.
 type BACnetPriorityValueOctetStringExactly interface {
+	BACnetPriorityValueOctetString
 	isBACnetPriorityValueOctetString() bool
 }
 

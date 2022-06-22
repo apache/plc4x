@@ -47,6 +47,7 @@ type BACnetStatusFlagsTagged interface {
 // BACnetStatusFlagsTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetStatusFlagsTagged.
 // This is useful for switch cases.
 type BACnetStatusFlagsTaggedExactly interface {
+	BACnetStatusFlagsTagged
 	isBACnetStatusFlagsTagged() bool
 }
 

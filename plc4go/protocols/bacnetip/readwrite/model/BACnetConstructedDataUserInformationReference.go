@@ -40,6 +40,7 @@ type BACnetConstructedDataUserInformationReference interface {
 // BACnetConstructedDataUserInformationReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserInformationReference.
 // This is useful for switch cases.
 type BACnetConstructedDataUserInformationReferenceExactly interface {
+	BACnetConstructedDataUserInformationReference
 	isBACnetConstructedDataUserInformationReference() bool
 }
 

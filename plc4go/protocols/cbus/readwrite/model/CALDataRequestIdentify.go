@@ -38,6 +38,7 @@ type CALDataRequestIdentify interface {
 // CALDataRequestIdentifyExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestIdentify.
 // This is useful for switch cases.
 type CALDataRequestIdentifyExactly interface {
+	CALDataRequestIdentify
 	isCALDataRequestIdentify() bool
 }
 

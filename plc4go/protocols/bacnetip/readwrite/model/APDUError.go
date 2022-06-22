@@ -43,6 +43,7 @@ type APDUError interface {
 // APDUErrorExactly can be used when we want exactly this type and not a type which fulfills APDUError.
 // This is useful for switch cases.
 type APDUErrorExactly interface {
+	APDUError
 	isAPDUError() bool
 }
 

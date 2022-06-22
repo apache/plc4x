@@ -38,6 +38,7 @@ type ModbusPDUError interface {
 // ModbusPDUErrorExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUError.
 // This is useful for switch cases.
 type ModbusPDUErrorExactly interface {
+	ModbusPDUError
 	isModbusPDUError() bool
 }
 

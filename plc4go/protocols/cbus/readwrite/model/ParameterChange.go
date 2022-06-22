@@ -42,6 +42,7 @@ type ParameterChange interface {
 // ParameterChangeExactly can be used when we want exactly this type and not a type which fulfills ParameterChange.
 // This is useful for switch cases.
 type ParameterChangeExactly interface {
+	ParameterChange
 	isParameterChange() bool
 }
 

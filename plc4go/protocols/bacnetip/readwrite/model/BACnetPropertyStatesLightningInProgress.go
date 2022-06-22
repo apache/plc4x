@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningInProgress interface {
 // BACnetPropertyStatesLightningInProgressExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLightningInProgress.
 // This is useful for switch cases.
 type BACnetPropertyStatesLightningInProgressExactly interface {
+	BACnetPropertyStatesLightningInProgress
 	isBACnetPropertyStatesLightningInProgress() bool
 }
 

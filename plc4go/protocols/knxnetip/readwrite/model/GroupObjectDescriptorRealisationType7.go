@@ -53,6 +53,7 @@ type GroupObjectDescriptorRealisationType7 interface {
 // GroupObjectDescriptorRealisationType7Exactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationType7.
 // This is useful for switch cases.
 type GroupObjectDescriptorRealisationType7Exactly interface {
+	GroupObjectDescriptorRealisationType7
 	isGroupObjectDescriptorRealisationType7() bool
 }
 

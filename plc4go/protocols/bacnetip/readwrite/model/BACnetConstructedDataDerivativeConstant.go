@@ -40,6 +40,7 @@ type BACnetConstructedDataDerivativeConstant interface {
 // BACnetConstructedDataDerivativeConstantExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDerivativeConstant.
 // This is useful for switch cases.
 type BACnetConstructedDataDerivativeConstantExactly interface {
+	BACnetConstructedDataDerivativeConstant
 	isBACnetConstructedDataDerivativeConstant() bool
 }
 

@@ -36,6 +36,7 @@ type MFuncPropCommandReq interface {
 // MFuncPropCommandReqExactly can be used when we want exactly this type and not a type which fulfills MFuncPropCommandReq.
 // This is useful for switch cases.
 type MFuncPropCommandReqExactly interface {
+	MFuncPropCommandReq
 	isMFuncPropCommandReq() bool
 }
 

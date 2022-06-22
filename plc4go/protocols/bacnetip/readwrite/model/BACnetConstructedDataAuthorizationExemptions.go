@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthorizationExemptions interface {
 // BACnetConstructedDataAuthorizationExemptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthorizationExemptions.
 // This is useful for switch cases.
 type BACnetConstructedDataAuthorizationExemptionsExactly interface {
+	BACnetConstructedDataAuthorizationExemptions
 	isBACnetConstructedDataAuthorizationExemptions() bool
 }
 

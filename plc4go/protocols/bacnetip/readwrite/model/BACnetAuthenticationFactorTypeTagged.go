@@ -39,6 +39,7 @@ type BACnetAuthenticationFactorTypeTagged interface {
 // BACnetAuthenticationFactorTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationFactorTypeTagged.
 // This is useful for switch cases.
 type BACnetAuthenticationFactorTypeTaggedExactly interface {
+	BACnetAuthenticationFactorTypeTagged
 	isBACnetAuthenticationFactorTypeTagged() bool
 }
 

@@ -44,6 +44,7 @@ type BACnetConstructedDataBitText interface {
 // BACnetConstructedDataBitTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitText.
 // This is useful for switch cases.
 type BACnetConstructedDataBitTextExactly interface {
+	BACnetConstructedDataBitText
 	isBACnetConstructedDataBitText() bool
 }
 

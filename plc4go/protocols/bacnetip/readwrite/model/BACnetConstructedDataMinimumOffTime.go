@@ -40,6 +40,7 @@ type BACnetConstructedDataMinimumOffTime interface {
 // BACnetConstructedDataMinimumOffTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumOffTime.
 // This is useful for switch cases.
 type BACnetConstructedDataMinimumOffTimeExactly interface {
+	BACnetConstructedDataMinimumOffTime
 	isBACnetConstructedDataMinimumOffTime() bool
 }
 

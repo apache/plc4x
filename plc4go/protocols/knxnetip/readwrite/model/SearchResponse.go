@@ -42,6 +42,7 @@ type SearchResponse interface {
 // SearchResponseExactly can be used when we want exactly this type and not a type which fulfills SearchResponse.
 // This is useful for switch cases.
 type SearchResponseExactly interface {
+	SearchResponse
 	isSearchResponse() bool
 }
 

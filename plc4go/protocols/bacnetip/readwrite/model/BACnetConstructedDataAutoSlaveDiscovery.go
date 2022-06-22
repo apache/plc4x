@@ -40,6 +40,7 @@ type BACnetConstructedDataAutoSlaveDiscovery interface {
 // BACnetConstructedDataAutoSlaveDiscoveryExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAutoSlaveDiscovery.
 // This is useful for switch cases.
 type BACnetConstructedDataAutoSlaveDiscoveryExactly interface {
+	BACnetConstructedDataAutoSlaveDiscovery
 	isBACnetConstructedDataAutoSlaveDiscovery() bool
 }
 

@@ -44,6 +44,7 @@ type BACnetNotificationParametersChangeOfState interface {
 // BACnetNotificationParametersChangeOfStateExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfState.
 // This is useful for switch cases.
 type BACnetNotificationParametersChangeOfStateExactly interface {
+	BACnetNotificationParametersChangeOfState
 	isBACnetNotificationParametersChangeOfState() bool
 }
 

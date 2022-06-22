@@ -41,6 +41,7 @@ type BACnetAuthenticationFactorEnclosed interface {
 // BACnetAuthenticationFactorEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationFactorEnclosed.
 // This is useful for switch cases.
 type BACnetAuthenticationFactorEnclosedExactly interface {
+	BACnetAuthenticationFactorEnclosed
 	isBACnetAuthenticationFactorEnclosed() bool
 }
 

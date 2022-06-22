@@ -36,6 +36,7 @@ type BACnetConstructedDataAnalogValueAll interface {
 // BACnetConstructedDataAnalogValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogValueAll.
 // This is useful for switch cases.
 type BACnetConstructedDataAnalogValueAllExactly interface {
+	BACnetConstructedDataAnalogValueAll
 	isBACnetConstructedDataAnalogValueAll() bool
 }
 

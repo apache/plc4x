@@ -43,6 +43,7 @@ type BACnetPropertyIdentifierTagged interface {
 // BACnetPropertyIdentifierTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyIdentifierTagged.
 // This is useful for switch cases.
 type BACnetPropertyIdentifierTaggedExactly interface {
+	BACnetPropertyIdentifierTagged
 	isBACnetPropertyIdentifierTagged() bool
 }
 

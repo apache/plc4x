@@ -40,6 +40,7 @@ type BACnetConstructedDataTimeDelay interface {
 // BACnetConstructedDataTimeDelayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeDelay.
 // This is useful for switch cases.
 type BACnetConstructedDataTimeDelayExactly interface {
+	BACnetConstructedDataTimeDelay
 	isBACnetConstructedDataTimeDelay() bool
 }
 

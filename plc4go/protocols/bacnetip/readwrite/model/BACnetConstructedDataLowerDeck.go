@@ -40,6 +40,7 @@ type BACnetConstructedDataLowerDeck interface {
 // BACnetConstructedDataLowerDeckExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLowerDeck.
 // This is useful for switch cases.
 type BACnetConstructedDataLowerDeckExactly interface {
+	BACnetConstructedDataLowerDeck
 	isBACnetConstructedDataLowerDeck() bool
 }
 

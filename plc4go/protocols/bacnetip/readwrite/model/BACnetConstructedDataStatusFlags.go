@@ -40,6 +40,7 @@ type BACnetConstructedDataStatusFlags interface {
 // BACnetConstructedDataStatusFlagsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStatusFlags.
 // This is useful for switch cases.
 type BACnetConstructedDataStatusFlagsExactly interface {
+	BACnetConstructedDataStatusFlags
 	isBACnetConstructedDataStatusFlags() bool
 }
 

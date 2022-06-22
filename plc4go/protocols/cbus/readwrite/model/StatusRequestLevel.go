@@ -41,6 +41,7 @@ type StatusRequestLevel interface {
 // StatusRequestLevelExactly can be used when we want exactly this type and not a type which fulfills StatusRequestLevel.
 // This is useful for switch cases.
 type StatusRequestLevelExactly interface {
+	StatusRequestLevel
 	isStatusRequestLevel() bool
 }
 

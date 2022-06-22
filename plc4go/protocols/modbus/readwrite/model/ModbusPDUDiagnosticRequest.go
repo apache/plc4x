@@ -40,6 +40,7 @@ type ModbusPDUDiagnosticRequest interface {
 // ModbusPDUDiagnosticRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUDiagnosticRequest.
 // This is useful for switch cases.
 type ModbusPDUDiagnosticRequestExactly interface {
+	ModbusPDUDiagnosticRequest
 	isModbusPDUDiagnosticRequest() bool
 }
 

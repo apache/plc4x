@@ -39,6 +39,7 @@ type BACnetKeyIdentifier interface {
 // BACnetKeyIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetKeyIdentifier.
 // This is useful for switch cases.
 type BACnetKeyIdentifierExactly interface {
+	BACnetKeyIdentifier
 	isBACnetKeyIdentifier() bool
 }
 

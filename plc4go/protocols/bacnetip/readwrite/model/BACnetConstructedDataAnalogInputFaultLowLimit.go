@@ -40,6 +40,7 @@ type BACnetConstructedDataAnalogInputFaultLowLimit interface {
 // BACnetConstructedDataAnalogInputFaultLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogInputFaultLowLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataAnalogInputFaultLowLimitExactly interface {
+	BACnetConstructedDataAnalogInputFaultLowLimit
 	isBACnetConstructedDataAnalogInputFaultLowLimit() bool
 }
 

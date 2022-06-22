@@ -43,6 +43,7 @@ type S7ParameterSetupCommunication interface {
 // S7ParameterSetupCommunicationExactly can be used when we want exactly this type and not a type which fulfills S7ParameterSetupCommunication.
 // This is useful for switch cases.
 type S7ParameterSetupCommunicationExactly interface {
+	S7ParameterSetupCommunication
 	isS7ParameterSetupCommunication() bool
 }
 

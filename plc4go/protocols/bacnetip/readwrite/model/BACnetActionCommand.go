@@ -55,6 +55,7 @@ type BACnetActionCommand interface {
 // BACnetActionCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetActionCommand.
 // This is useful for switch cases.
 type BACnetActionCommandExactly interface {
+	BACnetActionCommand
 	isBACnetActionCommand() bool
 }
 

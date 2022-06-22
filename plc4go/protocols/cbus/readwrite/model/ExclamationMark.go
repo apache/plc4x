@@ -35,6 +35,7 @@ type ExclamationMark interface {
 // ExclamationMarkExactly can be used when we want exactly this type and not a type which fulfills ExclamationMark.
 // This is useful for switch cases.
 type ExclamationMarkExactly interface {
+	ExclamationMark
 	isExclamationMark() bool
 }
 

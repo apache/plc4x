@@ -41,6 +41,7 @@ type BACnetNameValueCollection interface {
 // BACnetNameValueCollectionExactly can be used when we want exactly this type and not a type which fulfills BACnetNameValueCollection.
 // This is useful for switch cases.
 type BACnetNameValueCollectionExactly interface {
+	BACnetNameValueCollection
 	isBACnetNameValueCollection() bool
 }
 

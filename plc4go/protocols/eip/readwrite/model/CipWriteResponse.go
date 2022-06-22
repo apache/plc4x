@@ -41,6 +41,7 @@ type CipWriteResponse interface {
 // CipWriteResponseExactly can be used when we want exactly this type and not a type which fulfills CipWriteResponse.
 // This is useful for switch cases.
 type CipWriteResponseExactly interface {
+	CipWriteResponse
 	isCipWriteResponse() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyPointAlarmValues interface {
 // BACnetConstructedDataLifeSafetyPointAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyPointAlarmValues.
 // This is useful for switch cases.
 type BACnetConstructedDataLifeSafetyPointAlarmValuesExactly interface {
+	BACnetConstructedDataLifeSafetyPointAlarmValues
 	isBACnetConstructedDataLifeSafetyPointAlarmValues() bool
 }
 

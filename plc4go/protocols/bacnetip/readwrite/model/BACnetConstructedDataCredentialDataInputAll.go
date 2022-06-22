@@ -36,6 +36,7 @@ type BACnetConstructedDataCredentialDataInputAll interface {
 // BACnetConstructedDataCredentialDataInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDataInputAll.
 // This is useful for switch cases.
 type BACnetConstructedDataCredentialDataInputAllExactly interface {
+	BACnetConstructedDataCredentialDataInputAll
 	isBACnetConstructedDataCredentialDataInputAll() bool
 }
 

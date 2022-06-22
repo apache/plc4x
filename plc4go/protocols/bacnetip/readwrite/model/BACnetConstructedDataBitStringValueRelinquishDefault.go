@@ -40,6 +40,7 @@ type BACnetConstructedDataBitStringValueRelinquishDefault interface {
 // BACnetConstructedDataBitStringValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitStringValueRelinquishDefault.
 // This is useful for switch cases.
 type BACnetConstructedDataBitStringValueRelinquishDefaultExactly interface {
+	BACnetConstructedDataBitStringValueRelinquishDefault
 	isBACnetConstructedDataBitStringValueRelinquishDefault() bool
 }
 

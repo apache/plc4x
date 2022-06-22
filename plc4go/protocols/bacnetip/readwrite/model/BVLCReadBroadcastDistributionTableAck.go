@@ -38,6 +38,7 @@ type BVLCReadBroadcastDistributionTableAck interface {
 // BVLCReadBroadcastDistributionTableAckExactly can be used when we want exactly this type and not a type which fulfills BVLCReadBroadcastDistributionTableAck.
 // This is useful for switch cases.
 type BVLCReadBroadcastDistributionTableAckExactly interface {
+	BVLCReadBroadcastDistributionTableAck
 	isBVLCReadBroadcastDistributionTableAck() bool
 }
 

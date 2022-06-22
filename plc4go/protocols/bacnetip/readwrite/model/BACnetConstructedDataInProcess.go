@@ -40,6 +40,7 @@ type BACnetConstructedDataInProcess interface {
 // BACnetConstructedDataInProcessExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInProcess.
 // This is useful for switch cases.
 type BACnetConstructedDataInProcessExactly interface {
+	BACnetConstructedDataInProcess
 	isBACnetConstructedDataInProcess() bool
 }
 

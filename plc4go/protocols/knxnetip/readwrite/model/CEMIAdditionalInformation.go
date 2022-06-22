@@ -37,6 +37,7 @@ type CEMIAdditionalInformation interface {
 // CEMIAdditionalInformationExactly can be used when we want exactly this type and not a type which fulfills CEMIAdditionalInformation.
 // This is useful for switch cases.
 type CEMIAdditionalInformationExactly interface {
+	CEMIAdditionalInformation
 	isCEMIAdditionalInformation() bool
 }
 

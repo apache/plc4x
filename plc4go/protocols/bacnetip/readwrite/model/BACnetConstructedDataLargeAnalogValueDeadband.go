@@ -40,6 +40,7 @@ type BACnetConstructedDataLargeAnalogValueDeadband interface {
 // BACnetConstructedDataLargeAnalogValueDeadbandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueDeadband.
 // This is useful for switch cases.
 type BACnetConstructedDataLargeAnalogValueDeadbandExactly interface {
+	BACnetConstructedDataLargeAnalogValueDeadband
 	isBACnetConstructedDataLargeAnalogValueDeadband() bool
 }
 

@@ -38,6 +38,7 @@ type AmsTCPPacket interface {
 // AmsTCPPacketExactly can be used when we want exactly this type and not a type which fulfills AmsTCPPacket.
 // This is useful for switch cases.
 type AmsTCPPacketExactly interface {
+	AmsTCPPacket
 	isAmsTCPPacket() bool
 }
 

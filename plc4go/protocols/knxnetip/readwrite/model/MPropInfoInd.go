@@ -36,6 +36,7 @@ type MPropInfoInd interface {
 // MPropInfoIndExactly can be used when we want exactly this type and not a type which fulfills MPropInfoInd.
 // This is useful for switch cases.
 type MPropInfoIndExactly interface {
+	MPropInfoInd
 	isMPropInfoInd() bool
 }
 

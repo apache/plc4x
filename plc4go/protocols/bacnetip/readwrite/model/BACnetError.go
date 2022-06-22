@@ -37,6 +37,7 @@ type BACnetError interface {
 // BACnetErrorExactly can be used when we want exactly this type and not a type which fulfills BACnetError.
 // This is useful for switch cases.
 type BACnetErrorExactly interface {
+	BACnetError
 	isBACnetError() bool
 }
 

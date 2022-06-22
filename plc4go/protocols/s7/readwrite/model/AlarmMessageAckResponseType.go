@@ -41,6 +41,7 @@ type AlarmMessageAckResponseType interface {
 // AlarmMessageAckResponseTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageAckResponseType.
 // This is useful for switch cases.
 type AlarmMessageAckResponseTypeExactly interface {
+	AlarmMessageAckResponseType
 	isAlarmMessageAckResponseType() bool
 }
 

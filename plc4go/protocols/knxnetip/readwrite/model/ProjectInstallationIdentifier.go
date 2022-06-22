@@ -39,6 +39,7 @@ type ProjectInstallationIdentifier interface {
 // ProjectInstallationIdentifierExactly can be used when we want exactly this type and not a type which fulfills ProjectInstallationIdentifier.
 // This is useful for switch cases.
 type ProjectInstallationIdentifierExactly interface {
+	ProjectInstallationIdentifier
 	isProjectInstallationIdentifier() bool
 }
 

@@ -42,6 +42,7 @@ type AdsWriteRequest interface {
 // AdsWriteRequestExactly can be used when we want exactly this type and not a type which fulfills AdsWriteRequest.
 // This is useful for switch cases.
 type AdsWriteRequestExactly interface {
+	AdsWriteRequest
 	isAdsWriteRequest() bool
 }
 

@@ -41,6 +41,7 @@ type BACnetRejectReasonTagged interface {
 // BACnetRejectReasonTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRejectReasonTagged.
 // This is useful for switch cases.
 type BACnetRejectReasonTaggedExactly interface {
+	BACnetRejectReasonTagged
 	isBACnetRejectReasonTagged() bool
 }
 

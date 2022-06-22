@@ -39,6 +39,7 @@ type FirmataCommandSysex interface {
 // FirmataCommandSysexExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSysex.
 // This is useful for switch cases.
 type FirmataCommandSysexExactly interface {
+	FirmataCommandSysex
 	isFirmataCommandSysex() bool
 }
 

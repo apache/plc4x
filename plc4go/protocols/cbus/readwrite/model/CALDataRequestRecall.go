@@ -40,6 +40,7 @@ type CALDataRequestRecall interface {
 // CALDataRequestRecallExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestRecall.
 // This is useful for switch cases.
 type CALDataRequestRecallExactly interface {
+	CALDataRequestRecall
 	isCALDataRequestRecall() bool
 }
 

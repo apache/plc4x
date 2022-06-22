@@ -41,6 +41,7 @@ type ModbusPDU interface {
 // ModbusPDUExactly can be used when we want exactly this type and not a type which fulfills ModbusPDU.
 // This is useful for switch cases.
 type ModbusPDUExactly interface {
+	ModbusPDU
 	isModbusPDU() bool
 }
 

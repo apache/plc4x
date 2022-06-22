@@ -39,6 +39,7 @@ type ChannelInformation interface {
 // ChannelInformationExactly can be used when we want exactly this type and not a type which fulfills ChannelInformation.
 // This is useful for switch cases.
 type ChannelInformationExactly interface {
+	ChannelInformation
 	isChannelInformation() bool
 }
 

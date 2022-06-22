@@ -40,6 +40,7 @@ type BACnetConstructedDataDeployedProfileLocation interface {
 // BACnetConstructedDataDeployedProfileLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeployedProfileLocation.
 // This is useful for switch cases.
 type BACnetConstructedDataDeployedProfileLocationExactly interface {
+	BACnetConstructedDataDeployedProfileLocation
 	isBACnetConstructedDataDeployedProfileLocation() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetPropertyStatesZoneOccupanyState interface {
 // BACnetPropertyStatesZoneOccupanyStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesZoneOccupanyState.
 // This is useful for switch cases.
 type BACnetPropertyStatesZoneOccupanyStateExactly interface {
+	BACnetPropertyStatesZoneOccupanyState
 	isBACnetPropertyStatesZoneOccupanyState() bool
 }
 

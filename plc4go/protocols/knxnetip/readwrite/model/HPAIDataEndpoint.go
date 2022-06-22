@@ -41,6 +41,7 @@ type HPAIDataEndpoint interface {
 // HPAIDataEndpointExactly can be used when we want exactly this type and not a type which fulfills HPAIDataEndpoint.
 // This is useful for switch cases.
 type HPAIDataEndpointExactly interface {
+	HPAIDataEndpoint
 	isHPAIDataEndpoint() bool
 }
 

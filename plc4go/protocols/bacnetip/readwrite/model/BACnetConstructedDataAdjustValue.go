@@ -40,6 +40,7 @@ type BACnetConstructedDataAdjustValue interface {
 // BACnetConstructedDataAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAdjustValue.
 // This is useful for switch cases.
 type BACnetConstructedDataAdjustValueExactly interface {
+	BACnetConstructedDataAdjustValue
 	isBACnetConstructedDataAdjustValue() bool
 }
 

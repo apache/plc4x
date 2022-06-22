@@ -37,6 +37,7 @@ type ConnectionResponseDataBlock interface {
 // ConnectionResponseDataBlockExactly can be used when we want exactly this type and not a type which fulfills ConnectionResponseDataBlock.
 // This is useful for switch cases.
 type ConnectionResponseDataBlockExactly interface {
+	ConnectionResponseDataBlock
 	isConnectionResponseDataBlock() bool
 }
 

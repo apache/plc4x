@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryUnsigned interface {
 // BACnetFaultParameterFaultExtendedParametersEntryUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryUnsigned.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedParametersEntryUnsignedExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 	isBACnetFaultParameterFaultExtendedParametersEntryUnsigned() bool
 }
 

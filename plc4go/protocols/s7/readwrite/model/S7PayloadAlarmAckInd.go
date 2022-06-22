@@ -38,6 +38,7 @@ type S7PayloadAlarmAckInd interface {
 // S7PayloadAlarmAckIndExactly can be used when we want exactly this type and not a type which fulfills S7PayloadAlarmAckInd.
 // This is useful for switch cases.
 type S7PayloadAlarmAckIndExactly interface {
+	S7PayloadAlarmAckInd
 	isS7PayloadAlarmAckInd() bool
 }
 

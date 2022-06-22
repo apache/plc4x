@@ -36,6 +36,7 @@ type ApduDataUserMessage interface {
 // ApduDataUserMessageExactly can be used when we want exactly this type and not a type which fulfills ApduDataUserMessage.
 // This is useful for switch cases.
 type ApduDataUserMessageExactly interface {
+	ApduDataUserMessage
 	isApduDataUserMessage() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataNumberOfAPDURetries interface {
 // BACnetConstructedDataNumberOfAPDURetriesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNumberOfAPDURetries.
 // This is useful for switch cases.
 type BACnetConstructedDataNumberOfAPDURetriesExactly interface {
+	BACnetConstructedDataNumberOfAPDURetries
 	isBACnetConstructedDataNumberOfAPDURetries() bool
 }
 

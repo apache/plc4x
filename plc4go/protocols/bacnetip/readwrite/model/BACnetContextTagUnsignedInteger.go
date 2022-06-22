@@ -40,6 +40,7 @@ type BACnetContextTagUnsignedInteger interface {
 // BACnetContextTagUnsignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagUnsignedInteger.
 // This is useful for switch cases.
 type BACnetContextTagUnsignedIntegerExactly interface {
+	BACnetContextTagUnsignedInteger
 	isBACnetContextTagUnsignedInteger() bool
 }
 

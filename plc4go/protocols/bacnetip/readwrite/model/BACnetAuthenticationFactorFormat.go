@@ -43,6 +43,7 @@ type BACnetAuthenticationFactorFormat interface {
 // BACnetAuthenticationFactorFormatExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationFactorFormat.
 // This is useful for switch cases.
 type BACnetAuthenticationFactorFormatExactly interface {
+	BACnetAuthenticationFactorFormat
 	isBACnetAuthenticationFactorFormat() bool
 }
 

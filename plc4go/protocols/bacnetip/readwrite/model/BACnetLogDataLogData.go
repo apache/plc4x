@@ -42,6 +42,7 @@ type BACnetLogDataLogData interface {
 // BACnetLogDataLogDataExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogData.
 // This is useful for switch cases.
 type BACnetLogDataLogDataExactly interface {
+	BACnetLogDataLogData
 	isBACnetLogDataLogData() bool
 }
 

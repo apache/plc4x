@@ -40,6 +40,7 @@ type BACnetConstructedDataPositiveIntegerValueHighLimit interface {
 // BACnetConstructedDataPositiveIntegerValueHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueHighLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataPositiveIntegerValueHighLimitExactly interface {
+	BACnetConstructedDataPositiveIntegerValueHighLimit
 	isBACnetConstructedDataPositiveIntegerValueHighLimit() bool
 }
 

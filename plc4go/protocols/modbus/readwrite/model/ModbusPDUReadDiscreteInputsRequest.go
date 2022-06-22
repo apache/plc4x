@@ -40,6 +40,7 @@ type ModbusPDUReadDiscreteInputsRequest interface {
 // ModbusPDUReadDiscreteInputsRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDiscreteInputsRequest.
 // This is useful for switch cases.
 type ModbusPDUReadDiscreteInputsRequestExactly interface {
+	ModbusPDUReadDiscreteInputsRequest
 	isModbusPDUReadDiscreteInputsRequest() bool
 }
 

@@ -44,6 +44,7 @@ type CALDataReplyStatusExtended interface {
 // CALDataReplyStatusExtendedExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyStatusExtended.
 // This is useful for switch cases.
 type CALDataReplyStatusExtendedExactly interface {
+	CALDataReplyStatusExtended
 	isCALDataReplyStatusExtended() bool
 }
 

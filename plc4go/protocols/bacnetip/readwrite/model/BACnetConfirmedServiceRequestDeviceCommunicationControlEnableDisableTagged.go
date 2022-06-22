@@ -39,6 +39,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged 
 // BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedExactly interface {
+	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 	isBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged() bool
 }
 

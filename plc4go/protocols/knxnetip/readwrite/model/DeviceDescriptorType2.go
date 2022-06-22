@@ -55,6 +55,7 @@ type DeviceDescriptorType2 interface {
 // DeviceDescriptorType2Exactly can be used when we want exactly this type and not a type which fulfills DeviceDescriptorType2.
 // This is useful for switch cases.
 type DeviceDescriptorType2Exactly interface {
+	DeviceDescriptorType2
 	isDeviceDescriptorType2() bool
 }
 

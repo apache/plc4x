@@ -44,6 +44,7 @@ type BACnetNotificationParametersChangeOfDiscreteValue interface {
 // BACnetNotificationParametersChangeOfDiscreteValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValue.
 // This is useful for switch cases.
 type BACnetNotificationParametersChangeOfDiscreteValueExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValue
 	isBACnetNotificationParametersChangeOfDiscreteValue() bool
 }
 

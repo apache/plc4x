@@ -39,6 +39,7 @@ type BACnetHostAddress interface {
 // BACnetHostAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetHostAddress.
 // This is useful for switch cases.
 type BACnetHostAddressExactly interface {
+	BACnetHostAddress
 	isBACnetHostAddress() bool
 }
 

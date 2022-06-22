@@ -40,6 +40,7 @@ type BACnetConstructedDataAccessEventTime interface {
 // BACnetConstructedDataAccessEventTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEventTime.
 // This is useful for switch cases.
 type BACnetConstructedDataAccessEventTimeExactly interface {
+	BACnetConstructedDataAccessEventTime
 	isBACnetConstructedDataAccessEventTime() bool
 }
 

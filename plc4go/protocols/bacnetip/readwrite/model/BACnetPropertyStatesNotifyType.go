@@ -38,6 +38,7 @@ type BACnetPropertyStatesNotifyType interface {
 // BACnetPropertyStatesNotifyTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNotifyType.
 // This is useful for switch cases.
 type BACnetPropertyStatesNotifyTypeExactly interface {
+	BACnetPropertyStatesNotifyType
 	isBACnetPropertyStatesNotifyType() bool
 }
 

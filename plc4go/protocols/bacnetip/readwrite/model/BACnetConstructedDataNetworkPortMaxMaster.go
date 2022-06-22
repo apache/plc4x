@@ -40,6 +40,7 @@ type BACnetConstructedDataNetworkPortMaxMaster interface {
 // BACnetConstructedDataNetworkPortMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortMaxMaster.
 // This is useful for switch cases.
 type BACnetConstructedDataNetworkPortMaxMasterExactly interface {
+	BACnetConstructedDataNetworkPortMaxMaster
 	isBACnetConstructedDataNetworkPortMaxMaster() bool
 }
 

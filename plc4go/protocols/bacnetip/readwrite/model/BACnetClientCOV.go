@@ -39,6 +39,7 @@ type BACnetClientCOV interface {
 // BACnetClientCOVExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOV.
 // This is useful for switch cases.
 type BACnetClientCOVExactly interface {
+	BACnetClientCOV
 	isBACnetClientCOV() bool
 }
 

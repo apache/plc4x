@@ -36,6 +36,7 @@ type BACnetConstructedDataGlobalGroupAll interface {
 // BACnetConstructedDataGlobalGroupAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGlobalGroupAll.
 // This is useful for switch cases.
 type BACnetConstructedDataGlobalGroupAllExactly interface {
+	BACnetConstructedDataGlobalGroupAll
 	isBACnetConstructedDataGlobalGroupAll() bool
 }
 

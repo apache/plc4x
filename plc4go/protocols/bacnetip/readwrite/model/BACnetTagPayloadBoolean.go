@@ -41,6 +41,7 @@ type BACnetTagPayloadBoolean interface {
 // BACnetTagPayloadBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadBoolean.
 // This is useful for switch cases.
 type BACnetTagPayloadBooleanExactly interface {
+	BACnetTagPayloadBoolean
 	isBACnetTagPayloadBoolean() bool
 }
 

@@ -39,6 +39,7 @@ type BACnetAccessRuleLocationSpecifierTagged interface {
 // BACnetAccessRuleLocationSpecifierTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessRuleLocationSpecifierTagged.
 // This is useful for switch cases.
 type BACnetAccessRuleLocationSpecifierTaggedExactly interface {
+	BACnetAccessRuleLocationSpecifierTagged
 	isBACnetAccessRuleLocationSpecifierTagged() bool
 }
 

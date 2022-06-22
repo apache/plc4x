@@ -50,6 +50,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummary.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryExactly interface {
+	BACnetConfirmedServiceRequestGetEnrollmentSummary
 	isBACnetConfirmedServiceRequestGetEnrollmentSummary() bool
 }
 

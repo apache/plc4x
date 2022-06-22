@@ -40,6 +40,7 @@ type ApduDataGroupValueResponse interface {
 // ApduDataGroupValueResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueResponse.
 // This is useful for switch cases.
 type ApduDataGroupValueResponseExactly interface {
+	ApduDataGroupValueResponse
 	isApduDataGroupValueResponse() bool
 }
 

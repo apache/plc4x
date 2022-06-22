@@ -40,6 +40,7 @@ type BACnetConstructedDataLimitEnable interface {
 // BACnetConstructedDataLimitEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLimitEnable.
 // This is useful for switch cases.
 type BACnetConstructedDataLimitEnableExactly interface {
+	BACnetConstructedDataLimitEnable
 	isBACnetConstructedDataLimitEnable() bool
 }
 

@@ -36,6 +36,7 @@ type NotTransmittedSyncLoss interface {
 // NotTransmittedSyncLossExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedSyncLoss.
 // This is useful for switch cases.
 type NotTransmittedSyncLossExactly interface {
+	NotTransmittedSyncLoss
 	isNotTransmittedSyncLoss() bool
 }
 

@@ -38,6 +38,7 @@ type IdentifyReplyCommandType interface {
 // IdentifyReplyCommandTypeExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandType.
 // This is useful for switch cases.
 type IdentifyReplyCommandTypeExactly interface {
+	IdentifyReplyCommandType
 	isIdentifyReplyCommandType() bool
 }
 

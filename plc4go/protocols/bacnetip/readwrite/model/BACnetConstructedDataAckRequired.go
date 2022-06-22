@@ -40,6 +40,7 @@ type BACnetConstructedDataAckRequired interface {
 // BACnetConstructedDataAckRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAckRequired.
 // This is useful for switch cases.
 type BACnetConstructedDataAckRequiredExactly interface {
+	BACnetConstructedDataAckRequired
 	isBACnetConstructedDataAckRequired() bool
 }
 

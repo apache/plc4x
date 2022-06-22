@@ -43,6 +43,7 @@ type BACnetAccumulatorRecord interface {
 // BACnetAccumulatorRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetAccumulatorRecord.
 // This is useful for switch cases.
 type BACnetAccumulatorRecordExactly interface {
+	BACnetAccumulatorRecord
 	isBACnetAccumulatorRecord() bool
 }
 

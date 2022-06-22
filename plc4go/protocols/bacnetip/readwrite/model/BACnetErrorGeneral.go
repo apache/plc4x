@@ -38,6 +38,7 @@ type BACnetErrorGeneral interface {
 // BACnetErrorGeneralExactly can be used when we want exactly this type and not a type which fulfills BACnetErrorGeneral.
 // This is useful for switch cases.
 type BACnetErrorGeneralExactly interface {
+	BACnetErrorGeneral
 	isBACnetErrorGeneral() bool
 }
 

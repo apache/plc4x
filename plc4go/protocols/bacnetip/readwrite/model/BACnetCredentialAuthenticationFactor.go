@@ -39,6 +39,7 @@ type BACnetCredentialAuthenticationFactor interface {
 // BACnetCredentialAuthenticationFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetCredentialAuthenticationFactor.
 // This is useful for switch cases.
 type BACnetCredentialAuthenticationFactorExactly interface {
+	BACnetCredentialAuthenticationFactor
 	isBACnetCredentialAuthenticationFactor() bool
 }
 

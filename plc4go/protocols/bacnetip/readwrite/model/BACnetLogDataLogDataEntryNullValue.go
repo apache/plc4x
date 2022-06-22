@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryNullValue interface {
 // BACnetLogDataLogDataEntryNullValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryNullValue.
 // This is useful for switch cases.
 type BACnetLogDataLogDataEntryNullValueExactly interface {
+	BACnetLogDataLogDataEntryNullValue
 	isBACnetLogDataLogDataEntryNullValue() bool
 }
 

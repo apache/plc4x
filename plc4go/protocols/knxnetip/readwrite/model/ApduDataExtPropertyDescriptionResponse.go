@@ -53,6 +53,7 @@ type ApduDataExtPropertyDescriptionResponse interface {
 // ApduDataExtPropertyDescriptionResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyDescriptionResponse.
 // This is useful for switch cases.
 type ApduDataExtPropertyDescriptionResponseExactly interface {
+	ApduDataExtPropertyDescriptionResponse
 	isApduDataExtPropertyDescriptionResponse() bool
 }
 

@@ -52,6 +52,7 @@ type ModbusPDUReadDeviceIdentificationResponse interface {
 // ModbusPDUReadDeviceIdentificationResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDeviceIdentificationResponse.
 // This is useful for switch cases.
 type ModbusPDUReadDeviceIdentificationResponseExactly interface {
+	ModbusPDUReadDeviceIdentificationResponse
 	isModbusPDUReadDeviceIdentificationResponse() bool
 }
 

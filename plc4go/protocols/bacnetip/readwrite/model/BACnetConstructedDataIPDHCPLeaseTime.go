@@ -40,6 +40,7 @@ type BACnetConstructedDataIPDHCPLeaseTime interface {
 // BACnetConstructedDataIPDHCPLeaseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPLeaseTime.
 // This is useful for switch cases.
 type BACnetConstructedDataIPDHCPLeaseTimeExactly interface {
+	BACnetConstructedDataIPDHCPLeaseTime
 	isBACnetConstructedDataIPDHCPLeaseTime() bool
 }
 

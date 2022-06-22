@@ -58,6 +58,7 @@ type APDUComplexAck interface {
 // APDUComplexAckExactly can be used when we want exactly this type and not a type which fulfills APDUComplexAck.
 // This is useful for switch cases.
 type APDUComplexAckExactly interface {
+	APDUComplexAck
 	isAPDUComplexAck() bool
 }
 

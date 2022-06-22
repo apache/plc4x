@@ -41,6 +41,7 @@ type BACnetDeviceObjectReference interface {
 // BACnetDeviceObjectReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetDeviceObjectReference.
 // This is useful for switch cases.
 type BACnetDeviceObjectReferenceExactly interface {
+	BACnetDeviceObjectReference
 	isBACnetDeviceObjectReference() bool
 }
 

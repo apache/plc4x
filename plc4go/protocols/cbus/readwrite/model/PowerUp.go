@@ -41,6 +41,7 @@ type PowerUp interface {
 // PowerUpExactly can be used when we want exactly this type and not a type which fulfills PowerUp.
 // This is useful for switch cases.
 type PowerUpExactly interface {
+	PowerUp
 	isPowerUp() bool
 }
 

@@ -38,6 +38,7 @@ type BVLCOriginalBroadcastNPDU interface {
 // BVLCOriginalBroadcastNPDUExactly can be used when we want exactly this type and not a type which fulfills BVLCOriginalBroadcastNPDU.
 // This is useful for switch cases.
 type BVLCOriginalBroadcastNPDUExactly interface {
+	BVLCOriginalBroadcastNPDU
 	isBVLCOriginalBroadcastNPDU() bool
 }
 

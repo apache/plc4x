@@ -40,6 +40,7 @@ type BACnetConstructedDataWindowSamples interface {
 // BACnetConstructedDataWindowSamplesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataWindowSamples.
 // This is useful for switch cases.
 type BACnetConstructedDataWindowSamplesExactly interface {
+	BACnetConstructedDataWindowSamples
 	isBACnetConstructedDataWindowSamples() bool
 }
 

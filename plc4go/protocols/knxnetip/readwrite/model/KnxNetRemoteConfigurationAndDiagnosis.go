@@ -38,6 +38,7 @@ type KnxNetRemoteConfigurationAndDiagnosis interface {
 // KnxNetRemoteConfigurationAndDiagnosisExactly can be used when we want exactly this type and not a type which fulfills KnxNetRemoteConfigurationAndDiagnosis.
 // This is useful for switch cases.
 type KnxNetRemoteConfigurationAndDiagnosisExactly interface {
+	KnxNetRemoteConfigurationAndDiagnosis
 	isKnxNetRemoteConfigurationAndDiagnosis() bool
 }
 

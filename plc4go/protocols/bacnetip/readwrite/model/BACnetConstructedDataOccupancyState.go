@@ -40,6 +40,7 @@ type BACnetConstructedDataOccupancyState interface {
 // BACnetConstructedDataOccupancyStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyState.
 // This is useful for switch cases.
 type BACnetConstructedDataOccupancyStateExactly interface {
+	BACnetConstructedDataOccupancyState
 	isBACnetConstructedDataOccupancyState() bool
 }
 

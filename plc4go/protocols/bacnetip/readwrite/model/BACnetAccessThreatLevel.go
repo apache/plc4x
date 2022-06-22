@@ -37,6 +37,7 @@ type BACnetAccessThreatLevel interface {
 // BACnetAccessThreatLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessThreatLevel.
 // This is useful for switch cases.
 type BACnetAccessThreatLevelExactly interface {
+	BACnetAccessThreatLevel
 	isBACnetAccessThreatLevel() bool
 }
 

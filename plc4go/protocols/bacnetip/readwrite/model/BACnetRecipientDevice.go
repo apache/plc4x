@@ -38,6 +38,7 @@ type BACnetRecipientDevice interface {
 // BACnetRecipientDeviceExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientDevice.
 // This is useful for switch cases.
 type BACnetRecipientDeviceExactly interface {
+	BACnetRecipientDevice
 	isBACnetRecipientDevice() bool
 }
 

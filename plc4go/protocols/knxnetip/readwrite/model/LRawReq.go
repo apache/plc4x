@@ -36,6 +36,7 @@ type LRawReq interface {
 // LRawReqExactly can be used when we want exactly this type and not a type which fulfills LRawReq.
 // This is useful for switch cases.
 type LRawReqExactly interface {
+	LRawReq
 	isLRawReq() bool
 }
 

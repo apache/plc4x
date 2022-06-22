@@ -40,6 +40,7 @@ type BACnetConstructedDataScaleFactor interface {
 // BACnetConstructedDataScaleFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScaleFactor.
 // This is useful for switch cases.
 type BACnetConstructedDataScaleFactorExactly interface {
+	BACnetConstructedDataScaleFactor
 	isBACnetConstructedDataScaleFactor() bool
 }
 

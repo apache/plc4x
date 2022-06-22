@@ -36,6 +36,7 @@ type SysexCommandCapabilityQuery interface {
 // SysexCommandCapabilityQueryExactly can be used when we want exactly this type and not a type which fulfills SysexCommandCapabilityQuery.
 // This is useful for switch cases.
 type SysexCommandCapabilityQueryExactly interface {
+	SysexCommandCapabilityQuery
 	isSysexCommandCapabilityQuery() bool
 }
 

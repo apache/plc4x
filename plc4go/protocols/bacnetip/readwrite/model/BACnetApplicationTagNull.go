@@ -36,6 +36,7 @@ type BACnetApplicationTagNull interface {
 // BACnetApplicationTagNullExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagNull.
 // This is useful for switch cases.
 type BACnetApplicationTagNullExactly interface {
+	BACnetApplicationTagNull
 	isBACnetApplicationTagNull() bool
 }
 

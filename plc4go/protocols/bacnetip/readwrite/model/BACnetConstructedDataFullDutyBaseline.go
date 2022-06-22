@@ -40,6 +40,7 @@ type BACnetConstructedDataFullDutyBaseline interface {
 // BACnetConstructedDataFullDutyBaselineExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFullDutyBaseline.
 // This is useful for switch cases.
 type BACnetConstructedDataFullDutyBaselineExactly interface {
+	BACnetConstructedDataFullDutyBaseline
 	isBACnetConstructedDataFullDutyBaseline() bool
 }
 

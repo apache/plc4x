@@ -43,6 +43,7 @@ type BACnetAuthorizationModeTagged interface {
 // BACnetAuthorizationModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthorizationModeTagged.
 // This is useful for switch cases.
 type BACnetAuthorizationModeTaggedExactly interface {
+	BACnetAuthorizationModeTagged
 	isBACnetAuthorizationModeTagged() bool
 }
 

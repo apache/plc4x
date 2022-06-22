@@ -43,6 +43,7 @@ type BACnetEventParameterChangeOfValueCivCriteria interface {
 // BACnetEventParameterChangeOfValueCivCriteriaExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteria.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfValueCivCriteriaExactly interface {
+	BACnetEventParameterChangeOfValueCivCriteria
 	isBACnetEventParameterChangeOfValueCivCriteria() bool
 }
 

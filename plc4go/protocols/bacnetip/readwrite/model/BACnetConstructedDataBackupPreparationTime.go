@@ -40,6 +40,7 @@ type BACnetConstructedDataBackupPreparationTime interface {
 // BACnetConstructedDataBackupPreparationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBackupPreparationTime.
 // This is useful for switch cases.
 type BACnetConstructedDataBackupPreparationTimeExactly interface {
+	BACnetConstructedDataBackupPreparationTime
 	isBACnetConstructedDataBackupPreparationTime() bool
 }
 

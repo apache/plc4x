@@ -36,6 +36,7 @@ type BACnetConstructedDataAccumulatorAll interface {
 // BACnetConstructedDataAccumulatorAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorAll.
 // This is useful for switch cases.
 type BACnetConstructedDataAccumulatorAllExactly interface {
+	BACnetConstructedDataAccumulatorAll
 	isBACnetConstructedDataAccumulatorAll() bool
 }
 

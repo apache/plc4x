@@ -51,6 +51,7 @@ type GroupObjectDescriptorRealisationTypeB interface {
 // GroupObjectDescriptorRealisationTypeBExactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationTypeB.
 // This is useful for switch cases.
 type GroupObjectDescriptorRealisationTypeBExactly interface {
+	GroupObjectDescriptorRealisationTypeB
 	isGroupObjectDescriptorRealisationTypeB() bool
 }
 

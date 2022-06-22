@@ -48,6 +48,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple interface
 // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple.
 // This is useful for switch cases.
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 	isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple() bool
 }
 

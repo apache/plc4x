@@ -38,6 +38,7 @@ type KnxNetIpDeviceManagement interface {
 // KnxNetIpDeviceManagementExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpDeviceManagement.
 // This is useful for switch cases.
 type KnxNetIpDeviceManagementExactly interface {
+	KnxNetIpDeviceManagement
 	isKnxNetIpDeviceManagement() bool
 }
 

@@ -36,6 +36,7 @@ type BACnetConstructedDataElevatorGroupAll interface {
 // BACnetConstructedDataElevatorGroupAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElevatorGroupAll.
 // This is useful for switch cases.
 type BACnetConstructedDataElevatorGroupAllExactly interface {
+	BACnetConstructedDataElevatorGroupAll
 	isBACnetConstructedDataElevatorGroupAll() bool
 }
 

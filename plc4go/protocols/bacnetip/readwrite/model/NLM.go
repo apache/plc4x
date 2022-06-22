@@ -39,6 +39,7 @@ type NLM interface {
 // NLMExactly can be used when we want exactly this type and not a type which fulfills NLM.
 // This is useful for switch cases.
 type NLMExactly interface {
+	NLM
 	isNLM() bool
 }
 

@@ -37,6 +37,7 @@ type Alpha interface {
 // AlphaExactly can be used when we want exactly this type and not a type which fulfills Alpha.
 // This is useful for switch cases.
 type AlphaExactly interface {
+	Alpha
 	isAlpha() bool
 }
 

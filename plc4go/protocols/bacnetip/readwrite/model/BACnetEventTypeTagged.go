@@ -43,6 +43,7 @@ type BACnetEventTypeTagged interface {
 // BACnetEventTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEventTypeTagged.
 // This is useful for switch cases.
 type BACnetEventTypeTaggedExactly interface {
+	BACnetEventTypeTagged
 	isBACnetEventTypeTagged() bool
 }
 

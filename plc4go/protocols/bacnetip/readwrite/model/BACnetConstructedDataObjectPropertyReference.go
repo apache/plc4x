@@ -40,6 +40,7 @@ type BACnetConstructedDataObjectPropertyReference interface {
 // BACnetConstructedDataObjectPropertyReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataObjectPropertyReference.
 // This is useful for switch cases.
 type BACnetConstructedDataObjectPropertyReferenceExactly interface {
+	BACnetConstructedDataObjectPropertyReference
 	isBACnetConstructedDataObjectPropertyReference() bool
 }
 

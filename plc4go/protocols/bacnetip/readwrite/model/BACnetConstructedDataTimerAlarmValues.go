@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerAlarmValues interface {
 // BACnetConstructedDataTimerAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerAlarmValues.
 // This is useful for switch cases.
 type BACnetConstructedDataTimerAlarmValuesExactly interface {
+	BACnetConstructedDataTimerAlarmValues
 	isBACnetConstructedDataTimerAlarmValues() bool
 }
 

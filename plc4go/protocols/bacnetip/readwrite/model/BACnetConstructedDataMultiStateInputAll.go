@@ -36,6 +36,7 @@ type BACnetConstructedDataMultiStateInputAll interface {
 // BACnetConstructedDataMultiStateInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateInputAll.
 // This is useful for switch cases.
 type BACnetConstructedDataMultiStateInputAllExactly interface {
+	BACnetConstructedDataMultiStateInputAll
 	isBACnetConstructedDataMultiStateInputAll() bool
 }
 

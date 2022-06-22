@@ -44,6 +44,7 @@ type BACnetConstructedDataActionText interface {
 // BACnetConstructedDataActionTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActionText.
 // This is useful for switch cases.
 type BACnetConstructedDataActionTextExactly interface {
+	BACnetConstructedDataActionText
 	isBACnetConstructedDataActionText() bool
 }
 

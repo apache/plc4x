@@ -40,6 +40,7 @@ type BACnetContextTagEnumerated interface {
 // BACnetContextTagEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagEnumerated.
 // This is useful for switch cases.
 type BACnetContextTagEnumeratedExactly interface {
+	BACnetContextTagEnumerated
 	isBACnetContextTagEnumerated() bool
 }
 

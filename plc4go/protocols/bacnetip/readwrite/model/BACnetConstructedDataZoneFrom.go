@@ -40,6 +40,7 @@ type BACnetConstructedDataZoneFrom interface {
 // BACnetConstructedDataZoneFromExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataZoneFrom.
 // This is useful for switch cases.
 type BACnetConstructedDataZoneFromExactly interface {
+	BACnetConstructedDataZoneFrom
 	isBACnetConstructedDataZoneFrom() bool
 }
 

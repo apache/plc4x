@@ -38,6 +38,7 @@ type BACnetTimeStampSequence interface {
 // BACnetTimeStampSequenceExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampSequence.
 // This is useful for switch cases.
 type BACnetTimeStampSequenceExactly interface {
+	BACnetTimeStampSequence
 	isBACnetTimeStampSequence() bool
 }
 

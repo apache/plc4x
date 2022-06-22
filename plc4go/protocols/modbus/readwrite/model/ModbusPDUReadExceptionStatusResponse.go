@@ -38,6 +38,7 @@ type ModbusPDUReadExceptionStatusResponse interface {
 // ModbusPDUReadExceptionStatusResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadExceptionStatusResponse.
 // This is useful for switch cases.
 type ModbusPDUReadExceptionStatusResponseExactly interface {
+	ModbusPDUReadExceptionStatusResponse
 	isModbusPDUReadExceptionStatusResponse() bool
 }
 

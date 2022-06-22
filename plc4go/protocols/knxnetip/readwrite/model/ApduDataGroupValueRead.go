@@ -37,6 +37,7 @@ type ApduDataGroupValueRead interface {
 // ApduDataGroupValueReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueRead.
 // This is useful for switch cases.
 type ApduDataGroupValueReadExactly interface {
+	ApduDataGroupValueRead
 	isApduDataGroupValueRead() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConfirmedServiceRequestAtomicReadFileRecord interface {
 // BACnetConfirmedServiceRequestAtomicReadFileRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFileRecord.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestAtomicReadFileRecordExactly interface {
+	BACnetConfirmedServiceRequestAtomicReadFileRecord
 	isBACnetConfirmedServiceRequestAtomicReadFileRecord() bool
 }
 

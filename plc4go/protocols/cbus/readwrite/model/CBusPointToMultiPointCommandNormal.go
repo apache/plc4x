@@ -52,6 +52,7 @@ type CBusPointToMultiPointCommandNormal interface {
 // CBusPointToMultiPointCommandNormalExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommandNormal.
 // This is useful for switch cases.
 type CBusPointToMultiPointCommandNormalExactly interface {
+	CBusPointToMultiPointCommandNormal
 	isCBusPointToMultiPointCommandNormal() bool
 }
 

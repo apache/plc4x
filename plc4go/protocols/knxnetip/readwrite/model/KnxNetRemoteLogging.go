@@ -38,6 +38,7 @@ type KnxNetRemoteLogging interface {
 // KnxNetRemoteLoggingExactly can be used when we want exactly this type and not a type which fulfills KnxNetRemoteLogging.
 // This is useful for switch cases.
 type KnxNetRemoteLoggingExactly interface {
+	KnxNetRemoteLogging
 	isKnxNetRemoteLogging() bool
 }
 

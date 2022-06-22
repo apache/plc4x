@@ -36,6 +36,7 @@ type BACnetConstructedDataDeviceAll interface {
 // BACnetConstructedDataDeviceAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceAll.
 // This is useful for switch cases.
 type BACnetConstructedDataDeviceAllExactly interface {
+	BACnetConstructedDataDeviceAll
 	isBACnetConstructedDataDeviceAll() bool
 }
 

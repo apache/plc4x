@@ -40,6 +40,7 @@ type BACnetConstructedDataDeadband interface {
 // BACnetConstructedDataDeadbandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeadband.
 // This is useful for switch cases.
 type BACnetConstructedDataDeadbandExactly interface {
+	BACnetConstructedDataDeadband
 	isBACnetConstructedDataDeadband() bool
 }
 

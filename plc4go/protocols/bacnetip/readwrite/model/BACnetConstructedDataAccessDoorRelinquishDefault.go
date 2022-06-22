@@ -40,6 +40,7 @@ type BACnetConstructedDataAccessDoorRelinquishDefault interface {
 // BACnetConstructedDataAccessDoorRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoorRelinquishDefault.
 // This is useful for switch cases.
 type BACnetConstructedDataAccessDoorRelinquishDefaultExactly interface {
+	BACnetConstructedDataAccessDoorRelinquishDefault
 	isBACnetConstructedDataAccessDoorRelinquishDefault() bool
 }
 

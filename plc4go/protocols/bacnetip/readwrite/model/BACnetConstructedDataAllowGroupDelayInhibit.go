@@ -40,6 +40,7 @@ type BACnetConstructedDataAllowGroupDelayInhibit interface {
 // BACnetConstructedDataAllowGroupDelayInhibitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAllowGroupDelayInhibit.
 // This is useful for switch cases.
 type BACnetConstructedDataAllowGroupDelayInhibitExactly interface {
+	BACnetConstructedDataAllowGroupDelayInhibit
 	isBACnetConstructedDataAllowGroupDelayInhibit() bool
 }
 

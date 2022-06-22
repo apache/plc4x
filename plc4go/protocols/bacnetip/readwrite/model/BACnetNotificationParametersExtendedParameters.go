@@ -77,6 +77,7 @@ type BACnetNotificationParametersExtendedParameters interface {
 // BACnetNotificationParametersExtendedParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersExtendedParameters.
 // This is useful for switch cases.
 type BACnetNotificationParametersExtendedParametersExactly interface {
+	BACnetNotificationParametersExtendedParameters
 	isBACnetNotificationParametersExtendedParameters() bool
 }
 

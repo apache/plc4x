@@ -42,6 +42,7 @@ type KnxGroupAddress3Level interface {
 // KnxGroupAddress3LevelExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddress3Level.
 // This is useful for switch cases.
 type KnxGroupAddress3LevelExactly interface {
+	KnxGroupAddress3Level
 	isKnxGroupAddress3Level() bool
 }
 

@@ -36,6 +36,7 @@ type MPropWriteCon interface {
 // MPropWriteConExactly can be used when we want exactly this type and not a type which fulfills MPropWriteCon.
 // This is useful for switch cases.
 type MPropWriteConExactly interface {
+	MPropWriteCon
 	isMPropWriteCon() bool
 }
 

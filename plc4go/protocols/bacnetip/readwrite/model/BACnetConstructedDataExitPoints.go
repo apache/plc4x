@@ -38,6 +38,7 @@ type BACnetConstructedDataExitPoints interface {
 // BACnetConstructedDataExitPointsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExitPoints.
 // This is useful for switch cases.
 type BACnetConstructedDataExitPointsExactly interface {
+	BACnetConstructedDataExitPoints
 	isBACnetConstructedDataExitPoints() bool
 }
 

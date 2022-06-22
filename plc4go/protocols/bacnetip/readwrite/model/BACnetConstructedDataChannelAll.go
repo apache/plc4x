@@ -36,6 +36,7 @@ type BACnetConstructedDataChannelAll interface {
 // BACnetConstructedDataChannelAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChannelAll.
 // This is useful for switch cases.
 type BACnetConstructedDataChannelAllExactly interface {
+	BACnetConstructedDataChannelAll
 	isBACnetConstructedDataChannelAll() bool
 }
 

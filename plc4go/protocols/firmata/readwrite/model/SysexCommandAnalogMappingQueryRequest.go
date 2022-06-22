@@ -36,6 +36,7 @@ type SysexCommandAnalogMappingQueryRequest interface {
 // SysexCommandAnalogMappingQueryRequestExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingQueryRequest.
 // This is useful for switch cases.
 type SysexCommandAnalogMappingQueryRequestExactly interface {
+	SysexCommandAnalogMappingQueryRequest
 	isSysexCommandAnalogMappingQueryRequest() bool
 }
 

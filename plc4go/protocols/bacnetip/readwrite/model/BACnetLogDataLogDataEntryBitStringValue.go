@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryBitStringValue interface {
 // BACnetLogDataLogDataEntryBitStringValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryBitStringValue.
 // This is useful for switch cases.
 type BACnetLogDataLogDataEntryBitStringValueExactly interface {
+	BACnetLogDataLogDataEntryBitStringValue
 	isBACnetLogDataLogDataEntryBitStringValue() bool
 }
 

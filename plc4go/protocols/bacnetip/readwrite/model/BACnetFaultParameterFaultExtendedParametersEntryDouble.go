@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryDouble interface {
 // BACnetFaultParameterFaultExtendedParametersEntryDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryDouble.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedParametersEntryDoubleExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryDouble
 	isBACnetFaultParameterFaultExtendedParametersEntryDouble() bool
 }
 

@@ -36,6 +36,7 @@ type ApduDataExtKeyWrite interface {
 // ApduDataExtKeyWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtKeyWrite.
 // This is useful for switch cases.
 type ApduDataExtKeyWriteExactly interface {
+	ApduDataExtKeyWrite
 	isApduDataExtKeyWrite() bool
 }
 

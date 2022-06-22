@@ -38,6 +38,7 @@ type BACnetValueSourceAddress interface {
 // BACnetValueSourceAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSourceAddress.
 // This is useful for switch cases.
 type BACnetValueSourceAddressExactly interface {
+	BACnetValueSourceAddress
 	isBACnetValueSourceAddress() bool
 }
 

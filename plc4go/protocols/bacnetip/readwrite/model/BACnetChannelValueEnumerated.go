@@ -38,6 +38,7 @@ type BACnetChannelValueEnumerated interface {
 // BACnetChannelValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueEnumerated.
 // This is useful for switch cases.
 type BACnetChannelValueEnumeratedExactly interface {
+	BACnetChannelValueEnumerated
 	isBACnetChannelValueEnumerated() bool
 }
 

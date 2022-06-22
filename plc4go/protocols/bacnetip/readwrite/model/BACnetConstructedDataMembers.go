@@ -38,6 +38,7 @@ type BACnetConstructedDataMembers interface {
 // BACnetConstructedDataMembersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMembers.
 // This is useful for switch cases.
 type BACnetConstructedDataMembersExactly interface {
+	BACnetConstructedDataMembers
 	isBACnetConstructedDataMembers() bool
 }
 

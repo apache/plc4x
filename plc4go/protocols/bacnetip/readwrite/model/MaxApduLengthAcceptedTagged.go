@@ -39,6 +39,7 @@ type MaxApduLengthAcceptedTagged interface {
 // MaxApduLengthAcceptedTaggedExactly can be used when we want exactly this type and not a type which fulfills MaxApduLengthAcceptedTagged.
 // This is useful for switch cases.
 type MaxApduLengthAcceptedTaggedExactly interface {
+	MaxApduLengthAcceptedTagged
 	isMaxApduLengthAcceptedTagged() bool
 }
 

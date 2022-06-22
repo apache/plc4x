@@ -38,6 +38,7 @@ type BACnetPriorityValueReal interface {
 // BACnetPriorityValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueReal.
 // This is useful for switch cases.
 type BACnetPriorityValueRealExactly interface {
+	BACnetPriorityValueReal
 	isBACnetPriorityValueReal() bool
 }
 

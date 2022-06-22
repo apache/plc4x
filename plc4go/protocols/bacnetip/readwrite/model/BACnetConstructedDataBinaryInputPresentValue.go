@@ -40,6 +40,7 @@ type BACnetConstructedDataBinaryInputPresentValue interface {
 // BACnetConstructedDataBinaryInputPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryInputPresentValue.
 // This is useful for switch cases.
 type BACnetConstructedDataBinaryInputPresentValueExactly interface {
+	BACnetConstructedDataBinaryInputPresentValue
 	isBACnetConstructedDataBinaryInputPresentValue() bool
 }
 

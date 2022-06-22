@@ -44,6 +44,7 @@ type BACnetConstructedDataStateChangeValues interface {
 // BACnetConstructedDataStateChangeValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStateChangeValues.
 // This is useful for switch cases.
 type BACnetConstructedDataStateChangeValuesExactly interface {
+	BACnetConstructedDataStateChangeValues
 	isBACnetConstructedDataStateChangeValues() bool
 }
 

@@ -42,6 +42,7 @@ type CipReadRequest interface {
 // CipReadRequestExactly can be used when we want exactly this type and not a type which fulfills CipReadRequest.
 // This is useful for switch cases.
 type CipReadRequestExactly interface {
+	CipReadRequest
 	isCipReadRequest() bool
 }
 

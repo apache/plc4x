@@ -40,6 +40,7 @@ type BACnetConstructedDataEventParameters interface {
 // BACnetConstructedDataEventParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventParameters.
 // This is useful for switch cases.
 type BACnetConstructedDataEventParametersExactly interface {
+	BACnetConstructedDataEventParameters
 	isBACnetConstructedDataEventParameters() bool
 }
 

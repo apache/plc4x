@@ -38,6 +38,7 @@ type BACnetPriorityValueCharacterString interface {
 // BACnetPriorityValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueCharacterString.
 // This is useful for switch cases.
 type BACnetPriorityValueCharacterStringExactly interface {
+	BACnetPriorityValueCharacterString
 	isBACnetPriorityValueCharacterString() bool
 }
 

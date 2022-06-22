@@ -40,6 +40,7 @@ type BACnetConstructedDataNotifyType interface {
 // BACnetConstructedDataNotifyTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotifyType.
 // This is useful for switch cases.
 type BACnetConstructedDataNotifyTypeExactly interface {
+	BACnetConstructedDataNotifyType
 	isBACnetConstructedDataNotifyType() bool
 }
 

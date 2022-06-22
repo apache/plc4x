@@ -41,6 +41,7 @@ type DF1Symbol interface {
 // DF1SymbolExactly can be used when we want exactly this type and not a type which fulfills DF1Symbol.
 // This is useful for switch cases.
 type DF1SymbolExactly interface {
+	DF1Symbol
 	isDF1Symbol() bool
 }
 

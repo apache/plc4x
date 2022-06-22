@@ -40,6 +40,7 @@ type BACnetConstructedDataCommand interface {
 // BACnetConstructedDataCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCommand.
 // This is useful for switch cases.
 type BACnetConstructedDataCommandExactly interface {
+	BACnetConstructedDataCommand
 	isBACnetConstructedDataCommand() bool
 }
 

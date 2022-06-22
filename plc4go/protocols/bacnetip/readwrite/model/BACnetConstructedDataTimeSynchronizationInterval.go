@@ -40,6 +40,7 @@ type BACnetConstructedDataTimeSynchronizationInterval interface {
 // BACnetConstructedDataTimeSynchronizationIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeSynchronizationInterval.
 // This is useful for switch cases.
 type BACnetConstructedDataTimeSynchronizationIntervalExactly interface {
+	BACnetConstructedDataTimeSynchronizationInterval
 	isBACnetConstructedDataTimeSynchronizationInterval() bool
 }
 

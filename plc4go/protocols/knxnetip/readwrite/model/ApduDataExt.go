@@ -37,6 +37,7 @@ type ApduDataExt interface {
 // ApduDataExtExactly can be used when we want exactly this type and not a type which fulfills ApduDataExt.
 // This is useful for switch cases.
 type ApduDataExtExactly interface {
+	ApduDataExt
 	isApduDataExt() bool
 }
 

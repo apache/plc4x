@@ -36,6 +36,7 @@ type BACnetConstructedDataScheduleAll interface {
 // BACnetConstructedDataScheduleAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScheduleAll.
 // This is useful for switch cases.
 type BACnetConstructedDataScheduleAllExactly interface {
+	BACnetConstructedDataScheduleAll
 	isBACnetConstructedDataScheduleAll() bool
 }
 

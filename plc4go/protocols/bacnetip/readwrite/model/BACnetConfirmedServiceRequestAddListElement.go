@@ -46,6 +46,7 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 // BACnetConfirmedServiceRequestAddListElementExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAddListElement.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestAddListElementExactly interface {
+	BACnetConfirmedServiceRequestAddListElement
 	isBACnetConfirmedServiceRequestAddListElement() bool
 }
 

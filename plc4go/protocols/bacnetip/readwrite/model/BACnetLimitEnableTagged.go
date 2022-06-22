@@ -43,6 +43,7 @@ type BACnetLimitEnableTagged interface {
 // BACnetLimitEnableTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLimitEnableTagged.
 // This is useful for switch cases.
 type BACnetLimitEnableTaggedExactly interface {
+	BACnetLimitEnableTagged
 	isBACnetLimitEnableTagged() bool
 }
 

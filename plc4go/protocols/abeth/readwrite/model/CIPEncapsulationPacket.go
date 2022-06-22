@@ -46,6 +46,7 @@ type CIPEncapsulationPacket interface {
 // CIPEncapsulationPacketExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationPacket.
 // This is useful for switch cases.
 type CIPEncapsulationPacketExactly interface {
+	CIPEncapsulationPacket
 	isCIPEncapsulationPacket() bool
 }
 

@@ -46,6 +46,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessage interface {
 // BACnetConfirmedServiceRequestConfirmedTextMessageExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessage.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestConfirmedTextMessageExactly interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessage
 	isBACnetConfirmedServiceRequestConfirmedTextMessage() bool
 }
 

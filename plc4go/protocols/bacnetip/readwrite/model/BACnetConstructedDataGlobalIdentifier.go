@@ -40,6 +40,7 @@ type BACnetConstructedDataGlobalIdentifier interface {
 // BACnetConstructedDataGlobalIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGlobalIdentifier.
 // This is useful for switch cases.
 type BACnetConstructedDataGlobalIdentifierExactly interface {
+	BACnetConstructedDataGlobalIdentifier
 	isBACnetConstructedDataGlobalIdentifier() bool
 }
 

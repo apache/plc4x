@@ -43,6 +43,7 @@ type BACnetLiftCarDriveStatusTagged interface {
 // BACnetLiftCarDriveStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDriveStatusTagged.
 // This is useful for switch cases.
 type BACnetLiftCarDriveStatusTaggedExactly interface {
+	BACnetLiftCarDriveStatusTagged
 	isBACnetLiftCarDriveStatusTagged() bool
 }
 

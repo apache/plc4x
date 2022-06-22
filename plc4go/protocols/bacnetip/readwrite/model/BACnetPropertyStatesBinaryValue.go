@@ -38,6 +38,7 @@ type BACnetPropertyStatesBinaryValue interface {
 // BACnetPropertyStatesBinaryValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBinaryValue.
 // This is useful for switch cases.
 type BACnetPropertyStatesBinaryValueExactly interface {
+	BACnetPropertyStatesBinaryValue
 	isBACnetPropertyStatesBinaryValue() bool
 }
 

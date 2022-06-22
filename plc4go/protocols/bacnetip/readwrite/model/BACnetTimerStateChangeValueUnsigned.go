@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueUnsigned interface {
 // BACnetTimerStateChangeValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueUnsigned.
 // This is useful for switch cases.
 type BACnetTimerStateChangeValueUnsignedExactly interface {
+	BACnetTimerStateChangeValueUnsigned
 	isBACnetTimerStateChangeValueUnsigned() bool
 }
 

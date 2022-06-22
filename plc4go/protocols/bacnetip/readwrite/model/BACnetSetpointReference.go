@@ -39,6 +39,7 @@ type BACnetSetpointReference interface {
 // BACnetSetpointReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetSetpointReference.
 // This is useful for switch cases.
 type BACnetSetpointReferenceExactly interface {
+	BACnetSetpointReference
 	isBACnetSetpointReference() bool
 }
 

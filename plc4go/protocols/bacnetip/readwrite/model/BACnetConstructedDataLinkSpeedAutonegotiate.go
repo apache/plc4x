@@ -40,6 +40,7 @@ type BACnetConstructedDataLinkSpeedAutonegotiate interface {
 // BACnetConstructedDataLinkSpeedAutonegotiateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLinkSpeedAutonegotiate.
 // This is useful for switch cases.
 type BACnetConstructedDataLinkSpeedAutonegotiateExactly interface {
+	BACnetConstructedDataLinkSpeedAutonegotiate
 	isBACnetConstructedDataLinkSpeedAutonegotiate() bool
 }
 

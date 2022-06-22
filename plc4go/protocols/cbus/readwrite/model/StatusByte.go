@@ -43,6 +43,7 @@ type StatusByte interface {
 // StatusByteExactly can be used when we want exactly this type and not a type which fulfills StatusByte.
 // This is useful for switch cases.
 type StatusByteExactly interface {
+	StatusByte
 	isStatusByte() bool
 }
 

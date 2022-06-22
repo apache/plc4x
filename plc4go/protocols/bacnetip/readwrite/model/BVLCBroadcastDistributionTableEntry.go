@@ -41,6 +41,7 @@ type BVLCBroadcastDistributionTableEntry interface {
 // BVLCBroadcastDistributionTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCBroadcastDistributionTableEntry.
 // This is useful for switch cases.
 type BVLCBroadcastDistributionTableEntryExactly interface {
+	BVLCBroadcastDistributionTableEntry
 	isBVLCBroadcastDistributionTableEntry() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataMaxAPDULengthAccepted interface {
 // BACnetConstructedDataMaxAPDULengthAcceptedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaxAPDULengthAccepted.
 // This is useful for switch cases.
 type BACnetConstructedDataMaxAPDULengthAcceptedExactly interface {
+	BACnetConstructedDataMaxAPDULengthAccepted
 	isBACnetConstructedDataMaxAPDULengthAccepted() bool
 }
 

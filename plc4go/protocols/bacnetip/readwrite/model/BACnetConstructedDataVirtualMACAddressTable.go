@@ -38,6 +38,7 @@ type BACnetConstructedDataVirtualMACAddressTable interface {
 // BACnetConstructedDataVirtualMACAddressTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVirtualMACAddressTable.
 // This is useful for switch cases.
 type BACnetConstructedDataVirtualMACAddressTableExactly interface {
+	BACnetConstructedDataVirtualMACAddressTable
 	isBACnetConstructedDataVirtualMACAddressTable() bool
 }
 

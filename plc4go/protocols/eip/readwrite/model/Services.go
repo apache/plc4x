@@ -41,6 +41,7 @@ type Services interface {
 // ServicesExactly can be used when we want exactly this type and not a type which fulfills Services.
 // This is useful for switch cases.
 type ServicesExactly interface {
+	Services
 	isServices() bool
 }
 

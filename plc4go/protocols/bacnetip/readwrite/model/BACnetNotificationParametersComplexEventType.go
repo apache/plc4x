@@ -38,6 +38,7 @@ type BACnetNotificationParametersComplexEventType interface {
 // BACnetNotificationParametersComplexEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersComplexEventType.
 // This is useful for switch cases.
 type BACnetNotificationParametersComplexEventTypeExactly interface {
+	BACnetNotificationParametersComplexEventType
 	isBACnetNotificationParametersComplexEventType() bool
 }
 

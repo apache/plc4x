@@ -43,6 +43,7 @@ type BACnetLiftCarDirectionTagged interface {
 // BACnetLiftCarDirectionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDirectionTagged.
 // This is useful for switch cases.
 type BACnetLiftCarDirectionTaggedExactly interface {
+	BACnetLiftCarDirectionTagged
 	isBACnetLiftCarDirectionTagged() bool
 }
 

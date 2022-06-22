@@ -36,6 +36,7 @@ type BACnetConstructedDataAveragingAll interface {
 // BACnetConstructedDataAveragingAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAveragingAll.
 // This is useful for switch cases.
 type BACnetConstructedDataAveragingAllExactly interface {
+	BACnetConstructedDataAveragingAll
 	isBACnetConstructedDataAveragingAll() bool
 }
 

@@ -41,6 +41,7 @@ type BACnetDailySchedule interface {
 // BACnetDailyScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetDailySchedule.
 // This is useful for switch cases.
 type BACnetDailyScheduleExactly interface {
+	BACnetDailySchedule
 	isBACnetDailySchedule() bool
 }
 

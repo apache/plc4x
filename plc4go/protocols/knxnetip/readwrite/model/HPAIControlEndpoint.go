@@ -41,6 +41,7 @@ type HPAIControlEndpoint interface {
 // HPAIControlEndpointExactly can be used when we want exactly this type and not a type which fulfills HPAIControlEndpoint.
 // This is useful for switch cases.
 type HPAIControlEndpointExactly interface {
+	HPAIControlEndpoint
 	isHPAIControlEndpoint() bool
 }
 

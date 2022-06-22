@@ -79,6 +79,7 @@ type BACnetPriorityArray interface {
 // BACnetPriorityArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityArray.
 // This is useful for switch cases.
 type BACnetPriorityArrayExactly interface {
+	BACnetPriorityArray
 	isBACnetPriorityArray() bool
 }
 

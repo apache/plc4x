@@ -46,6 +46,7 @@ type DF1ResponseMessage interface {
 // DF1ResponseMessageExactly can be used when we want exactly this type and not a type which fulfills DF1ResponseMessage.
 // This is useful for switch cases.
 type DF1ResponseMessageExactly interface {
+	DF1ResponseMessage
 	isDF1ResponseMessage() bool
 }
 

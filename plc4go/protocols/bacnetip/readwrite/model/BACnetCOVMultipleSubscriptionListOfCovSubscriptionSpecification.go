@@ -41,6 +41,7 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification interface {
 // BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.
 // This is useful for switch cases.
 type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationExactly interface {
+	BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
 	isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification() bool
 }
 

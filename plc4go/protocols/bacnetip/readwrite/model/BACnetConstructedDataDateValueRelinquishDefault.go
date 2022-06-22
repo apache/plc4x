@@ -40,6 +40,7 @@ type BACnetConstructedDataDateValueRelinquishDefault interface {
 // BACnetConstructedDataDateValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDateValueRelinquishDefault.
 // This is useful for switch cases.
 type BACnetConstructedDataDateValueRelinquishDefaultExactly interface {
+	BACnetConstructedDataDateValueRelinquishDefault
 	isBACnetConstructedDataDateValueRelinquishDefault() bool
 }
 

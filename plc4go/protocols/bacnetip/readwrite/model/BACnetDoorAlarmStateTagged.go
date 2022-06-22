@@ -43,6 +43,7 @@ type BACnetDoorAlarmStateTagged interface {
 // BACnetDoorAlarmStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDoorAlarmStateTagged.
 // This is useful for switch cases.
 type BACnetDoorAlarmStateTaggedExactly interface {
+	BACnetDoorAlarmStateTagged
 	isBACnetDoorAlarmStateTagged() bool
 }
 

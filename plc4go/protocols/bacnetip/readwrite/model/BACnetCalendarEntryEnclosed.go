@@ -41,6 +41,7 @@ type BACnetCalendarEntryEnclosed interface {
 // BACnetCalendarEntryEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntryEnclosed.
 // This is useful for switch cases.
 type BACnetCalendarEntryEnclosedExactly interface {
+	BACnetCalendarEntryEnclosed
 	isBACnetCalendarEntryEnclosed() bool
 }
 

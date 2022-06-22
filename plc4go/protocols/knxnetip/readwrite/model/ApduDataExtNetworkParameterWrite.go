@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterWrite interface {
 // ApduDataExtNetworkParameterWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtNetworkParameterWrite.
 // This is useful for switch cases.
 type ApduDataExtNetworkParameterWriteExactly interface {
+	ApduDataExtNetworkParameterWrite
 	isApduDataExtNetworkParameterWrite() bool
 }
 

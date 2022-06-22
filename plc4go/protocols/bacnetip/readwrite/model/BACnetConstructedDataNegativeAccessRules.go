@@ -44,6 +44,7 @@ type BACnetConstructedDataNegativeAccessRules interface {
 // BACnetConstructedDataNegativeAccessRulesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNegativeAccessRules.
 // This is useful for switch cases.
 type BACnetConstructedDataNegativeAccessRulesExactly interface {
+	BACnetConstructedDataNegativeAccessRules
 	isBACnetConstructedDataNegativeAccessRules() bool
 }
 

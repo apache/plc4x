@@ -44,6 +44,7 @@ type BACnetConstructedDataCommandTimeArray interface {
 // BACnetConstructedDataCommandTimeArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCommandTimeArray.
 // This is useful for switch cases.
 type BACnetConstructedDataCommandTimeArrayExactly interface {
+	BACnetConstructedDataCommandTimeArray
 	isBACnetConstructedDataCommandTimeArray() bool
 }
 

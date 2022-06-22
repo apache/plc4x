@@ -40,6 +40,7 @@ type BACnetConstructedDataLargeAnalogValueCOVIncrement interface {
 // BACnetConstructedDataLargeAnalogValueCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueCOVIncrement.
 // This is useful for switch cases.
 type BACnetConstructedDataLargeAnalogValueCOVIncrementExactly interface {
+	BACnetConstructedDataLargeAnalogValueCOVIncrement
 	isBACnetConstructedDataLargeAnalogValueCOVIncrement() bool
 }
 

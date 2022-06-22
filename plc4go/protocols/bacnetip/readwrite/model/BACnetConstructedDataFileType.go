@@ -40,6 +40,7 @@ type BACnetConstructedDataFileType interface {
 // BACnetConstructedDataFileTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileType.
 // This is useful for switch cases.
 type BACnetConstructedDataFileTypeExactly interface {
+	BACnetConstructedDataFileType
 	isBACnetConstructedDataFileType() bool
 }
 

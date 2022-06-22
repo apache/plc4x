@@ -40,6 +40,7 @@ type BACnetConstructedDataMinimumValueTimestamp interface {
 // BACnetConstructedDataMinimumValueTimestampExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumValueTimestamp.
 // This is useful for switch cases.
 type BACnetConstructedDataMinimumValueTimestampExactly interface {
+	BACnetConstructedDataMinimumValueTimestamp
 	isBACnetConstructedDataMinimumValueTimestamp() bool
 }
 

@@ -36,6 +36,7 @@ type BACnetConstructedDataCalendarAll interface {
 // BACnetConstructedDataCalendarAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCalendarAll.
 // This is useful for switch cases.
 type BACnetConstructedDataCalendarAllExactly interface {
+	BACnetConstructedDataCalendarAll
 	isBACnetConstructedDataCalendarAll() bool
 }
 

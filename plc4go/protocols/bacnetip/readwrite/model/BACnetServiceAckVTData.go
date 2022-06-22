@@ -42,6 +42,7 @@ type BACnetServiceAckVTData interface {
 // BACnetServiceAckVTDataExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckVTData.
 // This is useful for switch cases.
 type BACnetServiceAckVTDataExactly interface {
+	BACnetServiceAckVTData
 	isBACnetServiceAckVTData() bool
 }
 

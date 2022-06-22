@@ -64,6 +64,7 @@ type APDUConfirmedRequest interface {
 // APDUConfirmedRequestExactly can be used when we want exactly this type and not a type which fulfills APDUConfirmedRequest.
 // This is useful for switch cases.
 type APDUConfirmedRequestExactly interface {
+	APDUConfirmedRequest
 	isAPDUConfirmedRequest() bool
 }
 

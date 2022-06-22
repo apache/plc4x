@@ -40,6 +40,7 @@ type BACnetConstructedDataBias interface {
 // BACnetConstructedDataBiasExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBias.
 // This is useful for switch cases.
 type BACnetConstructedDataBiasExactly interface {
+	BACnetConstructedDataBias
 	isBACnetConstructedDataBias() bool
 }
 

@@ -43,6 +43,7 @@ type BACnetWriteAccessSpecification interface {
 // BACnetWriteAccessSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetWriteAccessSpecification.
 // This is useful for switch cases.
 type BACnetWriteAccessSpecificationExactly interface {
+	BACnetWriteAccessSpecification
 	isBACnetWriteAccessSpecification() bool
 }
 

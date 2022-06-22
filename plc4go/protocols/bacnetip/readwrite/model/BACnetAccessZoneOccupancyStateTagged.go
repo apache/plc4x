@@ -43,6 +43,7 @@ type BACnetAccessZoneOccupancyStateTagged interface {
 // BACnetAccessZoneOccupancyStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessZoneOccupancyStateTagged.
 // This is useful for switch cases.
 type BACnetAccessZoneOccupancyStateTaggedExactly interface {
+	BACnetAccessZoneOccupancyStateTagged
 	isBACnetAccessZoneOccupancyStateTagged() bool
 }
 

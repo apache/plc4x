@@ -41,6 +41,7 @@ type BACnetPropertyStatesEnclosed interface {
 // BACnetPropertyStatesEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEnclosed.
 // This is useful for switch cases.
 type BACnetPropertyStatesEnclosedExactly interface {
+	BACnetPropertyStatesEnclosed
 	isBACnetPropertyStatesEnclosed() bool
 }
 

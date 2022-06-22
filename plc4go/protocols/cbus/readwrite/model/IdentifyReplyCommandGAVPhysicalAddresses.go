@@ -38,6 +38,7 @@ type IdentifyReplyCommandGAVPhysicalAddresses interface {
 // IdentifyReplyCommandGAVPhysicalAddressesExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandGAVPhysicalAddresses.
 // This is useful for switch cases.
 type IdentifyReplyCommandGAVPhysicalAddressesExactly interface {
+	IdentifyReplyCommandGAVPhysicalAddresses
 	isIdentifyReplyCommandGAVPhysicalAddresses() bool
 }
 

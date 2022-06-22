@@ -40,6 +40,7 @@ type BACnetConstructedDataAbsenteeLimit interface {
 // BACnetConstructedDataAbsenteeLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAbsenteeLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataAbsenteeLimitExactly interface {
+	BACnetConstructedDataAbsenteeLimit
 	isBACnetConstructedDataAbsenteeLimit() bool
 }
 

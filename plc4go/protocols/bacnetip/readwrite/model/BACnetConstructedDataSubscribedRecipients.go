@@ -38,6 +38,7 @@ type BACnetConstructedDataSubscribedRecipients interface {
 // BACnetConstructedDataSubscribedRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubscribedRecipients.
 // This is useful for switch cases.
 type BACnetConstructedDataSubscribedRecipientsExactly interface {
+	BACnetConstructedDataSubscribedRecipients
 	isBACnetConstructedDataSubscribedRecipients() bool
 }
 

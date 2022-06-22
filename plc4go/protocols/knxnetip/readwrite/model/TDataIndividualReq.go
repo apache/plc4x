@@ -36,6 +36,7 @@ type TDataIndividualReq interface {
 // TDataIndividualReqExactly can be used when we want exactly this type and not a type which fulfills TDataIndividualReq.
 // This is useful for switch cases.
 type TDataIndividualReqExactly interface {
+	TDataIndividualReq
 	isTDataIndividualReq() bool
 }
 

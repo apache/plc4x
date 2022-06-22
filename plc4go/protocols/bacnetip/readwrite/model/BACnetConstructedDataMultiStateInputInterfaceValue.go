@@ -40,6 +40,7 @@ type BACnetConstructedDataMultiStateInputInterfaceValue interface {
 // BACnetConstructedDataMultiStateInputInterfaceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateInputInterfaceValue.
 // This is useful for switch cases.
 type BACnetConstructedDataMultiStateInputInterfaceValueExactly interface {
+	BACnetConstructedDataMultiStateInputInterfaceValue
 	isBACnetConstructedDataMultiStateInputInterfaceValue() bool
 }
 

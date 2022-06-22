@@ -36,6 +36,7 @@ type ApduDataExtWriteRouterMemoryRequest interface {
 // ApduDataExtWriteRouterMemoryRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtWriteRouterMemoryRequest.
 // This is useful for switch cases.
 type ApduDataExtWriteRouterMemoryRequestExactly interface {
+	ApduDataExtWriteRouterMemoryRequest
 	isApduDataExtWriteRouterMemoryRequest() bool
 }
 

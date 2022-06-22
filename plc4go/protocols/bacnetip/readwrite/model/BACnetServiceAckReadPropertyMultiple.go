@@ -38,6 +38,7 @@ type BACnetServiceAckReadPropertyMultiple interface {
 // BACnetServiceAckReadPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyMultiple.
 // This is useful for switch cases.
 type BACnetServiceAckReadPropertyMultipleExactly interface {
+	BACnetServiceAckReadPropertyMultiple
 	isBACnetServiceAckReadPropertyMultiple() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataVendorName interface {
 // BACnetConstructedDataVendorNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVendorName.
 // This is useful for switch cases.
 type BACnetConstructedDataVendorNameExactly interface {
+	BACnetConstructedDataVendorName
 	isBACnetConstructedDataVendorName() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataFailedAttemptsTime interface {
 // BACnetConstructedDataFailedAttemptsTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFailedAttemptsTime.
 // This is useful for switch cases.
 type BACnetConstructedDataFailedAttemptsTimeExactly interface {
+	BACnetConstructedDataFailedAttemptsTime
 	isBACnetConstructedDataFailedAttemptsTime() bool
 }
 

@@ -43,6 +43,7 @@ type BACnetReadAccessSpecification interface {
 // BACnetReadAccessSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessSpecification.
 // This is useful for switch cases.
 type BACnetReadAccessSpecificationExactly interface {
+	BACnetReadAccessSpecification
 	isBACnetReadAccessSpecification() bool
 }
 

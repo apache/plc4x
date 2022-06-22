@@ -52,6 +52,7 @@ type CALReplyLong interface {
 // CALReplyLongExactly can be used when we want exactly this type and not a type which fulfills CALReplyLong.
 // This is useful for switch cases.
 type CALReplyLongExactly interface {
+	CALReplyLong
 	isCALReplyLong() bool
 }
 

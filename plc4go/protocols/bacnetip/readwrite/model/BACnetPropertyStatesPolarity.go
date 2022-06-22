@@ -38,6 +38,7 @@ type BACnetPropertyStatesPolarity interface {
 // BACnetPropertyStatesPolarityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesPolarity.
 // This is useful for switch cases.
 type BACnetPropertyStatesPolarityExactly interface {
+	BACnetPropertyStatesPolarity
 	isBACnetPropertyStatesPolarity() bool
 }
 

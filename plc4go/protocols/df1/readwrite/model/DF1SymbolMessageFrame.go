@@ -47,6 +47,7 @@ type DF1SymbolMessageFrame interface {
 // DF1SymbolMessageFrameExactly can be used when we want exactly this type and not a type which fulfills DF1SymbolMessageFrame.
 // This is useful for switch cases.
 type DF1SymbolMessageFrameExactly interface {
+	DF1SymbolMessageFrame
 	isDF1SymbolMessageFrame() bool
 }
 

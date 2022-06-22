@@ -39,6 +39,7 @@ type BACnetPrescale interface {
 // BACnetPrescaleExactly can be used when we want exactly this type and not a type which fulfills BACnetPrescale.
 // This is useful for switch cases.
 type BACnetPrescaleExactly interface {
+	BACnetPrescale
 	isBACnetPrescale() bool
 }
 

@@ -40,6 +40,7 @@ type DescriptionResponse interface {
 // DescriptionResponseExactly can be used when we want exactly this type and not a type which fulfills DescriptionResponse.
 // This is useful for switch cases.
 type DescriptionResponseExactly interface {
+	DescriptionResponse
 	isDescriptionResponse() bool
 }
 

@@ -51,6 +51,7 @@ type CBusOptions interface {
 // CBusOptionsExactly can be used when we want exactly this type and not a type which fulfills CBusOptions.
 // This is useful for switch cases.
 type CBusOptionsExactly interface {
+	CBusOptions
 	isCBusOptions() bool
 }
 

@@ -38,6 +38,7 @@ type ExclamationMarkReply interface {
 // ExclamationMarkReplyExactly can be used when we want exactly this type and not a type which fulfills ExclamationMarkReply.
 // This is useful for switch cases.
 type ExclamationMarkReplyExactly interface {
+	ExclamationMarkReply
 	isExclamationMarkReply() bool
 }
 

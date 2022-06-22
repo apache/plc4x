@@ -40,6 +40,7 @@ type BACnetConstructedDataBitMask interface {
 // BACnetConstructedDataBitMaskExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitMask.
 // This is useful for switch cases.
 type BACnetConstructedDataBitMaskExactly interface {
+	BACnetConstructedDataBitMask
 	isBACnetConstructedDataBitMask() bool
 }
 

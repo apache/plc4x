@@ -41,6 +41,7 @@ type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues interface
 // BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesExactly interface {
+	BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
 	isBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues() bool
 }
 

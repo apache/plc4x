@@ -36,6 +36,7 @@ type CALDataRequestReset interface {
 // CALDataRequestResetExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestReset.
 // This is useful for switch cases.
 type CALDataRequestResetExactly interface {
+	CALDataRequestReset
 	isCALDataRequestReset() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestWritePropertyMultiple interface {
 // BACnetConfirmedServiceRequestWritePropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestWritePropertyMultiple.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestWritePropertyMultipleExactly interface {
+	BACnetConfirmedServiceRequestWritePropertyMultiple
 	isBACnetConfirmedServiceRequestWritePropertyMultiple() bool
 }
 

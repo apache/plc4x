@@ -36,6 +36,7 @@ type DF1SymbolMessageFrameNAK interface {
 // DF1SymbolMessageFrameNAKExactly can be used when we want exactly this type and not a type which fulfills DF1SymbolMessageFrameNAK.
 // This is useful for switch cases.
 type DF1SymbolMessageFrameNAKExactly interface {
+	DF1SymbolMessageFrameNAK
 	isDF1SymbolMessageFrameNAK() bool
 }
 

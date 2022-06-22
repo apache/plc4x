@@ -41,6 +41,7 @@ type APDUSimpleAck interface {
 // APDUSimpleAckExactly can be used when we want exactly this type and not a type which fulfills APDUSimpleAck.
 // This is useful for switch cases.
 type APDUSimpleAckExactly interface {
+	APDUSimpleAck
 	isAPDUSimpleAck() bool
 }
 

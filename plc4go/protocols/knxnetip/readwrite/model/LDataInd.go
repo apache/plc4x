@@ -42,6 +42,7 @@ type LDataInd interface {
 // LDataIndExactly can be used when we want exactly this type and not a type which fulfills LDataInd.
 // This is useful for switch cases.
 type LDataIndExactly interface {
+	LDataInd
 	isLDataInd() bool
 }
 

@@ -40,6 +40,7 @@ type NLMRejectRouterToNetwork interface {
 // NLMRejectRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRejectRouterToNetwork.
 // This is useful for switch cases.
 type NLMRejectRouterToNetworkExactly interface {
+	NLMRejectRouterToNetwork
 	isNLMRejectRouterToNetwork() bool
 }
 

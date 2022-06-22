@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryNull interface {
 // BACnetFaultParameterFaultExtendedParametersEntryNullExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryNull.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedParametersEntryNullExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryNull
 	isBACnetFaultParameterFaultExtendedParametersEntryNull() bool
 }
 

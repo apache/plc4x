@@ -45,6 +45,7 @@ type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription interface {
 // SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionExactly can be used when we want exactly this type and not a type which fulfills SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.
 // This is useful for switch cases.
 type SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionExactly interface {
+	SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
 	isSubscribeCOVPropertyMultipleErrorFirstFailedSubscription() bool
 }
 

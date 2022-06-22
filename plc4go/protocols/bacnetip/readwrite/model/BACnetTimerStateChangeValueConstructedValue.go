@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueConstructedValue interface {
 // BACnetTimerStateChangeValueConstructedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueConstructedValue.
 // This is useful for switch cases.
 type BACnetTimerStateChangeValueConstructedValueExactly interface {
+	BACnetTimerStateChangeValueConstructedValue
 	isBACnetTimerStateChangeValueConstructedValue() bool
 }
 

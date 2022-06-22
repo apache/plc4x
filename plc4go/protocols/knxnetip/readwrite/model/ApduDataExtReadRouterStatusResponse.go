@@ -36,6 +36,7 @@ type ApduDataExtReadRouterStatusResponse interface {
 // ApduDataExtReadRouterStatusResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtReadRouterStatusResponse.
 // This is useful for switch cases.
 type ApduDataExtReadRouterStatusResponseExactly interface {
+	ApduDataExtReadRouterStatusResponse
 	isApduDataExtReadRouterStatusResponse() bool
 }
 

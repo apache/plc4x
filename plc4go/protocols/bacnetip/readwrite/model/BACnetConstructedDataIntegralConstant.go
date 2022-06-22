@@ -40,6 +40,7 @@ type BACnetConstructedDataIntegralConstant interface {
 // BACnetConstructedDataIntegralConstantExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegralConstant.
 // This is useful for switch cases.
 type BACnetConstructedDataIntegralConstantExactly interface {
+	BACnetConstructedDataIntegralConstant
 	isBACnetConstructedDataIntegralConstant() bool
 }
 

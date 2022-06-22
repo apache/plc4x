@@ -40,6 +40,7 @@ type ModbusPDUWriteSingleCoilRequest interface {
 // ModbusPDUWriteSingleCoilRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteSingleCoilRequest.
 // This is useful for switch cases.
 type ModbusPDUWriteSingleCoilRequestExactly interface {
+	ModbusPDUWriteSingleCoilRequest
 	isModbusPDUWriteSingleCoilRequest() bool
 }
 

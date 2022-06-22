@@ -41,6 +41,7 @@ type TunnelingResponseDataBlock interface {
 // TunnelingResponseDataBlockExactly can be used when we want exactly this type and not a type which fulfills TunnelingResponseDataBlock.
 // This is useful for switch cases.
 type TunnelingResponseDataBlockExactly interface {
+	TunnelingResponseDataBlock
 	isTunnelingResponseDataBlock() bool
 }
 

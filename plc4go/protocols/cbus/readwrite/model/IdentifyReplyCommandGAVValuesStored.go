@@ -38,6 +38,7 @@ type IdentifyReplyCommandGAVValuesStored interface {
 // IdentifyReplyCommandGAVValuesStoredExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandGAVValuesStored.
 // This is useful for switch cases.
 type IdentifyReplyCommandGAVValuesStoredExactly interface {
+	IdentifyReplyCommandGAVValuesStored
 	isIdentifyReplyCommandGAVValuesStored() bool
 }
 

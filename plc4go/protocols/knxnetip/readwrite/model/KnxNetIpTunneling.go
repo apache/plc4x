@@ -38,6 +38,7 @@ type KnxNetIpTunneling interface {
 // KnxNetIpTunnelingExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpTunneling.
 // This is useful for switch cases.
 type KnxNetIpTunnelingExactly interface {
+	KnxNetIpTunneling
 	isKnxNetIpTunneling() bool
 }
 

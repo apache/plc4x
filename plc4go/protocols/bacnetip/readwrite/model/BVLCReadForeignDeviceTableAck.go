@@ -38,6 +38,7 @@ type BVLCReadForeignDeviceTableAck interface {
 // BVLCReadForeignDeviceTableAckExactly can be used when we want exactly this type and not a type which fulfills BVLCReadForeignDeviceTableAck.
 // This is useful for switch cases.
 type BVLCReadForeignDeviceTableAckExactly interface {
+	BVLCReadForeignDeviceTableAck
 	isBVLCReadForeignDeviceTableAck() bool
 }
 

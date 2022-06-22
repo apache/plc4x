@@ -42,6 +42,7 @@ type COTPPacketDisconnectRequest interface {
 // COTPPacketDisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills COTPPacketDisconnectRequest.
 // This is useful for switch cases.
 type COTPPacketDisconnectRequestExactly interface {
+	COTPPacketDisconnectRequest
 	isCOTPPacketDisconnectRequest() bool
 }
 

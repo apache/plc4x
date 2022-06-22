@@ -43,6 +43,7 @@ type BACnetRestartReasonTagged interface {
 // BACnetRestartReasonTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRestartReasonTagged.
 // This is useful for switch cases.
 type BACnetRestartReasonTaggedExactly interface {
+	BACnetRestartReasonTagged
 	isBACnetRestartReasonTagged() bool
 }
 

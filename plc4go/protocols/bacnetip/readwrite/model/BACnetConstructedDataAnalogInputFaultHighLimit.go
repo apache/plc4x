@@ -40,6 +40,7 @@ type BACnetConstructedDataAnalogInputFaultHighLimit interface {
 // BACnetConstructedDataAnalogInputFaultHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogInputFaultHighLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataAnalogInputFaultHighLimitExactly interface {
+	BACnetConstructedDataAnalogInputFaultHighLimit
 	isBACnetConstructedDataAnalogInputFaultHighLimit() bool
 }
 

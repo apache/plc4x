@@ -43,6 +43,7 @@ type BACnetVTClassTagged interface {
 // BACnetVTClassTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetVTClassTagged.
 // This is useful for switch cases.
 type BACnetVTClassTaggedExactly interface {
+	BACnetVTClassTagged
 	isBACnetVTClassTagged() bool
 }
 

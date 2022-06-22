@@ -40,6 +40,7 @@ type S7MessageResponseData interface {
 // S7MessageResponseDataExactly can be used when we want exactly this type and not a type which fulfills S7MessageResponseData.
 // This is useful for switch cases.
 type S7MessageResponseDataExactly interface {
+	S7MessageResponseData
 	isS7MessageResponseData() bool
 }
 

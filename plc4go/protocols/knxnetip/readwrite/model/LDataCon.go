@@ -42,6 +42,7 @@ type LDataCon interface {
 // LDataConExactly can be used when we want exactly this type and not a type which fulfills LDataCon.
 // This is useful for switch cases.
 type LDataConExactly interface {
+	LDataCon
 	isLDataCon() bool
 }
 

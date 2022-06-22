@@ -43,6 +43,7 @@ type BACnetEscalatorFaultTagged interface {
 // BACnetEscalatorFaultTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEscalatorFaultTagged.
 // This is useful for switch cases.
 type BACnetEscalatorFaultTaggedExactly interface {
+	BACnetEscalatorFaultTagged
 	isBACnetEscalatorFaultTagged() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetUnconfirmedServiceRequestUTCTimeSynchronization interface {
 // BACnetUnconfirmedServiceRequestUTCTimeSynchronizationExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUTCTimeSynchronization.
 // This is useful for switch cases.
 type BACnetUnconfirmedServiceRequestUTCTimeSynchronizationExactly interface {
+	BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 	isBACnetUnconfirmedServiceRequestUTCTimeSynchronization() bool
 }
 

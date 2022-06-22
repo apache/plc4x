@@ -38,6 +38,7 @@ type BACnetClientCOVObject interface {
 // BACnetClientCOVObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOVObject.
 // This is useful for switch cases.
 type BACnetClientCOVObjectExactly interface {
+	BACnetClientCOVObject
 	isBACnetClientCOVObject() bool
 }
 

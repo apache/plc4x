@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier i
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier.
 // This is useful for switch cases.
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
 	isBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier() bool
 }
 

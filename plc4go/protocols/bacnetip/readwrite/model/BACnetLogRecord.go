@@ -43,6 +43,7 @@ type BACnetLogRecord interface {
 // BACnetLogRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecord.
 // This is useful for switch cases.
 type BACnetLogRecordExactly interface {
+	BACnetLogRecord
 	isBACnetLogRecord() bool
 }
 

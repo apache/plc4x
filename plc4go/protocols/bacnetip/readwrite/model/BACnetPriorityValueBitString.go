@@ -38,6 +38,7 @@ type BACnetPriorityValueBitString interface {
 // BACnetPriorityValueBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueBitString.
 // This is useful for switch cases.
 type BACnetPriorityValueBitStringExactly interface {
+	BACnetPriorityValueBitString
 	isBACnetPriorityValueBitString() bool
 }
 

@@ -47,6 +47,7 @@ type AmsSerialResetFrame interface {
 // AmsSerialResetFrameExactly can be used when we want exactly this type and not a type which fulfills AmsSerialResetFrame.
 // This is useful for switch cases.
 type AmsSerialResetFrameExactly interface {
+	AmsSerialResetFrame
 	isAmsSerialResetFrame() bool
 }
 

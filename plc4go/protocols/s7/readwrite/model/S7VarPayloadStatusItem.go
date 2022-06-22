@@ -37,6 +37,7 @@ type S7VarPayloadStatusItem interface {
 // S7VarPayloadStatusItemExactly can be used when we want exactly this type and not a type which fulfills S7VarPayloadStatusItem.
 // This is useful for switch cases.
 type S7VarPayloadStatusItemExactly interface {
+	S7VarPayloadStatusItem
 	isS7VarPayloadStatusItem() bool
 }
 

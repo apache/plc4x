@@ -40,6 +40,7 @@ type BACnetConstructedDataLinkSpeed interface {
 // BACnetConstructedDataLinkSpeedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLinkSpeed.
 // This is useful for switch cases.
 type BACnetConstructedDataLinkSpeedExactly interface {
+	BACnetConstructedDataLinkSpeed
 	isBACnetConstructedDataLinkSpeed() bool
 }
 

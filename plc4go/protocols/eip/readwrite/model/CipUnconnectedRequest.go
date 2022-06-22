@@ -47,6 +47,7 @@ type CipUnconnectedRequest interface {
 // CipUnconnectedRequestExactly can be used when we want exactly this type and not a type which fulfills CipUnconnectedRequest.
 // This is useful for switch cases.
 type CipUnconnectedRequestExactly interface {
+	CipUnconnectedRequest
 	isCipUnconnectedRequest() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetPriorityValueEnumerated interface {
 // BACnetPriorityValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueEnumerated.
 // This is useful for switch cases.
 type BACnetPriorityValueEnumeratedExactly interface {
+	BACnetPriorityValueEnumerated
 	isBACnetPriorityValueEnumerated() bool
 }
 

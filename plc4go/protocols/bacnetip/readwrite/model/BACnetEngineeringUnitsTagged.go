@@ -43,6 +43,7 @@ type BACnetEngineeringUnitsTagged interface {
 // BACnetEngineeringUnitsTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEngineeringUnitsTagged.
 // This is useful for switch cases.
 type BACnetEngineeringUnitsTaggedExactly interface {
+	BACnetEngineeringUnitsTagged
 	isBACnetEngineeringUnitsTagged() bool
 }
 

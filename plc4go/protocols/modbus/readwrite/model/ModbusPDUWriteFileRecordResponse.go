@@ -38,6 +38,7 @@ type ModbusPDUWriteFileRecordResponse interface {
 // ModbusPDUWriteFileRecordResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteFileRecordResponse.
 // This is useful for switch cases.
 type ModbusPDUWriteFileRecordResponseExactly interface {
+	ModbusPDUWriteFileRecordResponse
 	isModbusPDUWriteFileRecordResponse() bool
 }
 

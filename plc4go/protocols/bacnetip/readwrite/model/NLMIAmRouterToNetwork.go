@@ -38,6 +38,7 @@ type NLMIAmRouterToNetwork interface {
 // NLMIAmRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMIAmRouterToNetwork.
 // This is useful for switch cases.
 type NLMIAmRouterToNetworkExactly interface {
+	NLMIAmRouterToNetwork
 	isNLMIAmRouterToNetwork() bool
 }
 

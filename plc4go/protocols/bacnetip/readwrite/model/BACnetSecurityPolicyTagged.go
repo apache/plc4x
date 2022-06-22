@@ -39,6 +39,7 @@ type BACnetSecurityPolicyTagged interface {
 // BACnetSecurityPolicyTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityPolicyTagged.
 // This is useful for switch cases.
 type BACnetSecurityPolicyTaggedExactly interface {
+	BACnetSecurityPolicyTagged
 	isBACnetSecurityPolicyTagged() bool
 }
 

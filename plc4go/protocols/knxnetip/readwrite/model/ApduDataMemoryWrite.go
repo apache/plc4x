@@ -36,6 +36,7 @@ type ApduDataMemoryWrite interface {
 // ApduDataMemoryWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryWrite.
 // This is useful for switch cases.
 type ApduDataMemoryWriteExactly interface {
+	ApduDataMemoryWrite
 	isApduDataMemoryWrite() bool
 }
 

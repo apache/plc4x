@@ -36,6 +36,7 @@ type MResetInd interface {
 // MResetIndExactly can be used when we want exactly this type and not a type which fulfills MResetInd.
 // This is useful for switch cases.
 type MResetIndExactly interface {
+	MResetInd
 	isMResetInd() bool
 }
 

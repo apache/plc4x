@@ -36,6 +36,7 @@ type IdentifyReplyCommandNetworkTerminalLevels interface {
 // IdentifyReplyCommandNetworkTerminalLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandNetworkTerminalLevels.
 // This is useful for switch cases.
 type IdentifyReplyCommandNetworkTerminalLevelsExactly interface {
+	IdentifyReplyCommandNetworkTerminalLevels
 	isIdentifyReplyCommandNetworkTerminalLevels() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataInstanceOf interface {
 // BACnetConstructedDataInstanceOfExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInstanceOf.
 // This is useful for switch cases.
 type BACnetConstructedDataInstanceOfExactly interface {
+	BACnetConstructedDataInstanceOf
 	isBACnetConstructedDataInstanceOf() bool
 }
 

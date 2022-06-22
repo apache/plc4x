@@ -40,6 +40,7 @@ type BACnetConstructedDataControlledVariableReference interface {
 // BACnetConstructedDataControlledVariableReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataControlledVariableReference.
 // This is useful for switch cases.
 type BACnetConstructedDataControlledVariableReferenceExactly interface {
+	BACnetConstructedDataControlledVariableReference
 	isBACnetConstructedDataControlledVariableReference() bool
 }
 

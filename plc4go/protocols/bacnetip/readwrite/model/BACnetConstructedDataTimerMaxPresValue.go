@@ -40,6 +40,7 @@ type BACnetConstructedDataTimerMaxPresValue interface {
 // BACnetConstructedDataTimerMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerMaxPresValue.
 // This is useful for switch cases.
 type BACnetConstructedDataTimerMaxPresValueExactly interface {
+	BACnetConstructedDataTimerMaxPresValue
 	isBACnetConstructedDataTimerMaxPresValue() bool
 }
 

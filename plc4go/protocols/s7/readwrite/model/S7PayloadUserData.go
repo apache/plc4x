@@ -38,6 +38,7 @@ type S7PayloadUserData interface {
 // S7PayloadUserDataExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserData.
 // This is useful for switch cases.
 type S7PayloadUserDataExactly interface {
+	S7PayloadUserData
 	isS7PayloadUserData() bool
 }
 

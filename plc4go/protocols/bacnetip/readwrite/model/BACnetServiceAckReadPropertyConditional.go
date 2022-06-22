@@ -38,6 +38,7 @@ type BACnetServiceAckReadPropertyConditional interface {
 // BACnetServiceAckReadPropertyConditionalExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyConditional.
 // This is useful for switch cases.
 type BACnetServiceAckReadPropertyConditionalExactly interface {
+	BACnetServiceAckReadPropertyConditional
 	isBACnetServiceAckReadPropertyConditional() bool
 }
 

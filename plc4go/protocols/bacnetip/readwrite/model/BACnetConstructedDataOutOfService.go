@@ -40,6 +40,7 @@ type BACnetConstructedDataOutOfService interface {
 // BACnetConstructedDataOutOfServiceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOutOfService.
 // This is useful for switch cases.
 type BACnetConstructedDataOutOfServiceExactly interface {
+	BACnetConstructedDataOutOfService
 	isBACnetConstructedDataOutOfService() bool
 }
 

@@ -44,6 +44,7 @@ type BACnetEventParameterBufferReady interface {
 // BACnetEventParameterBufferReadyExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterBufferReady.
 // This is useful for switch cases.
 type BACnetEventParameterBufferReadyExactly interface {
+	BACnetEventParameterBufferReady
 	isBACnetEventParameterBufferReady() bool
 }
 

@@ -38,6 +38,7 @@ type NLMRouterBusyToNetwork interface {
 // NLMRouterBusyToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRouterBusyToNetwork.
 // This is useful for switch cases.
 type NLMRouterBusyToNetworkExactly interface {
+	NLMRouterBusyToNetwork
 	isNLMRouterBusyToNetwork() bool
 }
 

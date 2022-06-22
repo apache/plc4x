@@ -36,6 +36,7 @@ type MPropWriteReq interface {
 // MPropWriteReqExactly can be used when we want exactly this type and not a type which fulfills MPropWriteReq.
 // This is useful for switch cases.
 type MPropWriteReqExactly interface {
+	MPropWriteReq
 	isMPropWriteReq() bool
 }
 

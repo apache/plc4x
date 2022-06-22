@@ -38,6 +38,7 @@ type ComObjectTableRealisationType6 interface {
 // ComObjectTableRealisationType6Exactly can be used when we want exactly this type and not a type which fulfills ComObjectTableRealisationType6.
 // This is useful for switch cases.
 type ComObjectTableRealisationType6Exactly interface {
+	ComObjectTableRealisationType6
 	isComObjectTableRealisationType6() bool
 }
 

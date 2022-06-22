@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessDoorFaultValues interface {
 // BACnetConstructedDataAccessDoorFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoorFaultValues.
 // This is useful for switch cases.
 type BACnetConstructedDataAccessDoorFaultValuesExactly interface {
+	BACnetConstructedDataAccessDoorFaultValues
 	isBACnetConstructedDataAccessDoorFaultValues() bool
 }
 

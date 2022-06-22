@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
 // BACnetNotificationParametersChangeOfValueNewValueChangedBitsExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfValueNewValueChangedBits.
 // This is useful for switch cases.
 type BACnetNotificationParametersChangeOfValueNewValueChangedBitsExactly interface {
+	BACnetNotificationParametersChangeOfValueNewValueChangedBits
 	isBACnetNotificationParametersChangeOfValueNewValueChangedBits() bool
 }
 

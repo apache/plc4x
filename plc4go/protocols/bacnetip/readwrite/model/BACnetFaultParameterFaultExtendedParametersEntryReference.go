@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryReference interface {
 // BACnetFaultParameterFaultExtendedParametersEntryReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryReference.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedParametersEntryReferenceExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryReference
 	isBACnetFaultParameterFaultExtendedParametersEntryReference() bool
 }
 

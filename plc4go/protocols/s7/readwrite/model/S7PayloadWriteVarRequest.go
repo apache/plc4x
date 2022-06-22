@@ -38,6 +38,7 @@ type S7PayloadWriteVarRequest interface {
 // S7PayloadWriteVarRequestExactly can be used when we want exactly this type and not a type which fulfills S7PayloadWriteVarRequest.
 // This is useful for switch cases.
 type S7PayloadWriteVarRequestExactly interface {
+	S7PayloadWriteVarRequest
 	isS7PayloadWriteVarRequest() bool
 }
 

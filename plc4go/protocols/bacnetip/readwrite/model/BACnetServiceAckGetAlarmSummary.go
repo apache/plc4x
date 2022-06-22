@@ -42,6 +42,7 @@ type BACnetServiceAckGetAlarmSummary interface {
 // BACnetServiceAckGetAlarmSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetAlarmSummary.
 // This is useful for switch cases.
 type BACnetServiceAckGetAlarmSummaryExactly interface {
+	BACnetServiceAckGetAlarmSummary
 	isBACnetServiceAckGetAlarmSummary() bool
 }
 

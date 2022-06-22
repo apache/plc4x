@@ -39,6 +39,7 @@ type BACnetIPModeTagged interface {
 // BACnetIPModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetIPModeTagged.
 // This is useful for switch cases.
 type BACnetIPModeTaggedExactly interface {
+	BACnetIPModeTagged
 	isBACnetIPModeTagged() bool
 }
 

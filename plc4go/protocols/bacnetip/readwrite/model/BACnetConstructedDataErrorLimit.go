@@ -40,6 +40,7 @@ type BACnetConstructedDataErrorLimit interface {
 // BACnetConstructedDataErrorLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataErrorLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataErrorLimitExactly interface {
+	BACnetConstructedDataErrorLimit
 	isBACnetConstructedDataErrorLimit() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryDate interface {
 // BACnetFaultParameterFaultExtendedParametersEntryDateExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryDate.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedParametersEntryDateExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryDate
 	isBACnetFaultParameterFaultExtendedParametersEntryDate() bool
 }
 

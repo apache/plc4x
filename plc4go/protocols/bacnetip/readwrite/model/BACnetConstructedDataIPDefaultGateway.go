@@ -40,6 +40,7 @@ type BACnetConstructedDataIPDefaultGateway interface {
 // BACnetConstructedDataIPDefaultGatewayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDefaultGateway.
 // This is useful for switch cases.
 type BACnetConstructedDataIPDefaultGatewayExactly interface {
+	BACnetConstructedDataIPDefaultGateway
 	isBACnetConstructedDataIPDefaultGateway() bool
 }
 

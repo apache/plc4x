@@ -36,6 +36,7 @@ type MResetReq interface {
 // MResetReqExactly can be used when we want exactly this type and not a type which fulfills MResetReq.
 // This is useful for switch cases.
 type MResetReqExactly interface {
+	MResetReq
 	isMResetReq() bool
 }
 

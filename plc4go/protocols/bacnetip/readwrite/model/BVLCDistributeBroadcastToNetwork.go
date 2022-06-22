@@ -38,6 +38,7 @@ type BVLCDistributeBroadcastToNetwork interface {
 // BVLCDistributeBroadcastToNetworkExactly can be used when we want exactly this type and not a type which fulfills BVLCDistributeBroadcastToNetwork.
 // This is useful for switch cases.
 type BVLCDistributeBroadcastToNetworkExactly interface {
+	BVLCDistributeBroadcastToNetwork
 	isBVLCDistributeBroadcastToNetwork() bool
 }
 

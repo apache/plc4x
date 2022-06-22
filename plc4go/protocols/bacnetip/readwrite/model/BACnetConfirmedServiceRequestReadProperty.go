@@ -44,6 +44,7 @@ type BACnetConfirmedServiceRequestReadProperty interface {
 // BACnetConfirmedServiceRequestReadPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadProperty.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestReadPropertyExactly interface {
+	BACnetConfirmedServiceRequestReadProperty
 	isBACnetConfirmedServiceRequestReadProperty() bool
 }
 

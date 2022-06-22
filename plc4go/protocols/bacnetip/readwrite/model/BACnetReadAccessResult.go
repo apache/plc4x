@@ -41,6 +41,7 @@ type BACnetReadAccessResult interface {
 // BACnetReadAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessResult.
 // This is useful for switch cases.
 type BACnetReadAccessResultExactly interface {
+	BACnetReadAccessResult
 	isBACnetReadAccessResult() bool
 }
 

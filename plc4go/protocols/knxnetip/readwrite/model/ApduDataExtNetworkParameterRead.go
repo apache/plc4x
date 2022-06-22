@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterRead interface {
 // ApduDataExtNetworkParameterReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtNetworkParameterRead.
 // This is useful for switch cases.
 type ApduDataExtNetworkParameterReadExactly interface {
+	ApduDataExtNetworkParameterRead
 	isApduDataExtNetworkParameterRead() bool
 }
 

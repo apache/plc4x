@@ -42,6 +42,7 @@ type VTCloseError interface {
 // VTCloseErrorExactly can be used when we want exactly this type and not a type which fulfills VTCloseError.
 // This is useful for switch cases.
 type VTCloseErrorExactly interface {
+	VTCloseError
 	isVTCloseError() bool
 }
 

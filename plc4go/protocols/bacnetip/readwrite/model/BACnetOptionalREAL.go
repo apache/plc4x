@@ -39,6 +39,7 @@ type BACnetOptionalREAL interface {
 // BACnetOptionalREALExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREAL.
 // This is useful for switch cases.
 type BACnetOptionalREALExactly interface {
+	BACnetOptionalREAL
 	isBACnetOptionalREAL() bool
 }
 

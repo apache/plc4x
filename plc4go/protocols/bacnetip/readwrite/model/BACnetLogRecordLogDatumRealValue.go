@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumRealValue interface {
 // BACnetLogRecordLogDatumRealValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumRealValue.
 // This is useful for switch cases.
 type BACnetLogRecordLogDatumRealValueExactly interface {
+	BACnetLogRecordLogDatumRealValue
 	isBACnetLogRecordLogDatumRealValue() bool
 }
 

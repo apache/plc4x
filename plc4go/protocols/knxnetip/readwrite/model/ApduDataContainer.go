@@ -38,6 +38,7 @@ type ApduDataContainer interface {
 // ApduDataContainerExactly can be used when we want exactly this type and not a type which fulfills ApduDataContainer.
 // This is useful for switch cases.
 type ApduDataContainerExactly interface {
+	ApduDataContainer
 	isApduDataContainer() bool
 }
 

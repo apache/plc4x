@@ -40,6 +40,7 @@ type ModbusPDUReadCoilsRequest interface {
 // ModbusPDUReadCoilsRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadCoilsRequest.
 // This is useful for switch cases.
 type ModbusPDUReadCoilsRequestExactly interface {
+	ModbusPDUReadCoilsRequest
 	isModbusPDUReadCoilsRequest() bool
 }
 

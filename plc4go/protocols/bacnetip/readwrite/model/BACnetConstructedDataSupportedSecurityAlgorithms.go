@@ -38,6 +38,7 @@ type BACnetConstructedDataSupportedSecurityAlgorithms interface {
 // BACnetConstructedDataSupportedSecurityAlgorithmsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSupportedSecurityAlgorithms.
 // This is useful for switch cases.
 type BACnetConstructedDataSupportedSecurityAlgorithmsExactly interface {
+	BACnetConstructedDataSupportedSecurityAlgorithms
 	isBACnetConstructedDataSupportedSecurityAlgorithms() bool
 }
 

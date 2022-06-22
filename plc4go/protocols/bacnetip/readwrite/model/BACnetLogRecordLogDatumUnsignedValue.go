@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumUnsignedValue interface {
 // BACnetLogRecordLogDatumUnsignedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumUnsignedValue.
 // This is useful for switch cases.
 type BACnetLogRecordLogDatumUnsignedValueExactly interface {
+	BACnetLogRecordLogDatumUnsignedValue
 	isBACnetLogRecordLogDatumUnsignedValue() bool
 }
 

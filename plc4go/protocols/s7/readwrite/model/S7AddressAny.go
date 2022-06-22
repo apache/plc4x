@@ -49,6 +49,7 @@ type S7AddressAny interface {
 // S7AddressAnyExactly can be used when we want exactly this type and not a type which fulfills S7AddressAny.
 // This is useful for switch cases.
 type S7AddressAnyExactly interface {
+	S7AddressAny
 	isS7AddressAny() bool
 }
 

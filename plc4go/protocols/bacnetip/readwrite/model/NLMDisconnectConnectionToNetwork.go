@@ -38,6 +38,7 @@ type NLMDisconnectConnectionToNetwork interface {
 // NLMDisconnectConnectionToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMDisconnectConnectionToNetwork.
 // This is useful for switch cases.
 type NLMDisconnectConnectionToNetworkExactly interface {
+	NLMDisconnectConnectionToNetwork
 	isNLMDisconnectConnectionToNetwork() bool
 }
 

@@ -40,6 +40,7 @@ type NetworkProtocolControlInformation interface {
 // NetworkProtocolControlInformationExactly can be used when we want exactly this type and not a type which fulfills NetworkProtocolControlInformation.
 // This is useful for switch cases.
 type NetworkProtocolControlInformationExactly interface {
+	NetworkProtocolControlInformation
 	isNetworkProtocolControlInformation() bool
 }
 

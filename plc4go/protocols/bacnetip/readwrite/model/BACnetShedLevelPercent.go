@@ -38,6 +38,7 @@ type BACnetShedLevelPercent interface {
 // BACnetShedLevelPercentExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevelPercent.
 // This is useful for switch cases.
 type BACnetShedLevelPercentExactly interface {
+	BACnetShedLevelPercent
 	isBACnetShedLevelPercent() bool
 }
 

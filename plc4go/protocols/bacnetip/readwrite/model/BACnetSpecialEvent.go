@@ -41,6 +41,7 @@ type BACnetSpecialEvent interface {
 // BACnetSpecialEventExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEvent.
 // This is useful for switch cases.
 type BACnetSpecialEventExactly interface {
+	BACnetSpecialEvent
 	isBACnetSpecialEvent() bool
 }
 

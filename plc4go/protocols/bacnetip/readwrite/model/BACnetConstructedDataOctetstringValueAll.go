@@ -36,6 +36,7 @@ type BACnetConstructedDataOctetstringValueAll interface {
 // BACnetConstructedDataOctetstringValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOctetstringValueAll.
 // This is useful for switch cases.
 type BACnetConstructedDataOctetstringValueAllExactly interface {
+	BACnetConstructedDataOctetstringValueAll
 	isBACnetConstructedDataOctetstringValueAll() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataIPDHCPLeaseTimeRemaining interface {
 // BACnetConstructedDataIPDHCPLeaseTimeRemainingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPLeaseTimeRemaining.
 // This is useful for switch cases.
 type BACnetConstructedDataIPDHCPLeaseTimeRemainingExactly interface {
+	BACnetConstructedDataIPDHCPLeaseTimeRemaining
 	isBACnetConstructedDataIPDHCPLeaseTimeRemaining() bool
 }
 

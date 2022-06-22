@@ -35,6 +35,7 @@ type BACnetWeekNDay interface {
 // BACnetWeekNDayExactly can be used when we want exactly this type and not a type which fulfills BACnetWeekNDay.
 // This is useful for switch cases.
 type BACnetWeekNDayExactly interface {
+	BACnetWeekNDay
 	isBACnetWeekNDay() bool
 }
 

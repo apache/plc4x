@@ -40,6 +40,7 @@ type BACnetContextTagDouble interface {
 // BACnetContextTagDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagDouble.
 // This is useful for switch cases.
 type BACnetContextTagDoubleExactly interface {
+	BACnetContextTagDouble
 	isBACnetContextTagDouble() bool
 }
 

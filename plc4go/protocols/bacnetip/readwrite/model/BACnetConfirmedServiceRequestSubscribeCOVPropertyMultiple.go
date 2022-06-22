@@ -48,6 +48,7 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
 // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleExactly interface {
+	BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 	isBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() bool
 }
 

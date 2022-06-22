@@ -40,6 +40,7 @@ type NLMInitalizeRoutingTable interface {
 // NLMInitalizeRoutingTableExactly can be used when we want exactly this type and not a type which fulfills NLMInitalizeRoutingTable.
 // This is useful for switch cases.
 type NLMInitalizeRoutingTableExactly interface {
+	NLMInitalizeRoutingTable
 	isNLMInitalizeRoutingTable() bool
 }
 

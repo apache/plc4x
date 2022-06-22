@@ -40,6 +40,7 @@ type WritePropertyMultipleError interface {
 // WritePropertyMultipleErrorExactly can be used when we want exactly this type and not a type which fulfills WritePropertyMultipleError.
 // This is useful for switch cases.
 type WritePropertyMultipleErrorExactly interface {
+	WritePropertyMultipleError
 	isWritePropertyMultipleError() bool
 }
 

@@ -38,6 +38,7 @@ type PowerUpReply interface {
 // PowerUpReplyExactly can be used when we want exactly this type and not a type which fulfills PowerUpReply.
 // This is useful for switch cases.
 type PowerUpReplyExactly interface {
+	PowerUpReply
 	isPowerUpReply() bool
 }
 

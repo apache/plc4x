@@ -36,6 +36,7 @@ type CALReplyShort interface {
 // CALReplyShortExactly can be used when we want exactly this type and not a type which fulfills CALReplyShort.
 // This is useful for switch cases.
 type CALReplyShortExactly interface {
+	CALReplyShort
 	isCALReplyShort() bool
 }
 

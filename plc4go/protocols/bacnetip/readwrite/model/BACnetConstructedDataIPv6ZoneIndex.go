@@ -40,6 +40,7 @@ type BACnetConstructedDataIPv6ZoneIndex interface {
 // BACnetConstructedDataIPv6ZoneIndexExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6ZoneIndex.
 // This is useful for switch cases.
 type BACnetConstructedDataIPv6ZoneIndexExactly interface {
+	BACnetConstructedDataIPv6ZoneIndex
 	isBACnetConstructedDataIPv6ZoneIndex() bool
 }
 

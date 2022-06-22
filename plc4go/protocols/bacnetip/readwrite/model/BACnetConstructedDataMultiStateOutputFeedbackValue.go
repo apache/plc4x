@@ -40,6 +40,7 @@ type BACnetConstructedDataMultiStateOutputFeedbackValue interface {
 // BACnetConstructedDataMultiStateOutputFeedbackValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateOutputFeedbackValue.
 // This is useful for switch cases.
 type BACnetConstructedDataMultiStateOutputFeedbackValueExactly interface {
+	BACnetConstructedDataMultiStateOutputFeedbackValue
 	isBACnetConstructedDataMultiStateOutputFeedbackValue() bool
 }
 

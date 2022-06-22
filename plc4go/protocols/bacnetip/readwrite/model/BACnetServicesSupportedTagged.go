@@ -59,6 +59,7 @@ type BACnetServicesSupportedTagged interface {
 // BACnetServicesSupportedTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetServicesSupportedTagged.
 // This is useful for switch cases.
 type BACnetServicesSupportedTaggedExactly interface {
+	BACnetServicesSupportedTagged
 	isBACnetServicesSupportedTagged() bool
 }
 

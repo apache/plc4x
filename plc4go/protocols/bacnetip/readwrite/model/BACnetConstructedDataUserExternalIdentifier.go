@@ -40,6 +40,7 @@ type BACnetConstructedDataUserExternalIdentifier interface {
 // BACnetConstructedDataUserExternalIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserExternalIdentifier.
 // This is useful for switch cases.
 type BACnetConstructedDataUserExternalIdentifierExactly interface {
+	BACnetConstructedDataUserExternalIdentifier
 	isBACnetConstructedDataUserExternalIdentifier() bool
 }
 

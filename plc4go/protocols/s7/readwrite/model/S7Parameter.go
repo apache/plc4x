@@ -39,6 +39,7 @@ type S7Parameter interface {
 // S7ParameterExactly can be used when we want exactly this type and not a type which fulfills S7Parameter.
 // This is useful for switch cases.
 type S7ParameterExactly interface {
+	S7Parameter
 	isS7Parameter() bool
 }
 

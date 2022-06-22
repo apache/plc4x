@@ -40,6 +40,7 @@ type BACnetConstructedDataOccupancyUpperLimit interface {
 // BACnetConstructedDataOccupancyUpperLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyUpperLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataOccupancyUpperLimitExactly interface {
+	BACnetConstructedDataOccupancyUpperLimit
 	isBACnetConstructedDataOccupancyUpperLimit() bool
 }
 

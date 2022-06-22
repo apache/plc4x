@@ -42,6 +42,7 @@ type BACnetConfirmedServiceRequestVTData interface {
 // BACnetConfirmedServiceRequestVTDataExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTData.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestVTDataExactly interface {
+	BACnetConfirmedServiceRequestVTData
 	isBACnetConfirmedServiceRequestVTData() bool
 }
 

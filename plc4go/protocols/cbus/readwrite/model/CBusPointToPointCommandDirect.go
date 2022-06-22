@@ -39,6 +39,7 @@ type CBusPointToPointCommandDirect interface {
 // CBusPointToPointCommandDirectExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommandDirect.
 // This is useful for switch cases.
 type CBusPointToPointCommandDirectExactly interface {
+	CBusPointToPointCommandDirect
 	isCBusPointToPointCommandDirect() bool
 }
 

@@ -41,6 +41,7 @@ type VTCloseErrorListOfVTSessionIdentifiers interface {
 // VTCloseErrorListOfVTSessionIdentifiersExactly can be used when we want exactly this type and not a type which fulfills VTCloseErrorListOfVTSessionIdentifiers.
 // This is useful for switch cases.
 type VTCloseErrorListOfVTSessionIdentifiersExactly interface {
+	VTCloseErrorListOfVTSessionIdentifiers
 	isVTCloseErrorListOfVTSessionIdentifiers() bool
 }
 

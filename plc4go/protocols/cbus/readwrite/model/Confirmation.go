@@ -39,6 +39,7 @@ type Confirmation interface {
 // ConfirmationExactly can be used when we want exactly this type and not a type which fulfills Confirmation.
 // This is useful for switch cases.
 type ConfirmationExactly interface {
+	Confirmation
 	isConfirmation() bool
 }
 

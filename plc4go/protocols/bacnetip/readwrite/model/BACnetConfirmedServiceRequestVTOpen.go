@@ -40,6 +40,7 @@ type BACnetConfirmedServiceRequestVTOpen interface {
 // BACnetConfirmedServiceRequestVTOpenExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTOpen.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestVTOpenExactly interface {
+	BACnetConfirmedServiceRequestVTOpen
 	isBACnetConfirmedServiceRequestVTOpen() bool
 }
 

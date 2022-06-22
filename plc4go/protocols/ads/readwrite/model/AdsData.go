@@ -39,6 +39,7 @@ type AdsData interface {
 // AdsDataExactly can be used when we want exactly this type and not a type which fulfills AdsData.
 // This is useful for switch cases.
 type AdsDataExactly interface {
+	AdsData
 	isAdsData() bool
 }
 

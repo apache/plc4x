@@ -40,6 +40,7 @@ type BACnetConstructedDataLastRestartReason interface {
 // BACnetConstructedDataLastRestartReasonExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastRestartReason.
 // This is useful for switch cases.
 type BACnetConstructedDataLastRestartReasonExactly interface {
+	BACnetConstructedDataLastRestartReason
 	isBACnetConstructedDataLastRestartReason() bool
 }
 

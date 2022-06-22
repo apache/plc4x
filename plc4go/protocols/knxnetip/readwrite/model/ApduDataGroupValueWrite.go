@@ -40,6 +40,7 @@ type ApduDataGroupValueWrite interface {
 // ApduDataGroupValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueWrite.
 // This is useful for switch cases.
 type ApduDataGroupValueWriteExactly interface {
+	ApduDataGroupValueWrite
 	isApduDataGroupValueWrite() bool
 }
 

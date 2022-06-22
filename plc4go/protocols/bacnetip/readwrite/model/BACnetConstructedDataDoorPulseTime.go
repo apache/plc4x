@@ -40,6 +40,7 @@ type BACnetConstructedDataDoorPulseTime interface {
 // BACnetConstructedDataDoorPulseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorPulseTime.
 // This is useful for switch cases.
 type BACnetConstructedDataDoorPulseTimeExactly interface {
+	BACnetConstructedDataDoorPulseTime
 	isBACnetConstructedDataDoorPulseTime() bool
 }
 

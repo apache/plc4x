@@ -37,6 +37,7 @@ type ComObjectTable interface {
 // ComObjectTableExactly can be used when we want exactly this type and not a type which fulfills ComObjectTable.
 // This is useful for switch cases.
 type ComObjectTableExactly interface {
+	ComObjectTable
 	isComObjectTable() bool
 }
 

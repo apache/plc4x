@@ -40,6 +40,7 @@ type BACnetConstructedDataAccompaniment interface {
 // BACnetConstructedDataAccompanimentExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccompaniment.
 // This is useful for switch cases.
 type BACnetConstructedDataAccompanimentExactly interface {
+	BACnetConstructedDataAccompaniment
 	isBACnetConstructedDataAccompaniment() bool
 }
 

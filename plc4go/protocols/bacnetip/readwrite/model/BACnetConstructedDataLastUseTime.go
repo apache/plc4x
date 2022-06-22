@@ -40,6 +40,7 @@ type BACnetConstructedDataLastUseTime interface {
 // BACnetConstructedDataLastUseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastUseTime.
 // This is useful for switch cases.
 type BACnetConstructedDataLastUseTimeExactly interface {
+	BACnetConstructedDataLastUseTime
 	isBACnetConstructedDataLastUseTime() bool
 }
 

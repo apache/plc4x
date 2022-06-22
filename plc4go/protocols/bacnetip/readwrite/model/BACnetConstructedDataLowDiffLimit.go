@@ -40,6 +40,7 @@ type BACnetConstructedDataLowDiffLimit interface {
 // BACnetConstructedDataLowDiffLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLowDiffLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataLowDiffLimitExactly interface {
+	BACnetConstructedDataLowDiffLimit
 	isBACnetConstructedDataLowDiffLimit() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetPropertyStatesNetworkPortCommand interface {
 // BACnetPropertyStatesNetworkPortCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNetworkPortCommand.
 // This is useful for switch cases.
 type BACnetPropertyStatesNetworkPortCommandExactly interface {
+	BACnetPropertyStatesNetworkPortCommand
 	isBACnetPropertyStatesNetworkPortCommand() bool
 }
 

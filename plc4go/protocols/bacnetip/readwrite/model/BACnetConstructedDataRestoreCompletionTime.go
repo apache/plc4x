@@ -40,6 +40,7 @@ type BACnetConstructedDataRestoreCompletionTime interface {
 // BACnetConstructedDataRestoreCompletionTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestoreCompletionTime.
 // This is useful for switch cases.
 type BACnetConstructedDataRestoreCompletionTimeExactly interface {
+	BACnetConstructedDataRestoreCompletionTime
 	isBACnetConstructedDataRestoreCompletionTime() bool
 }
 

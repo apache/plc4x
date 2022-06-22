@@ -40,6 +40,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 // S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse.
 // This is useful for switch cases.
 type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseExactly interface {
+	S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
 	isS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() bool
 }
 

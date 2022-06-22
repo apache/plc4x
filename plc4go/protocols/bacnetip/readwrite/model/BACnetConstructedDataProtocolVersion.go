@@ -40,6 +40,7 @@ type BACnetConstructedDataProtocolVersion interface {
 // BACnetConstructedDataProtocolVersionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolVersion.
 // This is useful for switch cases.
 type BACnetConstructedDataProtocolVersionExactly interface {
+	BACnetConstructedDataProtocolVersion
 	isBACnetConstructedDataProtocolVersion() bool
 }
 

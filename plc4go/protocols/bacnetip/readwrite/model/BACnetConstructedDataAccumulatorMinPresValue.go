@@ -40,6 +40,7 @@ type BACnetConstructedDataAccumulatorMinPresValue interface {
 // BACnetConstructedDataAccumulatorMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorMinPresValue.
 // This is useful for switch cases.
 type BACnetConstructedDataAccumulatorMinPresValueExactly interface {
+	BACnetConstructedDataAccumulatorMinPresValue
 	isBACnetConstructedDataAccumulatorMinPresValue() bool
 }
 

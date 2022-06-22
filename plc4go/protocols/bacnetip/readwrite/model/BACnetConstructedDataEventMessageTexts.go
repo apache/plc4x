@@ -50,6 +50,7 @@ type BACnetConstructedDataEventMessageTexts interface {
 // BACnetConstructedDataEventMessageTextsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventMessageTexts.
 // This is useful for switch cases.
 type BACnetConstructedDataEventMessageTextsExactly interface {
+	BACnetConstructedDataEventMessageTexts
 	isBACnetConstructedDataEventMessageTexts() bool
 }
 

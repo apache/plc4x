@@ -43,6 +43,7 @@ type BACnetAccessCredentialDisableTagged interface {
 // BACnetAccessCredentialDisableTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessCredentialDisableTagged.
 // This is useful for switch cases.
 type BACnetAccessCredentialDisableTaggedExactly interface {
+	BACnetAccessCredentialDisableTagged
 	isBACnetAccessCredentialDisableTagged() bool
 }
 

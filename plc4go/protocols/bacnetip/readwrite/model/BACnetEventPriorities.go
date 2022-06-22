@@ -45,6 +45,7 @@ type BACnetEventPriorities interface {
 // BACnetEventPrioritiesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventPriorities.
 // This is useful for switch cases.
 type BACnetEventPrioritiesExactly interface {
+	BACnetEventPriorities
 	isBACnetEventPriorities() bool
 }
 

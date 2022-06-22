@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate interfac
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate.
 // This is useful for switch cases.
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
 	isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() bool
 }
 

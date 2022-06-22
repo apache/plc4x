@@ -41,6 +41,7 @@ type BACnetAbortReasonTagged interface {
 // BACnetAbortReasonTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAbortReasonTagged.
 // This is useful for switch cases.
 type BACnetAbortReasonTaggedExactly interface {
+	BACnetAbortReasonTagged
 	isBACnetAbortReasonTagged() bool
 }
 

@@ -41,6 +41,7 @@ type BACnetGroupChannelValueList interface {
 // BACnetGroupChannelValueListExactly can be used when we want exactly this type and not a type which fulfills BACnetGroupChannelValueList.
 // This is useful for switch cases.
 type BACnetGroupChannelValueListExactly interface {
+	BACnetGroupChannelValueList
 	isBACnetGroupChannelValueList() bool
 }
 

@@ -40,6 +40,7 @@ type COTPPacketTpduError interface {
 // COTPPacketTpduErrorExactly can be used when we want exactly this type and not a type which fulfills COTPPacketTpduError.
 // This is useful for switch cases.
 type COTPPacketTpduErrorExactly interface {
+	COTPPacketTpduError
 	isCOTPPacketTpduError() bool
 }
 

@@ -41,6 +41,7 @@ type BACnetFaultParameterFaultCharacterStringListOfFaultValues interface {
 // BACnetFaultParameterFaultCharacterStringListOfFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultCharacterStringListOfFaultValues.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultCharacterStringListOfFaultValuesExactly interface {
+	BACnetFaultParameterFaultCharacterStringListOfFaultValues
 	isBACnetFaultParameterFaultCharacterStringListOfFaultValues() bool
 }
 

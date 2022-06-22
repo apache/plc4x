@@ -36,6 +36,7 @@ type BACnetConstructedDataAccessUserAll interface {
 // BACnetConstructedDataAccessUserAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessUserAll.
 // This is useful for switch cases.
 type BACnetConstructedDataAccessUserAllExactly interface {
+	BACnetConstructedDataAccessUserAll
 	isBACnetConstructedDataAccessUserAll() bool
 }
 

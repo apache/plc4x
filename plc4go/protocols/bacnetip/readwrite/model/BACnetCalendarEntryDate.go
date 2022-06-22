@@ -38,6 +38,7 @@ type BACnetCalendarEntryDate interface {
 // BACnetCalendarEntryDateExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntryDate.
 // This is useful for switch cases.
 type BACnetCalendarEntryDateExactly interface {
+	BACnetCalendarEntryDate
 	isBACnetCalendarEntryDate() bool
 }
 

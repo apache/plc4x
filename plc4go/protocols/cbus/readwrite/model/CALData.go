@@ -39,6 +39,7 @@ type CALData interface {
 // CALDataExactly can be used when we want exactly this type and not a type which fulfills CALData.
 // This is useful for switch cases.
 type CALDataExactly interface {
+	CALData
 	isCALData() bool
 }
 

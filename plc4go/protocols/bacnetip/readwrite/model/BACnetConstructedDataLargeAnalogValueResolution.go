@@ -40,6 +40,7 @@ type BACnetConstructedDataLargeAnalogValueResolution interface {
 // BACnetConstructedDataLargeAnalogValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueResolution.
 // This is useful for switch cases.
 type BACnetConstructedDataLargeAnalogValueResolutionExactly interface {
+	BACnetConstructedDataLargeAnalogValueResolution
 	isBACnetConstructedDataLargeAnalogValueResolution() bool
 }
 

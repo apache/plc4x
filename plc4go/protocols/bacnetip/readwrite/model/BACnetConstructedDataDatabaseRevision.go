@@ -40,6 +40,7 @@ type BACnetConstructedDataDatabaseRevision interface {
 // BACnetConstructedDataDatabaseRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDatabaseRevision.
 // This is useful for switch cases.
 type BACnetConstructedDataDatabaseRevisionExactly interface {
+	BACnetConstructedDataDatabaseRevision
 	isBACnetConstructedDataDatabaseRevision() bool
 }
 

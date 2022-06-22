@@ -52,6 +52,7 @@ type MonitoredSALLongFormSmartMode interface {
 // MonitoredSALLongFormSmartModeExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALLongFormSmartMode.
 // This is useful for switch cases.
 type MonitoredSALLongFormSmartModeExactly interface {
+	MonitoredSALLongFormSmartMode
 	isMonitoredSALLongFormSmartMode() bool
 }
 

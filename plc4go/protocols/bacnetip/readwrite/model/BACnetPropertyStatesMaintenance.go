@@ -38,6 +38,7 @@ type BACnetPropertyStatesMaintenance interface {
 // BACnetPropertyStatesMaintenanceExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesMaintenance.
 // This is useful for switch cases.
 type BACnetPropertyStatesMaintenanceExactly interface {
+	BACnetPropertyStatesMaintenance
 	isBACnetPropertyStatesMaintenance() bool
 }
 

@@ -42,6 +42,7 @@ type BACnetUnconfirmedServiceRequestWhoIs interface {
 // BACnetUnconfirmedServiceRequestWhoIsExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWhoIs.
 // This is useful for switch cases.
 type BACnetUnconfirmedServiceRequestWhoIsExactly interface {
+	BACnetUnconfirmedServiceRequestWhoIs
 	isBACnetUnconfirmedServiceRequestWhoIs() bool
 }
 

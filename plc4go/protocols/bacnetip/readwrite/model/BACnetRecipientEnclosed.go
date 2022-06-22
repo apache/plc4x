@@ -41,6 +41,7 @@ type BACnetRecipientEnclosed interface {
 // BACnetRecipientEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientEnclosed.
 // This is useful for switch cases.
 type BACnetRecipientEnclosedExactly interface {
+	BACnetRecipientEnclosed
 	isBACnetRecipientEnclosed() bool
 }
 

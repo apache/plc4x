@@ -43,6 +43,7 @@ type BACnetTagPayloadObjectIdentifier interface {
 // BACnetTagPayloadObjectIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadObjectIdentifier.
 // This is useful for switch cases.
 type BACnetTagPayloadObjectIdentifierExactly interface {
+	BACnetTagPayloadObjectIdentifier
 	isBACnetTagPayloadObjectIdentifier() bool
 }
 

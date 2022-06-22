@@ -40,6 +40,7 @@ type BACnetConstructedDataLifeSafetyZonePresentValue interface {
 // BACnetConstructedDataLifeSafetyZonePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyZonePresentValue.
 // This is useful for switch cases.
 type BACnetConstructedDataLifeSafetyZonePresentValueExactly interface {
+	BACnetConstructedDataLifeSafetyZonePresentValue
 	isBACnetConstructedDataLifeSafetyZonePresentValue() bool
 }
 

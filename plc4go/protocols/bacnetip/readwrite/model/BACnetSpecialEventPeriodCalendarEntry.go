@@ -38,6 +38,7 @@ type BACnetSpecialEventPeriodCalendarEntry interface {
 // BACnetSpecialEventPeriodCalendarEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriodCalendarEntry.
 // This is useful for switch cases.
 type BACnetSpecialEventPeriodCalendarEntryExactly interface {
+	BACnetSpecialEventPeriodCalendarEntry
 	isBACnetSpecialEventPeriodCalendarEntry() bool
 }
 

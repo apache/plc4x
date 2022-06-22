@@ -40,6 +40,7 @@ type BACnetConstructedDataAPDULength interface {
 // BACnetConstructedDataAPDULengthExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDULength.
 // This is useful for switch cases.
 type BACnetConstructedDataAPDULengthExactly interface {
+	BACnetConstructedDataAPDULength
 	isBACnetConstructedDataAPDULength() bool
 }
 

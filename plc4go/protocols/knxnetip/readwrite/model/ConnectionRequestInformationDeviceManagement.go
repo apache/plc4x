@@ -36,6 +36,7 @@ type ConnectionRequestInformationDeviceManagement interface {
 // ConnectionRequestInformationDeviceManagementExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequestInformationDeviceManagement.
 // This is useful for switch cases.
 type ConnectionRequestInformationDeviceManagementExactly interface {
+	ConnectionRequestInformationDeviceManagement
 	isConnectionRequestInformationDeviceManagement() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataActiveAuthenticationPolicy interface {
 // BACnetConstructedDataActiveAuthenticationPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveAuthenticationPolicy.
 // This is useful for switch cases.
 type BACnetConstructedDataActiveAuthenticationPolicyExactly interface {
+	BACnetConstructedDataActiveAuthenticationPolicy
 	isBACnetConstructedDataActiveAuthenticationPolicy() bool
 }
 

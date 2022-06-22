@@ -44,6 +44,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer.
 // This is useful for switch cases.
 type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 	isBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer() bool
 }
 

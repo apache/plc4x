@@ -39,6 +39,7 @@ type BACnetSecurityLevelTagged interface {
 // BACnetSecurityLevelTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityLevelTagged.
 // This is useful for switch cases.
 type BACnetSecurityLevelTaggedExactly interface {
+	BACnetSecurityLevelTagged
 	isBACnetSecurityLevelTagged() bool
 }
 

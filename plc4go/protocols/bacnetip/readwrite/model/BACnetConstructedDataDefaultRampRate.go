@@ -40,6 +40,7 @@ type BACnetConstructedDataDefaultRampRate interface {
 // BACnetConstructedDataDefaultRampRateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultRampRate.
 // This is useful for switch cases.
 type BACnetConstructedDataDefaultRampRateExactly interface {
+	BACnetConstructedDataDefaultRampRate
 	isBACnetConstructedDataDefaultRampRate() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataRecordsSinceNotification interface {
 // BACnetConstructedDataRecordsSinceNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRecordsSinceNotification.
 // This is useful for switch cases.
 type BACnetConstructedDataRecordsSinceNotificationExactly interface {
+	BACnetConstructedDataRecordsSinceNotification
 	isBACnetConstructedDataRecordsSinceNotification() bool
 }
 

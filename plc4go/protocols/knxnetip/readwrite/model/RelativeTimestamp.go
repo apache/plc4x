@@ -37,6 +37,7 @@ type RelativeTimestamp interface {
 // RelativeTimestampExactly can be used when we want exactly this type and not a type which fulfills RelativeTimestamp.
 // This is useful for switch cases.
 type RelativeTimestampExactly interface {
+	RelativeTimestamp
 	isRelativeTimestamp() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataTransition interface {
 // BACnetConstructedDataTransitionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTransition.
 // This is useful for switch cases.
 type BACnetConstructedDataTransitionExactly interface {
+	BACnetConstructedDataTransition
 	isBACnetConstructedDataTransition() bool
 }
 

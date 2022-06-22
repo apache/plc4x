@@ -39,6 +39,7 @@ type BACnetUnconfirmedServiceChoiceTagged interface {
 // BACnetUnconfirmedServiceChoiceTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceChoiceTagged.
 // This is useful for switch cases.
 type BACnetUnconfirmedServiceChoiceTaggedExactly interface {
+	BACnetUnconfirmedServiceChoiceTagged
 	isBACnetUnconfirmedServiceChoiceTagged() bool
 }
 

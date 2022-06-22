@@ -43,6 +43,7 @@ type BACnetNetworkTypeTagged interface {
 // BACnetNetworkTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkTypeTagged.
 // This is useful for switch cases.
 type BACnetNetworkTypeTaggedExactly interface {
+	BACnetNetworkTypeTagged
 	isBACnetNetworkTypeTagged() bool
 }
 

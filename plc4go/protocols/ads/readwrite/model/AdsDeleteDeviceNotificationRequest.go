@@ -38,6 +38,7 @@ type AdsDeleteDeviceNotificationRequest interface {
 // AdsDeleteDeviceNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills AdsDeleteDeviceNotificationRequest.
 // This is useful for switch cases.
 type AdsDeleteDeviceNotificationRequestExactly interface {
+	AdsDeleteDeviceNotificationRequest
 	isAdsDeleteDeviceNotificationRequest() bool
 }
 

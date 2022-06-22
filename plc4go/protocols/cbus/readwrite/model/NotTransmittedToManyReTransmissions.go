@@ -36,6 +36,7 @@ type NotTransmittedToManyReTransmissions interface {
 // NotTransmittedToManyReTransmissionsExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedToManyReTransmissions.
 // This is useful for switch cases.
 type NotTransmittedToManyReTransmissionsExactly interface {
+	NotTransmittedToManyReTransmissions
 	isNotTransmittedToManyReTransmissions() bool
 }
 

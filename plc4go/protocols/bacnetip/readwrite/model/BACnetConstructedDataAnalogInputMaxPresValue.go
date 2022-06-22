@@ -40,6 +40,7 @@ type BACnetConstructedDataAnalogInputMaxPresValue interface {
 // BACnetConstructedDataAnalogInputMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogInputMaxPresValue.
 // This is useful for switch cases.
 type BACnetConstructedDataAnalogInputMaxPresValueExactly interface {
+	BACnetConstructedDataAnalogInputMaxPresValue
 	isBACnetConstructedDataAnalogInputMaxPresValue() bool
 }
 

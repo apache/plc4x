@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface 
 // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 	isBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() bool
 }
 

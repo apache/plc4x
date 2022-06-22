@@ -47,6 +47,7 @@ type AmsNetId interface {
 // AmsNetIdExactly can be used when we want exactly this type and not a type which fulfills AmsNetId.
 // This is useful for switch cases.
 type AmsNetIdExactly interface {
+	AmsNetId
 	isAmsNetId() bool
 }
 

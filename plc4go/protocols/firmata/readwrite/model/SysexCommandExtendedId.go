@@ -38,6 +38,7 @@ type SysexCommandExtendedId interface {
 // SysexCommandExtendedIdExactly can be used when we want exactly this type and not a type which fulfills SysexCommandExtendedId.
 // This is useful for switch cases.
 type SysexCommandExtendedIdExactly interface {
+	SysexCommandExtendedId
 	isSysexCommandExtendedId() bool
 }
 

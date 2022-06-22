@@ -36,6 +36,7 @@ type IdentifyReplyCommandCurrentSenseLevels interface {
 // IdentifyReplyCommandCurrentSenseLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandCurrentSenseLevels.
 // This is useful for switch cases.
 type IdentifyReplyCommandCurrentSenseLevelsExactly interface {
+	IdentifyReplyCommandCurrentSenseLevels
 	isIdentifyReplyCommandCurrentSenseLevels() bool
 }
 

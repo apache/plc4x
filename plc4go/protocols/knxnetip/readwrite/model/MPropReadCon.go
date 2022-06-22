@@ -48,6 +48,7 @@ type MPropReadCon interface {
 // MPropReadConExactly can be used when we want exactly this type and not a type which fulfills MPropReadCon.
 // This is useful for switch cases.
 type MPropReadConExactly interface {
+	MPropReadCon
 	isMPropReadCon() bool
 }
 

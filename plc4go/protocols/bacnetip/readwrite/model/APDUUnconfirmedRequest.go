@@ -39,6 +39,7 @@ type APDUUnconfirmedRequest interface {
 // APDUUnconfirmedRequestExactly can be used when we want exactly this type and not a type which fulfills APDUUnconfirmedRequest.
 // This is useful for switch cases.
 type APDUUnconfirmedRequestExactly interface {
+	APDUUnconfirmedRequest
 	isAPDUUnconfirmedRequest() bool
 }
 

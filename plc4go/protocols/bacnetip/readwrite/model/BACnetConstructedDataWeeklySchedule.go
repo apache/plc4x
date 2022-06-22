@@ -44,6 +44,7 @@ type BACnetConstructedDataWeeklySchedule interface {
 // BACnetConstructedDataWeeklyScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataWeeklySchedule.
 // This is useful for switch cases.
 type BACnetConstructedDataWeeklyScheduleExactly interface {
+	BACnetConstructedDataWeeklySchedule
 	isBACnetConstructedDataWeeklySchedule() bool
 }
 

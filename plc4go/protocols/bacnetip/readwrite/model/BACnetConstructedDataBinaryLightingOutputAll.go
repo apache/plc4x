@@ -36,6 +36,7 @@ type BACnetConstructedDataBinaryLightingOutputAll interface {
 // BACnetConstructedDataBinaryLightingOutputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryLightingOutputAll.
 // This is useful for switch cases.
 type BACnetConstructedDataBinaryLightingOutputAllExactly interface {
+	BACnetConstructedDataBinaryLightingOutputAll
 	isBACnetConstructedDataBinaryLightingOutputAll() bool
 }
 

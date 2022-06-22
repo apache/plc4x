@@ -41,6 +41,7 @@ type KnxAddress interface {
 // KnxAddressExactly can be used when we want exactly this type and not a type which fulfills KnxAddress.
 // This is useful for switch cases.
 type KnxAddressExactly interface {
+	KnxAddress
 	isKnxAddress() bool
 }
 

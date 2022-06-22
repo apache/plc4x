@@ -44,6 +44,7 @@ type BACnetConstructedDataTags interface {
 // BACnetConstructedDataTagsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTags.
 // This is useful for switch cases.
 type BACnetConstructedDataTagsExactly interface {
+	BACnetConstructedDataTags
 	isBACnetConstructedDataTags() bool
 }
 

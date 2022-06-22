@@ -40,6 +40,7 @@ type BACnetConstructedDataPolarity interface {
 // BACnetConstructedDataPolarityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPolarity.
 // This is useful for switch cases.
 type BACnetConstructedDataPolarityExactly interface {
+	BACnetConstructedDataPolarity
 	isBACnetConstructedDataPolarity() bool
 }
 

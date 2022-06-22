@@ -44,6 +44,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 // BACnetConfirmedServiceRequestDeviceCommunicationControlExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeviceCommunicationControl.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestDeviceCommunicationControlExactly interface {
+	BACnetConfirmedServiceRequestDeviceCommunicationControl
 	isBACnetConfirmedServiceRequestDeviceCommunicationControl() bool
 }
 

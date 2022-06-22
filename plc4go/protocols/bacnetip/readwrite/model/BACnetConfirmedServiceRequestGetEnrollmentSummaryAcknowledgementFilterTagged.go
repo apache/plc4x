@@ -39,6 +39,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedExactly interface {
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
 	isBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() bool
 }
 

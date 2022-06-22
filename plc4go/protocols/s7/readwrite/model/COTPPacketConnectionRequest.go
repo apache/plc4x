@@ -42,6 +42,7 @@ type COTPPacketConnectionRequest interface {
 // COTPPacketConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills COTPPacketConnectionRequest.
 // This is useful for switch cases.
 type COTPPacketConnectionRequestExactly interface {
+	COTPPacketConnectionRequest
 	isCOTPPacketConnectionRequest() bool
 }
 

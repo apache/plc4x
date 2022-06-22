@@ -38,6 +38,7 @@ type BACnetConstructedDataFailedAttemptEvents interface {
 // BACnetConstructedDataFailedAttemptEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFailedAttemptEvents.
 // This is useful for switch cases.
 type BACnetConstructedDataFailedAttemptEventsExactly interface {
+	BACnetConstructedDataFailedAttemptEvents
 	isBACnetConstructedDataFailedAttemptEvents() bool
 }
 

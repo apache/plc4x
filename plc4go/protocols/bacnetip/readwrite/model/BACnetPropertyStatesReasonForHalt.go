@@ -38,6 +38,7 @@ type BACnetPropertyStatesReasonForHalt interface {
 // BACnetPropertyStatesReasonForHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesReasonForHalt.
 // This is useful for switch cases.
 type BACnetPropertyStatesReasonForHaltExactly interface {
+	BACnetPropertyStatesReasonForHalt
 	isBACnetPropertyStatesReasonForHalt() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetPropertyStatesAccessCredentialDisableReason interface {
 // BACnetPropertyStatesAccessCredentialDisableReasonExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAccessCredentialDisableReason.
 // This is useful for switch cases.
 type BACnetPropertyStatesAccessCredentialDisableReasonExactly interface {
+	BACnetPropertyStatesAccessCredentialDisableReason
 	isBACnetPropertyStatesAccessCredentialDisableReason() bool
 }
 

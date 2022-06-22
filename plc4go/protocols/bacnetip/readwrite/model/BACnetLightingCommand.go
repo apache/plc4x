@@ -49,6 +49,7 @@ type BACnetLightingCommand interface {
 // BACnetLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetLightingCommand.
 // This is useful for switch cases.
 type BACnetLightingCommandExactly interface {
+	BACnetLightingCommand
 	isBACnetLightingCommand() bool
 }
 

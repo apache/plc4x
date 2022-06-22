@@ -41,6 +41,7 @@ type BACnetVTSession interface {
 // BACnetVTSessionExactly can be used when we want exactly this type and not a type which fulfills BACnetVTSession.
 // This is useful for switch cases.
 type BACnetVTSessionExactly interface {
+	BACnetVTSession
 	isBACnetVTSession() bool
 }
 

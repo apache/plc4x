@@ -41,6 +41,7 @@ type BACnetTimerStateChangeValue interface {
 // BACnetTimerStateChangeValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValue.
 // This is useful for switch cases.
 type BACnetTimerStateChangeValueExactly interface {
+	BACnetTimerStateChangeValue
 	isBACnetTimerStateChangeValue() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataVerificationTime interface {
 // BACnetConstructedDataVerificationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVerificationTime.
 // This is useful for switch cases.
 type BACnetConstructedDataVerificationTimeExactly interface {
+	BACnetConstructedDataVerificationTime
 	isBACnetConstructedDataVerificationTime() bool
 }
 

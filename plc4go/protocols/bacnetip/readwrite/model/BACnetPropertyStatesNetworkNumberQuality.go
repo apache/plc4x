@@ -38,6 +38,7 @@ type BACnetPropertyStatesNetworkNumberQuality interface {
 // BACnetPropertyStatesNetworkNumberQualityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNetworkNumberQuality.
 // This is useful for switch cases.
 type BACnetPropertyStatesNetworkNumberQualityExactly interface {
+	BACnetPropertyStatesNetworkNumberQuality
 	isBACnetPropertyStatesNetworkNumberQuality() bool
 }
 

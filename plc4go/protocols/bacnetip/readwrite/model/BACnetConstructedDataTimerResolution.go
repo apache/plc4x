@@ -40,6 +40,7 @@ type BACnetConstructedDataTimerResolution interface {
 // BACnetConstructedDataTimerResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerResolution.
 // This is useful for switch cases.
 type BACnetConstructedDataTimerResolutionExactly interface {
+	BACnetConstructedDataTimerResolution
 	isBACnetConstructedDataTimerResolution() bool
 }
 

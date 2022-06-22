@@ -40,6 +40,7 @@ type BACnetConstructedDataInitialTimeout interface {
 // BACnetConstructedDataInitialTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInitialTimeout.
 // This is useful for switch cases.
 type BACnetConstructedDataInitialTimeoutExactly interface {
+	BACnetConstructedDataInitialTimeout
 	isBACnetConstructedDataInitialTimeout() bool
 }
 

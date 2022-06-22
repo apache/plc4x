@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicWriteFile interface {
 // BACnetServiceAckAtomicWriteFileExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicWriteFile.
 // This is useful for switch cases.
 type BACnetServiceAckAtomicWriteFileExactly interface {
+	BACnetServiceAckAtomicWriteFile
 	isBACnetServiceAckAtomicWriteFile() bool
 }
 

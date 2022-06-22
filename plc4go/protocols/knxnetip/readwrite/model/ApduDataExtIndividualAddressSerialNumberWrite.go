@@ -36,6 +36,7 @@ type ApduDataExtIndividualAddressSerialNumberWrite interface {
 // ApduDataExtIndividualAddressSerialNumberWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtIndividualAddressSerialNumberWrite.
 // This is useful for switch cases.
 type ApduDataExtIndividualAddressSerialNumberWriteExactly interface {
+	ApduDataExtIndividualAddressSerialNumberWrite
 	isApduDataExtIndividualAddressSerialNumberWrite() bool
 }
 

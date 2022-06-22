@@ -40,6 +40,7 @@ type BACnetConstructedDataDefaultSubordinateRelationship interface {
 // BACnetConstructedDataDefaultSubordinateRelationshipExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultSubordinateRelationship.
 // This is useful for switch cases.
 type BACnetConstructedDataDefaultSubordinateRelationshipExactly interface {
+	BACnetConstructedDataDefaultSubordinateRelationship
 	isBACnetConstructedDataDefaultSubordinateRelationship() bool
 }
 

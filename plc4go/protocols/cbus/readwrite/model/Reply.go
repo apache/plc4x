@@ -37,6 +37,7 @@ type Reply interface {
 // ReplyExactly can be used when we want exactly this type and not a type which fulfills Reply.
 // This is useful for switch cases.
 type ReplyExactly interface {
+	Reply
 	isReply() bool
 }
 

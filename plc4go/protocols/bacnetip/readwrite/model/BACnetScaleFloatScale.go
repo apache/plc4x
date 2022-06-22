@@ -38,6 +38,7 @@ type BACnetScaleFloatScale interface {
 // BACnetScaleFloatScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScaleFloatScale.
 // This is useful for switch cases.
 type BACnetScaleFloatScaleExactly interface {
+	BACnetScaleFloatScale
 	isBACnetScaleFloatScale() bool
 }
 

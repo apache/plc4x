@@ -40,6 +40,7 @@ type BACnetConstructedDataBinaryLightingOutputRelinquishDefault interface {
 // BACnetConstructedDataBinaryLightingOutputRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryLightingOutputRelinquishDefault.
 // This is useful for switch cases.
 type BACnetConstructedDataBinaryLightingOutputRelinquishDefaultExactly interface {
+	BACnetConstructedDataBinaryLightingOutputRelinquishDefault
 	isBACnetConstructedDataBinaryLightingOutputRelinquishDefault() bool
 }
 

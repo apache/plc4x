@@ -40,6 +40,7 @@ type DF1UnprotectedReadRequest interface {
 // DF1UnprotectedReadRequestExactly can be used when we want exactly this type and not a type which fulfills DF1UnprotectedReadRequest.
 // This is useful for switch cases.
 type DF1UnprotectedReadRequestExactly interface {
+	DF1UnprotectedReadRequest
 	isDF1UnprotectedReadRequest() bool
 }
 

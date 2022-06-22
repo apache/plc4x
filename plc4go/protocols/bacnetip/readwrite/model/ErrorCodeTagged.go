@@ -43,6 +43,7 @@ type ErrorCodeTagged interface {
 // ErrorCodeTaggedExactly can be used when we want exactly this type and not a type which fulfills ErrorCodeTagged.
 // This is useful for switch cases.
 type ErrorCodeTaggedExactly interface {
+	ErrorCodeTagged
 	isErrorCodeTagged() bool
 }
 

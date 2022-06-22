@@ -36,6 +36,7 @@ type CIPEncapsulationConnectionRequest interface {
 // CIPEncapsulationConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationConnectionRequest.
 // This is useful for switch cases.
 type CIPEncapsulationConnectionRequestExactly interface {
+	CIPEncapsulationConnectionRequest
 	isCIPEncapsulationConnectionRequest() bool
 }
 

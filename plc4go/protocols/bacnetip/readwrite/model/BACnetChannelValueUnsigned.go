@@ -38,6 +38,7 @@ type BACnetChannelValueUnsigned interface {
 // BACnetChannelValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueUnsigned.
 // This is useful for switch cases.
 type BACnetChannelValueUnsignedExactly interface {
+	BACnetChannelValueUnsigned
 	isBACnetChannelValueUnsigned() bool
 }
 

@@ -53,6 +53,7 @@ type BACnetDaysOfWeekTagged interface {
 // BACnetDaysOfWeekTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDaysOfWeekTagged.
 // This is useful for switch cases.
 type BACnetDaysOfWeekTaggedExactly interface {
+	BACnetDaysOfWeekTagged
 	isBACnetDaysOfWeekTagged() bool
 }
 

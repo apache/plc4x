@@ -40,6 +40,7 @@ type BACnetConstructedDataProcessIdentifier interface {
 // BACnetConstructedDataProcessIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProcessIdentifier.
 // This is useful for switch cases.
 type BACnetConstructedDataProcessIdentifierExactly interface {
+	BACnetConstructedDataProcessIdentifier
 	isBACnetConstructedDataProcessIdentifier() bool
 }
 

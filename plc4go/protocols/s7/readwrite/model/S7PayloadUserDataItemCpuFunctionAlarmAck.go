@@ -40,6 +40,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmAck interface {
 // S7PayloadUserDataItemCpuFunctionAlarmAckExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmAck.
 // This is useful for switch cases.
 type S7PayloadUserDataItemCpuFunctionAlarmAckExactly interface {
+	S7PayloadUserDataItemCpuFunctionAlarmAck
 	isS7PayloadUserDataItemCpuFunctionAlarmAck() bool
 }
 

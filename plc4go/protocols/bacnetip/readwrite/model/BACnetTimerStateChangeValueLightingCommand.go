@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueLightingCommand interface {
 // BACnetTimerStateChangeValueLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueLightingCommand.
 // This is useful for switch cases.
 type BACnetTimerStateChangeValueLightingCommandExactly interface {
+	BACnetTimerStateChangeValueLightingCommand
 	isBACnetTimerStateChangeValueLightingCommand() bool
 }
 

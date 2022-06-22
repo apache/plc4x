@@ -38,6 +38,7 @@ type BACnetConstructedDataDateList interface {
 // BACnetConstructedDataDateListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDateList.
 // This is useful for switch cases.
 type BACnetConstructedDataDateListExactly interface {
+	BACnetConstructedDataDateList
 	isBACnetConstructedDataDateList() bool
 }
 

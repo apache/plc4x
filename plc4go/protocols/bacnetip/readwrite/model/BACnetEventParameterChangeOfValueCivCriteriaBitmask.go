@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
 // BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteriaBitmask.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly interface {
+	BACnetEventParameterChangeOfValueCivCriteriaBitmask
 	isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool
 }
 

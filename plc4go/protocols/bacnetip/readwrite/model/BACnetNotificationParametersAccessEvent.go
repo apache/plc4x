@@ -54,6 +54,7 @@ type BACnetNotificationParametersAccessEvent interface {
 // BACnetNotificationParametersAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersAccessEvent.
 // This is useful for switch cases.
 type BACnetNotificationParametersAccessEventExactly interface {
+	BACnetNotificationParametersAccessEvent
 	isBACnetNotificationParametersAccessEvent() bool
 }
 

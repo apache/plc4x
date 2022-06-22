@@ -43,6 +43,7 @@ type ModbusPDUWriteFileRecordRequestItem interface {
 // ModbusPDUWriteFileRecordRequestItemExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteFileRecordRequestItem.
 // This is useful for switch cases.
 type ModbusPDUWriteFileRecordRequestItemExactly interface {
+	ModbusPDUWriteFileRecordRequestItem
 	isModbusPDUWriteFileRecordRequestItem() bool
 }
 

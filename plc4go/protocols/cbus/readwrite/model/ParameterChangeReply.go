@@ -38,6 +38,7 @@ type ParameterChangeReply interface {
 // ParameterChangeReplyExactly can be used when we want exactly this type and not a type which fulfills ParameterChangeReply.
 // This is useful for switch cases.
 type ParameterChangeReplyExactly interface {
+	ParameterChangeReply
 	isParameterChangeReply() bool
 }
 

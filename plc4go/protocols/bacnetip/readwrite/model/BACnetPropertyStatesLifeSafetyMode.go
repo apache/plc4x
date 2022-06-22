@@ -38,6 +38,7 @@ type BACnetPropertyStatesLifeSafetyMode interface {
 // BACnetPropertyStatesLifeSafetyModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLifeSafetyMode.
 // This is useful for switch cases.
 type BACnetPropertyStatesLifeSafetyModeExactly interface {
+	BACnetPropertyStatesLifeSafetyMode
 	isBACnetPropertyStatesLifeSafetyMode() bool
 }
 

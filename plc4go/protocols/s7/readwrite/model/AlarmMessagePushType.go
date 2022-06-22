@@ -43,6 +43,7 @@ type AlarmMessagePushType interface {
 // AlarmMessagePushTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessagePushType.
 // This is useful for switch cases.
 type AlarmMessagePushTypeExactly interface {
+	AlarmMessagePushType
 	isAlarmMessagePushType() bool
 }
 

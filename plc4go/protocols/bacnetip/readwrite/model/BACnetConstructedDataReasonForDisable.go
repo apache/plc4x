@@ -38,6 +38,7 @@ type BACnetConstructedDataReasonForDisable interface {
 // BACnetConstructedDataReasonForDisableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReasonForDisable.
 // This is useful for switch cases.
 type BACnetConstructedDataReasonForDisableExactly interface {
+	BACnetConstructedDataReasonForDisable
 	isBACnetConstructedDataReasonForDisable() bool
 }
 

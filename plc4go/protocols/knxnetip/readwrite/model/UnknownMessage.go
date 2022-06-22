@@ -38,6 +38,7 @@ type UnknownMessage interface {
 // UnknownMessageExactly can be used when we want exactly this type and not a type which fulfills UnknownMessage.
 // This is useful for switch cases.
 type UnknownMessageExactly interface {
+	UnknownMessage
 	isUnknownMessage() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataAccessEventTag interface {
 // BACnetConstructedDataAccessEventTagExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEventTag.
 // This is useful for switch cases.
 type BACnetConstructedDataAccessEventTagExactly interface {
+	BACnetConstructedDataAccessEventTag
 	isBACnetConstructedDataAccessEventTag() bool
 }
 

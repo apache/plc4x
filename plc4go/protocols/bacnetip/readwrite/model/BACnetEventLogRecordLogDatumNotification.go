@@ -42,6 +42,7 @@ type BACnetEventLogRecordLogDatumNotification interface {
 // BACnetEventLogRecordLogDatumNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecordLogDatumNotification.
 // This is useful for switch cases.
 type BACnetEventLogRecordLogDatumNotificationExactly interface {
+	BACnetEventLogRecordLogDatumNotification
 	isBACnetEventLogRecordLogDatumNotification() bool
 }
 

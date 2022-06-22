@@ -38,6 +38,7 @@ type BACnetScaleIntegerScale interface {
 // BACnetScaleIntegerScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScaleIntegerScale.
 // This is useful for switch cases.
 type BACnetScaleIntegerScaleExactly interface {
+	BACnetScaleIntegerScale
 	isBACnetScaleIntegerScale() bool
 }
 

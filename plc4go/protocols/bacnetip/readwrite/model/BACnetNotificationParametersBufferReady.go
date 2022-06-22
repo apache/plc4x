@@ -46,6 +46,7 @@ type BACnetNotificationParametersBufferReady interface {
 // BACnetNotificationParametersBufferReadyExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersBufferReady.
 // This is useful for switch cases.
 type BACnetNotificationParametersBufferReadyExactly interface {
+	BACnetNotificationParametersBufferReady
 	isBACnetNotificationParametersBufferReady() bool
 }
 

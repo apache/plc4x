@@ -38,6 +38,7 @@ type BACnetConstructedDataLiftFaultSignals interface {
 // BACnetConstructedDataLiftFaultSignalsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLiftFaultSignals.
 // This is useful for switch cases.
 type BACnetConstructedDataLiftFaultSignalsExactly interface {
+	BACnetConstructedDataLiftFaultSignals
 	isBACnetConstructedDataLiftFaultSignals() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessTransactionEvents interface {
 // BACnetConstructedDataAccessTransactionEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessTransactionEvents.
 // This is useful for switch cases.
 type BACnetConstructedDataAccessTransactionEventsExactly interface {
+	BACnetConstructedDataAccessTransactionEvents
 	isBACnetConstructedDataAccessTransactionEvents() bool
 }
 

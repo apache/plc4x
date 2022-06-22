@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterResponse interface {
 // ApduDataExtNetworkParameterResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtNetworkParameterResponse.
 // This is useful for switch cases.
 type ApduDataExtNetworkParameterResponseExactly interface {
+	ApduDataExtNetworkParameterResponse
 	isApduDataExtNetworkParameterResponse() bool
 }
 

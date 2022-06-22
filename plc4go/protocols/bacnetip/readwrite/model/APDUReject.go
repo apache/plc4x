@@ -41,6 +41,7 @@ type APDUReject interface {
 // APDURejectExactly can be used when we want exactly this type and not a type which fulfills APDUReject.
 // This is useful for switch cases.
 type APDURejectExactly interface {
+	APDUReject
 	isAPDUReject() bool
 }
 

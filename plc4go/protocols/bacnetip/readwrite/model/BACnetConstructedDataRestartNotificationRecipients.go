@@ -38,6 +38,7 @@ type BACnetConstructedDataRestartNotificationRecipients interface {
 // BACnetConstructedDataRestartNotificationRecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestartNotificationRecipients.
 // This is useful for switch cases.
 type BACnetConstructedDataRestartNotificationRecipientsExactly interface {
+	BACnetConstructedDataRestartNotificationRecipients
 	isBACnetConstructedDataRestartNotificationRecipients() bool
 }
 

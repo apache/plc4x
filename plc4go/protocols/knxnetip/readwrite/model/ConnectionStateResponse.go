@@ -40,6 +40,7 @@ type ConnectionStateResponse interface {
 // ConnectionStateResponseExactly can be used when we want exactly this type and not a type which fulfills ConnectionStateResponse.
 // This is useful for switch cases.
 type ConnectionStateResponseExactly interface {
+	ConnectionStateResponse
 	isConnectionStateResponse() bool
 }
 

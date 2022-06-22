@@ -38,6 +38,7 @@ type BACnetOptionalUnsignedNull interface {
 // BACnetOptionalUnsignedNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsignedNull.
 // This is useful for switch cases.
 type BACnetOptionalUnsignedNullExactly interface {
+	BACnetOptionalUnsignedNull
 	isBACnetOptionalUnsignedNull() bool
 }
 

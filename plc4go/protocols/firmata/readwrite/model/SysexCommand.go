@@ -39,6 +39,7 @@ type SysexCommand interface {
 // SysexCommandExactly can be used when we want exactly this type and not a type which fulfills SysexCommand.
 // This is useful for switch cases.
 type SysexCommandExactly interface {
+	SysexCommand
 	isSysexCommand() bool
 }
 

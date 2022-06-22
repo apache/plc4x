@@ -38,6 +38,7 @@ type BACnetChannelValueCharacterString interface {
 // BACnetChannelValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueCharacterString.
 // This is useful for switch cases.
 type BACnetChannelValueCharacterStringExactly interface {
+	BACnetChannelValueCharacterString
 	isBACnetChannelValueCharacterString() bool
 }
 

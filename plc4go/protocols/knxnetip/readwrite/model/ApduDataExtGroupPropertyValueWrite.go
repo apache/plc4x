@@ -36,6 +36,7 @@ type ApduDataExtGroupPropertyValueWrite interface {
 // ApduDataExtGroupPropertyValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtGroupPropertyValueWrite.
 // This is useful for switch cases.
 type ApduDataExtGroupPropertyValueWriteExactly interface {
+	ApduDataExtGroupPropertyValueWrite
 	isApduDataExtGroupPropertyValueWrite() bool
 }
 

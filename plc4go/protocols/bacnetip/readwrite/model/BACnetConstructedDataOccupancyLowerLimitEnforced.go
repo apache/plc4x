@@ -40,6 +40,7 @@ type BACnetConstructedDataOccupancyLowerLimitEnforced interface {
 // BACnetConstructedDataOccupancyLowerLimitEnforcedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyLowerLimitEnforced.
 // This is useful for switch cases.
 type BACnetConstructedDataOccupancyLowerLimitEnforcedExactly interface {
+	BACnetConstructedDataOccupancyLowerLimitEnforced
 	isBACnetConstructedDataOccupancyLowerLimitEnforced() bool
 }
 

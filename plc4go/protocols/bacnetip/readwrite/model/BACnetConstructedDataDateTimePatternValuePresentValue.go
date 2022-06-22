@@ -40,6 +40,7 @@ type BACnetConstructedDataDateTimePatternValuePresentValue interface {
 // BACnetConstructedDataDateTimePatternValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDateTimePatternValuePresentValue.
 // This is useful for switch cases.
 type BACnetConstructedDataDateTimePatternValuePresentValueExactly interface {
+	BACnetConstructedDataDateTimePatternValuePresentValue
 	isBACnetConstructedDataDateTimePatternValuePresentValue() bool
 }
 

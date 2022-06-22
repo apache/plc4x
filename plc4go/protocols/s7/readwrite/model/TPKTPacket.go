@@ -42,6 +42,7 @@ type TPKTPacket interface {
 // TPKTPacketExactly can be used when we want exactly this type and not a type which fulfills TPKTPacket.
 // This is useful for switch cases.
 type TPKTPacketExactly interface {
+	TPKTPacket
 	isTPKTPacket() bool
 }
 

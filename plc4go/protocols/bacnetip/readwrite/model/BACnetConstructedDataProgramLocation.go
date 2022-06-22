@@ -40,6 +40,7 @@ type BACnetConstructedDataProgramLocation interface {
 // BACnetConstructedDataProgramLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProgramLocation.
 // This is useful for switch cases.
 type BACnetConstructedDataProgramLocationExactly interface {
+	BACnetConstructedDataProgramLocation
 	isBACnetConstructedDataProgramLocation() bool
 }
 

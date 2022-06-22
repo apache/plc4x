@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryOctetString interface {
 // BACnetFaultParameterFaultExtendedParametersEntryOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryOctetString.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedParametersEntryOctetStringExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryOctetString
 	isBACnetFaultParameterFaultExtendedParametersEntryOctetString() bool
 }
 

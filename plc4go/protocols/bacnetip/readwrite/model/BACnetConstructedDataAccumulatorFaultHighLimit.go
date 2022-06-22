@@ -40,6 +40,7 @@ type BACnetConstructedDataAccumulatorFaultHighLimit interface {
 // BACnetConstructedDataAccumulatorFaultHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorFaultHighLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataAccumulatorFaultHighLimitExactly interface {
+	BACnetConstructedDataAccumulatorFaultHighLimit
 	isBACnetConstructedDataAccumulatorFaultHighLimit() bool
 }
 

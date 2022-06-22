@@ -40,6 +40,7 @@ type BACnetConstructedDataRequestedUpdateInterval interface {
 // BACnetConstructedDataRequestedUpdateIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRequestedUpdateInterval.
 // This is useful for switch cases.
 type BACnetConstructedDataRequestedUpdateIntervalExactly interface {
+	BACnetConstructedDataRequestedUpdateInterval
 	isBACnetConstructedDataRequestedUpdateInterval() bool
 }
 

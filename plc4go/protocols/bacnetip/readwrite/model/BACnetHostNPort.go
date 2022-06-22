@@ -39,6 +39,7 @@ type BACnetHostNPort interface {
 // BACnetHostNPortExactly can be used when we want exactly this type and not a type which fulfills BACnetHostNPort.
 // This is useful for switch cases.
 type BACnetHostNPortExactly interface {
+	BACnetHostNPort
 	isBACnetHostNPort() bool
 }
 

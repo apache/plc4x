@@ -45,6 +45,7 @@ type BACnetRouterEntry interface {
 // BACnetRouterEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetRouterEntry.
 // This is useful for switch cases.
 type BACnetRouterEntryExactly interface {
+	BACnetRouterEntry
 	isBACnetRouterEntry() bool
 }
 

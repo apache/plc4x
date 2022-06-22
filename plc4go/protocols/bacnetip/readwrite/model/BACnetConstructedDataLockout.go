@@ -40,6 +40,7 @@ type BACnetConstructedDataLockout interface {
 // BACnetConstructedDataLockoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLockout.
 // This is useful for switch cases.
 type BACnetConstructedDataLockoutExactly interface {
+	BACnetConstructedDataLockout
 	isBACnetConstructedDataLockout() bool
 }
 

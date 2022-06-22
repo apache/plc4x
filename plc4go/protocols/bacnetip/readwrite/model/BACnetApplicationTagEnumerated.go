@@ -40,6 +40,7 @@ type BACnetApplicationTagEnumerated interface {
 // BACnetApplicationTagEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagEnumerated.
 // This is useful for switch cases.
 type BACnetApplicationTagEnumeratedExactly interface {
+	BACnetApplicationTagEnumerated
 	isBACnetApplicationTagEnumerated() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataChangeOfStateTime interface {
 // BACnetConstructedDataChangeOfStateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangeOfStateTime.
 // This is useful for switch cases.
 type BACnetConstructedDataChangeOfStateTimeExactly interface {
+	BACnetConstructedDataChangeOfStateTime
 	isBACnetConstructedDataChangeOfStateTime() bool
 }
 

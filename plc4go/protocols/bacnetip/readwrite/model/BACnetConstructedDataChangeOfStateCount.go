@@ -40,6 +40,7 @@ type BACnetConstructedDataChangeOfStateCount interface {
 // BACnetConstructedDataChangeOfStateCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangeOfStateCount.
 // This is useful for switch cases.
 type BACnetConstructedDataChangeOfStateCountExactly interface {
+	BACnetConstructedDataChangeOfStateCount
 	isBACnetConstructedDataChangeOfStateCount() bool
 }
 

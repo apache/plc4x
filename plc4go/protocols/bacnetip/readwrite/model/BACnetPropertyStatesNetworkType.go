@@ -38,6 +38,7 @@ type BACnetPropertyStatesNetworkType interface {
 // BACnetPropertyStatesNetworkTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNetworkType.
 // This is useful for switch cases.
 type BACnetPropertyStatesNetworkTypeExactly interface {
+	BACnetPropertyStatesNetworkType
 	isBACnetPropertyStatesNetworkType() bool
 }
 

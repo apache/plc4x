@@ -42,6 +42,7 @@ type ModbusPDUWriteMultipleCoilsRequest interface {
 // ModbusPDUWriteMultipleCoilsRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleCoilsRequest.
 // This is useful for switch cases.
 type ModbusPDUWriteMultipleCoilsRequestExactly interface {
+	ModbusPDUWriteMultipleCoilsRequest
 	isModbusPDUWriteMultipleCoilsRequest() bool
 }
 

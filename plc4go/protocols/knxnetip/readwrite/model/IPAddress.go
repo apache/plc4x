@@ -37,6 +37,7 @@ type IPAddress interface {
 // IPAddressExactly can be used when we want exactly this type and not a type which fulfills IPAddress.
 // This is useful for switch cases.
 type IPAddressExactly interface {
+	IPAddress
 	isIPAddress() bool
 }
 

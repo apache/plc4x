@@ -36,6 +36,7 @@ type ApduDataExtKeyResponse interface {
 // ApduDataExtKeyResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtKeyResponse.
 // This is useful for switch cases.
 type ApduDataExtKeyResponseExactly interface {
+	ApduDataExtKeyResponse
 	isApduDataExtKeyResponse() bool
 }
 

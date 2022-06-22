@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestVTClose interface {
 // BACnetConfirmedServiceRequestVTCloseExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTClose.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestVTCloseExactly interface {
+	BACnetConfirmedServiceRequestVTClose
 	isBACnetConfirmedServiceRequestVTClose() bool
 }
 

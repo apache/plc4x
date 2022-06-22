@@ -42,6 +42,7 @@ type BACnetContextTagBoolean interface {
 // BACnetContextTagBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagBoolean.
 // This is useful for switch cases.
 type BACnetContextTagBooleanExactly interface {
+	BACnetContextTagBoolean
 	isBACnetContextTagBoolean() bool
 }
 

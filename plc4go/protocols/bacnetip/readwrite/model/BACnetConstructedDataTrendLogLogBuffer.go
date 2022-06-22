@@ -38,6 +38,7 @@ type BACnetConstructedDataTrendLogLogBuffer interface {
 // BACnetConstructedDataTrendLogLogBufferExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogLogBuffer.
 // This is useful for switch cases.
 type BACnetConstructedDataTrendLogLogBufferExactly interface {
+	BACnetConstructedDataTrendLogLogBuffer
 	isBACnetConstructedDataTrendLogLogBuffer() bool
 }
 

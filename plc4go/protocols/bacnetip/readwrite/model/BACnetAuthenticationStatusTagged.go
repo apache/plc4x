@@ -39,6 +39,7 @@ type BACnetAuthenticationStatusTagged interface {
 // BACnetAuthenticationStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationStatusTagged.
 // This is useful for switch cases.
 type BACnetAuthenticationStatusTaggedExactly interface {
+	BACnetAuthenticationStatusTagged
 	isBACnetAuthenticationStatusTagged() bool
 }
 

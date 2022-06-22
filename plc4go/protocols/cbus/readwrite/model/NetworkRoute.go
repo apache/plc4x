@@ -39,6 +39,7 @@ type NetworkRoute interface {
 // NetworkRouteExactly can be used when we want exactly this type and not a type which fulfills NetworkRoute.
 // This is useful for switch cases.
 type NetworkRouteExactly interface {
+	NetworkRoute
 	isNetworkRoute() bool
 }
 

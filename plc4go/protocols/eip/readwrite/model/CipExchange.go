@@ -43,6 +43,7 @@ type CipExchange interface {
 // CipExchangeExactly can be used when we want exactly this type and not a type which fulfills CipExchange.
 // This is useful for switch cases.
 type CipExchangeExactly interface {
+	CipExchange
 	isCipExchange() bool
 }
 

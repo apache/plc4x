@@ -44,6 +44,7 @@ type BACnetConstructedDataMakingCarCall interface {
 // BACnetConstructedDataMakingCarCallExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMakingCarCall.
 // This is useful for switch cases.
 type BACnetConstructedDataMakingCarCallExactly interface {
+	BACnetConstructedDataMakingCarCall
 	isBACnetConstructedDataMakingCarCall() bool
 }
 

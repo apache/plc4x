@@ -38,6 +38,7 @@ type BACnetConstructedDataSlaveAddressBinding interface {
 // BACnetConstructedDataSlaveAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSlaveAddressBinding.
 // This is useful for switch cases.
 type BACnetConstructedDataSlaveAddressBindingExactly interface {
+	BACnetConstructedDataSlaveAddressBinding
 	isBACnetConstructedDataSlaveAddressBinding() bool
 }
 

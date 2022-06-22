@@ -40,6 +40,7 @@ type BACnetConstructedDataTimerRunning interface {
 // BACnetConstructedDataTimerRunningExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerRunning.
 // This is useful for switch cases.
 type BACnetConstructedDataTimerRunningExactly interface {
+	BACnetConstructedDataTimerRunning
 	isBACnetConstructedDataTimerRunning() bool
 }
 

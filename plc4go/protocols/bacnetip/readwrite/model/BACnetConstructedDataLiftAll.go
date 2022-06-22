@@ -36,6 +36,7 @@ type BACnetConstructedDataLiftAll interface {
 // BACnetConstructedDataLiftAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLiftAll.
 // This is useful for switch cases.
 type BACnetConstructedDataLiftAllExactly interface {
+	BACnetConstructedDataLiftAll
 	isBACnetConstructedDataLiftAll() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataActualShedLevel interface {
 // BACnetConstructedDataActualShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActualShedLevel.
 // This is useful for switch cases.
 type BACnetConstructedDataActualShedLevelExactly interface {
+	BACnetConstructedDataActualShedLevel
 	isBACnetConstructedDataActualShedLevel() bool
 }
 

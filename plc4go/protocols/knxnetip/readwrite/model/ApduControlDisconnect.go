@@ -36,6 +36,7 @@ type ApduControlDisconnect interface {
 // ApduControlDisconnectExactly can be used when we want exactly this type and not a type which fulfills ApduControlDisconnect.
 // This is useful for switch cases.
 type ApduControlDisconnectExactly interface {
+	ApduControlDisconnect
 	isApduControlDisconnect() bool
 }
 

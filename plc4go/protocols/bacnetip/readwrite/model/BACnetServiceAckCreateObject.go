@@ -38,6 +38,7 @@ type BACnetServiceAckCreateObject interface {
 // BACnetServiceAckCreateObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckCreateObject.
 // This is useful for switch cases.
 type BACnetServiceAckCreateObjectExactly interface {
+	BACnetServiceAckCreateObject
 	isBACnetServiceAckCreateObject() bool
 }
 

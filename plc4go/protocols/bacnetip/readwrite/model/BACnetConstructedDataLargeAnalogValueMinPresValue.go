@@ -40,6 +40,7 @@ type BACnetConstructedDataLargeAnalogValueMinPresValue interface {
 // BACnetConstructedDataLargeAnalogValueMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueMinPresValue.
 // This is useful for switch cases.
 type BACnetConstructedDataLargeAnalogValueMinPresValueExactly interface {
+	BACnetConstructedDataLargeAnalogValueMinPresValue
 	isBACnetConstructedDataLargeAnalogValueMinPresValue() bool
 }
 

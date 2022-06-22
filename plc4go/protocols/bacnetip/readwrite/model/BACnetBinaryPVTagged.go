@@ -39,6 +39,7 @@ type BACnetBinaryPVTagged interface {
 // BACnetBinaryPVTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetBinaryPVTagged.
 // This is useful for switch cases.
 type BACnetBinaryPVTaggedExactly interface {
+	BACnetBinaryPVTagged
 	isBACnetBinaryPVTagged() bool
 }
 

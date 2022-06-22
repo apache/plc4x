@@ -39,6 +39,7 @@ type BACnetFileAccessMethodTagged interface {
 // BACnetFileAccessMethodTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetFileAccessMethodTagged.
 // This is useful for switch cases.
 type BACnetFileAccessMethodTaggedExactly interface {
+	BACnetFileAccessMethodTagged
 	isBACnetFileAccessMethodTagged() bool
 }
 

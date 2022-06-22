@@ -50,6 +50,7 @@ type BACnetEventParameterFloatingLimit interface {
 // BACnetEventParameterFloatingLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterFloatingLimit.
 // This is useful for switch cases.
 type BACnetEventParameterFloatingLimitExactly interface {
+	BACnetEventParameterFloatingLimit
 	isBACnetEventParameterFloatingLimit() bool
 }
 

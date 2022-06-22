@@ -46,6 +46,7 @@ type BACnetEventParameterChangeOfBitstring interface {
 // BACnetEventParameterChangeOfBitstringExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfBitstring.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfBitstringExactly interface {
+	BACnetEventParameterChangeOfBitstring
 	isBACnetEventParameterChangeOfBitstring() bool
 }
 

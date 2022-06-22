@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated interfa
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated.
 // This is useful for switch cases.
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
 	isBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() bool
 }
 

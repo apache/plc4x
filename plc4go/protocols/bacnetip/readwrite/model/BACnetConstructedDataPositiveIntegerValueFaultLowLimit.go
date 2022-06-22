@@ -40,6 +40,7 @@ type BACnetConstructedDataPositiveIntegerValueFaultLowLimit interface {
 // BACnetConstructedDataPositiveIntegerValueFaultLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueFaultLowLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataPositiveIntegerValueFaultLowLimitExactly interface {
+	BACnetConstructedDataPositiveIntegerValueFaultLowLimit
 	isBACnetConstructedDataPositiveIntegerValueFaultLowLimit() bool
 }
 

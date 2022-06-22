@@ -44,6 +44,7 @@ type BACnetConstructedDataExceptionSchedule interface {
 // BACnetConstructedDataExceptionScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExceptionSchedule.
 // This is useful for switch cases.
 type BACnetConstructedDataExceptionScheduleExactly interface {
+	BACnetConstructedDataExceptionSchedule
 	isBACnetConstructedDataExceptionSchedule() bool
 }
 

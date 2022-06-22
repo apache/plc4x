@@ -36,6 +36,7 @@ type BACnetConstructedDataLoadControlAll interface {
 // BACnetConstructedDataLoadControlAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoadControlAll.
 // This is useful for switch cases.
 type BACnetConstructedDataLoadControlAllExactly interface {
+	BACnetConstructedDataLoadControlAll
 	isBACnetConstructedDataLoadControlAll() bool
 }
 

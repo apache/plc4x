@@ -40,6 +40,7 @@ type BACnetConstructedDataObjectName interface {
 // BACnetConstructedDataObjectNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataObjectName.
 // This is useful for switch cases.
 type BACnetConstructedDataObjectNameExactly interface {
+	BACnetConstructedDataObjectName
 	isBACnetConstructedDataObjectName() bool
 }
 

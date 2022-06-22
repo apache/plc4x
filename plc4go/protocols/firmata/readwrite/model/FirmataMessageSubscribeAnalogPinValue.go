@@ -41,6 +41,7 @@ type FirmataMessageSubscribeAnalogPinValue interface {
 // FirmataMessageSubscribeAnalogPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageSubscribeAnalogPinValue.
 // This is useful for switch cases.
 type FirmataMessageSubscribeAnalogPinValueExactly interface {
+	FirmataMessageSubscribeAnalogPinValue
 	isFirmataMessageSubscribeAnalogPinValue() bool
 }
 

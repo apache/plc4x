@@ -38,6 +38,7 @@ type IdentifyReplyCommandManufacturer interface {
 // IdentifyReplyCommandManufacturerExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandManufacturer.
 // This is useful for switch cases.
 type IdentifyReplyCommandManufacturerExactly interface {
+	IdentifyReplyCommandManufacturer
 	isIdentifyReplyCommandManufacturer() bool
 }
 

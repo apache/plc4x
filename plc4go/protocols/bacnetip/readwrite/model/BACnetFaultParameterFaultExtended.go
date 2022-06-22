@@ -46,6 +46,7 @@ type BACnetFaultParameterFaultExtended interface {
 // BACnetFaultParameterFaultExtendedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtended.
 // This is useful for switch cases.
 type BACnetFaultParameterFaultExtendedExactly interface {
+	BACnetFaultParameterFaultExtended
 	isBACnetFaultParameterFaultExtended() bool
 }
 

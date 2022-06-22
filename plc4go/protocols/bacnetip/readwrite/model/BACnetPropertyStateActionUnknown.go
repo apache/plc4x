@@ -38,6 +38,7 @@ type BACnetPropertyStateActionUnknown interface {
 // BACnetPropertyStateActionUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStateActionUnknown.
 // This is useful for switch cases.
 type BACnetPropertyStateActionUnknownExactly interface {
+	BACnetPropertyStateActionUnknown
 	isBACnetPropertyStateActionUnknown() bool
 }
 

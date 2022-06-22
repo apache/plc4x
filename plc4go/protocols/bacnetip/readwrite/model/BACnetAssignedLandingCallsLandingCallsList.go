@@ -41,6 +41,7 @@ type BACnetAssignedLandingCallsLandingCallsList interface {
 // BACnetAssignedLandingCallsLandingCallsListExactly can be used when we want exactly this type and not a type which fulfills BACnetAssignedLandingCallsLandingCallsList.
 // This is useful for switch cases.
 type BACnetAssignedLandingCallsLandingCallsListExactly interface {
+	BACnetAssignedLandingCallsLandingCallsList
 	isBACnetAssignedLandingCallsLandingCallsList() bool
 }
 

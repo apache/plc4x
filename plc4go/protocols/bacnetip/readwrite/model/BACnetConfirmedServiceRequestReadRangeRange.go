@@ -43,6 +43,7 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 // BACnetConfirmedServiceRequestReadRangeRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRange.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestReadRangeRangeExactly interface {
+	BACnetConfirmedServiceRequestReadRangeRange
 	isBACnetConfirmedServiceRequestReadRangeRange() bool
 }
 

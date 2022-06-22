@@ -41,6 +41,7 @@ type BACnetEventParameterChangeOfStateListOfValues interface {
 // BACnetEventParameterChangeOfStateListOfValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfStateListOfValues.
 // This is useful for switch cases.
 type BACnetEventParameterChangeOfStateListOfValuesExactly interface {
+	BACnetEventParameterChangeOfStateListOfValues
 	isBACnetEventParameterChangeOfStateListOfValues() bool
 }
 

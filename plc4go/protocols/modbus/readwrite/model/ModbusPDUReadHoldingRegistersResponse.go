@@ -38,6 +38,7 @@ type ModbusPDUReadHoldingRegistersResponse interface {
 // ModbusPDUReadHoldingRegistersResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadHoldingRegistersResponse.
 // This is useful for switch cases.
 type ModbusPDUReadHoldingRegistersResponseExactly interface {
+	ModbusPDUReadHoldingRegistersResponse
 	isModbusPDUReadHoldingRegistersResponse() bool
 }
 

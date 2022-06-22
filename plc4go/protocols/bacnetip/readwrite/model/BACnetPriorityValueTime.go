@@ -38,6 +38,7 @@ type BACnetPriorityValueTime interface {
 // BACnetPriorityValueTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueTime.
 // This is useful for switch cases.
 type BACnetPriorityValueTimeExactly interface {
+	BACnetPriorityValueTime
 	isBACnetPriorityValueTime() bool
 }
 

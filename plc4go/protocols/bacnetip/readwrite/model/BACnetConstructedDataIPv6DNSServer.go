@@ -44,6 +44,7 @@ type BACnetConstructedDataIPv6DNSServer interface {
 // BACnetConstructedDataIPv6DNSServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DNSServer.
 // This is useful for switch cases.
 type BACnetConstructedDataIPv6DNSServerExactly interface {
+	BACnetConstructedDataIPv6DNSServer
 	isBACnetConstructedDataIPv6DNSServer() bool
 }
 

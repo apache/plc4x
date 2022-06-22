@@ -42,6 +42,7 @@ type LDataReq interface {
 // LDataReqExactly can be used when we want exactly this type and not a type which fulfills LDataReq.
 // This is useful for switch cases.
 type LDataReqExactly interface {
+	LDataReq
 	isLDataReq() bool
 }
 

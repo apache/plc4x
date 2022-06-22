@@ -38,6 +38,7 @@ type BACnetPropertyStatesEscalatorFault interface {
 // BACnetPropertyStatesEscalatorFaultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEscalatorFault.
 // This is useful for switch cases.
 type BACnetPropertyStatesEscalatorFaultExactly interface {
+	BACnetPropertyStatesEscalatorFault
 	isBACnetPropertyStatesEscalatorFault() bool
 }
 

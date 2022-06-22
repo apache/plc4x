@@ -36,6 +36,7 @@ type ApduDataExtOpenRoutingTableRequest interface {
 // ApduDataExtOpenRoutingTableRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtOpenRoutingTableRequest.
 // This is useful for switch cases.
 type ApduDataExtOpenRoutingTableRequestExactly interface {
+	ApduDataExtOpenRoutingTableRequest
 	isApduDataExtOpenRoutingTableRequest() bool
 }
 

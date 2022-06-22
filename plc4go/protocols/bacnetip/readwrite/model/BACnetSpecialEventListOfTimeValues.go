@@ -41,6 +41,7 @@ type BACnetSpecialEventListOfTimeValues interface {
 // BACnetSpecialEventListOfTimeValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventListOfTimeValues.
 // This is useful for switch cases.
 type BACnetSpecialEventListOfTimeValuesExactly interface {
+	BACnetSpecialEventListOfTimeValues
 	isBACnetSpecialEventListOfTimeValues() bool
 }
 

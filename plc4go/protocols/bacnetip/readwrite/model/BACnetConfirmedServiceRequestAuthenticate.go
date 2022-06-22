@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAuthenticate interface {
 // BACnetConfirmedServiceRequestAuthenticateExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAuthenticate.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestAuthenticateExactly interface {
+	BACnetConfirmedServiceRequestAuthenticate
 	isBACnetConfirmedServiceRequestAuthenticate() bool
 }
 

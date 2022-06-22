@@ -36,6 +36,7 @@ type ApduDataExtGroupPropertyValueResponse interface {
 // ApduDataExtGroupPropertyValueResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtGroupPropertyValueResponse.
 // This is useful for switch cases.
 type ApduDataExtGroupPropertyValueResponseExactly interface {
+	ApduDataExtGroupPropertyValueResponse
 	isApduDataExtGroupPropertyValueResponse() bool
 }
 

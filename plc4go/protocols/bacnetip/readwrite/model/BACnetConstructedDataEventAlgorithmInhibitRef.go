@@ -40,6 +40,7 @@ type BACnetConstructedDataEventAlgorithmInhibitRef interface {
 // BACnetConstructedDataEventAlgorithmInhibitRefExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventAlgorithmInhibitRef.
 // This is useful for switch cases.
 type BACnetConstructedDataEventAlgorithmInhibitRefExactly interface {
+	BACnetConstructedDataEventAlgorithmInhibitRef
 	isBACnetConstructedDataEventAlgorithmInhibitRef() bool
 }
 

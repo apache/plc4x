@@ -46,6 +46,7 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 // BACnetConfirmedServiceRequestLifeSafetyOperationExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestLifeSafetyOperation.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestLifeSafetyOperationExactly interface {
+	BACnetConfirmedServiceRequestLifeSafetyOperation
 	isBACnetConfirmedServiceRequestLifeSafetyOperation() bool
 }
 

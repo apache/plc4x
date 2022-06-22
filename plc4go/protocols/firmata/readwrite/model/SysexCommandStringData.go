@@ -36,6 +36,7 @@ type SysexCommandStringData interface {
 // SysexCommandStringDataExactly can be used when we want exactly this type and not a type which fulfills SysexCommandStringData.
 // This is useful for switch cases.
 type SysexCommandStringDataExactly interface {
+	SysexCommandStringData
 	isSysexCommandStringData() bool
 }
 

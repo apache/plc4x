@@ -38,6 +38,7 @@ type BACnetApplicationTagTime interface {
 // BACnetApplicationTagTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagTime.
 // This is useful for switch cases.
 type BACnetApplicationTagTimeExactly interface {
+	BACnetApplicationTagTime
 	isBACnetApplicationTagTime() bool
 }
 

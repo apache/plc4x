@@ -46,6 +46,7 @@ type BACnetNotificationParametersUnsignedRange interface {
 // BACnetNotificationParametersUnsignedRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersUnsignedRange.
 // This is useful for switch cases.
 type BACnetNotificationParametersUnsignedRangeExactly interface {
+	BACnetNotificationParametersUnsignedRange
 	isBACnetNotificationParametersUnsignedRange() bool
 }
 

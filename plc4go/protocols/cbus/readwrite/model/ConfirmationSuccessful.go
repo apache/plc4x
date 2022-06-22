@@ -36,6 +36,7 @@ type ConfirmationSuccessful interface {
 // ConfirmationSuccessfulExactly can be used when we want exactly this type and not a type which fulfills ConfirmationSuccessful.
 // This is useful for switch cases.
 type ConfirmationSuccessfulExactly interface {
+	ConfirmationSuccessful
 	isConfirmationSuccessful() bool
 }
 

@@ -45,6 +45,7 @@ type SzlDataTreeItem interface {
 // SzlDataTreeItemExactly can be used when we want exactly this type and not a type which fulfills SzlDataTreeItem.
 // This is useful for switch cases.
 type SzlDataTreeItemExactly interface {
+	SzlDataTreeItem
 	isSzlDataTreeItem() bool
 }
 

@@ -38,6 +38,7 @@ type BACnetPropertyStatesSecurityLevel interface {
 // BACnetPropertyStatesSecurityLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesSecurityLevel.
 // This is useful for switch cases.
 type BACnetPropertyStatesSecurityLevelExactly interface {
+	BACnetPropertyStatesSecurityLevel
 	isBACnetPropertyStatesSecurityLevel() bool
 }
 

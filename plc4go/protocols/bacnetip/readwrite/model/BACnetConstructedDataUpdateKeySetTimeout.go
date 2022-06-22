@@ -40,6 +40,7 @@ type BACnetConstructedDataUpdateKeySetTimeout interface {
 // BACnetConstructedDataUpdateKeySetTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateKeySetTimeout.
 // This is useful for switch cases.
 type BACnetConstructedDataUpdateKeySetTimeoutExactly interface {
+	BACnetConstructedDataUpdateKeySetTimeout
 	isBACnetConstructedDataUpdateKeySetTimeout() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataTimerMinPresValue interface {
 // BACnetConstructedDataTimerMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerMinPresValue.
 // This is useful for switch cases.
 type BACnetConstructedDataTimerMinPresValueExactly interface {
+	BACnetConstructedDataTimerMinPresValue
 	isBACnetConstructedDataTimerMinPresValue() bool
 }
 

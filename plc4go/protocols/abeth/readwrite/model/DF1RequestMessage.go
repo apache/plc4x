@@ -46,6 +46,7 @@ type DF1RequestMessage interface {
 // DF1RequestMessageExactly can be used when we want exactly this type and not a type which fulfills DF1RequestMessage.
 // This is useful for switch cases.
 type DF1RequestMessageExactly interface {
+	DF1RequestMessage
 	isDF1RequestMessage() bool
 }
 

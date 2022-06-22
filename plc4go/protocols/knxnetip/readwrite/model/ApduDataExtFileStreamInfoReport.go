@@ -36,6 +36,7 @@ type ApduDataExtFileStreamInfoReport interface {
 // ApduDataExtFileStreamInfoReportExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtFileStreamInfoReport.
 // This is useful for switch cases.
 type ApduDataExtFileStreamInfoReportExactly interface {
+	ApduDataExtFileStreamInfoReport
 	isApduDataExtFileStreamInfoReport() bool
 }
 

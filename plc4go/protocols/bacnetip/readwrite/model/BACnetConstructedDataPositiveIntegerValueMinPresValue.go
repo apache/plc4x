@@ -40,6 +40,7 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValue interface {
 // BACnetConstructedDataPositiveIntegerValueMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueMinPresValue.
 // This is useful for switch cases.
 type BACnetConstructedDataPositiveIntegerValueMinPresValueExactly interface {
+	BACnetConstructedDataPositiveIntegerValueMinPresValue
 	isBACnetConstructedDataPositiveIntegerValueMinPresValue() bool
 }
 

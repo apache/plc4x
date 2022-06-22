@@ -40,6 +40,7 @@ type BACnetConstructedDataRepresents interface {
 // BACnetConstructedDataRepresentsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRepresents.
 // This is useful for switch cases.
 type BACnetConstructedDataRepresentsExactly interface {
+	BACnetConstructedDataRepresents
 	isBACnetConstructedDataRepresents() bool
 }
 

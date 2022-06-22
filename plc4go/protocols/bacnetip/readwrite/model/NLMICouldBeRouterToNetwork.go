@@ -40,6 +40,7 @@ type NLMICouldBeRouterToNetwork interface {
 // NLMICouldBeRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMICouldBeRouterToNetwork.
 // This is useful for switch cases.
 type NLMICouldBeRouterToNetworkExactly interface {
+	NLMICouldBeRouterToNetwork
 	isNLMICouldBeRouterToNetwork() bool
 }
 

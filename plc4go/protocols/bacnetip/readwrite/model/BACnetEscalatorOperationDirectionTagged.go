@@ -43,6 +43,7 @@ type BACnetEscalatorOperationDirectionTagged interface {
 // BACnetEscalatorOperationDirectionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEscalatorOperationDirectionTagged.
 // This is useful for switch cases.
 type BACnetEscalatorOperationDirectionTaggedExactly interface {
+	BACnetEscalatorOperationDirectionTagged
 	isBACnetEscalatorOperationDirectionTagged() bool
 }
 

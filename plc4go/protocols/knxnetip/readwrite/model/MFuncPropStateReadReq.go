@@ -36,6 +36,7 @@ type MFuncPropStateReadReq interface {
 // MFuncPropStateReadReqExactly can be used when we want exactly this type and not a type which fulfills MFuncPropStateReadReq.
 // This is useful for switch cases.
 type MFuncPropStateReadReqExactly interface {
+	MFuncPropStateReadReq
 	isMFuncPropStateReadReq() bool
 }
 

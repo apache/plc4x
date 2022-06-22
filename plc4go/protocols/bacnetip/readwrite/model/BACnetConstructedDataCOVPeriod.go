@@ -40,6 +40,7 @@ type BACnetConstructedDataCOVPeriod interface {
 // BACnetConstructedDataCOVPeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVPeriod.
 // This is useful for switch cases.
 type BACnetConstructedDataCOVPeriodExactly interface {
+	BACnetConstructedDataCOVPeriod
 	isBACnetConstructedDataCOVPeriod() bool
 }
 

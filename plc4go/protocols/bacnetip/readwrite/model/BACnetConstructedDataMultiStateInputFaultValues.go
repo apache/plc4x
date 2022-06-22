@@ -38,6 +38,7 @@ type BACnetConstructedDataMultiStateInputFaultValues interface {
 // BACnetConstructedDataMultiStateInputFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateInputFaultValues.
 // This is useful for switch cases.
 type BACnetConstructedDataMultiStateInputFaultValuesExactly interface {
+	BACnetConstructedDataMultiStateInputFaultValues
 	isBACnetConstructedDataMultiStateInputFaultValues() bool
 }
 

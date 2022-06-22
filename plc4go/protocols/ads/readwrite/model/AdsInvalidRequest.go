@@ -36,6 +36,7 @@ type AdsInvalidRequest interface {
 // AdsInvalidRequestExactly can be used when we want exactly this type and not a type which fulfills AdsInvalidRequest.
 // This is useful for switch cases.
 type AdsInvalidRequestExactly interface {
+	AdsInvalidRequest
 	isAdsInvalidRequest() bool
 }
 

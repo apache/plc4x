@@ -40,6 +40,7 @@ type BACnetConstructedDataDeviceMaxMaster interface {
 // BACnetConstructedDataDeviceMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceMaxMaster.
 // This is useful for switch cases.
 type BACnetConstructedDataDeviceMaxMasterExactly interface {
+	BACnetConstructedDataDeviceMaxMaster
 	isBACnetConstructedDataDeviceMaxMaster() bool
 }
 

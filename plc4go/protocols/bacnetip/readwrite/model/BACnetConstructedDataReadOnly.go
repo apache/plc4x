@@ -40,6 +40,7 @@ type BACnetConstructedDataReadOnly interface {
 // BACnetConstructedDataReadOnlyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReadOnly.
 // This is useful for switch cases.
 type BACnetConstructedDataReadOnlyExactly interface {
+	BACnetConstructedDataReadOnly
 	isBACnetConstructedDataReadOnly() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataProtocolLevel interface {
 // BACnetConstructedDataProtocolLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolLevel.
 // This is useful for switch cases.
 type BACnetConstructedDataProtocolLevelExactly interface {
+	BACnetConstructedDataProtocolLevel
 	isBACnetConstructedDataProtocolLevel() bool
 }
 

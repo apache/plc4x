@@ -40,6 +40,7 @@ type BACnetLogRecordLogDatumAnyValue interface {
 // BACnetLogRecordLogDatumAnyValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumAnyValue.
 // This is useful for switch cases.
 type BACnetLogRecordLogDatumAnyValueExactly interface {
+	BACnetLogRecordLogDatumAnyValue
 	isBACnetLogRecordLogDatumAnyValue() bool
 }
 

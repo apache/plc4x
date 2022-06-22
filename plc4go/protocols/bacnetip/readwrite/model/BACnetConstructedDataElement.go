@@ -53,6 +53,7 @@ type BACnetConstructedDataElement interface {
 // BACnetConstructedDataElementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElement.
 // This is useful for switch cases.
 type BACnetConstructedDataElementExactly interface {
+	BACnetConstructedDataElement
 	isBACnetConstructedDataElement() bool
 }
 

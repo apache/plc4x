@@ -39,6 +39,7 @@ type ConnectionRequestInformationTunnelConnection interface {
 // ConnectionRequestInformationTunnelConnectionExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequestInformationTunnelConnection.
 // This is useful for switch cases.
 type ConnectionRequestInformationTunnelConnectionExactly interface {
+	ConnectionRequestInformationTunnelConnection
 	isConnectionRequestInformationTunnelConnection() bool
 }
 

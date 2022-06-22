@@ -46,6 +46,7 @@ type ConfirmedPrivateTransferError interface {
 // ConfirmedPrivateTransferErrorExactly can be used when we want exactly this type and not a type which fulfills ConfirmedPrivateTransferError.
 // This is useful for switch cases.
 type ConfirmedPrivateTransferErrorExactly interface {
+	ConfirmedPrivateTransferError
 	isConfirmedPrivateTransferError() bool
 }
 

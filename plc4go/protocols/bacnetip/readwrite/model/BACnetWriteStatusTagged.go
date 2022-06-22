@@ -39,6 +39,7 @@ type BACnetWriteStatusTagged interface {
 // BACnetWriteStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetWriteStatusTagged.
 // This is useful for switch cases.
 type BACnetWriteStatusTaggedExactly interface {
+	BACnetWriteStatusTagged
 	isBACnetWriteStatusTagged() bool
 }
 

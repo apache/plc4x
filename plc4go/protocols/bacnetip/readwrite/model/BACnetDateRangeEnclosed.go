@@ -41,6 +41,7 @@ type BACnetDateRangeEnclosed interface {
 // BACnetDateRangeEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetDateRangeEnclosed.
 // This is useful for switch cases.
 type BACnetDateRangeEnclosedExactly interface {
+	BACnetDateRangeEnclosed
 	isBACnetDateRangeEnclosed() bool
 }
 

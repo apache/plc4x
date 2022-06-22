@@ -40,6 +40,7 @@ type BACnetConstructedDataLargeAnalogValueHighLimit interface {
 // BACnetConstructedDataLargeAnalogValueHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueHighLimit.
 // This is useful for switch cases.
 type BACnetConstructedDataLargeAnalogValueHighLimitExactly interface {
+	BACnetConstructedDataLargeAnalogValueHighLimit
 	isBACnetConstructedDataLargeAnalogValueHighLimit() bool
 }
 

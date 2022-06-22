@@ -39,6 +39,7 @@ type BACnetOptionalCharacterString interface {
 // BACnetOptionalCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalCharacterString.
 // This is useful for switch cases.
 type BACnetOptionalCharacterStringExactly interface {
+	BACnetOptionalCharacterString
 	isBACnetOptionalCharacterString() bool
 }
 

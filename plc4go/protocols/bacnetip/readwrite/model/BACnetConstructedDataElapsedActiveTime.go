@@ -40,6 +40,7 @@ type BACnetConstructedDataElapsedActiveTime interface {
 // BACnetConstructedDataElapsedActiveTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElapsedActiveTime.
 // This is useful for switch cases.
 type BACnetConstructedDataElapsedActiveTimeExactly interface {
+	BACnetConstructedDataElapsedActiveTime
 	isBACnetConstructedDataElapsedActiveTime() bool
 }
 

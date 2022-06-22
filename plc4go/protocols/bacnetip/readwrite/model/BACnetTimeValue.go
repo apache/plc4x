@@ -39,6 +39,7 @@ type BACnetTimeValue interface {
 // BACnetTimeValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeValue.
 // This is useful for switch cases.
 type BACnetTimeValueExactly interface {
+	BACnetTimeValue
 	isBACnetTimeValue() bool
 }
 

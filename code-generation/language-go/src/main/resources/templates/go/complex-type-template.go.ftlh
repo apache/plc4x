@@ -111,6 +111,7 @@ type ${type.name} interface {
 // ${type.name}Exactly can be used when we want exactly this type and not a type which fulfills ${type.name}.
 // This is useful for switch cases.
 type ${type.name}Exactly interface {
+	${type.name}
 	is${type.name}() bool
 }
 

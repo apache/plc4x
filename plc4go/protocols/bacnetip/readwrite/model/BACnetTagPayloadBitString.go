@@ -41,6 +41,7 @@ type BACnetTagPayloadBitString interface {
 // BACnetTagPayloadBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadBitString.
 // This is useful for switch cases.
 type BACnetTagPayloadBitStringExactly interface {
+	BACnetTagPayloadBitString
 	isBACnetTagPayloadBitString() bool
 }
 

@@ -38,6 +38,7 @@ type KnxNetIpCore interface {
 // KnxNetIpCoreExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpCore.
 // This is useful for switch cases.
 type KnxNetIpCoreExactly interface {
+	KnxNetIpCore
 	isKnxNetIpCore() bool
 }
 

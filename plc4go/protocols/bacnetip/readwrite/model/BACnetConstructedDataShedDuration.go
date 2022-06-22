@@ -40,6 +40,7 @@ type BACnetConstructedDataShedDuration interface {
 // BACnetConstructedDataShedDurationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataShedDuration.
 // This is useful for switch cases.
 type BACnetConstructedDataShedDurationExactly interface {
+	BACnetConstructedDataShedDuration
 	isBACnetConstructedDataShedDuration() bool
 }
 

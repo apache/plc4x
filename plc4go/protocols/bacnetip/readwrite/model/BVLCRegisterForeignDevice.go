@@ -38,6 +38,7 @@ type BVLCRegisterForeignDevice interface {
 // BVLCRegisterForeignDeviceExactly can be used when we want exactly this type and not a type which fulfills BVLCRegisterForeignDevice.
 // This is useful for switch cases.
 type BVLCRegisterForeignDeviceExactly interface {
+	BVLCRegisterForeignDevice
 	isBVLCRegisterForeignDevice() bool
 }
 

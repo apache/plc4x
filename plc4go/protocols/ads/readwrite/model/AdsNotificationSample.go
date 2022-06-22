@@ -41,6 +41,7 @@ type AdsNotificationSample interface {
 // AdsNotificationSampleExactly can be used when we want exactly this type and not a type which fulfills AdsNotificationSample.
 // This is useful for switch cases.
 type AdsNotificationSampleExactly interface {
+	AdsNotificationSample
 	isAdsNotificationSample() bool
 }
 

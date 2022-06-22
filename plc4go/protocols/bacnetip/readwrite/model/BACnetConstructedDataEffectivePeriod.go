@@ -40,6 +40,7 @@ type BACnetConstructedDataEffectivePeriod interface {
 // BACnetConstructedDataEffectivePeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEffectivePeriod.
 // This is useful for switch cases.
 type BACnetConstructedDataEffectivePeriodExactly interface {
+	BACnetConstructedDataEffectivePeriod
 	isBACnetConstructedDataEffectivePeriod() bool
 }
 

@@ -38,6 +38,7 @@ type SALDataOff interface {
 // SALDataOffExactly can be used when we want exactly this type and not a type which fulfills SALDataOff.
 // This is useful for switch cases.
 type SALDataOffExactly interface {
+	SALDataOff
 	isSALDataOff() bool
 }
 

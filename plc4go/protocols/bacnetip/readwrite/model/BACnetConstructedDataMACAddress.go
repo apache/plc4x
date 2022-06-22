@@ -40,6 +40,7 @@ type BACnetConstructedDataMACAddress interface {
 // BACnetConstructedDataMACAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMACAddress.
 // This is useful for switch cases.
 type BACnetConstructedDataMACAddressExactly interface {
+	BACnetConstructedDataMACAddress
 	isBACnetConstructedDataMACAddress() bool
 }
 

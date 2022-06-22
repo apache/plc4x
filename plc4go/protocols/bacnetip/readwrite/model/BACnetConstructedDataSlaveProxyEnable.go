@@ -40,6 +40,7 @@ type BACnetConstructedDataSlaveProxyEnable interface {
 // BACnetConstructedDataSlaveProxyEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSlaveProxyEnable.
 // This is useful for switch cases.
 type BACnetConstructedDataSlaveProxyEnableExactly interface {
+	BACnetConstructedDataSlaveProxyEnable
 	isBACnetConstructedDataSlaveProxyEnable() bool
 }
 

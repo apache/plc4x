@@ -38,6 +38,7 @@ type SALDataOn interface {
 // SALDataOnExactly can be used when we want exactly this type and not a type which fulfills SALDataOn.
 // This is useful for switch cases.
 type SALDataOnExactly interface {
+	SALDataOn
 	isSALDataOn() bool
 }
 

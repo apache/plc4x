@@ -37,6 +37,7 @@ type BACnetUnconfirmedServiceRequest interface {
 // BACnetUnconfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequest.
 // This is useful for switch cases.
 type BACnetUnconfirmedServiceRequestExactly interface {
+	BACnetUnconfirmedServiceRequest
 	isBACnetUnconfirmedServiceRequest() bool
 }
 

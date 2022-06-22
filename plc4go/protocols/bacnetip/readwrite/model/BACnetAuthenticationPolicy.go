@@ -41,6 +41,7 @@ type BACnetAuthenticationPolicy interface {
 // BACnetAuthenticationPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicy.
 // This is useful for switch cases.
 type BACnetAuthenticationPolicyExactly interface {
+	BACnetAuthenticationPolicy
 	isBACnetAuthenticationPolicy() bool
 }
 

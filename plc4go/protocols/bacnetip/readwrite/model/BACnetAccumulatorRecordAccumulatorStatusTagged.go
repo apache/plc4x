@@ -39,6 +39,7 @@ type BACnetAccumulatorRecordAccumulatorStatusTagged interface {
 // BACnetAccumulatorRecordAccumulatorStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccumulatorRecordAccumulatorStatusTagged.
 // This is useful for switch cases.
 type BACnetAccumulatorRecordAccumulatorStatusTaggedExactly interface {
+	BACnetAccumulatorRecordAccumulatorStatusTagged
 	isBACnetAccumulatorRecordAccumulatorStatusTagged() bool
 }
 

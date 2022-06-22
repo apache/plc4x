@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftCarDriveStatus interface {
 // BACnetPropertyStatesLiftCarDriveStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftCarDriveStatus.
 // This is useful for switch cases.
 type BACnetPropertyStatesLiftCarDriveStatusExactly interface {
+	BACnetPropertyStatesLiftCarDriveStatus
 	isBACnetPropertyStatesLiftCarDriveStatus() bool
 }
 

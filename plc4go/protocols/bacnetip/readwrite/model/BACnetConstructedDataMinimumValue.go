@@ -40,6 +40,7 @@ type BACnetConstructedDataMinimumValue interface {
 // BACnetConstructedDataMinimumValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumValue.
 // This is useful for switch cases.
 type BACnetConstructedDataMinimumValueExactly interface {
+	BACnetConstructedDataMinimumValue
 	isBACnetConstructedDataMinimumValue() bool
 }
 

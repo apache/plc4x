@@ -40,6 +40,7 @@ type BACnetConstructedDataBACnetIPv6UDPPort interface {
 // BACnetConstructedDataBACnetIPv6UDPPortExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPv6UDPPort.
 // This is useful for switch cases.
 type BACnetConstructedDataBACnetIPv6UDPPortExactly interface {
+	BACnetConstructedDataBACnetIPv6UDPPort
 	isBACnetConstructedDataBACnetIPv6UDPPort() bool
 }
 

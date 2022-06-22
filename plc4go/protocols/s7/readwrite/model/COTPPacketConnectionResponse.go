@@ -42,6 +42,7 @@ type COTPPacketConnectionResponse interface {
 // COTPPacketConnectionResponseExactly can be used when we want exactly this type and not a type which fulfills COTPPacketConnectionResponse.
 // This is useful for switch cases.
 type COTPPacketConnectionResponseExactly interface {
+	COTPPacketConnectionResponse
 	isCOTPPacketConnectionResponse() bool
 }
 

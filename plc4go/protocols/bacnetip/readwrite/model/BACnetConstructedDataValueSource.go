@@ -40,6 +40,7 @@ type BACnetConstructedDataValueSource interface {
 // BACnetConstructedDataValueSourceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueSource.
 // This is useful for switch cases.
 type BACnetConstructedDataValueSourceExactly interface {
+	BACnetConstructedDataValueSource
 	isBACnetConstructedDataValueSource() bool
 }
 

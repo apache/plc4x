@@ -36,6 +36,7 @@ type SysexCommandSamplingInterval interface {
 // SysexCommandSamplingIntervalExactly can be used when we want exactly this type and not a type which fulfills SysexCommandSamplingInterval.
 // This is useful for switch cases.
 type SysexCommandSamplingIntervalExactly interface {
+	SysexCommandSamplingInterval
 	isSysexCommandSamplingInterval() bool
 }
 

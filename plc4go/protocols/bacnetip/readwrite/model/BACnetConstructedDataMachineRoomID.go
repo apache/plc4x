@@ -40,6 +40,7 @@ type BACnetConstructedDataMachineRoomID interface {
 // BACnetConstructedDataMachineRoomIDExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMachineRoomID.
 // This is useful for switch cases.
 type BACnetConstructedDataMachineRoomIDExactly interface {
+	BACnetConstructedDataMachineRoomID
 	isBACnetConstructedDataMachineRoomID() bool
 }
 

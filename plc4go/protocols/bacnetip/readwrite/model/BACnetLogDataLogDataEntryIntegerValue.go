@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryIntegerValue interface {
 // BACnetLogDataLogDataEntryIntegerValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryIntegerValue.
 // This is useful for switch cases.
 type BACnetLogDataLogDataEntryIntegerValueExactly interface {
+	BACnetLogDataLogDataEntryIntegerValue
 	isBACnetLogDataLogDataEntryIntegerValue() bool
 }
 

@@ -36,6 +36,7 @@ type BACnetConstructedDataDateValueAll interface {
 // BACnetConstructedDataDateValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDateValueAll.
 // This is useful for switch cases.
 type BACnetConstructedDataDateValueAllExactly interface {
+	BACnetConstructedDataDateValueAll
 	isBACnetConstructedDataDateValueAll() bool
 }
 

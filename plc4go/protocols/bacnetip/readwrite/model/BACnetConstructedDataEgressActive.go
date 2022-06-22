@@ -40,6 +40,7 @@ type BACnetConstructedDataEgressActive interface {
 // BACnetConstructedDataEgressActiveExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEgressActive.
 // This is useful for switch cases.
 type BACnetConstructedDataEgressActiveExactly interface {
+	BACnetConstructedDataEgressActive
 	isBACnetConstructedDataEgressActive() bool
 }
 

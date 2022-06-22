@@ -44,6 +44,7 @@ type BACnetConstructedDataPriority interface {
 // BACnetConstructedDataPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPriority.
 // This is useful for switch cases.
 type BACnetConstructedDataPriorityExactly interface {
+	BACnetConstructedDataPriority
 	isBACnetConstructedDataPriority() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
 // BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyZoneMaintenanceRequired.
 // This is useful for switch cases.
 type BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly interface {
+	BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
 	isBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() bool
 }
 

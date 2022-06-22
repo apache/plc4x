@@ -38,6 +38,7 @@ type KnxNetObjectServer interface {
 // KnxNetObjectServerExactly can be used when we want exactly this type and not a type which fulfills KnxNetObjectServer.
 // This is useful for switch cases.
 type KnxNetObjectServerExactly interface {
+	KnxNetObjectServer
 	isKnxNetObjectServer() bool
 }
 

@@ -40,6 +40,7 @@ type BACnetConstructedDataOperationExpected interface {
 // BACnetConstructedDataOperationExpectedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOperationExpected.
 // This is useful for switch cases.
 type BACnetConstructedDataOperationExpectedExactly interface {
+	BACnetConstructedDataOperationExpected
 	isBACnetConstructedDataOperationExpected() bool
 }
 

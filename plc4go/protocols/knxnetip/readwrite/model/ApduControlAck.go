@@ -36,6 +36,7 @@ type ApduControlAck interface {
 // ApduControlAckExactly can be used when we want exactly this type and not a type which fulfills ApduControlAck.
 // This is useful for switch cases.
 type ApduControlAckExactly interface {
+	ApduControlAck
 	isApduControlAck() bool
 }
 

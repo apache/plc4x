@@ -36,6 +36,7 @@ type BACnetConstructedDataLoopAll interface {
 // BACnetConstructedDataLoopAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoopAll.
 // This is useful for switch cases.
 type BACnetConstructedDataLoopAllExactly interface {
+	BACnetConstructedDataLoopAll
 	isBACnetConstructedDataLoopAll() bool
 }
 

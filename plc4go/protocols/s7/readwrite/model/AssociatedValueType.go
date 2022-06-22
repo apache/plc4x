@@ -43,6 +43,7 @@ type AssociatedValueType interface {
 // AssociatedValueTypeExactly can be used when we want exactly this type and not a type which fulfills AssociatedValueType.
 // This is useful for switch cases.
 type AssociatedValueTypeExactly interface {
+	AssociatedValueType
 	isAssociatedValueType() bool
 }
 

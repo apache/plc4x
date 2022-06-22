@@ -36,6 +36,7 @@ type BACnetConstructedDataTrendLogMultipleAll interface {
 // BACnetConstructedDataTrendLogMultipleAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogMultipleAll.
 // This is useful for switch cases.
 type BACnetConstructedDataTrendLogMultipleAllExactly interface {
+	BACnetConstructedDataTrendLogMultipleAll
 	isBACnetConstructedDataTrendLogMultipleAll() bool
 }
 

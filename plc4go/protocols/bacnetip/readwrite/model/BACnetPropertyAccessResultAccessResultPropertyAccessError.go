@@ -38,6 +38,7 @@ type BACnetPropertyAccessResultAccessResultPropertyAccessError interface {
 // BACnetPropertyAccessResultAccessResultPropertyAccessErrorExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResultAccessResultPropertyAccessError.
 // This is useful for switch cases.
 type BACnetPropertyAccessResultAccessResultPropertyAccessErrorExactly interface {
+	BACnetPropertyAccessResultAccessResultPropertyAccessError
 	isBACnetPropertyAccessResultAccessResultPropertyAccessError() bool
 }
 

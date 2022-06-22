@@ -64,6 +64,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
 // BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedEventNotification.
 // This is useful for switch cases.
 type BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 	isBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() bool
 }
 

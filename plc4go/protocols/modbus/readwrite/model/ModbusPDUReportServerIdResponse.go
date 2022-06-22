@@ -38,6 +38,7 @@ type ModbusPDUReportServerIdResponse interface {
 // ModbusPDUReportServerIdResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReportServerIdResponse.
 // This is useful for switch cases.
 type ModbusPDUReportServerIdResponseExactly interface {
+	ModbusPDUReportServerIdResponse
 	isModbusPDUReportServerIdResponse() bool
 }
 

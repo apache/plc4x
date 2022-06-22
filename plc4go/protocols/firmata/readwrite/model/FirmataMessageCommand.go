@@ -38,6 +38,7 @@ type FirmataMessageCommand interface {
 // FirmataMessageCommandExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageCommand.
 // This is useful for switch cases.
 type FirmataMessageCommandExactly interface {
+	FirmataMessageCommand
 	isFirmataMessageCommand() bool
 }
 

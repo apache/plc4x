@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter inte
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter.
 // This is useful for switch cases.
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterExactly interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() bool
 }
 

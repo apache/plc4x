@@ -44,6 +44,7 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 // BACnetConstructedDataAssignedLandingCallsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAssignedLandingCalls.
 // This is useful for switch cases.
 type BACnetConstructedDataAssignedLandingCallsExactly interface {
+	BACnetConstructedDataAssignedLandingCalls
 	isBACnetConstructedDataAssignedLandingCalls() bool
 }
 

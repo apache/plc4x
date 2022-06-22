@@ -47,6 +47,7 @@ type S7ParameterModeTransition interface {
 // S7ParameterModeTransitionExactly can be used when we want exactly this type and not a type which fulfills S7ParameterModeTransition.
 // This is useful for switch cases.
 type S7ParameterModeTransitionExactly interface {
+	S7ParameterModeTransition
 	isS7ParameterModeTransition() bool
 }
 
