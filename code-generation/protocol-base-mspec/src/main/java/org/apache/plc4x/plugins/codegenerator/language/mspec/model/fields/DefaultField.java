@@ -27,19 +27,19 @@ import java.util.Optional;
 
 public abstract class DefaultField {
 
-    protected TypeDefinition parentTypeDefinition;
+    protected TypeDefinition owner;
     protected final Map<String, Term> attributes;
 
     protected DefaultField(Map<String, Term> attributes) {
         this.attributes = Objects.requireNonNull(attributes);
     }
 
-    public void setParentTypeDefinition(TypeDefinition parentTypeDefinition) {
-        this.parentTypeDefinition = parentTypeDefinition;
+    public void setParentTypeDefinition(TypeDefinition owner) {
+        this.owner = owner;
     }
 
-    public TypeDefinition getParentTypeDefinition() {
-        return parentTypeDefinition;
+    public TypeDefinition getOwner() {
+        return owner;
     }
 
     public Optional<Term> getAttribute(String attributeName) {
