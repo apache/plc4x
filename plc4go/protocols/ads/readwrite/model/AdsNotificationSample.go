@@ -28,18 +28,14 @@ import (
 
 // AdsNotificationSample is the corresponding interface of AdsNotificationSample
 type AdsNotificationSample interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 	// GetSampleSize returns SampleSize (property field)
 	GetSampleSize() uint32
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsNotificationSample is the data-structure of this message

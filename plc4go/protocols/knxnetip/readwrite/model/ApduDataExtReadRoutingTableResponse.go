@@ -28,13 +28,9 @@ import (
 
 // ApduDataExtReadRoutingTableResponse is the corresponding interface of ApduDataExtReadRoutingTableResponse
 type ApduDataExtReadRoutingTableResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataExtReadRoutingTableResponse is the data-structure of this message

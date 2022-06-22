@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataExitPoints is the corresponding interface of BACnetConstructedDataExitPoints
 type BACnetConstructedDataExitPoints interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetExitPoints returns ExitPoints (property field)
 	GetExitPoints() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataExitPoints is the data-structure of this message

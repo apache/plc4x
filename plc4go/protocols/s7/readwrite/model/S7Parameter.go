@@ -28,16 +28,12 @@ import (
 
 // S7Parameter is the corresponding interface of S7Parameter
 type S7Parameter interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7Parameter is the data-structure of this message

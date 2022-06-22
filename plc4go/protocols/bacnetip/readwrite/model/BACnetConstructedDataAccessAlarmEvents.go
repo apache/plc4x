@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataAccessAlarmEvents is the corresponding interface of BACnetConstructedDataAccessAlarmEvents
 type BACnetConstructedDataAccessAlarmEvents interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAccessAlarmEvents returns AccessAlarmEvents (property field)
 	GetAccessAlarmEvents() []BACnetAccessEventTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAccessAlarmEvents is the data-structure of this message

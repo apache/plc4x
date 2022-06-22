@@ -29,6 +29,8 @@ import (
 
 // IdentifyReplyCommandExtendedDiagnosticSummary is the corresponding interface of IdentifyReplyCommandExtendedDiagnosticSummary
 type IdentifyReplyCommandExtendedDiagnosticSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetLowApplication returns LowApplication (property field)
 	GetLowApplication() ApplicationIdContainer
@@ -68,12 +70,6 @@ type IdentifyReplyCommandExtendedDiagnosticSummary interface {
 	GetEEWriteError() bool
 	// GetInstallationMMIError returns InstallationMMIError (property field)
 	GetInstallationMMIError() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _IdentifyReplyCommandExtendedDiagnosticSummary is the data-structure of this message

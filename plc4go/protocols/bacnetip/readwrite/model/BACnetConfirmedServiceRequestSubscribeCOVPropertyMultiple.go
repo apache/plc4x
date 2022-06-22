@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -41,12 +43,6 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
 	GetMaxNotificationDelay() BACnetContextTagUnsignedInteger
 	// GetListOfCovSubscriptionSpecifications returns ListOfCovSubscriptionSpecifications (property field)
 	GetListOfCovSubscriptionSpecifications() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is the data-structure of this message

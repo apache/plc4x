@@ -28,13 +28,9 @@ import (
 
 // LRawReq is the corresponding interface of LRawReq
 type LRawReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _LRawReq is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestIAm is the corresponding interface of BACnetUnconfirmedServiceRequestIAm
 type BACnetUnconfirmedServiceRequestIAm interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -37,12 +39,6 @@ type BACnetUnconfirmedServiceRequestIAm interface {
 	GetSegmentationSupported() BACnetSegmentationTagged
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequestIAm is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // LDataFrame is the corresponding interface of LDataFrame
 type LDataFrame interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNotAckFrame returns NotAckFrame (discriminator field)
 	GetNotAckFrame() bool
 	// GetPolling returns Polling (discriminator field)
@@ -42,12 +44,6 @@ type LDataFrame interface {
 	GetAcknowledgeRequested() bool
 	// GetErrorFlag returns ErrorFlag (property field)
 	GetErrorFlag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _LDataFrame is the data-structure of this message

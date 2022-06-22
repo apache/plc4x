@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataTimerAlarmValues is the corresponding interface of BACnetConstructedDataTimerAlarmValues
 type BACnetConstructedDataTimerAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetTimerStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataTimerAlarmValues is the data-structure of this message

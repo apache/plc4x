@@ -33,6 +33,8 @@ const AlarmMessageObjectAckType_LENGTH uint8 = 0x08
 
 // AlarmMessageObjectAckType is the corresponding interface of AlarmMessageObjectAckType
 type AlarmMessageObjectAckType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
 	// GetNumberOfValues returns NumberOfValues (property field)
@@ -43,12 +45,6 @@ type AlarmMessageObjectAckType interface {
 	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() State
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AlarmMessageObjectAckType is the data-structure of this message

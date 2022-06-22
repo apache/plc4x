@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataReferencePort is the corresponding interface of BACnetConstructedDataReferencePort
 type BACnetConstructedDataReferencePort interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetReferencePort returns ReferencePort (property field)
 	GetReferencePort() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataReferencePort is the data-structure of this message

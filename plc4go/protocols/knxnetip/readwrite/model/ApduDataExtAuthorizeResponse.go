@@ -28,15 +28,11 @@ import (
 
 // ApduDataExtAuthorizeResponse is the corresponding interface of ApduDataExtAuthorizeResponse
 type ApduDataExtAuthorizeResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataExtAuthorizeResponse is the data-structure of this message

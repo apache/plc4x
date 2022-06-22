@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataElapsedActiveTime is the corresponding interface of BACnetConstructedDataElapsedActiveTime
 type BACnetConstructedDataElapsedActiveTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetElapsedActiveTime returns ElapsedActiveTime (property field)
 	GetElapsedActiveTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataElapsedActiveTime is the data-structure of this message

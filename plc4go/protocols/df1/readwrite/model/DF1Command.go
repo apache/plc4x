@@ -28,18 +28,14 @@ import (
 
 // DF1Command is the corresponding interface of DF1Command
 type DF1Command interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DF1Command is the data-structure of this message

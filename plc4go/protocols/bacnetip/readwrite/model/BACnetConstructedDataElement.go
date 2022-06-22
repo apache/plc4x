@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataElement is the corresponding interface of BACnetConstructedDataElement
 type BACnetConstructedDataElement interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetApplicationTag returns ApplicationTag (property field)
@@ -46,12 +48,6 @@ type BACnetConstructedDataElement interface {
 	GetIsConstructedData() bool
 	// GetIsContextTag returns IsContextTag (virtual field)
 	GetIsContextTag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataElement is the data-structure of this message

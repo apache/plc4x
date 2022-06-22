@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLightingOutputTrackingValue is the corresponding interface of BACnetConstructedDataLightingOutputTrackingValue
 type BACnetConstructedDataLightingOutputTrackingValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLightingOutputTrackingValue is the data-structure of this message

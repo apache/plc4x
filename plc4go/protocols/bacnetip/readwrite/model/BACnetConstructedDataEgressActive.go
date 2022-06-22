@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataEgressActive is the corresponding interface of BACnetConstructedDataEgressActive
 type BACnetConstructedDataEgressActive interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEgressActive returns EgressActive (property field)
 	GetEgressActive() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEgressActive is the data-structure of this message

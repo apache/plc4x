@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataIPv6DHCPLeaseTimeRemaining is the corresponding interface of BACnetConstructedDataIPv6DHCPLeaseTimeRemaining
 type BACnetConstructedDataIPv6DHCPLeaseTimeRemaining interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6DhcpLeaseTimeRemaining returns Ipv6DhcpLeaseTimeRemaining (property field)
 	GetIpv6DhcpLeaseTimeRemaining() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataIPv6DHCPLeaseTimeRemaining is the data-structure of this message

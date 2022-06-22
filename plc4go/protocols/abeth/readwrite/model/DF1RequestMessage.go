@@ -29,6 +29,8 @@ import (
 
 // DF1RequestMessage is the corresponding interface of DF1RequestMessage
 type DF1RequestMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 	// GetDestinationAddress returns DestinationAddress (property field)
@@ -39,12 +41,6 @@ type DF1RequestMessage interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DF1RequestMessage is the data-structure of this message

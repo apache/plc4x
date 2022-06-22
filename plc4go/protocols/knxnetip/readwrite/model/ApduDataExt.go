@@ -28,14 +28,10 @@ import (
 
 // ApduDataExt is the corresponding interface of ApduDataExt
 type ApduDataExt interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetExtApciType returns ExtApciType (discriminator field)
 	GetExtApciType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataExt is the data-structure of this message

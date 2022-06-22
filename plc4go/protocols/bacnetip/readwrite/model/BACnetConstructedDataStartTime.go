@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataStartTime is the corresponding interface of BACnetConstructedDataStartTime
 type BACnetConstructedDataStartTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetStartTime returns StartTime (property field)
 	GetStartTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataStartTime is the data-structure of this message

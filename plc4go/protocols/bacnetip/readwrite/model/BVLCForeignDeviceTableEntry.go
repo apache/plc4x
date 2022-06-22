@@ -28,6 +28,8 @@ import (
 
 // BVLCForeignDeviceTableEntry is the corresponding interface of BVLCForeignDeviceTableEntry
 type BVLCForeignDeviceTableEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
 	// GetPort returns Port (property field)
@@ -36,12 +38,6 @@ type BVLCForeignDeviceTableEntry interface {
 	GetTtl() uint16
 	// GetSecondRemainingBeforePurge returns SecondRemainingBeforePurge (property field)
 	GetSecondRemainingBeforePurge() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BVLCForeignDeviceTableEntry is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBitMask is the corresponding interface of BACnetConstructedDataBitMask
 type BACnetConstructedDataBitMask interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBitString returns BitString (property field)
 	GetBitString() BACnetApplicationTagBitString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBitMask is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // FirmataMessageDigitalIO is the corresponding interface of FirmataMessageDigitalIO
 type FirmataMessageDigitalIO interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetPinBlock returns PinBlock (property field)
 	GetPinBlock() uint8
 	// GetData returns Data (property field)
 	GetData() []int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _FirmataMessageDigitalIO is the data-structure of this message

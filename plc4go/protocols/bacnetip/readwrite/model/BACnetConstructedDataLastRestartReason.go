@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLastRestartReason is the corresponding interface of BACnetConstructedDataLastRestartReason
 type BACnetConstructedDataLastRestartReason interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastRestartReason returns LastRestartReason (property field)
 	GetLastRestartReason() BACnetRestartReasonTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetRestartReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLastRestartReason is the data-structure of this message

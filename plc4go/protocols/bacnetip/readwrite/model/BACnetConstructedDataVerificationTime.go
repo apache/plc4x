@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataVerificationTime is the corresponding interface of BACnetConstructedDataVerificationTime
 type BACnetConstructedDataVerificationTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetVerificationTime returns VerificationTime (property field)
 	GetVerificationTime() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataVerificationTime is the data-structure of this message

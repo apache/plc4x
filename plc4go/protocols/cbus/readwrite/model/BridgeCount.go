@@ -28,14 +28,10 @@ import (
 
 // BridgeCount is the corresponding interface of BridgeCount
 type BridgeCount interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCount returns Count (property field)
 	GetCount() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BridgeCount is the data-structure of this message

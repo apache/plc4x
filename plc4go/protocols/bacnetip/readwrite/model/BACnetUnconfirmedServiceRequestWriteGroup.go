@@ -30,6 +30,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestWriteGroup is the corresponding interface of BACnetUnconfirmedServiceRequestWriteGroup
 type BACnetUnconfirmedServiceRequestWriteGroup interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetGroupNumber returns GroupNumber (property field)
 	GetGroupNumber() BACnetContextTagUnsignedInteger
@@ -39,12 +41,6 @@ type BACnetUnconfirmedServiceRequestWriteGroup interface {
 	GetChangeList() BACnetGroupChannelValueList
 	// GetInhibitDelay returns InhibitDelay (property field)
 	GetInhibitDelay() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequestWriteGroup is the data-structure of this message

@@ -29,14 +29,10 @@ import (
 
 // DeviceStatus is the corresponding interface of DeviceStatus
 type DeviceStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetProgramMode returns ProgramMode (property field)
 	GetProgramMode() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DeviceStatus is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataNetworkInterfaceName is the corresponding interface of BACnetConstructedDataNetworkInterfaceName
 type BACnetConstructedDataNetworkInterfaceName interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNetworkInterfaceName returns NetworkInterfaceName (property field)
 	GetNetworkInterfaceName() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataNetworkInterfaceName is the data-structure of this message

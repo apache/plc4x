@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataPresentValue is the corresponding interface of BACnetConstructedDataPresentValue
 type BACnetConstructedDataPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataPresentValue is the data-structure of this message

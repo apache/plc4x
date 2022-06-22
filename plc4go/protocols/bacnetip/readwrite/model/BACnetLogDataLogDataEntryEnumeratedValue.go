@@ -28,15 +28,11 @@ import (
 
 // BACnetLogDataLogDataEntryEnumeratedValue is the corresponding interface of BACnetLogDataLogDataEntryEnumeratedValue
 type BACnetLogDataLogDataEntryEnumeratedValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLogDataLogDataEntryEnumeratedValue is the data-structure of this message

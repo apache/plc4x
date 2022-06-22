@@ -32,6 +32,8 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = uin
 
 // S7PayloadUserDataItemCpuFunctionReadSzlResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionReadSzlResponse
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetSzlId returns SzlId (property field)
 	GetSzlId() SzlId
@@ -39,12 +41,6 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	GetSzlIndex() uint16
 	// GetItems returns Items (property field)
 	GetItems() []SzlDataTreeItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlResponse is the data-structure of this message

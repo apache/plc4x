@@ -28,6 +28,8 @@ import (
 
 // BACnetEscalatorOperationDirectionTagged is the corresponding interface of BACnetEscalatorOperationDirectionTagged
 type BACnetEscalatorOperationDirectionTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,6 @@ type BACnetEscalatorOperationDirectionTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEscalatorOperationDirectionTagged is the data-structure of this message

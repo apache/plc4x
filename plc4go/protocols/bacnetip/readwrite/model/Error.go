@@ -28,16 +28,12 @@ import (
 
 // Error is the corresponding interface of Error
 type Error interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() ErrorClassTagged
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() ErrorCodeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _Error is the data-structure of this message

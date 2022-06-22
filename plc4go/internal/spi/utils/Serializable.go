@@ -20,5 +20,6 @@
 package utils
 
 type Serializable interface {
-	Serialize(io WriteBuffer) error
+	// Serialize serializes this type
+	Serialize(writeBuffer WriteBuffer) error
 }

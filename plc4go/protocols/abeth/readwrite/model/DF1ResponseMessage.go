@@ -29,6 +29,8 @@ import (
 
 // DF1ResponseMessage is the corresponding interface of DF1ResponseMessage
 type DF1ResponseMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 	// GetDestinationAddress returns DestinationAddress (property field)
@@ -39,12 +41,6 @@ type DF1ResponseMessage interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DF1ResponseMessage is the data-structure of this message

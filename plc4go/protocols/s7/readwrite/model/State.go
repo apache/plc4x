@@ -28,6 +28,8 @@ import (
 
 // State is the corresponding interface of State
 type State interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetSIG_8 returns SIG_8 (property field)
 	GetSIG_8() bool
 	// GetSIG_7 returns SIG_7 (property field)
@@ -44,12 +46,6 @@ type State interface {
 	GetSIG_2() bool
 	// GetSIG_1 returns SIG_1 (property field)
 	GetSIG_1() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _State is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataManualSlaveAddressBinding is the corresponding interface of BACnetConstructedDataManualSlaveAddressBinding
 type BACnetConstructedDataManualSlaveAddressBinding interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetManualSlaveAddressBinding returns ManualSlaveAddressBinding (property field)
 	GetManualSlaveAddressBinding() []BACnetAddressBinding
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataManualSlaveAddressBinding is the data-structure of this message

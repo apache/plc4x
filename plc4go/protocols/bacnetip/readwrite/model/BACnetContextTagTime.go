@@ -28,15 +28,11 @@ import (
 
 // BACnetContextTagTime is the corresponding interface of BACnetContextTagTime
 type BACnetContextTagTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetContextTagTime is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfCharacterString is the corresponding interface of BACnetNotificationParametersChangeOfCharacterString
 type BACnetNotificationParametersChangeOfCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -39,12 +41,6 @@ type BACnetNotificationParametersChangeOfCharacterString interface {
 	GetAlarmValue() BACnetContextTagCharacterString
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfCharacterString is the data-structure of this message

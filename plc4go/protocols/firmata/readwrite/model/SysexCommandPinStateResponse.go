@@ -28,6 +28,8 @@ import (
 
 // SysexCommandPinStateResponse is the corresponding interface of SysexCommandPinStateResponse
 type SysexCommandPinStateResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -35,12 +37,6 @@ type SysexCommandPinStateResponse interface {
 	GetPinMode() uint8
 	// GetPinState returns PinState (property field)
 	GetPinState() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SysexCommandPinStateResponse is the data-structure of this message

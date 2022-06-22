@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOVProperty is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVProperty
 type BACnetConfirmedServiceRequestSubscribeCOVProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -43,12 +45,6 @@ type BACnetConfirmedServiceRequestSubscribeCOVProperty interface {
 	GetMonitoredPropertyIdentifier() BACnetPropertyReferenceEnclosed
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVProperty is the data-structure of this message

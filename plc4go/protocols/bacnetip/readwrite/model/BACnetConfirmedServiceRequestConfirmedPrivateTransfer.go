@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedPrivateTransfer is the corresponding interface of BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 type BACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -37,12 +39,6 @@ type BACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetServiceParameters returns ServiceParameters (property field)
 	GetServiceParameters() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestConfirmedPrivateTransfer is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetShedLevelPercent is the corresponding interface of BACnetShedLevelPercent
 type BACnetShedLevelPercent interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetShedLevel
 	// GetPercent returns Percent (property field)
 	GetPercent() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetShedLevelPercent is the data-structure of this message

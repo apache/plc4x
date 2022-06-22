@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataSilenced is the corresponding interface of BACnetConstructedDataSilenced
 type BACnetConstructedDataSilenced interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSilenced returns Silenced (property field)
 	GetSilenced() BACnetSilencedStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSilencedStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSilenced is the data-structure of this message

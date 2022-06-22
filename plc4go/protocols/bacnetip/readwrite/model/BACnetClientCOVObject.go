@@ -28,15 +28,11 @@ import (
 
 // BACnetClientCOVObject is the corresponding interface of BACnetClientCOVObject
 type BACnetClientCOVObject interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetClientCOV
 	// GetRealIncrement returns RealIncrement (property field)
 	GetRealIncrement() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetClientCOVObject is the data-structure of this message

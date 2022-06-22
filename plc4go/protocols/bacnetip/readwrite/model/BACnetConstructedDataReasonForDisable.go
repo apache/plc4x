@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataReasonForDisable is the corresponding interface of BACnetConstructedDataReasonForDisable
 type BACnetConstructedDataReasonForDisable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetReasonForDisable returns ReasonForDisable (property field)
 	GetReasonForDisable() []BACnetAccessCredentialDisableReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataReasonForDisable is the data-structure of this message

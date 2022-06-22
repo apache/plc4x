@@ -28,17 +28,13 @@ import (
 
 // ConnectionStateResponse is the corresponding interface of ConnectionStateResponse
 type ConnectionStateResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ConnectionStateResponse is the data-structure of this message

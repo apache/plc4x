@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataCOVResubscriptionInterval is the corresponding interface of BACnetConstructedDataCOVResubscriptionInterval
 type BACnetConstructedDataCOVResubscriptionInterval interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCovResubscriptionInterval returns CovResubscriptionInterval (property field)
 	GetCovResubscriptionInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCOVResubscriptionInterval is the data-structure of this message

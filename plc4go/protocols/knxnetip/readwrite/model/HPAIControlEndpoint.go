@@ -28,18 +28,14 @@ import (
 
 // HPAIControlEndpoint is the corresponding interface of HPAIControlEndpoint
 type HPAIControlEndpoint interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() IPAddress
 	// GetIpPort returns IpPort (property field)
 	GetIpPort() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _HPAIControlEndpoint is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataMachineRoomID is the corresponding interface of BACnetConstructedDataMachineRoomID
 type BACnetConstructedDataMachineRoomID interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMachineRoomId returns MachineRoomId (property field)
 	GetMachineRoomId() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMachineRoomID is the data-structure of this message

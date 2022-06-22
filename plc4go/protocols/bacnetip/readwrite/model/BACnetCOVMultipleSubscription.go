@@ -28,6 +28,8 @@ import (
 
 // BACnetCOVMultipleSubscription is the corresponding interface of BACnetCOVMultipleSubscription
 type BACnetCOVMultipleSubscription interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetIssueConfirmedNotifications returns IssueConfirmedNotifications (property field)
@@ -38,12 +40,6 @@ type BACnetCOVMultipleSubscription interface {
 	GetMaxNotificationDelay() BACnetContextTagUnsignedInteger
 	// GetListOfCovSubscriptionSpecification returns ListOfCovSubscriptionSpecification (property field)
 	GetListOfCovSubscriptionSpecification() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetCOVMultipleSubscription is the data-structure of this message

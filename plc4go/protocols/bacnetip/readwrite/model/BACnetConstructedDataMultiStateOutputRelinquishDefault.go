@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataMultiStateOutputRelinquishDefault is the corresponding interface of BACnetConstructedDataMultiStateOutputRelinquishDefault
 type BACnetConstructedDataMultiStateOutputRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMultiStateOutputRelinquishDefault is the data-structure of this message

@@ -28,18 +28,14 @@ import (
 
 // BACnetTagPayloadBoolean is the corresponding interface of BACnetTagPayloadBoolean
 type BACnetTagPayloadBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValue returns Value (virtual field)
 	GetValue() bool
 	// GetIsTrue returns IsTrue (virtual field)
 	GetIsTrue() bool
 	// GetIsFalse returns IsFalse (virtual field)
 	GetIsFalse() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTagPayloadBoolean is the data-structure of this message

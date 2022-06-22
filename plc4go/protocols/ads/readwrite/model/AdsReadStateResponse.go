@@ -28,6 +28,8 @@ import (
 
 // AdsReadStateResponse is the corresponding interface of AdsReadStateResponse
 type AdsReadStateResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -35,12 +37,6 @@ type AdsReadStateResponse interface {
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
 	GetDeviceState() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsReadStateResponse is the data-structure of this message

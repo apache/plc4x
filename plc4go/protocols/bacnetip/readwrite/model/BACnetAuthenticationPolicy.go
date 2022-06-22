@@ -28,18 +28,14 @@ import (
 
 // BACnetAuthenticationPolicy is the corresponding interface of BACnetAuthenticationPolicy
 type BACnetAuthenticationPolicy interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPolicy returns Policy (property field)
 	GetPolicy() BACnetAuthenticationPolicyList
 	// GetOrderEnforced returns OrderEnforced (property field)
 	GetOrderEnforced() BACnetContextTagBoolean
 	// GetTimeout returns Timeout (property field)
 	GetTimeout() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetAuthenticationPolicy is the data-structure of this message

@@ -28,16 +28,12 @@ import (
 
 // BACnetUnconfirmedServiceChoiceTagged is the corresponding interface of BACnetUnconfirmedServiceChoiceTagged
 type BACnetUnconfirmedServiceChoiceTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetUnconfirmedServiceChoice
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceChoiceTagged is the data-structure of this message

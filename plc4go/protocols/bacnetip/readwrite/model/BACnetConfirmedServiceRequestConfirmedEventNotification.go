@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedEventNotification is the corresponding interface of BACnetConfirmedServiceRequestConfirmedEventNotification
 type BACnetConfirmedServiceRequestConfirmedEventNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -57,12 +59,6 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	GetToState() BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() BACnetNotificationParameters
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestConfirmedEventNotification is the data-structure of this message

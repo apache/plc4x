@@ -28,15 +28,11 @@ import (
 
 // BACnetLandingCallStatusCommandDestination is the corresponding interface of BACnetLandingCallStatusCommandDestination
 type BACnetLandingCallStatusCommandDestination interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLandingCallStatusCommand
 	// GetDestination returns Destination (property field)
 	GetDestination() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLandingCallStatusCommandDestination is the data-structure of this message

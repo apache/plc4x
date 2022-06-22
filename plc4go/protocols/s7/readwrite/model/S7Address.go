@@ -28,14 +28,10 @@ import (
 
 // S7Address is the corresponding interface of S7Address
 type S7Address interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAddressType returns AddressType (discriminator field)
 	GetAddressType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7Address is the data-structure of this message

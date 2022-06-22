@@ -29,17 +29,13 @@ import (
 
 // FirmataCommandSetDigitalPinValue is the corresponding interface of FirmataCommandSetDigitalPinValue
 type FirmataCommandSetDigitalPinValue interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetOn returns On (property field)
 	GetOn() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _FirmataCommandSetDigitalPinValue is the data-structure of this message

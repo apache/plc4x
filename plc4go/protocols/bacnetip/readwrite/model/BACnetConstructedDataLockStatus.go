@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLockStatus is the corresponding interface of BACnetConstructedDataLockStatus
 type BACnetConstructedDataLockStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLockStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLockStatus is the data-structure of this message

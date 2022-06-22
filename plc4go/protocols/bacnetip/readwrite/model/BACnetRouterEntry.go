@@ -30,6 +30,8 @@ import (
 
 // BACnetRouterEntry is the corresponding interface of BACnetRouterEntry
 type BACnetRouterEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetContextTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
@@ -38,12 +40,6 @@ type BACnetRouterEntry interface {
 	GetStatus() BACnetRouterEntryStatusTagged
 	// GetPerformanceIndex returns PerformanceIndex (property field)
 	GetPerformanceIndex() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetRouterEntry is the data-structure of this message

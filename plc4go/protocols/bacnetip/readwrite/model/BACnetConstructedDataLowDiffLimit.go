@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLowDiffLimit is the corresponding interface of BACnetConstructedDataLowDiffLimit
 type BACnetConstructedDataLowDiffLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLowDiffLimit returns LowDiffLimit (property field)
 	GetLowDiffLimit() BACnetOptionalREAL
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalREAL
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLowDiffLimit is the data-structure of this message

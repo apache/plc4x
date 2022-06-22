@@ -28,17 +28,13 @@ import (
 
 // ApduDataGroupValueResponse is the corresponding interface of ApduDataGroupValueResponse
 type ApduDataGroupValueResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataGroupValueResponse is the data-structure of this message

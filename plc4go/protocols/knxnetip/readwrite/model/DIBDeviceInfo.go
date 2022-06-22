@@ -28,6 +28,8 @@ import (
 
 // DIBDeviceInfo is the corresponding interface of DIBDeviceInfo
 type DIBDeviceInfo interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetKnxMedium returns KnxMedium (property field)
@@ -46,12 +48,6 @@ type DIBDeviceInfo interface {
 	GetKnxNetIpDeviceMacAddress() MACAddress
 	// GetDeviceFriendlyName returns DeviceFriendlyName (property field)
 	GetDeviceFriendlyName() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DIBDeviceInfo is the data-structure of this message

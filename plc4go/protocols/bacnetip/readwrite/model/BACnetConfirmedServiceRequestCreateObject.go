@@ -30,17 +30,13 @@ import (
 
 // BACnetConfirmedServiceRequestCreateObject is the corresponding interface of BACnetConfirmedServiceRequestCreateObject
 type BACnetConfirmedServiceRequestCreateObject interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetObjectSpecifier returns ObjectSpecifier (property field)
 	GetObjectSpecifier() BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestCreateObject is the data-structure of this message

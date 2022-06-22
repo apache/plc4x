@@ -28,6 +28,8 @@ import (
 
 // AdsReadRequest is the corresponding interface of AdsReadRequest
 type AdsReadRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
@@ -35,12 +37,6 @@ type AdsReadRequest interface {
 	GetIndexOffset() uint32
 	// GetLength returns Length (property field)
 	GetLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsReadRequest is the data-structure of this message

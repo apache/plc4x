@@ -28,13 +28,9 @@ import (
 
 // ApduDataRestart is the corresponding interface of ApduDataRestart
 type ApduDataRestart interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataRestart is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // WritePropertyMultipleError is the corresponding interface of WritePropertyMultipleError
 type WritePropertyMultipleError interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedWriteAttempt returns FirstFailedWriteAttempt (property field)
 	GetFirstFailedWriteAttempt() BACnetObjectPropertyReferenceEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _WritePropertyMultipleError is the data-structure of this message

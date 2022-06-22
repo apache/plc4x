@@ -28,17 +28,13 @@ import (
 
 // NLMICouldBeRouterToNetwork is the corresponding interface of NLMICouldBeRouterToNetwork
 type NLMICouldBeRouterToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// GetPerformanceIndex returns PerformanceIndex (property field)
 	GetPerformanceIndex() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NLMICouldBeRouterToNetwork is the data-structure of this message

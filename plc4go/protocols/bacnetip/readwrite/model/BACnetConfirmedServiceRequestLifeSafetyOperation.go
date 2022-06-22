@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestLifeSafetyOperation is the corresponding interface of BACnetConfirmedServiceRequestLifeSafetyOperation
 type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetRequestingProcessIdentifier returns RequestingProcessIdentifier (property field)
 	GetRequestingProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -39,12 +41,6 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	GetRequest() BACnetLifeSafetyOperationTagged
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestLifeSafetyOperation is the data-structure of this message

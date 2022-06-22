@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataDoorStatus is the corresponding interface of BACnetConstructedDataDoorStatus
 type BACnetConstructedDataDoorStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataDoorStatus is the data-structure of this message

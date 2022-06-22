@@ -28,6 +28,8 @@ import (
 
 // CBusOptions is the corresponding interface of CBusOptions
 type CBusOptions interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetConnect returns Connect (property field)
 	GetConnect() bool
 	// GetSmart returns Smart (property field)
@@ -44,12 +46,6 @@ type CBusOptions interface {
 	GetPun() bool
 	// GetPcn returns Pcn (property field)
 	GetPcn() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusOptions is the data-structure of this message

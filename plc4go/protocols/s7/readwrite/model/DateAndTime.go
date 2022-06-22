@@ -28,6 +28,8 @@ import (
 
 // DateAndTime is the corresponding interface of DateAndTime
 type DateAndTime interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetYear returns Year (property field)
 	GetYear() uint8
 	// GetMonth returns Month (property field)
@@ -44,12 +46,6 @@ type DateAndTime interface {
 	GetMsec() uint16
 	// GetDow returns Dow (property field)
 	GetDow() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DateAndTime is the data-structure of this message

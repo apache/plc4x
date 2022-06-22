@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataTimeOfDeviceRestart is the corresponding interface of BACnetConstructedDataTimeOfDeviceRestart
 type BACnetConstructedDataTimeOfDeviceRestart interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimeOfDeviceRestart returns TimeOfDeviceRestart (property field)
 	GetTimeOfDeviceRestart() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataTimeOfDeviceRestart is the data-structure of this message

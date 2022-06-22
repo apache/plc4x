@@ -28,17 +28,13 @@ import (
 
 // BACnetConfirmedServiceRequestVTOpen is the corresponding interface of BACnetConfirmedServiceRequestVTOpen
 type BACnetConfirmedServiceRequestVTOpen interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetVtClass returns VtClass (property field)
 	GetVtClass() BACnetVTClassTagged
 	// GetLocalVtSessionIdentifier returns LocalVtSessionIdentifier (property field)
 	GetLocalVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestVTOpen is the data-structure of this message

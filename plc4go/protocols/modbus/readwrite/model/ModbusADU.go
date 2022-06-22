@@ -28,14 +28,10 @@ import (
 
 // ModbusADU is the corresponding interface of ModbusADU
 type ModbusADU interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDriverType returns DriverType (discriminator field)
 	GetDriverType() DriverType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusADU is the data-structure of this message

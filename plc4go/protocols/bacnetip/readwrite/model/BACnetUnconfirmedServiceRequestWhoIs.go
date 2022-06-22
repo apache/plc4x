@@ -30,17 +30,13 @@ import (
 
 // BACnetUnconfirmedServiceRequestWhoIs is the corresponding interface of BACnetUnconfirmedServiceRequestWhoIs
 type BACnetUnconfirmedServiceRequestWhoIs interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceInstanceRangeLowLimit returns DeviceInstanceRangeLowLimit (property field)
 	GetDeviceInstanceRangeLowLimit() BACnetContextTagUnsignedInteger
 	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit (property field)
 	GetDeviceInstanceRangeHighLimit() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequestWhoIs is the data-structure of this message

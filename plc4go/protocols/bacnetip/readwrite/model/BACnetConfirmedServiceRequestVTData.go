@@ -28,6 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestVTData is the corresponding interface of BACnetConfirmedServiceRequestVTData
 type BACnetConfirmedServiceRequestVTData interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -35,12 +37,6 @@ type BACnetConfirmedServiceRequestVTData interface {
 	GetVtNewData() BACnetApplicationTagOctetString
 	// GetVtDataFlag returns VtDataFlag (property field)
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestVTData is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetTimerStateChangeValueCharacterString is the corresponding interface of BACnetTimerStateChangeValueCharacterString
 type BACnetTimerStateChangeValueCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTimerStateChangeValueCharacterString is the data-structure of this message

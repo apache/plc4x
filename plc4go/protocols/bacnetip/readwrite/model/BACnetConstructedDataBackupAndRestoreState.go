@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBackupAndRestoreState is the corresponding interface of BACnetConstructedDataBackupAndRestoreState
 type BACnetConstructedDataBackupAndRestoreState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBackupAndRestoreState returns BackupAndRestoreState (property field)
 	GetBackupAndRestoreState() BACnetBackupStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBackupStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBackupAndRestoreState is the data-structure of this message

@@ -30,17 +30,13 @@ import (
 
 // BACnetConfirmedServiceRequestReinitializeDevice is the corresponding interface of BACnetConfirmedServiceRequestReinitializeDevice
 type BACnetConfirmedServiceRequestReinitializeDevice interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetReinitializedStateOfDevice returns ReinitializedStateOfDevice (property field)
 	GetReinitializedStateOfDevice() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
 	// GetPassword returns Password (property field)
 	GetPassword() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestReinitializeDevice is the data-structure of this message

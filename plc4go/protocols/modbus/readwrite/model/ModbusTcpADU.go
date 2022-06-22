@@ -32,6 +32,8 @@ const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
 // ModbusTcpADU is the corresponding interface of ModbusTcpADU
 type ModbusTcpADU interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusADU
 	// GetTransactionIdentifier returns TransactionIdentifier (property field)
 	GetTransactionIdentifier() uint16
@@ -39,12 +41,6 @@ type ModbusTcpADU interface {
 	GetUnitIdentifier() uint8
 	// GetPdu returns Pdu (property field)
 	GetPdu() ModbusPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusTcpADU is the data-structure of this message

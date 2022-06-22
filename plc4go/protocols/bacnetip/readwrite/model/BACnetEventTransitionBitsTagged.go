@@ -28,6 +28,8 @@ import (
 
 // BACnetEventTransitionBitsTagged is the corresponding interface of BACnetEventTransitionBitsTagged
 type BACnetEventTransitionBitsTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -38,12 +40,6 @@ type BACnetEventTransitionBitsTagged interface {
 	GetToFault() bool
 	// GetToNormal returns ToNormal (virtual field)
 	GetToNormal() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventTransitionBitsTagged is the data-structure of this message

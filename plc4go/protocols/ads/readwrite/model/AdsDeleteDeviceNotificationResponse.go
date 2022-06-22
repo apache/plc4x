@@ -28,15 +28,11 @@ import (
 
 // AdsDeleteDeviceNotificationResponse is the corresponding interface of AdsDeleteDeviceNotificationResponse
 type AdsDeleteDeviceNotificationResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsDeleteDeviceNotificationResponse is the data-structure of this message

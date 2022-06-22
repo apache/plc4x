@@ -29,17 +29,13 @@ import (
 
 // FirmataMessageSubscribeDigitalPinValue is the corresponding interface of FirmataMessageSubscribeDigitalPinValue
 type FirmataMessageSubscribeDigitalPinValue interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetEnable returns Enable (property field)
 	GetEnable() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _FirmataMessageSubscribeDigitalPinValue is the data-structure of this message

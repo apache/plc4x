@@ -28,6 +28,8 @@ import (
 
 // BACnetDaysOfWeekTagged is the corresponding interface of BACnetDaysOfWeekTagged
 type BACnetDaysOfWeekTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -46,12 +48,6 @@ type BACnetDaysOfWeekTagged interface {
 	GetSaturday() bool
 	// GetSunday returns Sunday (virtual field)
 	GetSunday() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetDaysOfWeekTagged is the data-structure of this message

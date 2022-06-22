@@ -28,18 +28,14 @@ import (
 
 // AdsStampHeader is the corresponding interface of AdsStampHeader
 type AdsStampHeader interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint64
 	// GetSamples returns Samples (property field)
 	GetSamples() uint32
 	// GetAdsNotificationSamples returns AdsNotificationSamples (property field)
 	GetAdsNotificationSamples() []AdsNotificationSample
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsStampHeader is the data-structure of this message

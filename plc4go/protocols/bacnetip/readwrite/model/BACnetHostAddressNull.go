@@ -28,15 +28,11 @@ import (
 
 // BACnetHostAddressNull is the corresponding interface of BACnetHostAddressNull
 type BACnetHostAddressNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetHostAddress
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetHostAddressNull is the data-structure of this message

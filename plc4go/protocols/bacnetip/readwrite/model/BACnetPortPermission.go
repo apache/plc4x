@@ -30,16 +30,12 @@ import (
 
 // BACnetPortPermission is the corresponding interface of BACnetPortPermission
 type BACnetPortPermission interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPort returns Port (property field)
 	GetPort() BACnetContextTagUnsignedInteger
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPortPermission is the data-structure of this message

@@ -28,14 +28,10 @@ import (
 
 // BACnetUnconfirmedServiceRequest is the corresponding interface of BACnetUnconfirmedServiceRequest
 type BACnetUnconfirmedServiceRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequest is the data-structure of this message

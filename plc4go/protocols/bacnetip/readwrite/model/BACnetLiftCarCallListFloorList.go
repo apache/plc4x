@@ -28,18 +28,14 @@ import (
 
 // BACnetLiftCarCallListFloorList is the corresponding interface of BACnetLiftCarCallListFloorList
 type BACnetLiftCarCallListFloorList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetFloorNumbers returns FloorNumbers (property field)
 	GetFloorNumbers() []BACnetApplicationTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLiftCarCallListFloorList is the data-structure of this message

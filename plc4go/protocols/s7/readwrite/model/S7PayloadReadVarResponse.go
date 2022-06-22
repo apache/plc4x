@@ -28,15 +28,11 @@ import (
 
 // S7PayloadReadVarResponse is the corresponding interface of S7PayloadReadVarResponse
 type S7PayloadReadVarResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7VarPayloadDataItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadReadVarResponse is the data-structure of this message

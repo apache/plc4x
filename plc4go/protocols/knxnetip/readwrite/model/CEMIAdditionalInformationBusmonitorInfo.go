@@ -32,6 +32,8 @@ const CEMIAdditionalInformationBusmonitorInfo_LEN uint8 = uint8(1)
 
 // CEMIAdditionalInformationBusmonitorInfo is the corresponding interface of CEMIAdditionalInformationBusmonitorInfo
 type CEMIAdditionalInformationBusmonitorInfo interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMIAdditionalInformation
 	// GetFrameErrorFlag returns FrameErrorFlag (property field)
 	GetFrameErrorFlag() bool
@@ -45,12 +47,6 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	GetLostFlag() bool
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CEMIAdditionalInformationBusmonitorInfo is the data-structure of this message

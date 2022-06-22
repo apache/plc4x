@@ -28,17 +28,13 @@ import (
 
 // COTPPacketData is the corresponding interface of COTPPacketData
 type COTPPacketData interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPPacket
 	// GetEot returns Eot (property field)
 	GetEot() bool
 	// GetTpduRef returns TpduRef (property field)
 	GetTpduRef() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _COTPPacketData is the data-structure of this message

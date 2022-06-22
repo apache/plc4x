@@ -28,6 +28,8 @@ import (
 
 // BACnetServiceAckVTData is the corresponding interface of BACnetServiceAckVTData
 type BACnetServiceAckVTData interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -35,12 +37,6 @@ type BACnetServiceAckVTData interface {
 	GetVtNewData() BACnetApplicationTagOctetString
 	// GetVtDataFlag returns VtDataFlag (property field)
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckVTData is the data-structure of this message

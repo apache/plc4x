@@ -29,17 +29,13 @@ import (
 
 // S7MessageObjectResponse is the corresponding interface of S7MessageObjectResponse
 type S7MessageObjectResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7DataAlarmMessage
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7MessageObjectResponse is the data-structure of this message

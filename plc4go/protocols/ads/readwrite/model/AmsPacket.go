@@ -28,6 +28,8 @@ import (
 
 // AmsPacket is the corresponding interface of AmsPacket
 type AmsPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTargetAmsNetId returns TargetAmsNetId (property field)
 	GetTargetAmsNetId() AmsNetId
 	// GetTargetAmsPort returns TargetAmsPort (property field)
@@ -46,12 +48,6 @@ type AmsPacket interface {
 	GetInvokeId() uint32
 	// GetData returns Data (property field)
 	GetData() AdsData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AmsPacket is the data-structure of this message

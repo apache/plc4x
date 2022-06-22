@@ -28,16 +28,12 @@ import (
 
 // BACnetCredentialAuthenticationFactor is the corresponding interface of BACnetCredentialAuthenticationFactor
 type BACnetCredentialAuthenticationFactor interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDisable returns Disable (property field)
 	GetDisable() BACnetAccessAuthenticationFactorDisableTagged
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
 	GetAuthenticationFactor() BACnetAuthenticationFactorEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetCredentialAuthenticationFactor is the data-structure of this message

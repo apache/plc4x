@@ -28,6 +28,8 @@ import (
 
 // KnxGroupAddress3Level is the corresponding interface of KnxGroupAddress3Level
 type KnxGroupAddress3Level interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxGroupAddress
 	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
@@ -35,12 +37,6 @@ type KnxGroupAddress3Level interface {
 	GetMiddleGroup() uint8
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _KnxGroupAddress3Level is the data-structure of this message

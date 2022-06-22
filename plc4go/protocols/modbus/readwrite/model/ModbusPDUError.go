@@ -28,15 +28,11 @@ import (
 
 // ModbusPDUError is the corresponding interface of ModbusPDUError
 type ModbusPDUError interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetExceptionCode returns ExceptionCode (property field)
 	GetExceptionCode() ModbusErrorCode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUError is the data-structure of this message

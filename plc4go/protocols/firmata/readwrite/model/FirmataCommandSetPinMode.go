@@ -28,17 +28,13 @@ import (
 
 // FirmataCommandSetPinMode is the corresponding interface of FirmataCommandSetPinMode
 type FirmataCommandSetPinMode interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetMode returns Mode (property field)
 	GetMode() PinMode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _FirmataCommandSetPinMode is the data-structure of this message

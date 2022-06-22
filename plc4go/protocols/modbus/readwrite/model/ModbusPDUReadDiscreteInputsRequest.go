@@ -28,17 +28,13 @@ import (
 
 // ModbusPDUReadDiscreteInputsRequest is the corresponding interface of ModbusPDUReadDiscreteInputsRequest
 type ModbusPDUReadDiscreteInputsRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUReadDiscreteInputsRequest is the data-structure of this message

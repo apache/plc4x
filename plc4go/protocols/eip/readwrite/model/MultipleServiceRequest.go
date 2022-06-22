@@ -33,15 +33,11 @@ const MultipleServiceRequest_REQUESTPATH uint32 = 0x01240220
 
 // MultipleServiceRequest is the corresponding interface of MultipleServiceRequest
 type MultipleServiceRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetData returns Data (property field)
 	GetData() Services
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _MultipleServiceRequest is the data-structure of this message

@@ -30,6 +30,8 @@ import (
 
 // ConfirmedEventNotificationRequest is the corresponding interface of ConfirmedEventNotificationRequest
 type ConfirmedEventNotificationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
 	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier (property field)
@@ -56,12 +58,6 @@ type ConfirmedEventNotificationRequest interface {
 	GetToState() BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() BACnetNotificationParameters
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ConfirmedEventNotificationRequest is the data-structure of this message

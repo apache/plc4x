@@ -28,17 +28,13 @@ import (
 
 // ModbusPDUReadCoilsRequest is the corresponding interface of ModbusPDUReadCoilsRequest
 type ModbusPDUReadCoilsRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUReadCoilsRequest is the data-structure of this message

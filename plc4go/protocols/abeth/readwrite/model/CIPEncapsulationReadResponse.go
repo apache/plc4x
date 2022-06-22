@@ -28,15 +28,11 @@ import (
 
 // CIPEncapsulationReadResponse is the corresponding interface of CIPEncapsulationReadResponse
 type CIPEncapsulationReadResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	CIPEncapsulationPacket
 	// GetResponse returns Response (property field)
 	GetResponse() DF1ResponseMessage
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CIPEncapsulationReadResponse is the data-structure of this message

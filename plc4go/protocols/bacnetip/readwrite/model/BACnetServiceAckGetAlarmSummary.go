@@ -28,6 +28,8 @@ import (
 
 // BACnetServiceAckGetAlarmSummary is the corresponding interface of BACnetServiceAckGetAlarmSummary
 type BACnetServiceAckGetAlarmSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -35,12 +37,6 @@ type BACnetServiceAckGetAlarmSummary interface {
 	GetEventState() BACnetEventStateTagged
 	// GetAcknowledgedTransitions returns AcknowledgedTransitions (property field)
 	GetAcknowledgedTransitions() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckGetAlarmSummary is the data-structure of this message

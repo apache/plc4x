@@ -28,17 +28,13 @@ import (
 
 // BACnetContextTagSignedInteger is the corresponding interface of BACnetContextTagSignedInteger
 type BACnetContextTagSignedInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetContextTagSignedInteger is the data-structure of this message

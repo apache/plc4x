@@ -29,17 +29,13 @@ import (
 
 // ConnectionStateRequest is the corresponding interface of ConnectionStateRequest
 type ConnectionStateRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ConnectionStateRequest is the data-structure of this message

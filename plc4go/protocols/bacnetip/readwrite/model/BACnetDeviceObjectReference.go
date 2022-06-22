@@ -30,16 +30,12 @@ import (
 
 // BACnetDeviceObjectReference is the corresponding interface of BACnetDeviceObjectReference
 type BACnetDeviceObjectReference interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetDeviceObjectReference is the data-structure of this message

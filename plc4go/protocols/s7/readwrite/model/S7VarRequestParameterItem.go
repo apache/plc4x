@@ -28,14 +28,10 @@ import (
 
 // S7VarRequestParameterItem is the corresponding interface of S7VarRequestParameterItem
 type S7VarRequestParameterItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7VarRequestParameterItem is the data-structure of this message

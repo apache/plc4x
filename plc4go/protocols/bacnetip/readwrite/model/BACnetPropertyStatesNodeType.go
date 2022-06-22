@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesNodeType is the corresponding interface of BACnetPropertyStatesNodeType
 type BACnetPropertyStatesNodeType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() BACnetNodeTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesNodeType is the data-structure of this message

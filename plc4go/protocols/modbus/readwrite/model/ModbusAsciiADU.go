@@ -28,17 +28,13 @@ import (
 
 // ModbusAsciiADU is the corresponding interface of ModbusAsciiADU
 type ModbusAsciiADU interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusADU
 	// GetAddress returns Address (property field)
 	GetAddress() uint8
 	// GetPdu returns Pdu (property field)
 	GetPdu() ModbusPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusAsciiADU is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataMinimumValueTimestamp is the corresponding interface of BACnetConstructedDataMinimumValueTimestamp
 type BACnetConstructedDataMinimumValueTimestamp interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinimumValueTimestamp returns MinimumValueTimestamp (property field)
 	GetMinimumValueTimestamp() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMinimumValueTimestamp is the data-structure of this message

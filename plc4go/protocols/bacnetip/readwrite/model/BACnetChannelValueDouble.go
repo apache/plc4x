@@ -28,15 +28,11 @@ import (
 
 // BACnetChannelValueDouble is the corresponding interface of BACnetChannelValueDouble
 type BACnetChannelValueDouble interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetChannelValueDouble is the data-structure of this message

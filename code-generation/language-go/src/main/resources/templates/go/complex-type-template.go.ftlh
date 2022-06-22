@@ -82,6 +82,8 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 
 // ${type.name} is the corresponding interface of ${type.name?cap_first}
 type ${type.name} interface {
+	utils.LengthAware
+	utils.Serializable
 <#if type.isDiscriminatedChildTypeDefinition()>
 	${type.parentType.orElseThrow().name?cap_first}
 </#if>
@@ -104,12 +106,6 @@ type ${type.name} interface {
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
 	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _${type.name} is the data-structure of this message

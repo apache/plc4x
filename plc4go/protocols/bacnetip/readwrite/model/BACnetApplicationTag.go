@@ -28,18 +28,14 @@ import (
 
 // BACnetApplicationTag is the corresponding interface of BACnetApplicationTag
 type BACnetApplicationTag interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetActualTagNumber returns ActualTagNumber (virtual field)
 	GetActualTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetApplicationTag is the data-structure of this message

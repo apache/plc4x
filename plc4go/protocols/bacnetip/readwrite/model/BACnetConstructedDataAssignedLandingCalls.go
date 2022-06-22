@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataAssignedLandingCalls is the corresponding interface of BACnetConstructedDataAssignedLandingCalls
 type BACnetConstructedDataAssignedLandingCalls interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,6 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	GetAssignedLandingCalls() []BACnetAssignedLandingCalls
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAssignedLandingCalls is the data-structure of this message

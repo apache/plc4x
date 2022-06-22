@@ -30,6 +30,8 @@ import (
 
 // APDUConfirmedRequest is the corresponding interface of APDUConfirmedRequest
 type APDUConfirmedRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -57,12 +59,6 @@ type APDUConfirmedRequest interface {
 	GetApduHeaderReduction() uint16
 	// GetSegmentReduction returns SegmentReduction (virtual field)
 	GetSegmentReduction() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _APDUConfirmedRequest is the data-structure of this message

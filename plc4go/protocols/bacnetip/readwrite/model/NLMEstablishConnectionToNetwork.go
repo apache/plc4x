@@ -28,17 +28,13 @@ import (
 
 // NLMEstablishConnectionToNetwork is the corresponding interface of NLMEstablishConnectionToNetwork
 type NLMEstablishConnectionToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// GetTerminationTime returns TerminationTime (property field)
 	GetTerminationTime() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NLMEstablishConnectionToNetwork is the data-structure of this message

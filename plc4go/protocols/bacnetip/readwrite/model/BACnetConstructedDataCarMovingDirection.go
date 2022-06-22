@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataCarMovingDirection is the corresponding interface of BACnetConstructedDataCarMovingDirection
 type BACnetConstructedDataCarMovingDirection interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCarMovingDirection returns CarMovingDirection (property field)
 	GetCarMovingDirection() BACnetLiftCarDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarDirectionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCarMovingDirection is the data-structure of this message

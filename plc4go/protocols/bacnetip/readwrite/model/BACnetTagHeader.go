@@ -28,6 +28,8 @@ import (
 
 // BACnetTagHeader is the corresponding interface of BACnetTagHeader
 type BACnetTagHeader interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTagNumber returns TagNumber (property field)
 	GetTagNumber() uint8
 	// GetTagClass returns TagClass (property field)
@@ -52,12 +54,6 @@ type BACnetTagHeader interface {
 	GetIsPrimitiveAndNotBoolean() bool
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTagHeader is the data-structure of this message

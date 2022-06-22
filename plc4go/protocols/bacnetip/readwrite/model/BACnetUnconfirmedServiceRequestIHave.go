@@ -28,6 +28,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestIHave is the corresponding interface of BACnetUnconfirmedServiceRequestIHave
 type BACnetUnconfirmedServiceRequestIHave interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -35,12 +37,6 @@ type BACnetUnconfirmedServiceRequestIHave interface {
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetObjectName returns ObjectName (property field)
 	GetObjectName() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequestIHave is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BVLCReadForeignDeviceTableAck is the corresponding interface of BVLCReadForeignDeviceTableAck
 type BVLCReadForeignDeviceTableAck interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCForeignDeviceTableEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BVLCReadForeignDeviceTableAck is the data-structure of this message

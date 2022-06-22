@@ -28,15 +28,11 @@ import (
 
 // CALDataRequestIdentify is the corresponding interface of CALDataRequestIdentify
 type CALDataRequestIdentify interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
 	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CALDataRequestIdentify is the data-structure of this message

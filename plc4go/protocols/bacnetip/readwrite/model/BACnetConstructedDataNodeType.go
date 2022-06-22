@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataNodeType is the corresponding interface of BACnetConstructedDataNodeType
 type BACnetConstructedDataNodeType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() BACnetNodeTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNodeTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataNodeType is the data-structure of this message

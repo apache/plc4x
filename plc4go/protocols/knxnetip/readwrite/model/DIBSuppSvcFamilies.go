@@ -28,16 +28,12 @@ import (
 
 // DIBSuppSvcFamilies is the corresponding interface of DIBSuppSvcFamilies
 type DIBSuppSvcFamilies interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetServiceIds returns ServiceIds (property field)
 	GetServiceIds() []ServiceId
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DIBSuppSvcFamilies is the data-structure of this message

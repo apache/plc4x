@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataUsesRemaining is the corresponding interface of BACnetConstructedDataUsesRemaining
 type BACnetConstructedDataUsesRemaining interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUsesRemaining returns UsesRemaining (property field)
 	GetUsesRemaining() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataUsesRemaining is the data-structure of this message

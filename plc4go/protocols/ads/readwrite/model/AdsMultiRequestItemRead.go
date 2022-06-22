@@ -28,6 +28,8 @@ import (
 
 // AdsMultiRequestItemRead is the corresponding interface of AdsMultiRequestItemRead
 type AdsMultiRequestItemRead interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsMultiRequestItem
 	// GetItemIndexGroup returns ItemIndexGroup (property field)
 	GetItemIndexGroup() uint32
@@ -35,12 +37,6 @@ type AdsMultiRequestItemRead interface {
 	GetItemIndexOffset() uint32
 	// GetItemReadLength returns ItemReadLength (property field)
 	GetItemReadLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsMultiRequestItemRead is the data-structure of this message

@@ -28,18 +28,14 @@ import (
 
 // Services is the corresponding interface of Services
 type Services interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetServiceNb returns ServiceNb (property field)
 	GetServiceNb() uint16
 	// GetOffsets returns Offsets (property field)
 	GetOffsets() []uint16
 	// GetServices returns Services (property field)
 	GetServices() []CipService
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _Services is the data-structure of this message

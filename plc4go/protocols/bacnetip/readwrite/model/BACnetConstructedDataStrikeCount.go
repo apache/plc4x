@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataStrikeCount is the corresponding interface of BACnetConstructedDataStrikeCount
 type BACnetConstructedDataStrikeCount interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetStrikeCount returns StrikeCount (property field)
 	GetStrikeCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataStrikeCount is the data-structure of this message

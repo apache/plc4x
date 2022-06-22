@@ -28,15 +28,11 @@ import (
 
 // S7ParameterWriteVarResponse is the corresponding interface of S7ParameterWriteVarResponse
 type S7ParameterWriteVarResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Parameter
 	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7ParameterWriteVarResponse is the data-structure of this message

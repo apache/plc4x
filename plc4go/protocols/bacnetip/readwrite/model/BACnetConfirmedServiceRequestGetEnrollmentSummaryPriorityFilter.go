@@ -28,6 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMinPriority returns MinPriority (property field)
@@ -36,12 +38,6 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	GetMaxPriority() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the data-structure of this message

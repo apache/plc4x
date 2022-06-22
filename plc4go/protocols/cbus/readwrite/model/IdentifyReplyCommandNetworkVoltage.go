@@ -33,17 +33,13 @@ const IdentifyReplyCommandNetworkVoltage_V byte = 0x56
 
 // IdentifyReplyCommandNetworkVoltage is the corresponding interface of IdentifyReplyCommandNetworkVoltage
 type IdentifyReplyCommandNetworkVoltage interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetVolts returns Volts (property field)
 	GetVolts() string
 	// GetVoltsDecimalPlace returns VoltsDecimalPlace (property field)
 	GetVoltsDecimalPlace() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _IdentifyReplyCommandNetworkVoltage is the data-structure of this message

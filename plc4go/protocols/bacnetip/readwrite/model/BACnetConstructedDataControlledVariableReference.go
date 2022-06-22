@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataControlledVariableReference is the corresponding interface of BACnetConstructedDataControlledVariableReference
 type BACnetConstructedDataControlledVariableReference interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetControlledVariableReference returns ControlledVariableReference (property field)
 	GetControlledVariableReference() BACnetObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectPropertyReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataControlledVariableReference is the data-structure of this message

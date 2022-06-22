@@ -28,6 +28,8 @@ import (
 
 // BACnetTagPayloadObjectIdentifier is the corresponding interface of BACnetTagPayloadObjectIdentifier
 type BACnetTagPayloadObjectIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectType
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -36,12 +38,6 @@ type BACnetTagPayloadObjectIdentifier interface {
 	GetInstanceNumber() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTagPayloadObjectIdentifier is the data-structure of this message

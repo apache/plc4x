@@ -29,6 +29,8 @@ import (
 
 // S7AddressAny is the corresponding interface of S7AddressAny
 type S7AddressAny interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Address
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
@@ -42,12 +44,6 @@ type S7AddressAny interface {
 	GetByteAddress() uint16
 	// GetBitAddress returns BitAddress (property field)
 	GetBitAddress() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7AddressAny is the data-structure of this message

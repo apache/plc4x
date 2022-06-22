@@ -28,18 +28,14 @@ import (
 
 // BACnetEventParameterChangeOfStateListOfValues is the corresponding interface of BACnetEventParameterChangeOfStateListOfValues
 type BACnetEventParameterChangeOfStateListOfValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() []BACnetPropertyStates
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventParameterChangeOfStateListOfValues is the data-structure of this message

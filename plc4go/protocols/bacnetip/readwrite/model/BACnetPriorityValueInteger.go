@@ -28,15 +28,11 @@ import (
 
 // BACnetPriorityValueInteger is the corresponding interface of BACnetPriorityValueInteger
 type BACnetPriorityValueInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPriorityValueInteger is the data-structure of this message

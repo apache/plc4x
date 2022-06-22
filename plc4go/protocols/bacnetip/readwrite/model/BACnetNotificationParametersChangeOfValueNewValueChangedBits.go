@@ -28,15 +28,11 @@ import (
 
 // BACnetNotificationParametersChangeOfValueNewValueChangedBits is the corresponding interface of BACnetNotificationParametersChangeOfValueNewValueChangedBits
 type BACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedBits returns ChangedBits (property field)
 	GetChangedBits() BACnetContextTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfValueNewValueChangedBits is the data-structure of this message

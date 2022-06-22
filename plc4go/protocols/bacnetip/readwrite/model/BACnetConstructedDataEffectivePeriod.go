@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataEffectivePeriod is the corresponding interface of BACnetConstructedDataEffectivePeriod
 type BACnetConstructedDataEffectivePeriod interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() BACnetDateRange
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateRange
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEffectivePeriod is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataEventAlgorithmInhibit is the corresponding interface of BACnetConstructedDataEventAlgorithmInhibit
 type BACnetConstructedDataEventAlgorithmInhibit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventAlgorithmInhibit returns EventAlgorithmInhibit (property field)
 	GetEventAlgorithmInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEventAlgorithmInhibit is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataMode is the corresponding interface of BACnetConstructedDataMode
 type BACnetConstructedDataMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMode returns Mode (property field)
 	GetMode() BACnetLifeSafetyModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMode is the data-structure of this message

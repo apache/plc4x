@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesLiftCarDoorCommand is the corresponding interface of BACnetPropertyStatesLiftCarDoorCommand
 type BACnetPropertyStatesLiftCarDoorCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLiftCarDoorCommand returns LiftCarDoorCommand (property field)
 	GetLiftCarDoorCommand() BACnetLiftCarDoorCommandTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesLiftCarDoorCommand is the data-structure of this message

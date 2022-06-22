@@ -30,6 +30,8 @@ import (
 
 // ConnectionResponse is the corresponding interface of ConnectionResponse
 type ConnectionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -39,12 +41,6 @@ type ConnectionResponse interface {
 	GetHpaiDataEndpoint() HPAIDataEndpoint
 	// GetConnectionResponseDataBlock returns ConnectionResponseDataBlock (property field)
 	GetConnectionResponseDataBlock() ConnectionResponseDataBlock
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ConnectionResponse is the data-structure of this message

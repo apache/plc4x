@@ -28,17 +28,13 @@ import (
 
 // BACnetServiceAckGetEventInformation is the corresponding interface of BACnetServiceAckGetEventInformation
 type BACnetServiceAckGetEventInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
 	GetListOfEventSummaries() BACnetEventSummariesList
 	// GetMoreEvents returns MoreEvents (property field)
 	GetMoreEvents() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckGetEventInformation is the data-structure of this message

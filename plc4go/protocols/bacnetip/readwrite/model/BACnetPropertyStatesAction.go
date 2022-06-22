@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesAction is the corresponding interface of BACnetPropertyStatesAction
 type BACnetPropertyStatesAction interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetAction returns Action (property field)
 	GetAction() BACnetActionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesAction is the data-structure of this message

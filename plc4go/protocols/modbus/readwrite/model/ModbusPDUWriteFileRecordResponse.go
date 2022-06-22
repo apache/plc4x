@@ -28,15 +28,11 @@ import (
 
 // ModbusPDUWriteFileRecordResponse is the corresponding interface of ModbusPDUWriteFileRecordResponse
 type ModbusPDUWriteFileRecordResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetItems returns Items (property field)
 	GetItems() []ModbusPDUWriteFileRecordResponseItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUWriteFileRecordResponse is the data-structure of this message

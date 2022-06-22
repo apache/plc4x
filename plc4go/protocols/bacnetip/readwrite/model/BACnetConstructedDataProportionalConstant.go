@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataProportionalConstant is the corresponding interface of BACnetConstructedDataProportionalConstant
 type BACnetConstructedDataProportionalConstant interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProportionalConstant returns ProportionalConstant (property field)
 	GetProportionalConstant() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataProportionalConstant is the data-structure of this message

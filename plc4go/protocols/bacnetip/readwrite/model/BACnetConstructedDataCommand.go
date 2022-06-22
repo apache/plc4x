@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataCommand is the corresponding interface of BACnetConstructedDataCommand
 type BACnetConstructedDataCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCommand returns Command (property field)
 	GetCommand() BACnetNetworkPortCommandTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNetworkPortCommandTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCommand is the data-structure of this message

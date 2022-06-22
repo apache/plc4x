@@ -28,13 +28,9 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
 type S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is the data-structure of this message

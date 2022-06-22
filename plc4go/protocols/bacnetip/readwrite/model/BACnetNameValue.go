@@ -30,16 +30,12 @@ import (
 
 // BACnetNameValue is the corresponding interface of BACnetNameValue
 type BACnetNameValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetName returns Name (property field)
 	GetName() BACnetContextTagCharacterString
 	// GetValue returns Value (property field)
 	GetValue() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNameValue is the data-structure of this message

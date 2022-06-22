@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataBitStringValueAlarmValues is the corresponding interface of BACnetConstructedDataBitStringValueAlarmValues
 type BACnetConstructedDataBitStringValueAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,6 @@ type BACnetConstructedDataBitStringValueAlarmValues interface {
 	GetAlarmValues() []BACnetApplicationTagBitString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBitStringValueAlarmValues is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataAccessDoorRelinquishDefault is the corresponding interface of BACnetConstructedDataAccessDoorRelinquishDefault
 type BACnetConstructedDataAccessDoorRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetDoorValueTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorValueTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAccessDoorRelinquishDefault is the data-structure of this message

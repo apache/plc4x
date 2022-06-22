@@ -28,18 +28,14 @@ import (
 
 // BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification is the corresponding interface of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
 type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfCovSubscriptionSpecificationEntry returns ListOfCovSubscriptionSpecificationEntry (property field)
 	GetListOfCovSubscriptionSpecificationEntry() []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification is the data-structure of this message

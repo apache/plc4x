@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataAccessDoorPresentValue is the corresponding interface of BACnetConstructedDataAccessDoorPresentValue
 type BACnetConstructedDataAccessDoorPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetDoorValueTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorValueTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAccessDoorPresentValue is the data-structure of this message

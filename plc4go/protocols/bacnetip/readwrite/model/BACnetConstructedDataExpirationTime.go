@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataExpirationTime is the corresponding interface of BACnetConstructedDataExpirationTime
 type BACnetConstructedDataExpirationTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetExpirationTime returns ExpirationTime (property field)
 	GetExpirationTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataExpirationTime is the data-structure of this message

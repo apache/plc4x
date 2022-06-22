@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLockoutRelinquishTime is the corresponding interface of BACnetConstructedDataLockoutRelinquishTime
 type BACnetConstructedDataLockoutRelinquishTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLockoutRelinquishTime returns LockoutRelinquishTime (property field)
 	GetLockoutRelinquishTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLockoutRelinquishTime is the data-structure of this message

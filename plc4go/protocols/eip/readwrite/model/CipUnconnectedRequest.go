@@ -33,6 +33,8 @@ const CipUnconnectedRequest_ROUTE uint16 = 0x0001
 
 // CipUnconnectedRequest is the corresponding interface of CipUnconnectedRequest
 type CipUnconnectedRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetUnconnectedService returns UnconnectedService (property field)
 	GetUnconnectedService() CipService
@@ -40,12 +42,6 @@ type CipUnconnectedRequest interface {
 	GetBackPlane() int8
 	// GetSlot returns Slot (property field)
 	GetSlot() int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CipUnconnectedRequest is the data-structure of this message

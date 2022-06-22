@@ -28,16 +28,12 @@ import (
 
 // NLM is the corresponding interface of NLM
 type NLM interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() *BACnetVendorId
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NLM is the data-structure of this message

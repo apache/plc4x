@@ -28,15 +28,11 @@ import (
 
 // NLMIAmRouterToNetwork is the corresponding interface of NLMIAmRouterToNetwork
 type NLMIAmRouterToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() []uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NLMIAmRouterToNetwork is the data-structure of this message

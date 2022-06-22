@@ -28,6 +28,8 @@ import (
 
 // CALDataReplyStatusExtended is the corresponding interface of CALDataReplyStatusExtended
 type CALDataReplyStatusExtended interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() uint8
@@ -37,12 +39,6 @@ type CALDataReplyStatusExtended interface {
 	GetBlockStart() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CALDataReplyStatusExtended is the data-structure of this message

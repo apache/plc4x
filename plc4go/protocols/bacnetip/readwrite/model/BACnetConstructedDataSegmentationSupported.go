@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataSegmentationSupported is the corresponding interface of BACnetConstructedDataSegmentationSupported
 type BACnetConstructedDataSegmentationSupported interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSegmentationSupported returns SegmentationSupported (property field)
 	GetSegmentationSupported() BACnetSegmentationTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSegmentationTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSegmentationSupported is the data-structure of this message

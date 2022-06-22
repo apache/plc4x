@@ -28,15 +28,11 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetReferencedPropertyIncrement returns ReferencedPropertyIncrement (property field)
 	GetReferencedPropertyIncrement() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the data-structure of this message

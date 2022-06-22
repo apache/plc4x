@@ -28,15 +28,11 @@ import (
 
 // IdentifyReplyCommandGAVValuesCurrent is the corresponding interface of IdentifyReplyCommandGAVValuesCurrent
 type IdentifyReplyCommandGAVValuesCurrent interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _IdentifyReplyCommandGAVValuesCurrent is the data-structure of this message

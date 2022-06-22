@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataProfileLocation is the corresponding interface of BACnetConstructedDataProfileLocation
 type BACnetConstructedDataProfileLocation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProfileLocation returns ProfileLocation (property field)
 	GetProfileLocation() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataProfileLocation is the data-structure of this message

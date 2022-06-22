@@ -28,15 +28,11 @@ import (
 
 // BACnetOptionalUnsignedValue is the corresponding interface of BACnetOptionalUnsignedValue
 type BACnetOptionalUnsignedValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetOptionalUnsigned
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetOptionalUnsignedValue is the data-structure of this message

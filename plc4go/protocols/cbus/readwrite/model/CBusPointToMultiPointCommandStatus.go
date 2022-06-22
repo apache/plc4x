@@ -34,6 +34,8 @@ const CBusPointToMultiPointCommandStatus_CR byte = 0xD
 
 // CBusPointToMultiPointCommandStatus is the corresponding interface of CBusPointToMultiPointCommandStatus
 type CBusPointToMultiPointCommandStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() StatusRequest
@@ -43,12 +45,6 @@ type CBusPointToMultiPointCommandStatus interface {
 	GetPeekAlpha() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusPointToMultiPointCommandStatus is the data-structure of this message

@@ -33,6 +33,8 @@ const ExtendedFormatStatusReply_LF byte = 0x0A
 
 // ExtendedFormatStatusReply is the corresponding interface of ExtendedFormatStatusReply
 type ExtendedFormatStatusReply interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetStatusHeader returns StatusHeader (property field)
 	GetStatusHeader() ExtendedStatusHeader
 	// GetCoding returns Coding (property field)
@@ -45,12 +47,6 @@ type ExtendedFormatStatusReply interface {
 	GetStatusBytes() []StatusByte
 	// GetCrc returns Crc (property field)
 	GetCrc() Checksum
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ExtendedFormatStatusReply is the data-structure of this message

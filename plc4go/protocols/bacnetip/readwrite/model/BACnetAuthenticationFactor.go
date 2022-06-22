@@ -28,18 +28,14 @@ import (
 
 // BACnetAuthenticationFactor is the corresponding interface of BACnetAuthenticationFactor
 type BACnetAuthenticationFactor interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFormatType returns FormatType (property field)
 	GetFormatType() BACnetAuthenticationFactorTypeTagged
 	// GetFormatClass returns FormatClass (property field)
 	GetFormatClass() BACnetContextTagUnsignedInteger
 	// GetValue returns Value (property field)
 	GetValue() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetAuthenticationFactor is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetContextTagCharacterString is the corresponding interface of BACnetContextTagCharacterString
 type BACnetContextTagCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadCharacterString
 	// GetValue returns Value (virtual field)
 	GetValue() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetContextTagCharacterString is the data-structure of this message

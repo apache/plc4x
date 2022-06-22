@@ -28,13 +28,9 @@ import (
 
 // BACnetConstructedDataMultiStateInputAll is the corresponding interface of BACnetConstructedDataMultiStateInputAll
 type BACnetConstructedDataMultiStateInputAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMultiStateInputAll is the data-structure of this message

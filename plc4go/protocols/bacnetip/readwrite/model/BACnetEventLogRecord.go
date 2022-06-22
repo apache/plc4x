@@ -28,16 +28,12 @@ import (
 
 // BACnetEventLogRecord is the corresponding interface of BACnetEventLogRecord
 type BACnetEventLogRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogDatum returns LogDatum (property field)
 	GetLogDatum() BACnetEventLogRecordLogDatum
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventLogRecord is the data-structure of this message

@@ -28,18 +28,14 @@ import (
 
 // BACnetEventTimestamps is the corresponding interface of BACnetEventTimestamps
 type BACnetEventTimestamps interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetToOffnormal returns ToOffnormal (property field)
 	GetToOffnormal() BACnetTimeStamp
 	// GetToFault returns ToFault (property field)
 	GetToFault() BACnetTimeStamp
 	// GetToNormal returns ToNormal (property field)
 	GetToNormal() BACnetTimeStamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventTimestamps is the data-structure of this message

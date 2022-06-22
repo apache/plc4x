@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestDeviceCommunicationControl is the corresponding interface of BACnetConfirmedServiceRequestDeviceCommunicationControl
 type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetTimeDuration returns TimeDuration (property field)
 	GetTimeDuration() BACnetContextTagUnsignedInteger
@@ -37,12 +39,6 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	GetEnableDisable() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 	// GetPassword returns Password (property field)
 	GetPassword() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestDeviceCommunicationControl is the data-structure of this message

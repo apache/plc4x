@@ -29,6 +29,8 @@ import (
 
 // NPDUControl is the corresponding interface of NPDUControl
 type NPDUControl interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent (property field)
 	GetMessageTypeFieldPresent() bool
 	// GetDestinationSpecified returns DestinationSpecified (property field)
@@ -39,12 +41,6 @@ type NPDUControl interface {
 	GetExpectingReply() bool
 	// GetNetworkPriority returns NetworkPriority (property field)
 	GetNetworkPriority() NPDUNetworkPriority
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NPDUControl is the data-structure of this message

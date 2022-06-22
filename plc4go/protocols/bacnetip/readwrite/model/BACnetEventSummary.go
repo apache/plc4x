@@ -28,6 +28,8 @@ import (
 
 // BACnetEventSummary is the corresponding interface of BACnetEventSummary
 type BACnetEventSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetEventState returns EventState (property field)
@@ -42,12 +44,6 @@ type BACnetEventSummary interface {
 	GetEventEnable() BACnetEventTransitionBitsTagged
 	// GetEventPriorities returns EventPriorities (property field)
 	GetEventPriorities() BACnetEventPriorities
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventSummary is the data-structure of this message

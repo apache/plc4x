@@ -28,13 +28,9 @@ import (
 
 // CALReplyShort is the corresponding interface of CALReplyShort
 type CALReplyShort interface {
+	utils.LengthAware
+	utils.Serializable
 	CALReply
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CALReplyShort is the data-structure of this message

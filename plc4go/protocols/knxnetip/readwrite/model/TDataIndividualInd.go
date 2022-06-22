@@ -28,13 +28,9 @@ import (
 
 // TDataIndividualInd is the corresponding interface of TDataIndividualInd
 type TDataIndividualInd interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _TDataIndividualInd is the data-structure of this message

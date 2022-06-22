@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataFaultSignals is the corresponding interface of BACnetConstructedDataFaultSignals
 type BACnetConstructedDataFaultSignals interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultSignals returns FaultSignals (property field)
 	GetFaultSignals() []BACnetLiftFaultTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataFaultSignals is the data-structure of this message

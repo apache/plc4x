@@ -28,18 +28,14 @@ import (
 
 // BACnetFaultParameterFaultStateListOfFaultValues is the corresponding interface of BACnetFaultParameterFaultStateListOfFaultValues
 type BACnetFaultParameterFaultStateListOfFaultValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListIfFaultValues returns ListIfFaultValues (property field)
 	GetListIfFaultValues() []BACnetPropertyStates
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterFaultStateListOfFaultValues is the data-structure of this message

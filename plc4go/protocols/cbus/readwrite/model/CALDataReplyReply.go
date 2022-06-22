@@ -28,17 +28,13 @@ import (
 
 // CALDataReplyReply is the corresponding interface of CALDataReplyReply
 type CALDataReplyReply interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
 	// GetParamNumber returns ParamNumber (property field)
 	GetParamNumber() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CALDataReplyReply is the data-structure of this message

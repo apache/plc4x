@@ -28,16 +28,12 @@ import (
 
 // AdsData is the corresponding interface of AdsData
 type AdsData interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandId returns CommandId (discriminator field)
 	GetCommandId() CommandId
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsData is the data-structure of this message

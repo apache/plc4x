@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersSignedOutOfRange is the corresponding interface of BACnetNotificationParametersSignedOutOfRange
 type BACnetNotificationParametersSignedOutOfRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -41,12 +43,6 @@ type BACnetNotificationParametersSignedOutOfRange interface {
 	GetExceededLimit() BACnetContextTagSignedInteger
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersSignedOutOfRange is the data-structure of this message

@@ -30,18 +30,14 @@ import (
 
 // BACnetGroupChannelValue is the corresponding interface of BACnetGroupChannelValue
 type BACnetGroupChannelValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetChannel returns Channel (property field)
 	GetChannel() BACnetContextTagUnsignedInteger
 	// GetOverridingPriority returns OverridingPriority (property field)
 	GetOverridingPriority() BACnetContextTagUnsignedInteger
 	// GetValue returns Value (property field)
 	GetValue() BACnetChannelValue
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetGroupChannelValue is the data-structure of this message

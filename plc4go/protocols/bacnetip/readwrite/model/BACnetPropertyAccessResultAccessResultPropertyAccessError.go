@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyAccessResultAccessResultPropertyAccessError is the corresponding interface of BACnetPropertyAccessResultAccessResultPropertyAccessError
 type BACnetPropertyAccessResultAccessResultPropertyAccessError interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyAccessError returns PropertyAccessError (property field)
 	GetPropertyAccessError() ErrorEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyAccessResultAccessResultPropertyAccessError is the data-structure of this message

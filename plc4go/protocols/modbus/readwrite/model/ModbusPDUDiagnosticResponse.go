@@ -28,17 +28,13 @@ import (
 
 // ModbusPDUDiagnosticResponse is the corresponding interface of ModbusPDUDiagnosticResponse
 type ModbusPDUDiagnosticResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetSubFunction returns SubFunction (property field)
 	GetSubFunction() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUDiagnosticResponse is the data-structure of this message

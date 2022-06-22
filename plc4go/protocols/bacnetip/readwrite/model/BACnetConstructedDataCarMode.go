@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataCarMode is the corresponding interface of BACnetConstructedDataCarMode
 type BACnetConstructedDataCarMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCarMode returns CarMode (property field)
 	GetCarMode() BACnetLiftCarModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCarMode is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataAuthorizationExemptions is the corresponding interface of BACnetConstructedDataAuthorizationExemptions
 type BACnetConstructedDataAuthorizationExemptions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAuthorizationExemption returns AuthorizationExemption (property field)
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAuthorizationExemptions is the data-structure of this message

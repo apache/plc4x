@@ -28,16 +28,12 @@ import (
 
 // SysexCommand is the corresponding interface of SysexCommand
 type SysexCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint8
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SysexCommand is the data-structure of this message

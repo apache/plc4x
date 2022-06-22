@@ -29,6 +29,8 @@ import (
 
 // APDUSegmentAck is the corresponding interface of APDUSegmentAck
 type APDUSegmentAck interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetNegativeAck returns NegativeAck (property field)
 	GetNegativeAck() bool
@@ -40,12 +42,6 @@ type APDUSegmentAck interface {
 	GetSequenceNumber() uint8
 	// GetProposedWindowSize returns ProposedWindowSize (property field)
 	GetProposedWindowSize() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _APDUSegmentAck is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataGroupID is the corresponding interface of BACnetConstructedDataGroupID
 type BACnetConstructedDataGroupID interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetGroupId returns GroupId (property field)
 	GetGroupId() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataGroupID is the data-structure of this message

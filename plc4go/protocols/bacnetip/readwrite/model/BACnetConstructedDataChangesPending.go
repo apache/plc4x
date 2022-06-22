@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataChangesPending is the corresponding interface of BACnetConstructedDataChangesPending
 type BACnetConstructedDataChangesPending interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetChangesPending returns ChangesPending (property field)
 	GetChangesPending() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataChangesPending is the data-structure of this message

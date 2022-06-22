@@ -28,15 +28,11 @@ import (
 
 // BACnetServiceAckAtomicWriteFile is the corresponding interface of BACnetServiceAckAtomicWriteFile
 type BACnetServiceAckAtomicWriteFile interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetContextTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckAtomicWriteFile is the data-structure of this message

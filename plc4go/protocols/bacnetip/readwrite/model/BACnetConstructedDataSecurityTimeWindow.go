@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataSecurityTimeWindow is the corresponding interface of BACnetConstructedDataSecurityTimeWindow
 type BACnetConstructedDataSecurityTimeWindow interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSecurityTimeWindow returns SecurityTimeWindow (property field)
 	GetSecurityTimeWindow() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSecurityTimeWindow is the data-structure of this message

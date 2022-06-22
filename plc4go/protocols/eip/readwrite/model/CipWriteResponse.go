@@ -29,17 +29,13 @@ import (
 
 // CipWriteResponse is the corresponding interface of CipWriteResponse
 type CipWriteResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetExtStatus returns ExtStatus (property field)
 	GetExtStatus() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CipWriteResponse is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataRoutingTable is the corresponding interface of BACnetConstructedDataRoutingTable
 type BACnetConstructedDataRoutingTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRoutingTable returns RoutingTable (property field)
 	GetRoutingTable() []BACnetRouterEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataRoutingTable is the data-structure of this message

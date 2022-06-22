@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUWriteFileRecordRequestItem is the corresponding interface of ModbusPDUWriteFileRecordRequestItem
 type ModbusPDUWriteFileRecordRequestItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetFileNumber returns FileNumber (property field)
@@ -36,12 +38,6 @@ type ModbusPDUWriteFileRecordRequestItem interface {
 	GetRecordNumber() uint16
 	// GetRecordData returns RecordData (property field)
 	GetRecordData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUWriteFileRecordRequestItem is the data-structure of this message

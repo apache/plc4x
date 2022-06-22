@@ -28,17 +28,13 @@ import (
 
 // BVLCDeleteForeignDeviceTableEntry is the corresponding interface of BVLCDeleteForeignDeviceTableEntry
 type BVLCDeleteForeignDeviceTableEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
 	// GetPort returns Port (property field)
 	GetPort() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BVLCDeleteForeignDeviceTableEntry is the data-structure of this message

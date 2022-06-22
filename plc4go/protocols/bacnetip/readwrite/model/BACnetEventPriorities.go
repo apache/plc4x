@@ -28,6 +28,8 @@ import (
 
 // BACnetEventPriorities is the corresponding interface of BACnetEventPriorities
 type BACnetEventPriorities interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetToOffnormal returns ToOffnormal (property field)
@@ -38,12 +40,6 @@ type BACnetEventPriorities interface {
 	GetToNormal() BACnetApplicationTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventPriorities is the data-structure of this message

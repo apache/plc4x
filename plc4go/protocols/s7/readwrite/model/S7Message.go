@@ -34,6 +34,8 @@ const S7Message_PROTOCOLID uint8 = 0x32
 
 // S7Message is the corresponding interface of S7Message
 type S7Message interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetTpduReference returns TpduReference (property field)
@@ -42,12 +44,6 @@ type S7Message interface {
 	GetParameter() S7Parameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Payload
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7Message is the data-structure of this message

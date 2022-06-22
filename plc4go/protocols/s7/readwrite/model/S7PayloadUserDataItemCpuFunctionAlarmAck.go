@@ -28,17 +28,13 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionAlarmAck is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmAck
 type S7PayloadUserDataItemCpuFunctionAlarmAck interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectAckType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAck is the data-structure of this message

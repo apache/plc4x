@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataUTCTimeSynchronizationRecipients is the corresponding interface of BACnetConstructedDataUTCTimeSynchronizationRecipients
 type BACnetConstructedDataUTCTimeSynchronizationRecipients interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUtcTimeSynchronizationRecipients returns UtcTimeSynchronizationRecipients (property field)
 	GetUtcTimeSynchronizationRecipients() []BACnetRecipient
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataUTCTimeSynchronizationRecipients is the data-structure of this message

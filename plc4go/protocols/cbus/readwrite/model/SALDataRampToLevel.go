@@ -28,17 +28,13 @@ import (
 
 // SALDataRampToLevel is the corresponding interface of SALDataRampToLevel
 type SALDataRampToLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	SALData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
 	// GetLevel returns Level (property field)
 	GetLevel() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SALDataRampToLevel is the data-structure of this message

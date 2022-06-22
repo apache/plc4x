@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataSetpoint is the corresponding interface of BACnetConstructedDataSetpoint
 type BACnetConstructedDataSetpoint interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSetpoint returns Setpoint (property field)
 	GetSetpoint() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSetpoint is the data-structure of this message

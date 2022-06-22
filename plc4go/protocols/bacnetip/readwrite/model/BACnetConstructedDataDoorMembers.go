@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataDoorMembers is the corresponding interface of BACnetConstructedDataDoorMembers
 type BACnetConstructedDataDoorMembers interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,6 @@ type BACnetConstructedDataDoorMembers interface {
 	GetDoorMembers() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataDoorMembers is the data-structure of this message

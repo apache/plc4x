@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataVTClassesSupported is the corresponding interface of BACnetConstructedDataVTClassesSupported
 type BACnetConstructedDataVTClassesSupported interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetVtClassesSupported returns VtClassesSupported (property field)
 	GetVtClassesSupported() []BACnetVTClassTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataVTClassesSupported is the data-structure of this message

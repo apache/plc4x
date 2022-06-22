@@ -32,16 +32,12 @@ const CBusCommand_INITIATOR byte = 0x5C
 
 // CBusCommand is the corresponding interface of CBusCommand
 type CBusCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() CBusHeader
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
 	GetDestinationAddressType() DestinationAddressType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusCommand is the data-structure of this message

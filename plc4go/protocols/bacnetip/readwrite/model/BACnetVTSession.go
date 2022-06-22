@@ -28,18 +28,14 @@ import (
 
 // BACnetVTSession is the corresponding interface of BACnetVTSession
 type BACnetVTSession interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetLocalVtSessionId returns LocalVtSessionId (property field)
 	GetLocalVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoveVtSessionId returns RemoveVtSessionId (property field)
 	GetRemoveVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoteVtAddress returns RemoteVtAddress (property field)
 	GetRemoteVtAddress() BACnetAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetVTSession is the data-structure of this message

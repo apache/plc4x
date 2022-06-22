@@ -28,15 +28,11 @@ import (
 
 // BACnetServiceAckCreateObject is the corresponding interface of BACnetServiceAckCreateObject
 type BACnetServiceAckCreateObject interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckCreateObject is the data-structure of this message

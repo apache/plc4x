@@ -28,15 +28,11 @@ import (
 
 // BVLCRegisterForeignDevice is the corresponding interface of BVLCRegisterForeignDevice
 type BVLCRegisterForeignDevice interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BVLCRegisterForeignDevice is the data-structure of this message

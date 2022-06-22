@@ -28,18 +28,14 @@ import (
 
 // BACnetLightingCommandEnclosed is the corresponding interface of BACnetLightingCommandEnclosed
 type BACnetLightingCommandEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLightingCommand returns LightingCommand (property field)
 	GetLightingCommand() BACnetLightingCommand
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLightingCommandEnclosed is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataIPv6AutoAddressingEnable is the corresponding interface of BACnetConstructedDataIPv6AutoAddressingEnable
 type BACnetConstructedDataIPv6AutoAddressingEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAutoAddressingEnable returns AutoAddressingEnable (property field)
 	GetAutoAddressingEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataIPv6AutoAddressingEnable is the data-structure of this message

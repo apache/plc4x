@@ -28,15 +28,11 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is the data-structure of this message

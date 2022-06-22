@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataRepresents is the corresponding interface of BACnetConstructedDataRepresents
 type BACnetConstructedDataRepresents interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRepresents returns Represents (property field)
 	GetRepresents() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataRepresents is the data-structure of this message

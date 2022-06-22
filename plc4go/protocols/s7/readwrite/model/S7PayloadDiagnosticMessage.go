@@ -28,6 +28,8 @@ import (
 
 // S7PayloadDiagnosticMessage is the corresponding interface of S7PayloadDiagnosticMessage
 type S7PayloadDiagnosticMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetEventId returns EventId (property field)
 	GetEventId() uint16
@@ -43,12 +45,6 @@ type S7PayloadDiagnosticMessage interface {
 	GetInfo2() uint32
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadDiagnosticMessage is the data-structure of this message

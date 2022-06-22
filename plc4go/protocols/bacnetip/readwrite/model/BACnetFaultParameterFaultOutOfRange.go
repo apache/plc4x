@@ -28,6 +28,8 @@ import (
 
 // BACnetFaultParameterFaultOutOfRange is the corresponding interface of BACnetFaultParameterFaultOutOfRange
 type BACnetFaultParameterFaultOutOfRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -37,12 +39,6 @@ type BACnetFaultParameterFaultOutOfRange interface {
 	GetMaxNormalValue() BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterFaultOutOfRange is the data-structure of this message

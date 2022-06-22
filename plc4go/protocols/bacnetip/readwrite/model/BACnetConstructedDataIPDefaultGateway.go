@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataIPDefaultGateway is the corresponding interface of BACnetConstructedDataIPDefaultGateway
 type BACnetConstructedDataIPDefaultGateway interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpDefaultGateway returns IpDefaultGateway (property field)
 	GetIpDefaultGateway() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataIPDefaultGateway is the data-structure of this message

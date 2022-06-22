@@ -28,17 +28,13 @@ import (
 
 // BACnetServiceAckAtomicReadFile is the corresponding interface of BACnetServiceAckAtomicReadFile
 type BACnetServiceAckAtomicReadFile interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetEndOfFile returns EndOfFile (property field)
 	GetEndOfFile() BACnetApplicationTagBoolean
 	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() BACnetServiceAckAtomicReadFileStreamOrRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckAtomicReadFile is the data-structure of this message

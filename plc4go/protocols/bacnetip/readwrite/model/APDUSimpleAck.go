@@ -29,17 +29,13 @@ import (
 
 // APDUSimpleAck is the corresponding interface of APDUSimpleAck
 type APDUSimpleAck interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
 	// GetServiceChoice returns ServiceChoice (property field)
 	GetServiceChoice() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _APDUSimpleAck is the data-structure of this message

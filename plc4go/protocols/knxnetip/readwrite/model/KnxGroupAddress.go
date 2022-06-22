@@ -28,14 +28,10 @@ import (
 
 // KnxGroupAddress is the corresponding interface of KnxGroupAddress
 type KnxGroupAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNumLevels returns NumLevels (discriminator field)
 	GetNumLevels() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _KnxGroupAddress is the data-structure of this message

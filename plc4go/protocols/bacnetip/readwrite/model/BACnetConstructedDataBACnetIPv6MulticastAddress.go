@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBACnetIPv6MulticastAddress is the corresponding interface of BACnetConstructedDataBACnetIPv6MulticastAddress
 type BACnetConstructedDataBACnetIPv6MulticastAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6MulticastAddress returns Ipv6MulticastAddress (property field)
 	GetIpv6MulticastAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBACnetIPv6MulticastAddress is the data-structure of this message

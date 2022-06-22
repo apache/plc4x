@@ -34,17 +34,13 @@ const S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ uint8 
 
 // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetPudicfReturnCode returns PudicfReturnCode (property field)
 	GetPudicfReturnCode() DataTransportErrorCode
 	// GetPudicftransportSize returns PudicftransportSize (property field)
 	GetPudicftransportSize() DataTransportSize
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the data-structure of this message

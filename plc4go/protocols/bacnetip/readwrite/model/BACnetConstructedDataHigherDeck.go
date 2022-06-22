@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataHigherDeck is the corresponding interface of BACnetConstructedDataHigherDeck
 type BACnetConstructedDataHigherDeck interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetHigherDeck returns HigherDeck (property field)
 	GetHigherDeck() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataHigherDeck is the data-structure of this message

@@ -34,6 +34,8 @@ const CBusCommandPointToPointToMultiPointNormal_CR byte = 0xD
 
 // CBusCommandPointToPointToMultiPointNormal is the corresponding interface of CBusCommandPointToPointToMultiPointNormal
 type CBusCommandPointToPointToMultiPointNormal interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusPointToPointToMultipointCommand
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -45,12 +47,6 @@ type CBusCommandPointToPointToMultiPointNormal interface {
 	GetPeekAlpha() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusCommandPointToPointToMultiPointNormal is the data-structure of this message

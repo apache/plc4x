@@ -32,14 +32,10 @@ const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 
 // KnxNetIpMessage is the corresponding interface of KnxNetIpMessage
 type KnxNetIpMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _KnxNetIpMessage is the data-structure of this message

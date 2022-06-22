@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataReasonForHalt is the corresponding interface of BACnetConstructedDataReasonForHalt
 type BACnetConstructedDataReasonForHalt interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProgramError returns ProgramError (property field)
 	GetProgramError() BACnetProgramErrorTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProgramErrorTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataReasonForHalt is the data-structure of this message

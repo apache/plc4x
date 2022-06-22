@@ -28,16 +28,12 @@ import (
 
 // BACnetDateRange is the corresponding interface of BACnetDateRange
 type BACnetDateRange interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetStartDate returns StartDate (property field)
 	GetStartDate() BACnetApplicationTagDate
 	// GetEndDate returns EndDate (property field)
 	GetEndDate() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetDateRange is the data-structure of this message

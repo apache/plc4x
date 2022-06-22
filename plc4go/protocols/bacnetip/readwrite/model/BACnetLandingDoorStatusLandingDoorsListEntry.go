@@ -28,16 +28,12 @@ import (
 
 // BACnetLandingDoorStatusLandingDoorsListEntry is the corresponding interface of BACnetLandingDoorStatusLandingDoorsListEntry
 type BACnetLandingDoorStatusLandingDoorsListEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLandingDoorStatusLandingDoorsListEntry is the data-structure of this message

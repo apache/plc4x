@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataSupportedSecurityAlgorithms is the corresponding interface of BACnetConstructedDataSupportedSecurityAlgorithms
 type BACnetConstructedDataSupportedSecurityAlgorithms interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSupportedSecurityAlgorithms returns SupportedSecurityAlgorithms (property field)
 	GetSupportedSecurityAlgorithms() []BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSupportedSecurityAlgorithms is the data-structure of this message

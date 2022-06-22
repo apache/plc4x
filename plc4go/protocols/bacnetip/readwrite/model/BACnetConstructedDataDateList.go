@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataDateList is the corresponding interface of BACnetConstructedDataDateList
 type BACnetConstructedDataDateList interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDateList returns DateList (property field)
 	GetDateList() []BACnetCalendarEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataDateList is the data-structure of this message

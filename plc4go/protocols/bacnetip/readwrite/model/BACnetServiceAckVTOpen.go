@@ -28,15 +28,11 @@ import (
 
 // BACnetServiceAckVTOpen is the corresponding interface of BACnetServiceAckVTOpen
 type BACnetServiceAckVTOpen interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetRemoteVtSessionIdentifier returns RemoteVtSessionIdentifier (property field)
 	GetRemoteVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckVTOpen is the data-structure of this message

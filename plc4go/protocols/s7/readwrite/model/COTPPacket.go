@@ -30,18 +30,14 @@ import (
 
 // COTPPacket is the corresponding interface of COTPPacket
 type COTPPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTpduCode returns TpduCode (discriminator field)
 	GetTpduCode() uint8
 	// GetParameters returns Parameters (property field)
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Message
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _COTPPacket is the data-structure of this message

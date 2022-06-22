@@ -34,14 +34,10 @@ const CipExchange_UNCONNECTEDDATA uint16 = 0x00B2
 
 // CipExchange is the corresponding interface of CipExchange
 type CipExchange interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetService returns Service (property field)
 	GetService() CipService
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CipExchange is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // SearchResponse is the corresponding interface of SearchResponse
 type SearchResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
@@ -35,12 +37,6 @@ type SearchResponse interface {
 	GetDibDeviceInfo() DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SearchResponse is the data-structure of this message

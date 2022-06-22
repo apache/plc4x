@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataMaxAPDULengthAccepted is the corresponding interface of BACnetConstructedDataMaxAPDULengthAccepted
 type BACnetConstructedDataMaxAPDULengthAccepted interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted (property field)
 	GetMaxApduLengthAccepted() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMaxAPDULengthAccepted is the data-structure of this message

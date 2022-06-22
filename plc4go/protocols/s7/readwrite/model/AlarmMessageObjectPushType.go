@@ -32,6 +32,8 @@ const AlarmMessageObjectPushType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageObjectPushType is the corresponding interface of AlarmMessageObjectPushType
 type AlarmMessageObjectPushType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -50,12 +52,6 @@ type AlarmMessageObjectPushType interface {
 	GetAckStateComing() State
 	// GetAssociatedValues returns AssociatedValues (property field)
 	GetAssociatedValues() []AssociatedValueType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AlarmMessageObjectPushType is the data-structure of this message

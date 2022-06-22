@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataExtendedTimeEnable is the corresponding interface of BACnetConstructedDataExtendedTimeEnable
 type BACnetConstructedDataExtendedTimeEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetExtendedTimeEnable returns ExtendedTimeEnable (property field)
 	GetExtendedTimeEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataExtendedTimeEnable is the data-structure of this message

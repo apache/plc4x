@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataPowerMode is the corresponding interface of BACnetConstructedDataPowerMode
 type BACnetConstructedDataPowerMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPowerMode returns PowerMode (property field)
 	GetPowerMode() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataPowerMode is the data-structure of this message

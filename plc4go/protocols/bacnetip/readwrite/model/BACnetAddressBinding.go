@@ -28,16 +28,12 @@ import (
 
 // BACnetAddressBinding is the corresponding interface of BACnetAddressBinding
 type BACnetAddressBinding interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetDeviceAddress returns DeviceAddress (property field)
 	GetDeviceAddress() BACnetAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetAddressBinding is the data-structure of this message

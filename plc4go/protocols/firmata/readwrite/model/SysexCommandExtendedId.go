@@ -28,15 +28,11 @@ import (
 
 // SysexCommandExtendedId is the corresponding interface of SysexCommandExtendedId
 type SysexCommandExtendedId interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
 	// GetId returns Id (property field)
 	GetId() []int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SysexCommandExtendedId is the data-structure of this message

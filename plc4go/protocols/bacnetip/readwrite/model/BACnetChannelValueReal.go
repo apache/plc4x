@@ -28,15 +28,11 @@ import (
 
 // BACnetChannelValueReal is the corresponding interface of BACnetChannelValueReal
 type BACnetChannelValueReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetChannelValueReal is the data-structure of this message

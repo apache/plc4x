@@ -29,15 +29,11 @@ import (
 
 // ConnectionRequestInformationTunnelConnection is the corresponding interface of ConnectionRequestInformationTunnelConnection
 type ConnectionRequestInformationTunnelConnection interface {
+	utils.LengthAware
+	utils.Serializable
 	ConnectionRequestInformation
 	// GetKnxLayer returns KnxLayer (property field)
 	GetKnxLayer() KnxLayer
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ConnectionRequestInformationTunnelConnection is the data-structure of this message

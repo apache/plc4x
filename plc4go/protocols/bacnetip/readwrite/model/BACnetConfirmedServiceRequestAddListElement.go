@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestAddListElement is the corresponding interface of BACnetConfirmedServiceRequestAddListElement
 type BACnetConfirmedServiceRequestAddListElement interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -39,12 +41,6 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetListOfElements returns ListOfElements (property field)
 	GetListOfElements() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestAddListElement is the data-structure of this message

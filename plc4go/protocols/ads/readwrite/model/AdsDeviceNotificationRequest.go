@@ -28,6 +28,8 @@ import (
 
 // AdsDeviceNotificationRequest is the corresponding interface of AdsDeviceNotificationRequest
 type AdsDeviceNotificationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetLength returns Length (property field)
 	GetLength() uint32
@@ -35,12 +37,6 @@ type AdsDeviceNotificationRequest interface {
 	GetStamps() uint32
 	// GetAdsStampHeaders returns AdsStampHeaders (property field)
 	GetAdsStampHeaders() []AdsStampHeader
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsDeviceNotificationRequest is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataMinPresValue is the corresponding interface of BACnetConstructedDataMinPresValue
 type BACnetConstructedDataMinPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMinPresValue is the data-structure of this message

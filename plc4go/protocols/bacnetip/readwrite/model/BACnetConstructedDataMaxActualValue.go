@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataMaxActualValue is the corresponding interface of BACnetConstructedDataMaxActualValue
 type BACnetConstructedDataMaxActualValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxActualValue returns MaxActualValue (property field)
 	GetMaxActualValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMaxActualValue is the data-structure of this message

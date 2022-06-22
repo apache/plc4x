@@ -28,15 +28,11 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryDate is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryDate
 type BACnetFaultParameterFaultExtendedParametersEntryDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryDate is the data-structure of this message

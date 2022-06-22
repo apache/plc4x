@@ -28,6 +28,8 @@ import (
 
 // AdsWriteControlRequest is the corresponding interface of AdsWriteControlRequest
 type AdsWriteControlRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetAdsState returns AdsState (property field)
 	GetAdsState() uint16
@@ -35,12 +37,6 @@ type AdsWriteControlRequest interface {
 	GetDeviceState() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsWriteControlRequest is the data-structure of this message

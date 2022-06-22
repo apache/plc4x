@@ -28,15 +28,11 @@ import (
 
 // BACnetLogRecordLogDatumBooleanValue is the corresponding interface of BACnetLogRecordLogDatumBooleanValue
 type BACnetLogRecordLogDatumBooleanValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLogRecordLogDatumBooleanValue is the data-structure of this message

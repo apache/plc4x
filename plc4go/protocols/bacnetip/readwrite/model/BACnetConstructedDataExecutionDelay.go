@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataExecutionDelay is the corresponding interface of BACnetConstructedDataExecutionDelay
 type BACnetConstructedDataExecutionDelay interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,6 @@ type BACnetConstructedDataExecutionDelay interface {
 	GetExecutionDelay() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataExecutionDelay is the data-structure of this message

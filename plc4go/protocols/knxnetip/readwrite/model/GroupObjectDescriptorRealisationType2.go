@@ -28,6 +28,8 @@ import (
 
 // GroupObjectDescriptorRealisationType2 is the corresponding interface of GroupObjectDescriptorRealisationType2
 type GroupObjectDescriptorRealisationType2 interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDataPointer returns DataPointer (property field)
 	GetDataPointer() uint8
 	// GetUpdateEnable returns UpdateEnable (property field)
@@ -46,12 +48,6 @@ type GroupObjectDescriptorRealisationType2 interface {
 	GetPriority() CEMIPriority
 	// GetValueType returns ValueType (property field)
 	GetValueType() ComObjectValueType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _GroupObjectDescriptorRealisationType2 is the data-structure of this message

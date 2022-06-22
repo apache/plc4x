@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataTrendLogLogBuffer is the corresponding interface of BACnetConstructedDataTrendLogLogBuffer
 type BACnetConstructedDataTrendLogLogBuffer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataTrendLogLogBuffer is the data-structure of this message

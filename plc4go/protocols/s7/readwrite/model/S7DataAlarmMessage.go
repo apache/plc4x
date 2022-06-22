@@ -33,14 +33,10 @@ const S7DataAlarmMessage_NUMBERMESSAGEOBJ uint8 = 0x01
 
 // S7DataAlarmMessage is the corresponding interface of S7DataAlarmMessage
 type S7DataAlarmMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7DataAlarmMessage is the data-structure of this message

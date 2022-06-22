@@ -28,15 +28,11 @@ import (
 
 // BACnetLogDataLogDataEntryRealValue is the corresponding interface of BACnetLogDataLogDataEntryRealValue
 type BACnetLogDataLogDataEntryRealValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLogDataLogDataEntryRealValue is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataOperationDirection is the corresponding interface of BACnetConstructedDataOperationDirection
 type BACnetConstructedDataOperationDirection interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetOperationDirection returns OperationDirection (property field)
 	GetOperationDirection() BACnetEscalatorOperationDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEscalatorOperationDirectionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataOperationDirection is the data-structure of this message

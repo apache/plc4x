@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataFDBBMDAddress is the corresponding interface of BACnetConstructedDataFDBBMDAddress
 type BACnetConstructedDataFDBBMDAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFDBBMDAddress returns FDBBMDAddress (property field)
 	GetFDBBMDAddress() BACnetHostNPort
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetHostNPort
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataFDBBMDAddress is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataGroupMode is the corresponding interface of BACnetConstructedDataGroupMode
 type BACnetConstructedDataGroupMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetGroupMode returns GroupMode (property field)
 	GetGroupMode() BACnetLiftGroupModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftGroupModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataGroupMode is the data-structure of this message

@@ -28,18 +28,14 @@ import (
 
 // ModbusPDU is the corresponding interface of ModbusPDU
 type ModbusPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetErrorFlag returns ErrorFlag (discriminator field)
 	GetErrorFlag() bool
 	// GetFunctionFlag returns FunctionFlag (discriminator field)
 	GetFunctionFlag() uint8
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDU is the data-structure of this message

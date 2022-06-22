@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataIPAddress is the corresponding interface of BACnetConstructedDataIPAddress
 type BACnetConstructedDataIPAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataIPAddress is the data-structure of this message

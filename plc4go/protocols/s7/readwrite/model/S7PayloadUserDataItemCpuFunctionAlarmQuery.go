@@ -36,6 +36,8 @@ const S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH uint8 = 0x08
 
 // S7PayloadUserDataItemCpuFunctionAlarmQuery is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQuery
 type S7PayloadUserDataItemCpuFunctionAlarmQuery interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -43,12 +45,6 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 	GetQueryType() QueryType
 	// GetAlarmType returns AlarmType (property field)
 	GetAlarmType() AlarmType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmQuery is the data-structure of this message

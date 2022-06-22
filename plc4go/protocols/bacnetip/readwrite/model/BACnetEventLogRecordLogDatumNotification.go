@@ -28,6 +28,8 @@ import (
 
 // BACnetEventLogRecordLogDatumNotification is the corresponding interface of BACnetEventLogRecordLogDatumNotification
 type BACnetEventLogRecordLogDatumNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventLogRecordLogDatum
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -35,12 +37,6 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	GetNotification() ConfirmedEventNotificationRequest
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventLogRecordLogDatumNotification is the data-structure of this message

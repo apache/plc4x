@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLoggingRecord is the corresponding interface of BACnetConstructedDataLoggingRecord
 type BACnetConstructedDataLoggingRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLoggingRecord returns LoggingRecord (property field)
 	GetLoggingRecord() BACnetAccumulatorRecord
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccumulatorRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLoggingRecord is the data-structure of this message

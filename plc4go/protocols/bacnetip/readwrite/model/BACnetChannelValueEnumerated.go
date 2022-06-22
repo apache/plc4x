@@ -28,15 +28,11 @@ import (
 
 // BACnetChannelValueEnumerated is the corresponding interface of BACnetChannelValueEnumerated
 type BACnetChannelValueEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetChannelValueEnumerated is the data-structure of this message

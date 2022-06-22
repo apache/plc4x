@@ -29,6 +29,8 @@ import (
 
 // APDUAbort is the corresponding interface of APDUAbort
 type APDUAbort interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetServer returns Server (property field)
 	GetServer() bool
@@ -36,12 +38,6 @@ type APDUAbort interface {
 	GetOriginalInvokeId() uint8
 	// GetAbortReason returns AbortReason (property field)
 	GetAbortReason() BACnetAbortReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _APDUAbort is the data-structure of this message

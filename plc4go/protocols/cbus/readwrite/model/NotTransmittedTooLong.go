@@ -28,13 +28,9 @@ import (
 
 // NotTransmittedTooLong is the corresponding interface of NotTransmittedTooLong
 type NotTransmittedTooLong interface {
+	utils.LengthAware
+	utils.Serializable
 	Confirmation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NotTransmittedTooLong is the data-structure of this message

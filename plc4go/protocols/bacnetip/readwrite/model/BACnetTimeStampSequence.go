@@ -28,15 +28,11 @@ import (
 
 // BACnetTimeStampSequence is the corresponding interface of BACnetTimeStampSequence
 type BACnetTimeStampSequence interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimeStamp
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTimeStampSequence is the data-structure of this message

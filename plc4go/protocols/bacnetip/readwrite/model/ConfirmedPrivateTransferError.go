@@ -30,6 +30,8 @@ import (
 
 // ConfirmedPrivateTransferError is the corresponding interface of ConfirmedPrivateTransferError
 type ConfirmedPrivateTransferError interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -39,12 +41,6 @@ type ConfirmedPrivateTransferError interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetErrorParameters returns ErrorParameters (property field)
 	GetErrorParameters() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ConfirmedPrivateTransferError is the data-structure of this message

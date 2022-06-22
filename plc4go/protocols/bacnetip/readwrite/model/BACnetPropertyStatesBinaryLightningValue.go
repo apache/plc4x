@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesBinaryLightningValue is the corresponding interface of BACnetPropertyStatesBinaryLightningValue
 type BACnetPropertyStatesBinaryLightningValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetBinaryLightningValue returns BinaryLightningValue (property field)
 	GetBinaryLightningValue() BACnetBinaryLightingPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesBinaryLightningValue is the data-structure of this message

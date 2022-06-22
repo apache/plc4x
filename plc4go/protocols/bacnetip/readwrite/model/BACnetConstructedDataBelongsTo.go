@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBelongsTo is the corresponding interface of BACnetConstructedDataBelongsTo
 type BACnetConstructedDataBelongsTo interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBelongsTo returns BelongsTo (property field)
 	GetBelongsTo() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBelongsTo is the data-structure of this message

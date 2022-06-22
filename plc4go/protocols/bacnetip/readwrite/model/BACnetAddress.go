@@ -28,6 +28,8 @@ import (
 
 // BACnetAddress is the corresponding interface of BACnetAddress
 type BACnetAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetApplicationTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
@@ -38,12 +40,6 @@ type BACnetAddress interface {
 	GetIsLocalNetwork() bool
 	// GetIsBroadcast returns IsBroadcast (virtual field)
 	GetIsBroadcast() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetAddress is the data-structure of this message

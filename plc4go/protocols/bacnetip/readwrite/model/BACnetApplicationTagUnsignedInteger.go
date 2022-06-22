@@ -28,17 +28,13 @@ import (
 
 // BACnetApplicationTagUnsignedInteger is the corresponding interface of BACnetApplicationTagUnsignedInteger
 type BACnetApplicationTagUnsignedInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetApplicationTagUnsignedInteger is the data-structure of this message

@@ -30,6 +30,8 @@ import (
 
 // BACnetEventNotificationSubscription is the corresponding interface of BACnetEventNotificationSubscription
 type BACnetEventNotificationSubscription interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
@@ -38,12 +40,6 @@ type BACnetEventNotificationSubscription interface {
 	GetIssueConfirmedNotifications() BACnetContextTagBoolean
 	// GetTimeRemaining returns TimeRemaining (property field)
 	GetTimeRemaining() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventNotificationSubscription is the data-structure of this message

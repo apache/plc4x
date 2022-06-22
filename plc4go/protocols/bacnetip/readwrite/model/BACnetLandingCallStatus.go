@@ -30,18 +30,14 @@ import (
 
 // BACnetLandingCallStatus is the corresponding interface of BACnetLandingCallStatus
 type BACnetLandingCallStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetCommand returns Command (property field)
 	GetCommand() BACnetLandingCallStatusCommand
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLandingCallStatus is the data-structure of this message

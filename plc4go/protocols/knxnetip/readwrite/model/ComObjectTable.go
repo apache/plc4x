@@ -28,14 +28,10 @@ import (
 
 // ComObjectTable is the corresponding interface of ComObjectTable
 type ComObjectTable interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFirmwareType returns FirmwareType (discriminator field)
 	GetFirmwareType() FirmwareType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ComObjectTable is the data-structure of this message

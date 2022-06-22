@@ -29,6 +29,8 @@ import (
 
 // MultipleServiceResponse is the corresponding interface of MultipleServiceResponse
 type MultipleServiceResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -40,12 +42,6 @@ type MultipleServiceResponse interface {
 	GetOffsets() []uint16
 	// GetServicesData returns ServicesData (property field)
 	GetServicesData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _MultipleServiceResponse is the data-structure of this message

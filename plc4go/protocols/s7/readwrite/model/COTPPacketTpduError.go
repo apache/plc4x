@@ -28,17 +28,13 @@ import (
 
 // COTPPacketTpduError is the corresponding interface of COTPPacketTpduError
 type COTPPacketTpduError interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
 	// GetRejectCause returns RejectCause (property field)
 	GetRejectCause() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _COTPPacketTpduError is the data-structure of this message

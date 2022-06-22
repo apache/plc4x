@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesLightningTransition is the corresponding interface of BACnetPropertyStatesLightningTransition
 type BACnetPropertyStatesLightningTransition interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLightningTransition returns LightningTransition (property field)
 	GetLightningTransition() BACnetLightingTransitionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesLightningTransition is the data-structure of this message

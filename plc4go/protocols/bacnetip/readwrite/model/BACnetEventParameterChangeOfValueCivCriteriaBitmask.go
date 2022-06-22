@@ -28,15 +28,11 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteriaBitmask is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteriaBitmask
 type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetBitmask returns Bitmask (property field)
 	GetBitmask() BACnetContextTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaBitmask is the data-structure of this message

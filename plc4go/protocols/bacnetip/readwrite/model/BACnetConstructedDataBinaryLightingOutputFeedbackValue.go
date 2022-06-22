@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBinaryLightingOutputFeedbackValue is the corresponding interface of BACnetConstructedDataBinaryLightingOutputFeedbackValue
 type BACnetConstructedDataBinaryLightingOutputFeedbackValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() BACnetBinaryLightingPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryLightingPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBinaryLightingOutputFeedbackValue is the data-structure of this message

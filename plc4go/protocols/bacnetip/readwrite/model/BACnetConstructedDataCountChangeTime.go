@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataCountChangeTime is the corresponding interface of BACnetConstructedDataCountChangeTime
 type BACnetConstructedDataCountChangeTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCountChangeTime returns CountChangeTime (property field)
 	GetCountChangeTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCountChangeTime is the data-structure of this message

@@ -30,6 +30,8 @@ import (
 
 // NPDU is the corresponding interface of NPDU
 type NPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetProtocolVersionNumber returns ProtocolVersionNumber (property field)
 	GetProtocolVersionNumber() uint8
 	// GetControl returns Control (property field)
@@ -58,12 +60,6 @@ type NPDU interface {
 	GetSourceLengthAddon() uint16
 	// GetPayloadSubtraction returns PayloadSubtraction (virtual field)
 	GetPayloadSubtraction() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NPDU is the data-structure of this message

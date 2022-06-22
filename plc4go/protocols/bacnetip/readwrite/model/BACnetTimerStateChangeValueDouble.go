@@ -28,15 +28,11 @@ import (
 
 // BACnetTimerStateChangeValueDouble is the corresponding interface of BACnetTimerStateChangeValueDouble
 type BACnetTimerStateChangeValueDouble interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTimerStateChangeValueDouble is the data-structure of this message

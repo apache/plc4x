@@ -28,15 +28,11 @@ import (
 
 // BACnetLogDataLogDataEntryNullValue is the corresponding interface of BACnetLogDataLogDataEntryNullValue
 type BACnetLogDataLogDataEntryNullValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLogDataLogDataEntryNullValue is the data-structure of this message

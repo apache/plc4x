@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple is the corresponding interface of BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -41,12 +43,6 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	GetTimestamp() BACnetTimeStampEnclosed
 	// GetListOfCovNotifications returns ListOfCovNotifications (property field)
 	GetListOfCovNotifications() ListOfCovNotificationsList
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple is the data-structure of this message

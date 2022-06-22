@@ -28,15 +28,11 @@ import (
 
 // DF1CommandRequestMessage is the corresponding interface of DF1CommandRequestMessage
 type DF1CommandRequestMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1RequestMessage
 	// GetCommand returns Command (property field)
 	GetCommand() DF1RequestCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DF1CommandRequestMessage is the data-structure of this message

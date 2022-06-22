@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataAckedTransitions is the corresponding interface of BACnetConstructedDataAckedTransitions
 type BACnetConstructedDataAckedTransitions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAckedTransitions returns AckedTransitions (property field)
 	GetAckedTransitions() BACnetEventTransitionBitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAckedTransitions is the data-structure of this message

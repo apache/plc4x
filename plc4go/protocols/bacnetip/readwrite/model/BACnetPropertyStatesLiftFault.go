@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesLiftFault is the corresponding interface of BACnetPropertyStatesLiftFault
 type BACnetPropertyStatesLiftFault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLiftFault returns LiftFault (property field)
 	GetLiftFault() BACnetLiftFaultTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesLiftFault is the data-structure of this message

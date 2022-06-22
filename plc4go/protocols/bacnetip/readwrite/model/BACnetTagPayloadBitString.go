@@ -28,18 +28,14 @@ import (
 
 // BACnetTagPayloadBitString is the corresponding interface of BACnetTagPayloadBitString
 type BACnetTagPayloadBitString interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetUnusedBits returns UnusedBits (property field)
 	GetUnusedBits() uint8
 	// GetData returns Data (property field)
 	GetData() []bool
 	// GetUnused returns Unused (property field)
 	GetUnused() []bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTagPayloadBitString is the data-structure of this message

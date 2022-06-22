@@ -28,18 +28,14 @@ import (
 
 // BACnetAddressEnclosed is the corresponding interface of BACnetAddressEnclosed
 type BACnetAddressEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddress
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetAddressEnclosed is the data-structure of this message

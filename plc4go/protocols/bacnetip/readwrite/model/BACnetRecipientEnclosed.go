@@ -28,18 +28,14 @@ import (
 
 // BACnetRecipientEnclosed is the corresponding interface of BACnetRecipientEnclosed
 type BACnetRecipientEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipient
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetRecipientEnclosed is the data-structure of this message

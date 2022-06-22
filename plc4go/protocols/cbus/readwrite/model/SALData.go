@@ -28,16 +28,12 @@ import (
 
 // SALData is the corresponding interface of SALData
 type SALData interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() SALCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() SALCommandType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SALData is the data-structure of this message

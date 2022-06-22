@@ -28,17 +28,13 @@ import (
 
 // AdsReadWriteResponse is the corresponding interface of AdsReadWriteResponse
 type AdsReadWriteResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsReadWriteResponse is the data-structure of this message

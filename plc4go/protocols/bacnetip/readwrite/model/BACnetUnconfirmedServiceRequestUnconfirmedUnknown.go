@@ -28,15 +28,11 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedUnknown is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedUnknown
 type BACnetUnconfirmedServiceRequestUnconfirmedUnknown interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedUnknown is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // BACnetAccumulatorRecord is the corresponding interface of BACnetAccumulatorRecord
 type BACnetAccumulatorRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetPresentValue returns PresentValue (property field)
@@ -36,12 +38,6 @@ type BACnetAccumulatorRecord interface {
 	GetAccumulatedValue() BACnetContextTagSignedInteger
 	// GetAccumulatorStatus returns AccumulatorStatus (property field)
 	GetAccumulatorStatus() BACnetAccumulatorRecordAccumulatorStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetAccumulatorRecord is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetEventLogRecordLogDatumTimeChange is the corresponding interface of BACnetEventLogRecordLogDatumTimeChange
 type BACnetEventLogRecordLogDatumTimeChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventLogRecordLogDatum
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventLogRecordLogDatumTimeChange is the data-structure of this message

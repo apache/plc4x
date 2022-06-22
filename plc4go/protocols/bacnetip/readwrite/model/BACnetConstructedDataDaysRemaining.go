@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataDaysRemaining is the corresponding interface of BACnetConstructedDataDaysRemaining
 type BACnetConstructedDataDaysRemaining interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDaysRemaining returns DaysRemaining (property field)
 	GetDaysRemaining() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataDaysRemaining is the data-structure of this message

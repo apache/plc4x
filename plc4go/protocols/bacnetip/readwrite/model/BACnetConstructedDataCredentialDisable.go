@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataCredentialDisable is the corresponding interface of BACnetConstructedDataCredentialDisable
 type BACnetConstructedDataCredentialDisable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCredentialDisable returns CredentialDisable (property field)
 	GetCredentialDisable() BACnetAccessCredentialDisableTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessCredentialDisableTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCredentialDisable is the data-structure of this message

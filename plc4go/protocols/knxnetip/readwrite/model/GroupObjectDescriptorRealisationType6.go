@@ -28,12 +28,8 @@ import (
 
 // GroupObjectDescriptorRealisationType6 is the corresponding interface of GroupObjectDescriptorRealisationType6
 type GroupObjectDescriptorRealisationType6 interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.LengthAware
+	utils.Serializable
 }
 
 // _GroupObjectDescriptorRealisationType6 is the data-structure of this message

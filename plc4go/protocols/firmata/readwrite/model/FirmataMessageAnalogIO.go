@@ -28,17 +28,13 @@ import (
 
 // FirmataMessageAnalogIO is the corresponding interface of FirmataMessageAnalogIO
 type FirmataMessageAnalogIO interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetData returns Data (property field)
 	GetData() []int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _FirmataMessageAnalogIO is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataAnalogValueFaultHighLimit is the corresponding interface of BACnetConstructedDataAnalogValueFaultHighLimit
 type BACnetConstructedDataAnalogValueFaultHighLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultHighLimit returns FaultHighLimit (property field)
 	GetFaultHighLimit() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAnalogValueFaultHighLimit is the data-structure of this message

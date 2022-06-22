@@ -28,13 +28,9 @@ import (
 
 // BACnetConstructedDataAlertEnrollmentAll is the corresponding interface of BACnetConstructedDataAlertEnrollmentAll
 type BACnetConstructedDataAlertEnrollmentAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAlertEnrollmentAll is the data-structure of this message

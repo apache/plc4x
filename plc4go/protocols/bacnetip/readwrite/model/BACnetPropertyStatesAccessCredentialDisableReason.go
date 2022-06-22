@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesAccessCredentialDisableReason is the corresponding interface of BACnetPropertyStatesAccessCredentialDisableReason
 type BACnetPropertyStatesAccessCredentialDisableReason interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetAccessCredentialDisableReason returns AccessCredentialDisableReason (property field)
 	GetAccessCredentialDisableReason() BACnetAccessCredentialDisableReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesAccessCredentialDisableReason is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetShedLevelLevel is the corresponding interface of BACnetShedLevelLevel
 type BACnetShedLevelLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetShedLevel
 	// GetLevel returns Level (property field)
 	GetLevel() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetShedLevelLevel is the data-structure of this message

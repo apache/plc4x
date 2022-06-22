@@ -28,15 +28,11 @@ import (
 
 // BACnetPriorityValueEnumerated is the corresponding interface of BACnetPriorityValueEnumerated
 type BACnetPriorityValueEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPriorityValueEnumerated is the data-structure of this message

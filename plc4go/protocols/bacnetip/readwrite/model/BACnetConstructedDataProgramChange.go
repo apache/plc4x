@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataProgramChange is the corresponding interface of BACnetConstructedDataProgramChange
 type BACnetConstructedDataProgramChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProgramChange returns ProgramChange (property field)
 	GetProgramChange() BACnetProgramRequestTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProgramRequestTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataProgramChange is the data-structure of this message

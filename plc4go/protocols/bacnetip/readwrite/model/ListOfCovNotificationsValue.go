@@ -30,6 +30,8 @@ import (
 
 // ListOfCovNotificationsValue is the corresponding interface of ListOfCovNotificationsValue
 type ListOfCovNotificationsValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -38,12 +40,6 @@ type ListOfCovNotificationsValue interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetTimeOfChange returns TimeOfChange (property field)
 	GetTimeOfChange() BACnetContextTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ListOfCovNotificationsValue is the data-structure of this message

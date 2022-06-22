@@ -28,13 +28,9 @@ import (
 
 // SysexCommandCapabilityQuery is the corresponding interface of SysexCommandCapabilityQuery
 type SysexCommandCapabilityQuery interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SysexCommandCapabilityQuery is the data-structure of this message

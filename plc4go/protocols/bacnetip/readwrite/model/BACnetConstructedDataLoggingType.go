@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLoggingType is the corresponding interface of BACnetConstructedDataLoggingType
 type BACnetConstructedDataLoggingType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLoggingType returns LoggingType (property field)
 	GetLoggingType() BACnetLoggingTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLoggingTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLoggingType is the data-structure of this message

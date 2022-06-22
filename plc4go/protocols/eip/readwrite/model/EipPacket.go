@@ -28,6 +28,8 @@ import (
 
 // EipPacket is the corresponding interface of EipPacket
 type EipPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommand returns Command (discriminator field)
 	GetCommand() uint16
 	// GetSessionHandle returns SessionHandle (property field)
@@ -38,12 +40,6 @@ type EipPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _EipPacket is the data-structure of this message

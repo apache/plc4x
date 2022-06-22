@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesProtocolLevel is the corresponding interface of BACnetPropertyStatesProtocolLevel
 type BACnetPropertyStatesProtocolLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesProtocolLevel is the data-structure of this message

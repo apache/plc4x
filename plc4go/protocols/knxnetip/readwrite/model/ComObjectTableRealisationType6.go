@@ -28,15 +28,11 @@ import (
 
 // ComObjectTableRealisationType6 is the corresponding interface of ComObjectTableRealisationType6
 type ComObjectTableRealisationType6 interface {
+	utils.LengthAware
+	utils.Serializable
 	ComObjectTable
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() GroupObjectDescriptorRealisationType6
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ComObjectTableRealisationType6 is the data-structure of this message

@@ -30,6 +30,8 @@ import (
 
 // BACnetServiceAckReadRange is the corresponding interface of BACnetServiceAckReadRange
 type BACnetServiceAckReadRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -45,12 +47,6 @@ type BACnetServiceAckReadRange interface {
 	GetItemData() BACnetConstructedData
 	// GetFirstSequenceNumber returns FirstSequenceNumber (property field)
 	GetFirstSequenceNumber() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckReadRange is the data-structure of this message

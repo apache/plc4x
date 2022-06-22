@@ -30,16 +30,12 @@ import (
 
 // BACnetReadAccessResult is the corresponding interface of BACnetReadAccessResult
 type BACnetReadAccessResult interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfResults returns ListOfResults (property field)
 	GetListOfResults() BACnetReadAccessResultListOfResults
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetReadAccessResult is the data-structure of this message

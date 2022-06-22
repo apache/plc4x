@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterChangeOfTimer is the corresponding interface of BACnetEventParameterChangeOfTimer
 type BACnetEventParameterChangeOfTimer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -39,12 +41,6 @@ type BACnetEventParameterChangeOfTimer interface {
 	GetUpdateTimeReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventParameterChangeOfTimer is the data-structure of this message

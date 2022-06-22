@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataSubscribedRecipients is the corresponding interface of BACnetConstructedDataSubscribedRecipients
 type BACnetConstructedDataSubscribedRecipients interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSubscribedRecipients returns SubscribedRecipients (property field)
 	GetSubscribedRecipients() []BACnetEventNotificationSubscription
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSubscribedRecipients is the data-structure of this message

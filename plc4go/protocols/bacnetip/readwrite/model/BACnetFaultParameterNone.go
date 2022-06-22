@@ -28,15 +28,11 @@ import (
 
 // BACnetFaultParameterNone is the corresponding interface of BACnetFaultParameterNone
 type BACnetFaultParameterNone interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterNone is the data-structure of this message

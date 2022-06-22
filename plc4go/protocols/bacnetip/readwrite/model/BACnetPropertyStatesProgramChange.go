@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesProgramChange is the corresponding interface of BACnetPropertyStatesProgramChange
 type BACnetPropertyStatesProgramChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetProgramState returns ProgramState (property field)
 	GetProgramState() BACnetProgramStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesProgramChange is the data-structure of this message

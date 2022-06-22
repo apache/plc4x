@@ -28,17 +28,13 @@ import (
 
 // AdsAddDeviceNotificationResponse is the corresponding interface of AdsAddDeviceNotificationResponse
 type AdsAddDeviceNotificationResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AdsAddDeviceNotificationResponse is the data-structure of this message

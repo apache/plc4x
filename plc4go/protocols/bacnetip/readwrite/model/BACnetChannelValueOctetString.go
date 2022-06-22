@@ -28,15 +28,11 @@ import (
 
 // BACnetChannelValueOctetString is the corresponding interface of BACnetChannelValueOctetString
 type BACnetChannelValueOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetChannelValueOctetString is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BVLCOriginalUnicastNPDU is the corresponding interface of BVLCOriginalUnicastNPDU
 type BVLCOriginalUnicastNPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BVLCOriginalUnicastNPDU is the data-structure of this message

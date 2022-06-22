@@ -29,6 +29,8 @@ import (
 
 // S7ParameterSetupCommunication is the corresponding interface of S7ParameterSetupCommunication
 type S7ParameterSetupCommunication interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Parameter
 	// GetMaxAmqCaller returns MaxAmqCaller (property field)
 	GetMaxAmqCaller() uint16
@@ -36,12 +38,6 @@ type S7ParameterSetupCommunication interface {
 	GetMaxAmqCallee() uint16
 	// GetPduLength returns PduLength (property field)
 	GetPduLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7ParameterSetupCommunication is the data-structure of this message

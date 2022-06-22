@@ -28,15 +28,11 @@ import (
 
 // BACnetScaleFloatScale is the corresponding interface of BACnetScaleFloatScale
 type BACnetScaleFloatScale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetScale
 	// GetFloatScale returns FloatScale (property field)
 	GetFloatScale() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetScaleFloatScale is the data-structure of this message

@@ -30,16 +30,12 @@ import (
 
 // BACnetVMACEntry is the corresponding interface of BACnetVMACEntry
 type BACnetVMACEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetVirtualMacAddress returns VirtualMacAddress (property field)
 	GetVirtualMacAddress() BACnetContextTagOctetString
 	// GetNativeMacAddress returns NativeMacAddress (property field)
 	GetNativeMacAddress() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetVMACEntry is the data-structure of this message

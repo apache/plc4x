@@ -29,6 +29,8 @@ import (
 
 // APDUError is the corresponding interface of APDUError
 type APDUError interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -36,12 +38,6 @@ type APDUError interface {
 	GetErrorChoice() BACnetConfirmedServiceChoice
 	// GetError returns Error (property field)
 	GetError() BACnetError
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _APDUError is the data-structure of this message

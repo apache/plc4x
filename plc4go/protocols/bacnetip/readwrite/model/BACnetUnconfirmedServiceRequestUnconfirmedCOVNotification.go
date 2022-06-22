@@ -28,6 +28,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -39,12 +41,6 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	GetLifetimeInSeconds() BACnetContextTagUnsignedInteger
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is the data-structure of this message

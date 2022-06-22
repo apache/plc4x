@@ -34,6 +34,8 @@ const CBusPointToPointCommand_CR byte = 0xD
 
 // CBusPointToPointCommand is the corresponding interface of CBusPointToPointCommand
 type CBusPointToPointCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetBridgeAddressCountPeek returns BridgeAddressCountPeek (property field)
 	GetBridgeAddressCountPeek() uint16
 	// GetCalData returns CalData (property field)
@@ -46,12 +48,6 @@ type CBusPointToPointCommand interface {
 	GetAlpha() Alpha
 	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusPointToPointCommand is the data-structure of this message

@@ -28,18 +28,14 @@ import (
 
 // BACnetEventParameterChangeOfTimerAlarmValue is the corresponding interface of BACnetEventParameterChangeOfTimerAlarmValue
 type BACnetEventParameterChangeOfTimerAlarmValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetTimerStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventParameterChangeOfTimerAlarmValue is the data-structure of this message

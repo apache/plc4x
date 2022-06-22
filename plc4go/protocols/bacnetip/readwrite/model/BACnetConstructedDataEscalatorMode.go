@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataEscalatorMode is the corresponding interface of BACnetConstructedDataEscalatorMode
 type BACnetConstructedDataEscalatorMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() BACnetEscalatorModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEscalatorModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEscalatorMode is the data-structure of this message

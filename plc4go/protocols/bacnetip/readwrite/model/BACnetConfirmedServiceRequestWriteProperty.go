@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestWriteProperty is the corresponding interface of BACnetConfirmedServiceRequestWriteProperty
 type BACnetConfirmedServiceRequestWriteProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -41,12 +43,6 @@ type BACnetConfirmedServiceRequestWriteProperty interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestWriteProperty is the data-structure of this message

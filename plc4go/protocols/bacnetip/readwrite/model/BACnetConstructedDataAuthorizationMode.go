@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataAuthorizationMode is the corresponding interface of BACnetConstructedDataAuthorizationMode
 type BACnetConstructedDataAuthorizationMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAuthorizationMode returns AuthorizationMode (property field)
 	GetAuthorizationMode() BACnetAuthorizationModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthorizationModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAuthorizationMode is the data-structure of this message

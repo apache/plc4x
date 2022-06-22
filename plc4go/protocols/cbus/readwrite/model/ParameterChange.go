@@ -35,12 +35,8 @@ const ParameterChange_LF byte = 0x0A
 
 // ParameterChange is the corresponding interface of ParameterChange
 type ParameterChange interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.LengthAware
+	utils.Serializable
 }
 
 // _ParameterChange is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfReliability is the corresponding interface of BACnetNotificationParametersChangeOfReliability
 type BACnetNotificationParametersChangeOfReliability interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -39,12 +41,6 @@ type BACnetNotificationParametersChangeOfReliability interface {
 	GetPropertyValues() BACnetPropertyValues
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfReliability is the data-structure of this message

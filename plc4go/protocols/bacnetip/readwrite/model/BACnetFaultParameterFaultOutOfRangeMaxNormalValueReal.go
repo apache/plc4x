@@ -28,15 +28,11 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal is the data-structure of this message

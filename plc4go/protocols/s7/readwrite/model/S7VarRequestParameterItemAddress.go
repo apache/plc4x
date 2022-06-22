@@ -28,15 +28,11 @@ import (
 
 // S7VarRequestParameterItemAddress is the corresponding interface of S7VarRequestParameterItemAddress
 type S7VarRequestParameterItemAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	S7VarRequestParameterItem
 	// GetAddress returns Address (property field)
 	GetAddress() S7Address
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7VarRequestParameterItemAddress is the data-structure of this message

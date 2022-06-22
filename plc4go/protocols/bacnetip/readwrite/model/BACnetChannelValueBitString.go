@@ -28,15 +28,11 @@ import (
 
 // BACnetChannelValueBitString is the corresponding interface of BACnetChannelValueBitString
 type BACnetChannelValueBitString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetChannelValueBitString is the data-structure of this message

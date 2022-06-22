@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesLockStatus is the corresponding interface of BACnetPropertyStatesLockStatus
 type BACnetPropertyStatesLockStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesLockStatus is the data-structure of this message

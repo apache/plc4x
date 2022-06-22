@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesUnits is the corresponding interface of BACnetPropertyStatesUnits
 type BACnetPropertyStatesUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesUnits is the data-structure of this message

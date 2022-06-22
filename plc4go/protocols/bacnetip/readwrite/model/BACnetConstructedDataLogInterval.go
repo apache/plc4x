@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLogInterval is the corresponding interface of BACnetConstructedDataLogInterval
 type BACnetConstructedDataLogInterval interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLogInterval returns LogInterval (property field)
 	GetLogInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLogInterval is the data-structure of this message

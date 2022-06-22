@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataEventEnable is the corresponding interface of BACnetConstructedDataEventEnable
 type BACnetConstructedDataEventEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventEnable returns EventEnable (property field)
 	GetEventEnable() BACnetEventTransitionBitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEventEnable is the data-structure of this message

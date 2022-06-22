@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataEventLogLogBuffer is the corresponding interface of BACnetConstructedDataEventLogLogBuffer
 type BACnetConstructedDataEventLogLogBuffer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetEventLogRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEventLogLogBuffer is the data-structure of this message

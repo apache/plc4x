@@ -28,6 +28,8 @@ import (
 
 // BVLCForwardedNPDU is the corresponding interface of BVLCForwardedNPDU
 type BVLCForwardedNPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
@@ -35,12 +37,6 @@ type BVLCForwardedNPDU interface {
 	GetPort() uint16
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BVLCForwardedNPDU is the data-structure of this message

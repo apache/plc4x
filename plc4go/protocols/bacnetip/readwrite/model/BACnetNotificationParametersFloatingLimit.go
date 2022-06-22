@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersFloatingLimit is the corresponding interface of BACnetNotificationParametersFloatingLimit
 type BACnetNotificationParametersFloatingLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -41,12 +43,6 @@ type BACnetNotificationParametersFloatingLimit interface {
 	GetErrorLimit() BACnetContextTagReal
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersFloatingLimit is the data-structure of this message

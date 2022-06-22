@@ -28,15 +28,11 @@ import (
 
 // ApduControlContainer is the corresponding interface of ApduControlContainer
 type ApduControlContainer interface {
+	utils.LengthAware
+	utils.Serializable
 	Apdu
 	// GetControlApdu returns ControlApdu (property field)
 	GetControlApdu() ApduControl
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduControlContainer is the data-structure of this message

@@ -32,6 +32,8 @@ const ModbusPDUReadDeviceIdentificationResponse_MEITYPE uint8 = 0x0E
 
 // ModbusPDUReadDeviceIdentificationResponse is the corresponding interface of ModbusPDUReadDeviceIdentificationResponse
 type ModbusPDUReadDeviceIdentificationResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetLevel returns Level (property field)
 	GetLevel() ModbusDeviceInformationLevel
@@ -45,12 +47,6 @@ type ModbusPDUReadDeviceIdentificationResponse interface {
 	GetNextObjectId() uint8
 	// GetObjects returns Objects (property field)
 	GetObjects() []ModbusDeviceInformationObject
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUReadDeviceIdentificationResponse is the data-structure of this message

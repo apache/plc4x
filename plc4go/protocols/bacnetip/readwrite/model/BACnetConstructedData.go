@@ -28,6 +28,8 @@ import (
 
 // BACnetConstructedData is the corresponding interface of BACnetConstructedData
 type BACnetConstructedData interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectTypeArgument returns ObjectTypeArgument (discriminator field)
 	GetObjectTypeArgument() BACnetObjectType
 	// GetPropertyIdentifierArgument returns PropertyIdentifierArgument (discriminator field)
@@ -40,12 +42,6 @@ type BACnetConstructedData interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedData is the data-structure of this message

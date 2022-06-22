@@ -28,15 +28,11 @@ import (
 
 // ConnectionResponseDataBlockTunnelConnection is the corresponding interface of ConnectionResponseDataBlockTunnelConnection
 type ConnectionResponseDataBlockTunnelConnection interface {
+	utils.LengthAware
+	utils.Serializable
 	ConnectionResponseDataBlock
 	// GetKnxAddress returns KnxAddress (property field)
 	GetKnxAddress() KnxAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ConnectionResponseDataBlockTunnelConnection is the data-structure of this message

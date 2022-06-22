@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestCreateObjectObjectSpecifier is the corresponding interface of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetRawObjectType returns RawObjectType (property field)
@@ -44,12 +46,6 @@ type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
 	GetObjectType() BACnetObjectType
 	// GetIsObjectIdentifier returns IsObjectIdentifier (virtual field)
 	GetIsObjectIdentifier() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier is the data-structure of this message

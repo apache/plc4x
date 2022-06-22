@@ -28,13 +28,9 @@ import (
 
 // TDataConnectedReq is the corresponding interface of TDataConnectedReq
 type TDataConnectedReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _TDataConnectedReq is the data-structure of this message

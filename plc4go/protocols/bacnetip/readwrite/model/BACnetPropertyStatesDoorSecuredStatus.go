@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesDoorSecuredStatus is the corresponding interface of BACnetPropertyStatesDoorSecuredStatus
 type BACnetPropertyStatesDoorSecuredStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetDoorSecuredStatus returns DoorSecuredStatus (property field)
 	GetDoorSecuredStatus() BACnetDoorSecuredStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesDoorSecuredStatus is the data-structure of this message

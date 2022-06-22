@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataPolarity is the corresponding interface of BACnetConstructedDataPolarity
 type BACnetConstructedDataPolarity interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetPolarityTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataPolarity is the data-structure of this message

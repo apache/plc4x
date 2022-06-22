@@ -28,15 +28,11 @@ import (
 
 // CBusCommandPointToPointToMultiPoint is the corresponding interface of CBusCommandPointToPointToMultiPoint
 type CBusCommandPointToPointToMultiPoint interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToPointToMultipointCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusCommandPointToPointToMultiPoint is the data-structure of this message

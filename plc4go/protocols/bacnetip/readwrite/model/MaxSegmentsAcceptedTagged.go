@@ -28,16 +28,12 @@ import (
 
 // MaxSegmentsAcceptedTagged is the corresponding interface of MaxSegmentsAcceptedTagged
 type MaxSegmentsAcceptedTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() MaxSegmentsAccepted
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _MaxSegmentsAcceptedTagged is the data-structure of this message

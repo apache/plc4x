@@ -28,15 +28,11 @@ import (
 
 // ModbusPDUReadCoilsResponse is the corresponding interface of ModbusPDUReadCoilsResponse
 type ModbusPDUReadCoilsResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUReadCoilsResponse is the data-structure of this message

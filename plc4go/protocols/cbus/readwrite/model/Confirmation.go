@@ -28,16 +28,12 @@ import (
 
 // Confirmation is the corresponding interface of Confirmation
 type Confirmation interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetConfirmationType returns ConfirmationType (discriminator field)
 	GetConfirmationType() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _Confirmation is the data-structure of this message

@@ -28,13 +28,9 @@ import (
 
 // ApduDataExtDomainAddressResponse is the corresponding interface of ApduDataExtDomainAddressResponse
 type ApduDataExtDomainAddressResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataExtDomainAddressResponse is the data-structure of this message

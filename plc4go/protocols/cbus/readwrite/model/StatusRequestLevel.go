@@ -29,17 +29,13 @@ import (
 
 // StatusRequestLevel is the corresponding interface of StatusRequestLevel
 type StatusRequestLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() byte
 	// GetStartingGroupAddressLabel returns StartingGroupAddressLabel (property field)
 	GetStartingGroupAddressLabel() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _StatusRequestLevel is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfState is the corresponding interface of BACnetNotificationParametersChangeOfState
 type BACnetNotificationParametersChangeOfState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -37,12 +39,6 @@ type BACnetNotificationParametersChangeOfState interface {
 	GetStatusFlags() BACnetStatusFlagsTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfState is the data-structure of this message

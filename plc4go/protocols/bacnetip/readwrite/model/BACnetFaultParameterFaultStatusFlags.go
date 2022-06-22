@@ -28,6 +28,8 @@ import (
 
 // BACnetFaultParameterFaultStatusFlags is the corresponding interface of BACnetFaultParameterFaultStatusFlags
 type BACnetFaultParameterFaultStatusFlags interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -35,12 +37,6 @@ type BACnetFaultParameterFaultStatusFlags interface {
 	GetStatusFlagsReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterFaultStatusFlags is the data-structure of this message

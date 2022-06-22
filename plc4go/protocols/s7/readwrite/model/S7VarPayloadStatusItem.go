@@ -28,14 +28,10 @@ import (
 
 // S7VarPayloadStatusItem is the corresponding interface of S7VarPayloadStatusItem
 type S7VarPayloadStatusItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7VarPayloadStatusItem is the data-structure of this message

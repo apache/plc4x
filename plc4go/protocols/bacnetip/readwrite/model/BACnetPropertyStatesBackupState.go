@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesBackupState is the corresponding interface of BACnetPropertyStatesBackupState
 type BACnetPropertyStatesBackupState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetBackupState returns BackupState (property field)
 	GetBackupState() BACnetBackupStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesBackupState is the data-structure of this message

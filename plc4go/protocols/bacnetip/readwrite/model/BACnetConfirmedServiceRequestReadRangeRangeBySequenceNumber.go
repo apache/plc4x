@@ -28,17 +28,13 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
 type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceSequenceNumber returns ReferenceSequenceNumber (property field)
 	GetReferenceSequenceNumber() BACnetApplicationTagUnsignedInteger
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // CIPEncapsulationReadRequest is the corresponding interface of CIPEncapsulationReadRequest
 type CIPEncapsulationReadRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CIPEncapsulationPacket
 	// GetRequest returns Request (property field)
 	GetRequest() DF1RequestMessage
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CIPEncapsulationReadRequest is the data-structure of this message

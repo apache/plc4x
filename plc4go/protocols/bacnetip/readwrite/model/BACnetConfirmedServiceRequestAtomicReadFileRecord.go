@@ -28,17 +28,13 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicReadFileRecord is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFileRecord
 type BACnetConfirmedServiceRequestAtomicReadFileRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	// GetFileStartRecord returns FileStartRecord (property field)
 	GetFileStartRecord() BACnetApplicationTagSignedInteger
 	// GetRequestRecordCount returns RequestRecordCount (property field)
 	GetRequestRecordCount() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFileRecord is the data-structure of this message

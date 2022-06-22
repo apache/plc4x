@@ -28,6 +28,8 @@ import (
 
 // MPropReadCon is the corresponding interface of MPropReadCon
 type MPropReadCon interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
 	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
@@ -41,12 +43,6 @@ type MPropReadCon interface {
 	GetStartIndex() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _MPropReadCon is the data-structure of this message

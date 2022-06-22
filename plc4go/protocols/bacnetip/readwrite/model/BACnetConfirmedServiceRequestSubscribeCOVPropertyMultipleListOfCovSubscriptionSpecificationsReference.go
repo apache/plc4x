@@ -30,18 +30,14 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMonitoredProperty returns MonitoredProperty (property field)
 	GetMonitoredProperty() BACnetPropertyReferenceEnclosed
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetContextTagReal
 	// GetTimestamped returns Timestamped (property field)
 	GetTimestamped() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueMaxPresValue is the corresponding interface of BACnetConstructedDataPositiveIntegerValueMaxPresValue
 type BACnetConstructedDataPositiveIntegerValueMaxPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataPositiveIntegerValueMaxPresValue is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // KnxNetIpDeviceManagement is the corresponding interface of KnxNetIpDeviceManagement
 type KnxNetIpDeviceManagement interface {
+	utils.LengthAware
+	utils.Serializable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _KnxNetIpDeviceManagement is the data-structure of this message

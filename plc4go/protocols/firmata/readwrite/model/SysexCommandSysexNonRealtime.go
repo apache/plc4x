@@ -28,13 +28,9 @@ import (
 
 // SysexCommandSysexNonRealtime is the corresponding interface of SysexCommandSysexNonRealtime
 type SysexCommandSysexNonRealtime interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SysexCommandSysexNonRealtime is the data-structure of this message

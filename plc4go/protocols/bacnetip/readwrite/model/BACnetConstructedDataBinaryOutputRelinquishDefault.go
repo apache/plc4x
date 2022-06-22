@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBinaryOutputRelinquishDefault is the corresponding interface of BACnetConstructedDataBinaryOutputRelinquishDefault
 type BACnetConstructedDataBinaryOutputRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBinaryOutputRelinquishDefault is the data-structure of this message

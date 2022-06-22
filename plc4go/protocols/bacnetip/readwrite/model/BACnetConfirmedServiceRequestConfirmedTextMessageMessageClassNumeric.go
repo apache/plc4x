@@ -28,15 +28,11 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetNumericValue returns NumericValue (property field)
 	GetNumericValue() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataDoNotHide is the corresponding interface of BACnetConstructedDataDoNotHide
 type BACnetConstructedDataDoNotHide interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDoNotHide returns DoNotHide (property field)
 	GetDoNotHide() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataDoNotHide is the data-structure of this message

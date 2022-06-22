@@ -28,15 +28,11 @@ import (
 
 // S7ParameterReadVarRequest is the corresponding interface of S7ParameterReadVarRequest
 type S7ParameterReadVarRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7ParameterReadVarRequest is the data-structure of this message

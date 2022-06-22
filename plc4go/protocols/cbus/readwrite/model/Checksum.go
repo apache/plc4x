@@ -28,14 +28,10 @@ import (
 
 // Checksum is the corresponding interface of Checksum
 type Checksum interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCrc returns Crc (property field)
 	GetCrc() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _Checksum is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is the data-structure of this message

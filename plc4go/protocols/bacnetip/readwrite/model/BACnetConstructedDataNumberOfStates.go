@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataNumberOfStates is the corresponding interface of BACnetConstructedDataNumberOfStates
 type BACnetConstructedDataNumberOfStates interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfState returns NumberOfState (property field)
 	GetNumberOfState() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataNumberOfStates is the data-structure of this message

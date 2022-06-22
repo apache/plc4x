@@ -28,15 +28,11 @@ import (
 
 // BACnetPriorityValueBoolean is the corresponding interface of BACnetPriorityValueBoolean
 type BACnetPriorityValueBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPriorityValueBoolean is the data-structure of this message

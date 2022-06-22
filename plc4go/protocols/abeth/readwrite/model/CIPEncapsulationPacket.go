@@ -29,6 +29,8 @@ import (
 
 // CIPEncapsulationPacket is the corresponding interface of CIPEncapsulationPacket
 type CIPEncapsulationPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint16
 	// GetSessionHandle returns SessionHandle (property field)
@@ -39,12 +41,6 @@ type CIPEncapsulationPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CIPEncapsulationPacket is the data-structure of this message

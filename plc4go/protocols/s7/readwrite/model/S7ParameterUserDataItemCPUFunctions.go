@@ -28,6 +28,8 @@ import (
 
 // S7ParameterUserDataItemCPUFunctions is the corresponding interface of S7ParameterUserDataItemCPUFunctions
 type S7ParameterUserDataItemCPUFunctions interface {
+	utils.LengthAware
+	utils.Serializable
 	S7ParameterUserDataItem
 	// GetMethod returns Method (property field)
 	GetMethod() uint8
@@ -45,12 +47,6 @@ type S7ParameterUserDataItemCPUFunctions interface {
 	GetLastDataUnit() *uint8
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() *uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7ParameterUserDataItemCPUFunctions is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataRestorePreparationTime is the corresponding interface of BACnetConstructedDataRestorePreparationTime
 type BACnetConstructedDataRestorePreparationTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRestorePreparationTime returns RestorePreparationTime (property field)
 	GetRestorePreparationTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataRestorePreparationTime is the data-structure of this message

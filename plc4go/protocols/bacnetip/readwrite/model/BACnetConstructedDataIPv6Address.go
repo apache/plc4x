@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataIPv6Address is the corresponding interface of BACnetConstructedDataIPv6Address
 type BACnetConstructedDataIPv6Address interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6Address returns Ipv6Address (property field)
 	GetIpv6Address() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataIPv6Address is the data-structure of this message

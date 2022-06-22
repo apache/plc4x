@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataTrendLogLogDeviceObjectProperty is the corresponding interface of BACnetConstructedDataTrendLogLogDeviceObjectProperty
 type BACnetConstructedDataTrendLogLogDeviceObjectProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLogDeviceObjectProperty returns LogDeviceObjectProperty (property field)
 	GetLogDeviceObjectProperty() BACnetDeviceObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectPropertyReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataTrendLogLogDeviceObjectProperty is the data-structure of this message

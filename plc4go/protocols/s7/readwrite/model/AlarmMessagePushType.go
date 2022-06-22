@@ -28,6 +28,8 @@ import (
 
 // AlarmMessagePushType is the corresponding interface of AlarmMessagePushType
 type AlarmMessagePushType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
 	// GetFunctionId returns FunctionId (property field)
@@ -36,12 +38,6 @@ type AlarmMessagePushType interface {
 	GetNumberOfObjects() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectPushType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AlarmMessagePushType is the data-structure of this message

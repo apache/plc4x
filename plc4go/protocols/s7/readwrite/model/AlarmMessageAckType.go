@@ -28,18 +28,14 @@ import (
 
 // AlarmMessageAckType is the corresponding interface of AlarmMessageAckType
 type AlarmMessageAckType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
 	GetNumberOfObjects() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectAckType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AlarmMessageAckType is the data-structure of this message

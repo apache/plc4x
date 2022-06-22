@@ -28,13 +28,9 @@ import (
 
 // IdentifyReplyCommandMinimumLevels is the corresponding interface of IdentifyReplyCommandMinimumLevels
 type IdentifyReplyCommandMinimumLevels interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _IdentifyReplyCommandMinimumLevels is the data-structure of this message

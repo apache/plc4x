@@ -28,16 +28,12 @@ import (
 
 // BACnetNetworkSecurityPolicy is the corresponding interface of BACnetNetworkSecurityPolicy
 type BACnetNetworkSecurityPolicy interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPortId returns PortId (property field)
 	GetPortId() BACnetContextTagUnsignedInteger
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityPolicyTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNetworkSecurityPolicy is the data-structure of this message

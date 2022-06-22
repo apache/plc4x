@@ -28,16 +28,12 @@ import (
 
 // BACnetProgramRequestTagged is the corresponding interface of BACnetProgramRequestTagged
 type BACnetProgramRequestTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetProgramRequest
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetProgramRequestTagged is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetContextTagUnknown is the corresponding interface of BACnetContextTagUnknown
 type BACnetContextTagUnknown interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetContextTagUnknown is the data-structure of this message

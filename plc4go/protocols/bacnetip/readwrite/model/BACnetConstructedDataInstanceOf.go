@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataInstanceOf is the corresponding interface of BACnetConstructedDataInstanceOf
 type BACnetConstructedDataInstanceOf interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInstanceOf returns InstanceOf (property field)
 	GetInstanceOf() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataInstanceOf is the data-structure of this message

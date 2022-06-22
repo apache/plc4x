@@ -28,16 +28,12 @@ import (
 
 // NetworkRoute is the corresponding interface of NetworkRoute
 type NetworkRoute interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRouteType returns RouteType (property field)
 	GetRouteType() RouteType
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []BridgeAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NetworkRoute is the data-structure of this message

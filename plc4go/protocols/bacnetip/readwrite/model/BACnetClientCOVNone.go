@@ -28,15 +28,11 @@ import (
 
 // BACnetClientCOVNone is the corresponding interface of BACnetClientCOVNone
 type BACnetClientCOVNone interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetClientCOV
 	// GetDefaultIncrement returns DefaultIncrement (property field)
 	GetDefaultIncrement() BACnetApplicationTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetClientCOVNone is the data-structure of this message

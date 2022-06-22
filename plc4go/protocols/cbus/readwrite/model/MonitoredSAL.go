@@ -35,16 +35,12 @@ const MonitoredSAL_LF byte = 0x0A
 
 // MonitoredSAL is the corresponding interface of MonitoredSAL
 type MonitoredSAL interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _MonitoredSAL is the data-structure of this message

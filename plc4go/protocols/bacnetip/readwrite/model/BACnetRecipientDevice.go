@@ -28,15 +28,11 @@ import (
 
 // BACnetRecipientDevice is the corresponding interface of BACnetRecipientDevice
 type BACnetRecipientDevice interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetRecipient
 	// GetDeviceValue returns DeviceValue (property field)
 	GetDeviceValue() BACnetContextTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetRecipientDevice is the data-structure of this message

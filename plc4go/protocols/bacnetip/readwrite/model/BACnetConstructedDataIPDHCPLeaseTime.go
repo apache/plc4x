@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataIPDHCPLeaseTime is the corresponding interface of BACnetConstructedDataIPDHCPLeaseTime
 type BACnetConstructedDataIPDHCPLeaseTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpDhcpLeaseTime returns IpDhcpLeaseTime (property field)
 	GetIpDhcpLeaseTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataIPDHCPLeaseTime is the data-structure of this message

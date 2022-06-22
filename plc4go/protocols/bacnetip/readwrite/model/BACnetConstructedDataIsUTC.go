@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataIsUTC is the corresponding interface of BACnetConstructedDataIsUTC
 type BACnetConstructedDataIsUTC interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIsUtc returns IsUtc (property field)
 	GetIsUtc() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataIsUTC is the data-structure of this message

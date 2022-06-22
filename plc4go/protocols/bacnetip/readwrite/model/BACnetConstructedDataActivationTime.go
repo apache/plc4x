@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataActivationTime is the corresponding interface of BACnetConstructedDataActivationTime
 type BACnetConstructedDataActivationTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActivationTime returns ActivationTime (property field)
 	GetActivationTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataActivationTime is the data-structure of this message

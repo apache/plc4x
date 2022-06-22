@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataCredentials is the corresponding interface of BACnetConstructedDataCredentials
 type BACnetConstructedDataCredentials interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCredentials returns Credentials (property field)
 	GetCredentials() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCredentials is the data-structure of this message

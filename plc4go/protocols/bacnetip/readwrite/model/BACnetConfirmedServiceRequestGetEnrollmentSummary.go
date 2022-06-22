@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummary is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummary
 type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetAcknowledgmentFilter returns AcknowledgmentFilter (property field)
 	GetAcknowledgmentFilter() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
@@ -43,12 +45,6 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
 	GetPriorityFilter() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 	// GetNotificationClassFilter returns NotificationClassFilter (property field)
 	GetNotificationClassFilter() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummary is the data-structure of this message

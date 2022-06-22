@@ -30,6 +30,8 @@ import (
 
 // BACnetPriorityArray is the corresponding interface of BACnetPriorityArray
 type BACnetPriorityArray interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
 	// GetData returns Data (property field)
@@ -72,12 +74,6 @@ type BACnetPriorityArray interface {
 	GetIsIndexedAccess() bool
 	// GetIndexEntry returns IndexEntry (virtual field)
 	GetIndexEntry() BACnetPriorityValue
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPriorityArray is the data-structure of this message

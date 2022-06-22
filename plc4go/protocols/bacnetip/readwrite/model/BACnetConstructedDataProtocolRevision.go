@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataProtocolRevision is the corresponding interface of BACnetConstructedDataProtocolRevision
 type BACnetConstructedDataProtocolRevision interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProtocolRevision returns ProtocolRevision (property field)
 	GetProtocolRevision() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataProtocolRevision is the data-structure of this message

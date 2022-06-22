@@ -30,6 +30,8 @@ import (
 
 // CALReplyLong is the corresponding interface of CALReplyLong
 type CALReplyLong interface {
+	utils.LengthAware
+	utils.Serializable
 	CALReply
 	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
@@ -45,12 +47,6 @@ type CALReplyLong interface {
 	GetReplyNetwork() ReplyNetwork
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CALReplyLong is the data-structure of this message

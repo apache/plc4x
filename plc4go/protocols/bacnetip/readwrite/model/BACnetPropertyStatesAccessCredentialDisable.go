@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesAccessCredentialDisable is the corresponding interface of BACnetPropertyStatesAccessCredentialDisable
 type BACnetPropertyStatesAccessCredentialDisable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetAccessCredentialDisable returns AccessCredentialDisable (property field)
 	GetAccessCredentialDisable() BACnetAccessCredentialDisableTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesAccessCredentialDisable is the data-structure of this message

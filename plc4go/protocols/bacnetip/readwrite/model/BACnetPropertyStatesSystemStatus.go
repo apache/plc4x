@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesSystemStatus is the corresponding interface of BACnetPropertyStatesSystemStatus
 type BACnetPropertyStatesSystemStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesSystemStatus is the data-structure of this message

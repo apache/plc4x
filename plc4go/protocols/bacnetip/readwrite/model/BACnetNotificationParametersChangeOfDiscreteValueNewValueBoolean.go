@@ -28,15 +28,11 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean is the data-structure of this message

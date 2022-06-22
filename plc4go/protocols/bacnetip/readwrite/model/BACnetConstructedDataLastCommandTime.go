@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLastCommandTime is the corresponding interface of BACnetConstructedDataLastCommandTime
 type BACnetConstructedDataLastCommandTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastCommandTime returns LastCommandTime (property field)
 	GetLastCommandTime() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLastCommandTime is the data-structure of this message

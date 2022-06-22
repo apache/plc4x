@@ -28,17 +28,13 @@ import (
 
 // BACnetUnconfirmedServiceRequestTimeSynchronization is the corresponding interface of BACnetUnconfirmedServiceRequestTimeSynchronization
 type BACnetUnconfirmedServiceRequestTimeSynchronization interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetSynchronizedDate returns SynchronizedDate (property field)
 	GetSynchronizedDate() BACnetApplicationTagDate
 	// GetSynchronizedTime returns SynchronizedTime (property field)
 	GetSynchronizedTime() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetUnconfirmedServiceRequestTimeSynchronization is the data-structure of this message

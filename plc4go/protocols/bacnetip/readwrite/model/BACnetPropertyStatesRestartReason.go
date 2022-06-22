@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesRestartReason is the corresponding interface of BACnetPropertyStatesRestartReason
 type BACnetPropertyStatesRestartReason interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetRestartReason returns RestartReason (property field)
 	GetRestartReason() BACnetRestartReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesRestartReason is the data-structure of this message

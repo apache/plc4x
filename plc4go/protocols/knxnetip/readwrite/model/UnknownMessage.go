@@ -28,15 +28,11 @@ import (
 
 // UnknownMessage is the corresponding interface of UnknownMessage
 type UnknownMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _UnknownMessage is the data-structure of this message

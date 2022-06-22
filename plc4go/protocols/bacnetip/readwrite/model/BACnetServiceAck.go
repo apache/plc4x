@@ -28,16 +28,12 @@ import (
 
 // BACnetServiceAck is the corresponding interface of BACnetServiceAck
 type BACnetServiceAck interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
 	GetServiceAckPayloadLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAck is the data-structure of this message

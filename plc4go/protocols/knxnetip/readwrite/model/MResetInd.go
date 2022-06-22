@@ -28,13 +28,9 @@ import (
 
 // MResetInd is the corresponding interface of MResetInd
 type MResetInd interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _MResetInd is the data-structure of this message

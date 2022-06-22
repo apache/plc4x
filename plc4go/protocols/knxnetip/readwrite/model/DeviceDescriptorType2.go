@@ -28,6 +28,8 @@ import (
 
 // DeviceDescriptorType2 is the corresponding interface of DeviceDescriptorType2
 type DeviceDescriptorType2 interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetManufacturerId returns ManufacturerId (property field)
 	GetManufacturerId() uint16
 	// GetDeviceType returns DeviceType (property field)
@@ -48,12 +50,6 @@ type DeviceDescriptorType2 interface {
 	GetChannelInfo3() ChannelInformation
 	// GetChannelInfo4 returns ChannelInfo4 (property field)
 	GetChannelInfo4() ChannelInformation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DeviceDescriptorType2 is the data-structure of this message

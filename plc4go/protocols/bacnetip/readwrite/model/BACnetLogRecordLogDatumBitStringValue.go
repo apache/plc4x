@@ -28,15 +28,11 @@ import (
 
 // BACnetLogRecordLogDatumBitStringValue is the corresponding interface of BACnetLogRecordLogDatumBitStringValue
 type BACnetLogRecordLogDatumBitStringValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLogRecordLogDatumBitStringValue is the data-structure of this message

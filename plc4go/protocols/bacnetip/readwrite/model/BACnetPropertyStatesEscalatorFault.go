@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesEscalatorFault is the corresponding interface of BACnetPropertyStatesEscalatorFault
 type BACnetPropertyStatesEscalatorFault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetEscalatorFault returns EscalatorFault (property field)
 	GetEscalatorFault() BACnetEscalatorFaultTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesEscalatorFault is the data-structure of this message

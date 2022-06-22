@@ -30,6 +30,8 @@ import (
 
 // BACnetPropertyValue is the corresponding interface of BACnetPropertyValue
 type BACnetPropertyValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetPropertyArrayIndex returns PropertyArrayIndex (property field)
@@ -38,12 +40,6 @@ type BACnetPropertyValue interface {
 	GetPropertyValue() BACnetConstructedDataElement
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyValue is the data-structure of this message

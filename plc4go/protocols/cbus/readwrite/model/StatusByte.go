@@ -28,6 +28,8 @@ import (
 
 // StatusByte is the corresponding interface of StatusByte
 type StatusByte interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetGav3 returns Gav3 (property field)
 	GetGav3() GAVState
 	// GetGav2 returns Gav2 (property field)
@@ -36,12 +38,6 @@ type StatusByte interface {
 	GetGav1() GAVState
 	// GetGav0 returns Gav0 (property field)
 	GetGav0() GAVState
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _StatusByte is the data-structure of this message

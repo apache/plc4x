@@ -28,6 +28,8 @@ import (
 
 // IdentifyReplyCommandDSIStatus is the corresponding interface of IdentifyReplyCommandDSIStatus
 type IdentifyReplyCommandDSIStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetChannelStatus1 returns ChannelStatus1 (property field)
 	GetChannelStatus1() ChannelStatus
@@ -49,12 +51,6 @@ type IdentifyReplyCommandDSIStatus interface {
 	GetUnitStatus() UnitStatus
 	// GetDimmingUCRevisionNumber returns DimmingUCRevisionNumber (property field)
 	GetDimmingUCRevisionNumber() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _IdentifyReplyCommandDSIStatus is the data-structure of this message

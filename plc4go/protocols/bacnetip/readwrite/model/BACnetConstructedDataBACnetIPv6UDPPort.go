@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBACnetIPv6UDPPort is the corresponding interface of BACnetConstructedDataBACnetIPv6UDPPort
 type BACnetConstructedDataBACnetIPv6UDPPort interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6UdpPort returns Ipv6UdpPort (property field)
 	GetIpv6UdpPort() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBACnetIPv6UDPPort is the data-structure of this message

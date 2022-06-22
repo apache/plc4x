@@ -30,6 +30,8 @@ import (
 
 // APDUComplexAck is the corresponding interface of APDUComplexAck
 type APDUComplexAck interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -51,12 +53,6 @@ type APDUComplexAck interface {
 	GetApduHeaderReduction() uint16
 	// GetSegmentReduction returns SegmentReduction (virtual field)
 	GetSegmentReduction() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _APDUComplexAck is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUMaskWriteHoldingRegisterResponse is the corresponding interface of ModbusPDUMaskWriteHoldingRegisterResponse
 type ModbusPDUMaskWriteHoldingRegisterResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetReferenceAddress returns ReferenceAddress (property field)
 	GetReferenceAddress() uint16
@@ -35,12 +37,6 @@ type ModbusPDUMaskWriteHoldingRegisterResponse interface {
 	GetAndMask() uint16
 	// GetOrMask returns OrMask (property field)
 	GetOrMask() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUMaskWriteHoldingRegisterResponse is the data-structure of this message

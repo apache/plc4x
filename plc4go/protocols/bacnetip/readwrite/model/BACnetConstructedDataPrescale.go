@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataPrescale is the corresponding interface of BACnetConstructedDataPrescale
 type BACnetConstructedDataPrescale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPrescale returns Prescale (property field)
 	GetPrescale() BACnetPrescale
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetPrescale
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataPrescale is the data-structure of this message

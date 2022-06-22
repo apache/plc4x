@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLandingCallControl is the corresponding interface of BACnetConstructedDataLandingCallControl
 type BACnetConstructedDataLandingCallControl interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLandingCallControl returns LandingCallControl (property field)
 	GetLandingCallControl() BACnetLandingCallStatus
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLandingCallStatus
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLandingCallControl is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataAccessZoneAlarmValues is the corresponding interface of BACnetConstructedDataAccessZoneAlarmValues
 type BACnetConstructedDataAccessZoneAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetAccessZoneOccupancyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAccessZoneAlarmValues is the data-structure of this message

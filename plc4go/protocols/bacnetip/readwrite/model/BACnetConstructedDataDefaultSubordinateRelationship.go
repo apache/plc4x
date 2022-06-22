@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataDefaultSubordinateRelationship is the corresponding interface of BACnetConstructedDataDefaultSubordinateRelationship
 type BACnetConstructedDataDefaultSubordinateRelationship interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDefaultSubordinateRelationship returns DefaultSubordinateRelationship (property field)
 	GetDefaultSubordinateRelationship() BACnetRelationshipTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetRelationshipTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataDefaultSubordinateRelationship is the data-structure of this message

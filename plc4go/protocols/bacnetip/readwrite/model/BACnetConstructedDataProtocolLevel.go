@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataProtocolLevel is the corresponding interface of BACnetConstructedDataProtocolLevel
 type BACnetConstructedDataProtocolLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProtocolLevelTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataProtocolLevel is the data-structure of this message

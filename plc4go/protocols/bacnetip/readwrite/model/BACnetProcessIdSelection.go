@@ -28,16 +28,12 @@ import (
 
 // BACnetProcessIdSelection is the corresponding interface of BACnetProcessIdSelection
 type BACnetProcessIdSelection interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetProcessIdSelection is the data-structure of this message

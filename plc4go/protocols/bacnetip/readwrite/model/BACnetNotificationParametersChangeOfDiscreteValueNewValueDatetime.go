@@ -28,15 +28,11 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime is the data-structure of this message

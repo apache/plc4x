@@ -28,6 +28,8 @@ import (
 
 // AmsNetId is the corresponding interface of AmsNetId
 type AmsNetId interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() uint8
 	// GetOctet2 returns Octet2 (property field)
@@ -40,12 +42,6 @@ type AmsNetId interface {
 	GetOctet5() uint8
 	// GetOctet6 returns Octet6 (property field)
 	GetOctet6() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AmsNetId is the data-structure of this message

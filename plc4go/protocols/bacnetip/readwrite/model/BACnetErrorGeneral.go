@@ -28,15 +28,11 @@ import (
 
 // BACnetErrorGeneral is the corresponding interface of BACnetErrorGeneral
 type BACnetErrorGeneral interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetError returns Error (property field)
 	GetError() Error
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetErrorGeneral is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // FirmataMessageCommand is the corresponding interface of FirmataMessageCommand
 type FirmataMessageCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetCommand returns Command (property field)
 	GetCommand() FirmataCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _FirmataMessageCommand is the data-structure of this message

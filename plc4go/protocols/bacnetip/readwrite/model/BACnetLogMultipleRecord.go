@@ -28,16 +28,12 @@ import (
 
 // BACnetLogMultipleRecord is the corresponding interface of BACnetLogMultipleRecord
 type BACnetLogMultipleRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogData returns LogData (property field)
 	GetLogData() BACnetLogData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLogMultipleRecord is the data-structure of this message

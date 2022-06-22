@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataLifeSafetyPointAlarmValues is the corresponding interface of BACnetConstructedDataLifeSafetyPointAlarmValues
 type BACnetConstructedDataLifeSafetyPointAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetLifeSafetyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLifeSafetyPointAlarmValues is the data-structure of this message

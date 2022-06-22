@@ -28,18 +28,14 @@ import (
 
 // BACnetRejectReasonTagged is the corresponding interface of BACnetRejectReasonTagged
 type BACnetRejectReasonTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() BACnetRejectReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetRejectReasonTagged is the data-structure of this message

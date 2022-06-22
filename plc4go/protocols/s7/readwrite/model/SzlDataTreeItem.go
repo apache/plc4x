@@ -28,6 +28,8 @@ import (
 
 // SzlDataTreeItem is the corresponding interface of SzlDataTreeItem
 type SzlDataTreeItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetItemIndex returns ItemIndex (property field)
 	GetItemIndex() uint16
 	// GetMlfb returns Mlfb (property field)
@@ -38,12 +40,6 @@ type SzlDataTreeItem interface {
 	GetAusbg() uint16
 	// GetAusbe returns Ausbe (property field)
 	GetAusbe() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SzlDataTreeItem is the data-structure of this message

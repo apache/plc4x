@@ -28,15 +28,11 @@ import (
 
 // BACnetOptionalBinaryPVNull is the corresponding interface of BACnetOptionalBinaryPVNull
 type BACnetOptionalBinaryPVNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetOptionalBinaryPV
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetOptionalBinaryPVNull is the data-structure of this message

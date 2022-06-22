@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataTimeOfStrikeCountReset is the corresponding interface of BACnetConstructedDataTimeOfStrikeCountReset
 type BACnetConstructedDataTimeOfStrikeCountReset interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimeOfStrikeCountReset returns TimeOfStrikeCountReset (property field)
 	GetTimeOfStrikeCountReset() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataTimeOfStrikeCountReset is the data-structure of this message

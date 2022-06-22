@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataPower is the corresponding interface of BACnetConstructedDataPower
 type BACnetConstructedDataPower interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPower returns Power (property field)
 	GetPower() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataPower is the data-structure of this message

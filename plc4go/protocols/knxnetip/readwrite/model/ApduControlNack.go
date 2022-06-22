@@ -28,13 +28,9 @@ import (
 
 // ApduControlNack is the corresponding interface of ApduControlNack
 type ApduControlNack interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduControl
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduControlNack is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // ChangeListRemoveError is the corresponding interface of ChangeListRemoveError
 type ChangeListRemoveError interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedElementNumber returns FirstFailedElementNumber (property field)
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ChangeListRemoveError is the data-structure of this message

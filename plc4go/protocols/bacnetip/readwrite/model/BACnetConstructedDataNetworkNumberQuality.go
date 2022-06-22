@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataNetworkNumberQuality is the corresponding interface of BACnetConstructedDataNetworkNumberQuality
 type BACnetConstructedDataNetworkNumberQuality interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNetworkNumberQuality returns NetworkNumberQuality (property field)
 	GetNetworkNumberQuality() BACnetNetworkNumberQualityTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNetworkNumberQualityTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataNetworkNumberQuality is the data-structure of this message

@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLastCredentialRemovedTime is the corresponding interface of BACnetConstructedDataLastCredentialRemovedTime
 type BACnetConstructedDataLastCredentialRemovedTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastCredentialRemovedTime returns LastCredentialRemovedTime (property field)
 	GetLastCredentialRemovedTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLastCredentialRemovedTime is the data-structure of this message

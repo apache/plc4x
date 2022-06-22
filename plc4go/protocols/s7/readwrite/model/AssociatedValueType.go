@@ -28,6 +28,8 @@ import (
 
 // AssociatedValueType is the corresponding interface of AssociatedValueType
 type AssociatedValueType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -36,12 +38,6 @@ type AssociatedValueType interface {
 	GetValueLength() uint16
 	// GetData returns Data (property field)
 	GetData() []uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AssociatedValueType is the data-structure of this message

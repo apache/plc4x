@@ -33,13 +33,9 @@ const EipConnectionRequest_FLAGS uint16 = 0x00
 
 // EipConnectionRequest is the corresponding interface of EipConnectionRequest
 type EipConnectionRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	EipPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _EipConnectionRequest is the data-structure of this message

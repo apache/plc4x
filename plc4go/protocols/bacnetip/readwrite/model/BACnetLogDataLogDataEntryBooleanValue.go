@@ -28,15 +28,11 @@ import (
 
 // BACnetLogDataLogDataEntryBooleanValue is the corresponding interface of BACnetLogDataLogDataEntryBooleanValue
 type BACnetLogDataLogDataEntryBooleanValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLogDataLogDataEntryBooleanValue is the data-structure of this message

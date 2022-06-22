@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataTimeValueRelinquishDefault is the corresponding interface of BACnetConstructedDataTimeValueRelinquishDefault
 type BACnetConstructedDataTimeValueRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataTimeValueRelinquishDefault is the data-structure of this message

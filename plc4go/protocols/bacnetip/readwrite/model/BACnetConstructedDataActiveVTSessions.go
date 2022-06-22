@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataActiveVTSessions is the corresponding interface of BACnetConstructedDataActiveVTSessions
 type BACnetConstructedDataActiveVTSessions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveVTSession returns ActiveVTSession (property field)
 	GetActiveVTSession() []BACnetVTSession
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataActiveVTSessions is the data-structure of this message

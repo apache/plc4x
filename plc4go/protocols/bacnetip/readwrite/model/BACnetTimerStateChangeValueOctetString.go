@@ -28,15 +28,11 @@ import (
 
 // BACnetTimerStateChangeValueOctetString is the corresponding interface of BACnetTimerStateChangeValueOctetString
 type BACnetTimerStateChangeValueOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTimerStateChangeValueOctetString is the data-structure of this message

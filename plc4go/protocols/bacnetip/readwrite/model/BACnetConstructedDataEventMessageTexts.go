@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataEventMessageTexts is the corresponding interface of BACnetConstructedDataEventMessageTexts
 type BACnetConstructedDataEventMessageTexts interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -43,12 +45,6 @@ type BACnetConstructedDataEventMessageTexts interface {
 	GetToFaultText() BACnetOptionalCharacterString
 	// GetToNormalText returns ToNormalText (virtual field)
 	GetToNormalText() BACnetOptionalCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEventMessageTexts is the data-structure of this message

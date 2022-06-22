@@ -32,6 +32,8 @@ const AlarmMessageQueryType_DATALENGTH uint16 = 0xFFFF
 
 // AlarmMessageQueryType is the corresponding interface of AlarmMessageQueryType
 type AlarmMessageQueryType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -42,12 +44,6 @@ type AlarmMessageQueryType interface {
 	GetTransportSize() DataTransportSize
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectQueryType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AlarmMessageQueryType is the data-structure of this message

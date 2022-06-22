@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataActiveCOVMultipleSubscriptions is the corresponding interface of BACnetConstructedDataActiveCOVMultipleSubscriptions
 type BACnetConstructedDataActiveCOVMultipleSubscriptions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveCOVMultipleSubscriptions returns ActiveCOVMultipleSubscriptions (property field)
 	GetActiveCOVMultipleSubscriptions() []BACnetCOVMultipleSubscription
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataActiveCOVMultipleSubscriptions is the data-structure of this message

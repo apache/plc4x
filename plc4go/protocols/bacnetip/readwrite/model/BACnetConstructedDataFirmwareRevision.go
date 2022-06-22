@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataFirmwareRevision is the corresponding interface of BACnetConstructedDataFirmwareRevision
 type BACnetConstructedDataFirmwareRevision interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFirmwareRevision returns FirmwareRevision (property field)
 	GetFirmwareRevision() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataFirmwareRevision is the data-structure of this message

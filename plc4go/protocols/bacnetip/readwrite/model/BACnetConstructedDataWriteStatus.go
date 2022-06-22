@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataWriteStatus is the corresponding interface of BACnetConstructedDataWriteStatus
 type BACnetConstructedDataWriteStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() BACnetWriteStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetWriteStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataWriteStatus is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is the data-structure of this message

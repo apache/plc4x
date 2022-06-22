@@ -28,15 +28,11 @@ import (
 
 // S7PayloadAlarmAckInd is the corresponding interface of S7PayloadAlarmAckInd
 type S7PayloadAlarmAckInd interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessageAckPushType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadAlarmAckInd is the data-structure of this message

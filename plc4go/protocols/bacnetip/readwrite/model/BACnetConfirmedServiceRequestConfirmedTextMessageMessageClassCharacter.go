@@ -28,15 +28,11 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetCharacterValue returns CharacterValue (property field)
 	GetCharacterValue() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is the data-structure of this message

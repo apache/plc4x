@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesLightningInProgress is the corresponding interface of BACnetPropertyStatesLightningInProgress
 type BACnetPropertyStatesLightningInProgress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLightningInProgress returns LightningInProgress (property field)
 	GetLightningInProgress() BACnetLightingInProgressTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesLightningInProgress is the data-structure of this message

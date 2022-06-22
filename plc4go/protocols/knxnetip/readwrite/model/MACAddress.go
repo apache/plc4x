@@ -28,14 +28,10 @@ import (
 
 // MACAddress is the corresponding interface of MACAddress
 type MACAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _MACAddress is the data-structure of this message

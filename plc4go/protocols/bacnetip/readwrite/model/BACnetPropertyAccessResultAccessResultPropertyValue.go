@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyAccessResultAccessResultPropertyValue is the corresponding interface of BACnetPropertyAccessResultAccessResultPropertyValue
 type BACnetPropertyAccessResultAccessResultPropertyValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyValue returns PropertyValue (property field)
 	GetPropertyValue() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyAccessResultAccessResultPropertyValue is the data-structure of this message

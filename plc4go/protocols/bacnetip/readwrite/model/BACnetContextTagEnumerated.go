@@ -28,17 +28,13 @@ import (
 
 // BACnetContextTagEnumerated is the corresponding interface of BACnetContextTagEnumerated
 type BACnetContextTagEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadEnumerated
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetContextTagEnumerated is the data-structure of this message

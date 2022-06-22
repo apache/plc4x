@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataValueSource is the corresponding interface of BACnetConstructedDataValueSource
 type BACnetConstructedDataValueSource interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetValueSource returns ValueSource (property field)
 	GetValueSource() BACnetValueSource
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetValueSource
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataValueSource is the data-structure of this message

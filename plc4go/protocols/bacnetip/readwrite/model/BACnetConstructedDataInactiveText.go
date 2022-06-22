@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataInactiveText is the corresponding interface of BACnetConstructedDataInactiveText
 type BACnetConstructedDataInactiveText interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInactiveText returns InactiveText (property field)
 	GetInactiveText() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataInactiveText is the data-structure of this message

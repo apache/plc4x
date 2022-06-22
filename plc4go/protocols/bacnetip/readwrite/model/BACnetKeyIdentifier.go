@@ -28,16 +28,12 @@ import (
 
 // BACnetKeyIdentifier is the corresponding interface of BACnetKeyIdentifier
 type BACnetKeyIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAlgorithm returns Algorithm (property field)
 	GetAlgorithm() BACnetContextTagUnsignedInteger
 	// GetKeyId returns KeyId (property field)
 	GetKeyId() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetKeyIdentifier is the data-structure of this message

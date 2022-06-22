@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataOccupancyUpperLimit is the corresponding interface of BACnetConstructedDataOccupancyUpperLimit
 type BACnetConstructedDataOccupancyUpperLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetOccupancyUpperLimit returns OccupancyUpperLimit (property field)
 	GetOccupancyUpperLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataOccupancyUpperLimit is the data-structure of this message

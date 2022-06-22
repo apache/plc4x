@@ -28,15 +28,11 @@ import (
 
 // BACnetSpecialEventPeriodCalendarReference is the corresponding interface of BACnetSpecialEventPeriodCalendarReference
 type BACnetSpecialEventPeriodCalendarReference interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetSpecialEventPeriod
 	// GetCalendarReference returns CalendarReference (property field)
 	GetCalendarReference() BACnetContextTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetSpecialEventPeriodCalendarReference is the data-structure of this message

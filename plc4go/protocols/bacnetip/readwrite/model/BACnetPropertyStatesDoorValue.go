@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesDoorValue is the corresponding interface of BACnetPropertyStatesDoorValue
 type BACnetPropertyStatesDoorValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetDoorValue returns DoorValue (property field)
 	GetDoorValue() BACnetDoorValueTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesDoorValue is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetOptionalCharacterStringValue is the corresponding interface of BACnetOptionalCharacterStringValue
 type BACnetOptionalCharacterStringValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetOptionalCharacterString
 	// GetCharacterstring returns Characterstring (property field)
 	GetCharacterstring() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetOptionalCharacterStringValue is the data-structure of this message

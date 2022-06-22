@@ -30,18 +30,14 @@ import (
 
 // BACnetReadAccessProperty is the corresponding interface of BACnetReadAccessProperty
 type BACnetReadAccessProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetReadResult returns ReadResult (property field)
 	GetReadResult() BACnetReadAccessPropertyReadResult
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetReadAccessProperty is the data-structure of this message

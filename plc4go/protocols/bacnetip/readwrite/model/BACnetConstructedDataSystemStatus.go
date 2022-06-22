@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataSystemStatus is the corresponding interface of BACnetConstructedDataSystemStatus
 type BACnetConstructedDataSystemStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSystemStatus is the data-structure of this message

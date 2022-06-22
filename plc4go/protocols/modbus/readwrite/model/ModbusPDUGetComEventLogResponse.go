@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUGetComEventLogResponse is the corresponding interface of ModbusPDUGetComEventLogResponse
 type ModbusPDUGetComEventLogResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStatus returns Status (property field)
 	GetStatus() uint16
@@ -37,12 +39,6 @@ type ModbusPDUGetComEventLogResponse interface {
 	GetMessageCount() uint16
 	// GetEvents returns Events (property field)
 	GetEvents() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUGetComEventLogResponse is the data-structure of this message

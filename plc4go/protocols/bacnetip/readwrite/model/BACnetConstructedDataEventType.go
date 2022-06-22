@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataEventType is the corresponding interface of BACnetConstructedDataEventType
 type BACnetConstructedDataEventType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventType returns EventType (property field)
 	GetEventType() BACnetEventTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataEventType is the data-structure of this message

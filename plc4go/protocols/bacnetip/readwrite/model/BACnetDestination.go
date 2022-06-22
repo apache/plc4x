@@ -28,6 +28,8 @@ import (
 
 // BACnetDestination is the corresponding interface of BACnetDestination
 type BACnetDestination interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValidDays returns ValidDays (property field)
 	GetValidDays() BACnetDaysOfWeekTagged
 	// GetFromTime returns FromTime (property field)
@@ -42,12 +44,6 @@ type BACnetDestination interface {
 	GetIssueConfirmedNotifications() BACnetApplicationTagBoolean
 	// GetTransitions returns Transitions (property field)
 	GetTransitions() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetDestination is the data-structure of this message

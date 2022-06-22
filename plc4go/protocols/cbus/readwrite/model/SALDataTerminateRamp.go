@@ -28,15 +28,11 @@ import (
 
 // SALDataTerminateRamp is the corresponding interface of SALDataTerminateRamp
 type SALDataTerminateRamp interface {
+	utils.LengthAware
+	utils.Serializable
 	SALData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _SALDataTerminateRamp is the data-structure of this message

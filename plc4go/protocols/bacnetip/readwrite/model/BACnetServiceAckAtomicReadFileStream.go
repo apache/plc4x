@@ -28,17 +28,13 @@ import (
 
 // BACnetServiceAckAtomicReadFileStream is the corresponding interface of BACnetServiceAckAtomicReadFileStream
 type BACnetServiceAckAtomicReadFileStream interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
 	// GetFileData returns FileData (property field)
 	GetFileData() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckAtomicReadFileStream is the data-structure of this message

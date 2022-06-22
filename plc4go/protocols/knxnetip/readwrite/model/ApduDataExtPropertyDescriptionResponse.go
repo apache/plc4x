@@ -29,6 +29,8 @@ import (
 
 // ApduDataExtPropertyDescriptionResponse is the corresponding interface of ApduDataExtPropertyDescriptionResponse
 type ApduDataExtPropertyDescriptionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -46,12 +48,6 @@ type ApduDataExtPropertyDescriptionResponse interface {
 	GetReadLevel() AccessLevel
 	// GetWriteLevel returns WriteLevel (property field)
 	GetWriteLevel() AccessLevel
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataExtPropertyDescriptionResponse is the data-structure of this message

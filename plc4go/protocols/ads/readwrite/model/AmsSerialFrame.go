@@ -28,6 +28,8 @@ import (
 
 // AmsSerialFrame is the corresponding interface of AmsSerialFrame
 type AmsSerialFrame interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -42,12 +44,6 @@ type AmsSerialFrame interface {
 	GetUserdata() AmsPacket
 	// GetCrc returns Crc (property field)
 	GetCrc() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AmsSerialFrame is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetHostAddressIpAddress is the corresponding interface of BACnetHostAddressIpAddress
 type BACnetHostAddressIpAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetHostAddress
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetHostAddressIpAddress is the data-structure of this message

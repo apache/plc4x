@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataBaseDeviceSecurityPolicy is the corresponding interface of BACnetConstructedDataBaseDeviceSecurityPolicy
 type BACnetConstructedDataBaseDeviceSecurityPolicy interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBaseDeviceSecurityPolicy returns BaseDeviceSecurityPolicy (property field)
 	GetBaseDeviceSecurityPolicy() BACnetSecurityLevelTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSecurityLevelTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBaseDeviceSecurityPolicy is the data-structure of this message

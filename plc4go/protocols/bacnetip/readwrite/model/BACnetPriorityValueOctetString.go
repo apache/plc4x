@@ -28,15 +28,11 @@ import (
 
 // BACnetPriorityValueOctetString is the corresponding interface of BACnetPriorityValueOctetString
 type BACnetPriorityValueOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPriorityValueOctetString is the data-structure of this message

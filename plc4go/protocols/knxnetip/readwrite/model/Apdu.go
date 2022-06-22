@@ -28,18 +28,14 @@ import (
 
 // Apdu is the corresponding interface of Apdu
 type Apdu interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetControl returns Control (discriminator field)
 	GetControl() uint8
 	// GetNumbered returns Numbered (property field)
 	GetNumbered() bool
 	// GetCounter returns Counter (property field)
 	GetCounter() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _Apdu is the data-structure of this message

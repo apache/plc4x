@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataCredentialsInZone is the corresponding interface of BACnetConstructedDataCredentialsInZone
 type BACnetConstructedDataCredentialsInZone interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCredentialsInZone returns CredentialsInZone (property field)
 	GetCredentialsInZone() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCredentialsInZone is the data-structure of this message

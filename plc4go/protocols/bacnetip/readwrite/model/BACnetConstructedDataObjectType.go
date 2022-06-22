@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataObjectType is the corresponding interface of BACnetConstructedDataObjectType
 type BACnetConstructedDataObjectType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataObjectType is the data-structure of this message

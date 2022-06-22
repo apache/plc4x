@@ -28,18 +28,14 @@ import (
 
 // BACnetTagPayloadCharacterString is the corresponding interface of BACnetTagPayloadCharacterString
 type BACnetTagPayloadCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
 	// GetValue returns Value (property field)
 	GetValue() string
 	// GetActualLengthInBit returns ActualLengthInBit (virtual field)
 	GetActualLengthInBit() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetTagPayloadCharacterString is the data-structure of this message

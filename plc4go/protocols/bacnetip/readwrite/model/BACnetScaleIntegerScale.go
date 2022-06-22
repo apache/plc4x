@@ -28,15 +28,11 @@ import (
 
 // BACnetScaleIntegerScale is the corresponding interface of BACnetScaleIntegerScale
 type BACnetScaleIntegerScale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetScale
 	// GetIntegerScale returns IntegerScale (property field)
 	GetIntegerScale() BACnetContextTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetScaleIntegerScale is the data-structure of this message

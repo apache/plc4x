@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataUpdateInterval is the corresponding interface of BACnetConstructedDataUpdateInterval
 type BACnetConstructedDataUpdateInterval interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUpdateInterval returns UpdateInterval (property field)
 	GetUpdateInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataUpdateInterval is the data-structure of this message

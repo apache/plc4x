@@ -30,6 +30,8 @@ import (
 
 // BACnetServiceAckConfirmedPrivateTransfer is the corresponding interface of BACnetServiceAckConfirmedPrivateTransfer
 type BACnetServiceAckConfirmedPrivateTransfer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -37,12 +39,6 @@ type BACnetServiceAckConfirmedPrivateTransfer interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetResultBlock returns ResultBlock (property field)
 	GetResultBlock() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetServiceAckConfirmedPrivateTransfer is the data-structure of this message

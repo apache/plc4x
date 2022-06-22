@@ -28,6 +28,8 @@ import (
 
 // ApduDataExtPropertyValueWrite is the corresponding interface of ApduDataExtPropertyValueWrite
 type ApduDataExtPropertyValueWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -39,12 +41,6 @@ type ApduDataExtPropertyValueWrite interface {
 	GetIndex() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ApduDataExtPropertyValueWrite is the data-structure of this message

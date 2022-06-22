@@ -28,6 +28,8 @@ import (
 
 // ComObjectTableRealisationType2 is the corresponding interface of ComObjectTableRealisationType2
 type ComObjectTableRealisationType2 interface {
+	utils.LengthAware
+	utils.Serializable
 	ComObjectTable
 	// GetNumEntries returns NumEntries (property field)
 	GetNumEntries() uint8
@@ -35,12 +37,6 @@ type ComObjectTableRealisationType2 interface {
 	GetRamFlagsTablePointer() uint8
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() []GroupObjectDescriptorRealisationType2
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ComObjectTableRealisationType2 is the data-structure of this message

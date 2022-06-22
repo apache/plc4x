@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataAccumulatorFaultLowLimit is the corresponding interface of BACnetConstructedDataAccumulatorFaultLowLimit
 type BACnetConstructedDataAccumulatorFaultLowLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAccumulatorFaultLowLimit is the data-structure of this message

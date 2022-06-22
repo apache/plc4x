@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataUserExternalIdentifier is the corresponding interface of BACnetConstructedDataUserExternalIdentifier
 type BACnetConstructedDataUserExternalIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUserExternalIdentifier returns UserExternalIdentifier (property field)
 	GetUserExternalIdentifier() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataUserExternalIdentifier is the data-structure of this message

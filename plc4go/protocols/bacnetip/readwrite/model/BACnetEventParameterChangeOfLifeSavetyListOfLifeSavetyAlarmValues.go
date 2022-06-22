@@ -28,18 +28,14 @@ import (
 
 // BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is the corresponding interface of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
 type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfLifeSavetyAlarmValues returns ListOfLifeSavetyAlarmValues (property field)
 	GetListOfLifeSavetyAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is the data-structure of this message

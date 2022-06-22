@@ -28,17 +28,13 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionReadSzlRequest is the corresponding interface of S7PayloadUserDataItemCpuFunctionReadSzlRequest
 type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetSzlId returns SzlId (property field)
 	GetSzlId() SzlId
 	// GetSzlIndex returns SzlIndex (property field)
 	GetSzlIndex() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlRequest is the data-structure of this message

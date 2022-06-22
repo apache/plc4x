@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueMinPresValue is the corresponding interface of BACnetConstructedDataLargeAnalogValueMinPresValue
 type BACnetConstructedDataLargeAnalogValueMinPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataLargeAnalogValueMinPresValue is the data-structure of this message

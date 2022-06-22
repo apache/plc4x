@@ -28,13 +28,9 @@ import (
 
 // CIPEncapsulationConnectionResponse is the corresponding interface of CIPEncapsulationConnectionResponse
 type CIPEncapsulationConnectionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	CIPEncapsulationPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CIPEncapsulationConnectionResponse is the data-structure of this message

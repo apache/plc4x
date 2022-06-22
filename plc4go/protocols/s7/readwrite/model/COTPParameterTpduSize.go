@@ -28,15 +28,11 @@ import (
 
 // COTPParameterTpduSize is the corresponding interface of COTPParameterTpduSize
 type COTPParameterTpduSize interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPParameter
 	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _COTPParameterTpduSize is the data-structure of this message

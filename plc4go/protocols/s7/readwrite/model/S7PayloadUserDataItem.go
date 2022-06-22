@@ -28,6 +28,8 @@ import (
 
 // S7PayloadUserDataItem is the corresponding interface of S7PayloadUserDataItem
 type S7PayloadUserDataItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
 	// GetCpuSubfunction returns CpuSubfunction (discriminator field)
@@ -38,12 +40,6 @@ type S7PayloadUserDataItem interface {
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7PayloadUserDataItem is the data-structure of this message

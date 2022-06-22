@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesSecurityLevel is the corresponding interface of BACnetPropertyStatesSecurityLevel
 type BACnetPropertyStatesSecurityLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityLevelTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesSecurityLevel is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // COTPParameterChecksum is the corresponding interface of COTPParameterChecksum
 type COTPParameterChecksum interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPParameter
 	// GetCrc returns Crc (property field)
 	GetCrc() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _COTPParameterChecksum is the data-structure of this message

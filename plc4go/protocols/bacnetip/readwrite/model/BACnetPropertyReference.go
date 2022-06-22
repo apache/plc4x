@@ -30,16 +30,12 @@ import (
 
 // BACnetPropertyReference is the corresponding interface of BACnetPropertyReference
 type BACnetPropertyReference interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyReference is the data-structure of this message

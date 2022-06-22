@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataBBMDBroadcastDistributionTable is the corresponding interface of BACnetConstructedDataBBMDBroadcastDistributionTable
 type BACnetConstructedDataBBMDBroadcastDistributionTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBbmdBroadcastDistributionTable returns BbmdBroadcastDistributionTable (property field)
 	GetBbmdBroadcastDistributionTable() []BACnetBDTEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataBBMDBroadcastDistributionTable is the data-structure of this message

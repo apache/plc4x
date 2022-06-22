@@ -28,6 +28,8 @@ import (
 
 // DF1RequestProtectedTypedLogicalRead is the corresponding interface of DF1RequestProtectedTypedLogicalRead
 type DF1RequestProtectedTypedLogicalRead interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1RequestCommand
 	// GetByteSize returns ByteSize (property field)
 	GetByteSize() uint8
@@ -39,12 +41,6 @@ type DF1RequestProtectedTypedLogicalRead interface {
 	GetElementNumber() uint8
 	// GetSubElementNumber returns SubElementNumber (property field)
 	GetSubElementNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _DF1RequestProtectedTypedLogicalRead is the data-structure of this message

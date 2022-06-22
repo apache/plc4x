@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataCarDriveStatus is the corresponding interface of BACnetConstructedDataCarDriveStatus
 type BACnetConstructedDataCarDriveStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCarDriveStatus returns CarDriveStatus (property field)
 	GetCarDriveStatus() BACnetLiftCarDriveStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarDriveStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataCarDriveStatus is the data-structure of this message

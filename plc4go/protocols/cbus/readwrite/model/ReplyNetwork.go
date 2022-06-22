@@ -28,18 +28,14 @@ import (
 
 // ReplyNetwork is the corresponding interface of ReplyNetwork
 type ReplyNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRouteType returns RouteType (property field)
 	GetRouteType() RouteType
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []BridgeAddress
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ReplyNetwork is the data-structure of this message

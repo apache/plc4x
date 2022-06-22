@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataSerialNumber is the corresponding interface of BACnetConstructedDataSerialNumber
 type BACnetConstructedDataSerialNumber interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSerialNumber returns SerialNumber (property field)
 	GetSerialNumber() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataSerialNumber is the data-structure of this message

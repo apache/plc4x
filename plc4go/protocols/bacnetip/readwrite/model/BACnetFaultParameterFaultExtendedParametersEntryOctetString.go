@@ -28,15 +28,11 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryOctetString is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryOctetString
 type BACnetFaultParameterFaultExtendedParametersEntryOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryOctetString is the data-structure of this message

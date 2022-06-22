@@ -28,12 +28,8 @@ import (
 
 // BACnetWeekNDay is the corresponding interface of BACnetWeekNDay
 type BACnetWeekNDay interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.LengthAware
+	utils.Serializable
 }
 
 // _BACnetWeekNDay is the data-structure of this message

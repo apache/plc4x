@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataAuthenticationStatus is the corresponding interface of BACnetConstructedDataAuthenticationStatus
 type BACnetConstructedDataAuthenticationStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAuthenticationStatus returns AuthenticationStatus (property field)
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthenticationStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataAuthenticationStatus is the data-structure of this message

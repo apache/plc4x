@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueHighLimit is the corresponding interface of BACnetConstructedDataPositiveIntegerValueHighLimit
 type BACnetConstructedDataPositiveIntegerValueHighLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetHighLimit returns HighLimit (property field)
 	GetHighLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataPositiveIntegerValueHighLimit is the data-structure of this message

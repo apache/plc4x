@@ -30,6 +30,8 @@ import (
 
 // BACnetPropertyWriteDefinition is the corresponding interface of BACnetPropertyWriteDefinition
 type BACnetPropertyWriteDefinition interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -38,12 +40,6 @@ type BACnetPropertyWriteDefinition interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyWriteDefinition is the data-structure of this message

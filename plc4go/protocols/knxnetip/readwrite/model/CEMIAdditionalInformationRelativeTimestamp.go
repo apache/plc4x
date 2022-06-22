@@ -32,15 +32,11 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = uint8(2)
 
 // CEMIAdditionalInformationRelativeTimestamp is the corresponding interface of CEMIAdditionalInformationRelativeTimestamp
 type CEMIAdditionalInformationRelativeTimestamp interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
 	GetRelativeTimestamp() RelativeTimestamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message

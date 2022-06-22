@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataActiveCOVSubscriptions is the corresponding interface of BACnetConstructedDataActiveCOVSubscriptions
 type BACnetConstructedDataActiveCOVSubscriptions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveCOVSubscriptions returns ActiveCOVSubscriptions (property field)
 	GetActiveCOVSubscriptions() []BACnetCOVSubscription
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataActiveCOVSubscriptions is the data-structure of this message

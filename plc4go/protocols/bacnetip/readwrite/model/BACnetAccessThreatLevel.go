@@ -28,14 +28,10 @@ import (
 
 // BACnetAccessThreatLevel is the corresponding interface of BACnetAccessThreatLevel
 type BACnetAccessThreatLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetThreatLevel returns ThreatLevel (property field)
 	GetThreatLevel() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetAccessThreatLevel is the data-structure of this message

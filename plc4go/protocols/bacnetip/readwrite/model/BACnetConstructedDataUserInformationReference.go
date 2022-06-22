@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataUserInformationReference is the corresponding interface of BACnetConstructedDataUserInformationReference
 type BACnetConstructedDataUserInformationReference interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUserInformationReference returns UserInformationReference (property field)
 	GetUserInformationReference() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataUserInformationReference is the data-structure of this message

@@ -28,6 +28,8 @@ import (
 
 // BACnetLimitEnableTagged is the corresponding interface of BACnetLimitEnableTagged
 type BACnetLimitEnableTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -36,12 +38,6 @@ type BACnetLimitEnableTagged interface {
 	GetLowLimitEnable() bool
 	// GetHighLimitEnable returns HighLimitEnable (virtual field)
 	GetHighLimitEnable() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLimitEnableTagged is the data-structure of this message

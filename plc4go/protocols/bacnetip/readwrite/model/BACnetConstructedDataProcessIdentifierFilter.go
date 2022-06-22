@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataProcessIdentifierFilter is the corresponding interface of BACnetConstructedDataProcessIdentifierFilter
 type BACnetConstructedDataProcessIdentifierFilter interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProcessIdentifierFilter returns ProcessIdentifierFilter (property field)
 	GetProcessIdentifierFilter() BACnetProcessIdSelection
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProcessIdSelection
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataProcessIdentifierFilter is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataMemberOf is the corresponding interface of BACnetConstructedDataMemberOf
 type BACnetConstructedDataMemberOf interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetZones returns Zones (property field)
 	GetZones() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataMemberOf is the data-structure of this message

@@ -33,6 +33,8 @@ const AlarmMessageObjectQueryType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
 type AlarmMessageObjectQueryType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetLengthDataset returns LengthDataset (property field)
 	GetLengthDataset() uint8
 	// GetEventState returns EventState (property field)
@@ -49,12 +51,6 @@ type AlarmMessageObjectQueryType interface {
 	GetTimeGoing() DateAndTime
 	// GetValueGoing returns ValueGoing (property field)
 	GetValueGoing() AssociatedValueType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _AlarmMessageObjectQueryType is the data-structure of this message

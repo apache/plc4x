@@ -30,15 +30,11 @@ import (
 
 // BACnetConfirmedServiceRequestGetEventInformation is the corresponding interface of BACnetConfirmedServiceRequestGetEventInformation
 type BACnetConfirmedServiceRequestGetEventInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetLastReceivedObjectIdentifier returns LastReceivedObjectIdentifier (property field)
 	GetLastReceivedObjectIdentifier() BACnetContextTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConfirmedServiceRequestGetEventInformation is the data-structure of this message

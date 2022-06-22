@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataFullDutyBaseline is the corresponding interface of BACnetConstructedDataFullDutyBaseline
 type BACnetConstructedDataFullDutyBaseline interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFullDutyBaseLine returns FullDutyBaseLine (property field)
 	GetFullDutyBaseLine() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataFullDutyBaseline is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // BACnetConstructedDataRestartNotificationRecipients is the corresponding interface of BACnetConstructedDataRestartNotificationRecipients
 type BACnetConstructedDataRestartNotificationRecipients interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRestartNotificationRecipients returns RestartNotificationRecipients (property field)
 	GetRestartNotificationRecipients() []BACnetRecipient
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataRestartNotificationRecipients is the data-structure of this message

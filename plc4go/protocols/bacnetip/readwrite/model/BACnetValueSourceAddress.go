@@ -28,15 +28,11 @@ import (
 
 // BACnetValueSourceAddress is the corresponding interface of BACnetValueSourceAddress
 type BACnetValueSourceAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetValueSource
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddressEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetValueSourceAddress is the data-structure of this message

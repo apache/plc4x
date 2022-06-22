@@ -28,6 +28,8 @@ import (
 
 // CALDataReplyStatus is the corresponding interface of CALDataReplyStatus
 type CALDataReplyStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -35,12 +37,6 @@ type CALDataReplyStatus interface {
 	GetBlockStart() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CALDataReplyStatus is the data-structure of this message

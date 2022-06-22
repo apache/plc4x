@@ -29,18 +29,14 @@ import (
 
 // S7VarPayloadDataItem is the corresponding interface of S7VarPayloadDataItem
 type S7VarPayloadDataItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _S7VarPayloadDataItem is the data-structure of this message

@@ -28,14 +28,10 @@ import (
 
 // CBusPointToMultiPointCommand is the corresponding interface of CBusPointToMultiPointCommand
 type CBusPointToMultiPointCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusPointToMultiPointCommand is the data-structure of this message

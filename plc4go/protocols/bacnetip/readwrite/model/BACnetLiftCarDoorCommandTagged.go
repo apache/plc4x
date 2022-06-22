@@ -28,16 +28,12 @@ import (
 
 // BACnetLiftCarDoorCommandTagged is the corresponding interface of BACnetLiftCarDoorCommandTagged
 type BACnetLiftCarDoorCommandTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLiftCarDoorCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetLiftCarDoorCommandTagged is the data-structure of this message

@@ -28,15 +28,11 @@ import (
 
 // ModbusPDUReadInputRegistersResponse is the corresponding interface of ModbusPDUReadInputRegistersResponse
 type ModbusPDUReadInputRegistersResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUReadInputRegistersResponse is the data-structure of this message

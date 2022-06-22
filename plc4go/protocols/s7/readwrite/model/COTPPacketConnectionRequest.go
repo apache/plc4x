@@ -28,6 +28,8 @@ import (
 
 // COTPPacketConnectionRequest is the corresponding interface of COTPPacketConnectionRequest
 type COTPPacketConnectionRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -35,12 +37,6 @@ type COTPPacketConnectionRequest interface {
 	GetSourceReference() uint16
 	// GetProtocolClass returns ProtocolClass (property field)
 	GetProtocolClass() COTPProtocolClass
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _COTPPacketConnectionRequest is the data-structure of this message

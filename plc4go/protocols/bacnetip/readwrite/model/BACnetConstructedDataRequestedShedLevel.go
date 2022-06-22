@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataRequestedShedLevel is the corresponding interface of BACnetConstructedDataRequestedShedLevel
 type BACnetConstructedDataRequestedShedLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRequestedShedLevel returns RequestedShedLevel (property field)
 	GetRequestedShedLevel() BACnetShedLevel
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetShedLevel
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataRequestedShedLevel is the data-structure of this message

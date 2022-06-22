@@ -28,6 +28,8 @@ import (
 
 // BACnetContextTag is the corresponding interface of BACnetContextTag
 type BACnetContextTag interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDataType returns DataType (discriminator field)
 	GetDataType() BACnetDataType
 	// GetHeader returns Header (property field)
@@ -36,12 +38,6 @@ type BACnetContextTag interface {
 	GetTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetContextTag is the data-structure of this message

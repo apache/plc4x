@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesReliability is the corresponding interface of BACnetPropertyStatesReliability
 type BACnetPropertyStatesReliability interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesReliability is the data-structure of this message

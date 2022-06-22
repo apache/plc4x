@@ -29,16 +29,12 @@ import (
 
 // NetworkProtocolControlInformation is the corresponding interface of NetworkProtocolControlInformation
 type NetworkProtocolControlInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetStackCounter returns StackCounter (property field)
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
 	GetStackDepth() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NetworkProtocolControlInformation is the data-structure of this message

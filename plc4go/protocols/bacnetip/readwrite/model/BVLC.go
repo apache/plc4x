@@ -32,16 +32,12 @@ const BVLC_BACNETTYPE uint8 = 0x81
 
 // BVLC is the corresponding interface of BVLC
 type BVLC interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetBvlcFunction returns BvlcFunction (discriminator field)
 	GetBvlcFunction() uint8
 	// GetBvlcPayloadLength returns BvlcPayloadLength (virtual field)
 	GetBvlcPayloadLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BVLC is the data-structure of this message

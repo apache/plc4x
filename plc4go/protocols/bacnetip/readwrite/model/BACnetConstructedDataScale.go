@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataScale is the corresponding interface of BACnetConstructedDataScale
 type BACnetConstructedDataScale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetScale returns Scale (property field)
 	GetScale() BACnetScale
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetScale
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataScale is the data-structure of this message

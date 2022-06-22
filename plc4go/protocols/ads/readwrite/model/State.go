@@ -29,6 +29,8 @@ import (
 
 // State is the corresponding interface of State
 type State interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetInitCommand returns InitCommand (property field)
 	GetInitCommand() bool
 	// GetUpdCommand returns UpdCommand (property field)
@@ -47,12 +49,6 @@ type State interface {
 	GetResponse() bool
 	// GetBroadcast returns Broadcast (property field)
 	GetBroadcast() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _State is the data-structure of this message

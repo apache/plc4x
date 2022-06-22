@@ -28,6 +28,8 @@ import (
 
 // NLMInitalizeRoutingTablePortMapping is the corresponding interface of NLMInitalizeRoutingTablePortMapping
 type NLMInitalizeRoutingTablePortMapping interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// GetPortId returns PortId (property field)
@@ -36,12 +38,6 @@ type NLMInitalizeRoutingTablePortMapping interface {
 	GetPortInfoLength() uint8
 	// GetPortInfo returns PortInfo (property field)
 	GetPortInfo() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _NLMInitalizeRoutingTablePortMapping is the data-structure of this message

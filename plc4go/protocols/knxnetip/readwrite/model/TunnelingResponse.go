@@ -28,15 +28,11 @@ import (
 
 // TunnelingResponse is the corresponding interface of TunnelingResponse
 type TunnelingResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock (property field)
 	GetTunnelingResponseDataBlock() TunnelingResponseDataBlock
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _TunnelingResponse is the data-structure of this message

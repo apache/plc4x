@@ -28,6 +28,8 @@ import (
 
 // CipReadRequest is the corresponding interface of CipReadRequest
 type CipReadRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetRequestPathSize returns RequestPathSize (property field)
 	GetRequestPathSize() int8
@@ -35,12 +37,6 @@ type CipReadRequest interface {
 	GetTag() []byte
 	// GetElementNb returns ElementNb (property field)
 	GetElementNb() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CipReadRequest is the data-structure of this message

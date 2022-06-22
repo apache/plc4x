@@ -28,18 +28,14 @@ import (
 
 // CBusPointToPointToMultipointCommand is the corresponding interface of CBusPointToPointToMultipointCommand
 type CBusPointToPointToMultipointCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
 	// GetNetworkRoute returns NetworkRoute (property field)
 	GetNetworkRoute() NetworkRoute
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _CBusPointToPointToMultipointCommand is the data-structure of this message

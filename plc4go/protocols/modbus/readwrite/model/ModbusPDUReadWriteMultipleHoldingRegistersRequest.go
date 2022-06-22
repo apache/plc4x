@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUReadWriteMultipleHoldingRegistersRequest is the corresponding interface of ModbusPDUReadWriteMultipleHoldingRegistersRequest
 type ModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetReadStartingAddress returns ReadStartingAddress (property field)
 	GetReadStartingAddress() uint16
@@ -39,12 +41,6 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	GetWriteQuantity() uint16
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _ModbusPDUReadWriteMultipleHoldingRegistersRequest is the data-structure of this message

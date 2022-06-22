@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesZoneOccupanyState is the corresponding interface of BACnetPropertyStatesZoneOccupanyState
 type BACnetPropertyStatesZoneOccupanyState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetZoneOccupanyState returns ZoneOccupanyState (property field)
 	GetZoneOccupanyState() BACnetAccessZoneOccupancyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesZoneOccupanyState is the data-structure of this message

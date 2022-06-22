@@ -28,15 +28,11 @@ import (
 
 // BACnetPropertyStatesNetworkPortCommand is the corresponding interface of BACnetPropertyStatesNetworkPortCommand
 type BACnetPropertyStatesNetworkPortCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetNetworkPortCommand returns NetworkPortCommand (property field)
 	GetNetworkPortCommand() BACnetNetworkPortCommandTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetPropertyStatesNetworkPortCommand is the data-structure of this message

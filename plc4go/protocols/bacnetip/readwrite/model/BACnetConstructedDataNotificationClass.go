@@ -28,17 +28,13 @@ import (
 
 // BACnetConstructedDataNotificationClass is the corresponding interface of BACnetConstructedDataNotificationClass
 type BACnetConstructedDataNotificationClass interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNotificationClass returns NotificationClass (property field)
 	GetNotificationClass() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 // _BACnetConstructedDataNotificationClass is the data-structure of this message
