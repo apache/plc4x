@@ -159,7 +159,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 typeName, attributes, parserArguments, abstractType, fields);
             // Link the fields and the complex types.
             if (fields != null) {
-                fields.forEach(field -> ((DefaultField) field).setParentTypeDefinition(type));
+                fields.forEach(field -> ((DefaultField) field).setOwner(type));
             }
             dispatchType(typeName, type);
 
@@ -547,7 +547,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 discriminatorValues, fields);
         // Link the fields and the complex types.
         if (fields != null) {
-            fields.forEach(field -> ((DefaultField) field).setParentTypeDefinition(type));
+            fields.forEach(field -> ((DefaultField) field).setOwner(type));
         }
 
         // For DataIO we don't need to generate the sub-types as these will be PlcValues.

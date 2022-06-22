@@ -34,7 +34,7 @@ public abstract class DefaultField {
         this.attributes = Objects.requireNonNull(attributes);
     }
 
-    public void setParentTypeDefinition(TypeDefinition owner) {
+    public void setOwner(TypeDefinition owner) {
         this.owner = owner;
     }
 
