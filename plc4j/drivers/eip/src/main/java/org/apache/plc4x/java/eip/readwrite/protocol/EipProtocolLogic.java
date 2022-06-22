@@ -164,8 +164,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             0,
             2,
             typeIds,
-            this.configuration.getByteOrder(),
-            -1
+            this.configuration.getByteOrder()
         );
 
 
@@ -235,8 +234,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0,
                 2,
                 typeIds,
-                this.configuration.getByteOrder(),
-                -1
+                this.configuration.getByteOrder()
             );
 
 
@@ -607,8 +605,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0,
                 2,
                 typeIds,
-                this.configuration.getByteOrder(),
-                -1
+                this.configuration.getByteOrder()
             );
             transaction.submit(() -> context.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -672,8 +669,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0,
                 2,
                 typeIds,
-                this.configuration.getByteOrder(),
-                -1
+                this.configuration.getByteOrder()
             );
 
 

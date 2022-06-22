@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
-                byteOrder="BIG_ENDIAN">
+                byteOrder="LITTLE_ENDIAN">
 
   <name>EIP</name>
 
@@ -35,7 +35,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>
-        <len dataType="uint" bitLength="16">4</len>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
         <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
@@ -60,7 +60,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">40</len>
+        <packetLength dataType="uint" bitLength="16">40</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x0100000000000001</senderContext>
@@ -79,7 +79,7 @@
             <TypeId>
               <id dataType="uint" bitLength="16">178</id>
               <UnConnectedDataItem>
-                <size dataType="uint" bitLength="16">24</size>
+                <packetSize dataType="uint" bitLength="16">24</packetSize>
                 <service>
                   <CipService>
                     <response dataType="bit" bitLength="1">false</response>
@@ -155,7 +155,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">26</len>
+        <packetLength dataType="uint" bitLength="16">26</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x0100000000000001</senderContext>
@@ -174,7 +174,7 @@
             <TypeId>
               <id dataType="uint" bitLength="16">178</id>
               <UnConnectedDataItem>
-                <size dataType="uint" bitLength="16">10</size>
+                <packetSize dataType="uint" bitLength="16">10</packetSize>
                 <service>
                   <CipService>
                     <response dataType="bit" bitLength="1">true</response>
@@ -210,7 +210,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">52</len>
+        <packetLength dataType="uint" bitLength="16">52</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x0100000000000001</senderContext>
@@ -229,7 +229,7 @@
             <TypeId>
               <id dataType="uint" bitLength="16">178</id>
               <UnConnectedDataItem>
-                <size dataType="uint" bitLength="16">36</size>
+                <packetSize dataType="uint" bitLength="16">36</packetSize>
                 <service>
                   <CipService>
                     <response dataType="bit" bitLength="1">false</response>
@@ -309,7 +309,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">111</command>
-        <len dataType="uint" bitLength="16">20</len>
+        <packetLength dataType="uint" bitLength="16">20</packetLength>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x0100000000000001</senderContext>
@@ -328,7 +328,7 @@
             <TypeId>
               <id dataType="uint" bitLength="16">178</id>
               <UnConnectedDataItem>
-                <size dataType="uint" bitLength="16">4</size>
+                <packetSize dataType="uint" bitLength="16">4</packetSize>
                 <service>
                   <CipService>
                     <response dataType="bit" bitLength="1">true</response>
@@ -358,7 +358,7 @@
     <xml>
       <EipPacket>
         <command dataType="uint" bitLength="16">112</command>
-        <len dataType="uint" bitLength="16">51</len>
+        <packetLength dataType="uint" bitLength="16">56</packetLength>
         <sessionHandle dataType="uint" bitLength="32">1074005961</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext dataType="byte" bitLength="64">0x5765277265000000</senderContext>
@@ -371,23 +371,24 @@
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
-                <reserved dataType="uint" bitLength="16">1024</reserved>
+                <reserved dataType="uint" bitLength="16">4</reserved>
                 <connectionId dataType="uint" bitLength="32">4294853209</connectionId>
               </ConnectedAddressItem>
             </TypeId>
             <TypeId>
               <id dataType="uint" bitLength="16">177</id>
               <ConnectedDataItem>
-                <size dataType="uint" bitLength="16">31</size>
+                <packetSize dataType="uint" bitLength="16">36</packetSize>
                 <sequenceCount dataType="uint" bitLength="16">1</sequenceCount>
                 <service>
                   <CipService>
                     <response dataType="bit" bitLength="1">false</response>
                     <service dataType="uint" bitLength="7">82</service>
                     <CipConnectedRequest>
-                      <requestPathSize dataType="uint" bitLength="8">26</requestPathSize>
+                      <requestPathSize dataType="uint" bitLength="8">13</requestPathSize>
                       <pathSegments dataType="byte" bitLength="208">0x91124b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b910370707000</pathSegments>
-                      <reserved dataType="byte" bitLength="8">0x00</reserved>
+                      <reserved dataType="uint" bitLength="16">1</reserved>
+                      <reserved dataType="uint" bitLength="32">0</reserved>
                     </CipConnectedRequest>
                   </CipService>
                 </service>

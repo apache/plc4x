@@ -23,7 +23,8 @@
 
 [discriminatedType EipPacket (IntegerEncoding order) byteOrder='order == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
     [discriminator uint 16 command]
-    [implicit      uint 16 len 'lengthInBytes - 24']
+    // TODO: was len before but that is a reserved keyword in golang and as long as we don't have a language agnostic neutralizer this clashes
+    [implicit      uint 16 packetLength 'lengthInBytes - 24']
     [simple        uint 32 sessionHandle]
     [simple        uint 32 status]
     [array         byte    senderContext count '8']
@@ -35,7 +36,7 @@
             ]
             ['0x0066' EipDisconnectRequest
             ]
-            ['0x006F' CipRRData(uint 16 len)
+            ['0x006F' CipRRData
                 [simple     uint    32    interfaceHandle]
                 [simple     uint    16    timeout]
                 [simple     uint    16    itemCount]
@@ -57,17 +58,17 @@
             [reserved       uint    16  '0x0000']
         ]
         ['0x00A1'   ConnectedAddressItem
-            [reserved       uint    16  '0x0400']
+            [reserved       uint    16  '0x0004']
             [simple         uint    32  connectionId]
         ]
         ['0x00B1'   ConnectedDataItem
-            [implicit       uint    16  size 'service.lengthInBytes + 2']
+            [implicit       uint    16  packetSize 'service.lengthInBytes + 2']
             [simple         uint    16  sequenceCount]
-            [simple         CipService('true', 'size - 2', 'order')    service]
+            [simple         CipService('true', 'packetSize', 'order')    service]
         ]
         ['0x00B2'   UnConnectedDataItem
-            [implicit       uint    16  size 'service.lengthInBytes']
-            [simple         CipService('false', 'size', 'order')    service]
+            [implicit       uint    16  packetSize 'service.lengthInBytes']
+            [simple         CipService('false', 'packetSize', 'order')    service]
         ]
     ]
 ]
@@ -150,9 +151,10 @@
                [simple     int     8   slot]
         ]
         ['0x52','false','true'   CipConnectedRequest
-               [implicit   uint    8    requestPathSize 'COUNT(pathSegments)']
-               [array      byte         pathSegments    count 'requestPathSize*2']
-               [reserved   byte    30   '0x00000000']
+               [implicit   uint    8    requestPathSize 'COUNT(pathSegments) / 2']
+               [array      byte         pathSegments    count 'requestPathSize * 2']
+               [reserved   uint    16   '0x0001']
+               [reserved   uint    32   '0x00000000']
         ]
         ['0x5B','false'     CipConnectionManagerRequest
                [implicit      int     8         requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
