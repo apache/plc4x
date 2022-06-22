@@ -90,6 +90,8 @@ func (m *_BACnetNotificationParametersComplexEventType) GetListOfValues() BACnet
 func NewBACnetNotificationParametersComplexEventType(listOfValues BACnetPropertyValues, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
 	_result := &_BACnetNotificationParametersComplexEventType{
 		ListOfValues:                  listOfValues,
+		TagNumber:                     tagNumber,
+		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

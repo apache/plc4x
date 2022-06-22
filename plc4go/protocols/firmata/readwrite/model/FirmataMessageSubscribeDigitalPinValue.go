@@ -98,6 +98,7 @@ func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response 
 	_result := &_FirmataMessageSubscribeDigitalPinValue{
 		Pin:             pin,
 		Enable:          enable,
+		Response:        response,
 		_FirmataMessage: NewFirmataMessage(response),
 	}
 	_result._FirmataMessage._FirmataMessageChildRequirements = _result

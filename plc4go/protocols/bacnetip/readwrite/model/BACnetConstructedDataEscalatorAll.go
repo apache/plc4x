@@ -80,6 +80,8 @@ func (m *_BACnetConstructedDataEscalatorAll) GetParent() BACnetConstructedData {
 // NewBACnetConstructedDataEscalatorAll factory function for _BACnetConstructedDataEscalatorAll
 func NewBACnetConstructedDataEscalatorAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorAll {
 	_result := &_BACnetConstructedDataEscalatorAll{
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

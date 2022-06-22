@@ -89,6 +89,7 @@ func (m *_ApduDataOther) GetExtendedApdu() ApduDataExt {
 func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
 	_result := &_ApduDataOther{
 		ExtendedApdu: extendedApdu,
+		DataLength:   dataLength,
 		_ApduData:    NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result

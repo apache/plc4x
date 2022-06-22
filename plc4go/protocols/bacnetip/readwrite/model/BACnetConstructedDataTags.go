@@ -125,6 +125,8 @@ func NewBACnetConstructedDataTags(numberOfDataElements BACnetApplicationTagUnsig
 	_result := &_BACnetConstructedDataTags{
 		NumberOfDataElements:   numberOfDataElements,
 		Tags:                   tags,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

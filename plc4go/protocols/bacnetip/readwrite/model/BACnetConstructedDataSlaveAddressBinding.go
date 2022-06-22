@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) GetSlaveAddressBinding() []B
 func NewBACnetConstructedDataSlaveAddressBinding(slaveAddressBinding []BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveAddressBinding {
 	_result := &_BACnetConstructedDataSlaveAddressBinding{
 		SlaveAddressBinding:    slaveAddressBinding,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

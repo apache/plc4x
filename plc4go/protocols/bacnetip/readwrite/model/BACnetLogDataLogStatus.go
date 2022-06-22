@@ -89,6 +89,7 @@ func (m *_BACnetLogDataLogStatus) GetLogStatus() BACnetLogStatusTagged {
 func NewBACnetLogDataLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogStatus {
 	_result := &_BACnetLogDataLogStatus{
 		LogStatus:      logStatus,
+		TagNumber:      tagNumber,
 		_BACnetLogData: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogData._BACnetLogDataChildRequirements = _result

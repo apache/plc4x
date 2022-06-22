@@ -71,6 +71,7 @@ func (m *_ApduDataExtIndividualAddressSerialNumberResponse) GetParent() ApduData
 // NewApduDataExtIndividualAddressSerialNumberResponse factory function for _ApduDataExtIndividualAddressSerialNumberResponse
 func NewApduDataExtIndividualAddressSerialNumberResponse(length uint8) *_ApduDataExtIndividualAddressSerialNumberResponse {
 	_result := &_ApduDataExtIndividualAddressSerialNumberResponse{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

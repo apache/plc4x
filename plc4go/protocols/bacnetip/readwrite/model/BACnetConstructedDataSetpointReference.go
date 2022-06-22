@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataSetpointReference) GetActualValue() BACnetSetpoin
 func NewBACnetConstructedDataSetpointReference(setpointReference BACnetSetpointReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpointReference {
 	_result := &_BACnetConstructedDataSetpointReference{
 		SetpointReference:      setpointReference,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

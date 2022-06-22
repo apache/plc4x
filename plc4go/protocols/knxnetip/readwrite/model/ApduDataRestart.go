@@ -71,7 +71,8 @@ func (m *_ApduDataRestart) GetParent() ApduData {
 // NewApduDataRestart factory function for _ApduDataRestart
 func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
 	_result := &_ApduDataRestart{
-		_ApduData: NewApduData(dataLength),
+		DataLength: dataLength,
+		_ApduData:  NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

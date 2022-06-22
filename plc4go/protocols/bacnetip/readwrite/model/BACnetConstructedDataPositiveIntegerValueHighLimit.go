@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetActualValue() B
 func NewBACnetConstructedDataPositiveIntegerValueHighLimit(highLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueHighLimit {
 	_result := &_BACnetConstructedDataPositiveIntegerValueHighLimit{
 		HighLimit:              highLimit,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

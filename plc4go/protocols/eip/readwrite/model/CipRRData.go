@@ -94,8 +94,9 @@ func (m *_CipRRData) GetExchange() CipExchange {
 // NewCipRRData factory function for _CipRRData
 func NewCipRRData(exchange CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLength uint16) *_CipRRData {
 	_result := &_CipRRData{
-		Exchange:   exchange,
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		Exchange:     exchange,
+		PacketLength: packetLength,
+		_EipPacket:   NewEipPacket(sessionHandle, status, senderContext, options),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result

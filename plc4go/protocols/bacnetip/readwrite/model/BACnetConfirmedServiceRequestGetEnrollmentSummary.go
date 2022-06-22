@@ -132,6 +132,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter B
 		EventTypeFilter:                eventTypeFilter,
 		PriorityFilter:                 priorityFilter,
 		NotificationClassFilter:        notificationClassFilter,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

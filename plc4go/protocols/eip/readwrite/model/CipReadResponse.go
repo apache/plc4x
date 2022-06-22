@@ -114,6 +114,7 @@ func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode,
 		ExtStatus:   extStatus,
 		DataType:    dataType,
 		Data:        data,
+		ServiceLen:  serviceLen,
 		_CipService: NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

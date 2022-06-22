@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataThreatAuthority) GetActualValue() BACnetAccessThr
 func NewBACnetConstructedDataThreatAuthority(threatAuthority BACnetAccessThreatLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatAuthority {
 	_result := &_BACnetConstructedDataThreatAuthority{
 		ThreatAuthority:        threatAuthority,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

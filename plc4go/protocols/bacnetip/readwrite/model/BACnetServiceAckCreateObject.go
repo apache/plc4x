@@ -89,6 +89,7 @@ func (m *_BACnetServiceAckCreateObject) GetObjectIdentifier() BACnetApplicationT
 func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint16) *_BACnetServiceAckCreateObject {
 	_result := &_BACnetServiceAckCreateObject{
 		ObjectIdentifier:  objectIdentifier,
+		ServiceAckLength:  serviceAckLength,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

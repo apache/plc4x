@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataEgressActive) GetActualValue() BACnetApplicationT
 func NewBACnetConstructedDataEgressActive(egressActive BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
 	_result := &_BACnetConstructedDataEgressActive{
 		EgressActive:           egressActive,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

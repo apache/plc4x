@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueDouble) GetDoubleValue() BACnetApplicationT
 func NewBACnetTimerStateChangeValueDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueDouble {
 	_result := &_BACnetTimerStateChangeValueDouble{
 		DoubleValue:                  doubleValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

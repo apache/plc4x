@@ -184,6 +184,7 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 		ServiceAck:           serviceAck,
 		SegmentServiceChoice: segmentServiceChoice,
 		Segment:              segment,
+		ApduLength:           apduLength,
 		_APDU:                NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

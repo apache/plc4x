@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataElevatorGroup) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataElevatorGroup(elevatorGroup BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroup {
 	_result := &_BACnetConstructedDataElevatorGroup{
 		ElevatorGroup:          elevatorGroup,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

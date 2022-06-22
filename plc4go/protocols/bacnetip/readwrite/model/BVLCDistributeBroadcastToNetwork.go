@@ -88,8 +88,9 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetNpdu() NPDU {
 // NewBVLCDistributeBroadcastToNetwork factory function for _BVLCDistributeBroadcastToNetwork
 func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_BVLCDistributeBroadcastToNetwork {
 	_result := &_BVLCDistributeBroadcastToNetwork{
-		Npdu:  npdu,
-		_BVLC: NewBVLC(),
+		Npdu:              npdu,
+		BvlcPayloadLength: bvlcPayloadLength,
+		_BVLC:             NewBVLC(),
 	}
 	_result._BVLC._BVLCChildRequirements = _result
 	return _result

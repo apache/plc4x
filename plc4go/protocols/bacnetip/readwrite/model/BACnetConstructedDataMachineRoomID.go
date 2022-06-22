@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataMachineRoomID) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataMachineRoomID(machineRoomId BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMachineRoomID {
 	_result := &_BACnetConstructedDataMachineRoomID{
 		MachineRoomId:          machineRoomId,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

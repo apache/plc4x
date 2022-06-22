@@ -99,6 +99,7 @@ func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, termin
 	_result := &_NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
+		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

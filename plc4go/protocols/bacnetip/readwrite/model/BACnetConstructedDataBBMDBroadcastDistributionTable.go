@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetBbmdBroadcastD
 func NewBACnetConstructedDataBBMDBroadcastDistributionTable(bbmdBroadcastDistributionTable []BACnetBDTEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
 	_result := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
 		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
+		TagNumber:                      tagNumber,
+		ArrayIndexArgument:             arrayIndexArgument,
 		_BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

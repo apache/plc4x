@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetActualValue() BAC
 func NewBACnetConstructedDataOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyUpperLimitEnforced {
 	_result := &_BACnetConstructedDataOccupancyUpperLimitEnforced{
 		OccupancyUpperLimitEnforced: occupancyUpperLimitEnforced,
+		TagNumber:                   tagNumber,
+		ArrayIndexArgument:          arrayIndexArgument,
 		_BACnetConstructedData:      NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

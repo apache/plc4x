@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataInProgress) GetActualValue() BACnetLightingInProg
 func NewBACnetConstructedDataInProgress(inProgress BACnetLightingInProgressTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProgress {
 	_result := &_BACnetConstructedDataInProgress{
 		InProgress:             inProgress,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

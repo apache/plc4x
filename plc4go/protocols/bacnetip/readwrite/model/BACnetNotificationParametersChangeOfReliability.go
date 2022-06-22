@@ -122,6 +122,8 @@ func NewBACnetNotificationParametersChangeOfReliability(innerOpeningTag BACnetOp
 		StatusFlags:                   statusFlags,
 		PropertyValues:                propertyValues,
 		InnerClosingTag:               innerClosingTag,
+		TagNumber:                     tagNumber,
+		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

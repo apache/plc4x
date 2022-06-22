@@ -89,6 +89,7 @@ func (m *_COTPParameterTpduSize) GetTpduSize() COTPTpduSize {
 func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
 	_result := &_COTPParameterTpduSize{
 		TpduSize:       tpduSize,
+		Rest:           rest,
 		_COTPParameter: NewCOTPParameter(rest),
 	}
 	_result._COTPParameter._COTPParameterChildRequirements = _result

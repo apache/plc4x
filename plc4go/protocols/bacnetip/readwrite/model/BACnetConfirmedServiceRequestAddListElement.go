@@ -116,6 +116,7 @@ func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetConte
 		PropertyIdentifier:             propertyIdentifier,
 		ArrayIndex:                     arrayIndex,
 		ListOfElements:                 listOfElements,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

@@ -71,6 +71,7 @@ func (m *_ApduDataExtLinkWrite) GetParent() ApduDataExt {
 // NewApduDataExtLinkWrite factory function for _ApduDataExtLinkWrite
 func NewApduDataExtLinkWrite(length uint8) *_ApduDataExtLinkWrite {
 	_result := &_ApduDataExtLinkWrite{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetTimeSynchroniza
 func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationRecipients {
 	_result := &_BACnetConstructedDataTimeSynchronizationRecipients{
 		TimeSynchronizationRecipients: timeSynchronizationRecipients,
+		TagNumber:                     tagNumber,
+		ArrayIndexArgument:            arrayIndexArgument,
 		_BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

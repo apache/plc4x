@@ -89,6 +89,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(characterValue BACnetContextTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
 	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
 		CharacterValue: characterValue,
+		TagNumber:      tagNumber,
 		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _result

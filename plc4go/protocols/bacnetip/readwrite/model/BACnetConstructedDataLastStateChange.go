@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLastStateChange) GetActualValue() BACnetTimerTran
 func NewBACnetConstructedDataLastStateChange(lastStateChange BACnetTimerTransitionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastStateChange {
 	_result := &_BACnetConstructedDataLastStateChange{
 		LastStateChange:        lastStateChange,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataSecuredStatus) GetActualValue() BACnetDoorSecured
 func NewBACnetConstructedDataSecuredStatus(securedStatus BACnetDoorSecuredStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecuredStatus {
 	_result := &_BACnetConstructedDataSecuredStatus{
 		SecuredStatus:          securedStatus,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -89,6 +89,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetDoubleValu
 func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble(doubleValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble {
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble{
 		DoubleValue: doubleValue,
+		TagNumber:   tagNumber,
 		_BACnetFaultParameterFaultOutOfRangeMaxNormalValue: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetFaultParameterFaultOutOfRangeMaxNormalValue._BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildRequirements = _result

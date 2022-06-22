@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLockout) GetActualValue() BACnetApplicationTagBoo
 func NewBACnetConstructedDataLockout(lockout BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
 	_result := &_BACnetConstructedDataLockout{
 		Lockout:                lockout,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

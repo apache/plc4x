@@ -71,6 +71,7 @@ func (m *_ApduDataExtReadRoutingTableRequest) GetParent() ApduDataExt {
 // NewApduDataExtReadRoutingTableRequest factory function for _ApduDataExtReadRoutingTableRequest
 func NewApduDataExtReadRoutingTableRequest(length uint8) *_ApduDataExtReadRoutingTableRequest {
 	_result := &_ApduDataExtReadRoutingTableRequest{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

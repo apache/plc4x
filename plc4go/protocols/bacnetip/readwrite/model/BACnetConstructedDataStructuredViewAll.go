@@ -80,6 +80,8 @@ func (m *_BACnetConstructedDataStructuredViewAll) GetParent() BACnetConstructedD
 // NewBACnetConstructedDataStructuredViewAll factory function for _BACnetConstructedDataStructuredViewAll
 func NewBACnetConstructedDataStructuredViewAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStructuredViewAll {
 	_result := &_BACnetConstructedDataStructuredViewAll{
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

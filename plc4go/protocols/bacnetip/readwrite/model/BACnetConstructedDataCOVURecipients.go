@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataCOVURecipients) GetCovuRecipients() []BACnetRecip
 func NewBACnetConstructedDataCOVURecipients(covuRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVURecipients {
 	_result := &_BACnetConstructedDataCOVURecipients{
 		CovuRecipients:         covuRecipients,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

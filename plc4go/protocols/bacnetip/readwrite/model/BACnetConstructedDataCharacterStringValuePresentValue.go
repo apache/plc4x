@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataCharacterStringValuePresentValue) GetActualValue(
 func NewBACnetConstructedDataCharacterStringValuePresentValue(presentValue BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValuePresentValue {
 	_result := &_BACnetConstructedDataCharacterStringValuePresentValue{
 		PresentValue:           presentValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -71,6 +71,7 @@ func (m *_ApduDataExtKeyResponse) GetParent() ApduDataExt {
 // NewApduDataExtKeyResponse factory function for _ApduDataExtKeyResponse
 func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
 	_result := &_ApduDataExtKeyResponse{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

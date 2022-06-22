@@ -125,6 +125,8 @@ func NewBACnetConstructedDataStructuredObjectList(numberOfDataElements BACnetApp
 	_result := &_BACnetConstructedDataStructuredObjectList{
 		NumberOfDataElements:   numberOfDataElements,
 		StructuredObjectList:   structuredObjectList,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetActualValue() BACne
 func NewBACnetConstructedDataProtocolServicesSupported(protocolServicesSupported BACnetServicesSupportedTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolServicesSupported {
 	_result := &_BACnetConstructedDataProtocolServicesSupported{
 		ProtocolServicesSupported: protocolServicesSupported,
+		TagNumber:                 tagNumber,
+		ArrayIndexArgument:        arrayIndexArgument,
 		_BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

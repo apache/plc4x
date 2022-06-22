@@ -148,6 +148,8 @@ func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag BACnetOpeningT
 		InitialTimeout:                initialTimeout,
 		ExpirationTime:                expirationTime,
 		InnerClosingTag:               innerClosingTag,
+		TagNumber:                     tagNumber,
+		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

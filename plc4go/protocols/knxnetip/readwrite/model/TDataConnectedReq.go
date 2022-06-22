@@ -71,6 +71,7 @@ func (m *_TDataConnectedReq) GetParent() CEMI {
 // NewTDataConnectedReq factory function for _TDataConnectedReq
 func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
 	_result := &_TDataConnectedReq{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

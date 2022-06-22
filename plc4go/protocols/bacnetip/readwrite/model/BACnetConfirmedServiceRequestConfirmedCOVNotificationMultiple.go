@@ -124,6 +124,7 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(subscriber
 		TimeRemaining:                  timeRemaining,
 		Timestamp:                      timestamp,
 		ListOfCovNotifications:         listOfCovNotifications,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

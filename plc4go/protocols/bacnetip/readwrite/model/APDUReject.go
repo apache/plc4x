@@ -98,6 +98,7 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged
 	_result := &_APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
+		ApduLength:       apduLength,
 		_APDU:            NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

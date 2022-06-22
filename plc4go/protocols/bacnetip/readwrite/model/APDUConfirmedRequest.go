@@ -208,6 +208,7 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 		ServiceRequest:            serviceRequest,
 		SegmentServiceChoice:      segmentServiceChoice,
 		Segment:                   segment,
+		ApduLength:                apduLength,
 		_APDU:                     NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

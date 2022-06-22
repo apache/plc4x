@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataFaultType) GetActualValue() BACnetFaultTypeTagged
 func NewBACnetConstructedDataFaultType(faultType BACnetFaultTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultType {
 	_result := &_BACnetConstructedDataFaultType{
 		FaultType:              faultType,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

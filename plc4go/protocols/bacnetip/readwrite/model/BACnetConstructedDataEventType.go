@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataEventType) GetActualValue() BACnetEventTypeTagged
 func NewBACnetConstructedDataEventType(eventType BACnetEventTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventType {
 	_result := &_BACnetConstructedDataEventType{
 		EventType:              eventType,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

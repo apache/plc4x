@@ -100,6 +100,7 @@ func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []COTPParameter, payl
 	_result := &_COTPPacketData{
 		Eot:         eot,
 		TpduRef:     tpduRef,
+		CotpLen:     cotpLen,
 		_COTPPacket: NewCOTPPacket(parameters, payload, cotpLen),
 	}
 	_result._COTPPacket._COTPPacketChildRequirements = _result

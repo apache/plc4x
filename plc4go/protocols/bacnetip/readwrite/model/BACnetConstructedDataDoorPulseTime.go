@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDoorPulseTime) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataDoorPulseTime(doorPulseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorPulseTime {
 	_result := &_BACnetConstructedDataDoorPulseTime{
 		DoorPulseTime:          doorPulseTime,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

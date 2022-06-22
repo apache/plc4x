@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) GetActualValue() BACnetHos
 func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress BACnetHostNPort, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
 	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
 		BacnetIpGlobalAddress:  bacnetIpGlobalAddress,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

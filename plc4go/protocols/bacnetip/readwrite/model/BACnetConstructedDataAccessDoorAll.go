@@ -80,6 +80,8 @@ func (m *_BACnetConstructedDataAccessDoorAll) GetParent() BACnetConstructedData 
 // NewBACnetConstructedDataAccessDoorAll factory function for _BACnetConstructedDataAccessDoorAll
 func NewBACnetConstructedDataAccessDoorAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorAll {
 	_result := &_BACnetConstructedDataAccessDoorAll{
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

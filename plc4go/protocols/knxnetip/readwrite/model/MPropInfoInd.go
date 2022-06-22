@@ -71,6 +71,7 @@ func (m *_MPropInfoInd) GetParent() CEMI {
 // NewMPropInfoInd factory function for _MPropInfoInd
 func NewMPropInfoInd(size uint16) *_MPropInfoInd {
 	_result := &_MPropInfoInd{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

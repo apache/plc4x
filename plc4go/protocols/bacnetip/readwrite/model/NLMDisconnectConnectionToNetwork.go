@@ -91,6 +91,7 @@ func (m *_NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint1
 func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
 	_result := &_NLMDisconnectConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
+		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

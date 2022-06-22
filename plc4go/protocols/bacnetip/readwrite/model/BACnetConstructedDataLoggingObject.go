@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLoggingObject) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataLoggingObject(loggingObject BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingObject {
 	_result := &_BACnetConstructedDataLoggingObject{
 		LoggingObject:          loggingObject,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

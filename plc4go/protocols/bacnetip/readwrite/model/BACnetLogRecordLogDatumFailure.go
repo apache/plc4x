@@ -89,6 +89,7 @@ func (m *_BACnetLogRecordLogDatumFailure) GetFailure() ErrorEnclosed {
 func NewBACnetLogRecordLogDatumFailure(failure ErrorEnclosed, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
 	_result := &_BACnetLogRecordLogDatumFailure{
 		Failure:                  failure,
+		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

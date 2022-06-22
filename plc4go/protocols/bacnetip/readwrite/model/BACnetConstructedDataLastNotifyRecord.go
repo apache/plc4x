@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLastNotifyRecord) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
 	_result := &_BACnetConstructedDataLastNotifyRecord{
 		LastNotifyRecord:       lastNotifyRecord,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -125,6 +125,8 @@ func NewBACnetConstructedDataFloorText(numberOfDataElements BACnetApplicationTag
 	_result := &_BACnetConstructedDataFloorText{
 		NumberOfDataElements:   numberOfDataElements,
 		FloorText:              floorText,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

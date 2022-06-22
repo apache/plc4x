@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLoopPresentValue) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataLoopPresentValue(presentValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopPresentValue {
 	_result := &_BACnetConstructedDataLoopPresentValue{
 		PresentValue:           presentValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

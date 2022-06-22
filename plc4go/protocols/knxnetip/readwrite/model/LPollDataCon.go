@@ -71,6 +71,7 @@ func (m *_LPollDataCon) GetParent() CEMI {
 // NewLPollDataCon factory function for _LPollDataCon
 func NewLPollDataCon(size uint16) *_LPollDataCon {
 	_result := &_LPollDataCon{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

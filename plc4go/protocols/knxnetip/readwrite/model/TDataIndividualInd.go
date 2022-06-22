@@ -71,6 +71,7 @@ func (m *_TDataIndividualInd) GetParent() CEMI {
 // NewTDataIndividualInd factory function for _TDataIndividualInd
 func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
 	_result := &_TDataIndividualInd{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

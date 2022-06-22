@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataDatabaseRevision(databaseRevision BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
 	_result := &_BACnetConstructedDataDatabaseRevision{
 		DatabaseRevision:       databaseRevision,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

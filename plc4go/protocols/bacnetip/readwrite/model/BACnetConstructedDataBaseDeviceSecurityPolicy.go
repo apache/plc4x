@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetActualValue() BACnet
 func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy BACnetSecurityLevelTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
 	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
 		BaseDeviceSecurityPolicy: baseDeviceSecurityPolicy,
+		TagNumber:                tagNumber,
+		ArrayIndexArgument:       arrayIndexArgument,
 		_BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

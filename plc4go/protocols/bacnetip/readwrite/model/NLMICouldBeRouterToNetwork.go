@@ -99,6 +99,7 @@ func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performance
 	_result := &_NLMICouldBeRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
+		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

@@ -95,9 +95,10 @@ func (m *_ApduDataMemoryRead) GetAddress() uint16 {
 // NewApduDataMemoryRead factory function for _ApduDataMemoryRead
 func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_ApduDataMemoryRead {
 	_result := &_ApduDataMemoryRead{
-		NumBytes:  numBytes,
-		Address:   address,
-		_ApduData: NewApduData(dataLength),
+		NumBytes:   numBytes,
+		Address:    address,
+		DataLength: dataLength,
+		_ApduData:  NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

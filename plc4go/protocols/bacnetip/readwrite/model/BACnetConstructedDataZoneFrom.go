@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataZoneFrom) GetActualValue() BACnetDeviceObjectRefe
 func NewBACnetConstructedDataZoneFrom(zoneFrom BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneFrom {
 	_result := &_BACnetConstructedDataZoneFrom{
 		ZoneFrom:               zoneFrom,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

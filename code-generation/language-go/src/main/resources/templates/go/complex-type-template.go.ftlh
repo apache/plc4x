@@ -345,6 +345,11 @@ func New${type.name}(
 	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
+    <#if filteredParserArguments?has_content>
+        <#list filteredParserArguments as parserArgument>
+		${parserArgument.name?cap_first}: ${parserArgument.name},
+        </#list>
+    </#if>
     	_${type.parentType.orElseThrow().name}: New${type.parentType.orElseThrow().name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
 	}
 	_result._${type.parentType.orElseThrow().name}._${type.parentType.orElseThrow().name}ChildRequirements = _result

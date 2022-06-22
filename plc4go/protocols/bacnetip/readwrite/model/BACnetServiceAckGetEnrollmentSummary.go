@@ -123,6 +123,7 @@ func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationT
 		EventState:        eventState,
 		Priority:          priority,
 		NotificationClass: notificationClass,
+		ServiceAckLength:  serviceAckLength,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

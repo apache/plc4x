@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetActualValue() BACnetAp
 func NewBACnetConstructedDataRestorePreparationTime(restorePreparationTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestorePreparationTime {
 	_result := &_BACnetConstructedDataRestorePreparationTime{
 		RestorePreparationTime: restorePreparationTime,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

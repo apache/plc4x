@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataGroupMode) GetActualValue() BACnetLiftGroupModeTa
 func NewBACnetConstructedDataGroupMode(groupMode BACnetLiftGroupModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMode {
 	_result := &_BACnetConstructedDataGroupMode{
 		GroupMode:              groupMode,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

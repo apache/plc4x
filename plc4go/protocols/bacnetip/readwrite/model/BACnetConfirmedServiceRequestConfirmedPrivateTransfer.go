@@ -108,6 +108,7 @@ func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(vendorId BACnetVen
 		VendorId:                       vendorId,
 		ServiceNumber:                  serviceNumber,
 		ServiceParameters:              serviceParameters,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

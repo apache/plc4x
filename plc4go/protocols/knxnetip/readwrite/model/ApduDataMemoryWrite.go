@@ -71,7 +71,8 @@ func (m *_ApduDataMemoryWrite) GetParent() ApduData {
 // NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
 func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
 	_result := &_ApduDataMemoryWrite{
-		_ApduData: NewApduData(dataLength),
+		DataLength: dataLength,
+		_ApduData:  NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

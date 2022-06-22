@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBufferSize) GetActualValue() BACnetApplicationTag
 func NewBACnetConstructedDataBufferSize(bufferSize BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBufferSize {
 	_result := &_BACnetConstructedDataBufferSize{
 		BufferSize:             bufferSize,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

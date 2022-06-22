@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDeviceType) GetActualValue() BACnetApplicationTag
 func NewBACnetConstructedDataDeviceType(deviceType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
 	_result := &_BACnetConstructedDataDeviceType{
 		DeviceType:             deviceType,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

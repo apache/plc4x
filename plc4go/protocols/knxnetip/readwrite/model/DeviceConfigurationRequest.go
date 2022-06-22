@@ -97,6 +97,7 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceCon
 	_result := &_DeviceConfigurationRequest{
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
 		Cemi:                                cemi,
+		TotalLength:                         totalLength,
 		_KnxNetIpMessage:                    NewKnxNetIpMessage(),
 	}
 	_result._KnxNetIpMessage._KnxNetIpMessageChildRequirements = _result

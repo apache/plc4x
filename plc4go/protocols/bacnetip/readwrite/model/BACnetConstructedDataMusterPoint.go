@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataMusterPoint) GetActualValue() BACnetApplicationTa
 func NewBACnetConstructedDataMusterPoint(musterPoint BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMusterPoint {
 	_result := &_BACnetConstructedDataMusterPoint{
 		MusterPoint:            musterPoint,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

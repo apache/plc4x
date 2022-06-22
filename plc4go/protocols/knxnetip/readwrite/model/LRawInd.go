@@ -71,6 +71,7 @@ func (m *_LRawInd) GetParent() CEMI {
 // NewLRawInd factory function for _LRawInd
 func NewLRawInd(size uint16) *_LRawInd {
 	_result := &_LRawInd{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

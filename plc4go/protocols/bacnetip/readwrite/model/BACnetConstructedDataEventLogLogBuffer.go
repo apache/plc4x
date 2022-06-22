@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataEventLogLogBuffer) GetFloorText() []BACnetEventLo
 func NewBACnetConstructedDataEventLogLogBuffer(floorText []BACnetEventLogRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventLogLogBuffer {
 	_result := &_BACnetConstructedDataEventLogLogBuffer{
 		FloorText:              floorText,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

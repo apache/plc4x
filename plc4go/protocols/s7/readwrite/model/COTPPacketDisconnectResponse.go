@@ -100,6 +100,7 @@ func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReferenc
 	_result := &_COTPPacketDisconnectResponse{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
+		CotpLen:              cotpLen,
 		_COTPPacket:          NewCOTPPacket(parameters, payload, cotpLen),
 	}
 	_result._COTPPacket._COTPPacketChildRequirements = _result

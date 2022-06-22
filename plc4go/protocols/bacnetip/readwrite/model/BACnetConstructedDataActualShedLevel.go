@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataActualShedLevel) GetActualValue() BACnetShedLevel
 func NewBACnetConstructedDataActualShedLevel(actualShedLevel BACnetShedLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActualShedLevel {
 	_result := &_BACnetConstructedDataActualShedLevel{
 		ActualShedLevel:        actualShedLevel,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetActualValue(
 func NewBACnetConstructedDataBinaryLightingOutputPresentValue(presentValue BACnetBinaryLightingPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
 	_result := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
 		PresentValue:           presentValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

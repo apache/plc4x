@@ -112,6 +112,7 @@ func (m *_BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
 func NewBACnetContextTagObjectIdentifier(payload BACnetTagPayloadObjectIdentifier, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagObjectIdentifier {
 	_result := &_BACnetContextTagObjectIdentifier{
 		Payload:           payload,
+		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

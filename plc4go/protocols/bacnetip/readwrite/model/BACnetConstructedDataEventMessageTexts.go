@@ -149,6 +149,8 @@ func NewBACnetConstructedDataEventMessageTexts(numberOfDataElements BACnetApplic
 	_result := &_BACnetConstructedDataEventMessageTexts{
 		NumberOfDataElements:   numberOfDataElements,
 		EventMessageTexts:      eventMessageTexts,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

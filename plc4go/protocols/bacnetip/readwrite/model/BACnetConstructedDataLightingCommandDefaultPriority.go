@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetActualValue() 
 func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommandDefaultPriority {
 	_result := &_BACnetConstructedDataLightingCommandDefaultPriority{
 		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
+		TagNumber:                      tagNumber,
+		ArrayIndexArgument:             arrayIndexArgument,
 		_BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

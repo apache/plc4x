@@ -122,6 +122,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProc
 		MonitoredObjectIdentifier:        monitoredObjectIdentifier,
 		LifetimeInSeconds:                lifetimeInSeconds,
 		ListOfValues:                     listOfValues,
+		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

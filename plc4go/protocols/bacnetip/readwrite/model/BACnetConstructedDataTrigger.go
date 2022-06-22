@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataTrigger) GetActualValue() BACnetApplicationTagBoo
 func NewBACnetConstructedDataTrigger(trigger BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrigger {
 	_result := &_BACnetConstructedDataTrigger{
 		Trigger:                trigger,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

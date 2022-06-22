@@ -93,6 +93,7 @@ func (m *_S7PayloadWriteVarRequest) GetItems() []S7VarPayloadDataItem {
 func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadWriteVarRequest {
 	_result := &_S7PayloadWriteVarRequest{
 		Items:      items,
+		Parameter:  parameter,
 		_S7Payload: NewS7Payload(parameter),
 	}
 	_result._S7Payload._S7PayloadChildRequirements = _result

@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataAnalogInputMaxPresValue) GetActualValue() BACnetA
 func NewBACnetConstructedDataAnalogInputMaxPresValue(maxPresValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputMaxPresValue {
 	_result := &_BACnetConstructedDataAnalogInputMaxPresValue{
 		MaxPresValue:           maxPresValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

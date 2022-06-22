@@ -80,6 +80,8 @@ func (m *_BACnetConstructedDataPulseConverterAll) GetParent() BACnetConstructedD
 // NewBACnetConstructedDataPulseConverterAll factory function for _BACnetConstructedDataPulseConverterAll
 func NewBACnetConstructedDataPulseConverterAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAll {
 	_result := &_BACnetConstructedDataPulseConverterAll{
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

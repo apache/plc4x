@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) GetActualValue()
 func NewBACnetConstructedDataCredentialDataInputPresentValue(presentValue BACnetAuthenticationFactor, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputPresentValue {
 	_result := &_BACnetConstructedDataCredentialDataInputPresentValue{
 		PresentValue:           presentValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -125,6 +125,8 @@ func NewBACnetConstructedDataPriority(numberOfDataElements BACnetApplicationTagU
 	_result := &_BACnetConstructedDataPriority{
 		NumberOfDataElements:   numberOfDataElements,
 		Priority:               priority,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

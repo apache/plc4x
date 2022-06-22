@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetActualValue() BACnetApplica
 func NewBACnetConstructedDataBACnetIPv6UDPPort(ipv6UdpPort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6UDPPort {
 	_result := &_BACnetConstructedDataBACnetIPv6UDPPort{
 		Ipv6UdpPort:            ipv6UdpPort,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

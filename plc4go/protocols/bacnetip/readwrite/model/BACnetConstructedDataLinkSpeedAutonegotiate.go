@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetActualValue() BACnetAp
 func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeedAutonegotiate {
 	_result := &_BACnetConstructedDataLinkSpeedAutonegotiate{
 		LinkSpeedAutonegotiate: linkSpeedAutonegotiate,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

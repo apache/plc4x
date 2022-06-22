@@ -91,6 +91,7 @@ func (m *_BACnetContextTagOctetString) GetPayload() BACnetTagPayloadOctetString 
 func NewBACnetContextTagOctetString(payload BACnetTagPayloadOctetString, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagOctetString {
 	_result := &_BACnetContextTagOctetString{
 		Payload:           payload,
+		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

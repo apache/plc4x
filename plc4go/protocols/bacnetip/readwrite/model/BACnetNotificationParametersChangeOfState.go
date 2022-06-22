@@ -114,6 +114,8 @@ func NewBACnetNotificationParametersChangeOfState(innerOpeningTag BACnetOpeningT
 		ChangeOfState:                 changeOfState,
 		StatusFlags:                   statusFlags,
 		InnerClosingTag:               innerClosingTag,
+		TagNumber:                     tagNumber,
+		ObjectTypeArgument:            objectTypeArgument,
 		_BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 	}
 	_result._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _result

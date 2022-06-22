@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataPassengerAlarm) GetActualValue() BACnetApplicatio
 func NewBACnetConstructedDataPassengerAlarm(passengerAlarm BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassengerAlarm {
 	_result := &_BACnetConstructedDataPassengerAlarm{
 		PassengerAlarm:         passengerAlarm,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

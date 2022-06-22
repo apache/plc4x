@@ -105,6 +105,7 @@ func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16, servi
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		ElementNb:       elementNb,
+		ServiceLen:      serviceLen,
 		_CipService:     NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

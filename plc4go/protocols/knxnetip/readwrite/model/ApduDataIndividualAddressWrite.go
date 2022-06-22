@@ -71,7 +71,8 @@ func (m *_ApduDataIndividualAddressWrite) GetParent() ApduData {
 // NewApduDataIndividualAddressWrite factory function for _ApduDataIndividualAddressWrite
 func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAddressWrite {
 	_result := &_ApduDataIndividualAddressWrite{
-		_ApduData: NewApduData(dataLength),
+		DataLength: dataLength,
+		_ApduData:  NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

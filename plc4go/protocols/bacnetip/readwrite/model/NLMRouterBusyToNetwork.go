@@ -91,6 +91,7 @@ func (m *_NLMRouterBusyToNetwork) GetDestinationNetworkAddress() []uint16 {
 func NewNLMRouterBusyToNetwork(destinationNetworkAddress []uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMRouterBusyToNetwork {
 	_result := &_NLMRouterBusyToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
+		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

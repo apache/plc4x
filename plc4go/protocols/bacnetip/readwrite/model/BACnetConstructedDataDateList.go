@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataDateList) GetDateList() []BACnetCalendarEntry {
 func NewBACnetConstructedDataDateList(dateList []BACnetCalendarEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateList {
 	_result := &_BACnetConstructedDataDateList{
 		DateList:               dateList,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

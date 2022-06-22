@@ -71,6 +71,7 @@ func (m *_FirmataCommandSystemReset) GetParent() FirmataCommand {
 // NewFirmataCommandSystemReset factory function for _FirmataCommandSystemReset
 func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
 	_result := &_FirmataCommandSystemReset{
+		Response:        response,
 		_FirmataCommand: NewFirmataCommand(response),
 	}
 	_result._FirmataCommand._FirmataCommandChildRequirements = _result

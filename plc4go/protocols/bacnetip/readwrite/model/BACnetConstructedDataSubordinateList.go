@@ -125,6 +125,8 @@ func NewBACnetConstructedDataSubordinateList(numberOfDataElements BACnetApplicat
 	_result := &_BACnetConstructedDataSubordinateList{
 		NumberOfDataElements:   numberOfDataElements,
 		SubordinateList:        subordinateList,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueCharacterString) GetCharacterStringValue() 
 func NewBACnetTimerStateChangeValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueCharacterString {
 	_result := &_BACnetTimerStateChangeValueCharacterString{
 		CharacterStringValue:         characterStringValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

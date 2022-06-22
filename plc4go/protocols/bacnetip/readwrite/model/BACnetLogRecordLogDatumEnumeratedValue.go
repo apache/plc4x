@@ -89,6 +89,7 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetEnumeratedValue() BACnetCon
 func NewBACnetLogRecordLogDatumEnumeratedValue(enumeratedValue BACnetContextTagEnumerated, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumEnumeratedValue {
 	_result := &_BACnetLogRecordLogDatumEnumeratedValue{
 		EnumeratedValue:          enumeratedValue,
+		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

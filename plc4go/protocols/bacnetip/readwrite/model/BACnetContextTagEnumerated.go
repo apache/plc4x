@@ -106,6 +106,7 @@ func (m *_BACnetContextTagEnumerated) GetActualValue() uint32 {
 func NewBACnetContextTagEnumerated(payload BACnetTagPayloadEnumerated, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagEnumerated {
 	_result := &_BACnetContextTagEnumerated{
 		Payload:           payload,
+		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

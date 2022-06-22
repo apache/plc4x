@@ -106,6 +106,7 @@ func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationT
 		DeviceIdentifier:                 deviceIdentifier,
 		ObjectIdentifier:                 objectIdentifier,
 		ObjectName:                       objectName,
+		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

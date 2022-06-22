@@ -105,6 +105,7 @@ func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMI
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
+		Size:                        size,
 		_CEMI:                       NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

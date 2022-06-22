@@ -107,6 +107,7 @@ func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, 
 		VendorId:          vendorId,
 		ServiceNumber:     serviceNumber,
 		ResultBlock:       resultBlock,
+		ServiceAckLength:  serviceAckLength,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

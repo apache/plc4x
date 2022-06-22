@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueOctetString) GetOctetStringValue() BACnetAp
 func NewBACnetTimerStateChangeValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueOctetString {
 	_result := &_BACnetTimerStateChangeValueOctetString{
 		OctetStringValue:             octetStringValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

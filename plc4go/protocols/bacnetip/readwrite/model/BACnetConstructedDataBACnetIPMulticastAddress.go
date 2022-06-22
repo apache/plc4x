@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetActualValue() BACnet
 func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPMulticastAddress {
 	_result := &_BACnetConstructedDataBACnetIPMulticastAddress{
 		IpMulticastAddress:     ipMulticastAddress,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

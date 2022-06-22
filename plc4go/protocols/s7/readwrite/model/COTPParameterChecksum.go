@@ -89,6 +89,7 @@ func (m *_COTPParameterChecksum) GetCrc() uint8 {
 func NewCOTPParameterChecksum(crc uint8, rest uint8) *_COTPParameterChecksum {
 	_result := &_COTPParameterChecksum{
 		Crc:            crc,
+		Rest:           rest,
 		_COTPParameter: NewCOTPParameter(rest),
 	}
 	_result._COTPParameter._COTPParameterChildRequirements = _result

@@ -89,6 +89,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) GetB
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean(booleanValue BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean {
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean{
 		BooleanValue: booleanValue,
+		TagNumber:    tagNumber,
 		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _result

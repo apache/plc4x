@@ -71,6 +71,7 @@ func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetParent() ApduDataExt
 // NewApduDataExtIndividualAddressSerialNumberWrite factory function for _ApduDataExtIndividualAddressSerialNumberWrite
 func NewApduDataExtIndividualAddressSerialNumberWrite(length uint8) *_ApduDataExtIndividualAddressSerialNumberWrite {
 	_result := &_ApduDataExtIndividualAddressSerialNumberWrite{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

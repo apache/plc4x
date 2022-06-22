@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetActualValue() BACnetD
 func NewBACnetConstructedDataLogDeviceObjectProperty(logDeviceObjectProperty BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogDeviceObjectProperty {
 	_result := &_BACnetConstructedDataLogDeviceObjectProperty{
 		LogDeviceObjectProperty: logDeviceObjectProperty,
+		TagNumber:               tagNumber,
+		ArrayIndexArgument:      arrayIndexArgument,
 		_BACnetConstructedData:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataCarDoorZone) GetActualValue() BACnetApplicationTa
 func NewBACnetConstructedDataCarDoorZone(carDoorZone BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorZone {
 	_result := &_BACnetConstructedDataCarDoorZone{
 		CarDoorZone:            carDoorZone,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

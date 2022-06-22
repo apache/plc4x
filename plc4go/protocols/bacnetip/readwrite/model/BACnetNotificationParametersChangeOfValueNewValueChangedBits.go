@@ -89,6 +89,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetChang
 func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(changedBits BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
 	_result := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
 		ChangedBits: changedBits,
+		TagNumber:   tagNumber,
 		_BACnetNotificationParametersChangeOfValueNewValue: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetNotificationParametersChangeOfValueNewValue._BACnetNotificationParametersChangeOfValueNewValueChildRequirements = _result

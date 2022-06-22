@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataChannelNumber) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataChannelNumber(channelNumber BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelNumber {
 	_result := &_BACnetConstructedDataChannelNumber{
 		ChannelNumber:          channelNumber,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

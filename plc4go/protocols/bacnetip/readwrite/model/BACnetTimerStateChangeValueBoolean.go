@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueBoolean) GetBooleanValue() BACnetApplicatio
 func NewBACnetTimerStateChangeValueBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueBoolean {
 	_result := &_BACnetTimerStateChangeValueBoolean{
 		BooleanValue:                 booleanValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

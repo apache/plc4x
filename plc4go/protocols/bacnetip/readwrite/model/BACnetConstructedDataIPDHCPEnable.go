@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetActualValue() BACnetApplicationT
 func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPEnable {
 	_result := &_BACnetConstructedDataIPDHCPEnable{
 		IpDhcpEnable:           ipDhcpEnable,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

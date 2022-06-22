@@ -125,6 +125,8 @@ func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(numberOfDat
 	_result := &_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty{
 		NumberOfDataElements:   numberOfDataElements,
 		GroupMembers:           groupMembers,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

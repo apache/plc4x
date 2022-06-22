@@ -113,6 +113,7 @@ func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CE
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
+		Size:                        size,
 		_CEMI:                       NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

@@ -98,6 +98,7 @@ func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVt
 	_result := &_BACnetConfirmedServiceRequestVTOpen{
 		VtClass:                        vtClass,
 		LocalVtSessionIdentifier:       localVtSessionIdentifier,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

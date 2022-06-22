@@ -99,6 +99,7 @@ func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReas
 	_result := &_NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
+		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

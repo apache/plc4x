@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
 	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
 		UpdateKeySetTimeout:    updateKeySetTimeout,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -100,6 +100,7 @@ func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevi
 	_result := &_BACnetConfirmedServiceRequestReinitializeDevice{
 		ReinitializedStateOfDevice:     reinitializedStateOfDevice,
 		Password:                       password,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

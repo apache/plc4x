@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetActualValue() 
 func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRelationship BACnetRelationshipTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultSubordinateRelationship {
 	_result := &_BACnetConstructedDataDefaultSubordinateRelationship{
 		DefaultSubordinateRelationship: defaultSubordinateRelationship,
+		TagNumber:                      tagNumber,
+		ArrayIndexArgument:             arrayIndexArgument,
 		_BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -73,6 +73,7 @@ func (m *_BACnetContextTagNull) GetParent() BACnetContextTag {
 // NewBACnetContextTagNull factory function for _BACnetContextTagNull
 func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
 	_result := &_BACnetContextTagNull{
+		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

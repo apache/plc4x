@@ -89,6 +89,7 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetRealValue() BACnetContextTagReal 
 func NewBACnetLogRecordLogDatumRealValue(realValue BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumRealValue {
 	_result := &_BACnetLogRecordLogDatumRealValue{
 		RealValue:                realValue,
+		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

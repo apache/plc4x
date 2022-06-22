@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataProportionalConstant) GetActualValue() BACnetAppl
 func NewBACnetConstructedDataProportionalConstant(proportionalConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
 	_result := &_BACnetConstructedDataProportionalConstant{
 		ProportionalConstant:   proportionalConstant,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -97,6 +97,7 @@ func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_Firma
 	_result := &_FirmataCommandSetPinMode{
 		Pin:             pin,
 		Mode:            mode,
+		Response:        response,
 		_FirmataCommand: NewFirmataCommand(response),
 	}
 	_result._FirmataCommand._FirmataCommandChildRequirements = _result

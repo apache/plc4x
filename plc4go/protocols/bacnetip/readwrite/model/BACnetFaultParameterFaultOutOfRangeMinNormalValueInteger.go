@@ -89,6 +89,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger) GetIntegerVa
 func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger(integerValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger {
 	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger{
 		IntegerValue: integerValue,
+		TagNumber:    tagNumber,
 		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _result

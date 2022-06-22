@@ -88,8 +88,9 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetTable() []BVLCBroadcastDistrib
 // NewBVLCWriteBroadcastDistributionTable factory function for _BVLCWriteBroadcastDistributionTable
 func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCWriteBroadcastDistributionTable {
 	_result := &_BVLCWriteBroadcastDistributionTable{
-		Table: table,
-		_BVLC: NewBVLC(),
+		Table:             table,
+		BvlcPayloadLength: bvlcPayloadLength,
+		_BVLC:             NewBVLC(),
 	}
 	_result._BVLC._BVLCChildRequirements = _result
 	return _result

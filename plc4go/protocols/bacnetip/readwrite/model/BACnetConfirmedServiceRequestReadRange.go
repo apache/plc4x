@@ -116,6 +116,7 @@ func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier BACnetContextTag
 		PropertyIdentifier:             propertyIdentifier,
 		PropertyArrayIndex:             propertyArrayIndex,
 		ReadRange:                      readRange,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

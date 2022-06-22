@@ -87,6 +87,7 @@ func (m *_CBusCommandPointToMultiPoint) GetCommand() CBusPointToMultiPointComman
 func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, header CBusHeader, srchk bool) *_CBusCommandPointToMultiPoint {
 	_result := &_CBusCommandPointToMultiPoint{
 		Command:      command,
+		Srchk:        srchk,
 		_CBusCommand: NewCBusCommand(header, srchk),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result

@@ -125,6 +125,8 @@ func NewBACnetConstructedDataAccessDoors(numberOfDataElements BACnetApplicationT
 	_result := &_BACnetConstructedDataAccessDoors{
 		NumberOfDataElements:   numberOfDataElements,
 		AccessDoors:            accessDoors,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

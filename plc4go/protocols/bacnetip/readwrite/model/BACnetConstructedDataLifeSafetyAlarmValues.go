@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataLifeSafetyAlarmValues) GetAlarmValues() []BACnetL
 func NewBACnetConstructedDataLifeSafetyAlarmValues(alarmValues []BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyAlarmValues {
 	_result := &_BACnetConstructedDataLifeSafetyAlarmValues{
 		AlarmValues:            alarmValues,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

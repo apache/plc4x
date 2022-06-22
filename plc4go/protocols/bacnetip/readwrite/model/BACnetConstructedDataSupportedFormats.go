@@ -125,6 +125,8 @@ func NewBACnetConstructedDataSupportedFormats(numberOfDataElements BACnetApplica
 	_result := &_BACnetConstructedDataSupportedFormats{
 		NumberOfDataElements:   numberOfDataElements,
 		SupportedFormats:       supportedFormats,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

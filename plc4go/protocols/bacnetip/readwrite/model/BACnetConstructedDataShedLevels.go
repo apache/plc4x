@@ -125,6 +125,8 @@ func NewBACnetConstructedDataShedLevels(numberOfDataElements BACnetApplicationTa
 	_result := &_BACnetConstructedDataShedLevels{
 		NumberOfDataElements:   numberOfDataElements,
 		ShedLevels:             shedLevels,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

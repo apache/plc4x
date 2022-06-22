@@ -71,7 +71,8 @@ func (m *_ApduDataAdcResponse) GetParent() ApduData {
 // NewApduDataAdcResponse factory function for _ApduDataAdcResponse
 func NewApduDataAdcResponse(dataLength uint8) *_ApduDataAdcResponse {
 	_result := &_ApduDataAdcResponse{
-		_ApduData: NewApduData(dataLength),
+		DataLength: dataLength,
+		_ApduData:  NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

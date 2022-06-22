@@ -71,6 +71,7 @@ func (m *_ApduDataExtMemoryBitWrite) GetParent() ApduDataExt {
 // NewApduDataExtMemoryBitWrite factory function for _ApduDataExtMemoryBitWrite
 func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
 	_result := &_ApduDataExtMemoryBitWrite{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

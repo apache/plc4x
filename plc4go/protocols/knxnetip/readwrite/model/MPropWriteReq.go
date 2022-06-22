@@ -71,6 +71,7 @@ func (m *_MPropWriteReq) GetParent() CEMI {
 // NewMPropWriteReq factory function for _MPropWriteReq
 func NewMPropWriteReq(size uint16) *_MPropWriteReq {
 	_result := &_MPropWriteReq{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

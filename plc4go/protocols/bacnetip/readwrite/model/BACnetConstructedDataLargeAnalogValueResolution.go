@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetActualValue() BACn
 func NewBACnetConstructedDataLargeAnalogValueResolution(resolution BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
 	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
 		Resolution:             resolution,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

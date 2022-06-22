@@ -125,6 +125,8 @@ func NewBACnetConstructedDataAssignedLandingCalls(numberOfDataElements BACnetApp
 	_result := &_BACnetConstructedDataAssignedLandingCalls{
 		NumberOfDataElements:   numberOfDataElements,
 		AssignedLandingCalls:   assignedLandingCalls,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

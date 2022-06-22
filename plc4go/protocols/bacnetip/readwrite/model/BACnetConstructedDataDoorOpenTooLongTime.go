@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) GetActualValue() BACnetAppli
 func NewBACnetConstructedDataDoorOpenTooLongTime(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorOpenTooLongTime {
 	_result := &_BACnetConstructedDataDoorOpenTooLongTime{
 		DoorOpenTooLongTime:    doorOpenTooLongTime,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

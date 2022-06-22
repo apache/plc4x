@@ -71,6 +71,7 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) GetParent() ApduDataExt {
 // NewApduDataExtDomainAddressSerialNumberRead factory function for _ApduDataExtDomainAddressSerialNumberRead
 func NewApduDataExtDomainAddressSerialNumberRead(length uint8) *_ApduDataExtDomainAddressSerialNumberRead {
 	_result := &_ApduDataExtDomainAddressSerialNumberRead{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

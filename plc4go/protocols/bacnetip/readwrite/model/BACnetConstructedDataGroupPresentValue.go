@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataGroupPresentValue) GetPresentValue() []BACnetRead
 func NewBACnetConstructedDataGroupPresentValue(presentValue []BACnetReadAccessResult, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupPresentValue {
 	_result := &_BACnetConstructedDataGroupPresentValue{
 		PresentValue:           presentValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

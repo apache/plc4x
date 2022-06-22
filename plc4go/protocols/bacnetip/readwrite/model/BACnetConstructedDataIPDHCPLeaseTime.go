@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetActualValue() BACnetApplicati
 func NewBACnetConstructedDataIPDHCPLeaseTime(ipDhcpLeaseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTime {
 	_result := &_BACnetConstructedDataIPDHCPLeaseTime{
 		IpDhcpLeaseTime:        ipDhcpLeaseTime,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

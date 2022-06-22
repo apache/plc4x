@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLandingCallControl) GetActualValue() BACnetLandin
 func NewBACnetConstructedDataLandingCallControl(landingCallControl BACnetLandingCallStatus, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCallControl {
 	_result := &_BACnetConstructedDataLandingCallControl{
 		LandingCallControl:     landingCallControl,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

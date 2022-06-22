@@ -94,6 +94,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetData() []uint8 
 func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
 	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
 		Data:                data,
+		PayloadLength:       payloadLength,
 		_DF1ResponseMessage: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
 	}
 	_result._DF1ResponseMessage._DF1ResponseMessageChildRequirements = _result

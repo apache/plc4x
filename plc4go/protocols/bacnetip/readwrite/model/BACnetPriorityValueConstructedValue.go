@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueConstructedValue) GetConstructedValue() BACnetConst
 func NewBACnetPriorityValueConstructedValue(constructedValue BACnetConstructedData, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueConstructedValue {
 	_result := &_BACnetPriorityValueConstructedValue{
 		ConstructedValue:     constructedValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

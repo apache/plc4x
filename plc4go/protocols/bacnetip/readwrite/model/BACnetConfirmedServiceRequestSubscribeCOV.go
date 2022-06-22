@@ -116,6 +116,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BA
 		MonitoredObjectIdentifier:      monitoredObjectIdentifier,
 		IssueConfirmed:                 issueConfirmed,
 		LifetimeInSeconds:              lifetimeInSeconds,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

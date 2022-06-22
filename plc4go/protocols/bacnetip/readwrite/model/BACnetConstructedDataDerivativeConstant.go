@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDerivativeConstant) GetActualValue() BACnetApplic
 func NewBACnetConstructedDataDerivativeConstant(derivativeConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
 	_result := &_BACnetConstructedDataDerivativeConstant{
 		DerivativeConstant:     derivativeConstant,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

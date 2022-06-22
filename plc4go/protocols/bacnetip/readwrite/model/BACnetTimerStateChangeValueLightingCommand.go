@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) GetLigthingCommandValue() 
 func NewBACnetTimerStateChangeValueLightingCommand(ligthingCommandValue BACnetLightingCommandEnclosed, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueLightingCommand {
 	_result := &_BACnetTimerStateChangeValueLightingCommand{
 		LigthingCommandValue:         ligthingCommandValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

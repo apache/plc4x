@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDoorAlarmState) GetActualValue() BACnetDoorAlarmS
 func NewBACnetConstructedDataDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorAlarmState {
 	_result := &_BACnetConstructedDataDoorAlarmState{
 		DoorAlarmState:         doorAlarmState,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

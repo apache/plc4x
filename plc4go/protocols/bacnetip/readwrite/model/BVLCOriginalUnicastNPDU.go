@@ -88,8 +88,9 @@ func (m *_BVLCOriginalUnicastNPDU) GetNpdu() NPDU {
 // NewBVLCOriginalUnicastNPDU factory function for _BVLCOriginalUnicastNPDU
 func NewBVLCOriginalUnicastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalUnicastNPDU {
 	_result := &_BVLCOriginalUnicastNPDU{
-		Npdu:  npdu,
-		_BVLC: NewBVLC(),
+		Npdu:              npdu,
+		BvlcPayloadLength: bvlcPayloadLength,
+		_BVLC:             NewBVLC(),
 	}
 	_result._BVLC._BVLCChildRequirements = _result
 	return _result

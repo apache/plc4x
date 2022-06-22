@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetActualValue() BACnetApplicati
 func NewBACnetConstructedDataDeviceMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxMaster {
 	_result := &_BACnetConstructedDataDeviceMaxMaster{
 		MaxMaster:              maxMaster,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

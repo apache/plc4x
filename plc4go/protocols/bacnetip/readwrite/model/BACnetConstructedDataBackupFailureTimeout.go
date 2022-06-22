@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetActualValue() BACnetAppl
 func NewBACnetConstructedDataBackupFailureTimeout(backupFailureTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupFailureTimeout {
 	_result := &_BACnetConstructedDataBackupFailureTimeout{
 		BackupFailureTimeout:   backupFailureTimeout,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

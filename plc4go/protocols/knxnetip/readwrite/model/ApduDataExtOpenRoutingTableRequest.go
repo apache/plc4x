@@ -71,6 +71,7 @@ func (m *_ApduDataExtOpenRoutingTableRequest) GetParent() ApduDataExt {
 // NewApduDataExtOpenRoutingTableRequest factory function for _ApduDataExtOpenRoutingTableRequest
 func NewApduDataExtOpenRoutingTableRequest(length uint8) *_ApduDataExtOpenRoutingTableRequest {
 	_result := &_ApduDataExtOpenRoutingTableRequest{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

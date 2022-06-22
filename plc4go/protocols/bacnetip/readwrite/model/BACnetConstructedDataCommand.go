@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataCommand) GetActualValue() BACnetNetworkPortComman
 func NewBACnetConstructedDataCommand(command BACnetNetworkPortCommandTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
 	_result := &_BACnetConstructedDataCommand{
 		Command:                command,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

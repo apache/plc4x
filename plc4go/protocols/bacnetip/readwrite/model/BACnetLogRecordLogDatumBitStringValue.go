@@ -89,6 +89,7 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetBitStringValue() BACnetConte
 func NewBACnetLogRecordLogDatumBitStringValue(bitStringValue BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumBitStringValue {
 	_result := &_BACnetLogRecordLogDatumBitStringValue{
 		BitStringValue:           bitStringValue,
+		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

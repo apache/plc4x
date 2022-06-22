@@ -89,6 +89,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) GetRealValue() 
 func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueReal(realValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal {
 	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal{
 		RealValue: realValue,
+		TagNumber: tagNumber,
 		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _result

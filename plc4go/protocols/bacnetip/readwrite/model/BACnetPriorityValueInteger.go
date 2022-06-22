@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueInteger) GetIntegerValue() BACnetApplicationTagSign
 func NewBACnetPriorityValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
 	_result := &_BACnetPriorityValueInteger{
 		IntegerValue:         integerValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

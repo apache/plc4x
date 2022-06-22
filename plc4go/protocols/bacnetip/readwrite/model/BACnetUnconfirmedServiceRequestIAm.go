@@ -114,6 +114,7 @@ func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTag
 		MaximumApduLengthAcceptedLength:  maximumApduLengthAcceptedLength,
 		SegmentationSupported:            segmentationSupported,
 		VendorId:                         vendorId,
+		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

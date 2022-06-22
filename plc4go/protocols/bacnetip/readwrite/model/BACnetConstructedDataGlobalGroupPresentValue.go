@@ -125,6 +125,8 @@ func NewBACnetConstructedDataGlobalGroupPresentValue(numberOfDataElements BACnet
 	_result := &_BACnetConstructedDataGlobalGroupPresentValue{
 		NumberOfDataElements:   numberOfDataElements,
 		PresentValue:           presentValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

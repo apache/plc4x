@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataHigherDeck) GetActualValue() BACnetApplicationTag
 func NewBACnetConstructedDataHigherDeck(higherDeck BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHigherDeck {
 	_result := &_BACnetConstructedDataHigherDeck{
 		HigherDeck:             higherDeck,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

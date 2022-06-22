@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLastRestoreTime) GetActualValue() BACnetTimeStamp
 func NewBACnetConstructedDataLastRestoreTime(lastRestoreTime BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestoreTime {
 	_result := &_BACnetConstructedDataLastRestoreTime{
 		LastRestoreTime:        lastRestoreTime,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

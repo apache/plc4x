@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetActualValue() B
 func NewBACnetConstructedDataMultiStateOutputFeedbackValue(feedbackValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputFeedbackValue {
 	_result := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
 		FeedbackValue:          feedbackValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

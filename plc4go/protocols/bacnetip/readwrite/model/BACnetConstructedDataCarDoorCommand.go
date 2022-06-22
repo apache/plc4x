@@ -125,6 +125,8 @@ func NewBACnetConstructedDataCarDoorCommand(numberOfDataElements BACnetApplicati
 	_result := &_BACnetConstructedDataCarDoorCommand{
 		NumberOfDataElements:   numberOfDataElements,
 		CarDoorCommand:         carDoorCommand,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

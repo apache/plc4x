@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetActualValue() BAC
 func NewBACnetConstructedDataLightingOutputTrackingValue(trackingValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputTrackingValue {
 	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
 		TrackingValue:          trackingValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

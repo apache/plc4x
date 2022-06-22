@@ -71,6 +71,7 @@ func (m *_ApduDataExtLinkRead) GetParent() ApduDataExt {
 // NewApduDataExtLinkRead factory function for _ApduDataExtLinkRead
 func NewApduDataExtLinkRead(length uint8) *_ApduDataExtLinkRead {
 	_result := &_ApduDataExtLinkRead{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

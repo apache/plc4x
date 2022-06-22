@@ -115,6 +115,7 @@ func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIden
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		Values:             values,
+		ServiceAckLength:   serviceAckLength,
 		_BACnetServiceAck:  NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

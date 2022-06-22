@@ -124,6 +124,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProc
 		Lifetime:                            lifetime,
 		MaxNotificationDelay:                maxNotificationDelay,
 		ListOfCovSubscriptionSpecifications: listOfCovSubscriptionSpecifications,
+		ServiceRequestLength:                serviceRequestLength,
 		_BACnetConfirmedServiceRequest:      NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

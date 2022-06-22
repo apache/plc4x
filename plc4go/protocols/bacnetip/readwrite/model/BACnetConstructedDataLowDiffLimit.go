@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLowDiffLimit) GetActualValue() BACnetOptionalREAL
 func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit BACnetOptionalREAL, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowDiffLimit {
 	_result := &_BACnetConstructedDataLowDiffLimit{
 		LowDiffLimit:           lowDiffLimit,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

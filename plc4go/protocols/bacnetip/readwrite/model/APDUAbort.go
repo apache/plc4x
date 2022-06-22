@@ -106,6 +106,7 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortRe
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
+		ApduLength:       apduLength,
 		_APDU:            NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

@@ -90,6 +90,7 @@ func (m *_APDUUnconfirmedRequest) GetServiceRequest() BACnetUnconfirmedServiceRe
 func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
 	_result := &_APDUUnconfirmedRequest{
 		ServiceRequest: serviceRequest,
+		ApduLength:     apduLength,
 		_APDU:          NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result

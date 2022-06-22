@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetActualValue() BACnetApplica
 func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
 	_result := &_BACnetConstructedDataNextStoppingFloor{
 		NextStoppingFloor:      nextStoppingFloor,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

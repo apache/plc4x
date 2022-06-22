@@ -98,6 +98,7 @@ func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(synchronizedDate B
 	_result := &_BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
 		SynchronizedDate:                 synchronizedDate,
 		SynchronizedTime:                 synchronizedTime,
+		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

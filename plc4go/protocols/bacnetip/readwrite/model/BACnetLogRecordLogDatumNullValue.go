@@ -89,6 +89,7 @@ func (m *_BACnetLogRecordLogDatumNullValue) GetNullValue() BACnetContextTagNull 
 func NewBACnetLogRecordLogDatumNullValue(nullValue BACnetContextTagNull, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumNullValue {
 	_result := &_BACnetLogRecordLogDatumNullValue{
 		NullValue:                nullValue,
+		TagNumber:                tagNumber,
 		_BACnetLogRecordLogDatum: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _result

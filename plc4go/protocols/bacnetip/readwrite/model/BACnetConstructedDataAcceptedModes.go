@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataAcceptedModes) GetAcceptedModes() []BACnetLifeSaf
 func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
 	_result := &_BACnetConstructedDataAcceptedModes{
 		AcceptedModes:          acceptedModes,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetActiveCOVMulti
 func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
 	_result := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
 		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
+		TagNumber:                      tagNumber,
+		ArrayIndexArgument:             arrayIndexArgument,
 		_BACnetConstructedData:         NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

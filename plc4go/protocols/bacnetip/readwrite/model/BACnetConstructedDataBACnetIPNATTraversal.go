@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetActualValue() BACnetAppl
 func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPNATTraversal {
 	_result := &_BACnetConstructedDataBACnetIPNATTraversal{
 		BacnetIPNATTraversal:   bacnetIPNATTraversal,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

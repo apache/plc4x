@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataListOfGroupMembers) GetListOfGroupMembers() []BAC
 func NewBACnetConstructedDataListOfGroupMembers(listOfGroupMembers []BACnetReadAccessSpecification, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfGroupMembers {
 	_result := &_BACnetConstructedDataListOfGroupMembers{
 		ListOfGroupMembers:     listOfGroupMembers,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

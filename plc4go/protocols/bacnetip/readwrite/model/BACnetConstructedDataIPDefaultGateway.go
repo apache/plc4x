@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataIPDefaultGateway(ipDefaultGateway BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDefaultGateway {
 	_result := &_BACnetConstructedDataIPDefaultGateway{
 		IpDefaultGateway:       ipDefaultGateway,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

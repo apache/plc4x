@@ -89,6 +89,7 @@ func (m *_ApduDataDeviceDescriptorRead) GetDescriptorType() uint8 {
 func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_ApduDataDeviceDescriptorRead {
 	_result := &_ApduDataDeviceDescriptorRead{
 		DescriptorType: descriptorType,
+		DataLength:     dataLength,
 		_ApduData:      NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result

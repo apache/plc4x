@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataLastKeyServer) GetActualValue() BACnetAddressBind
 func NewBACnetConstructedDataLastKeyServer(lastKeyServer BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastKeyServer {
 	_result := &_BACnetConstructedDataLastKeyServer{
 		LastKeyServer:          lastKeyServer,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

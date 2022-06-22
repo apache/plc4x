@@ -113,6 +113,7 @@ func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count 
 		PropertyId:   propertyId,
 		Count:        count,
 		Index:        index,
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

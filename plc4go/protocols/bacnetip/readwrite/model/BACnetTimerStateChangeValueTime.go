@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueTime) GetTimeValue() BACnetApplicationTagTi
 func NewBACnetTimerStateChangeValueTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueTime {
 	_result := &_BACnetTimerStateChangeValueTime{
 		TimeValue:                    timeValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

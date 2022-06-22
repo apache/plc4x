@@ -71,6 +71,7 @@ func (m *_ApduDataExtReadRouterMemoryResponse) GetParent() ApduDataExt {
 // NewApduDataExtReadRouterMemoryResponse factory function for _ApduDataExtReadRouterMemoryResponse
 func NewApduDataExtReadRouterMemoryResponse(length uint8) *_ApduDataExtReadRouterMemoryResponse {
 	_result := &_ApduDataExtReadRouterMemoryResponse{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

@@ -91,6 +91,7 @@ func (m *_NLMIAmRouterToNetwork) GetDestinationNetworkAddress() []uint16 {
 func NewNLMIAmRouterToNetwork(destinationNetworkAddress []uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMIAmRouterToNetwork {
 	_result := &_NLMIAmRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
+		ApduLength:                apduLength,
 		_NLM:                      NewNLM(vendorId, apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result

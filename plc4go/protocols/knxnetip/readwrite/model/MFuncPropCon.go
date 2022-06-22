@@ -71,6 +71,7 @@ func (m *_MFuncPropCon) GetParent() CEMI {
 // NewMFuncPropCon factory function for _MFuncPropCon
 func NewMFuncPropCon(size uint16) *_MFuncPropCon {
 	_result := &_MFuncPropCon{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

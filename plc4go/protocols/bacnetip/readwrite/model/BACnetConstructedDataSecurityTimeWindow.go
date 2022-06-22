@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetActualValue() BACnetApplic
 func NewBACnetConstructedDataSecurityTimeWindow(securityTimeWindow BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
 	_result := &_BACnetConstructedDataSecurityTimeWindow{
 		SecurityTimeWindow:     securityTimeWindow,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

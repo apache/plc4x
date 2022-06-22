@@ -87,6 +87,7 @@ func (m *_CBusCommandPointToPoint) GetCommand() CBusPointToPointCommand {
 func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHeader, srchk bool) *_CBusCommandPointToPoint {
 	_result := &_CBusCommandPointToPoint{
 		Command:      command,
+		Srchk:        srchk,
 		_CBusCommand: NewCBusCommand(header, srchk),
 	}
 	_result._CBusCommand._CBusCommandChildRequirements = _result

@@ -105,6 +105,7 @@ func NewBACnetLogDataLogData(innerOpeningTag BACnetOpeningTag, logData []BACnetL
 		InnerOpeningTag: innerOpeningTag,
 		LogData:         logData,
 		InnerClosingTag: innerClosingTag,
+		TagNumber:       tagNumber,
 		_BACnetLogData:  NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetLogData._BACnetLogDataChildRequirements = _result

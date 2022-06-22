@@ -106,6 +106,7 @@ func (m *_BACnetContextTagSignedInteger) GetActualValue() uint64 {
 func NewBACnetContextTagSignedInteger(payload BACnetTagPayloadSignedInteger, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagSignedInteger {
 	_result := &_BACnetContextTagSignedInteger{
 		Payload:           payload,
+		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

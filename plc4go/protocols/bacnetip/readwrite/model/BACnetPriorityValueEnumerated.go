@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueEnumerated) GetEnumeratedValue() BACnetApplicationT
 func NewBACnetPriorityValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueEnumerated {
 	_result := &_BACnetPriorityValueEnumerated{
 		EnumeratedValue:      enumeratedValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

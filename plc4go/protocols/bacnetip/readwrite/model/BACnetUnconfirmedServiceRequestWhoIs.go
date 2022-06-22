@@ -100,6 +100,7 @@ func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetC
 	_result := &_BACnetUnconfirmedServiceRequestWhoIs{
 		DeviceInstanceRangeLowLimit:      deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:     deviceInstanceRangeHighLimit,
+		ServiceRequestLength:             serviceRequestLength,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result

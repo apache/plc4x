@@ -71,6 +71,7 @@ func (m *_ApduDataExtGroupPropertyValueResponse) GetParent() ApduDataExt {
 // NewApduDataExtGroupPropertyValueResponse factory function for _ApduDataExtGroupPropertyValueResponse
 func NewApduDataExtGroupPropertyValueResponse(length uint8) *_ApduDataExtGroupPropertyValueResponse {
 	_result := &_ApduDataExtGroupPropertyValueResponse{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

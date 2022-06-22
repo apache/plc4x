@@ -97,6 +97,7 @@ func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, data
 	_result := &_ApduDataDeviceDescriptorResponse{
 		DescriptorType: descriptorType,
 		Data:           data,
+		DataLength:     dataLength,
 		_ApduData:      NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result

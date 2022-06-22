@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueBoolean) GetBooleanValue() BACnetApplicationTagBool
 func NewBACnetPriorityValueBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
 	_result := &_BACnetPriorityValueBoolean{
 		BooleanValue:         booleanValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

@@ -106,6 +106,7 @@ func (m *_BACnetContextTagReal) GetActualValue() float32 {
 func NewBACnetContextTagReal(payload BACnetTagPayloadReal, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagReal {
 	_result := &_BACnetContextTagReal{
 		Payload:           payload,
+		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

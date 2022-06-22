@@ -108,6 +108,7 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BAC
 		TimeDuration:                   timeDuration,
 		EnableDisable:                  enableDisable,
 		Password:                       password,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

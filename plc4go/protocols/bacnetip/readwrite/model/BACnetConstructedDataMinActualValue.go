@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataMinActualValue) GetActualValue() BACnetApplicatio
 func NewBACnetConstructedDataMinActualValue(minActualValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinActualValue {
 	_result := &_BACnetConstructedDataMinActualValue{
 		MinActualValue:         minActualValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

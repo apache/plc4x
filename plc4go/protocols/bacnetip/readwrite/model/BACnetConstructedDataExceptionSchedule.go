@@ -125,6 +125,8 @@ func NewBACnetConstructedDataExceptionSchedule(numberOfDataElements BACnetApplic
 	_result := &_BACnetConstructedDataExceptionSchedule{
 		NumberOfDataElements:   numberOfDataElements,
 		ExceptionSchedule:      exceptionSchedule,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

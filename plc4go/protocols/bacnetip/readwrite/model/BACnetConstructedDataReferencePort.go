@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataReferencePort) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataReferencePort(referencePort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
 	_result := &_BACnetConstructedDataReferencePort{
 		ReferencePort:          referencePort,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

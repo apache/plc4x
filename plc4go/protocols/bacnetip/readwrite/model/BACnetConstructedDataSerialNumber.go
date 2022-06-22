@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataSerialNumber) GetActualValue() BACnetApplicationT
 func NewBACnetConstructedDataSerialNumber(serialNumber BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSerialNumber {
 	_result := &_BACnetConstructedDataSerialNumber{
 		SerialNumber:           serialNumber,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

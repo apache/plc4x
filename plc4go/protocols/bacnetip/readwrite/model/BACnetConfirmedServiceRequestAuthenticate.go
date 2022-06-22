@@ -91,6 +91,8 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) GetBytesOfRemovedService() 
 func NewBACnetConfirmedServiceRequestAuthenticate(bytesOfRemovedService []byte, serviceRequestLength uint16, serviceRequestPayloadLength uint16) *_BACnetConfirmedServiceRequestAuthenticate {
 	_result := &_BACnetConfirmedServiceRequestAuthenticate{
 		BytesOfRemovedService:          bytesOfRemovedService,
+		ServiceRequestLength:           serviceRequestLength,
+		ServiceRequestPayloadLength:    serviceRequestPayloadLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

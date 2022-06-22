@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataAlignIntervals) GetActualValue() BACnetApplicatio
 func NewBACnetConstructedDataAlignIntervals(alignIntervals BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlignIntervals {
 	_result := &_BACnetConstructedDataAlignIntervals{
 		AlignIntervals:         alignIntervals,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -125,6 +125,8 @@ func NewBACnetConstructedDataGroupMemberNames(numberOfDataElements BACnetApplica
 	_result := &_BACnetConstructedDataGroupMemberNames{
 		NumberOfDataElements:   numberOfDataElements,
 		GroupMemberNames:       groupMemberNames,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

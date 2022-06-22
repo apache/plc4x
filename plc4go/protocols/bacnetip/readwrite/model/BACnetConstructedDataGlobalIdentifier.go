@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalIdentifier {
 	_result := &_BACnetConstructedDataGlobalIdentifier{
 		GlobalIdentifier:       globalIdentifier,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -89,6 +89,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetUnsigned
 func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned {
 	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned{
 		UnsignedValue: unsignedValue,
+		TagNumber:     tagNumber,
 		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	_result._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _result

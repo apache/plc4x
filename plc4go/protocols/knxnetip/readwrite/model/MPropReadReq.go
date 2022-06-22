@@ -121,6 +121,7 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
+		Size:                size,
 		_CEMI:               NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

@@ -71,6 +71,7 @@ func (m *_MFuncPropStateReadReq) GetParent() CEMI {
 // NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
 func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
 	_result := &_MFuncPropStateReadReq{
+		Size:  size,
 		_CEMI: NewCEMI(size),
 	}
 	_result._CEMI._CEMIChildRequirements = _result

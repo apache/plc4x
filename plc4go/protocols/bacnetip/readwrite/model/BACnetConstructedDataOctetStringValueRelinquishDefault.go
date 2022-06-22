@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataOctetStringValueRelinquishDefault) GetActualValue
 func NewBACnetConstructedDataOctetStringValueRelinquishDefault(relinquishDefault BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOctetStringValueRelinquishDefault {
 	_result := &_BACnetConstructedDataOctetStringValueRelinquishDefault{
 		RelinquishDefault:      relinquishDefault,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

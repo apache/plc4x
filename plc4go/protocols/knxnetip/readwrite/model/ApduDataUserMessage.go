@@ -71,7 +71,8 @@ func (m *_ApduDataUserMessage) GetParent() ApduData {
 // NewApduDataUserMessage factory function for _ApduDataUserMessage
 func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
 	_result := &_ApduDataUserMessage{
-		_ApduData: NewApduData(dataLength),
+		DataLength: dataLength,
+		_ApduData:  NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

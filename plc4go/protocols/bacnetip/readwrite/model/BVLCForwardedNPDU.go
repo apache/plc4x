@@ -102,10 +102,11 @@ func (m *_BVLCForwardedNPDU) GetNpdu() NPDU {
 // NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
 func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
 	_result := &_BVLCForwardedNPDU{
-		Ip:    ip,
-		Port:  port,
-		Npdu:  npdu,
-		_BVLC: NewBVLC(),
+		Ip:                ip,
+		Port:              port,
+		Npdu:              npdu,
+		BvlcPayloadLength: bvlcPayloadLength,
+		_BVLC:             NewBVLC(),
 	}
 	_result._BVLC._BVLCChildRequirements = _result
 	return _result

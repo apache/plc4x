@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueBitString) GetBitStringValue() BACnetApplicationTag
 func NewBACnetPriorityValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
 	_result := &_BACnetPriorityValueBitString{
 		BitStringValue:       bitStringValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

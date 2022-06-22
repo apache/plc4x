@@ -122,6 +122,7 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 		ServiceNb:    serviceNb,
 		Offsets:      offsets,
 		ServicesData: servicesData,
+		ServiceLen:   serviceLen,
 		_CipService:  NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

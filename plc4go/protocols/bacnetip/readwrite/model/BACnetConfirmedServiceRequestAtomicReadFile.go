@@ -98,6 +98,7 @@ func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier BACnetApplica
 	_result := &_BACnetConfirmedServiceRequestAtomicReadFile{
 		FileIdentifier:                 fileIdentifier,
 		AccessMethod:                   accessMethod,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

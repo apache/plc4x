@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetActualValue() BACnetApplicat
 func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveProxyEnable {
 	_result := &_BACnetConstructedDataSlaveProxyEnable{
 		SlaveProxyEnable:       slaveProxyEnable,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

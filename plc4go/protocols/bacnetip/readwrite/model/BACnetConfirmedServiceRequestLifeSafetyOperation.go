@@ -116,6 +116,7 @@ func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdenti
 		RequestingSource:               requestingSource,
 		Request:                        request,
 		ObjectIdentifier:               objectIdentifier,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

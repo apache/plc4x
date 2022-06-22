@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetCredentialsInZone() []BACne
 func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialsInZone {
 	_result := &_BACnetConstructedDataCredentialsInZone{
 		CredentialsInZone:      credentialsInZone,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

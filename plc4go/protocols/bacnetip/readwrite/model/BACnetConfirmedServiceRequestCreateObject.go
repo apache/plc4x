@@ -100,6 +100,7 @@ func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirme
 	_result := &_BACnetConfirmedServiceRequestCreateObject{
 		ObjectSpecifier:                objectSpecifier,
 		ListOfValues:                   listOfValues,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

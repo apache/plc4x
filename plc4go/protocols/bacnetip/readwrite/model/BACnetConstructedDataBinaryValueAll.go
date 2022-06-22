@@ -80,6 +80,8 @@ func (m *_BACnetConstructedDataBinaryValueAll) GetParent() BACnetConstructedData
 // NewBACnetConstructedDataBinaryValueAll factory function for _BACnetConstructedDataBinaryValueAll
 func NewBACnetConstructedDataBinaryValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryValueAll {
 	_result := &_BACnetConstructedDataBinaryValueAll{
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

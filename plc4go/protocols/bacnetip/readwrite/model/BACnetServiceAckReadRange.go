@@ -139,6 +139,7 @@ func NewBACnetServiceAckReadRange(objectIdentifier BACnetContextTagObjectIdentif
 		ItemCount:           itemCount,
 		ItemData:            itemData,
 		FirstSequenceNumber: firstSequenceNumber,
+		ServiceAckLength:    serviceAckLength,
 		_BACnetServiceAck:   NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

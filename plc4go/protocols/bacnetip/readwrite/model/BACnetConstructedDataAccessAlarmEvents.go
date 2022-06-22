@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) GetAccessAlarmEvents() []BACne
 func NewBACnetConstructedDataAccessAlarmEvents(accessAlarmEvents []BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessAlarmEvents {
 	_result := &_BACnetConstructedDataAccessAlarmEvents{
 		AccessAlarmEvents:      accessAlarmEvents,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

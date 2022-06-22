@@ -80,6 +80,8 @@ func (m *_BACnetConstructedDataTrendLogMultipleAll) GetParent() BACnetConstructe
 // NewBACnetConstructedDataTrendLogMultipleAll factory function for _BACnetConstructedDataTrendLogMultipleAll
 func NewBACnetConstructedDataTrendLogMultipleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleAll {
 	_result := &_BACnetConstructedDataTrendLogMultipleAll{
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

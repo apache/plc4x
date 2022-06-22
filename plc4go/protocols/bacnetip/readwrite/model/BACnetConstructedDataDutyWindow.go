@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataDutyWindow) GetActualValue() BACnetApplicationTag
 func NewBACnetConstructedDataDutyWindow(dutyWindow BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDutyWindow {
 	_result := &_BACnetConstructedDataDutyWindow{
 		DutyWindow:             dutyWindow,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

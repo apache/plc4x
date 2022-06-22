@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetActualValue() BACnetApplication
 func NewBACnetConstructedDataAbsenteeLimit(absenteeLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
 	_result := &_BACnetConstructedDataAbsenteeLimit{
 		AbsenteeLimit:          absenteeLimit,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

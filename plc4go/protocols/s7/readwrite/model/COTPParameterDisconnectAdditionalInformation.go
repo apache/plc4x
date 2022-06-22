@@ -89,6 +89,7 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetData() []byte {
 func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_COTPParameterDisconnectAdditionalInformation {
 	_result := &_COTPParameterDisconnectAdditionalInformation{
 		Data:           data,
+		Rest:           rest,
 		_COTPParameter: NewCOTPParameter(rest),
 	}
 	_result._COTPParameter._COTPParameterChildRequirements = _result

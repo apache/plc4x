@@ -124,6 +124,7 @@ func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetAppl
 		FileStartPosition:              fileStartPosition,
 		FileData:                       fileData,
 		ClosingTag:                     closingTag,
+		ServiceRequestLength:           serviceRequestLength,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _result

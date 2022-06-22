@@ -71,6 +71,7 @@ func (m *_ApduDataExtReadRouterStatusRequest) GetParent() ApduDataExt {
 // NewApduDataExtReadRouterStatusRequest factory function for _ApduDataExtReadRouterStatusRequest
 func NewApduDataExtReadRouterStatusRequest(length uint8) *_ApduDataExtReadRouterStatusRequest {
 	_result := &_ApduDataExtReadRouterStatusRequest{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

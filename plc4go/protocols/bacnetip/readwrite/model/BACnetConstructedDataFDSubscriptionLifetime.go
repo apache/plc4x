@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetActualValue() BACnetAp
 func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDSubscriptionLifetime {
 	_result := &_BACnetConstructedDataFDSubscriptionLifetime{
 		FdSubscriptionLifetime: fdSubscriptionLifetime,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

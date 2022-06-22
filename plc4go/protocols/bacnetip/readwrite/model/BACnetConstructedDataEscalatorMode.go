@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataEscalatorMode) GetActualValue() BACnetEscalatorMo
 func NewBACnetConstructedDataEscalatorMode(escalatorMode BACnetEscalatorModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
 	_result := &_BACnetConstructedDataEscalatorMode{
 		EscalatorMode:          escalatorMode,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

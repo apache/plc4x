@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetFaultValues() []BA
 func NewBACnetConstructedDataMultiStateInputFaultValues(faultValues []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateInputFaultValues {
 	_result := &_BACnetConstructedDataMultiStateInputFaultValues{
 		FaultValues:            faultValues,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

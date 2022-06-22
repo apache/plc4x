@@ -71,6 +71,7 @@ func (m *_ApduDataExtNetworkParameterResponse) GetParent() ApduDataExt {
 // NewApduDataExtNetworkParameterResponse factory function for _ApduDataExtNetworkParameterResponse
 func NewApduDataExtNetworkParameterResponse(length uint8) *_ApduDataExtNetworkParameterResponse {
 	_result := &_ApduDataExtNetworkParameterResponse{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

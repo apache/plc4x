@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueInteger) GetIntegerValue() BACnetApplicatio
 func NewBACnetTimerStateChangeValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueInteger {
 	_result := &_BACnetTimerStateChangeValueInteger{
 		IntegerValue:                 integerValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

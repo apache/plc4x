@@ -97,6 +97,7 @@ func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, ac
 	_result := &_BACnetServiceAckAtomicReadFile{
 		EndOfFile:         endOfFile,
 		AccessMethod:      accessMethod,
+		ServiceAckLength:  serviceAckLength,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

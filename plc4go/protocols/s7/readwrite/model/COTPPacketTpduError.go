@@ -100,6 +100,7 @@ func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, para
 	_result := &_COTPPacketTpduError{
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
+		CotpLen:              cotpLen,
 		_COTPPacket:          NewCOTPPacket(parameters, payload, cotpLen),
 	}
 	_result._COTPPacket._COTPPacketChildRequirements = _result

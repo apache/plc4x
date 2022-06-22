@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueTime) GetTimeValue() BACnetApplicationTagTime {
 func NewBACnetPriorityValueTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueTime {
 	_result := &_BACnetPriorityValueTime{
 		TimeValue:            timeValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

@@ -71,6 +71,7 @@ func (m *_ApduDataExtDomainAddressResponse) GetParent() ApduDataExt {
 // NewApduDataExtDomainAddressResponse factory function for _ApduDataExtDomainAddressResponse
 func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddressResponse {
 	_result := &_ApduDataExtDomainAddressResponse{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

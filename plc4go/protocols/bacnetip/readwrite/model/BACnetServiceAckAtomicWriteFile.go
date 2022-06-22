@@ -89,6 +89,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetFileStartPosition() BACnetContextT
 func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint16) *_BACnetServiceAckAtomicWriteFile {
 	_result := &_BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
+		ServiceAckLength:  serviceAckLength,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

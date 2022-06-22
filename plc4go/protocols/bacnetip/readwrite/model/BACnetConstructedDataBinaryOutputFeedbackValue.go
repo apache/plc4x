@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetActualValue() BACne
 func NewBACnetConstructedDataBinaryOutputFeedbackValue(feedbackValue BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputFeedbackValue {
 	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
 		FeedbackValue:          feedbackValue,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

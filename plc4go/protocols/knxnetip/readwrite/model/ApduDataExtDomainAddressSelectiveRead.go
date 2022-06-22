@@ -71,6 +71,7 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) GetParent() ApduDataExt {
 // NewApduDataExtDomainAddressSelectiveRead factory function for _ApduDataExtDomainAddressSelectiveRead
 func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainAddressSelectiveRead {
 	_result := &_ApduDataExtDomainAddressSelectiveRead{
+		Length:       length,
 		_ApduDataExt: NewApduDataExt(length),
 	}
 	_result._ApduDataExt._ApduDataExtChildRequirements = _result

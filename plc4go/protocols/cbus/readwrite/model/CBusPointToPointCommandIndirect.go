@@ -107,6 +107,7 @@ func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRout
 		BridgeAddress:            bridgeAddress,
 		NetworkRoute:             networkRoute,
 		UnitAddress:              unitAddress,
+		Srchk:                    srchk,
 		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, peekAlpha, alpha, srchk),
 	}
 	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result

@@ -97,6 +97,7 @@ func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU
 	_result := &_ModbusRtuADU{
 		Address:    address,
 		Pdu:        pdu,
+		Response:   response,
 		_ModbusADU: NewModbusADU(response),
 	}
 	_result._ModbusADU._ModbusADUChildRequirements = _result

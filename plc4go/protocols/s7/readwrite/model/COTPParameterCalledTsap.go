@@ -89,6 +89,7 @@ func (m *_COTPParameterCalledTsap) GetTsapId() uint16 {
 func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *_COTPParameterCalledTsap {
 	_result := &_COTPParameterCalledTsap{
 		TsapId:         tsapId,
+		Rest:           rest,
 		_COTPParameter: NewCOTPParameter(rest),
 	}
 	_result._COTPParameter._COTPParameterChildRequirements = _result

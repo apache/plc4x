@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataActivationTime) GetActualValue() BACnetDateTime {
 func NewBACnetConstructedDataActivationTime(activationTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActivationTime {
 	_result := &_BACnetConstructedDataActivationTime{
 		ActivationTime:         activationTime,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

@@ -105,6 +105,7 @@ func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObj
 		ObjectIdentifier:        objectIdentifier,
 		EventState:              eventState,
 		AcknowledgedTransitions: acknowledgedTransitions,
+		ServiceAckLength:        serviceAckLength,
 		_BACnetServiceAck:       NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

@@ -125,6 +125,8 @@ func NewBACnetConstructedDataRegisteredCarCall(numberOfDataElements BACnetApplic
 	_result := &_BACnetConstructedDataRegisteredCarCall{
 		NumberOfDataElements:   numberOfDataElements,
 		RegisteredCarCall:      registeredCarCall,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

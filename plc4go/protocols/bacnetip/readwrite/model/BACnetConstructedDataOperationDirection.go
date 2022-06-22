@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataOperationDirection) GetActualValue() BACnetEscala
 func NewBACnetConstructedDataOperationDirection(operationDirection BACnetEscalatorOperationDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationDirection {
 	_result := &_BACnetConstructedDataOperationDirection{
 		OperationDirection:     operationDirection,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

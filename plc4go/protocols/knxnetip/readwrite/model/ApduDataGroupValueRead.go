@@ -72,7 +72,8 @@ func (m *_ApduDataGroupValueRead) GetParent() ApduData {
 // NewApduDataGroupValueRead factory function for _ApduDataGroupValueRead
 func NewApduDataGroupValueRead(dataLength uint8) *_ApduDataGroupValueRead {
 	_result := &_ApduDataGroupValueRead{
-		_ApduData: NewApduData(dataLength),
+		DataLength: dataLength,
+		_ApduData:  NewApduData(dataLength),
 	}
 	_result._ApduData._ApduDataChildRequirements = _result
 	return _result

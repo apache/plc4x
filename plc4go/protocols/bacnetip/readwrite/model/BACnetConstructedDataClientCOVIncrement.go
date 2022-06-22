@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataClientCOVIncrement) GetActualValue() BACnetClient
 func NewBACnetConstructedDataClientCOVIncrement(covIncrement BACnetClientCOV, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataClientCOVIncrement {
 	_result := &_BACnetConstructedDataClientCOVIncrement{
 		CovIncrement:           covIncrement,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

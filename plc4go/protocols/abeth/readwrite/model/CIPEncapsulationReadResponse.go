@@ -94,6 +94,7 @@ func (m *_CIPEncapsulationReadResponse) GetResponse() DF1ResponseMessage {
 func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLen uint16) *_CIPEncapsulationReadResponse {
 	_result := &_CIPEncapsulationReadResponse{
 		Response:                response,
+		PacketLen:               packetLen,
 		_CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
 	_result._CIPEncapsulationPacket._CIPEncapsulationPacketChildRequirements = _result

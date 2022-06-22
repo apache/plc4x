@@ -123,6 +123,7 @@ func NewCipUnconnectedRequest(unconnectedService CipService, backPlane int8, slo
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
+		ServiceLen:         serviceLen,
 		_CipService:        NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result

@@ -90,6 +90,7 @@ func (m *_FirmataCommandSysex) GetCommand() SysexCommand {
 func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataCommandSysex {
 	_result := &_FirmataCommandSysex{
 		Command:         command,
+		Response:        response,
 		_FirmataCommand: NewFirmataCommand(response),
 	}
 	_result._FirmataCommand._FirmataCommandChildRequirements = _result

@@ -98,6 +98,8 @@ func (m *_BACnetConstructedDataMultiStateInputAlarmValues) GetAlarmValues() []BA
 func NewBACnetConstructedDataMultiStateInputAlarmValues(alarmValues []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateInputAlarmValues {
 	_result := &_BACnetConstructedDataMultiStateInputAlarmValues{
 		AlarmValues:            alarmValues,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

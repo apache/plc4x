@@ -105,6 +105,7 @@ func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedI
 		VtSessionIdentifier: vtSessionIdentifier,
 		VtNewData:           vtNewData,
 		VtDataFlag:          vtDataFlag,
+		ServiceAckLength:    serviceAckLength,
 		_BACnetServiceAck:   NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

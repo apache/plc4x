@@ -97,6 +97,7 @@ func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSumm
 	_result := &_BACnetServiceAckGetEventInformation{
 		ListOfEventSummaries: listOfEventSummaries,
 		MoreEvents:           moreEvents,
+		ServiceAckLength:     serviceAckLength,
 		_BACnetServiceAck:    NewBACnetServiceAck(serviceAckLength),
 	}
 	_result._BACnetServiceAck._BACnetServiceAckChildRequirements = _result

@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueUnsigned) GetUnsignedValue() BACnetApplicationTagUn
 func NewBACnetPriorityValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueUnsigned {
 	_result := &_BACnetPriorityValueUnsigned{
 		UnsignedValue:        unsignedValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result

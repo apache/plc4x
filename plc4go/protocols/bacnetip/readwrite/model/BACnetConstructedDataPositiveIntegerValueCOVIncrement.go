@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetActualValue(
 func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(covIncrement BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
 	_result := &_BACnetConstructedDataPositiveIntegerValueCOVIncrement{
 		CovIncrement:           covIncrement,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

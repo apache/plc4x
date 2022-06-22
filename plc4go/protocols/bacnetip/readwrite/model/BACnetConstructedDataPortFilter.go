@@ -125,6 +125,8 @@ func NewBACnetConstructedDataPortFilter(numberOfDataElements BACnetApplicationTa
 	_result := &_BACnetConstructedDataPortFilter{
 		NumberOfDataElements:   numberOfDataElements,
 		PortFilter:             portFilter,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

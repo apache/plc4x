@@ -114,6 +114,7 @@ func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, he
 	_result := &_BACnetContextTagBoolean{
 		Value:             value,
 		Payload:           payload,
+		TagNumberArgument: tagNumberArgument,
 		_BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	_result._BACnetContextTag._BACnetContextTagChildRequirements = _result

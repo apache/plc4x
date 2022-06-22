@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) GetActualValue() BACnetNetw
 func NewBACnetConstructedDataNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumberQuality {
 	_result := &_BACnetConstructedDataNetworkNumberQuality{
 		NetworkNumberQuality:   networkNumberQuality,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

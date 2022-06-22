@@ -87,6 +87,7 @@ func (m *_BACnetTimerStateChangeValueNoValue) GetNoValue() BACnetContextTagNull 
 func NewBACnetTimerStateChangeValueNoValue(noValue BACnetContextTagNull, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueNoValue {
 	_result := &_BACnetTimerStateChangeValueNoValue{
 		NoValue:                      noValue,
+		ObjectTypeArgument:           objectTypeArgument,
 		_BACnetTimerStateChangeValue: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _result

@@ -113,6 +113,8 @@ func (m *_BACnetConstructedDataCOVUPeriod) GetActualValue() BACnetApplicationTag
 func NewBACnetConstructedDataCOVUPeriod(covuPeriod BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVUPeriod {
 	_result := &_BACnetConstructedDataCOVUPeriod{
 		CovuPeriod:             covuPeriod,
+		TagNumber:              tagNumber,
+		ArrayIndexArgument:     arrayIndexArgument,
 		_BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result._BACnetConstructedData._BACnetConstructedDataChildRequirements = _result

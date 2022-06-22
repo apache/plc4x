@@ -87,6 +87,7 @@ func (m *_BACnetPriorityValueDateTime) GetDateTimeValue() BACnetDateTimeEnclosed
 func NewBACnetPriorityValueDateTime(dateTimeValue BACnetDateTimeEnclosed, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDateTime {
 	_result := &_BACnetPriorityValueDateTime{
 		DateTimeValue:        dateTimeValue,
+		ObjectTypeArgument:   objectTypeArgument,
 		_BACnetPriorityValue: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 	}
 	_result._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _result
