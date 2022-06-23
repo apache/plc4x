@@ -97,11 +97,11 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
 		if err := m.messageCodec.SendRequest(
 			pingRequest,
-			func(message interface{}) bool {
+			func(message spi.Message) bool {
 				responseAdu := readWriteModel.CastModbusTcpADU(message)
 				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == m.unitIdentifier
 			},
-			func(message interface{}) error {
+			func(message spi.Message) error {
 				log.Trace().Msgf("Received Message")
 				if message != nil {
 					// If we got a valid response (even if it will probably contain an error, we know the remote is available)

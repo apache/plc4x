@@ -88,6 +88,8 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		}
 	}
 
+	// TODO: get reuse option from options
+
 	// Potentially resolve the ip address, if a hostname was provided
 	remoteAddress, err := net.ResolveUDPAddr("udp", remoteAddressString+":"+strconv.Itoa(remotePort))
 	if err != nil {

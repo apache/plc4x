@@ -32,10 +32,10 @@ import (
 type MessageCodec struct {
 	_default.DefaultCodec
 	sequenceCounter    int32
-	messageInterceptor func(message interface{})
+	messageInterceptor func(message spi.Message)
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message interface{})) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message spi.Message)) *MessageCodec {
 	codec := &MessageCodec{
 		messageInterceptor: messageInterceptor,
 	}
@@ -51,7 +51,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(message interface{}) error {
+func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	knxMessage := model.CastKnxNetIpMessage(message)
@@ -70,7 +70,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *MessageCodec) Receive() (interface{}, error) {
+func (m *MessageCodec) Receive() (spi.Message, error) {
 	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumReadableBytes(); (err == nil) && (num >= 6) {
@@ -108,7 +108,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 	return nil, nil
 }
 
-func CustomMessageHandling(codec *_default.DefaultCodecRequirements, message interface{}) bool {
+func CustomMessageHandling(codec *_default.DefaultCodecRequirements, message spi.Message) bool {
 	// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
 	tunnelingResponse := model.CastTunnelingResponse(message)
 	if tunnelingResponse != nil {

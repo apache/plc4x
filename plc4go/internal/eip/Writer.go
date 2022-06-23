@@ -121,7 +121,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				// Send the  over the wire
 				if err := m.messageCodec.SendRequest(
 					pkt,
-					func(message interface{}) bool {
+					func(message spi.Message) bool {
 						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
 							return false
@@ -139,7 +139,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						}
 						return true
 					},
-					func(message interface{}) error {
+					func(message spi.Message) error {
 						// Convert the response into an
 						log.Trace().Msg("convert response to ")
 						eipPacket := message.(readWriteModel.EipPacket)
@@ -218,7 +218,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				// Send the  over the wire
 				if err := m.messageCodec.SendRequest(
 					pkt,
-					func(message interface{}) bool {
+					func(message spi.Message) bool {
 						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
 							return false
@@ -239,7 +239,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						}
 						return true
 					},
-					func(message interface{}) error {
+					func(message spi.Message) error {
 						// Convert the response into an
 						log.Trace().Msg("convert response to ")
 						eipPacket := message.(readWriteModel.EipPacket)

@@ -159,11 +159,11 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		// Send the TCP Paket over the wire
 		err = m.messageCodec.SendRequest(
 			amsTcpPaket,
-			func(message interface{}) bool {
+			func(message spi.Message) bool {
 				paket := readWriteModel.CastAmsTCPPacket(message)
 				return paket.GetUserdata().GetInvokeId() == transactionIdentifier
 			},
-			func(message interface{}) error {
+			func(message spi.Message) error {
 				// Convert the response into an responseAmsTcpPaket
 				responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
 				// Convert the ads response into a PLC4X response

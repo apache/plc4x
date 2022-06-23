@@ -20,6 +20,7 @@
 package knxnetip
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/spi"
 	"reflect"
 	"time"
 
@@ -56,11 +57,11 @@ func (m *Connection) sendGatewaySearchRequest() (driverModel.SearchResponse, err
 	result := make(chan driverModel.SearchResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(searchRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			searchResponse := driverModel.CastSearchResponse(message)
 			return searchResponse != nil
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			searchResponse := driverModel.CastSearchResponse(message)
 			result <- searchResponse
 			return nil
@@ -114,11 +115,11 @@ func (m *Connection) sendGatewayConnectionRequest() (driverModel.ConnectionRespo
 	result := make(chan driverModel.ConnectionResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(connectionRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			connectionResponse := driverModel.CastConnectionResponse(message)
 			return connectionResponse != nil
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			connectionResponse := driverModel.CastConnectionResponse(message)
 			result <- connectionResponse
 			return nil
@@ -164,11 +165,11 @@ func (m *Connection) sendGatewayDisconnectionRequest() (driverModel.DisconnectRe
 	result := make(chan driverModel.DisconnectResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(disconnectRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			disconnectResponse := driverModel.CastDisconnectResponse(message)
 			return disconnectResponse != nil
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			disconnectResponse := driverModel.CastDisconnectResponse(message)
 			result <- disconnectResponse
 			return nil
@@ -211,11 +212,11 @@ func (m *Connection) sendConnectionStateRequest() (driverModel.ConnectionStateRe
 	result := make(chan driverModel.ConnectionStateResponse)
 	errorResult := make(chan error)
 	err = m.messageCodec.SendRequest(connectionStateRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			connectionStateResponse := driverModel.CastConnectionStateResponse(message)
 			return connectionStateResponse != nil
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			connectionStateResponse := driverModel.CastConnectionStateResponse(message)
 			result <- connectionStateResponse
 			return nil
@@ -270,7 +271,7 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (driverMod
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		groupAddressReadRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -295,7 +296,7 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (driverMod
 			// Check if it's a value response for the given group address
 			return dataFrameExt.GetGroupAddress() && reflect.DeepEqual(dataFrameExt.GetSourceAddress(), groupAddress)
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
@@ -356,7 +357,7 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 	err := m.messageCodec.SendRequest(
 		deviceConnectionRequest,
 		// The Gateway is now supposed to send an Ack to this request.
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -381,7 +382,7 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 			apduControlConnect := driverModel.CastApduControlConnect(apduControlContainer.GetControlApdu())
 			return apduControlConnect != nil
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataCon := driverModel.CastLDataCon(tunnelingRequest.GetCemi())
 			lDataFrameExt := driverModel.CastLDataExtended(lDataCon.GetDataFrame())
@@ -448,7 +449,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 	err := m.messageCodec.SendRequest(
 		deviceDisconnectionRequest,
 		// The Gateway is now supposed to send an Ack to this request.
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -474,7 +475,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 			apduControlDisconnect := driverModel.CastApduControlDisconnect(apduControlContainer.GetControlApdu())
 			return apduControlDisconnect != nil
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataCon := driverModel.CastLDataCon(tunnelingRequest.GetCemi())
 			dataFrameExt := driverModel.CastLDataExtended(lDataCon.GetDataFrame())
@@ -558,7 +559,7 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 	err := m.messageCodec.SendRequest(
 		deviceAuthenticationRequest,
 		// The Gateway is now supposed to send an Ack to this request.
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -598,7 +599,7 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 			}
 			return true
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
@@ -674,7 +675,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		deviceDescriptorReadRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -706,7 +707,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 			}
 			return true
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			dataFrame := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
@@ -788,7 +789,7 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		propertyReadRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -824,7 +825,7 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 			}
 			return propertyValueResponse.GetObjectIndex() == objectId && propertyValueResponse.GetPropertyId() == propertyId
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
@@ -907,7 +908,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		propertyReadRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -943,7 +944,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 			}
 			return propertyDescriptionResponse.GetObjectIndex() == objectId && propertyDescriptionResponse.GetPropertyId() == propertyId
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
@@ -1024,7 +1025,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 	errorResult := make(chan error)
 	err := m.messageCodec.SendRequest(
 		propertyReadRequest,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -1057,7 +1058,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 			}
 			return dataApduMemoryResponse.GetAddress() == address
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataInd := driverModel.CastLDataInd(tunnelingRequest.GetCemi())
 			dataFrameExt := driverModel.CastLDataExtended(lDataInd.GetDataFrame())
@@ -1125,7 +1126,7 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 
 	err := m.messageCodec.SendRequest(
 		ack,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			if tunnelingRequest == nil ||
 				tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -1161,7 +1162,7 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 			}
 			return true
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			callback(nil)
 			return nil
 		},

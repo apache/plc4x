@@ -118,12 +118,12 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		log.Trace().Msg("Send ADU")
 		if err = m.messageCodec.SendRequest(
 			requestAdu,
-			func(message interface{}) bool {
+			func(message spi.Message) bool {
 				responseAdu := message.(readWriteModel.ModbusTcpADU)
 				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
 					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
 			},
-			func(message interface{}) error {
+			func(message spi.Message) error {
 				// Convert the response into an ADU
 				log.Trace().Msg("convert response to ADU")
 				responseAdu := message.(readWriteModel.ModbusTcpADU)

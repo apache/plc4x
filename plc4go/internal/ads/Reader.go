@@ -271,11 +271,11 @@ func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest 
 	log.Trace().Msg("Send TCP Paket")
 	if err := m.messageCodec.SendRequest(
 		amsTcpPaket,
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			paket := message.(readWriteModel.AmsTCPPacket)
 			return paket.GetUserdata().GetInvokeId() == transactionIdentifier
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			// Convert the response into an amsTcpPaket
 			log.Trace().Msg("convert response to amsTcpPaket")
 			receivedAmsTcpPaket := message.(readWriteModel.AmsTCPPacket)

@@ -38,7 +38,7 @@ import (
 // Internal helper functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *Connection) interceptIncomingMessage(interface{}) {
+func (m *Connection) interceptIncomingMessage(spi.Message) {
 	m.resetTimeout()
 	if m.connectionStateTimer != nil {
 		// Reset the timer for sending the ConnectionStateRequest

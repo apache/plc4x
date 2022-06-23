@@ -33,10 +33,10 @@ type Expectation interface {
 }
 
 // AcceptsMessage If this function returns true, the message is forwarded to the message handler
-type AcceptsMessage func(message interface{}) bool
+type AcceptsMessage func(message Message) bool
 
 // HandleMessage Function for handling the message, returns an error if anything goes wrong
-type HandleMessage func(message interface{}) error
+type HandleMessage func(message Message) error
 
 // HandleError Function for handling the message, returns an error if anything goes wrong
 type HandleError func(err error) error
@@ -49,13 +49,14 @@ type MessageCodec interface {
 	// IsRunning returns tur if the codec (workers are running)
 	IsRunning() bool
 
-	// Send Sends a given message
-	Send(message interface{}) error
+	// Send is sending a given message
+	Send(message Message) error
 	// Expect Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
 	// and is then forwarded to the 'handleMessage' function
 	Expect(acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
 	// SendRequest A combination that sends a message first and then waits for a response
-	SendRequest(message interface{}, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
+	SendRequest(message Message, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
 
-	GetDefaultIncomingMessageChannel() chan interface{}
+	// GetDefaultIncomingMessageChannel gives back the chan where unexpected messages arrive
+	GetDefaultIncomingMessageChannel() chan Message
 }
