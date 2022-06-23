@@ -133,10 +133,10 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 				select {
 				case ok := <-blockingReadChan:
 					if !ok {
-						log.Debug().Msg("Ending reading")
+						log.Debug().Msg("Ending unicast reading")
 						return
 					}
-					log.Trace().Msg("Received something")
+					log.Trace().Msg("Received something unicast")
 				case <-ctx.Done():
 					log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
 					return
@@ -151,7 +151,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.broadcastConnection.ReadFrom(buf)
 					if err != nil {
-						log.Debug().Err(err).Msg("Ending unicast receive")
+						log.Debug().Err(err).Msg("Ending broadcast receive")
 						blockingReadChan <- false
 						return
 					}
@@ -167,12 +167,12 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 				select {
 				case ok := <-blockingReadChan:
 					if !ok {
-						log.Debug().Msg("Ending reading")
+						log.Debug().Msg("Ending broadcast reading")
 						return
 					}
-					log.Trace().Msg("Received something")
+					log.Trace().Msg("Received something broadcast")
 				case <-ctx.Done():
-					log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
+					log.Debug().Err(ctx.Err()).Msg("Ending broadcast receive")
 					return
 				}
 			}

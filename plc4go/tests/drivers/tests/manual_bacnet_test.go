@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
@@ -37,7 +38,5 @@ func TestManualBacnet(t *testing.T) {
 		/*00000060*/ 0x3f, //|?|
 	}
 	_, err := model.BVLCParse(utils.NewReadBufferByteBased(rawBytes[42:]))
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
 }

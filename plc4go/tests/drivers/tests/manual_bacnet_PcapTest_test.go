@@ -28,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
 	"os"
@@ -66,9 +67,7 @@ func Test(t *testing.T) {
 			println(event)
 		}).
 		Build()
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
 	requestResult := <-build.Execute()
 	if requestResult.GetErr() != nil {
 		panic(requestResult.GetErr())
