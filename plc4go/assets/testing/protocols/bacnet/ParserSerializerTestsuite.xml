@@ -120,30 +120,36 @@
                           <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_HAS">7</BACnetUnconfirmedServiceChoice>
                         </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoHas>
-                          <objectName>
-                            <BACnetContextTag>
-                              <header>
-                                <BACnetTagHeader>
-                                  <tagNumber dataType="uint" bitLength="4">3</tagNumber>
-                                  <tagClass>
-                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                  </tagClass>
-                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
-                                  <extLength dataType="uint" bitLength="8">8</extLength>
-                                </BACnetTagHeader>
-                              </header>
-                              <BACnetContextTagCharacterString>
-                                <payload>
-                                  <BACnetTagPayloadCharacterString>
-                                    <encoding>
-                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                    </encoding>
-                                    <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
-                                  </BACnetTagPayloadCharacterString>
-                                </payload>
-                              </BACnetContextTagCharacterString>
-                            </BACnetContextTag>
-                          </objectName>
+                          <object>
+                            <BACnetUnconfirmedServiceRequestWhoHasObject>
+                              <BACnetUnconfirmedServiceRequestWhoHasObjectName>
+                                <objectName>
+                                  <BACnetContextTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                        <extLength dataType="uint" bitLength="8">8</extLength>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetContextTagCharacterString>
+                                      <payload>
+                                        <BACnetTagPayloadCharacterString>
+                                          <encoding>
+                                            <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                          </encoding>
+                                          <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                        </BACnetTagPayloadCharacterString>
+                                      </payload>
+                                    </BACnetContextTagCharacterString>
+                                  </BACnetContextTag>
+                                </objectName>
+                              </BACnetUnconfirmedServiceRequestWhoHasObjectName>
+                            </BACnetUnconfirmedServiceRequestWhoHasObject>
+                          </object>
                         </BACnetUnconfirmedServiceRequestWhoHas>
                       </BACnetUnconfirmedServiceRequest>
                     </serviceRequest>
@@ -328,27 +334,33 @@
                           <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_HAS">7</BACnetUnconfirmedServiceChoice>
                         </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoHas>
-                          <objectIdentifier>
-                            <BACnetContextTag>
-                              <header>
-                                <BACnetTagHeader>
-                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
-                                  <tagClass>
-                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                  </tagClass>
-                                  <lengthValueType dataType="uint" bitLength="3">4</lengthValueType>
-                                </BACnetTagHeader>
-                              </header>
-                              <BACnetContextTagObjectIdentifier>
-                                <payload>
-                                  <BACnetTagPayloadObjectIdentifier>
-                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
-                                  </BACnetTagPayloadObjectIdentifier>
-                                </payload>
-                              </BACnetContextTagObjectIdentifier>
-                            </BACnetContextTag>
-                          </objectIdentifier>
+                          <object>
+                            <BACnetUnconfirmedServiceRequestWhoHasObject>
+                              <BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier>
+                                <objectIdentifier>
+                                  <BACnetContextTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">4</lengthValueType>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetContextTagObjectIdentifier>
+                                      <payload>
+                                        <BACnetTagPayloadObjectIdentifier>
+                                          <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                          <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                        </BACnetTagPayloadObjectIdentifier>
+                                      </payload>
+                                    </BACnetContextTagObjectIdentifier>
+                                  </BACnetContextTag>
+                                </objectIdentifier>
+                              </BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier>
+                            </BACnetUnconfirmedServiceRequestWhoHasObject>
+                          </object>
                         </BACnetUnconfirmedServiceRequestWhoHas>
                       </BACnetUnconfirmedServiceRequest>
                     </serviceRequest>
@@ -7714,27 +7726,33 @@
                           <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_HAS">7</BACnetUnconfirmedServiceChoice>
                         </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoHas>
-                          <objectIdentifier>
-                            <BACnetContextTag>
-                              <header>
-                                <BACnetTagHeader>
-                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
-                                  <tagClass>
-                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                  </tagClass>
-                                  <lengthValueType dataType="uint" bitLength="3">4</lengthValueType>
-                                </BACnetTagHeader>
-                              </header>
-                              <BACnetContextTagObjectIdentifier>
-                                <payload>
-                                  <BACnetTagPayloadObjectIdentifier>
-                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                    <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
-                                  </BACnetTagPayloadObjectIdentifier>
-                                </payload>
-                              </BACnetContextTagObjectIdentifier>
-                            </BACnetContextTag>
-                          </objectIdentifier>
+                          <object>
+                            <BACnetUnconfirmedServiceRequestWhoHasObject>
+                              <BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier>
+                                <objectIdentifier>
+                                  <BACnetContextTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">4</lengthValueType>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetContextTagObjectIdentifier>
+                                      <payload>
+                                        <BACnetTagPayloadObjectIdentifier>
+                                          <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                          <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                        </BACnetTagPayloadObjectIdentifier>
+                                      </payload>
+                                    </BACnetContextTagObjectIdentifier>
+                                  </BACnetContextTag>
+                                </objectIdentifier>
+                              </BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier>
+                            </BACnetUnconfirmedServiceRequestWhoHasObject>
+                          </object>
                         </BACnetUnconfirmedServiceRequestWhoHas>
                       </BACnetUnconfirmedServiceRequest>
                     </serviceRequest>

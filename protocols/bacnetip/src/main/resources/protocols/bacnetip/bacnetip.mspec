@@ -901,8 +901,7 @@
         ['WHO_HAS' BACnetUnconfirmedServiceRequestWhoHas
             [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeLowLimit                                         ]
             [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null' ]
-            [optional BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')  objectIdentifier                                                    ]
-            [optional BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')           objectName                    'objectIdentifier == null'            ]
+            [simple   BACnetUnconfirmedServiceRequestWhoHasObject                                       object                                                              ]
         ]
         ['WHO_IS' BACnetUnconfirmedServiceRequestWhoIs
             [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeLowLimit                                                 ]
@@ -927,6 +926,22 @@
         ]
         [BACnetUnconfirmedServiceRequestUnconfirmedUnknown
             [array    byte    unknownBytes length '(serviceRequestLength>0)?(serviceRequestLength - 1):0']
+        ]
+    ]
+]
+
+[type BACnetUnconfirmedServiceRequestWhoHasObject
+    [peek     BACnetTagHeader
+                        peekedTagHeader                                             ]
+    [virtual  uint 8    peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [typeSwitch peekedTagNumber
+        ['2' BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+            [simple   BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                                        objectIdentifier                            ]
+        ]
+        ['3' BACnetUnconfirmedServiceRequestWhoHasObjectName
+            [simple   BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')
+                                        objectName                                  ]
         ]
     ]
 ]

@@ -37,10 +37,8 @@ type BACnetUnconfirmedServiceRequestWhoHas interface {
 	GetDeviceInstanceRangeLowLimit() BACnetContextTagUnsignedInteger
 	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit (property field)
 	GetDeviceInstanceRangeHighLimit() BACnetContextTagUnsignedInteger
-	// GetObjectIdentifier returns ObjectIdentifier (property field)
-	GetObjectIdentifier() BACnetContextTagObjectIdentifier
-	// GetObjectName returns ObjectName (property field)
-	GetObjectName() BACnetContextTagCharacterString
+	// GetObject returns Object (property field)
+	GetObject() BACnetUnconfirmedServiceRequestWhoHasObject
 }
 
 // BACnetUnconfirmedServiceRequestWhoHasExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWhoHas.
@@ -55,8 +53,7 @@ type _BACnetUnconfirmedServiceRequestWhoHas struct {
 	*_BACnetUnconfirmedServiceRequest
 	DeviceInstanceRangeLowLimit  BACnetContextTagUnsignedInteger
 	DeviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger
-	ObjectIdentifier             BACnetContextTagObjectIdentifier
-	ObjectName                   BACnetContextTagCharacterString
+	Object                       BACnetUnconfirmedServiceRequestWhoHasObject
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,12 +90,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetDeviceInstanceRangeHighLimit
 	return m.DeviceInstanceRangeHighLimit
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetObjectIdentifier() BACnetContextTagObjectIdentifier {
-	return m.ObjectIdentifier
-}
-
-func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetObjectName() BACnetContextTagCharacterString {
-	return m.ObjectName
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetObject() BACnetUnconfirmedServiceRequestWhoHasObject {
+	return m.Object
 }
 
 ///////////////////////
@@ -107,12 +100,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetObjectName() BACnetContextTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestWhoHas factory function for _BACnetUnconfirmedServiceRequestWhoHas
-func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, objectIdentifier BACnetContextTagObjectIdentifier, objectName BACnetContextTagCharacterString, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoHas {
+func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoHas {
 	_result := &_BACnetUnconfirmedServiceRequestWhoHas{
 		DeviceInstanceRangeLowLimit:      deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:     deviceInstanceRangeHighLimit,
-		ObjectIdentifier:                 objectIdentifier,
-		ObjectName:                       objectName,
+		Object:                           object,
 		_BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 	}
 	_result._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _result
@@ -151,15 +143,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBitsConditional(last
 		lengthInBits += m.DeviceInstanceRangeHighLimit.GetLengthInBits()
 	}
 
-	// Optional Field (objectIdentifier)
-	if m.ObjectIdentifier != nil {
-		lengthInBits += m.ObjectIdentifier.GetLengthInBits()
-	}
-
-	// Optional Field (objectName)
-	if m.ObjectName != nil {
-		lengthInBits += m.ObjectName.GetLengthInBits()
-	}
+	// Simple field (object)
+	lengthInBits += m.Object.GetLengthInBits()
 
 	return lengthInBits
 }
@@ -221,48 +206,17 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 		}
 	}
 
-	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var objectIdentifier BACnetContextTagObjectIdentifier = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
-		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
-		default:
-			objectIdentifier = _val.(BACnetContextTagObjectIdentifier)
-			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
-			}
-		}
+	// Simple Field (object)
+	if pullErr := readBuffer.PullContext("object"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for object")
 	}
-
-	// Optional Field (objectName) (Can be skipped, if a given expression evaluates to false)
-	var objectName BACnetContextTagCharacterString = nil
-	if bool((objectIdentifier) == (nil)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for objectName")
-		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectName' field")
-		default:
-			objectName = _val.(BACnetContextTagCharacterString)
-			if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for objectName")
-			}
-		}
+	_object, _objectErr := BACnetUnconfirmedServiceRequestWhoHasObjectParse(readBuffer)
+	if _objectErr != nil {
+		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field")
+	}
+	object := _object.(BACnetUnconfirmedServiceRequestWhoHasObject)
+	if closeErr := readBuffer.CloseContext("object"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for object")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWhoHas"); closeErr != nil {
@@ -273,8 +227,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	_child := &_BACnetUnconfirmedServiceRequestWhoHas{
 		DeviceInstanceRangeLowLimit:  deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit,
-		ObjectIdentifier:             objectIdentifier,
-		ObjectName:                   objectName,
+		Object:                       object,
 		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
 			ServiceRequestLength: serviceRequestLength,
 		},
@@ -323,36 +276,16 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Wri
 			}
 		}
 
-		// Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-		var objectIdentifier BACnetContextTagObjectIdentifier = nil
-		if m.GetObjectIdentifier() != nil {
-			if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-			}
-			objectIdentifier = m.GetObjectIdentifier()
-			_objectIdentifierErr := writeBuffer.WriteSerializable(objectIdentifier)
-			if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for objectIdentifier")
-			}
-			if _objectIdentifierErr != nil {
-				return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
-			}
+		// Simple Field (object)
+		if pushErr := writeBuffer.PushContext("object"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for object")
 		}
-
-		// Optional Field (objectName) (Can be skipped, if the value is null)
-		var objectName BACnetContextTagCharacterString = nil
-		if m.GetObjectName() != nil {
-			if pushErr := writeBuffer.PushContext("objectName"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for objectName")
-			}
-			objectName = m.GetObjectName()
-			_objectNameErr := writeBuffer.WriteSerializable(objectName)
-			if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for objectName")
-			}
-			if _objectNameErr != nil {
-				return errors.Wrap(_objectNameErr, "Error serializing 'objectName' field")
-			}
+		_objectErr := writeBuffer.WriteSerializable(m.GetObject())
+		if popErr := writeBuffer.PopContext("object"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for object")
+		}
+		if _objectErr != nil {
+			return errors.Wrap(_objectErr, "Error serializing 'object' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWhoHas"); popErr != nil {
