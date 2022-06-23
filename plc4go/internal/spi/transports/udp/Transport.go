@@ -143,20 +143,19 @@ func (m *TransportInstance) Connect() error {
 
 	// "connect" to the remote
 	var err error
-	if m.SoReUse {
-		if m.udpConn, err = net.ListenUDP("udp", m.LocalAddress); err != nil {
+	if m.RemoteAddress != nil {
+		if m.udpConn, err = net.DialUDP("upd", m.LocalAddress, m.RemoteAddress); err != nil {
 			return errors.Wrap(err, "error connecting to remote address")
 		}
-		rawConn, err := m.udpConn.SyscallConn()
-		if err != nil {
-			return errors.Wrap(err, "Error getting syscall connection")
-		}
-		if err := reuseport.Control("", "", rawConn); err != nil {
-			return errors.Wrap(err, "Error setting re-use control")
+	} else if m.SoReUse {
+		if packetConn, err := reuseport.ListenPacket("udp", m.LocalAddress.String()); err != nil {
+			return errors.Wrap(err, "error connecting to local address")
+		} else {
+			m.udpConn = packetConn.(*net.UDPConn)
 		}
 	} else {
 		if m.udpConn, err = net.ListenUDP("udp", m.LocalAddress); err != nil {
-			return errors.Wrap(err, "error connecting to remote address")
+			return errors.Wrap(err, "error connecting to local address")
 		}
 	}
 
