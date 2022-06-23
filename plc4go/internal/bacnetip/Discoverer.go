@@ -35,8 +35,6 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/spi"
 	"github.com/apache/plc4x/plc4go/internal/spi/options"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -86,14 +84,6 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, whoIsLowLimit *uint, whoIsHighLimit *uint) (chan receivedBvlcMessage, error) {
 	incomingBVLCChannel := make(chan receivedBvlcMessage, 0)
 	for _, communicationChannelInstance := range communicationChannels {
-		// Create a codec for sending and receiving messages.
-		codec := NewMessageCodec(communicationChannelInstance.unicastTransport)
-		// Explicitly start the worker
-		if err := codec.Connect(); err != nil {
-			log.Warn().Err(err).Msg("Error connecting")
-			continue
-		}
-
 		// Prepare the discovery packet data
 		var lowLimit driverModel.BACnetContextTagUnsignedInteger
 		if whoIsLowLimit != nil {
@@ -111,17 +101,42 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 		bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
 
 		// Send the search request.
-		if err := codec.Send(bvlc); err != nil {
+		wbbb := utils.NewWriteBufferByteBased()
+		if err := bvlc.Serialize(wbbb); err != nil {
+			panic(err)
+		}
+		if _, err := communicationChannelInstance.broadcastConnection.WriteTo(wbbb.GetBytes(), communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
 			log.Debug().Err(err).Msg("Error sending broadcast")
 		}
+
 		go func(communicationChannelInstance communicationChannel) {
 			for {
-				select {
-				case message := <-codec.GetDefaultIncomingMessageChannel():
-					if incomingBvlc, ok := message.(driverModel.BVLC); ok {
-						// TODO: how to get the receiverd ip from that?
-						incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, nil}
+				blockingReadChan := make(chan bool, 0)
+				go func() {
+					buf := make([]byte, 4096)
+					n, addr, err := communicationChannelInstance.unicastConnection.ReadFrom(buf)
+					if err != nil {
+						log.Debug().Err(err).Msg("Ending unicast receive")
+						blockingReadChan <- false
+						return
 					}
+					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
+					incomingBvlc, err := driverModel.BVLCParse(utils.NewReadBufferByteBased(buf[:n]))
+					if err != nil {
+						log.Warn().Err(err).Msg("Could not parse bvlc")
+						blockingReadChan <- true
+						return
+					}
+					incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, addr}
+					blockingReadChan <- true
+				}()
+				select {
+				case ok := <-blockingReadChan:
+					if !ok {
+						log.Debug().Msg("Ending reading")
+						return
+					}
+					log.Trace().Msg("Received something")
 				case <-ctx.Done():
 					log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
 					return
@@ -136,18 +151,25 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.broadcastConnection.ReadFrom(buf)
 					if err != nil {
-						panic(err)
+						log.Debug().Err(err).Msg("Ending unicast receive")
+						blockingReadChan <- false
+						return
 					}
 					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
 					incomingBvlc, err := driverModel.BVLCParse(utils.NewReadBufferByteBased(buf[:n]))
 					if err != nil {
-						panic(err)
+						log.Warn().Err(err).Msg("Could not parse bvlc")
+						blockingReadChan <- true
 					}
 					incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, addr}
 					blockingReadChan <- true
 				}()
 				select {
-				case <-blockingReadChan:
+				case ok := <-blockingReadChan:
+					if !ok {
+						log.Debug().Msg("Ending reading")
+						return
+					}
 					log.Trace().Msg("Received something")
 				case <-ctx.Done():
 					log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
@@ -206,7 +228,6 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 }
 
 func buildupCommunicationChannels(interfaces []net.Interface, bacNetPort int) (communicationChannels []communicationChannel, err error) {
-	udpTransport := udp.NewTransport()
 	// Iterate over all network devices of this system.
 	for _, networkInterface := range interfaces {
 		unicastInterfaceAddress, err := networkInterface.Addrs()
@@ -242,37 +263,28 @@ func buildupCommunicationChannels(interfaces []net.Interface, bacNetPort int) (c
 				continue
 			}
 
-			_, cidr, _ := net.ParseCIDR(unicastAddress.String())
-			broadcastAddr := netaddr.BroadcastAddr(cidr)
-			udpAddr := &net.UDPAddr{IP: broadcastAddr, Port: bacNetPort}
-			connectionUrl, err := url.Parse(fmt.Sprintf("udp://%s", udpAddr))
+			// Handle undirected
+			unicastConnection, err := reuseport.ListenPacket("udp4", fmt.Sprintf("%v:%d", ipAddr, bacNetPort))
 			if err != nil {
-				log.Debug().Err(err).Msg("error parsing url")
-				continue
-			}
-			localAddr := &net.UDPAddr{IP: ipAddr, Port: bacNetPort}
-			transportInstance, err :=
-				udpTransport.CreateTransportInstanceForLocalAddress(*connectionUrl, nil, localAddr)
-			if err != nil {
-				return nil, errors.Wrap(err, "error creating transport instance")
-			}
-			if err := transportInstance.Connect(); err != nil {
-				log.Warn().Err(err).Msgf("Can't connect to %v", localAddr)
+				log.Debug().Err(err).Msg("Error building unicast Port")
 				continue
 			}
 
+			_, cidr, _ := net.ParseCIDR(unicastAddress.String())
+			broadcastAddr := netaddr.BroadcastAddr(cidr)
 			// Handle undirected
-			pc, err := reuseport.ListenPacket("udp4", broadcastAddr.String()+":47808")
+			broadcastConnection, err := reuseport.ListenPacket("udp4", fmt.Sprintf("%v:%d", broadcastAddr, bacNetPort))
 			if err != nil {
-				if err := transportInstance.Close(); err != nil {
+				if err := unicastConnection.Close(); err != nil {
 					log.Debug().Err(err).Msg("Error closing transport instance")
 				}
-				return nil, err
+				log.Debug().Err(err).Msg("Error building broadcast Port")
+				continue
 			}
 			communicationChannels = append(communicationChannels, communicationChannel{
 				networkInterface:    networkInterface,
-				unicastTransport:    transportInstance,
-				broadcastConnection: pc,
+				unicastConnection:   unicastConnection,
+				broadcastConnection: broadcastConnection,
 			})
 		}
 	}
@@ -286,12 +298,12 @@ type receivedBvlcMessage struct {
 
 type communicationChannel struct {
 	networkInterface    net.Interface
-	unicastTransport    transports.TransportInstance
+	unicastConnection   net.PacketConn
 	broadcastConnection net.PacketConn
 }
 
 func (c communicationChannel) Close() error {
-	_ = c.unicastTransport.Close()
+	_ = c.unicastConnection.Close()
 	_ = c.broadcastConnection.Close()
 	return nil
 }

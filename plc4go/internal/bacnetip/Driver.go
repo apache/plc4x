@@ -58,6 +58,10 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	options["defaultUdpPort"] = []string{"47808"}
+	// Set so_reuse by default
+	if _, ok := options["so-reuse"]; !ok {
+		options["so-reuse"] = []string{"true"}
+	}
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
