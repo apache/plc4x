@@ -83,8 +83,8 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 	return nil
 }
 
-func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, whoIsLowLimit *uint, whoIsHighLimit *uint) (chan driverModel.BVLC, error) {
-	incomingBVLCChannel := make(chan driverModel.BVLC, 0)
+func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, whoIsLowLimit *uint, whoIsHighLimit *uint) (chan receivedBvlcMessage, error) {
+	incomingBVLCChannel := make(chan receivedBvlcMessage, 0)
 	for _, communicationChannelInstance := range communicationChannels {
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(communicationChannelInstance.unicastTransport)
@@ -119,7 +119,8 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 				select {
 				case message := <-codec.GetDefaultIncomingMessageChannel():
 					if incomingBvlc, ok := message.(driverModel.BVLC); ok {
-						incomingBVLCChannel <- incomingBvlc
+						// TODO: how to get the receiverd ip from that?
+						incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, nil}
 					}
 				case <-ctx.Done():
 					log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
@@ -142,7 +143,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 					if err != nil {
 						panic(err)
 					}
-					incomingBVLCChannel <- incomingBvlc
+					incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, addr}
 					blockingReadChan <- true
 				}()
 				select {
@@ -158,12 +159,12 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 	return incomingBVLCChannel, nil
 }
 
-func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), incomingBVLCChannel chan driverModel.BVLC) {
+func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), incomingBVLCChannel chan receivedBvlcMessage) {
 	for {
 		select {
-		case bvlc := <-incomingBVLCChannel:
+		case receivedBvlc := <-incomingBVLCChannel:
 			var npdu driverModel.NPDU
-			if bvlc, ok := bvlc.(interface{ GetNpdu() driverModel.NPDU }); ok {
+			if bvlc, ok := receivedBvlc.bvlc.(interface{ GetNpdu() driverModel.NPDU }); ok {
 				npdu = bvlc.GetNpdu()
 			}
 			_ = npdu
@@ -184,7 +185,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				continue
 			}
 			iam := serviceRequest.(driverModel.BACnetUnconfirmedServiceRequestIAm)
-			remoteUrl, err := url.Parse("udp://todo")
+			remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
 			if err != nil {
 				log.Debug().Err(err).Msg("Error parsing url")
 			}
@@ -276,6 +277,11 @@ func buildupCommunicationChannels(interfaces []net.Interface, bacNetPort int) (c
 		}
 	}
 	return
+}
+
+type receivedBvlcMessage struct {
+	bvlc driverModel.BVLC
+	addr net.Addr
 }
 
 type communicationChannel struct {
