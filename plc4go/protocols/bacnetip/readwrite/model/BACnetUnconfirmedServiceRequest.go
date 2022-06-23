@@ -158,8 +158,8 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer, serviceRequestLength)
-	case true: // BACnetUnconfirmedServiceRequestUnconfirmedUnknown
-		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedUnknownParse(readBuffer, serviceRequestLength)
+	case true: // BACnetUnconfirmedServiceRequestUnknown
+		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnknownParse(readBuffer, serviceRequestLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

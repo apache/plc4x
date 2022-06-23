@@ -111,7 +111,7 @@
     [abstract float 64 abstractDoubleField]
     [abstract string 8 abstractStringField]
     [typeSwitch simpleField
-        ['0' AbstractTypeTestSubType
+        ['0' *SubType
             //Abstract fields need to be overridden in child
             [simple bit abstractBitField]
             [simple int 8 abstractIntField]
@@ -278,13 +278,13 @@
 [discriminatedType EnumDiscriminatedType
     [discriminator EnumType discr]
     [typeSwitch discr
-        ['BOOL' EnumDiscriminatedTypeA
+        ['BOOL' *A
             [simple        uint 8 simpA]
         ]
-        ['UINT' EnumDiscriminatedTypeB
+        ['UINT' *B
             [simple        uint 8 simpB]
         ]
-        ['INT' EnumDiscriminatedTypeC
+        ['INT' *C
             [simple        uint 8 simpC]
         ]
     ]
@@ -295,13 +295,13 @@
     [discriminator EnumType discr1]
     [discriminator EnumTypeInt discr2]
     [typeSwitch discr1,discr2
-        ['BOOL','BOOLINT' EnumDiscriminatedTypeMultipleA
+        ['BOOL','BOOLINT' *A
             [simple        uint 8 simpA]
         ]
-        ['UINT','UINTINT' EnumDiscriminatedTypeMultipleB
+        ['UINT','UINTINT' *B
             [simple        uint 8 simpB]
         ]
-        ['INT','INTINT' EnumDiscriminatedTypeMultipleC
+        ['INT','INTINT'   *C
             [simple        uint 8 simpC]
         ]
     ]
@@ -310,13 +310,13 @@
 // Enumerated Parameter
 [discriminatedType EnumDiscriminatedTypeParameter(EnumType discr)
     [typeSwitch discr
-        ['BOOL' EnumDiscriminatedTypeAParameter
+        ['BOOL' *A
             [simple        uint 8 simpA]
         ]
-        ['UINT' EnumDiscriminatedTypeBParameter
+        ['UINT' *B
             [simple        uint 8 simpB]
         ]
-        ['INT' EnumDiscriminatedTypeCParameter
+        ['INT' *C
             [simple        uint 8 simpC]
         ]
     ]
@@ -325,13 +325,13 @@
 // Multiple Enumerated Parameters
 [discriminatedType EnumDiscriminatedTypeParameterMultiple(EnumType discr1, EnumTypeInt discr2)
     [typeSwitch discr1,discr2
-        ['BOOL','BOOLINT' EnumDiscriminatedTypeAParameterMultiple
+        ['BOOL','BOOLINT' *A
             [simple        uint 8 simpA]
         ]
-        ['UINT','UINTINT' EnumDiscriminatedTypeBParameterMultiple
+        ['UINT','UINTINT' *B
             [simple        uint 8 simpB]
         ]
-        ['INT','INTINT' EnumDiscriminatedTypeCParameterMultiple
+        ['INT','INTINT'   *C
             [simple        uint 8 simpC]
         ]
     ]
@@ -340,13 +340,13 @@
 [discriminatedType SimpleDiscriminatedType
     [discriminator uint 8 discr]
     [typeSwitch discr
-        ['0x00' SimpleDiscriminatedTypeA
+        ['0x00' *A
             [simple        uint 8 simpA]
         ]
-        ['0x01' SimpleDiscriminatedTypeB
+        ['0x01' *B
             [simple        uint 8 simpB]
         ]
-        ['0x02' SimpleDiscriminatedTypeC
+        ['0x02' *C
             [simple        uint 8 simpC]
         ]
     ]
@@ -357,7 +357,7 @@
 [discriminatedType SimpleDiscriminatedType
     [discriminator uint 8 discr]
     [typeSwitch discr
-        ['0x00' SimpleDiscriminatedTypeA
+        ['0x00' *A
             [simple        AnotherSimpleDiscriminatedTypeA simpA]
         ]
     ]
@@ -366,7 +366,7 @@
 [discriminatedType AnotherSimpleDiscriminatedType
     [discriminator uint 8 discr]
     [typeSwitch discr
-        ['0x00' AnotherSimpleDiscriminatedTypeA
+        ['0x00' *A
             [simple        uint 8 simpA]
         ]
     ]
