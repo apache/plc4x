@@ -29,6 +29,8 @@
     [array         byte    senderContext count '8']
     [simple        uint 32 options]
     [typeSwitch command,response
+            ['0x0001'   NullLittleCommand
+            ]
             ['0x0004','false' ListServicesRequest
             ]
             ['0x0004','true' ListServicesResponse
@@ -52,6 +54,8 @@
                 [simple     uint    16     timeout]
                 [simple     uint    16     itemCount]
                 [array      TypeId('order')         typeId   count   'itemCount']
+            ]
+            ['0x0100'   NullBigCommand
             ]
         ]
 ]
@@ -91,6 +95,18 @@
     [discriminator  bit     response]
     [discriminator  uint    7   service]
     [typeSwitch service,response,connected
+        ['0x01','false' GetAttributeAllRequest
+            [implicit    int     8              requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
+            [simple      PathSegment('order')   classSegment]
+            [simple      PathSegment('order')   instanceSegment]
+        ]
+        ['0x01','true' GetAttributeAllResponse
+            [implicit      int     8         requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
+            [simple      PathSegment('order')         classSegment]
+            [simple      PathSegment('order')         instanceSegment]
+            [implicit    uint 16                numberOfClasses 'COUNT(classId)']
+            [array       uint 16                classId count 'numberOfClasses']
+        ]
         ['0x4C','false' CipReadRequest
             [implicit   int     8   requestPathSize 'COUNT(tag) / 2']
             [array      byte   tag   count  '(requestPathSize * 2)']

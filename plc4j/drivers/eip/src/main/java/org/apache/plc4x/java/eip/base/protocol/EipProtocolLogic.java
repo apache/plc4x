@@ -20,6 +20,7 @@ package org.apache.plc4x.java.eip.base.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -43,6 +44,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -72,6 +74,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private boolean useConnectionManager = false;
 
+    private boolean cipEncapsulationAvailable = false;
+
     @Override
     public void setConfiguration(EIPConfiguration configuration) {
         this.configuration = configuration;
@@ -80,9 +84,34 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         this.tm = new RequestTransactionManager(1);
     }
 
-    @Override
-    public void onConnect(ConversationContext<EipPacket> context) {
+    public CompletableFuture<Boolean> detectEndianness(ConversationContext<EipPacket> context) {
         logger.debug("Sending Register Session EIP Package");
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+
+        NullLittleCommand listServicesRequest = new NullLittleCommand(
+            EMPTY_SESSION_HANDLE,
+            CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT,
+            0L,
+            this.configuration.getByteOrder());
+        transaction.submit(() -> context.sendRequest(listServicesRequest)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
+            .onError((p,e) -> logger.warn("No response for initial packet. Suspect device uses Big endian"))
+            .onTimeout(p -> logger.warn("No response for initial packet. Suspect device uses Big endian"))
+            .check(p -> p instanceof NullLittleCommand)
+            .handle(p -> {
+                logger.info("Device uses little endian");
+                future.complete(true);
+            })
+        );
+        return future;
+    }
+
+    private CompletableFuture<Boolean> listServices(ConversationContext<EipPacket> context) {
+        logger.debug("Sending List Services packet to confirm CIP Encapsulation is available");
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 
         ListServicesRequest listServicesRequest = new ListServicesRequest(
             EMPTY_SESSION_HANDLE,
@@ -90,24 +119,96 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             DEFAULT_SENDER_CONTEXT,
             0L,
             this.configuration.getByteOrder());
-        context.sendRequest(listServicesRequest)
+        transaction.submit(() -> context.sendRequest(listServicesRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
             .check(p -> p instanceof ListServicesResponse)
             .handle(p -> {
                 if (p.getStatus() == CIPStatus.Success.getValue()) {
                     ServicesResponse listServicesResponse = (ServicesResponse) ((ListServicesResponse) p).getTypeId().get(0);
-                    this.useConnectionManager = listServicesResponse.getSupportsCIPEncapsulation();
-                    logger.debug("Device is capable of CIP over EIP encapsulation");
+                    if (listServicesResponse.getSupportsCIPEncapsulation()) {
+                        logger.debug("Device is capable of CIP over EIP encapsulation");
+                    }
+                    future.complete(listServicesResponse.getSupportsCIPEncapsulation());
                 } else {
-                    logger.warn("Got status code while polling for supported services [{}]", p.getStatus());
-
+                    logger.warn("Got status code while polling for supported EIP services [{}]", p.getStatus());
+                    future.complete(false);
                 }
-                onConnectRegisterSession(context);
-            });
+            })
+        );
+        return future;
     }
 
-    private void onConnectRegisterSession(ConversationContext<EipPacket> context) {
+    private CompletableFuture<Boolean> getAllAttributes(ConversationContext<EipPacket> context) {
+        logger.debug("Requesting list of supported attributes");
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+
+        ListServicesRequest listServicesRequest = new ListServicesRequest(
+            EMPTY_SESSION_HANDLE,
+            CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT,
+            0L,
+            this.configuration.getByteOrder());
+        transaction.submit(() -> context.sendRequest(listServicesRequest)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
+            .check(p -> p instanceof ListServicesResponse)
+            .handle(p -> {
+                if (p.getStatus() == CIPStatus.Success.getValue()) {
+                    ServicesResponse listServicesResponse = (ServicesResponse) ((ListServicesResponse) p).getTypeId().get(0);
+                    if (listServicesResponse.getSupportsCIPEncapsulation()) {
+                        logger.debug("Device is capable of CIP over EIP encapsulation");
+                    }
+                    future.complete(listServicesResponse.getSupportsCIPEncapsulation());
+                } else {
+                    logger.warn("Got status code while polling for supported EIP services [{}]", p.getStatus());
+                    future.complete(false);
+                }
+            })
+        );
+        return future;
+    }
+
+    @Override
+    public void onConnect(ConversationContext<EipPacket> context) {
+
+        try {
+            detectEndianness(context).get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            // This is where we should set the endianness, still not sure if this is correct though.
+        }
+
+        try {
+            this.cipEncapsulationAvailable = listServices(context).get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+            if (!this.cipEncapsulationAvailable) {
+                logger.error("Device doesn't support EIP with Encapsulated CIP");
+                context.fireDisconnected();
+                return;
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            // This is where we should set the endianness, still not sure if this is correct though.
+        }
+
+        try {
+            onConnectRegisterSession(context).get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            // This is where we should set the endianness, still not sure if this is correct though.
+        }
+
+        try {
+            getAllAttributes(context).get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            // This is where we should set the endianness, still not sure if this is correct though.
+        }
+
+
+
+    }
+
+    private CompletableFuture<Boolean> onConnectRegisterSession(ConversationContext<EipPacket> context) {
         logger.debug("Sending Register Session EIP Package");
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+
         EipConnectionRequest connectionRequest =
             new EipConnectionRequest(
                 EMPTY_SESSION_HANDLE,
@@ -115,25 +216,23 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 DEFAULT_SENDER_CONTEXT,
                 0L,
                 this.configuration.getByteOrder());
-        context.sendRequest(connectionRequest)
+
+        transaction.submit(() -> context.sendRequest(connectionRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
             .check(p -> p instanceof EipConnectionRequest)
             .handle(p -> {
                 if (p.getStatus() == CIPStatus.Success.getValue()) {
                     sessionHandle = p.getSessionHandle();
                     senderContext = p.getSenderContext();
-                    logger.debug("Got assigned with Session {}", sessionHandle);
-                    if (this.useConnectionManager) {
-                        onConnectOpenConnectionManager(context, p);
-                    } else {
-                        logger.debug("Using unconnected explicit messaging");
-                        // Send an event that connection setup is complete.
-                        context.fireConnected();
-                    }
+                    logger.debug("Got assigned with Session handle {}", sessionHandle);
+                    future.complete(true);
                 } else {
                     logger.warn("Got status code [{}]", p.getStatus());
+                    future.completeExceptionally(new PlcConnectionException("Error while handling Register Session response"));
                 }
-            });
+            })
+        );
+        return future;
     }
 
     public void onConnectOpenConnectionManager(ConversationContext<EipPacket> context, EipPacket response) {
