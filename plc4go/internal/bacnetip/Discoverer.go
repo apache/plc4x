@@ -31,6 +31,7 @@ import (
 	"net"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/spi"
@@ -53,12 +54,12 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 		return errors.Wrap(err, "error extracting interfaces")
 	}
 
-	whoIsLowLimit, whoIsHighLimit, bacNetPort, err := extractProtocolSpecificOptions(discoveryOptions)
+	specificOptions, err := extractProtocolSpecificOptions(discoveryOptions)
 	if err != nil {
 		return errors.Wrap(err, "error extracting protocol specific options")
 	}
 
-	communicationChannels, err := buildupCommunicationChannels(interfaces, bacNetPort)
+	communicationChannels, err := buildupCommunicationChannels(interfaces, specificOptions.bacNetPort)
 	if err != nil {
 		return errors.Wrap(err, "error building communication channels")
 	}
@@ -68,7 +69,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 	defer func() {
 		cancelFunc()
 	}()
-	incomingBVLCChannel, err := broadcastAndDiscover(ctx, communicationChannels, whoIsLowLimit, whoIsHighLimit)
+	incomingBVLCChannel, err := broadcastAndDiscover(ctx, communicationChannels, specificOptions)
 	if err != nil {
 		return errors.Wrap(err, "error broadcasting and discovering")
 	}
@@ -81,32 +82,76 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 	return nil
 }
 
-func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, whoIsLowLimit *uint, whoIsHighLimit *uint) (chan receivedBvlcMessage, error) {
+func broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, specificOptions *protocolSpecificOptions) (chan receivedBvlcMessage, error) {
 	incomingBVLCChannel := make(chan receivedBvlcMessage, 0)
 	for _, communicationChannelInstance := range communicationChannels {
 		// Prepare the discovery packet data
-		var lowLimit driverModel.BACnetContextTagUnsignedInteger
-		if whoIsLowLimit != nil {
-			lowLimit = driverModel.CreateBACnetContextTagUnsignedInteger(0, *whoIsLowLimit)
-		}
-		var highLimit driverModel.BACnetContextTagUnsignedInteger
-		if whoIsHighLimit != nil {
-			highLimit = driverModel.CreateBACnetContextTagUnsignedInteger(1, *whoIsHighLimit)
-		}
-		requestWhoIs := driverModel.NewBACnetUnconfirmedServiceRequestWhoIs(lowLimit, highLimit, 0)
-		apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoIs, 0)
+		{
+			var lowLimit driverModel.BACnetContextTagUnsignedInteger
+			var highLimit driverModel.BACnetContextTagUnsignedInteger
+			if whoIsOptions := specificOptions.whoIsOptions; whoIsOptions != nil && whoIsOptions.limits != nil {
+				lowLimit = driverModel.CreateBACnetContextTagUnsignedInteger(0, whoIsOptions.limits.low)
+				highLimit = driverModel.CreateBACnetContextTagUnsignedInteger(1, whoIsOptions.limits.high)
+			}
+			requestWhoIs := driverModel.NewBACnetUnconfirmedServiceRequestWhoIs(lowLimit, highLimit, 0)
+			apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoIs, 0)
 
-		control := driverModel.NewNPDUControl(false, false, false, false, driverModel.NPDUNetworkPriority_NORMAL_MESSAGE)
-		npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu, 0)
-		bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
+			control := driverModel.NewNPDUControl(false, false, false, false, driverModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+			npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu, 0)
+			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
 
-		// Send the search request.
-		wbbb := utils.NewWriteBufferByteBased()
-		if err := bvlc.Serialize(wbbb); err != nil {
-			panic(err)
+			// Send the search request.
+			wbbb := utils.NewWriteBufferByteBased()
+			if err := bvlc.Serialize(wbbb); err != nil {
+				panic(err)
+			}
+			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(wbbb.GetBytes(), communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
+				log.Debug().Err(err).Msg("Error sending broadcast")
+			}
 		}
-		if _, err := communicationChannelInstance.broadcastConnection.WriteTo(wbbb.GetBytes(), communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
-			log.Debug().Err(err).Msg("Error sending broadcast")
+		if whoHasOptions := specificOptions.whoHasOptions; whoHasOptions != nil {
+			var lowLimit driverModel.BACnetContextTagUnsignedInteger
+			var highLimit driverModel.BACnetContextTagUnsignedInteger
+			if limits := whoHasOptions.limits; limits != nil {
+				lowLimit = driverModel.CreateBACnetContextTagUnsignedInteger(0, limits.deviceInstanceRangeLow)
+				highLimit = driverModel.CreateBACnetContextTagUnsignedInteger(1, limits.deviceInstanceRangeHigh)
+			}
+			var object driverModel.BACnetUnconfirmedServiceRequestWhoHasObject
+			if identifier := whoHasOptions.object.identifier; identifier != nil {
+				var objectType uint16
+				objectTypeByName := driverModel.BACnetObjectTypeByName(identifier.type_)
+				if objectTypeByName.String() == "" {
+					parseUint, err := strconv.ParseUint(identifier.type_, 10, 16)
+					if err != nil {
+						return nil, err
+					}
+					objectType = uint16(parseUint)
+				} else {
+					objectType = uint16(objectTypeByName)
+				}
+				objectIdentifier := driverModel.CreateBACnetContextTagObjectIdentifier(2, objectType, uint32(identifier.instance))
+				object = driverModel.NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(objectIdentifier, objectIdentifier.GetHeader())
+			} else if name := whoHasOptions.object.name; name != nil {
+				characterString := driverModel.CreateBACnetContextTagCharacterString(3, driverModel.BACnetCharacterEncoding_ISO_10646, *name)
+				object = driverModel.NewBACnetUnconfirmedServiceRequestWhoHasObjectName(characterString, characterString.GetHeader())
+			} else {
+				panic("Invalid state")
+			}
+			requestWhoHas := driverModel.NewBACnetUnconfirmedServiceRequestWhoHas(lowLimit, highLimit, object, 0)
+			apdu := driverModel.NewAPDUUnconfirmedRequest(requestWhoHas, 0)
+
+			control := driverModel.NewNPDUControl(false, false, false, false, driverModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+			npdu := driverModel.NewNPDU(1, control, nil, nil, nil, nil, nil, nil, nil, nil, apdu, 0)
+			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
+
+			// Send the search request.
+			wbbb := utils.NewWriteBufferByteBased()
+			if err := bvlc.Serialize(wbbb); err != nil {
+				panic(err)
+			}
+			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(wbbb.GetBytes(), communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
+				log.Debug().Err(err).Msg("Error sending broadcast")
+			}
 		}
 
 		go func(communicationChannelInstance communicationChannel) {
@@ -202,24 +247,38 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 			}
 			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequestExactly)
 			serviceRequest := apduUnconfirmedRequest.GetServiceRequest()
-			if _, ok := serviceRequest.(driverModel.BACnetUnconfirmedServiceRequestIAmExactly); !ok {
-				log.Debug().Msgf("Got serviceRequest \n%v", serviceRequest)
-				continue
-			}
-			iam := serviceRequest.(driverModel.BACnetUnconfirmedServiceRequestIAm)
-			remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
-			if err != nil {
-				log.Debug().Err(err).Msg("Error parsing url")
-			}
-			discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
-				ProtocolCode:  "bacnet-ip",
-				TransportCode: "udp",
-				TransportUrl:  *remoteUrl,
-				Name:          fmt.Sprintf("device %v", iam.GetDeviceIdentifier().GetInstanceNumber()),
-			}
+			switch serviceRequest := serviceRequest.(type) {
+			case driverModel.BACnetUnconfirmedServiceRequestIAmExactly:
+				iAm := serviceRequest
+				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
+				if err != nil {
+					log.Debug().Err(err).Msg("Error parsing url")
+				}
+				discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+					ProtocolCode:  "bacnet-ip",
+					TransportCode: "udp",
+					TransportUrl:  *remoteUrl,
+					Name:          fmt.Sprintf("device %v:%v", iAm.GetDeviceIdentifier().GetObjectType(), iAm.GetDeviceIdentifier().GetInstanceNumber()),
+				}
 
-			// Pass the event back to the callback
-			callback(discoveryEvent)
+				// Pass the event back to the callback
+				callback(discoveryEvent)
+			case driverModel.BACnetUnconfirmedServiceRequestIHaveExactly:
+				iHave := serviceRequest
+				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
+				if err != nil {
+					log.Debug().Err(err).Msg("Error parsing url")
+				}
+				discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+					ProtocolCode:  "bacnet-ip",
+					TransportCode: "udp",
+					TransportUrl:  *remoteUrl,
+					Name:          fmt.Sprintf("device %v:%v with %v:%v and %v", iHave.GetDeviceIdentifier().GetObjectType(), iHave.GetDeviceIdentifier().GetInstanceNumber(), iHave.GetObjectIdentifier().GetObjectType(), iHave.GetObjectIdentifier().GetInstanceNumber(), iHave.GetObjectName().GetValue()),
+				}
+
+				// Pass the event back to the callback
+				callback(discoveryEvent)
+			}
 		case <-ctx.Done():
 			log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
 			return
@@ -334,35 +393,266 @@ func extractInterfaces(discoveryOptions []options.WithDiscoveryOption) ([]net.In
 	return interfaces, nil
 }
 
-func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOption) (whoIsLowLimit *uint, whoIsHighLimit *uint, bacNetPort int, err error) {
-	bacNetPort = 47808
-	for _, protocolSpecificOption := range options.FilterDiscoveryOptionProtocolSpecific(discoveryOptions) {
-		switch protocolSpecificOption.GetKey() {
-		case "bacnet-port":
-			bacNetPortParsed, parseError := strconv.ParseInt(fmt.Sprintf("%v", protocolSpecificOption.GetValue()), 10, 8)
-			if parseError != nil {
-				return nil, nil, 0, errors.Wrap(parseError, "Error parsing option")
-			}
-			bacNetPortParsedInt := int(bacNetPortParsed)
-			bacNetPort = bacNetPortParsedInt
-		case "who-is-low-limit":
-			whoIsLowLimitParsed, parseError := strconv.ParseUint(fmt.Sprintf("%v", protocolSpecificOption.GetValue()), 10, 8)
-			if parseError != nil {
-				return nil, nil, 0, errors.Wrap(parseError, "Error parsing option")
-			}
-			whoIsLowLimitParsedUint := uint(whoIsLowLimitParsed)
-			whoIsLowLimit = &whoIsLowLimitParsedUint
-		case "who-is-high-limit":
-			whoIsHighLimitParsed, parseError := strconv.ParseUint(fmt.Sprintf("%v", protocolSpecificOption.GetValue()), 10, 8)
-			if parseError != nil {
-				return nil, nil, 0, errors.Wrap(parseError, "Error parsing option")
-			}
-			whoIsHighLimitParsedUint := uint(whoIsHighLimitParsed)
-			whoIsHighLimit = &whoIsHighLimitParsedUint
+type protocolSpecificOptions struct {
+	bacNetPort   int
+	whoIsOptions *struct {
+		limits *struct {
+			low  uint
+			high uint
 		}
 	}
-	if whoIsLowLimit != nil && whoIsHighLimit == nil || whoIsLowLimit == nil && whoIsHighLimit != nil {
-		return nil, nil, 0, errors.Errorf("who-is high-limit must be specified together")
+	whoHasOptions *struct {
+		limits *struct {
+			deviceInstanceRangeLow  uint
+			deviceInstanceRangeHigh uint
+		}
+		object struct {
+			identifier *struct {
+				type_    string
+				instance uint
+			}
+			name *string
+		}
 	}
-	return
+}
+
+func bacNetPort(port int) option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		specificOptions.bacNetPort = port
+		return nil
+	}
+}
+
+func whoIsLimits(whoIsLowLimit, whoIsHighLimit uint) option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		specificOptions.whoIsOptions = &struct {
+			limits *struct {
+				low  uint
+				high uint
+			}
+		}{&struct {
+			low  uint
+			high uint
+		}{whoIsLowLimit, whoIsHighLimit}}
+		return nil
+	}
+}
+
+func whoHasOption() option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		specificOptions.whoHasOptions = &struct {
+			limits *struct {
+				deviceInstanceRangeLow  uint
+				deviceInstanceRangeHigh uint
+			}
+			object struct {
+				identifier *struct {
+					type_    string
+					instance uint
+				}
+				name *string
+			}
+		}{}
+		return nil
+	}
+}
+
+func whoHasLimits(whoHasDeviceInstanceRangeLowLimit, whoHasDeviceInstanceRangeHighLimit uint) option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		if specificOptions.whoHasOptions == nil {
+			panic("we should have set this before")
+		}
+		specificOptions.whoHasOptions.limits = &struct {
+			deviceInstanceRangeLow  uint
+			deviceInstanceRangeHigh uint
+		}{whoHasDeviceInstanceRangeLowLimit, whoHasDeviceInstanceRangeHighLimit}
+		return nil
+	}
+}
+
+func whoHasObjectIdentifier(objectIdentifierType string, objectIdentifierInstance uint) option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		if specificOptions.whoHasOptions == nil {
+			panic("we should have set this before")
+		}
+		specificOptions.whoHasOptions.object.identifier = &struct {
+			type_    string
+			instance uint
+		}{objectIdentifierType, objectIdentifierInstance}
+		return nil
+	}
+}
+
+func whoHasObjectName(objectName string) option {
+	return func(specificOptions *protocolSpecificOptions) error {
+		if specificOptions.whoHasOptions == nil {
+			panic("we should have set this before")
+		}
+		specificOptions.whoHasOptions.object.name = &objectName
+		return nil
+	}
+}
+
+func NewProtocolSpecificOptions(options ...option) (*protocolSpecificOptions, error) {
+	var specificOptions protocolSpecificOptions
+	for _, _option := range options {
+		if parseErr := _option(&specificOptions); parseErr != nil {
+			return nil, parseErr
+		}
+	}
+	return &specificOptions, nil
+}
+
+type option func(specificOptions *protocolSpecificOptions) error
+
+func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOption) (*protocolSpecificOptions, error) {
+	var collectedOptions []option
+	filteredOptionMap := make(map[string][]interface{})
+	for _, protocolSpecificOption := range options.FilterDiscoveryOptionProtocolSpecific(discoveryOptions) {
+		key := protocolSpecificOption.GetKey()
+		value := protocolSpecificOption.GetValue()
+		if _, ok := filteredOptionMap[key]; !ok {
+			filteredOptionMap[key] = make([]interface{}, 0)
+		}
+		filteredOptionMap[key] = append(filteredOptionMap[key], value)
+	}
+	keyDependencies := map[string][]struct {
+		key           string
+		mustBePresent bool
+	}{
+		"who-is-low-limit":                         {{"who-is-high-limit", true}},
+		"who-is-high-limit":                        {{"who-is-low-limit", true}},
+		"who-has-device-instance-range-low-limit":  {{"who-has-device-instance-range-high-limit", true}, {"who-has-object*", true}},
+		"who-has-device-instance-range-high-limit": {{"who-has-device-instance-range-low-limit", true}, {"who-has-object*", true}},
+		"who-has-object-identifier-type":           {{"who-has-object-identifier-instance", true}, {"who-has-object-name", false}},
+		"who-has-object-identifier-instance":       {{"who-has-object-identifier-type", true}, {"who-has-object-name", false}},
+		"who-has-object-name":                      {{"who-has-object-identifier-instance", false}, {"who-has-object-identifier-type", false}},
+	}
+	for key, value := range keyDependencies {
+		if _, ok := filteredOptionMap[key]; ok {
+			for _, otherKey := range value {
+				if strings.HasSuffix(otherKey.key, "*") {
+					prefix := strings.TrimSuffix(otherKey.key, "*")
+					mustBePresent := otherKey.mustBePresent
+					var found bool
+					for key, _ := range filteredOptionMap {
+						found = found || strings.HasPrefix(key, prefix)
+					}
+					if mustBePresent && !found {
+						return nil, errors.Errorf("When %s is set one of %s must also be set", key, otherKey.key)
+					} else if !mustBePresent && found {
+						return nil, errors.Errorf("When %s is set none of %s must be set", key, otherKey.key)
+					}
+				} else if _, otherOk := filteredOptionMap[otherKey.key]; otherOk && !otherKey.mustBePresent {
+					return nil, errors.Errorf("When %s is set %s must not be set", key, otherKey.key)
+				} else if !otherOk && otherKey.mustBePresent {
+					return nil, errors.Errorf("When %s is set %s must be set too", key, otherKey.key)
+				}
+			}
+		}
+	}
+	if _, ok := filteredOptionMap["bacnet-port"]; ok {
+		parsedInt, err := exactlyOneInt(filteredOptionMap, "bacnet-port")
+		if err != nil {
+			return nil, err
+		}
+		collectedOptions = append(collectedOptions, bacNetPort(parsedInt))
+	} else {
+		collectedOptions = append(collectedOptions, bacNetPort(47808))
+	}
+
+	if whoIsLow, whoIsHigh, ok, err := func() (whoIsLowLimit uint, whoIsHighLimit uint, ok bool, err error) {
+		if _, limitPresent := filteredOptionMap["who-is-low-limit"]; !limitPresent {
+			return
+		}
+		ok = true
+		whoIsLowLimit, err = exactlyOneUint(filteredOptionMap, "who-is-low-limit")
+		whoIsHighLimit, err = exactlyOneUint(filteredOptionMap, "who-is-high-limit")
+		return
+	}(); ok {
+		collectedOptions = append(collectedOptions, whoIsLimits(whoIsLow, whoIsHigh))
+	} else if err != nil {
+		return nil, err
+	}
+	for key, _ := range filteredOptionMap {
+		if strings.HasPrefix(key, "who-has-object") {
+			collectedOptions = append(collectedOptions, whoHasOption())
+			break
+		}
+	}
+	if whoHasDeviceInstanceRangeLowLimit, whoHasDeviceInstanceRangeHighLimit, ok, err := func() (whoIsLowLimit uint, whoIsHighLimit uint, ok bool, err error) {
+		if _, limitPresent := filteredOptionMap["who-has-device-instance-range-low-limit"]; !limitPresent {
+			return
+		}
+		ok = true
+		whoIsLowLimit, err = exactlyOneUint(filteredOptionMap, "who-has-device-instance-range-low-limit")
+		whoIsHighLimit, err = exactlyOneUint(filteredOptionMap, "who-has-device-instance-range-high-limit")
+		return
+	}(); ok {
+		collectedOptions = append(collectedOptions, whoHasLimits(whoHasDeviceInstanceRangeLowLimit, whoHasDeviceInstanceRangeHighLimit))
+	} else if err != nil {
+		return nil, err
+	}
+
+	if whoHasObjectIdentifierType, objectIdentifierInstance, ok, err := func() (whoHasObjectIdentifierType string, whoHasObjectIdentifierInstance uint, ok bool, err error) {
+		if _, limitPresent := filteredOptionMap["who-has-object-identifier-type"]; !limitPresent {
+			return
+		}
+		ok = true
+		whoHasObjectIdentifierType, err = exactlyOneString(filteredOptionMap, "who-has-object-identifier-type")
+		whoHasObjectIdentifierInstance, err = exactlyOneUint(filteredOptionMap, "who-has-object-identifier-instance")
+		return
+	}(); ok {
+		collectedOptions = append(collectedOptions, whoHasObjectIdentifier(whoHasObjectIdentifierType, objectIdentifierInstance))
+	} else if err != nil {
+		return nil, err
+	}
+
+	if _, ok := filteredOptionMap["who-has-object-name"]; ok {
+		if name, err := exactlyOneString(filteredOptionMap, "who-has-object-name"); err != nil {
+			return nil, err
+		} else {
+			collectedOptions = append(collectedOptions, whoHasObjectName(name))
+		}
+	}
+	return NewProtocolSpecificOptions(collectedOptions...)
+}
+
+func exactlyOneInt(filteredOptionMap map[string][]interface{}, key string) (int, error) {
+	value, err := exactlyOne(filteredOptionMap, key)
+	if err != nil {
+		return 0, err
+	}
+	parsedInt, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 32)
+	if err != nil {
+		return 0, errors.Wrap(err, "Error parsing option bacnet-port")
+	}
+	return int(parsedInt), nil
+}
+
+func exactlyOneUint(filteredOptionMap map[string][]interface{}, key string) (uint, error) {
+	value, err := exactlyOne(filteredOptionMap, key)
+	if err != nil {
+		return 0, err
+	}
+	parsedInt, err := strconv.ParseUint(fmt.Sprintf("%v", value), 10, 32)
+	if err != nil {
+		return 0, errors.Wrap(err, "Error parsing option bacnet-port")
+	}
+	return uint(parsedInt), nil
+}
+func exactlyOneString(filteredOptionMap map[string][]interface{}, key string) (string, error) {
+	value, err := exactlyOne(filteredOptionMap, key)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%v", value), nil
+}
+
+func exactlyOne(filteredOptionMap map[string][]interface{}, key string) (interface{}, error) {
+	values := filteredOptionMap[key]
+	if len(values) != 1 {
+		return nil, errors.Errorf("%s expects only one value", key)
+	}
+	return values[0], nil
 }

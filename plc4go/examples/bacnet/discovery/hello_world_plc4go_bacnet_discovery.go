@@ -47,6 +47,12 @@ func main() {
 		},
 			plc4go.WithDiscoveryOptionProtocolSpecific("who-is-low-limit", 0),
 			plc4go.WithDiscoveryOptionProtocolSpecific("who-is-high-limit", "255"),
+			plc4go.WithDiscoveryOptionProtocolSpecific("who-has-device-instance-range-low-limit", "0"),
+			plc4go.WithDiscoveryOptionProtocolSpecific("who-has-device-instance-range-high-limit", "255"),
+			// Either use name or the 2 identifier tuple below
+			plc4go.WithDiscoveryOptionProtocolSpecific("who-has-object-name", "john"),
+			//plc4go.WithDiscoveryOptionProtocolSpecific("who-has-object-identifier-type", "DEVICE"),
+			//plc4go.WithDiscoveryOptionProtocolSpecific("who-has-object-identifier-instance", "133"),
 		); err != nil {
 			panic(err)
 		}
