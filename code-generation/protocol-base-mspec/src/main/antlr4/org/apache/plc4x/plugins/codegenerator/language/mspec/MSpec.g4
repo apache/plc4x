@@ -154,7 +154,7 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER_LITERAL (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)* RBRACKET
+ : LBRACKET (discriminatorValues=multipleExpressions)? (nameWildcard=ASTERISK)? name=IDENTIFIER_LITERAL (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)* RBRACKET
  ;
 
 dataType

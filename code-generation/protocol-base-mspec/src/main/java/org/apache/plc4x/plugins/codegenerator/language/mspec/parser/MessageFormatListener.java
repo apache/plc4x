@@ -517,7 +517,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
-        String typeName = ctx.name.getText();
+        String namePrefix = "";
+        if (ctx.nameWildcard != null) {
+            namePrefix = currentTypeName;
+        }
+        String typeName = namePrefix + ctx.name.getText();
 
         final Map<String, Term> attributes = batchSetAttributes.peek();
 
@@ -703,13 +707,13 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 int propertySizeInBits = 32;
                 if (attributes.containsKey("propertySizeInBits")) {
                     final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
-                    if(!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
                         throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
                     }
                     NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
                     propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
                 }
-                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT,propertySizeInBits);
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, propertySizeInBits);
                 return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
             }
             case VUINT: {
@@ -718,13 +722,13 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 int propertySizeInBits = 32;
                 if (attributes.containsKey("propertySizeInBits")) {
                     final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
-                    if(!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
                         throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
                     }
                     NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
                     propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
                 }
-                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT,propertySizeInBits);
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, propertySizeInBits);
                 return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
             }
             case FLOAT:
