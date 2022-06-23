@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.eip.readwrite.field;
+package org.apache.plc4x.java.eip.base.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class EipField implements PlcField, Serializable {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
+        Pattern.compile("^(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
     private static final String TAG = "tag";
     private static final String ELEMENTS = "elementNb";
@@ -91,7 +91,7 @@ public class EipField implements PlcField, Serializable {
         if (matcher.matches()) {
             String tag = matcher.group(TAG);
             int nb = 0;
-            CIPDataTypeCode type = null;
+            CIPDataTypeCode type;
             if (!matcher.group(ELEMENTS).isEmpty()) {
                 nb = Integer.parseInt(matcher.group(ELEMENTS));
             }

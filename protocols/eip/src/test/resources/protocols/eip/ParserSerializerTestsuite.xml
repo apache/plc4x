@@ -31,6 +31,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>BIG_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -56,6 +57,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>BIG_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -151,6 +153,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>BIG_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -206,6 +209,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>BIG_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -305,6 +309,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>BIG_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>

@@ -21,15 +21,20 @@
 ///EthernetIP Header of size 24
 /////////////////////////////////////////////////////////////////
 
-[discriminatedType EipPacket (IntegerEncoding order) byteOrder='order == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
+[discriminatedType EipPacket (IntegerEncoding order, bit response) byteOrder='order == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
     [discriminator uint 16 command]
-    // TODO: was len before but that is a reserved keyword in golang and as long as we don't have a language agnostic neutralizer this clashes
     [implicit      uint 16 packetLength 'lengthInBytes - 24']
     [simple        uint 32 sessionHandle]
     [simple        uint 32 status]
     [array         byte    senderContext count '8']
     [simple        uint 32 options]
-    [typeSwitch command
+    [typeSwitch command,response
+            ['0x0004','false' ListServicesRequest
+            ]
+            ['0x0004','true' ListServicesResponse
+                [simple     uint    16    itemCount]
+                [array      TypeId('order')         typeId   count   'itemCount']
+            ]
             ['0x0065' EipConnectionRequest
                 [const  uint    16   protocolVersion   0x01]
                 [const  uint    16   flags             0x00]
@@ -57,6 +62,15 @@
         ['0x0000'   NullAddressItem
             [reserved       uint    16  '0x0000']
         ]
+        ['0x0100'   ServicesResponse
+            [implicit   uint 16     serviceLen 'lengthInBytes - 4']
+            [simple     uint 16     encapsulationProtocol]
+            [reserved   uint 2      '0x00']
+            [simple     bit         supportsCIPEncapsulation]
+            [reserved   uint 12      '0x00']
+            [simple     bit         supportsUDP]
+            [array      byte   data  count  'serviceLen - 4']
+        ]
         ['0x00A1'   ConnectedAddressItem
             [reserved       uint    16  '0x0004']
             [simple         uint    32  connectionId]
@@ -64,7 +78,7 @@
         ['0x00B1'   ConnectedDataItem
             [implicit       uint    16  packetSize 'service.lengthInBytes + 2']
             [simple         uint    16  sequenceCount]
-            [simple         CipService('true', 'packetSize', 'order')    service]
+            [simple         CipService('true', 'packetSize - 2', 'order')    service]
         ]
         ['0x00B2'   UnConnectedDataItem
             [implicit       uint    16  packetSize 'service.lengthInBytes']
@@ -146,7 +160,7 @@
                [simple      PathSegment('order')         instanceSegment]
                [reserved   uint    16  '0x9D05']   //Timeout 5s
                [implicit   uint    16  messageSize   'lengthInBytes - 10 - 4']   //subtract above and routing
-               [simple     CipService('false','messageSize','order')  unconnectedService ]
+               [simple     CipService('false','messageSize','order')  unconnectedService]
                [const      uint    16  route 0x0001]
                [simple     int     8   backPlane]
                [simple     int     8   slot]

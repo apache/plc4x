@@ -31,6 +31,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -83,6 +84,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -248,6 +250,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -304,6 +307,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -356,6 +360,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -409,6 +414,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -464,6 +470,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -519,6 +526,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -648,6 +656,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -702,6 +711,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -725,6 +735,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -748,6 +759,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -769,6 +781,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -864,6 +877,7 @@
     <root-type>EipPacket</root-type>
     <parser-arguments>
       <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
     </parser-arguments>
     <xml>
       <EipPacket>
@@ -907,6 +921,182 @@
             </TypeId>
           </typeId>
         </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Register Response - Simulator</name>
+    <raw>6500040081926a3500000000504c4334582020200000000001000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">896176769</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipConnectionRequest>
+          <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
+          <flags dataType="uint" bitLength="16">0</flags>
+        </EipConnectionRequest>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Read Response 4C</name>
+    <raw>700020005e5dccfd00000000504c433458202020000000000000000000000200a1000400c3a45cf2b1000c000100cc000000ca0000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">112</command>
+        <packetLength dataType="uint" bitLength="16">32</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">4258028894</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <SendUnitData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">161</id>
+              <ConnectedAddressItem>
+                <reserved dataType="uint" bitLength="16">4</reserved>
+                <connectionId dataType="uint" bitLength="32">4066157763</connectionId>
+              </ConnectedAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">177</id>
+              <ConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">12</packetSize>
+                <sequenceCount dataType="uint" bitLength="16">1</sequenceCount>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">76</service>
+                    <CipReadResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      <dataType>
+                        <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="REAL">202</CIPDataTypeCode>
+                      </dataType>
+                      <data dataType="byte" bitLength="32">0x00000000</data>
+                    </CipReadResponse>
+                  </CipService>
+                </service>
+              </ConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </SendUnitData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP List Services Request</name>
+    <raw>04000000ec9a149000000000000000000000000000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">0</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">2417269484</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesRequest>
+        </ListServicesRequest>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP List Services Response</name>
+    <raw>04001900ec9a14900000000000000000000000000000000001000001130001002000436f6d6d756e69636174696f6e7300</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">25</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">2417269484</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesResponse>
+          <itemCount dataType="uint" bitLength="16">1</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">256</id>
+              <ServicesResponse>
+                <serviceLen dataType="uint" bitLength="16">19</serviceLen>
+                <encapsulationProtocol dataType="uint" bitLength="16">1</encapsulationProtocol>
+                <reserved dataType="uint" bitLength="2">0</reserved>
+                <supportsCIPEncapsulation dataType="bit" bitLength="1">true</supportsCIPEncapsulation>
+                <reserved dataType="uint" bitLength="12">0</reserved>
+                <supportsUDP dataType="bit" bitLength="1">false</supportsUDP>
+                <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
+              </ServicesResponse>
+            </TypeId>
+          </typeId>
+        </ListServicesResponse>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP List Services Response 2</name>
+    <raw>040019000000000000000000504c4334582020200000000001000001130001002000436f6d6d756e69636174696f6e7300</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">25</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesResponse>
+          <itemCount dataType="uint" bitLength="16">1</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">256</id>
+              <ServicesResponse>
+                <serviceLen dataType="uint" bitLength="16">19</serviceLen>
+                <encapsulationProtocol dataType="uint" bitLength="16">1</encapsulationProtocol>
+                <reserved dataType="uint" bitLength="2">0</reserved>
+                <supportsCIPEncapsulation dataType="bit" bitLength="1">true</supportsCIPEncapsulation>
+                <reserved dataType="uint" bitLength="12">0</reserved>
+                <supportsUDP dataType="bit" bitLength="1">false</supportsUDP>
+                <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
+              </ServicesResponse>
+            </TypeId>
+          </typeId>
+        </ListServicesResponse>
       </EipPacket>
     </xml>
   </testcase>

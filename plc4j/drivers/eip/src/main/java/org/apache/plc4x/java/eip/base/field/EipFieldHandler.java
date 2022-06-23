@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.eip.readwrite.field;
+package org.apache.plc4x.java.eip.base.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;

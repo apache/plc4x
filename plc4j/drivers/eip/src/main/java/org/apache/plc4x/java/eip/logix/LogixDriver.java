@@ -16,39 +16,48 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.eip.readwrite;
+package org.apache.plc4x.java.eip.logix;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
-import org.apache.plc4x.java.eip.readwrite.field.EipField;
-import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
-import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.eip.base.field.EipField;
+import org.apache.plc4x.java.eip.base.field.EipFieldHandler;
+import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
+import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
+import org.apache.plc4x.java.eip.readwrite.EipPacket;
+import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class EIPDriver extends GeneratedDriverBase<EipPacket> {
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
+
+public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     public static final int PORT = 44818;
+
     @Override
     public String getProtocolCode() {
-        return "eip";
+        return "logix";
     }
 
     @Override
     public String getProtocolName() {
-        return "EthernetIP";
+        return "Logix CIP";
     }
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
-        return EIPConfiguration.class;
+        return LogixConfiguration.class;
     }
 
     @Override
@@ -61,13 +70,9 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         return new IEC61131ValueHandler();
     }
 
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
     protected boolean awaitDisconnectComplete() {
-        return false;
+        return true;
     }
 
     @Override
@@ -90,6 +95,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withParserArgs(IntegerEncoding.LITTLE_ENDIAN, true)
             .littleEndian()
             .build();
     }

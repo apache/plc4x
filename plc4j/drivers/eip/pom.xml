@@ -90,7 +90,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.eip.readwrite.EIPDriver
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.eip.base.EIPDriver
             </Export-Service>
             <Import-Package>
               com.fasterxml.jackson.annotation;resolution:=optional,
