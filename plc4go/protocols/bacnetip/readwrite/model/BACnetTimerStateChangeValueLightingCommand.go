@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueLightingCommand is the corresponding interface of BACnetTimerStateChangeValueLightingCommand
 type BACnetTimerStateChangeValueLightingCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueLightingCommand.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueLightingCommandExactly interface {
+	BACnetTimerStateChangeValueLightingCommand
+	isBACnetTimerStateChangeValueLightingCommand() bool
 }
 
 // _BACnetTimerStateChangeValueLightingCommand is the data-structure of this message
 type _BACnetTimerStateChangeValueLightingCommand struct {
 	*_BACnetTimerStateChangeValue
 	LigthingCommandValue BACnetLightingCommandEnclosed
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueLightingCommandParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueLightingCommand{
-		LigthingCommandValue:         ligthingCommandValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		LigthingCommandValue: ligthingCommandValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueLightingCommand) isBACnetTimerStateChangeValueLightingCommand() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueLightingCommand) String() string {

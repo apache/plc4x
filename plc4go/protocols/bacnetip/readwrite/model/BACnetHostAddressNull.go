@@ -28,15 +28,18 @@ import (
 
 // BACnetHostAddressNull is the corresponding interface of BACnetHostAddressNull
 type BACnetHostAddressNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetHostAddress
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetHostAddressNullExactly can be used when we want exactly this type and not a type which fulfills BACnetHostAddressNull.
+// This is useful for switch cases.
+type BACnetHostAddressNullExactly interface {
+	BACnetHostAddressNull
+	isBACnetHostAddressNull() bool
 }
 
 // _BACnetHostAddressNull is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetHostAddressNull) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetHostAddressNull) isBACnetHostAddressNull() bool {
+	return true
 }
 
 func (m *_BACnetHostAddressNull) String() string {

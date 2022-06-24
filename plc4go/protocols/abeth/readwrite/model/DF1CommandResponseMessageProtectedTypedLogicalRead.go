@@ -28,24 +28,24 @@ import (
 
 // DF1CommandResponseMessageProtectedTypedLogicalRead is the corresponding interface of DF1CommandResponseMessageProtectedTypedLogicalRead
 type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1ResponseMessage
 	// GetData returns Data (property field)
 	GetData() []uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1CommandResponseMessageProtectedTypedLogicalReadExactly can be used when we want exactly this type and not a type which fulfills DF1CommandResponseMessageProtectedTypedLogicalRead.
+// This is useful for switch cases.
+type DF1CommandResponseMessageProtectedTypedLogicalReadExactly interface {
+	DF1CommandResponseMessageProtectedTypedLogicalRead
+	isDF1CommandResponseMessageProtectedTypedLogicalRead() bool
 }
 
 // _DF1CommandResponseMessageProtectedTypedLogicalRead is the data-structure of this message
 type _DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 	*_DF1ResponseMessage
 	Data []uint8
-
-	// Arguments.
-	PayloadLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
-	data := make([]uint8, 0)
+	var data []uint8
 	{
 		_dataLength := uint16(payloadLength) - uint16(uint16(8))
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
@@ -167,8 +167,10 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
-		Data:                data,
-		_DF1ResponseMessage: &_DF1ResponseMessage{},
+		Data: data,
+		_DF1ResponseMessage: &_DF1ResponseMessage{
+			PayloadLength: payloadLength,
+		},
 	}
 	_child._DF1ResponseMessage._DF1ResponseMessageChildRequirements = _child
 	return _child, nil
@@ -183,19 +185,17 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuf
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); popErr != nil {
@@ -204,6 +204,10 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) isDF1CommandResponseMessageProtectedTypedLogicalRead() bool {
+	return true
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) String() string {

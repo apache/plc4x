@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesUnits is the corresponding interface of BACnetPropertyStatesUnits
 type BACnetPropertyStatesUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesUnits.
+// This is useful for switch cases.
+type BACnetPropertyStatesUnitsExactly interface {
+	BACnetPropertyStatesUnits
+	isBACnetPropertyStatesUnits() bool
 }
 
 // _BACnetPropertyStatesUnits is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesUnits) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesUnits) isBACnetPropertyStatesUnits() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesUnits) String() string {

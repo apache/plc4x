@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDeployedProfileLocation is the corresponding interface of BACnetConstructedDataDeployedProfileLocation
 type BACnetConstructedDataDeployedProfileLocation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDeployedProfileLocation returns DeployedProfileLocation (property field)
 	GetDeployedProfileLocation() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDeployedProfileLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeployedProfileLocation.
+// This is useful for switch cases.
+type BACnetConstructedDataDeployedProfileLocationExactly interface {
+	BACnetConstructedDataDeployedProfileLocation
+	isBACnetConstructedDataDeployedProfileLocation() bool
 }
 
 // _BACnetConstructedDataDeployedProfileLocation is the data-structure of this message
 type _BACnetConstructedDataDeployedProfileLocation struct {
 	*_BACnetConstructedData
 	DeployedProfileLocation BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDeployedProfileLocation{
 		DeployedProfileLocation: deployedProfileLocation,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocation) isBACnetConstructedDataDeployedProfileLocation() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) String() string {

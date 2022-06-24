@@ -5566,8 +5566,9 @@ public class RandomPackagesTest {
                     BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit().getPayload().getActualValue().longValue());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit().getPayload().getActualValue().longValue());
-                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
-                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
+                    BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier = (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) baCnetUnconfirmedServiceRequestWhoHas.getObject();
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier.getObjectIdentifier().getInstanceNumber());
                 }),
             DynamicTest.dynamicTest("No. 3-4 - skip 2 LLC packages",
                 () -> pcapEvaluator.skipPackages(2)),
@@ -5617,8 +5618,9 @@ public class RandomPackagesTest {
                     BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
-                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
-                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
+                    BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier = (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) baCnetUnconfirmedServiceRequestWhoHas.getObject();
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier.getObjectIdentifier().getInstanceNumber());
                 }),
             DynamicTest.dynamicTest("No. 67 - skip 1 LLC packages",
                 () -> pcapEvaluator.skipPackages(1)),
@@ -5657,8 +5659,9 @@ public class RandomPackagesTest {
                     BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
-                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
-                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
+                    BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier = (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) baCnetUnconfirmedServiceRequestWhoHas.getObject();
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHasObjectIdentifier.getObjectIdentifier().getInstanceNumber());
                 }),
             DynamicTest.dynamicTest("No. 71 - skip 1 LLC packages",
                 () -> pcapEvaluator.skipPackages(1)),

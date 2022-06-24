@@ -28,14 +28,17 @@ import (
 
 // BACnetOpeningTag is the corresponding interface of BACnetOpeningTag
 type BACnetOpeningTag interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetOpeningTagExactly can be used when we want exactly this type and not a type which fulfills BACnetOpeningTag.
+// This is useful for switch cases.
+type BACnetOpeningTagExactly interface {
+	BACnetOpeningTag
+	isBACnetOpeningTag() bool
 }
 
 // _BACnetOpeningTag is the data-structure of this message
@@ -165,6 +168,10 @@ func (m *_BACnetOpeningTag) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetOpeningTag")
 	}
 	return nil
+}
+
+func (m *_BACnetOpeningTag) isBACnetOpeningTag() bool {
+	return true
 }
 
 func (m *_BACnetOpeningTag) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetAuthenticationFactorTypeTagged is the corresponding interface of BACnetAuthenticationFactorTypeTagged
 type BACnetAuthenticationFactorTypeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAuthenticationFactorType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthenticationFactorTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationFactorTypeTagged.
+// This is useful for switch cases.
+type BACnetAuthenticationFactorTypeTaggedExactly interface {
+	BACnetAuthenticationFactorTypeTagged
+	isBACnetAuthenticationFactorTypeTagged() bool
 }
 
 // _BACnetAuthenticationFactorTypeTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetAuthenticationFactorTypeTagged) Serialize(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationFactorTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationFactorTypeTagged) isBACnetAuthenticationFactorTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationFactorTypeTagged) String() string {

@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtMemoryBitWrite is the corresponding interface of ApduDataExtMemoryBitWrite
 type ApduDataExtMemoryBitWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtMemoryBitWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtMemoryBitWrite.
+// This is useful for switch cases.
+type ApduDataExtMemoryBitWriteExactly interface {
+	ApduDataExtMemoryBitWrite
+	isApduDataExtMemoryBitWrite() bool
 }
 
 // _ApduDataExtMemoryBitWrite is the data-structure of this message
 type _ApduDataExtMemoryBitWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtMemoryBitWrite{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtMemoryBitWrite) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtMemoryBitWrite) isApduDataExtMemoryBitWrite() bool {
+	return true
 }
 
 func (m *_ApduDataExtMemoryBitWrite) String() string {

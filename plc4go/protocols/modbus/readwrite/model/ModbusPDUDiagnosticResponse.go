@@ -28,17 +28,20 @@ import (
 
 // ModbusPDUDiagnosticResponse is the corresponding interface of ModbusPDUDiagnosticResponse
 type ModbusPDUDiagnosticResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetSubFunction returns SubFunction (property field)
 	GetSubFunction() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUDiagnosticResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUDiagnosticResponse.
+// This is useful for switch cases.
+type ModbusPDUDiagnosticResponseExactly interface {
+	ModbusPDUDiagnosticResponse
+	isModbusPDUDiagnosticResponse() bool
 }
 
 // _ModbusPDUDiagnosticResponse is the data-structure of this message
@@ -205,6 +208,10 @@ func (m *_ModbusPDUDiagnosticResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUDiagnosticResponse) isModbusPDUDiagnosticResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUDiagnosticResponse) String() string {

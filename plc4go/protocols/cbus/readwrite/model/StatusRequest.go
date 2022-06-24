@@ -28,14 +28,17 @@ import (
 
 // StatusRequest is the corresponding interface of StatusRequest
 type StatusRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetStatusType returns StatusType (property field)
 	GetStatusType() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// StatusRequestExactly can be used when we want exactly this type and not a type which fulfills StatusRequest.
+// This is useful for switch cases.
+type StatusRequestExactly interface {
+	StatusRequest
+	isStatusRequest() bool
 }
 
 // _StatusRequest is the data-structure of this message
@@ -45,9 +48,9 @@ type _StatusRequest struct {
 }
 
 type _StatusRequestChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type StatusRequestParent interface {
@@ -56,7 +59,7 @@ type StatusRequestParent interface {
 }
 
 type StatusRequestChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent StatusRequest, statusType byte)
 	GetParent() *StatusRequest
 
@@ -177,6 +180,10 @@ func (pm *_StatusRequest) SerializeParent(writeBuffer utils.WriteBuffer, child S
 		return errors.Wrap(popErr, "Error popping for StatusRequest")
 	}
 	return nil
+}
+
+func (m *_StatusRequest) isStatusRequest() bool {
+	return true
 }
 
 func (m *_StatusRequest) String() string {

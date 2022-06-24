@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMode is the corresponding interface of BACnetConstructedDataMode
 type BACnetConstructedDataMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMode returns Mode (property field)
 	GetMode() BACnetLifeSafetyModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMode.
+// This is useful for switch cases.
+type BACnetConstructedDataModeExactly interface {
+	BACnetConstructedDataMode
+	isBACnetConstructedDataMode() bool
 }
 
 // _BACnetConstructedDataMode is the data-structure of this message
 type _BACnetConstructedDataMode struct {
 	*_BACnetConstructedData
 	Mode BACnetLifeSafetyModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMode{
-		Mode:                   mode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Mode: mode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMode) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMode) isBACnetConstructedDataMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMode) String() string {

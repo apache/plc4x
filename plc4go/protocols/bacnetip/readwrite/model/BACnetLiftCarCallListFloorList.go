@@ -28,18 +28,21 @@ import (
 
 // BACnetLiftCarCallListFloorList is the corresponding interface of BACnetLiftCarCallListFloorList
 type BACnetLiftCarCallListFloorList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetFloorNumbers returns FloorNumbers (property field)
 	GetFloorNumbers() []BACnetApplicationTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLiftCarCallListFloorListExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarCallListFloorList.
+// This is useful for switch cases.
+type BACnetLiftCarCallListFloorListExactly interface {
+	BACnetLiftCarCallListFloorList
+	isBACnetLiftCarCallListFloorList() bool
 }
 
 // _BACnetLiftCarCallListFloorList is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetLiftCarCallListFloorListParse(readBuffer utils.ReadBuffer, tagNumber 
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumbers")
 	}
 	// Terminated array
-	floorNumbers := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var floorNumbers []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetLiftCarCallListFloorList) Serialize(writeBuffer utils.WriteBuffe
 	}
 
 	// Array Field (floorNumbers)
-	if m.GetFloorNumbers() != nil {
-		if pushErr := writeBuffer.PushContext("floorNumbers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floorNumbers")
+	if pushErr := writeBuffer.PushContext("floorNumbers", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for floorNumbers")
+	}
+	for _, _element := range m.GetFloorNumbers() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'floorNumbers' field")
 		}
-		for _, _element := range m.GetFloorNumbers() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'floorNumbers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("floorNumbers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floorNumbers")
-		}
+	}
+	if popErr := writeBuffer.PopContext("floorNumbers", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for floorNumbers")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetLiftCarCallListFloorList) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarCallListFloorList")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarCallListFloorList) isBACnetLiftCarCallListFloorList() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarCallListFloorList) String() string {

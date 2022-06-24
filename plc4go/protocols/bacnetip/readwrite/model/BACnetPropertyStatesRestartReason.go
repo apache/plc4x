@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesRestartReason is the corresponding interface of BACnetPropertyStatesRestartReason
 type BACnetPropertyStatesRestartReason interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetRestartReason returns RestartReason (property field)
 	GetRestartReason() BACnetRestartReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesRestartReasonExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesRestartReason.
+// This is useful for switch cases.
+type BACnetPropertyStatesRestartReasonExactly interface {
+	BACnetPropertyStatesRestartReason
+	isBACnetPropertyStatesRestartReason() bool
 }
 
 // _BACnetPropertyStatesRestartReason is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesRestartReason) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesRestartReason) isBACnetPropertyStatesRestartReason() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesRestartReason) String() string {

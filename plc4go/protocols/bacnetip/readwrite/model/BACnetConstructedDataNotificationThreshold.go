@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNotificationThreshold is the corresponding interface of BACnetConstructedDataNotificationThreshold
 type BACnetConstructedDataNotificationThreshold interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNotificationThreshold returns NotificationThreshold (property field)
 	GetNotificationThreshold() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNotificationThresholdExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotificationThreshold.
+// This is useful for switch cases.
+type BACnetConstructedDataNotificationThresholdExactly interface {
+	BACnetConstructedDataNotificationThreshold
+	isBACnetConstructedDataNotificationThreshold() bool
 }
 
 // _BACnetConstructedDataNotificationThreshold is the data-structure of this message
 type _BACnetConstructedDataNotificationThreshold struct {
 	*_BACnetConstructedData
 	NotificationThreshold BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNotificationThresholdParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNotificationThreshold{
-		NotificationThreshold:  notificationThreshold,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NotificationThreshold: notificationThreshold,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNotificationThreshold) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNotificationThreshold) isBACnetConstructedDataNotificationThreshold() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) String() string {

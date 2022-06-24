@@ -28,6 +28,8 @@ import (
 
 // BVLCForwardedNPDU is the corresponding interface of BVLCForwardedNPDU
 type BVLCForwardedNPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
@@ -35,12 +37,13 @@ type BVLCForwardedNPDU interface {
 	GetPort() uint16
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCForwardedNPDUExactly can be used when we want exactly this type and not a type which fulfills BVLCForwardedNPDU.
+// This is useful for switch cases.
+type BVLCForwardedNPDUExactly interface {
+	BVLCForwardedNPDU
+	isBVLCForwardedNPDU() bool
 }
 
 // _BVLCForwardedNPDU is the data-structure of this message
@@ -163,6 +166,10 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
+	// This happens when the size is set conditional to 0
+	if len(ip) == 0 {
+		ip = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -220,19 +227,17 @@ func (m *_BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (ip)
-		if m.GetIp() != nil {
-			if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for ip")
+		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for ip")
+		}
+		for _, _element := range m.GetIp() {
+			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 			}
-			for _, _element := range m.GetIp() {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for ip")
-			}
+		}
+		if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for ip")
 		}
 
 		// Simple Field (port)
@@ -260,6 +265,10 @@ func (m *_BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCForwardedNPDU) isBVLCForwardedNPDU() bool {
+	return true
 }
 
 func (m *_BVLCForwardedNPDU) String() string {

@@ -28,6 +28,8 @@ import (
 
 // LDataCon is the corresponding interface of LDataCon
 type LDataCon interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -35,12 +37,13 @@ type LDataCon interface {
 	GetAdditionalInformation() []CEMIAdditionalInformation
 	// GetDataFrame returns DataFrame (property field)
 	GetDataFrame() LDataFrame
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// LDataConExactly can be used when we want exactly this type and not a type which fulfills LDataCon.
+// This is useful for switch cases.
+type LDataConExactly interface {
+	LDataCon
+	isLDataCon() bool
 }
 
 // _LDataCon is the data-structure of this message
@@ -49,9 +52,6 @@ type _LDataCon struct {
 	AdditionalInformationLength uint8
 	AdditionalInformation       []CEMIAdditionalInformation
 	DataFrame                   LDataFrame
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {
 		return nil, errors.Wrap(pullErr, "Error pulling for additionalInformation")
 	}
 	// Length array
-	additionalInformation := make([]CEMIAdditionalInformation, 0)
+	var additionalInformation []CEMIAdditionalInformation
 	{
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
@@ -209,7 +209,9 @@ func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (LDataCon, error) {
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		_CEMI:                       &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -231,19 +233,17 @@ func (m *_LDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (additionalInformation)
-		if m.GetAdditionalInformation() != nil {
-			if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for additionalInformation")
+		if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for additionalInformation")
+		}
+		for _, _element := range m.GetAdditionalInformation() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 			}
-			for _, _element := range m.GetAdditionalInformation() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for additionalInformation")
-			}
+		}
+		if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for additionalInformation")
 		}
 
 		// Simple Field (dataFrame)
@@ -264,6 +264,10 @@ func (m *_LDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LDataCon) isLDataCon() bool {
+	return true
 }
 
 func (m *_LDataCon) String() string {

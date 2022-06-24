@@ -28,18 +28,21 @@ import (
 
 // BVLCBroadcastDistributionTableEntry is the corresponding interface of BVLCBroadcastDistributionTableEntry
 type BVLCBroadcastDistributionTableEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
 	// GetPort returns Port (property field)
 	GetPort() uint16
 	// GetBroadcastDistributionMap returns BroadcastDistributionMap (property field)
 	GetBroadcastDistributionMap() []uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCBroadcastDistributionTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCBroadcastDistributionTableEntry.
+// This is useful for switch cases.
+type BVLCBroadcastDistributionTableEntryExactly interface {
+	BVLCBroadcastDistributionTableEntry
+	isBVLCBroadcastDistributionTableEntry() bool
 }
 
 // _BVLCBroadcastDistributionTableEntry is the data-structure of this message
@@ -133,6 +136,10 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLC
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
+	// This happens when the size is set conditional to 0
+	if len(ip) == 0 {
+		ip = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -159,6 +166,10 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLC
 	}
 	// Count array
 	broadcastDistributionMap := make([]uint8, uint16(4))
+	// This happens when the size is set conditional to 0
+	if len(broadcastDistributionMap) == 0 {
+		broadcastDistributionMap = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -188,19 +199,17 @@ func (m *_BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.Write
 	}
 
 	// Array Field (ip)
-	if m.GetIp() != nil {
-		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ip")
+	if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for ip")
+	}
+	for _, _element := range m.GetIp() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 		}
-		for _, _element := range m.GetIp() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ip")
-		}
+	}
+	if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for ip")
 	}
 
 	// Simple Field (port)
@@ -211,25 +220,27 @@ func (m *_BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.Write
 	}
 
 	// Array Field (broadcastDistributionMap)
-	if m.GetBroadcastDistributionMap() != nil {
-		if pushErr := writeBuffer.PushContext("broadcastDistributionMap", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for broadcastDistributionMap")
+	if pushErr := writeBuffer.PushContext("broadcastDistributionMap", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for broadcastDistributionMap")
+	}
+	for _, _element := range m.GetBroadcastDistributionMap() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'broadcastDistributionMap' field")
 		}
-		for _, _element := range m.GetBroadcastDistributionMap() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'broadcastDistributionMap' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("broadcastDistributionMap", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for broadcastDistributionMap")
-		}
+	}
+	if popErr := writeBuffer.PopContext("broadcastDistributionMap", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for broadcastDistributionMap")
 	}
 
 	if popErr := writeBuffer.PopContext("BVLCBroadcastDistributionTableEntry"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for BVLCBroadcastDistributionTableEntry")
 	}
 	return nil
+}
+
+func (m *_BVLCBroadcastDistributionTableEntry) isBVLCBroadcastDistributionTableEntry() bool {
+	return true
 }
 
 func (m *_BVLCBroadcastDistributionTableEntry) String() string {

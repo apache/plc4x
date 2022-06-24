@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimeSynchronizationInterval is the corresponding interface of BACnetConstructedDataTimeSynchronizationInterval
 type BACnetConstructedDataTimeSynchronizationInterval interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimeSynchronization returns TimeSynchronization (property field)
 	GetTimeSynchronization() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimeSynchronizationIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeSynchronizationInterval.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeSynchronizationIntervalExactly interface {
+	BACnetConstructedDataTimeSynchronizationInterval
+	isBACnetConstructedDataTimeSynchronizationInterval() bool
 }
 
 // _BACnetConstructedDataTimeSynchronizationInterval is the data-structure of this message
 type _BACnetConstructedDataTimeSynchronizationInterval struct {
 	*_BACnetConstructedData
 	TimeSynchronization BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimeSynchronizationInterval{
-		TimeSynchronization:    timeSynchronization,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		TimeSynchronization: timeSynchronization,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) isBACnetConstructedDataTimeSynchronizationInterval() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) String() string {

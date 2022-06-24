@@ -33,14 +33,17 @@ const TPKTPacket_PROTOCOLID uint8 = 0x03
 
 // TPKTPacket is the corresponding interface of TPKTPacket
 type TPKTPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPayload returns Payload (property field)
 	GetPayload() COTPPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// TPKTPacketExactly can be used when we want exactly this type and not a type which fulfills TPKTPacket.
+// This is useful for switch cases.
+type TPKTPacketExactly interface {
+	TPKTPacket
+	isTPKTPacket() bool
 }
 
 // _TPKTPacket is the data-structure of this message
@@ -225,6 +228,10 @@ func (m *_TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for TPKTPacket")
 	}
 	return nil
+}
+
+func (m *_TPKTPacket) isTPKTPacket() bool {
+	return true
 }
 
 func (m *_TPKTPacket) String() string {

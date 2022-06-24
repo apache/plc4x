@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFileAccessMethod is the corresponding interface of BACnetConstructedDataFileAccessMethod
 type BACnetConstructedDataFileAccessMethod interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetFileAccessMethodTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFileAccessMethodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileAccessMethod.
+// This is useful for switch cases.
+type BACnetConstructedDataFileAccessMethodExactly interface {
+	BACnetConstructedDataFileAccessMethod
+	isBACnetConstructedDataFileAccessMethod() bool
 }
 
 // _BACnetConstructedDataFileAccessMethod is the data-structure of this message
 type _BACnetConstructedDataFileAccessMethod struct {
 	*_BACnetConstructedData
 	FileAccessMethod BACnetFileAccessMethodTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFileAccessMethod{
-		FileAccessMethod:       fileAccessMethod,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FileAccessMethod: fileAccessMethod,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFileAccessMethod) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFileAccessMethod) isBACnetConstructedDataFileAccessMethod() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFileAccessMethod) String() string {

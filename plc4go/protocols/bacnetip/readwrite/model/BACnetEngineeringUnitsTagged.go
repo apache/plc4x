@@ -28,6 +28,8 @@ import (
 
 // BACnetEngineeringUnitsTagged is the corresponding interface of BACnetEngineeringUnitsTagged
 type BACnetEngineeringUnitsTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetEngineeringUnitsTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEngineeringUnitsTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEngineeringUnitsTagged.
+// This is useful for switch cases.
+type BACnetEngineeringUnitsTaggedExactly interface {
+	BACnetEngineeringUnitsTagged
+	isBACnetEngineeringUnitsTagged() bool
 }
 
 // _BACnetEngineeringUnitsTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetEngineeringUnitsTagged) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetEngineeringUnitsTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetEngineeringUnitsTagged) isBACnetEngineeringUnitsTagged() bool {
+	return true
 }
 
 func (m *_BACnetEngineeringUnitsTagged) String() string {

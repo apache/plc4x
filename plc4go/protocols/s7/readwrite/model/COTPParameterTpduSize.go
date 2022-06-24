@@ -28,24 +28,24 @@ import (
 
 // COTPParameterTpduSize is the corresponding interface of COTPParameterTpduSize
 type COTPParameterTpduSize interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPParameter
 	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPParameterTpduSizeExactly can be used when we want exactly this type and not a type which fulfills COTPParameterTpduSize.
+// This is useful for switch cases.
+type COTPParameterTpduSizeExactly interface {
+	COTPParameterTpduSize
+	isCOTPParameterTpduSize() bool
 }
 
 // _COTPParameterTpduSize is the data-structure of this message
 type _COTPParameterTpduSize struct {
 	*_COTPParameter
 	TpduSize COTPTpduSize
-
-	// Arguments.
-	Rest uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (COTPPa
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterTpduSize{
-		TpduSize:       tpduSize,
-		_COTPParameter: &_COTPParameter{},
+		TpduSize: tpduSize,
+		_COTPParameter: &_COTPParameter{
+			Rest: rest,
+		},
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPParameterTpduSize) isCOTPParameterTpduSize() bool {
+	return true
 }
 
 func (m *_COTPParameterTpduSize) String() string {

@@ -28,15 +28,18 @@ import (
 
 // SALDataOff is the corresponding interface of SALDataOff
 type SALDataOff interface {
+	utils.LengthAware
+	utils.Serializable
 	SALData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SALDataOffExactly can be used when we want exactly this type and not a type which fulfills SALDataOff.
+// This is useful for switch cases.
+type SALDataOffExactly interface {
+	SALDataOff
+	isSALDataOff() bool
 }
 
 // _SALDataOff is the data-structure of this message
@@ -169,6 +172,10 @@ func (m *_SALDataOff) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SALDataOff) isSALDataOff() bool {
+	return true
 }
 
 func (m *_SALDataOff) String() string {

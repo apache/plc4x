@@ -28,13 +28,16 @@ import (
 
 // CIPEncapsulationConnectionRequest is the corresponding interface of CIPEncapsulationConnectionRequest
 type CIPEncapsulationConnectionRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CIPEncapsulationPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CIPEncapsulationConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationConnectionRequest.
+// This is useful for switch cases.
+type CIPEncapsulationConnectionRequestExactly interface {
+	CIPEncapsulationConnectionRequest
+	isCIPEncapsulationConnectionRequest() bool
 }
 
 // _CIPEncapsulationConnectionRequest is the data-structure of this message
@@ -140,6 +143,10 @@ func (m *_CIPEncapsulationConnectionRequest) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CIPEncapsulationConnectionRequest) isCIPEncapsulationConnectionRequest() bool {
+	return true
 }
 
 func (m *_CIPEncapsulationConnectionRequest) String() string {

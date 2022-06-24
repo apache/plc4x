@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesLiftCarDoorCommand is the corresponding interface of BACnetPropertyStatesLiftCarDoorCommand
 type BACnetPropertyStatesLiftCarDoorCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLiftCarDoorCommand returns LiftCarDoorCommand (property field)
 	GetLiftCarDoorCommand() BACnetLiftCarDoorCommandTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesLiftCarDoorCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftCarDoorCommand.
+// This is useful for switch cases.
+type BACnetPropertyStatesLiftCarDoorCommandExactly interface {
+	BACnetPropertyStatesLiftCarDoorCommand
+	isBACnetPropertyStatesLiftCarDoorCommand() bool
 }
 
 // _BACnetPropertyStatesLiftCarDoorCommand is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) isBACnetPropertyStatesLiftCarDoorCommand() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) String() string {

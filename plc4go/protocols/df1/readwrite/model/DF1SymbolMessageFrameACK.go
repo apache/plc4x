@@ -28,13 +28,16 @@ import (
 
 // DF1SymbolMessageFrameACK is the corresponding interface of DF1SymbolMessageFrameACK
 type DF1SymbolMessageFrameACK interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1Symbol
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1SymbolMessageFrameACKExactly can be used when we want exactly this type and not a type which fulfills DF1SymbolMessageFrameACK.
+// This is useful for switch cases.
+type DF1SymbolMessageFrameACKExactly interface {
+	DF1SymbolMessageFrameACK
+	isDF1SymbolMessageFrameACK() bool
 }
 
 // _DF1SymbolMessageFrameACK is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_DF1SymbolMessageFrameACK) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1SymbolMessageFrameACK) isDF1SymbolMessageFrameACK() bool {
+	return true
 }
 
 func (m *_DF1SymbolMessageFrameACK) String() string {

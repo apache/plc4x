@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDoorExtendedPulseTime is the corresponding interface of BACnetConstructedDataDoorExtendedPulseTime
 type BACnetConstructedDataDoorExtendedPulseTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDoorExtendedPulseTime returns DoorExtendedPulseTime (property field)
 	GetDoorExtendedPulseTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDoorExtendedPulseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorExtendedPulseTime.
+// This is useful for switch cases.
+type BACnetConstructedDataDoorExtendedPulseTimeExactly interface {
+	BACnetConstructedDataDoorExtendedPulseTime
+	isBACnetConstructedDataDoorExtendedPulseTime() bool
 }
 
 // _BACnetConstructedDataDoorExtendedPulseTime is the data-structure of this message
 type _BACnetConstructedDataDoorExtendedPulseTime struct {
 	*_BACnetConstructedData
 	DoorExtendedPulseTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDoorExtendedPulseTimeParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDoorExtendedPulseTime{
-		DoorExtendedPulseTime:  doorExtendedPulseTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DoorExtendedPulseTime: doorExtendedPulseTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) isBACnetConstructedDataDoorExtendedPulseTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) String() string {

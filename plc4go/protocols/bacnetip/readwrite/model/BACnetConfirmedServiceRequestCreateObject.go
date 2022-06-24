@@ -30,17 +30,20 @@ import (
 
 // BACnetConfirmedServiceRequestCreateObject is the corresponding interface of BACnetConfirmedServiceRequestCreateObject
 type BACnetConfirmedServiceRequestCreateObject interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetObjectSpecifier returns ObjectSpecifier (property field)
 	GetObjectSpecifier() BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestCreateObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestCreateObject.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestCreateObjectExactly interface {
+	BACnetConfirmedServiceRequestCreateObject
+	isBACnetConfirmedServiceRequestCreateObject() bool
 }
 
 // _BACnetConfirmedServiceRequestCreateObject is the data-structure of this message
@@ -48,9 +51,6 @@ type _BACnetConfirmedServiceRequestCreateObject struct {
 	*_BACnetConfirmedServiceRequest
 	ObjectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 	ListOfValues    BACnetPropertyValues
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -190,9 +190,11 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestCreateObject{
-		ObjectSpecifier:                objectSpecifier,
-		ListOfValues:                   listOfValues,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		ObjectSpecifier: objectSpecifier,
+		ListOfValues:    listOfValues,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -240,6 +242,10 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObject) isBACnetConfirmedServiceRequestCreateObject() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObject) String() string {

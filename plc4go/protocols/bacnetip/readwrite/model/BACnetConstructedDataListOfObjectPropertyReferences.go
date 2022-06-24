@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataListOfObjectPropertyReferences is the corresponding interface of BACnetConstructedDataListOfObjectPropertyReferences
 type BACnetConstructedDataListOfObjectPropertyReferences interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetReferences returns References (property field)
 	GetReferences() []BACnetDeviceObjectPropertyReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataListOfObjectPropertyReferencesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataListOfObjectPropertyReferences.
+// This is useful for switch cases.
+type BACnetConstructedDataListOfObjectPropertyReferencesExactly interface {
+	BACnetConstructedDataListOfObjectPropertyReferences
+	isBACnetConstructedDataListOfObjectPropertyReferences() bool
 }
 
 // _BACnetConstructedDataListOfObjectPropertyReferences is the data-structure of this message
 type _BACnetConstructedDataListOfObjectPropertyReferences struct {
 	*_BACnetConstructedData
 	References []BACnetDeviceObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for references")
 	}
 	// Terminated array
-	references := make([]BACnetDeviceObjectPropertyReference, 0)
+	var references []BACnetDeviceObjectPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataListOfObjectPropertyReferences{
-		References:             references,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		References: references,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) Serialize(writeBu
 		}
 
 		// Array Field (references)
-		if m.GetReferences() != nil {
-			if pushErr := writeBuffer.PushContext("references", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for references")
+		if pushErr := writeBuffer.PushContext("references", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for references")
+		}
+		for _, _element := range m.GetReferences() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'references' field")
 			}
-			for _, _element := range m.GetReferences() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'references' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("references", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for references")
-			}
+		}
+		if popErr := writeBuffer.PopContext("references", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for references")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataListOfObjectPropertyReferences"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataListOfObjectPropertyReferences) isBACnetConstructedDataListOfObjectPropertyReferences() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataListOfObjectPropertyReferences) String() string {

@@ -28,17 +28,20 @@ import (
 
 // COTPPacketData is the corresponding interface of COTPPacketData
 type COTPPacketData interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPPacket
 	// GetEot returns Eot (property field)
 	GetEot() bool
 	// GetTpduRef returns TpduRef (property field)
 	GetTpduRef() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPPacketDataExactly can be used when we want exactly this type and not a type which fulfills COTPPacketData.
+// This is useful for switch cases.
+type COTPPacketDataExactly interface {
+	COTPPacketData
+	isCOTPPacketData() bool
 }
 
 // _COTPPacketData is the data-structure of this message
@@ -46,9 +49,6 @@ type _COTPPacketData struct {
 	*_COTPPacket
 	Eot     bool
 	TpduRef uint8
-
-	// Arguments.
-	CotpLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -167,9 +167,11 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacke
 
 	// Create a partially initialized instance
 	_child := &_COTPPacketData{
-		Eot:         eot,
-		TpduRef:     tpduRef,
-		_COTPPacket: &_COTPPacket{},
+		Eot:     eot,
+		TpduRef: tpduRef,
+		_COTPPacket: &_COTPPacket{
+			CotpLen: cotpLen,
+		},
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil
@@ -203,6 +205,10 @@ func (m *_COTPPacketData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketData) isCOTPPacketData() bool {
+	return true
 }
 
 func (m *_COTPPacketData) String() string {

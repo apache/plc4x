@@ -28,17 +28,20 @@ import (
 
 // DisconnectResponse is the corresponding interface of DisconnectResponse
 type DisconnectResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DisconnectResponseExactly can be used when we want exactly this type and not a type which fulfills DisconnectResponse.
+// This is useful for switch cases.
+type DisconnectResponseExactly interface {
+	DisconnectResponse
+	isDisconnectResponse() bool
 }
 
 // _DisconnectResponse is the data-structure of this message
@@ -208,6 +211,10 @@ func (m *_DisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DisconnectResponse) isDisconnectResponse() bool {
+	return true
 }
 
 func (m *_DisconnectResponse) String() string {

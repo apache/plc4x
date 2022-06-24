@@ -28,26 +28,26 @@ import (
 
 // BACnetContextTagReal is the corresponding interface of BACnetContextTagReal
 type BACnetContextTagReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() float32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagRealExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagReal.
+// This is useful for switch cases.
+type BACnetContextTagRealExactly interface {
+	BACnetContextTagReal
+	isBACnetContextTagReal() bool
 }
 
 // _BACnetContextTagReal is the data-structure of this message
 type _BACnetContextTagReal struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadReal
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -176,8 +176,10 @@ func BACnetContextTagRealParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagReal{
-		Payload:           payload,
-		_BACnetContextTag: &_BACnetContextTag{},
+		Payload: payload,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -213,6 +215,10 @@ func (m *_BACnetContextTagReal) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagReal) isBACnetContextTagReal() bool {
+	return true
 }
 
 func (m *_BACnetContextTagReal) String() string {

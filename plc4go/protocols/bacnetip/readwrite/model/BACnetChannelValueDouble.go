@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueDouble is the corresponding interface of BACnetChannelValueDouble
 type BACnetChannelValueDouble interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueDouble.
+// This is useful for switch cases.
+type BACnetChannelValueDoubleExactly interface {
+	BACnetChannelValueDouble
+	isBACnetChannelValueDouble() bool
 }
 
 // _BACnetChannelValueDouble is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueDouble) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueDouble) isBACnetChannelValueDouble() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueDouble) String() string {

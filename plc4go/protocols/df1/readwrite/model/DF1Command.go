@@ -28,18 +28,21 @@ import (
 
 // DF1Command is the corresponding interface of DF1Command
 type DF1Command interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1CommandExactly can be used when we want exactly this type and not a type which fulfills DF1Command.
+// This is useful for switch cases.
+type DF1CommandExactly interface {
+	DF1Command
+	isDF1Command() bool
 }
 
 // _DF1Command is the data-structure of this message
@@ -50,10 +53,10 @@ type _DF1Command struct {
 }
 
 type _DF1CommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1CommandParent interface {
@@ -62,7 +65,7 @@ type DF1CommandParent interface {
 }
 
 type DF1CommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent DF1Command, status uint8, transactionCounter uint16)
 	GetParent() *DF1Command
 
@@ -228,6 +231,10 @@ func (pm *_DF1Command) SerializeParent(writeBuffer utils.WriteBuffer, child DF1C
 		return errors.Wrap(popErr, "Error popping for DF1Command")
 	}
 	return nil
+}
+
+func (m *_DF1Command) isDF1Command() bool {
+	return true
 }
 
 func (m *_DF1Command) String() string {

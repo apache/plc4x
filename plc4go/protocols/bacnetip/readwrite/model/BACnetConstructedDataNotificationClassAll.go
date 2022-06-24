@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataNotificationClassAll is the corresponding interface of BACnetConstructedDataNotificationClassAll
 type BACnetConstructedDataNotificationClassAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNotificationClassAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotificationClassAll.
+// This is useful for switch cases.
+type BACnetConstructedDataNotificationClassAllExactly interface {
+	BACnetConstructedDataNotificationClassAll
+	isBACnetConstructedDataNotificationClassAll() bool
 }
 
 // _BACnetConstructedDataNotificationClassAll is the data-structure of this message
 type _BACnetConstructedDataNotificationClassAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataNotificationClassAllParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNotificationClassAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataNotificationClassAll) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNotificationClassAll) isBACnetConstructedDataNotificationClassAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNotificationClassAll) String() string {

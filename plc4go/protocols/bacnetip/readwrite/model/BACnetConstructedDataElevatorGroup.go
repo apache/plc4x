@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataElevatorGroup is the corresponding interface of BACnetConstructedDataElevatorGroup
 type BACnetConstructedDataElevatorGroup interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetElevatorGroup returns ElevatorGroup (property field)
 	GetElevatorGroup() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataElevatorGroupExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElevatorGroup.
+// This is useful for switch cases.
+type BACnetConstructedDataElevatorGroupExactly interface {
+	BACnetConstructedDataElevatorGroup
+	isBACnetConstructedDataElevatorGroup() bool
 }
 
 // _BACnetConstructedDataElevatorGroup is the data-structure of this message
 type _BACnetConstructedDataElevatorGroup struct {
 	*_BACnetConstructedData
 	ElevatorGroup BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataElevatorGroupParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataElevatorGroup{
-		ElevatorGroup:          elevatorGroup,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ElevatorGroup: elevatorGroup,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataElevatorGroup) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataElevatorGroup) isBACnetConstructedDataElevatorGroup() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataElevatorGroup) String() string {

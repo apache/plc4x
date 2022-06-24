@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicWriteFile is the corresponding interface of BACnetConfirmedServiceRequestAtomicWriteFile
 type BACnetConfirmedServiceRequestAtomicWriteFile interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -41,12 +43,13 @@ type BACnetConfirmedServiceRequestAtomicWriteFile interface {
 	GetFileData() BACnetApplicationTagOctetString
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestAtomicWriteFileExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicWriteFile.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAtomicWriteFileExactly interface {
+	BACnetConfirmedServiceRequestAtomicWriteFile
+	isBACnetConfirmedServiceRequestAtomicWriteFile() bool
 }
 
 // _BACnetConfirmedServiceRequestAtomicWriteFile is the data-structure of this message
@@ -57,9 +60,6 @@ type _BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	FileStartPosition BACnetApplicationTagSignedInteger
 	FileData          BACnetApplicationTagOctetString
 	ClosingTag        BACnetClosingTag
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -273,12 +273,14 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestAtomicWriteFile{
-		DeviceIdentifier:               deviceIdentifier,
-		OpeningTag:                     openingTag,
-		FileStartPosition:              fileStartPosition,
-		FileData:                       fileData,
-		ClosingTag:                     closingTag,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		DeviceIdentifier:  deviceIdentifier,
+		OpeningTag:        openingTag,
+		FileStartPosition: fileStartPosition,
+		FileData:          fileData,
+		ClosingTag:        closingTag,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -366,6 +368,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) isBACnetConfirmedServiceRequestAtomicWriteFile() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) String() string {

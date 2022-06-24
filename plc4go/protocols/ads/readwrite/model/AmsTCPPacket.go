@@ -29,14 +29,17 @@ import (
 
 // AmsTCPPacket is the corresponding interface of AmsTCPPacket
 type AmsTCPPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetUserdata returns Userdata (property field)
 	GetUserdata() AmsPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AmsTCPPacketExactly can be used when we want exactly this type and not a type which fulfills AmsTCPPacket.
+// This is useful for switch cases.
+type AmsTCPPacketExactly interface {
+	AmsTCPPacket
+	isAmsTCPPacket() bool
 }
 
 // _AmsTCPPacket is the data-structure of this message
@@ -190,6 +193,10 @@ func (m *_AmsTCPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsTCPPacket")
 	}
 	return nil
+}
+
+func (m *_AmsTCPPacket) isAmsTCPPacket() bool {
+	return true
 }
 
 func (m *_AmsTCPPacket) String() string {

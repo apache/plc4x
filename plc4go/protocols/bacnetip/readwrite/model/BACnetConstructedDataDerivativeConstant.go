@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDerivativeConstant is the corresponding interface of BACnetConstructedDataDerivativeConstant
 type BACnetConstructedDataDerivativeConstant interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDerivativeConstant returns DerivativeConstant (property field)
 	GetDerivativeConstant() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDerivativeConstantExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDerivativeConstant.
+// This is useful for switch cases.
+type BACnetConstructedDataDerivativeConstantExactly interface {
+	BACnetConstructedDataDerivativeConstant
+	isBACnetConstructedDataDerivativeConstant() bool
 }
 
 // _BACnetConstructedDataDerivativeConstant is the data-structure of this message
 type _BACnetConstructedDataDerivativeConstant struct {
 	*_BACnetConstructedData
 	DerivativeConstant BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDerivativeConstantParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDerivativeConstant{
-		DerivativeConstant:     derivativeConstant,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DerivativeConstant: derivativeConstant,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDerivativeConstant) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDerivativeConstant) isBACnetConstructedDataDerivativeConstant() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDerivativeConstant) String() string {

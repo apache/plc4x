@@ -28,21 +28,21 @@ import (
 
 // TDataIndividualInd is the corresponding interface of TDataIndividualInd
 type TDataIndividualInd interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// TDataIndividualIndExactly can be used when we want exactly this type and not a type which fulfills TDataIndividualInd.
+// This is useful for switch cases.
+type TDataIndividualIndExactly interface {
+	TDataIndividualInd
+	isTDataIndividualInd() bool
 }
 
 // _TDataIndividualInd is the data-structure of this message
 type _TDataIndividualInd struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (TDataInd
 
 	// Create a partially initialized instance
 	_child := &_TDataIndividualInd{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_TDataIndividualInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TDataIndividualInd) isTDataIndividualInd() bool {
+	return true
 }
 
 func (m *_TDataIndividualInd) String() string {

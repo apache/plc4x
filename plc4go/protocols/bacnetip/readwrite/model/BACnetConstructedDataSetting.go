@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataSetting is the corresponding interface of BACnetConstructedDataSetting
 type BACnetConstructedDataSetting interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSetting returns Setting (property field)
 	GetSetting() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSettingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSetting.
+// This is useful for switch cases.
+type BACnetConstructedDataSettingExactly interface {
+	BACnetConstructedDataSetting
+	isBACnetConstructedDataSetting() bool
 }
 
 // _BACnetConstructedDataSetting is the data-structure of this message
 type _BACnetConstructedDataSetting struct {
 	*_BACnetConstructedData
 	Setting BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataSettingParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSetting{
-		Setting:                setting,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Setting: setting,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataSetting) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSetting) isBACnetConstructedDataSetting() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSetting) String() string {

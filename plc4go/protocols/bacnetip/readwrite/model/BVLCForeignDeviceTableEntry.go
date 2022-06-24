@@ -28,6 +28,8 @@ import (
 
 // BVLCForeignDeviceTableEntry is the corresponding interface of BVLCForeignDeviceTableEntry
 type BVLCForeignDeviceTableEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
 	// GetPort returns Port (property field)
@@ -36,12 +38,13 @@ type BVLCForeignDeviceTableEntry interface {
 	GetTtl() uint16
 	// GetSecondRemainingBeforePurge returns SecondRemainingBeforePurge (property field)
 	GetSecondRemainingBeforePurge() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCForeignDeviceTableEntryExactly can be used when we want exactly this type and not a type which fulfills BVLCForeignDeviceTableEntry.
+// This is useful for switch cases.
+type BVLCForeignDeviceTableEntryExactly interface {
+	BVLCForeignDeviceTableEntry
+	isBVLCForeignDeviceTableEntry() bool
 }
 
 // _BVLCForeignDeviceTableEntry is the data-structure of this message
@@ -141,6 +144,10 @@ func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCForeignD
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
+	// This happens when the size is set conditional to 0
+	if len(ip) == 0 {
+		ip = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -191,19 +198,17 @@ func (m *_BVLCForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) 
 	}
 
 	// Array Field (ip)
-	if m.GetIp() != nil {
-		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ip")
+	if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for ip")
+	}
+	for _, _element := range m.GetIp() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 		}
-		for _, _element := range m.GetIp() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ip")
-		}
+	}
+	if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for ip")
 	}
 
 	// Simple Field (port)
@@ -231,6 +236,10 @@ func (m *_BVLCForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for BVLCForeignDeviceTableEntry")
 	}
 	return nil
+}
+
+func (m *_BVLCForeignDeviceTableEntry) isBVLCForeignDeviceTableEntry() bool {
+	return true
 }
 
 func (m *_BVLCForeignDeviceTableEntry) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataActiveAuthenticationPolicy is the corresponding interface of BACnetConstructedDataActiveAuthenticationPolicy
 type BACnetConstructedDataActiveAuthenticationPolicy interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveAuthenticationPolicy returns ActiveAuthenticationPolicy (property field)
 	GetActiveAuthenticationPolicy() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataActiveAuthenticationPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveAuthenticationPolicy.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveAuthenticationPolicyExactly interface {
+	BACnetConstructedDataActiveAuthenticationPolicy
+	isBACnetConstructedDataActiveAuthenticationPolicy() bool
 }
 
 // _BACnetConstructedDataActiveAuthenticationPolicy is the data-structure of this message
 type _BACnetConstructedDataActiveAuthenticationPolicy struct {
 	*_BACnetConstructedData
 	ActiveAuthenticationPolicy BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer utils.ReadB
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActiveAuthenticationPolicy{
 		ActiveAuthenticationPolicy: activeAuthenticationPolicy,
-		_BACnetConstructedData:     &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataActiveAuthenticationPolicy) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveAuthenticationPolicy) isBACnetConstructedDataActiveAuthenticationPolicy() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveAuthenticationPolicy) String() string {

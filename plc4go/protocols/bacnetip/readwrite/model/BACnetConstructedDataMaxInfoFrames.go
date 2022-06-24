@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMaxInfoFrames is the corresponding interface of BACnetConstructedDataMaxInfoFrames
 type BACnetConstructedDataMaxInfoFrames interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxInfoFrames returns MaxInfoFrames (property field)
 	GetMaxInfoFrames() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaxInfoFramesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaxInfoFrames.
+// This is useful for switch cases.
+type BACnetConstructedDataMaxInfoFramesExactly interface {
+	BACnetConstructedDataMaxInfoFrames
+	isBACnetConstructedDataMaxInfoFrames() bool
 }
 
 // _BACnetConstructedDataMaxInfoFrames is the data-structure of this message
 type _BACnetConstructedDataMaxInfoFrames struct {
 	*_BACnetConstructedData
 	MaxInfoFrames BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaxInfoFrames{
-		MaxInfoFrames:          maxInfoFrames,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxInfoFrames: maxInfoFrames,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMaxInfoFrames) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaxInfoFrames) isBACnetConstructedDataMaxInfoFrames() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaxInfoFrames) String() string {

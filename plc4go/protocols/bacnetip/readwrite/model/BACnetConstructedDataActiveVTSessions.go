@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataActiveVTSessions is the corresponding interface of BACnetConstructedDataActiveVTSessions
 type BACnetConstructedDataActiveVTSessions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveVTSession returns ActiveVTSession (property field)
 	GetActiveVTSession() []BACnetVTSession
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataActiveVTSessionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveVTSessions.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveVTSessionsExactly interface {
+	BACnetConstructedDataActiveVTSessions
+	isBACnetConstructedDataActiveVTSessions() bool
 }
 
 // _BACnetConstructedDataActiveVTSessions is the data-structure of this message
 type _BACnetConstructedDataActiveVTSessions struct {
 	*_BACnetConstructedData
 	ActiveVTSession []BACnetVTSession
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 		return nil, errors.Wrap(pullErr, "Error pulling for activeVTSession")
 	}
 	// Terminated array
-	activeVTSession := make([]BACnetVTSession, 0)
+	var activeVTSession []BACnetVTSession
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVTSessionParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActiveVTSessions{
-		ActiveVTSession:        activeVTSession,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ActiveVTSession: activeVTSession,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataActiveVTSessions) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (activeVTSession)
-		if m.GetActiveVTSession() != nil {
-			if pushErr := writeBuffer.PushContext("activeVTSession", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for activeVTSession")
+		if pushErr := writeBuffer.PushContext("activeVTSession", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for activeVTSession")
+		}
+		for _, _element := range m.GetActiveVTSession() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'activeVTSession' field")
 			}
-			for _, _element := range m.GetActiveVTSession() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'activeVTSession' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("activeVTSession", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for activeVTSession")
-			}
+		}
+		if popErr := writeBuffer.PopContext("activeVTSession", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for activeVTSession")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveVTSessions"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataActiveVTSessions) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveVTSessions) isBACnetConstructedDataActiveVTSessions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveVTSessions) String() string {

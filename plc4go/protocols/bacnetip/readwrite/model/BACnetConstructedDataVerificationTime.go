@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataVerificationTime is the corresponding interface of BACnetConstructedDataVerificationTime
 type BACnetConstructedDataVerificationTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetVerificationTime returns VerificationTime (property field)
 	GetVerificationTime() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataVerificationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVerificationTime.
+// This is useful for switch cases.
+type BACnetConstructedDataVerificationTimeExactly interface {
+	BACnetConstructedDataVerificationTime
+	isBACnetConstructedDataVerificationTime() bool
 }
 
 // _BACnetConstructedDataVerificationTime is the data-structure of this message
 type _BACnetConstructedDataVerificationTime struct {
 	*_BACnetConstructedData
 	VerificationTime BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataVerificationTimeParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataVerificationTime{
-		VerificationTime:       verificationTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		VerificationTime: verificationTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataVerificationTime) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataVerificationTime) isBACnetConstructedDataVerificationTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataVerificationTime) String() string {

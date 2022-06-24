@@ -28,16 +28,19 @@ import (
 
 // ModbusPDUReadFileRecordResponseItem is the corresponding interface of ModbusPDUReadFileRecordResponseItem
 type ModbusPDUReadFileRecordResponseItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadFileRecordResponseItemExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadFileRecordResponseItem.
+// This is useful for switch cases.
+type ModbusPDUReadFileRecordResponseItemExactly interface {
+	ModbusPDUReadFileRecordResponseItem
+	isModbusPDUReadFileRecordResponseItem() bool
 }
 
 // _ModbusPDUReadFileRecordResponseItem is the data-structure of this message
@@ -168,18 +171,19 @@ func (m *_ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.Write
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		// Byte Array field (data)
-		_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-		}
+	// Byte Array field (data)
+	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusPDUReadFileRecordResponseItem"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ModbusPDUReadFileRecordResponseItem")
 	}
 	return nil
+}
+
+func (m *_ModbusPDUReadFileRecordResponseItem) isModbusPDUReadFileRecordResponseItem() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadFileRecordResponseItem) String() string {

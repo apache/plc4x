@@ -29,6 +29,8 @@ import (
 
 // S7ParameterModeTransition is the corresponding interface of S7ParameterModeTransition
 type S7ParameterModeTransition interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Parameter
 	// GetMethod returns Method (property field)
 	GetMethod() uint8
@@ -40,12 +42,13 @@ type S7ParameterModeTransition interface {
 	GetCurrentMode() uint8
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7ParameterModeTransitionExactly can be used when we want exactly this type and not a type which fulfills S7ParameterModeTransition.
+// This is useful for switch cases.
+type S7ParameterModeTransitionExactly interface {
+	S7ParameterModeTransition
+	isS7ParameterModeTransition() bool
 }
 
 // _S7ParameterModeTransition is the data-structure of this message
@@ -322,6 +325,10 @@ func (m *_S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterModeTransition) isS7ParameterModeTransition() bool {
+	return true
 }
 
 func (m *_S7ParameterModeTransition) String() string {

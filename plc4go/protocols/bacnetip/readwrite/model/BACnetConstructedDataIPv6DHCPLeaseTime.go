@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPv6DHCPLeaseTime is the corresponding interface of BACnetConstructedDataIPv6DHCPLeaseTime
 type BACnetConstructedDataIPv6DHCPLeaseTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6DhcpLeaseTime returns Ipv6DhcpLeaseTime (property field)
 	GetIpv6DhcpLeaseTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6DHCPLeaseTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DHCPLeaseTime.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6DHCPLeaseTimeExactly interface {
+	BACnetConstructedDataIPv6DHCPLeaseTime
+	isBACnetConstructedDataIPv6DHCPLeaseTime() bool
 }
 
 // _BACnetConstructedDataIPv6DHCPLeaseTime is the data-structure of this message
 type _BACnetConstructedDataIPv6DHCPLeaseTime struct {
 	*_BACnetConstructedData
 	Ipv6DhcpLeaseTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6DHCPLeaseTime{
-		Ipv6DhcpLeaseTime:      ipv6DhcpLeaseTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Ipv6DhcpLeaseTime: ipv6DhcpLeaseTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) isBACnetConstructedDataIPv6DHCPLeaseTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) String() string {

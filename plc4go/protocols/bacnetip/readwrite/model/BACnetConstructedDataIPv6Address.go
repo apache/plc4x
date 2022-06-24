@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPv6Address is the corresponding interface of BACnetConstructedDataIPv6Address
 type BACnetConstructedDataIPv6Address interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6Address returns Ipv6Address (property field)
 	GetIpv6Address() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6AddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6Address.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6AddressExactly interface {
+	BACnetConstructedDataIPv6Address
+	isBACnetConstructedDataIPv6Address() bool
 }
 
 // _BACnetConstructedDataIPv6Address is the data-structure of this message
 type _BACnetConstructedDataIPv6Address struct {
 	*_BACnetConstructedData
 	Ipv6Address BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPv6AddressParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6Address{
-		Ipv6Address:            ipv6Address,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Ipv6Address: ipv6Address,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6Address) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6Address) isBACnetConstructedDataIPv6Address() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6Address) String() string {

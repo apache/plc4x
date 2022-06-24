@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccessEventAuthenticationFactor is the corresponding interface of BACnetConstructedDataAccessEventAuthenticationFactor
 type BACnetConstructedDataAccessEventAuthenticationFactor interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAccessEventAuthenticationFactor returns AccessEventAuthenticationFactor (property field)
 	GetAccessEventAuthenticationFactor() BACnetAuthenticationFactor
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthenticationFactor
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessEventAuthenticationFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEventAuthenticationFactor.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessEventAuthenticationFactorExactly interface {
+	BACnetConstructedDataAccessEventAuthenticationFactor
+	isBACnetConstructedDataAccessEventAuthenticationFactor() bool
 }
 
 // _BACnetConstructedDataAccessEventAuthenticationFactor is the data-structure of this message
 type _BACnetConstructedDataAccessEventAuthenticationFactor struct {
 	*_BACnetConstructedData
 	AccessEventAuthenticationFactor BACnetAuthenticationFactor
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessEventAuthenticationFactor{
 		AccessEventAuthenticationFactor: accessEventAuthenticationFactor,
-		_BACnetConstructedData:          &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) isBACnetConstructedDataAccessEventAuthenticationFactor() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) String() string {

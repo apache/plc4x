@@ -28,6 +28,8 @@ import (
 
 // LDataExtended is the corresponding interface of LDataExtended
 type LDataExtended interface {
+	utils.LengthAware
+	utils.Serializable
 	LDataFrame
 	// GetGroupAddress returns GroupAddress (property field)
 	GetGroupAddress() bool
@@ -41,12 +43,13 @@ type LDataExtended interface {
 	GetDestinationAddress() []byte
 	// GetApdu returns Apdu (property field)
 	GetApdu() Apdu
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// LDataExtendedExactly can be used when we want exactly this type and not a type which fulfills LDataExtended.
+// This is useful for switch cases.
+type LDataExtendedExactly interface {
+	LDataExtended
+	isLDataExtended() bool
 }
 
 // _LDataExtended is the data-structure of this message
@@ -320,12 +323,9 @@ func (m *_LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (destinationAddress)
-		if m.GetDestinationAddress() != nil {
-			// Byte Array field (destinationAddress)
-			_writeArrayErr := writeBuffer.WriteByteArray("destinationAddress", m.GetDestinationAddress())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'destinationAddress' field")
-			}
+		// Byte Array field (destinationAddress)
+		if err := writeBuffer.WriteByteArray("destinationAddress", m.GetDestinationAddress()); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -353,6 +353,10 @@ func (m *_LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LDataExtended) isLDataExtended() bool {
+	return true
 }
 
 func (m *_LDataExtended) String() string {

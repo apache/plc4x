@@ -28,6 +28,8 @@ import (
 
 // BACnetLightingTransitionTagged is the corresponding interface of BACnetLightingTransitionTagged
 type BACnetLightingTransitionTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetLightingTransitionTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLightingTransitionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLightingTransitionTagged.
+// This is useful for switch cases.
+type BACnetLightingTransitionTaggedExactly interface {
+	BACnetLightingTransitionTagged
+	isBACnetLightingTransitionTagged() bool
 }
 
 // _BACnetLightingTransitionTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetLightingTransitionTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLightingTransitionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLightingTransitionTagged) isBACnetLightingTransitionTagged() bool {
+	return true
 }
 
 func (m *_BACnetLightingTransitionTagged) String() string {

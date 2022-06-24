@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataLifeSafetyPointFaultValues is the corresponding interface of BACnetConstructedDataLifeSafetyPointFaultValues
 type BACnetConstructedDataLifeSafetyPointFaultValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetLifeSafetyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLifeSafetyPointFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyPointFaultValues.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyPointFaultValuesExactly interface {
+	BACnetConstructedDataLifeSafetyPointFaultValues
+	isBACnetConstructedDataLifeSafetyPointFaultValues() bool
 }
 
 // _BACnetConstructedDataLifeSafetyPointFaultValues is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyPointFaultValues struct {
 	*_BACnetConstructedData
 	FaultValues []BACnetLifeSafetyStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataLifeSafetyPointFaultValuesParse(readBuffer utils.ReadB
 		return nil, errors.Wrap(pullErr, "Error pulling for faultValues")
 	}
 	// Terminated array
-	faultValues := make([]BACnetLifeSafetyStateTagged, 0)
+	var faultValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -172,8 +171,11 @@ func BACnetConstructedDataLifeSafetyPointFaultValuesParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLifeSafetyPointFaultValues{
-		FaultValues:            faultValues,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FaultValues: faultValues,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) Serialize(writeBuffer
 		}
 
 		// Array Field (faultValues)
-		if m.GetFaultValues() != nil {
-			if pushErr := writeBuffer.PushContext("faultValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for faultValues")
+		if pushErr := writeBuffer.PushContext("faultValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for faultValues")
+		}
+		for _, _element := range m.GetFaultValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'faultValues' field")
 			}
-			for _, _element := range m.GetFaultValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'faultValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("faultValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for faultValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("faultValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for faultValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLifeSafetyPointFaultValues"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) isBACnetConstructedDataLifeSafetyPointFaultValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) String() string {

@@ -28,13 +28,16 @@ import (
 
 // IdentifyReplyCommandMaximumLevels is the corresponding interface of IdentifyReplyCommandMaximumLevels
 type IdentifyReplyCommandMaximumLevels interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandMaximumLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandMaximumLevels.
+// This is useful for switch cases.
+type IdentifyReplyCommandMaximumLevelsExactly interface {
+	IdentifyReplyCommandMaximumLevels
+	isIdentifyReplyCommandMaximumLevels() bool
 }
 
 // _IdentifyReplyCommandMaximumLevels is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_IdentifyReplyCommandMaximumLevels) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandMaximumLevels) isIdentifyReplyCommandMaximumLevels() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandMaximumLevels) String() string {

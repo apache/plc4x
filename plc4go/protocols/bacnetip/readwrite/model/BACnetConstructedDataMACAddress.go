@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMACAddress is the corresponding interface of BACnetConstructedDataMACAddress
 type BACnetConstructedDataMACAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMacAddress returns MacAddress (property field)
 	GetMacAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMACAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMACAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataMACAddressExactly interface {
+	BACnetConstructedDataMACAddress
+	isBACnetConstructedDataMACAddress() bool
 }
 
 // _BACnetConstructedDataMACAddress is the data-structure of this message
 type _BACnetConstructedDataMACAddress struct {
 	*_BACnetConstructedData
 	MacAddress BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMACAddressParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMACAddress{
-		MacAddress:             macAddress,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MacAddress: macAddress,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMACAddress) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMACAddress) isBACnetConstructedDataMACAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMACAddress) String() string {

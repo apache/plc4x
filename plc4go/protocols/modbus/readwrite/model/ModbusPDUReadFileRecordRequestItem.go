@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUReadFileRecordRequestItem is the corresponding interface of ModbusPDUReadFileRecordRequestItem
 type ModbusPDUReadFileRecordRequestItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetFileNumber returns FileNumber (property field)
@@ -36,12 +38,13 @@ type ModbusPDUReadFileRecordRequestItem interface {
 	GetRecordNumber() uint16
 	// GetRecordLength returns RecordLength (property field)
 	GetRecordLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadFileRecordRequestItemExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadFileRecordRequestItem.
+// This is useful for switch cases.
+type ModbusPDUReadFileRecordRequestItemExactly interface {
+	ModbusPDUReadFileRecordRequestItem
+	isModbusPDUReadFileRecordRequestItem() bool
 }
 
 // _ModbusPDUReadFileRecordRequestItem is the data-structure of this message
@@ -208,6 +211,10 @@ func (m *_ModbusPDUReadFileRecordRequestItem) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for ModbusPDUReadFileRecordRequestItem")
 	}
 	return nil
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItem) isModbusPDUReadFileRecordRequestItem() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadFileRecordRequestItem) String() string {

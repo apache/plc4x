@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataChangeOfStateCount is the corresponding interface of BACnetConstructedDataChangeOfStateCount
 type BACnetConstructedDataChangeOfStateCount interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetChangeIfStateCount returns ChangeIfStateCount (property field)
 	GetChangeIfStateCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataChangeOfStateCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangeOfStateCount.
+// This is useful for switch cases.
+type BACnetConstructedDataChangeOfStateCountExactly interface {
+	BACnetConstructedDataChangeOfStateCount
+	isBACnetConstructedDataChangeOfStateCount() bool
 }
 
 // _BACnetConstructedDataChangeOfStateCount is the data-structure of this message
 type _BACnetConstructedDataChangeOfStateCount struct {
 	*_BACnetConstructedData
 	ChangeIfStateCount BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataChangeOfStateCount{
-		ChangeIfStateCount:     changeIfStateCount,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ChangeIfStateCount: changeIfStateCount,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataChangeOfStateCount) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataChangeOfStateCount) isBACnetConstructedDataChangeOfStateCount() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataChangeOfStateCount) String() string {

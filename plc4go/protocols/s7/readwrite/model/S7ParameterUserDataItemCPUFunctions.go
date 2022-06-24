@@ -28,6 +28,8 @@ import (
 
 // S7ParameterUserDataItemCPUFunctions is the corresponding interface of S7ParameterUserDataItemCPUFunctions
 type S7ParameterUserDataItemCPUFunctions interface {
+	utils.LengthAware
+	utils.Serializable
 	S7ParameterUserDataItem
 	// GetMethod returns Method (property field)
 	GetMethod() uint8
@@ -45,12 +47,13 @@ type S7ParameterUserDataItemCPUFunctions interface {
 	GetLastDataUnit() *uint8
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() *uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7ParameterUserDataItemCPUFunctionsExactly can be used when we want exactly this type and not a type which fulfills S7ParameterUserDataItemCPUFunctions.
+// This is useful for switch cases.
+type S7ParameterUserDataItemCPUFunctionsExactly interface {
+	S7ParameterUserDataItemCPUFunctions
+	isS7ParameterUserDataItemCPUFunctions() bool
 }
 
 // _S7ParameterUserDataItemCPUFunctions is the data-structure of this message
@@ -394,6 +397,10 @@ func (m *_S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterUserDataItemCPUFunctions) isS7ParameterUserDataItemCPUFunctions() bool {
+	return true
 }
 
 func (m *_S7ParameterUserDataItemCPUFunctions) String() string {

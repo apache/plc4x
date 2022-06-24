@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimeOfActiveTimeReset is the corresponding interface of BACnetConstructedDataTimeOfActiveTimeReset
 type BACnetConstructedDataTimeOfActiveTimeReset interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimeOfActiveTimeReset returns TimeOfActiveTimeReset (property field)
 	GetTimeOfActiveTimeReset() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimeOfActiveTimeResetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeOfActiveTimeReset.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeOfActiveTimeResetExactly interface {
+	BACnetConstructedDataTimeOfActiveTimeReset
+	isBACnetConstructedDataTimeOfActiveTimeReset() bool
 }
 
 // _BACnetConstructedDataTimeOfActiveTimeReset is the data-structure of this message
 type _BACnetConstructedDataTimeOfActiveTimeReset struct {
 	*_BACnetConstructedData
 	TimeOfActiveTimeReset BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimeOfActiveTimeResetParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimeOfActiveTimeReset{
-		TimeOfActiveTimeReset:  timeOfActiveTimeReset,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		TimeOfActiveTimeReset: timeOfActiveTimeReset,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeOfActiveTimeReset) isBACnetConstructedDataTimeOfActiveTimeReset() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeOfActiveTimeReset) String() string {

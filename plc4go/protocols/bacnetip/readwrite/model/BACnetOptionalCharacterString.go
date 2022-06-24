@@ -28,16 +28,19 @@ import (
 
 // BACnetOptionalCharacterString is the corresponding interface of BACnetOptionalCharacterString
 type BACnetOptionalCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetOptionalCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalCharacterString.
+// This is useful for switch cases.
+type BACnetOptionalCharacterStringExactly interface {
+	BACnetOptionalCharacterString
+	isBACnetOptionalCharacterString() bool
 }
 
 // _BACnetOptionalCharacterString is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetOptionalCharacterString struct {
 }
 
 type _BACnetOptionalCharacterStringChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetOptionalCharacterStringParent interface {
@@ -58,7 +61,7 @@ type BACnetOptionalCharacterStringParent interface {
 }
 
 type BACnetOptionalCharacterStringChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetOptionalCharacterString, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetOptionalCharacterString
 
@@ -202,6 +205,10 @@ func (pm *_BACnetOptionalCharacterString) SerializeParent(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetOptionalCharacterString")
 	}
 	return nil
+}
+
+func (m *_BACnetOptionalCharacterString) isBACnetOptionalCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetOptionalCharacterString) String() string {

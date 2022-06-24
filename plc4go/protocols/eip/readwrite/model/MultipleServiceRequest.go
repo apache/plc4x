@@ -33,24 +33,24 @@ const MultipleServiceRequest_REQUESTPATH uint32 = 0x01240220
 
 // MultipleServiceRequest is the corresponding interface of MultipleServiceRequest
 type MultipleServiceRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetData returns Data (property field)
 	GetData() Services
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MultipleServiceRequestExactly can be used when we want exactly this type and not a type which fulfills MultipleServiceRequest.
+// This is useful for switch cases.
+type MultipleServiceRequestExactly interface {
+	MultipleServiceRequest
+	isMultipleServiceRequest() bool
 }
 
 // _MultipleServiceRequest is the data-structure of this message
 type _MultipleServiceRequest struct {
 	*_CipService
 	Data Services
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -198,8 +198,10 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 
 	// Create a partially initialized instance
 	_child := &_MultipleServiceRequest{
-		Data:        data,
-		_CipService: &_CipService{},
+		Data: data,
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -243,6 +245,10 @@ func (m *_MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MultipleServiceRequest) isMultipleServiceRequest() bool {
+	return true
 }
 
 func (m *_MultipleServiceRequest) String() string {

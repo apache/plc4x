@@ -28,15 +28,18 @@ import (
 
 // ConnectionResponseDataBlockTunnelConnection is the corresponding interface of ConnectionResponseDataBlockTunnelConnection
 type ConnectionResponseDataBlockTunnelConnection interface {
+	utils.LengthAware
+	utils.Serializable
 	ConnectionResponseDataBlock
 	// GetKnxAddress returns KnxAddress (property field)
 	GetKnxAddress() KnxAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConnectionResponseDataBlockTunnelConnectionExactly can be used when we want exactly this type and not a type which fulfills ConnectionResponseDataBlockTunnelConnection.
+// This is useful for switch cases.
+type ConnectionResponseDataBlockTunnelConnectionExactly interface {
+	ConnectionResponseDataBlockTunnelConnection
+	isConnectionResponseDataBlockTunnelConnection() bool
 }
 
 // _ConnectionResponseDataBlockTunnelConnection is the data-structure of this message
@@ -183,6 +186,10 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnection) isConnectionResponseDataBlockTunnelConnection() bool {
+	return true
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataInstallationID is the corresponding interface of BACnetConstructedDataInstallationID
 type BACnetConstructedDataInstallationID interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInstallationId returns InstallationId (property field)
 	GetInstallationId() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataInstallationIDExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInstallationID.
+// This is useful for switch cases.
+type BACnetConstructedDataInstallationIDExactly interface {
+	BACnetConstructedDataInstallationID
+	isBACnetConstructedDataInstallationID() bool
 }
 
 // _BACnetConstructedDataInstallationID is the data-structure of this message
 type _BACnetConstructedDataInstallationID struct {
 	*_BACnetConstructedData
 	InstallationId BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataInstallationIDParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataInstallationID{
-		InstallationId:         installationId,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		InstallationId: installationId,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataInstallationID) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInstallationID) isBACnetConstructedDataInstallationID() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInstallationID) String() string {

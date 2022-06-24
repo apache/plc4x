@@ -28,13 +28,16 @@ import (
 
 // ModbusPDUReportServerIdRequest is the corresponding interface of ModbusPDUReportServerIdRequest
 type ModbusPDUReportServerIdRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReportServerIdRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReportServerIdRequest.
+// This is useful for switch cases.
+type ModbusPDUReportServerIdRequestExactly interface {
+	ModbusPDUReportServerIdRequest
+	isModbusPDUReportServerIdRequest() bool
 }
 
 // _ModbusPDUReportServerIdRequest is the data-structure of this message
@@ -143,6 +146,10 @@ func (m *_ModbusPDUReportServerIdRequest) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReportServerIdRequest) isModbusPDUReportServerIdRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReportServerIdRequest) String() string {

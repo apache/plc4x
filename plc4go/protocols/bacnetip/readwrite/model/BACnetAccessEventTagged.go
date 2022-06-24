@@ -28,6 +28,8 @@ import (
 
 // BACnetAccessEventTagged is the corresponding interface of BACnetAccessEventTagged
 type BACnetAccessEventTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetAccessEventTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAccessEventTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessEventTagged.
+// This is useful for switch cases.
+type BACnetAccessEventTaggedExactly interface {
+	BACnetAccessEventTagged
+	isBACnetAccessEventTagged() bool
 }
 
 // _BACnetAccessEventTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetAccessEventTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetAccessEventTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessEventTagged) isBACnetAccessEventTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessEventTagged) String() string {

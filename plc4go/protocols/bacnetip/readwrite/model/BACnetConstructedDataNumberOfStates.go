@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNumberOfStates is the corresponding interface of BACnetConstructedDataNumberOfStates
 type BACnetConstructedDataNumberOfStates interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfState returns NumberOfState (property field)
 	GetNumberOfState() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNumberOfStatesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNumberOfStates.
+// This is useful for switch cases.
+type BACnetConstructedDataNumberOfStatesExactly interface {
+	BACnetConstructedDataNumberOfStates
+	isBACnetConstructedDataNumberOfStates() bool
 }
 
 // _BACnetConstructedDataNumberOfStates is the data-structure of this message
 type _BACnetConstructedDataNumberOfStates struct {
 	*_BACnetConstructedData
 	NumberOfState BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNumberOfStatesParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNumberOfStates{
-		NumberOfState:          numberOfState,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfState: numberOfState,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNumberOfStates) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNumberOfStates) isBACnetConstructedDataNumberOfStates() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNumberOfStates) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetFileAccessMethodTagged is the corresponding interface of BACnetFileAccessMethodTagged
 type BACnetFileAccessMethodTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetFileAccessMethod
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFileAccessMethodTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetFileAccessMethodTagged.
+// This is useful for switch cases.
+type BACnetFileAccessMethodTaggedExactly interface {
+	BACnetFileAccessMethodTagged
+	isBACnetFileAccessMethodTagged() bool
 }
 
 // _BACnetFileAccessMethodTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetFileAccessMethodTagged) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetFileAccessMethodTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetFileAccessMethodTagged) isBACnetFileAccessMethodTagged() bool {
+	return true
 }
 
 func (m *_BACnetFileAccessMethodTagged) String() string {

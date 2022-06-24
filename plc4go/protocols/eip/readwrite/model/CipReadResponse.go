@@ -29,6 +29,8 @@ import (
 
 // CipReadResponse is the corresponding interface of CipReadResponse
 type CipReadResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -38,12 +40,13 @@ type CipReadResponse interface {
 	GetDataType() CIPDataTypeCode
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipReadResponseExactly can be used when we want exactly this type and not a type which fulfills CipReadResponse.
+// This is useful for switch cases.
+type CipReadResponseExactly interface {
+	CipReadResponse
+	isCipReadResponse() bool
 }
 
 // _CipReadResponse is the data-structure of this message
@@ -53,9 +56,6 @@ type _CipReadResponse struct {
 	ExtStatus uint8
 	DataType  CIPDataTypeCode
 	Data      []byte
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -225,11 +225,13 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRe
 
 	// Create a partially initialized instance
 	_child := &_CipReadResponse{
-		Status:      status,
-		ExtStatus:   extStatus,
-		DataType:    dataType,
-		Data:        data,
-		_CipService: &_CipService{},
+		Status:    status,
+		ExtStatus: extStatus,
+		DataType:  dataType,
+		Data:      data,
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -278,12 +280,9 @@ func (m *_CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipReadResponse"); popErr != nil {
@@ -292,6 +291,10 @@ func (m *_CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipReadResponse) isCipReadResponse() bool {
+	return true
 }
 
 func (m *_CipReadResponse) String() string {

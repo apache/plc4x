@@ -28,18 +28,21 @@ import (
 
 // ReplyNetwork is the corresponding interface of ReplyNetwork
 type ReplyNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRouteType returns RouteType (property field)
 	GetRouteType() RouteType
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []BridgeAddress
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ReplyNetworkExactly can be used when we want exactly this type and not a type which fulfills ReplyNetwork.
+// This is useful for switch cases.
+type ReplyNetworkExactly interface {
+	ReplyNetwork
+	isReplyNetwork() bool
 }
 
 // _ReplyNetwork is the data-structure of this message
@@ -147,6 +150,10 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	}
 	// Count array
 	additionalBridgeAddresses := make([]BridgeAddress, routeType.AdditionalBridges())
+	// This happens when the size is set conditional to 0
+	if len(additionalBridgeAddresses) == 0 {
+		additionalBridgeAddresses = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(routeType.AdditionalBridges()); curItem++ {
 			_item, _err := BridgeAddressParse(readBuffer)
@@ -201,19 +208,17 @@ func (m *_ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (additionalBridgeAddresses)
-	if m.GetAdditionalBridgeAddresses() != nil {
-		if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
+	if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
+	}
+	for _, _element := range m.GetAdditionalBridgeAddresses() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
 		}
-		for _, _element := range m.GetAdditionalBridgeAddresses() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
-		}
+	}
+	if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
 	}
 
 	// Simple Field (unitAddress)
@@ -232,6 +237,10 @@ func (m *_ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ReplyNetwork")
 	}
 	return nil
+}
+
+func (m *_ReplyNetwork) isReplyNetwork() bool {
+	return true
 }
 
 func (m *_ReplyNetwork) String() string {

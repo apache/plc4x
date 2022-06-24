@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTrackingValue is the corresponding interface of BACnetConstructedDataTrackingValue
 type BACnetConstructedDataTrackingValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() BACnetLifeSafetyStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTrackingValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrackingValue.
+// This is useful for switch cases.
+type BACnetConstructedDataTrackingValueExactly interface {
+	BACnetConstructedDataTrackingValue
+	isBACnetConstructedDataTrackingValue() bool
 }
 
 // _BACnetConstructedDataTrackingValue is the data-structure of this message
 type _BACnetConstructedDataTrackingValue struct {
 	*_BACnetConstructedData
 	TrackingValue BACnetLifeSafetyStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTrackingValueParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTrackingValue{
-		TrackingValue:          trackingValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		TrackingValue: trackingValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTrackingValue) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrackingValue) isBACnetConstructedDataTrackingValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrackingValue) String() string {

@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtKeyWrite is the corresponding interface of ApduDataExtKeyWrite
 type ApduDataExtKeyWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtKeyWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtKeyWrite.
+// This is useful for switch cases.
+type ApduDataExtKeyWriteExactly interface {
+	ApduDataExtKeyWrite
+	isApduDataExtKeyWrite() bool
 }
 
 // _ApduDataExtKeyWrite is the data-structure of this message
 type _ApduDataExtKeyWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtKeyWriteParse(readBuffer utils.ReadBuffer, length uint8) (ApduDa
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtKeyWrite{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtKeyWrite) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtKeyWrite) isApduDataExtKeyWrite() bool {
+	return true
 }
 
 func (m *_ApduDataExtKeyWrite) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataValueSourceArray is the corresponding interface of BACnetConstructedDataValueSourceArray
 type BACnetConstructedDataValueSourceArray interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataValueSourceArray interface {
 	GetVtClassesSupported() []BACnetValueSource
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataValueSourceArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueSourceArray.
+// This is useful for switch cases.
+type BACnetConstructedDataValueSourceArrayExactly interface {
+	BACnetConstructedDataValueSourceArray
+	isBACnetConstructedDataValueSourceArray() bool
 }
 
 // _BACnetConstructedDataValueSourceArray is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataValueSourceArray struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	VtClassesSupported   []BACnetValueSource
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tag
 		return nil, errors.Wrap(pullErr, "Error pulling for vtClassesSupported")
 	}
 	// Terminated array
-	vtClassesSupported := make([]BACnetValueSource, 0)
+	var vtClassesSupported []BACnetValueSource
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetValueSourceParse(readBuffer)
@@ -238,9 +237,12 @@ func BACnetConstructedDataValueSourceArrayParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataValueSourceArray{
-		NumberOfDataElements:   numberOfDataElements,
-		VtClassesSupported:     vtClassesSupported,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		VtClassesSupported:   vtClassesSupported,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -275,19 +277,17 @@ func (m *_BACnetConstructedDataValueSourceArray) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (vtClassesSupported)
-		if m.GetVtClassesSupported() != nil {
-			if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
+		if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
+		}
+		for _, _element := range m.GetVtClassesSupported() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'vtClassesSupported' field")
 			}
-			for _, _element := range m.GetVtClassesSupported() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'vtClassesSupported' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for vtClassesSupported")
-			}
+		}
+		if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for vtClassesSupported")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataValueSourceArray"); popErr != nil {
@@ -296,6 +296,10 @@ func (m *_BACnetConstructedDataValueSourceArray) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataValueSourceArray) isBACnetConstructedDataValueSourceArray() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataValueSourceArray) String() string {

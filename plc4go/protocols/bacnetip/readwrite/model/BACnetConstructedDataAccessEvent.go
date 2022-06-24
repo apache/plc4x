@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccessEvent is the corresponding interface of BACnetConstructedDataAccessEvent
 type BACnetConstructedDataAccessEvent interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAccessEvent returns AccessEvent (property field)
 	GetAccessEvent() BACnetAccessEventTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessEventTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEvent.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessEventExactly interface {
+	BACnetConstructedDataAccessEvent
+	isBACnetConstructedDataAccessEvent() bool
 }
 
 // _BACnetConstructedDataAccessEvent is the data-structure of this message
 type _BACnetConstructedDataAccessEvent struct {
 	*_BACnetConstructedData
 	AccessEvent BACnetAccessEventTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccessEventParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessEvent{
-		AccessEvent:            accessEvent,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AccessEvent: accessEvent,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccessEvent) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessEvent) isBACnetConstructedDataAccessEvent() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessEvent) String() string {

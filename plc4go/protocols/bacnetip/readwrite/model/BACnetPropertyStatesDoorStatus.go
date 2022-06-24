@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesDoorStatus is the corresponding interface of BACnetPropertyStatesDoorStatus
 type BACnetPropertyStatesDoorStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesDoorStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesDoorStatus.
+// This is useful for switch cases.
+type BACnetPropertyStatesDoorStatusExactly interface {
+	BACnetPropertyStatesDoorStatus
+	isBACnetPropertyStatesDoorStatus() bool
 }
 
 // _BACnetPropertyStatesDoorStatus is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesDoorStatus) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesDoorStatus) isBACnetPropertyStatesDoorStatus() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesDoorStatus) String() string {

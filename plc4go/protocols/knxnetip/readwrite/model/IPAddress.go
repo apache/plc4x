@@ -28,14 +28,17 @@ import (
 
 // IPAddress is the corresponding interface of IPAddress
 type IPAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IPAddressExactly can be used when we want exactly this type and not a type which fulfills IPAddress.
+// This is useful for switch cases.
+type IPAddressExactly interface {
+	IPAddress
+	isIPAddress() bool
 }
 
 // _IPAddress is the data-structure of this message
@@ -127,18 +130,19 @@ func (m *_IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (addr)
-	if m.GetAddr() != nil {
-		// Byte Array field (addr)
-		_writeArrayErr := writeBuffer.WriteByteArray("addr", m.GetAddr())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'addr' field")
-		}
+	// Byte Array field (addr)
+	if err := writeBuffer.WriteByteArray("addr", m.GetAddr()); err != nil {
+		return errors.Wrap(err, "Error serializing 'addr' field")
 	}
 
 	if popErr := writeBuffer.PopContext("IPAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for IPAddress")
 	}
 	return nil
+}
+
+func (m *_IPAddress) isIPAddress() bool {
+	return true
 }
 
 func (m *_IPAddress) String() string {

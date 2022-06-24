@@ -28,18 +28,21 @@ import (
 
 // HPAIDataEndpoint is the corresponding interface of HPAIDataEndpoint
 type HPAIDataEndpoint interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() IPAddress
 	// GetIpPort returns IpPort (property field)
 	GetIpPort() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// HPAIDataEndpointExactly can be used when we want exactly this type and not a type which fulfills HPAIDataEndpoint.
+// This is useful for switch cases.
+type HPAIDataEndpointExactly interface {
+	HPAIDataEndpoint
+	isHPAIDataEndpoint() bool
 }
 
 // _HPAIDataEndpoint is the data-structure of this message
@@ -223,6 +226,10 @@ func (m *_HPAIDataEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for HPAIDataEndpoint")
 	}
 	return nil
+}
+
+func (m *_HPAIDataEndpoint) isHPAIDataEndpoint() bool {
+	return true
 }
 
 func (m *_HPAIDataEndpoint) String() string {

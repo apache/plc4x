@@ -29,17 +29,20 @@ import (
 
 // ConnectionStateRequest is the corresponding interface of ConnectionStateRequest
 type ConnectionStateRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConnectionStateRequestExactly can be used when we want exactly this type and not a type which fulfills ConnectionStateRequest.
+// This is useful for switch cases.
+type ConnectionStateRequestExactly interface {
+	ConnectionStateRequest
+	isConnectionStateRequest() bool
 }
 
 // _ConnectionStateRequest is the data-structure of this message
@@ -234,6 +237,10 @@ func (m *_ConnectionStateRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionStateRequest) isConnectionStateRequest() bool {
+	return true
 }
 
 func (m *_ConnectionStateRequest) String() string {

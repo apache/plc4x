@@ -28,6 +28,8 @@ import (
 
 // LBusmonInd is the corresponding interface of LBusmonInd
 type LBusmonInd interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -37,12 +39,13 @@ type LBusmonInd interface {
 	GetDataFrame() LDataFrame
 	// GetCrc returns Crc (property field)
 	GetCrc() *uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// LBusmonIndExactly can be used when we want exactly this type and not a type which fulfills LBusmonInd.
+// This is useful for switch cases.
+type LBusmonIndExactly interface {
+	LBusmonInd
+	isLBusmonInd() bool
 }
 
 // _LBusmonInd is the data-structure of this message
@@ -52,9 +55,6 @@ type _LBusmonInd struct {
 	AdditionalInformation       []CEMIAdditionalInformation
 	DataFrame                   LDataFrame
 	Crc                         *uint8
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 		return nil, errors.Wrap(pullErr, "Error pulling for additionalInformation")
 	}
 	// Length array
-	additionalInformation := make([]CEMIAdditionalInformation, 0)
+	var additionalInformation []CEMIAdditionalInformation
 	{
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
@@ -233,7 +233,9 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
-		_CEMI:                       &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -255,19 +257,17 @@ func (m *_LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (additionalInformation)
-		if m.GetAdditionalInformation() != nil {
-			if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for additionalInformation")
+		if pushErr := writeBuffer.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for additionalInformation")
+		}
+		for _, _element := range m.GetAdditionalInformation() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 			}
-			for _, _element := range m.GetAdditionalInformation() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for additionalInformation")
-			}
+		}
+		if popErr := writeBuffer.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for additionalInformation")
 		}
 
 		// Simple Field (dataFrame)
@@ -298,6 +298,10 @@ func (m *_LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LBusmonInd) isLBusmonInd() bool {
+	return true
 }
 
 func (m *_LBusmonInd) String() string {

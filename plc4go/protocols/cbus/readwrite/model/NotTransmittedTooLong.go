@@ -28,13 +28,16 @@ import (
 
 // NotTransmittedTooLong is the corresponding interface of NotTransmittedTooLong
 type NotTransmittedTooLong interface {
+	utils.LengthAware
+	utils.Serializable
 	Confirmation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NotTransmittedTooLongExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedTooLong.
+// This is useful for switch cases.
+type NotTransmittedTooLongExactly interface {
+	NotTransmittedTooLong
+	isNotTransmittedTooLong() bool
 }
 
 // _NotTransmittedTooLong is the data-structure of this message
@@ -137,6 +140,10 @@ func (m *_NotTransmittedTooLong) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NotTransmittedTooLong) isNotTransmittedTooLong() bool {
+	return true
 }
 
 func (m *_NotTransmittedTooLong) String() string {

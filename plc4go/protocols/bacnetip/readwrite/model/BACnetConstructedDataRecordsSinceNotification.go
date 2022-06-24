@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataRecordsSinceNotification is the corresponding interface of BACnetConstructedDataRecordsSinceNotification
 type BACnetConstructedDataRecordsSinceNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRecordsSinceNotifications returns RecordsSinceNotifications (property field)
 	GetRecordsSinceNotifications() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataRecordsSinceNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRecordsSinceNotification.
+// This is useful for switch cases.
+type BACnetConstructedDataRecordsSinceNotificationExactly interface {
+	BACnetConstructedDataRecordsSinceNotification
+	isBACnetConstructedDataRecordsSinceNotification() bool
 }
 
 // _BACnetConstructedDataRecordsSinceNotification is the data-structure of this message
 type _BACnetConstructedDataRecordsSinceNotification struct {
 	*_BACnetConstructedData
 	RecordsSinceNotifications BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRecordsSinceNotification{
 		RecordsSinceNotifications: recordsSinceNotifications,
-		_BACnetConstructedData:    &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRecordsSinceNotification) isBACnetConstructedDataRecordsSinceNotification() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) String() string {

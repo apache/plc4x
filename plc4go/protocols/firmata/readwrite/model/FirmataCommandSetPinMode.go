@@ -28,17 +28,20 @@ import (
 
 // FirmataCommandSetPinMode is the corresponding interface of FirmataCommandSetPinMode
 type FirmataCommandSetPinMode interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetMode returns Mode (property field)
 	GetMode() PinMode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataCommandSetPinModeExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetPinMode.
+// This is useful for switch cases.
+type FirmataCommandSetPinModeExactly interface {
+	FirmataCommandSetPinMode
+	isFirmataCommandSetPinMode() bool
 }
 
 // _FirmataCommandSetPinMode is the data-structure of this message
@@ -46,9 +49,6 @@ type _FirmataCommandSetPinMode struct {
 	*_FirmataCommand
 	Pin  uint8
 	Mode PinMode
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -170,9 +170,11 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSetPinMode{
-		Pin:             pin,
-		Mode:            mode,
-		_FirmataCommand: &_FirmataCommand{},
+		Pin:  pin,
+		Mode: mode,
+		_FirmataCommand: &_FirmataCommand{
+			Response: response,
+		},
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil
@@ -211,6 +213,10 @@ func (m *_FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSetPinMode) isFirmataCommandSetPinMode() bool {
+	return true
 }
 
 func (m *_FirmataCommandSetPinMode) String() string {

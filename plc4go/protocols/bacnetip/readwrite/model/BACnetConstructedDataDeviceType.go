@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDeviceType is the corresponding interface of BACnetConstructedDataDeviceType
 type BACnetConstructedDataDeviceType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDeviceType returns DeviceType (property field)
 	GetDeviceType() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDeviceTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceType.
+// This is useful for switch cases.
+type BACnetConstructedDataDeviceTypeExactly interface {
+	BACnetConstructedDataDeviceType
+	isBACnetConstructedDataDeviceType() bool
 }
 
 // _BACnetConstructedDataDeviceType is the data-structure of this message
 type _BACnetConstructedDataDeviceType struct {
 	*_BACnetConstructedData
 	DeviceType BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDeviceTypeParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDeviceType{
-		DeviceType:             deviceType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DeviceType: deviceType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDeviceType) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeviceType) isBACnetConstructedDataDeviceType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeviceType) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryInteger is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryInteger
 type BACnetFaultParameterFaultExtendedParametersEntryInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryInteger.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryIntegerExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryInteger
+	isBACnetFaultParameterFaultExtendedParametersEntryInteger() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryInteger is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) isBACnetFaultParameterFaultExtendedParametersEntryInteger() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) String() string {

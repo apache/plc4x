@@ -28,15 +28,18 @@ import (
 
 // BACnetScaleIntegerScale is the corresponding interface of BACnetScaleIntegerScale
 type BACnetScaleIntegerScale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetScale
 	// GetIntegerScale returns IntegerScale (property field)
 	GetIntegerScale() BACnetContextTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetScaleIntegerScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScaleIntegerScale.
+// This is useful for switch cases.
+type BACnetScaleIntegerScaleExactly interface {
+	BACnetScaleIntegerScale
+	isBACnetScaleIntegerScale() bool
 }
 
 // _BACnetScaleIntegerScale is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetScaleIntegerScale) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetScaleIntegerScale) isBACnetScaleIntegerScale() bool {
+	return true
 }
 
 func (m *_BACnetScaleIntegerScale) String() string {

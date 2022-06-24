@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfValueNewValue is the corresponding interface of BACnetNotificationParametersChangeOfValueNewValue
 type BACnetNotificationParametersChangeOfValueNewValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -36,12 +38,13 @@ type BACnetNotificationParametersChangeOfValueNewValue interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfValueNewValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfValueNewValue.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfValueNewValueExactly interface {
+	BACnetNotificationParametersChangeOfValueNewValue
+	isBACnetNotificationParametersChangeOfValueNewValue() bool
 }
 
 // _BACnetNotificationParametersChangeOfValueNewValue is the data-structure of this message
@@ -56,9 +59,9 @@ type _BACnetNotificationParametersChangeOfValueNewValue struct {
 }
 
 type _BACnetNotificationParametersChangeOfValueNewValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetNotificationParametersChangeOfValueNewValueParent interface {
@@ -67,7 +70,7 @@ type BACnetNotificationParametersChangeOfValueNewValueParent interface {
 }
 
 type BACnetNotificationParametersChangeOfValueNewValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetNotificationParametersChangeOfValueNewValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetNotificationParametersChangeOfValueNewValue
 
@@ -275,6 +278,10 @@ func (pm *_BACnetNotificationParametersChangeOfValueNewValue) SerializeParent(wr
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfValueNewValue")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) isBACnetNotificationParametersChangeOfValueNewValue() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValue) String() string {

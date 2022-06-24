@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataConfigurationFiles is the corresponding interface of BACnetConstructedDataConfigurationFiles
 type BACnetConstructedDataConfigurationFiles interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataConfigurationFiles interface {
 	GetConfigurationFiles() []BACnetApplicationTagObjectIdentifier
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataConfigurationFilesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataConfigurationFiles.
+// This is useful for switch cases.
+type BACnetConstructedDataConfigurationFilesExactly interface {
+	BACnetConstructedDataConfigurationFiles
+	isBACnetConstructedDataConfigurationFiles() bool
 }
 
 // _BACnetConstructedDataConfigurationFiles is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataConfigurationFiles struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	ConfigurationFiles   []BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataConfigurationFilesParse(readBuffer utils.ReadBuffer, t
 		return nil, errors.Wrap(pullErr, "Error pulling for configurationFiles")
 	}
 	// Terminated array
-	configurationFiles := make([]BACnetApplicationTagObjectIdentifier, 0)
+	var configurationFiles []BACnetApplicationTagObjectIdentifier
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataConfigurationFilesParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataConfigurationFiles{
-		NumberOfDataElements:   numberOfDataElements,
-		ConfigurationFiles:     configurationFiles,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		ConfigurationFiles:   configurationFiles,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataConfigurationFiles) Serialize(writeBuffer utils.W
 		}
 
 		// Array Field (configurationFiles)
-		if m.GetConfigurationFiles() != nil {
-			if pushErr := writeBuffer.PushContext("configurationFiles", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for configurationFiles")
+		if pushErr := writeBuffer.PushContext("configurationFiles", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for configurationFiles")
+		}
+		for _, _element := range m.GetConfigurationFiles() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'configurationFiles' field")
 			}
-			for _, _element := range m.GetConfigurationFiles() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'configurationFiles' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("configurationFiles", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for configurationFiles")
-			}
+		}
+		if popErr := writeBuffer.PopContext("configurationFiles", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for configurationFiles")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataConfigurationFiles"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataConfigurationFiles) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataConfigurationFiles) isBACnetConstructedDataConfigurationFiles() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataConfigurationFiles) String() string {

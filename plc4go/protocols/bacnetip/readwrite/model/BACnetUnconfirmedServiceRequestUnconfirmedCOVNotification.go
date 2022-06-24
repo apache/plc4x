@@ -28,6 +28,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -39,12 +41,13 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	GetLifetimeInSeconds() BACnetContextTagUnsignedInteger
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+	isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() bool
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is the data-structure of this message
@@ -55,9 +58,6 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 	MonitoredObjectIdentifier   BACnetContextTagObjectIdentifier
 	LifetimeInSeconds           BACnetContextTagUnsignedInteger
 	ListOfValues                BACnetPropertyValues
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,12 +249,14 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
-		SubscriberProcessIdentifier:      subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:       initiatingDeviceIdentifier,
-		MonitoredObjectIdentifier:        monitoredObjectIdentifier,
-		LifetimeInSeconds:                lifetimeInSeconds,
-		ListOfValues:                     listOfValues,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		SubscriberProcessIdentifier: subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:  initiatingDeviceIdentifier,
+		MonitoredObjectIdentifier:   monitoredObjectIdentifier,
+		LifetimeInSeconds:           lifetimeInSeconds,
+		ListOfValues:                listOfValues,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -334,6 +336,10 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() string {

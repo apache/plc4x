@@ -28,17 +28,20 @@ import (
 
 // AdsAddDeviceNotificationResponse is the corresponding interface of AdsAddDeviceNotificationResponse
 type AdsAddDeviceNotificationResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsAddDeviceNotificationResponseExactly can be used when we want exactly this type and not a type which fulfills AdsAddDeviceNotificationResponse.
+// This is useful for switch cases.
+type AdsAddDeviceNotificationResponseExactly interface {
+	AdsAddDeviceNotificationResponse
+	isAdsAddDeviceNotificationResponse() bool
 }
 
 // _AdsAddDeviceNotificationResponse is the data-structure of this message
@@ -212,6 +215,10 @@ func (m *_AdsAddDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsAddDeviceNotificationResponse) isAdsAddDeviceNotificationResponse() bool {
+	return true
 }
 
 func (m *_AdsAddDeviceNotificationResponse) String() string {

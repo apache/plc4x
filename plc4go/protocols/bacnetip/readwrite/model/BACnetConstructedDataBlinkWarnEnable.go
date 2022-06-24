@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBlinkWarnEnable is the corresponding interface of BACnetConstructedDataBlinkWarnEnable
 type BACnetConstructedDataBlinkWarnEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBlinkWarnEnable returns BlinkWarnEnable (property field)
 	GetBlinkWarnEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBlinkWarnEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBlinkWarnEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataBlinkWarnEnableExactly interface {
+	BACnetConstructedDataBlinkWarnEnable
+	isBACnetConstructedDataBlinkWarnEnable() bool
 }
 
 // _BACnetConstructedDataBlinkWarnEnable is the data-structure of this message
 type _BACnetConstructedDataBlinkWarnEnable struct {
 	*_BACnetConstructedData
 	BlinkWarnEnable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBlinkWarnEnableParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBlinkWarnEnable{
-		BlinkWarnEnable:        blinkWarnEnable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BlinkWarnEnable: blinkWarnEnable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnable) isBACnetConstructedDataBlinkWarnEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBlinkWarnEnable) String() string {

@@ -28,24 +28,24 @@ import (
 
 // ApduControlContainer is the corresponding interface of ApduControlContainer
 type ApduControlContainer interface {
+	utils.LengthAware
+	utils.Serializable
 	Apdu
 	// GetControlApdu returns ControlApdu (property field)
 	GetControlApdu() ApduControl
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduControlContainerExactly can be used when we want exactly this type and not a type which fulfills ApduControlContainer.
+// This is useful for switch cases.
+type ApduControlContainerExactly interface {
+	ApduControlContainer
+	isApduControlContainer() bool
 }
 
 // _ApduControlContainer is the data-structure of this message
 type _ApduControlContainer struct {
 	*_Apdu
 	ControlApdu ApduControl
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -156,7 +156,9 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (A
 	// Create a partially initialized instance
 	_child := &_ApduControlContainer{
 		ControlApdu: controlApdu,
-		_Apdu:       &_Apdu{},
+		_Apdu: &_Apdu{
+			DataLength: dataLength,
+		},
 	}
 	_child._Apdu._ApduChildRequirements = _child
 	return _child, nil
@@ -188,6 +190,10 @@ func (m *_ApduControlContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduControlContainer) isApduControlContainer() bool {
+	return true
 }
 
 func (m *_ApduControlContainer) String() string {

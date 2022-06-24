@@ -28,18 +28,21 @@ import (
 
 // BACnetAuthenticationFactorEnclosed is the corresponding interface of BACnetAuthenticationFactorEnclosed
 type BACnetAuthenticationFactorEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
 	GetAuthenticationFactor() BACnetAuthenticationFactor
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthenticationFactorEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationFactorEnclosed.
+// This is useful for switch cases.
+type BACnetAuthenticationFactorEnclosedExactly interface {
+	BACnetAuthenticationFactorEnclosed
+	isBACnetAuthenticationFactorEnclosed() bool
 }
 
 // _BACnetAuthenticationFactorEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_BACnetAuthenticationFactorEnclosed) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationFactorEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationFactorEnclosed) isBACnetAuthenticationFactorEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationFactorEnclosed) String() string {

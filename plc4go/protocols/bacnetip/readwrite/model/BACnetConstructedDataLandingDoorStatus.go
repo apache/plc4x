@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataLandingDoorStatus is the corresponding interface of BACnetConstructedDataLandingDoorStatus
 type BACnetConstructedDataLandingDoorStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataLandingDoorStatus interface {
 	GetLandingDoorStatus() []BACnetLandingDoorStatus
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLandingDoorStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLandingDoorStatus.
+// This is useful for switch cases.
+type BACnetConstructedDataLandingDoorStatusExactly interface {
+	BACnetConstructedDataLandingDoorStatus
+	isBACnetConstructedDataLandingDoorStatus() bool
 }
 
 // _BACnetConstructedDataLandingDoorStatus is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataLandingDoorStatus struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	LandingDoorStatus    []BACnetLandingDoorStatus
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataLandingDoorStatusParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for landingDoorStatus")
 	}
 	// Terminated array
-	landingDoorStatus := make([]BACnetLandingDoorStatus, 0)
+	var landingDoorStatus []BACnetLandingDoorStatus
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLandingDoorStatusParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataLandingDoorStatusParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLandingDoorStatus{
-		NumberOfDataElements:   numberOfDataElements,
-		LandingDoorStatus:      landingDoorStatus,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		LandingDoorStatus:    landingDoorStatus,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataLandingDoorStatus) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (landingDoorStatus)
-		if m.GetLandingDoorStatus() != nil {
-			if pushErr := writeBuffer.PushContext("landingDoorStatus", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for landingDoorStatus")
+		if pushErr := writeBuffer.PushContext("landingDoorStatus", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for landingDoorStatus")
+		}
+		for _, _element := range m.GetLandingDoorStatus() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'landingDoorStatus' field")
 			}
-			for _, _element := range m.GetLandingDoorStatus() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'landingDoorStatus' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("landingDoorStatus", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for landingDoorStatus")
-			}
+		}
+		if popErr := writeBuffer.PopContext("landingDoorStatus", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for landingDoorStatus")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLandingDoorStatus"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataLandingDoorStatus) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLandingDoorStatus) isBACnetConstructedDataLandingDoorStatus() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLandingDoorStatus) String() string {

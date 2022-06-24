@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFDBBMDAddress is the corresponding interface of BACnetConstructedDataFDBBMDAddress
 type BACnetConstructedDataFDBBMDAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFDBBMDAddress returns FDBBMDAddress (property field)
 	GetFDBBMDAddress() BACnetHostNPort
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetHostNPort
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFDBBMDAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFDBBMDAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataFDBBMDAddressExactly interface {
+	BACnetConstructedDataFDBBMDAddress
+	isBACnetConstructedDataFDBBMDAddress() bool
 }
 
 // _BACnetConstructedDataFDBBMDAddress is the data-structure of this message
 type _BACnetConstructedDataFDBBMDAddress struct {
 	*_BACnetConstructedData
 	FDBBMDAddress BACnetHostNPort
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFDBBMDAddressParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFDBBMDAddress{
-		FDBBMDAddress:          fDBBMDAddress,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FDBBMDAddress: fDBBMDAddress,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFDBBMDAddress) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFDBBMDAddress) isBACnetConstructedDataFDBBMDAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFDBBMDAddress) String() string {

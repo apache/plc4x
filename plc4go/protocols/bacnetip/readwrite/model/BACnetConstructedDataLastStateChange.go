@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastStateChange is the corresponding interface of BACnetConstructedDataLastStateChange
 type BACnetConstructedDataLastStateChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastStateChange returns LastStateChange (property field)
 	GetLastStateChange() BACnetTimerTransitionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimerTransitionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastStateChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastStateChange.
+// This is useful for switch cases.
+type BACnetConstructedDataLastStateChangeExactly interface {
+	BACnetConstructedDataLastStateChange
+	isBACnetConstructedDataLastStateChange() bool
 }
 
 // _BACnetConstructedDataLastStateChange is the data-structure of this message
 type _BACnetConstructedDataLastStateChange struct {
 	*_BACnetConstructedData
 	LastStateChange BACnetTimerTransitionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLastStateChangeParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastStateChange{
-		LastStateChange:        lastStateChange,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LastStateChange: lastStateChange,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastStateChange) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastStateChange) isBACnetConstructedDataLastStateChange() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastStateChange) String() string {

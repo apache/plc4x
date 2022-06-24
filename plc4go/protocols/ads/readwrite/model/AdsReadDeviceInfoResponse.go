@@ -28,6 +28,8 @@ import (
 
 // AdsReadDeviceInfoResponse is the corresponding interface of AdsReadDeviceInfoResponse
 type AdsReadDeviceInfoResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -39,12 +41,13 @@ type AdsReadDeviceInfoResponse interface {
 	GetVersion() uint16
 	// GetDevice returns Device (property field)
 	GetDevice() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsReadDeviceInfoResponseExactly can be used when we want exactly this type and not a type which fulfills AdsReadDeviceInfoResponse.
+// This is useful for switch cases.
+type AdsReadDeviceInfoResponseExactly interface {
+	AdsReadDeviceInfoResponse
+	isAdsReadDeviceInfoResponse() bool
 }
 
 // _AdsReadDeviceInfoResponse is the data-structure of this message
@@ -279,12 +282,9 @@ func (m *_AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		// Array Field (device)
-		if m.GetDevice() != nil {
-			// Byte Array field (device)
-			_writeArrayErr := writeBuffer.WriteByteArray("device", m.GetDevice())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'device' field")
-			}
+		// Byte Array field (device)
+		if err := writeBuffer.WriteByteArray("device", m.GetDevice()); err != nil {
+			return errors.Wrap(err, "Error serializing 'device' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsReadDeviceInfoResponse"); popErr != nil {
@@ -293,6 +293,10 @@ func (m *_AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsReadDeviceInfoResponse) isAdsReadDeviceInfoResponse() bool {
+	return true
 }
 
 func (m *_AdsReadDeviceInfoResponse) String() string {

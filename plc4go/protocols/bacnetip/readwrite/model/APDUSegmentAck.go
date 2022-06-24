@@ -29,6 +29,8 @@ import (
 
 // APDUSegmentAck is the corresponding interface of APDUSegmentAck
 type APDUSegmentAck interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetNegativeAck returns NegativeAck (property field)
 	GetNegativeAck() bool
@@ -40,12 +42,13 @@ type APDUSegmentAck interface {
 	GetSequenceNumber() uint8
 	// GetProposedWindowSize returns ProposedWindowSize (property field)
 	GetProposedWindowSize() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// APDUSegmentAckExactly can be used when we want exactly this type and not a type which fulfills APDUSegmentAck.
+// This is useful for switch cases.
+type APDUSegmentAckExactly interface {
+	APDUSegmentAck
+	isAPDUSegmentAck() bool
 }
 
 // _APDUSegmentAck is the data-structure of this message
@@ -56,9 +59,6 @@ type _APDUSegmentAck struct {
 	OriginalInvokeId   uint8
 	SequenceNumber     uint8
 	ProposedWindowSize uint8
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -241,7 +241,9 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSe
 		OriginalInvokeId:   originalInvokeId,
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
-		_APDU:              &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -304,6 +306,10 @@ func (m *_APDUSegmentAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUSegmentAck) isAPDUSegmentAck() bool {
+	return true
 }
 
 func (m *_APDUSegmentAck) String() string {

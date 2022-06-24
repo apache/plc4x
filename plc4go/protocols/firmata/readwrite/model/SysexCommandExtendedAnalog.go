@@ -28,13 +28,16 @@ import (
 
 // SysexCommandExtendedAnalog is the corresponding interface of SysexCommandExtendedAnalog
 type SysexCommandExtendedAnalog interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandExtendedAnalogExactly can be used when we want exactly this type and not a type which fulfills SysexCommandExtendedAnalog.
+// This is useful for switch cases.
+type SysexCommandExtendedAnalogExactly interface {
+	SysexCommandExtendedAnalog
+	isSysexCommandExtendedAnalog() bool
 }
 
 // _SysexCommandExtendedAnalog is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_SysexCommandExtendedAnalog) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandExtendedAnalog) isSysexCommandExtendedAnalog() bool {
+	return true
 }
 
 func (m *_SysexCommandExtendedAnalog) String() string {

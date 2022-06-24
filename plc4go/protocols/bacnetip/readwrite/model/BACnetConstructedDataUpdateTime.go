@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataUpdateTime is the corresponding interface of BACnetConstructedDataUpdateTime
 type BACnetConstructedDataUpdateTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUpdateTime returns UpdateTime (property field)
 	GetUpdateTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataUpdateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateTime.
+// This is useful for switch cases.
+type BACnetConstructedDataUpdateTimeExactly interface {
+	BACnetConstructedDataUpdateTime
+	isBACnetConstructedDataUpdateTime() bool
 }
 
 // _BACnetConstructedDataUpdateTime is the data-structure of this message
 type _BACnetConstructedDataUpdateTime struct {
 	*_BACnetConstructedData
 	UpdateTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataUpdateTimeParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUpdateTime{
-		UpdateTime:             updateTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		UpdateTime: updateTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataUpdateTime) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUpdateTime) isBACnetConstructedDataUpdateTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUpdateTime) String() string {

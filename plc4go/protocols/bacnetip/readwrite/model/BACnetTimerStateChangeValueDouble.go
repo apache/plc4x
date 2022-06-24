@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueDouble is the corresponding interface of BACnetTimerStateChangeValueDouble
 type BACnetTimerStateChangeValueDouble interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueDouble.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueDoubleExactly interface {
+	BACnetTimerStateChangeValueDouble
+	isBACnetTimerStateChangeValueDouble() bool
 }
 
 // _BACnetTimerStateChangeValueDouble is the data-structure of this message
 type _BACnetTimerStateChangeValueDouble struct {
 	*_BACnetTimerStateChangeValue
 	DoubleValue BACnetApplicationTagDouble
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueDoubleParse(readBuffer utils.ReadBuffer, objectT
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueDouble{
-		DoubleValue:                  doubleValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		DoubleValue: doubleValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueDouble) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueDouble) isBACnetTimerStateChangeValueDouble() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueDouble) String() string {

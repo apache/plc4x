@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLifeSafetyZoneMaintenanceRequired is the corresponding interface of BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
 type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyZoneMaintenanceRequired.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredExactly interface {
+	BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
+	isBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() bool
 }
 
 // _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired struct {
 	*_BACnetConstructedData
 	MaintenanceRequired BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(readBuffer util
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
-		MaintenanceRequired:    maintenanceRequired,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaintenanceRequired: maintenanceRequired,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) Serialize(writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) isBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) String() string {

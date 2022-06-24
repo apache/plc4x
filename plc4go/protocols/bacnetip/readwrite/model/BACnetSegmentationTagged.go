@@ -28,16 +28,19 @@ import (
 
 // BACnetSegmentationTagged is the corresponding interface of BACnetSegmentationTagged
 type BACnetSegmentationTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetSegmentation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSegmentationTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSegmentationTagged.
+// This is useful for switch cases.
+type BACnetSegmentationTaggedExactly interface {
+	BACnetSegmentationTagged
+	isBACnetSegmentationTagged() bool
 }
 
 // _BACnetSegmentationTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetSegmentationTagged) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetSegmentationTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetSegmentationTagged) isBACnetSegmentationTagged() bool {
+	return true
 }
 
 func (m *_BACnetSegmentationTagged) String() string {

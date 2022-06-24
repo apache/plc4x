@@ -28,6 +28,8 @@ import (
 
 // BACnetAccumulatorRecord is the corresponding interface of BACnetAccumulatorRecord
 type BACnetAccumulatorRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetPresentValue returns PresentValue (property field)
@@ -36,12 +38,13 @@ type BACnetAccumulatorRecord interface {
 	GetAccumulatedValue() BACnetContextTagSignedInteger
 	// GetAccumulatorStatus returns AccumulatorStatus (property field)
 	GetAccumulatorStatus() BACnetAccumulatorRecordAccumulatorStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAccumulatorRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetAccumulatorRecord.
+// This is useful for switch cases.
+type BACnetAccumulatorRecordExactly interface {
+	BACnetAccumulatorRecord
+	isBACnetAccumulatorRecord() bool
 }
 
 // _BACnetAccumulatorRecord is the data-structure of this message
@@ -252,6 +255,10 @@ func (m *_BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetAccumulatorRecord")
 	}
 	return nil
+}
+
+func (m *_BACnetAccumulatorRecord) isBACnetAccumulatorRecord() bool {
+	return true
 }
 
 func (m *_BACnetAccumulatorRecord) String() string {

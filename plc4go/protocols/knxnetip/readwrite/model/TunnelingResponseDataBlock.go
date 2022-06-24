@@ -28,18 +28,21 @@ import (
 
 // TunnelingResponseDataBlock is the corresponding interface of TunnelingResponseDataBlock
 type TunnelingResponseDataBlock interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// TunnelingResponseDataBlockExactly can be used when we want exactly this type and not a type which fulfills TunnelingResponseDataBlock.
+// This is useful for switch cases.
+type TunnelingResponseDataBlockExactly interface {
+	TunnelingResponseDataBlock
+	isTunnelingResponseDataBlock() bool
 }
 
 // _TunnelingResponseDataBlock is the data-structure of this message
@@ -212,6 +215,10 @@ func (m *_TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for TunnelingResponseDataBlock")
 	}
 	return nil
+}
+
+func (m *_TunnelingResponseDataBlock) isTunnelingResponseDataBlock() bool {
+	return true
 }
 
 func (m *_TunnelingResponseDataBlock) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetAccessPassbackModeTagged is the corresponding interface of BACnetAccessPassbackModeTagged
 type BACnetAccessPassbackModeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccessPassbackMode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAccessPassbackModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessPassbackModeTagged.
+// This is useful for switch cases.
+type BACnetAccessPassbackModeTaggedExactly interface {
+	BACnetAccessPassbackModeTagged
+	isBACnetAccessPassbackModeTagged() bool
 }
 
 // _BACnetAccessPassbackModeTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetAccessPassbackModeTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetAccessPassbackModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessPassbackModeTagged) isBACnetAccessPassbackModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessPassbackModeTagged) String() string {

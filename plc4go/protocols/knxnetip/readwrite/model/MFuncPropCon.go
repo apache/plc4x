@@ -28,21 +28,21 @@ import (
 
 // MFuncPropCon is the corresponding interface of MFuncPropCon
 type MFuncPropCon interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MFuncPropConExactly can be used when we want exactly this type and not a type which fulfills MFuncPropCon.
+// This is useful for switch cases.
+type MFuncPropConExactly interface {
+	MFuncPropCon
+	isMFuncPropCon() bool
 }
 
 // _MFuncPropCon is the data-structure of this message
 type _MFuncPropCon struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func MFuncPropConParse(readBuffer utils.ReadBuffer, size uint16) (MFuncPropCon, 
 
 	// Create a partially initialized instance
 	_child := &_MFuncPropCon{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_MFuncPropCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MFuncPropCon) isMFuncPropCon() bool {
+	return true
 }
 
 func (m *_MFuncPropCon) String() string {

@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueCharacterString is the corresponding interface of BACnetTimerStateChangeValueCharacterString
 type BACnetTimerStateChangeValueCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueCharacterString.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueCharacterStringExactly interface {
+	BACnetTimerStateChangeValueCharacterString
+	isBACnetTimerStateChangeValueCharacterString() bool
 }
 
 // _BACnetTimerStateChangeValueCharacterString is the data-structure of this message
 type _BACnetTimerStateChangeValueCharacterString struct {
 	*_BACnetTimerStateChangeValue
 	CharacterStringValue BACnetApplicationTagCharacterString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueCharacterStringParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueCharacterString{
-		CharacterStringValue:         characterStringValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		CharacterStringValue: characterStringValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueCharacterString) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterString) isBACnetTimerStateChangeValueCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueCharacterString) String() string {

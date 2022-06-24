@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBACnetIPUDPPort is the corresponding interface of BACnetConstructedDataBACnetIPUDPPort
 type BACnetConstructedDataBACnetIPUDPPort interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpUdpPort returns IpUdpPort (property field)
 	GetIpUdpPort() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBACnetIPUDPPortExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPUDPPort.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPUDPPortExactly interface {
+	BACnetConstructedDataBACnetIPUDPPort
+	isBACnetConstructedDataBACnetIPUDPPort() bool
 }
 
 // _BACnetConstructedDataBACnetIPUDPPort is the data-structure of this message
 type _BACnetConstructedDataBACnetIPUDPPort struct {
 	*_BACnetConstructedData
 	IpUdpPort BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBACnetIPUDPPortParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPUDPPort{
-		IpUdpPort:              ipUdpPort,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		IpUdpPort: ipUdpPort,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPUDPPort) isBACnetConstructedDataBACnetIPUDPPort() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) String() string {

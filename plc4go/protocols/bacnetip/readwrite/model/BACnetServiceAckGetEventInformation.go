@@ -28,17 +28,20 @@ import (
 
 // BACnetServiceAckGetEventInformation is the corresponding interface of BACnetServiceAckGetEventInformation
 type BACnetServiceAckGetEventInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
 	GetListOfEventSummaries() BACnetEventSummariesList
 	// GetMoreEvents returns MoreEvents (property field)
 	GetMoreEvents() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckGetEventInformationExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetEventInformation.
+// This is useful for switch cases.
+type BACnetServiceAckGetEventInformationExactly interface {
+	BACnetServiceAckGetEventInformation
+	isBACnetServiceAckGetEventInformation() bool
 }
 
 // _BACnetServiceAckGetEventInformation is the data-structure of this message
@@ -46,9 +49,6 @@ type _BACnetServiceAckGetEventInformation struct {
 	*_BACnetServiceAck
 	ListOfEventSummaries BACnetEventSummariesList
 	MoreEvents           BACnetContextTagBoolean
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -178,7 +178,9 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	_child := &_BACnetServiceAckGetEventInformation{
 		ListOfEventSummaries: listOfEventSummaries,
 		MoreEvents:           moreEvents,
-		_BACnetServiceAck:    &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -222,6 +224,10 @@ func (m *_BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckGetEventInformation) isBACnetServiceAckGetEventInformation() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckGetEventInformation) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesReliability is the corresponding interface of BACnetPropertyStatesReliability
 type BACnetPropertyStatesReliability interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesReliabilityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesReliability.
+// This is useful for switch cases.
+type BACnetPropertyStatesReliabilityExactly interface {
+	BACnetPropertyStatesReliability
+	isBACnetPropertyStatesReliability() bool
 }
 
 // _BACnetPropertyStatesReliability is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesReliability) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesReliability) isBACnetPropertyStatesReliability() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesReliability) String() string {

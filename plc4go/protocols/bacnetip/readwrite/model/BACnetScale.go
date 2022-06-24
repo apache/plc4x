@@ -28,16 +28,19 @@ import (
 
 // BACnetScale is the corresponding interface of BACnetScale
 type BACnetScale interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScale.
+// This is useful for switch cases.
+type BACnetScaleExactly interface {
+	BACnetScale
+	isBACnetScale() bool
 }
 
 // _BACnetScale is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetScale struct {
 }
 
 type _BACnetScaleChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetScaleParent interface {
@@ -58,7 +61,7 @@ type BACnetScaleParent interface {
 }
 
 type BACnetScaleChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetScale, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetScale
 
@@ -202,6 +205,10 @@ func (pm *_BACnetScale) SerializeParent(writeBuffer utils.WriteBuffer, child BAC
 		return errors.Wrap(popErr, "Error popping for BACnetScale")
 	}
 	return nil
+}
+
+func (m *_BACnetScale) isBACnetScale() bool {
+	return true
 }
 
 func (m *_BACnetScale) String() string {

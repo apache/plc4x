@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDirectReading is the corresponding interface of BACnetConstructedDataDirectReading
 type BACnetConstructedDataDirectReading interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDirectReading returns DirectReading (property field)
 	GetDirectReading() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDirectReadingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDirectReading.
+// This is useful for switch cases.
+type BACnetConstructedDataDirectReadingExactly interface {
+	BACnetConstructedDataDirectReading
+	isBACnetConstructedDataDirectReading() bool
 }
 
 // _BACnetConstructedDataDirectReading is the data-structure of this message
 type _BACnetConstructedDataDirectReading struct {
 	*_BACnetConstructedData
 	DirectReading BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDirectReadingParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDirectReading{
-		DirectReading:          directReading,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DirectReading: directReading,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDirectReading) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDirectReading) isBACnetConstructedDataDirectReading() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDirectReading) String() string {

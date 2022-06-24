@@ -944,6 +944,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass := model.TagClassByName(arguments[1])
 		return model.BACnetLiftCarDriveStatusTaggedParse(io, tagNumber, tagClass)
+	case "BACnetUnconfirmedServiceRequestWhoHasObject":
+		return model.BACnetUnconfirmedServiceRequestWhoHasObjectParse(io)
 	case "BACnetTagPayloadSignedInteger":
 		actualLength, err := utils.StrToUint32(arguments[0])
 		if err != nil {

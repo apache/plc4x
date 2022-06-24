@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesShedState is the corresponding interface of BACnetPropertyStatesShedState
 type BACnetPropertyStatesShedState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetShedState returns ShedState (property field)
 	GetShedState() BACnetShedStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesShedStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesShedState.
+// This is useful for switch cases.
+type BACnetPropertyStatesShedStateExactly interface {
+	BACnetPropertyStatesShedState
+	isBACnetPropertyStatesShedState() bool
 }
 
 // _BACnetPropertyStatesShedState is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesShedState) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesShedState) isBACnetPropertyStatesShedState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesShedState) String() string {

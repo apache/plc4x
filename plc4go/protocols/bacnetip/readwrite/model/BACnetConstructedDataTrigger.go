@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTrigger is the corresponding interface of BACnetConstructedDataTrigger
 type BACnetConstructedDataTrigger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTrigger returns Trigger (property field)
 	GetTrigger() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTriggerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrigger.
+// This is useful for switch cases.
+type BACnetConstructedDataTriggerExactly interface {
+	BACnetConstructedDataTrigger
+	isBACnetConstructedDataTrigger() bool
 }
 
 // _BACnetConstructedDataTrigger is the data-structure of this message
 type _BACnetConstructedDataTrigger struct {
 	*_BACnetConstructedData
 	Trigger BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTriggerParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTrigger{
-		Trigger:                trigger,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Trigger: trigger,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTrigger) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrigger) isBACnetConstructedDataTrigger() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrigger) String() string {

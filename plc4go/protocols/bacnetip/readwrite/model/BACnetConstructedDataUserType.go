@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataUserType is the corresponding interface of BACnetConstructedDataUserType
 type BACnetConstructedDataUserType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUserType returns UserType (property field)
 	GetUserType() BACnetAccessUserTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessUserTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataUserTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserType.
+// This is useful for switch cases.
+type BACnetConstructedDataUserTypeExactly interface {
+	BACnetConstructedDataUserType
+	isBACnetConstructedDataUserType() bool
 }
 
 // _BACnetConstructedDataUserType is the data-structure of this message
 type _BACnetConstructedDataUserType struct {
 	*_BACnetConstructedData
 	UserType BACnetAccessUserTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataUserTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUserType{
-		UserType:               userType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		UserType: userType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataUserType) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUserType) isBACnetConstructedDataUserType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUserType) String() string {

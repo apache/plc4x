@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCarMovingDirection is the corresponding interface of BACnetConstructedDataCarMovingDirection
 type BACnetConstructedDataCarMovingDirection interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCarMovingDirection returns CarMovingDirection (property field)
 	GetCarMovingDirection() BACnetLiftCarDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarDirectionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCarMovingDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarMovingDirection.
+// This is useful for switch cases.
+type BACnetConstructedDataCarMovingDirectionExactly interface {
+	BACnetConstructedDataCarMovingDirection
+	isBACnetConstructedDataCarMovingDirection() bool
 }
 
 // _BACnetConstructedDataCarMovingDirection is the data-structure of this message
 type _BACnetConstructedDataCarMovingDirection struct {
 	*_BACnetConstructedData
 	CarMovingDirection BACnetLiftCarDirectionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCarMovingDirectionParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCarMovingDirection{
-		CarMovingDirection:     carMovingDirection,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CarMovingDirection: carMovingDirection,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCarMovingDirection) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarMovingDirection) isBACnetConstructedDataCarMovingDirection() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarMovingDirection) String() string {

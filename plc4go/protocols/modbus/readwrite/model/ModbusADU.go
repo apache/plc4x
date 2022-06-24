@@ -28,14 +28,17 @@ import (
 
 // ModbusADU is the corresponding interface of ModbusADU
 type ModbusADU interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDriverType returns DriverType (discriminator field)
 	GetDriverType() DriverType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusADUExactly can be used when we want exactly this type and not a type which fulfills ModbusADU.
+// This is useful for switch cases.
+type ModbusADUExactly interface {
+	ModbusADU
+	isModbusADU() bool
 }
 
 // _ModbusADU is the data-structure of this message
@@ -47,10 +50,10 @@ type _ModbusADU struct {
 }
 
 type _ModbusADUChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetDriverType() DriverType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ModbusADUParent interface {
@@ -59,7 +62,7 @@ type ModbusADUParent interface {
 }
 
 type ModbusADUChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ModbusADU)
 	GetParent() *ModbusADU
 
@@ -159,6 +162,10 @@ func (pm *_ModbusADU) SerializeParent(writeBuffer utils.WriteBuffer, child Modbu
 		return errors.Wrap(popErr, "Error popping for ModbusADU")
 	}
 	return nil
+}
+
+func (m *_ModbusADU) isModbusADU() bool {
+	return true
 }
 
 func (m *_ModbusADU) String() string {

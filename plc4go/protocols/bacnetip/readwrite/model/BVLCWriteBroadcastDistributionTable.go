@@ -28,15 +28,18 @@ import (
 
 // BVLCWriteBroadcastDistributionTable is the corresponding interface of BVLCWriteBroadcastDistributionTable
 type BVLCWriteBroadcastDistributionTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCBroadcastDistributionTableEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCWriteBroadcastDistributionTableExactly can be used when we want exactly this type and not a type which fulfills BVLCWriteBroadcastDistributionTable.
+// This is useful for switch cases.
+type BVLCWriteBroadcastDistributionTableExactly interface {
+	BVLCWriteBroadcastDistributionTable
+	isBVLCWriteBroadcastDistributionTable() bool
 }
 
 // _BVLCWriteBroadcastDistributionTable is the data-structure of this message
@@ -142,7 +145,7 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 		return nil, errors.Wrap(pullErr, "Error pulling for table")
 	}
 	// Length array
-	table := make([]BVLCBroadcastDistributionTableEntry, 0)
+	var table []BVLCBroadcastDistributionTableEntry
 	{
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
@@ -180,19 +183,17 @@ func (m *_BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (table)
-		if m.GetTable() != nil {
-			if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for table")
+		if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for table")
+		}
+		for _, _element := range m.GetTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'table' field")
 			}
-			for _, _element := range m.GetTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'table' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for table")
-			}
+		}
+		if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for table")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCWriteBroadcastDistributionTable"); popErr != nil {
@@ -201,6 +202,10 @@ func (m *_BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCWriteBroadcastDistributionTable) isBVLCWriteBroadcastDistributionTable() bool {
+	return true
 }
 
 func (m *_BVLCWriteBroadcastDistributionTable) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetLogDataLogDataEntryBitStringValue is the corresponding interface of BACnetLogDataLogDataEntryBitStringValue
 type BACnetLogDataLogDataEntryBitStringValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataEntryBitStringValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryBitStringValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryBitStringValueExactly interface {
+	BACnetLogDataLogDataEntryBitStringValue
+	isBACnetLogDataLogDataEntryBitStringValue() bool
 }
 
 // _BACnetLogDataLogDataEntryBitStringValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) isBACnetLogDataLogDataEntryBitStringValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) String() string {

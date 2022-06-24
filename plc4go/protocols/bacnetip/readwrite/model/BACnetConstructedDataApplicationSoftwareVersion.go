@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataApplicationSoftwareVersion is the corresponding interface of BACnetConstructedDataApplicationSoftwareVersion
 type BACnetConstructedDataApplicationSoftwareVersion interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetApplicationSoftwareVersion returns ApplicationSoftwareVersion (property field)
 	GetApplicationSoftwareVersion() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataApplicationSoftwareVersionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataApplicationSoftwareVersion.
+// This is useful for switch cases.
+type BACnetConstructedDataApplicationSoftwareVersionExactly interface {
+	BACnetConstructedDataApplicationSoftwareVersion
+	isBACnetConstructedDataApplicationSoftwareVersion() bool
 }
 
 // _BACnetConstructedDataApplicationSoftwareVersion is the data-structure of this message
 type _BACnetConstructedDataApplicationSoftwareVersion struct {
 	*_BACnetConstructedData
 	ApplicationSoftwareVersion BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataApplicationSoftwareVersionParse(readBuffer utils.ReadB
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataApplicationSoftwareVersion{
 		ApplicationSoftwareVersion: applicationSoftwareVersion,
-		_BACnetConstructedData:     &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) isBACnetConstructedDataApplicationSoftwareVersion() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataApplicationSoftwareVersion) String() string {

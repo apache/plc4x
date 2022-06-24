@@ -28,21 +28,21 @@ import (
 
 // MPropWriteCon is the corresponding interface of MPropWriteCon
 type MPropWriteCon interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MPropWriteConExactly can be used when we want exactly this type and not a type which fulfills MPropWriteCon.
+// This is useful for switch cases.
+type MPropWriteConExactly interface {
+	MPropWriteCon
+	isMPropWriteCon() bool
 }
 
 // _MPropWriteCon is the data-structure of this message
 type _MPropWriteCon struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (MPropWriteCon
 
 	// Create a partially initialized instance
 	_child := &_MPropWriteCon{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_MPropWriteCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MPropWriteCon) isMPropWriteCon() bool {
+	return true
 }
 
 func (m *_MPropWriteCon) String() string {

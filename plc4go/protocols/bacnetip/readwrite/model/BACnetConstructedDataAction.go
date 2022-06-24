@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataAction is the corresponding interface of BACnetConstructedDataAction
 type BACnetConstructedDataAction interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataAction interface {
 	GetActionLists() []BACnetActionList
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataActionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAction.
+// This is useful for switch cases.
+type BACnetConstructedDataActionExactly interface {
+	BACnetConstructedDataAction
+	isBACnetConstructedDataAction() bool
 }
 
 // _BACnetConstructedDataAction is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataAction struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	ActionLists          []BACnetActionList
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataActionParse(readBuffer utils.ReadBuffer, tagNumber uin
 		return nil, errors.Wrap(pullErr, "Error pulling for actionLists")
 	}
 	// Terminated array
-	actionLists := make([]BACnetActionList, 0)
+	var actionLists []BACnetActionList
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetActionListParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataActionParse(readBuffer utils.ReadBuffer, tagNumber uin
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAction{
-		NumberOfDataElements:   numberOfDataElements,
-		ActionLists:            actionLists,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		ActionLists:          actionLists,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataAction) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 
 		// Array Field (actionLists)
-		if m.GetActionLists() != nil {
-			if pushErr := writeBuffer.PushContext("actionLists", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for actionLists")
+		if pushErr := writeBuffer.PushContext("actionLists", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for actionLists")
+		}
+		for _, _element := range m.GetActionLists() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'actionLists' field")
 			}
-			for _, _element := range m.GetActionLists() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'actionLists' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("actionLists", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for actionLists")
-			}
+		}
+		if popErr := writeBuffer.PopContext("actionLists", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for actionLists")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAction"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataAction) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAction) isBACnetConstructedDataAction() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAction) String() string {

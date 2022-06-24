@@ -28,24 +28,24 @@ import (
 
 // BACnetServiceAckAtomicWriteFile is the corresponding interface of BACnetServiceAckAtomicWriteFile
 type BACnetServiceAckAtomicWriteFile interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetContextTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckAtomicWriteFileExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicWriteFile.
+// This is useful for switch cases.
+type BACnetServiceAckAtomicWriteFileExactly interface {
+	BACnetServiceAckAtomicWriteFile
+	isBACnetServiceAckAtomicWriteFile() bool
 }
 
 // _BACnetServiceAckAtomicWriteFile is the data-structure of this message
 type _BACnetServiceAckAtomicWriteFile struct {
 	*_BACnetServiceAck
 	FileStartPosition BACnetContextTagSignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer, serviceAc
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetServiceAckAtomicWriteFile) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckAtomicWriteFile) isBACnetServiceAckAtomicWriteFile() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) String() string {

@@ -33,14 +33,17 @@ const S7DataAlarmMessage_NUMBERMESSAGEOBJ uint8 = 0x01
 
 // S7DataAlarmMessage is the corresponding interface of S7DataAlarmMessage
 type S7DataAlarmMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7DataAlarmMessageExactly can be used when we want exactly this type and not a type which fulfills S7DataAlarmMessage.
+// This is useful for switch cases.
+type S7DataAlarmMessageExactly interface {
+	S7DataAlarmMessage
+	isS7DataAlarmMessage() bool
 }
 
 // _S7DataAlarmMessage is the data-structure of this message
@@ -49,10 +52,10 @@ type _S7DataAlarmMessage struct {
 }
 
 type _S7DataAlarmMessageChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCpuFunctionType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7DataAlarmMessageParent interface {
@@ -61,7 +64,7 @@ type S7DataAlarmMessageParent interface {
 }
 
 type S7DataAlarmMessageChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7DataAlarmMessage)
 	GetParent() *S7DataAlarmMessage
 
@@ -213,6 +216,10 @@ func (pm *_S7DataAlarmMessage) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(popErr, "Error popping for S7DataAlarmMessage")
 	}
 	return nil
+}
+
+func (m *_S7DataAlarmMessage) isS7DataAlarmMessage() bool {
+	return true
 }
 
 func (m *_S7DataAlarmMessage) String() string {

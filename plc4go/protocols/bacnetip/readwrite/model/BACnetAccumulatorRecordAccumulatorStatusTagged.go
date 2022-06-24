@@ -28,16 +28,19 @@ import (
 
 // BACnetAccumulatorRecordAccumulatorStatusTagged is the corresponding interface of BACnetAccumulatorRecordAccumulatorStatusTagged
 type BACnetAccumulatorRecordAccumulatorStatusTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccumulatorRecordAccumulatorStatus
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAccumulatorRecordAccumulatorStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccumulatorRecordAccumulatorStatusTagged.
+// This is useful for switch cases.
+type BACnetAccumulatorRecordAccumulatorStatusTaggedExactly interface {
+	BACnetAccumulatorRecordAccumulatorStatusTagged
+	isBACnetAccumulatorRecordAccumulatorStatusTagged() bool
 }
 
 // _BACnetAccumulatorRecordAccumulatorStatusTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) Serialize(writeBuffer 
 		return errors.Wrap(popErr, "Error popping for BACnetAccumulatorRecordAccumulatorStatusTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) isBACnetAccumulatorRecordAccumulatorStatusTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) String() string {

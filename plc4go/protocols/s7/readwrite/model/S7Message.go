@@ -34,6 +34,8 @@ const S7Message_PROTOCOLID uint8 = 0x32
 
 // S7Message is the corresponding interface of S7Message
 type S7Message interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetTpduReference returns TpduReference (property field)
@@ -42,12 +44,13 @@ type S7Message interface {
 	GetParameter() S7Parameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Payload
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7MessageExactly can be used when we want exactly this type and not a type which fulfills S7Message.
+// This is useful for switch cases.
+type S7MessageExactly interface {
+	S7Message
+	isS7Message() bool
 }
 
 // _S7Message is the data-structure of this message
@@ -59,10 +62,10 @@ type _S7Message struct {
 }
 
 type _S7MessageChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7MessageParent interface {
@@ -71,7 +74,7 @@ type S7MessageParent interface {
 }
 
 type S7MessageChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7Message, tpduReference uint16, parameter S7Parameter, payload S7Payload)
 	GetParent() *S7Message
 
@@ -404,6 +407,10 @@ func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Mes
 		return errors.Wrap(popErr, "Error popping for S7Message")
 	}
 	return nil
+}
+
+func (m *_S7Message) isS7Message() bool {
+	return true
 }
 
 func (m *_S7Message) String() string {

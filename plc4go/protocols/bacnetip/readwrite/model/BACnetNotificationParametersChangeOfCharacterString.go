@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfCharacterString is the corresponding interface of BACnetNotificationParametersChangeOfCharacterString
 type BACnetNotificationParametersChangeOfCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetNotificationParametersChangeOfCharacterString interface {
 	GetAlarmValue() BACnetContextTagCharacterString
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfCharacterString.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfCharacterStringExactly interface {
+	BACnetNotificationParametersChangeOfCharacterString
+	isBACnetNotificationParametersChangeOfCharacterString() bool
 }
 
 // _BACnetNotificationParametersChangeOfCharacterString is the data-structure of this message
@@ -55,10 +58,6 @@ type _BACnetNotificationParametersChangeOfCharacterString struct {
 	StatusFlags     BACnetStatusFlagsTagged
 	AlarmValue      BACnetContextTagCharacterString
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,12 +248,15 @@ func BACnetNotificationParametersChangeOfCharacterStringParse(readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfCharacterString{
-		InnerOpeningTag:               innerOpeningTag,
-		ChangedValue:                  changedValue,
-		StatusFlags:                   statusFlags,
-		AlarmValue:                    alarmValue,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		ChangedValue:    changedValue,
+		StatusFlags:     statusFlags,
+		AlarmValue:      alarmValue,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -334,6 +336,10 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfCharacterString) isBACnetNotificationParametersChangeOfCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfCharacterString) String() string {

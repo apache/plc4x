@@ -32,6 +32,8 @@ const AlarmMessageQueryType_DATALENGTH uint16 = 0xFFFF
 
 // AlarmMessageQueryType is the corresponding interface of AlarmMessageQueryType
 type AlarmMessageQueryType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -42,12 +44,13 @@ type AlarmMessageQueryType interface {
 	GetTransportSize() DataTransportSize
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectQueryType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AlarmMessageQueryTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageQueryType.
+// This is useful for switch cases.
+type AlarmMessageQueryTypeExactly interface {
+	AlarmMessageQueryType
+	isAlarmMessageQueryType() bool
 }
 
 // _AlarmMessageQueryType is the data-structure of this message
@@ -223,6 +226,10 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	}
 	// Count array
 	messageObjects := make([]AlarmMessageObjectQueryType, numberOfObjects)
+	// This happens when the size is set conditional to 0
+	if len(messageObjects) == 0 {
+		messageObjects = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := AlarmMessageObjectQueryTypeParse(readBuffer)
@@ -296,25 +303,27 @@ func (m *_AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 
 	// Array Field (messageObjects)
-	if m.GetMessageObjects() != nil {
-		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for messageObjects")
+	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for messageObjects")
+	}
+	for _, _element := range m.GetMessageObjects() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 		}
-		for _, _element := range m.GetMessageObjects() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for messageObjects")
-		}
+	}
+	if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for messageObjects")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageQueryType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for AlarmMessageQueryType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageQueryType) isAlarmMessageQueryType() bool {
+	return true
 }
 
 func (m *_AlarmMessageQueryType) String() string {

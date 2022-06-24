@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDatabaseRevision is the corresponding interface of BACnetConstructedDataDatabaseRevision
 type BACnetConstructedDataDatabaseRevision interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDatabaseRevision returns DatabaseRevision (property field)
 	GetDatabaseRevision() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDatabaseRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDatabaseRevision.
+// This is useful for switch cases.
+type BACnetConstructedDataDatabaseRevisionExactly interface {
+	BACnetConstructedDataDatabaseRevision
+	isBACnetConstructedDataDatabaseRevision() bool
 }
 
 // _BACnetConstructedDataDatabaseRevision is the data-structure of this message
 type _BACnetConstructedDataDatabaseRevision struct {
 	*_BACnetConstructedData
 	DatabaseRevision BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDatabaseRevisionParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDatabaseRevision{
-		DatabaseRevision:       databaseRevision,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DatabaseRevision: databaseRevision,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDatabaseRevision) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDatabaseRevision) isBACnetConstructedDataDatabaseRevision() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDatabaseRevision) String() string {

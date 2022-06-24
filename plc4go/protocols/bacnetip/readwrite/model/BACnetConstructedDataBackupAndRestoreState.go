@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBackupAndRestoreState is the corresponding interface of BACnetConstructedDataBackupAndRestoreState
 type BACnetConstructedDataBackupAndRestoreState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBackupAndRestoreState returns BackupAndRestoreState (property field)
 	GetBackupAndRestoreState() BACnetBackupStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBackupStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBackupAndRestoreStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBackupAndRestoreState.
+// This is useful for switch cases.
+type BACnetConstructedDataBackupAndRestoreStateExactly interface {
+	BACnetConstructedDataBackupAndRestoreState
+	isBACnetConstructedDataBackupAndRestoreState() bool
 }
 
 // _BACnetConstructedDataBackupAndRestoreState is the data-structure of this message
 type _BACnetConstructedDataBackupAndRestoreState struct {
 	*_BACnetConstructedData
 	BackupAndRestoreState BACnetBackupStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBackupAndRestoreStateParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBackupAndRestoreState{
-		BackupAndRestoreState:  backupAndRestoreState,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BackupAndRestoreState: backupAndRestoreState,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreState) isBACnetConstructedDataBackupAndRestoreState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBackupAndRestoreState) String() string {

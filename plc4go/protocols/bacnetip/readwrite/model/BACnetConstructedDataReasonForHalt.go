@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataReasonForHalt is the corresponding interface of BACnetConstructedDataReasonForHalt
 type BACnetConstructedDataReasonForHalt interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProgramError returns ProgramError (property field)
 	GetProgramError() BACnetProgramErrorTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProgramErrorTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataReasonForHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReasonForHalt.
+// This is useful for switch cases.
+type BACnetConstructedDataReasonForHaltExactly interface {
+	BACnetConstructedDataReasonForHalt
+	isBACnetConstructedDataReasonForHalt() bool
 }
 
 // _BACnetConstructedDataReasonForHalt is the data-structure of this message
 type _BACnetConstructedDataReasonForHalt struct {
 	*_BACnetConstructedData
 	ProgramError BACnetProgramErrorTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataReasonForHaltParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataReasonForHalt{
-		ProgramError:           programError,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ProgramError: programError,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataReasonForHalt) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReasonForHalt) isBACnetConstructedDataReasonForHalt() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReasonForHalt) String() string {

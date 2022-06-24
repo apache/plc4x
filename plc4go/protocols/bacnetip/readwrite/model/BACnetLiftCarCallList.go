@@ -28,14 +28,17 @@ import (
 
 // BACnetLiftCarCallList is the corresponding interface of BACnetLiftCarCallList
 type BACnetLiftCarCallList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFloorNumbers returns FloorNumbers (property field)
 	GetFloorNumbers() BACnetLiftCarCallListFloorList
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLiftCarCallListExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarCallList.
+// This is useful for switch cases.
+type BACnetLiftCarCallListExactly interface {
+	BACnetLiftCarCallList
+	isBACnetLiftCarCallList() bool
 }
 
 // _BACnetLiftCarCallList is the data-structure of this message
@@ -147,6 +150,10 @@ func (m *_BACnetLiftCarCallList) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarCallList")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarCallList) isBACnetLiftCarCallList() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarCallList) String() string {

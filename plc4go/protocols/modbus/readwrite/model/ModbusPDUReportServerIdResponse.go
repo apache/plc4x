@@ -28,15 +28,18 @@ import (
 
 // ModbusPDUReportServerIdResponse is the corresponding interface of ModbusPDUReportServerIdResponse
 type ModbusPDUReportServerIdResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReportServerIdResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReportServerIdResponse.
+// This is useful for switch cases.
+type ModbusPDUReportServerIdResponseExactly interface {
+	ModbusPDUReportServerIdResponse
+	isModbusPDUReportServerIdResponse() bool
 }
 
 // _ModbusPDUReportServerIdResponse is the data-structure of this message
@@ -185,12 +188,9 @@ func (m *_ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (value)
-		if m.GetValue() != nil {
-			// Byte Array field (value)
-			_writeArrayErr := writeBuffer.WriteByteArray("value", m.GetValue())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
-			}
+		// Byte Array field (value)
+		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReportServerIdResponse"); popErr != nil {
@@ -199,6 +199,10 @@ func (m *_ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReportServerIdResponse) isModbusPDUReportServerIdResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReportServerIdResponse) String() string {

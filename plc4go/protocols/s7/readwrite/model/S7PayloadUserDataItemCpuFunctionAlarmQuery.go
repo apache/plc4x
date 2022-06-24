@@ -36,6 +36,8 @@ const S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH uint8 = 0x08
 
 // S7PayloadUserDataItemCpuFunctionAlarmQuery is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQuery
 type S7PayloadUserDataItemCpuFunctionAlarmQuery interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -43,12 +45,13 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 	GetQueryType() QueryType
 	// GetAlarmType returns AlarmType (property field)
 	GetAlarmType() AlarmType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataItemCpuFunctionAlarmQueryExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmQuery.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionAlarmQueryExactly interface {
+	S7PayloadUserDataItemCpuFunctionAlarmQuery
+	isS7PayloadUserDataItemCpuFunctionAlarmQuery() bool
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmQuery is the data-structure of this message
@@ -422,6 +425,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) isS7PayloadUserDataItemCpuFunctionAlarmQuery() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) String() string {

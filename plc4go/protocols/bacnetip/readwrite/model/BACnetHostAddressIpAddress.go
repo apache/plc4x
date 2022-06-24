@@ -28,15 +28,18 @@ import (
 
 // BACnetHostAddressIpAddress is the corresponding interface of BACnetHostAddressIpAddress
 type BACnetHostAddressIpAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetHostAddress
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetHostAddressIpAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetHostAddressIpAddress.
+// This is useful for switch cases.
+type BACnetHostAddressIpAddressExactly interface {
+	BACnetHostAddressIpAddress
+	isBACnetHostAddressIpAddress() bool
 }
 
 // _BACnetHostAddressIpAddress is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetHostAddressIpAddress) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetHostAddressIpAddress) isBACnetHostAddressIpAddress() bool {
+	return true
 }
 
 func (m *_BACnetHostAddressIpAddress) String() string {

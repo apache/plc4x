@@ -28,14 +28,17 @@ import (
 
 // SerialInterfaceAddress is the corresponding interface of SerialInterfaceAddress
 type SerialInterfaceAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SerialInterfaceAddressExactly can be used when we want exactly this type and not a type which fulfills SerialInterfaceAddress.
+// This is useful for switch cases.
+type SerialInterfaceAddressExactly interface {
+	SerialInterfaceAddress
+	isSerialInterfaceAddress() bool
 }
 
 // _SerialInterfaceAddress is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_SerialInterfaceAddress) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for SerialInterfaceAddress")
 	}
 	return nil
+}
+
+func (m *_SerialInterfaceAddress) isSerialInterfaceAddress() bool {
+	return true
 }
 
 func (m *_SerialInterfaceAddress) String() string {

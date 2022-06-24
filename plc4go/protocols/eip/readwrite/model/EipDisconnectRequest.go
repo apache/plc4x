@@ -28,13 +28,16 @@ import (
 
 // EipDisconnectRequest is the corresponding interface of EipDisconnectRequest
 type EipDisconnectRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	EipPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// EipDisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills EipDisconnectRequest.
+// This is useful for switch cases.
+type EipDisconnectRequestExactly interface {
+	EipDisconnectRequest
+	isEipDisconnectRequest() bool
 }
 
 // _EipDisconnectRequest is the data-structure of this message
@@ -140,6 +143,10 @@ func (m *_EipDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_EipDisconnectRequest) isEipDisconnectRequest() bool {
+	return true
 }
 
 func (m *_EipDisconnectRequest) String() string {

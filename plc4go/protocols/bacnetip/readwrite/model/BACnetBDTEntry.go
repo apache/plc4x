@@ -30,16 +30,19 @@ import (
 
 // BACnetBDTEntry is the corresponding interface of BACnetBDTEntry
 type BACnetBDTEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetBbmdAddress returns BbmdAddress (property field)
 	GetBbmdAddress() BACnetHostNPortEnclosed
 	// GetBroadcastMask returns BroadcastMask (property field)
 	GetBroadcastMask() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetBDTEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetBDTEntry.
+// This is useful for switch cases.
+type BACnetBDTEntryExactly interface {
+	BACnetBDTEntry
+	isBACnetBDTEntry() bool
 }
 
 // _BACnetBDTEntry is the data-structure of this message
@@ -199,6 +202,10 @@ func (m *_BACnetBDTEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetBDTEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetBDTEntry) isBACnetBDTEntry() bool {
+	return true
 }
 
 func (m *_BACnetBDTEntry) String() string {

@@ -28,6 +28,8 @@ import (
 
 // SearchResponse is the corresponding interface of SearchResponse
 type SearchResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
@@ -35,12 +37,13 @@ type SearchResponse interface {
 	GetDibDeviceInfo() DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SearchResponseExactly can be used when we want exactly this type and not a type which fulfills SearchResponse.
+// This is useful for switch cases.
+type SearchResponseExactly interface {
+	SearchResponse
+	isSearchResponse() bool
 }
 
 // _SearchResponse is the data-structure of this message
@@ -256,6 +259,10 @@ func (m *_SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SearchResponse) isSearchResponse() bool {
+	return true
 }
 
 func (m *_SearchResponse) String() string {

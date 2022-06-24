@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBelongsTo is the corresponding interface of BACnetConstructedDataBelongsTo
 type BACnetConstructedDataBelongsTo interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBelongsTo returns BelongsTo (property field)
 	GetBelongsTo() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBelongsToExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBelongsTo.
+// This is useful for switch cases.
+type BACnetConstructedDataBelongsToExactly interface {
+	BACnetConstructedDataBelongsTo
+	isBACnetConstructedDataBelongsTo() bool
 }
 
 // _BACnetConstructedDataBelongsTo is the data-structure of this message
 type _BACnetConstructedDataBelongsTo struct {
 	*_BACnetConstructedData
 	BelongsTo BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBelongsToParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBelongsTo{
-		BelongsTo:              belongsTo,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BelongsTo: belongsTo,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBelongsTo) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBelongsTo) isBACnetConstructedDataBelongsTo() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBelongsTo) String() string {

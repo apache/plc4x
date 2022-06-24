@@ -30,17 +30,20 @@ import (
 
 // VTCloseError is the corresponding interface of VTCloseError
 type VTCloseError interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
 	// GetListOfVtSessionIdentifiers returns ListOfVtSessionIdentifiers (property field)
 	GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSessionIdentifiers
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// VTCloseErrorExactly can be used when we want exactly this type and not a type which fulfills VTCloseError.
+// This is useful for switch cases.
+type VTCloseErrorExactly interface {
+	VTCloseError
+	isVTCloseError() bool
 }
 
 // _VTCloseError is the data-structure of this message
@@ -236,6 +239,10 @@ func (m *_VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_VTCloseError) isVTCloseError() bool {
+	return true
 }
 
 func (m *_VTCloseError) String() string {

@@ -28,15 +28,18 @@ import (
 
 // PowerUpReply is the corresponding interface of PowerUpReply
 type PowerUpReply interface {
+	utils.LengthAware
+	utils.Serializable
 	Reply
 	// GetIsA returns IsA (property field)
 	GetIsA() PowerUp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// PowerUpReplyExactly can be used when we want exactly this type and not a type which fulfills PowerUpReply.
+// This is useful for switch cases.
+type PowerUpReplyExactly interface {
+	PowerUpReply
+	isPowerUpReply() bool
 }
 
 // _PowerUpReply is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_PowerUpReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_PowerUpReply) isPowerUpReply() bool {
+	return true
 }
 
 func (m *_PowerUpReply) String() string {

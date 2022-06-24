@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValue is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValue
 type BACnetNotificationParametersChangeOfDiscreteValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -37,12 +39,13 @@ type BACnetNotificationParametersChangeOfDiscreteValue interface {
 	GetStatusFlags() BACnetStatusFlagsTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValue.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValue
+	isBACnetNotificationParametersChangeOfDiscreteValue() bool
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValue is the data-structure of this message
@@ -52,10 +55,6 @@ type _BACnetNotificationParametersChangeOfDiscreteValue struct {
 	NewValue        BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	StatusFlags     BACnetStatusFlagsTagged
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -225,11 +224,14 @@ func BACnetNotificationParametersChangeOfDiscreteValueParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValue{
-		InnerOpeningTag:               innerOpeningTag,
-		NewValue:                      newValue,
-		StatusFlags:                   statusFlags,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		NewValue:        newValue,
+		StatusFlags:     statusFlags,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -297,6 +299,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValue) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValue) isBACnetNotificationParametersChangeOfDiscreteValue() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValue) String() string {

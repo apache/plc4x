@@ -28,18 +28,21 @@ import (
 
 // BACnetRecipientProcessEnclosed is the corresponding interface of BACnetRecipientProcessEnclosed
 type BACnetRecipientProcessEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetRecipientProcess returns RecipientProcess (property field)
 	GetRecipientProcess() BACnetRecipientProcess
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRecipientProcessEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientProcessEnclosed.
+// This is useful for switch cases.
+type BACnetRecipientProcessEnclosedExactly interface {
+	BACnetRecipientProcessEnclosed
+	isBACnetRecipientProcessEnclosed() bool
 }
 
 // _BACnetRecipientProcessEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_BACnetRecipientProcessEnclosed) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetRecipientProcessEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetRecipientProcessEnclosed) isBACnetRecipientProcessEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetRecipientProcessEnclosed) String() string {

@@ -28,6 +28,8 @@ import (
 
 // MPropReadCon is the corresponding interface of MPropReadCon
 type MPropReadCon interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
 	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
@@ -41,12 +43,13 @@ type MPropReadCon interface {
 	GetStartIndex() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MPropReadConExactly can be used when we want exactly this type and not a type which fulfills MPropReadCon.
+// This is useful for switch cases.
+type MPropReadConExactly interface {
+	MPropReadCon
+	isMPropReadCon() bool
 }
 
 // _MPropReadCon is the data-structure of this message
@@ -58,9 +61,6 @@ type _MPropReadCon struct {
 	NumberOfElements    uint8
 	StartIndex          uint16
 	Data                uint16
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -242,7 +242,9 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, 
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 		Data:                data,
-		_CEMI:               &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -304,6 +306,10 @@ func (m *_MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MPropReadCon) isMPropReadCon() bool {
+	return true
 }
 
 func (m *_MPropReadCon) String() string {

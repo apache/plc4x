@@ -28,15 +28,18 @@ import (
 
 // ComObjectTableRealisationType6 is the corresponding interface of ComObjectTableRealisationType6
 type ComObjectTableRealisationType6 interface {
+	utils.LengthAware
+	utils.Serializable
 	ComObjectTable
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() GroupObjectDescriptorRealisationType6
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ComObjectTableRealisationType6Exactly can be used when we want exactly this type and not a type which fulfills ComObjectTableRealisationType6.
+// This is useful for switch cases.
+type ComObjectTableRealisationType6Exactly interface {
+	ComObjectTableRealisationType6
+	isComObjectTableRealisationType6() bool
 }
 
 // _ComObjectTableRealisationType6 is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_ComObjectTableRealisationType6) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ComObjectTableRealisationType6) isComObjectTableRealisationType6() bool {
+	return true
 }
 
 func (m *_ComObjectTableRealisationType6) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataOccupancyCount is the corresponding interface of BACnetConstructedDataOccupancyCount
 type BACnetConstructedDataOccupancyCount interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetOccupancyCount returns OccupancyCount (property field)
 	GetOccupancyCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOccupancyCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyCount.
+// This is useful for switch cases.
+type BACnetConstructedDataOccupancyCountExactly interface {
+	BACnetConstructedDataOccupancyCount
+	isBACnetConstructedDataOccupancyCount() bool
 }
 
 // _BACnetConstructedDataOccupancyCount is the data-structure of this message
 type _BACnetConstructedDataOccupancyCount struct {
 	*_BACnetConstructedData
 	OccupancyCount BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOccupancyCount{
-		OccupancyCount:         occupancyCount,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		OccupancyCount: occupancyCount,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataOccupancyCount) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOccupancyCount) isBACnetConstructedDataOccupancyCount() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOccupancyCount) String() string {

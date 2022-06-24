@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataIPv6DNSServer is the corresponding interface of BACnetConstructedDataIPv6DNSServer
 type BACnetConstructedDataIPv6DNSServer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataIPv6DNSServer interface {
 	GetIpv6DnsServer() []BACnetApplicationTagOctetString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6DNSServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DNSServer.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6DNSServerExactly interface {
+	BACnetConstructedDataIPv6DNSServer
+	isBACnetConstructedDataIPv6DNSServer() bool
 }
 
 // _BACnetConstructedDataIPv6DNSServer is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataIPv6DNSServer struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	Ipv6DnsServer        []BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataIPv6DNSServerParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DnsServer")
 	}
 	// Terminated array
-	ipv6DnsServer := make([]BACnetApplicationTagOctetString, 0)
+	var ipv6DnsServer []BACnetApplicationTagOctetString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataIPv6DNSServerParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6DNSServer{
-		NumberOfDataElements:   numberOfDataElements,
-		Ipv6DnsServer:          ipv6DnsServer,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		Ipv6DnsServer:        ipv6DnsServer,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataIPv6DNSServer) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (ipv6DnsServer)
-		if m.GetIpv6DnsServer() != nil {
-			if pushErr := writeBuffer.PushContext("ipv6DnsServer", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for ipv6DnsServer")
+		if pushErr := writeBuffer.PushContext("ipv6DnsServer", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for ipv6DnsServer")
+		}
+		for _, _element := range m.GetIpv6DnsServer() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'ipv6DnsServer' field")
 			}
-			for _, _element := range m.GetIpv6DnsServer() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'ipv6DnsServer' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("ipv6DnsServer", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for ipv6DnsServer")
-			}
+		}
+		if popErr := writeBuffer.PopContext("ipv6DnsServer", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for ipv6DnsServer")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6DNSServer"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataIPv6DNSServer) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6DNSServer) isBACnetConstructedDataIPv6DNSServer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6DNSServer) String() string {

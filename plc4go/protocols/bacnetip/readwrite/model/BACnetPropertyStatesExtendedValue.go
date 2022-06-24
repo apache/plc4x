@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesExtendedValue is the corresponding interface of BACnetPropertyStatesExtendedValue
 type BACnetPropertyStatesExtendedValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetExtendedValue returns ExtendedValue (property field)
 	GetExtendedValue() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesExtendedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesExtendedValue.
+// This is useful for switch cases.
+type BACnetPropertyStatesExtendedValueExactly interface {
+	BACnetPropertyStatesExtendedValue
+	isBACnetPropertyStatesExtendedValue() bool
 }
 
 // _BACnetPropertyStatesExtendedValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesExtendedValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesExtendedValue) isBACnetPropertyStatesExtendedValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesExtendedValue) String() string {

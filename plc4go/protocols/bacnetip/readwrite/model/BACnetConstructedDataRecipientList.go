@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataRecipientList is the corresponding interface of BACnetConstructedDataRecipientList
 type BACnetConstructedDataRecipientList interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRecipientList returns RecipientList (property field)
 	GetRecipientList() []BACnetDestination
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataRecipientListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRecipientList.
+// This is useful for switch cases.
+type BACnetConstructedDataRecipientListExactly interface {
+	BACnetConstructedDataRecipientList
+	isBACnetConstructedDataRecipientList() bool
 }
 
 // _BACnetConstructedDataRecipientList is the data-structure of this message
 type _BACnetConstructedDataRecipientList struct {
 	*_BACnetConstructedData
 	RecipientList []BACnetDestination
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataRecipientListParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for recipientList")
 	}
 	// Terminated array
-	recipientList := make([]BACnetDestination, 0)
+	var recipientList []BACnetDestination
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDestinationParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataRecipientListParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRecipientList{
-		RecipientList:          recipientList,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		RecipientList: recipientList,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataRecipientList) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (recipientList)
-		if m.GetRecipientList() != nil {
-			if pushErr := writeBuffer.PushContext("recipientList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for recipientList")
+		if pushErr := writeBuffer.PushContext("recipientList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for recipientList")
+		}
+		for _, _element := range m.GetRecipientList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'recipientList' field")
 			}
-			for _, _element := range m.GetRecipientList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'recipientList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("recipientList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for recipientList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("recipientList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for recipientList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRecipientList"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataRecipientList) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRecipientList) isBACnetConstructedDataRecipientList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRecipientList) String() string {

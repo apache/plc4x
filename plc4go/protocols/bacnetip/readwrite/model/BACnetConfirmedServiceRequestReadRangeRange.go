@@ -28,6 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRange is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRange
 type BACnetConfirmedServiceRequestReadRangeRange interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -36,12 +38,13 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestReadRangeRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRange.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeExactly interface {
+	BACnetConfirmedServiceRequestReadRangeRange
+	isBACnetConfirmedServiceRequestReadRangeRange() bool
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRange is the data-structure of this message
@@ -53,9 +56,9 @@ type _BACnetConfirmedServiceRequestReadRangeRange struct {
 }
 
 type _BACnetConfirmedServiceRequestReadRangeRangeChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestReadRangeRangeParent interface {
@@ -64,7 +67,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeParent interface {
 }
 
 type BACnetConfirmedServiceRequestReadRangeRangeChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConfirmedServiceRequestReadRangeRange, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag)
 	GetParent() *BACnetConfirmedServiceRequestReadRangeRange
 
@@ -274,6 +277,10 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) SerializeParent(writeBuf
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestReadRangeRange")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) isBACnetConfirmedServiceRequestReadRangeRange() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetLogDataLogDataEntryFailure is the corresponding interface of BACnetLogDataLogDataEntryFailure
 type BACnetLogDataLogDataEntryFailure interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataEntryFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryFailure.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryFailureExactly interface {
+	BACnetLogDataLogDataEntryFailure
+	isBACnetLogDataLogDataEntryFailure() bool
 }
 
 // _BACnetLogDataLogDataEntryFailure is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetLogDataLogDataEntryFailure) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryFailure) isBACnetLogDataLogDataEntryFailure() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryFailure) String() string {

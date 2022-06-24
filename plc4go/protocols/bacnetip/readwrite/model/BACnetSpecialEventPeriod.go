@@ -28,16 +28,19 @@ import (
 
 // BACnetSpecialEventPeriod is the corresponding interface of BACnetSpecialEventPeriod
 type BACnetSpecialEventPeriod interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSpecialEventPeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriod.
+// This is useful for switch cases.
+type BACnetSpecialEventPeriodExactly interface {
+	BACnetSpecialEventPeriod
+	isBACnetSpecialEventPeriod() bool
 }
 
 // _BACnetSpecialEventPeriod is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetSpecialEventPeriod struct {
 }
 
 type _BACnetSpecialEventPeriodChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetSpecialEventPeriodParent interface {
@@ -58,7 +61,7 @@ type BACnetSpecialEventPeriodParent interface {
 }
 
 type BACnetSpecialEventPeriodChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetSpecialEventPeriod, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetSpecialEventPeriod
 
@@ -207,6 +210,10 @@ func (pm *_BACnetSpecialEventPeriod) SerializeParent(writeBuffer utils.WriteBuff
 		return errors.Wrap(popErr, "Error popping for BACnetSpecialEventPeriod")
 	}
 	return nil
+}
+
+func (m *_BACnetSpecialEventPeriod) isBACnetSpecialEventPeriod() bool {
+	return true
 }
 
 func (m *_BACnetSpecialEventPeriod) String() string {

@@ -29,24 +29,24 @@ import (
 
 // APDUUnconfirmedRequest is the corresponding interface of APDUUnconfirmedRequest
 type APDUUnconfirmedRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() BACnetUnconfirmedServiceRequest
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// APDUUnconfirmedRequestExactly can be used when we want exactly this type and not a type which fulfills APDUUnconfirmedRequest.
+// This is useful for switch cases.
+type APDUUnconfirmedRequestExactly interface {
+	APDUUnconfirmedRequest
+	isAPDUUnconfirmedRequest() bool
 }
 
 // _APDUUnconfirmedRequest is the data-structure of this message
 type _APDUUnconfirmedRequest struct {
 	*_APDU
 	ServiceRequest BACnetUnconfirmedServiceRequest
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -171,7 +171,9 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	// Create a partially initialized instance
 	_child := &_APDUUnconfirmedRequest{
 		ServiceRequest: serviceRequest,
-		_APDU:          &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -211,6 +213,10 @@ func (m *_APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUUnconfirmedRequest) isAPDUUnconfirmedRequest() bool {
+	return true
 }
 
 func (m *_APDUUnconfirmedRequest) String() string {

@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtKeyResponse is the corresponding interface of ApduDataExtKeyResponse
 type ApduDataExtKeyResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtKeyResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtKeyResponse.
+// This is useful for switch cases.
+type ApduDataExtKeyResponseExactly interface {
+	ApduDataExtKeyResponse
+	isApduDataExtKeyResponse() bool
 }
 
 // _ApduDataExtKeyResponse is the data-structure of this message
 type _ApduDataExtKeyResponse struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer, length uint8) (Apd
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtKeyResponse{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtKeyResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtKeyResponse) isApduDataExtKeyResponse() bool {
+	return true
 }
 
 func (m *_ApduDataExtKeyResponse) String() string {

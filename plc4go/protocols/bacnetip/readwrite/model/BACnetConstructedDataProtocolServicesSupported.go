@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProtocolServicesSupported is the corresponding interface of BACnetConstructedDataProtocolServicesSupported
 type BACnetConstructedDataProtocolServicesSupported interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProtocolServicesSupported returns ProtocolServicesSupported (property field)
 	GetProtocolServicesSupported() BACnetServicesSupportedTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetServicesSupportedTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProtocolServicesSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolServicesSupported.
+// This is useful for switch cases.
+type BACnetConstructedDataProtocolServicesSupportedExactly interface {
+	BACnetConstructedDataProtocolServicesSupported
+	isBACnetConstructedDataProtocolServicesSupported() bool
 }
 
 // _BACnetConstructedDataProtocolServicesSupported is the data-structure of this message
 type _BACnetConstructedDataProtocolServicesSupported struct {
 	*_BACnetConstructedData
 	ProtocolServicesSupported BACnetServicesSupportedTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataProtocolServicesSupportedParse(readBuffer utils.ReadBu
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProtocolServicesSupported{
 		ProtocolServicesSupported: protocolServicesSupported,
-		_BACnetConstructedData:    &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupported) isBACnetConstructedDataProtocolServicesSupported() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) String() string {

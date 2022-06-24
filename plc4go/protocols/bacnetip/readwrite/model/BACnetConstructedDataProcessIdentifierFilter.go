@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProcessIdentifierFilter is the corresponding interface of BACnetConstructedDataProcessIdentifierFilter
 type BACnetConstructedDataProcessIdentifierFilter interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProcessIdentifierFilter returns ProcessIdentifierFilter (property field)
 	GetProcessIdentifierFilter() BACnetProcessIdSelection
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProcessIdSelection
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProcessIdentifierFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProcessIdentifierFilter.
+// This is useful for switch cases.
+type BACnetConstructedDataProcessIdentifierFilterExactly interface {
+	BACnetConstructedDataProcessIdentifierFilter
+	isBACnetConstructedDataProcessIdentifierFilter() bool
 }
 
 // _BACnetConstructedDataProcessIdentifierFilter is the data-structure of this message
 type _BACnetConstructedDataProcessIdentifierFilter struct {
 	*_BACnetConstructedData
 	ProcessIdentifierFilter BACnetProcessIdSelection
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProcessIdentifierFilter{
 		ProcessIdentifierFilter: processIdentifierFilter,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilter) isBACnetConstructedDataProcessIdentifierFilter() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) String() string {

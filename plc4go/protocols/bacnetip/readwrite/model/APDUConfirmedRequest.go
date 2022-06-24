@@ -30,6 +30,8 @@ import (
 
 // APDUConfirmedRequest is the corresponding interface of APDUConfirmedRequest
 type APDUConfirmedRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -57,12 +59,13 @@ type APDUConfirmedRequest interface {
 	GetApduHeaderReduction() uint16
 	// GetSegmentReduction returns SegmentReduction (virtual field)
 	GetSegmentReduction() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// APDUConfirmedRequestExactly can be used when we want exactly this type and not a type which fulfills APDUConfirmedRequest.
+// This is useful for switch cases.
+type APDUConfirmedRequestExactly interface {
+	APDUConfirmedRequest
+	isAPDUConfirmedRequest() bool
 }
 
 // _APDUConfirmedRequest is the data-structure of this message
@@ -79,9 +82,6 @@ type _APDUConfirmedRequest struct {
 	ServiceRequest            BACnetConfirmedServiceRequest
 	SegmentServiceChoice      *uint8
 	Segment                   []byte
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -459,7 +459,9 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		ServiceRequest:            serviceRequest,
 		SegmentServiceChoice:      segmentServiceChoice,
 		Segment:                   segment,
-		_APDU:                     &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -588,12 +590,9 @@ func (m *_APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (segment)
-		if m.GetSegment() != nil {
-			// Byte Array field (segment)
-			_writeArrayErr := writeBuffer.WriteByteArray("segment", m.GetSegment())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'segment' field")
-			}
+		// Byte Array field (segment)
+		if err := writeBuffer.WriteByteArray("segment", m.GetSegment()); err != nil {
+			return errors.Wrap(err, "Error serializing 'segment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUConfirmedRequest"); popErr != nil {
@@ -602,6 +601,10 @@ func (m *_APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUConfirmedRequest) isAPDUConfirmedRequest() bool {
+	return true
 }
 
 func (m *_APDUConfirmedRequest) String() string {

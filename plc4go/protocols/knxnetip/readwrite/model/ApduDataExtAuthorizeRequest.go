@@ -28,17 +28,20 @@ import (
 
 // ApduDataExtAuthorizeRequest is the corresponding interface of ApduDataExtAuthorizeRequest
 type ApduDataExtAuthorizeRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtAuthorizeRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtAuthorizeRequest.
+// This is useful for switch cases.
+type ApduDataExtAuthorizeRequestExactly interface {
+	ApduDataExtAuthorizeRequest
+	isApduDataExtAuthorizeRequest() bool
 }
 
 // _ApduDataExtAuthorizeRequest is the data-structure of this message
@@ -46,9 +49,6 @@ type _ApduDataExtAuthorizeRequest struct {
 	*_ApduDataExt
 	Level uint8
 	Data  []byte
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -165,9 +165,11 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8)
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtAuthorizeRequest{
-		Level:        level,
-		Data:         data,
-		_ApduDataExt: &_ApduDataExt{},
+		Level: level,
+		Data:  data,
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -189,12 +191,9 @@ func (m *_ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtAuthorizeRequest"); popErr != nil {
@@ -203,6 +202,10 @@ func (m *_ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtAuthorizeRequest) isApduDataExtAuthorizeRequest() bool {
+	return true
 }
 
 func (m *_ApduDataExtAuthorizeRequest) String() string {

@@ -102,7 +102,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			// Send the  over the wire
 			if err := m.messageCodec.SendRequest(
 				tpktPacket,
-				func(message interface{}) bool {
+				func(message spi.Message) bool {
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					if tpktPacket == nil {
 						return false
@@ -117,7 +117,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 					}
 					return payload.GetTpduReference() == tpduId
 				},
-				func(message interface{}) error {
+				func(message spi.Message) error {
 					// Convert the response into an
 					log.Trace().Msg("convert response to ")
 					tpktPacket := readWriteModel.CastTPKTPacket(message)

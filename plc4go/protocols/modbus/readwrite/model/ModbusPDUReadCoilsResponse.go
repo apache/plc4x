@@ -28,15 +28,18 @@ import (
 
 // ModbusPDUReadCoilsResponse is the corresponding interface of ModbusPDUReadCoilsResponse
 type ModbusPDUReadCoilsResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadCoilsResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadCoilsResponse.
+// This is useful for switch cases.
+type ModbusPDUReadCoilsResponseExactly interface {
+	ModbusPDUReadCoilsResponse
+	isModbusPDUReadCoilsResponse() bool
 }
 
 // _ModbusPDUReadCoilsResponse is the data-structure of this message
@@ -185,12 +188,9 @@ func (m *_ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Array Field (value)
-		if m.GetValue() != nil {
-			// Byte Array field (value)
-			_writeArrayErr := writeBuffer.WriteByteArray("value", m.GetValue())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
-			}
+		// Byte Array field (value)
+		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadCoilsResponse"); popErr != nil {
@@ -199,6 +199,10 @@ func (m *_ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadCoilsResponse) isModbusPDUReadCoilsResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadCoilsResponse) String() string {

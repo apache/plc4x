@@ -28,13 +28,16 @@ import (
 
 // ModbusPDUReadExceptionStatusRequest is the corresponding interface of ModbusPDUReadExceptionStatusRequest
 type ModbusPDUReadExceptionStatusRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadExceptionStatusRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadExceptionStatusRequest.
+// This is useful for switch cases.
+type ModbusPDUReadExceptionStatusRequestExactly interface {
+	ModbusPDUReadExceptionStatusRequest
+	isModbusPDUReadExceptionStatusRequest() bool
 }
 
 // _ModbusPDUReadExceptionStatusRequest is the data-structure of this message
@@ -143,6 +146,10 @@ func (m *_ModbusPDUReadExceptionStatusRequest) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadExceptionStatusRequest) isModbusPDUReadExceptionStatusRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadExceptionStatusRequest) String() string {

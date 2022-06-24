@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataPriority is the corresponding interface of BACnetConstructedDataPriority
 type BACnetConstructedDataPriority interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataPriority interface {
 	GetPriority() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPriority.
+// This is useful for switch cases.
+type BACnetConstructedDataPriorityExactly interface {
+	BACnetConstructedDataPriority
+	isBACnetConstructedDataPriority() bool
 }
 
 // _BACnetConstructedDataPriority is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataPriority struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	Priority             []BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataPriorityParse(readBuffer utils.ReadBuffer, tagNumber u
 		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
 	// Terminated array
-	priority := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var priority []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -238,9 +237,12 @@ func BACnetConstructedDataPriorityParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPriority{
-		NumberOfDataElements:   numberOfDataElements,
-		Priority:               priority,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		Priority:             priority,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -275,19 +277,17 @@ func (m *_BACnetConstructedDataPriority) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (priority)
-		if m.GetPriority() != nil {
-			if pushErr := writeBuffer.PushContext("priority", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for priority")
+		if pushErr := writeBuffer.PushContext("priority", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for priority")
+		}
+		for _, _element := range m.GetPriority() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'priority' field")
 			}
-			for _, _element := range m.GetPriority() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'priority' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("priority", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for priority")
-			}
+		}
+		if popErr := writeBuffer.PopContext("priority", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for priority")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPriority"); popErr != nil {
@@ -296,6 +296,10 @@ func (m *_BACnetConstructedDataPriority) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPriority) isBACnetConstructedDataPriority() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPriority) String() string {

@@ -28,15 +28,18 @@ import (
 
 // ModbusPDUReadFileRecordRequest is the corresponding interface of ModbusPDUReadFileRecordRequest
 type ModbusPDUReadFileRecordRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetItems returns Items (property field)
 	GetItems() []ModbusPDUReadFileRecordRequestItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadFileRecordRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadFileRecordRequest.
+// This is useful for switch cases.
+type ModbusPDUReadFileRecordRequestExactly interface {
+	ModbusPDUReadFileRecordRequest
+	isModbusPDUReadFileRecordRequest() bool
 }
 
 // _ModbusPDUReadFileRecordRequest is the data-structure of this message
@@ -157,7 +160,7 @@ func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response b
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Length array
-	items := make([]ModbusPDUReadFileRecordRequestItem, 0)
+	var items []ModbusPDUReadFileRecordRequestItem
 	{
 		_itemsLength := byteCount
 		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
@@ -209,19 +212,17 @@ func (m *_ModbusPDUReadFileRecordRequest) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Array Field (items)
-		if m.GetItems() != nil {
-			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for items")
+		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for items")
+		}
+		for _, _element := range m.GetItems() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
-			for _, _element := range m.GetItems() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'items' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for items")
-			}
+		}
+		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for items")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadFileRecordRequest"); popErr != nil {
@@ -230,6 +231,10 @@ func (m *_ModbusPDUReadFileRecordRequest) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadFileRecordRequest) isModbusPDUReadFileRecordRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadFileRecordRequest) String() string {

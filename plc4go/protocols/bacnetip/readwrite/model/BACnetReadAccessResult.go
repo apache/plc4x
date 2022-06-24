@@ -30,16 +30,19 @@ import (
 
 // BACnetReadAccessResult is the corresponding interface of BACnetReadAccessResult
 type BACnetReadAccessResult interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfResults returns ListOfResults (property field)
 	GetListOfResults() BACnetReadAccessResultListOfResults
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetReadAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessResult.
+// This is useful for switch cases.
+type BACnetReadAccessResultExactly interface {
+	BACnetReadAccessResult
+	isBACnetReadAccessResult() bool
 }
 
 // _BACnetReadAccessResult is the data-structure of this message
@@ -199,6 +202,10 @@ func (m *_BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetReadAccessResult")
 	}
 	return nil
+}
+
+func (m *_BACnetReadAccessResult) isBACnetReadAccessResult() bool {
+	return true
 }
 
 func (m *_BACnetReadAccessResult) String() string {

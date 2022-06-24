@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesSystemStatus is the corresponding interface of BACnetPropertyStatesSystemStatus
 type BACnetPropertyStatesSystemStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesSystemStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesSystemStatus.
+// This is useful for switch cases.
+type BACnetPropertyStatesSystemStatusExactly interface {
+	BACnetPropertyStatesSystemStatus
+	isBACnetPropertyStatesSystemStatus() bool
 }
 
 // _BACnetPropertyStatesSystemStatus is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesSystemStatus) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesSystemStatus) isBACnetPropertyStatesSystemStatus() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesSystemStatus) String() string {

@@ -28,6 +28,8 @@ import (
 
 // BACnetReadAccessSpecification is the corresponding interface of BACnetReadAccessSpecification
 type BACnetReadAccessSpecification interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
@@ -36,12 +38,13 @@ type BACnetReadAccessSpecification interface {
 	GetListOfPropertyReferences() []BACnetPropertyReference
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetReadAccessSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessSpecification.
+// This is useful for switch cases.
+type BACnetReadAccessSpecificationExactly interface {
+	BACnetReadAccessSpecification
+	isBACnetReadAccessSpecification() bool
 }
 
 // _BACnetReadAccessSpecification is the data-structure of this message
@@ -168,7 +171,7 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetRead
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfPropertyReferences")
 	}
 	// Terminated array
-	listOfPropertyReferences := make([]BACnetPropertyReference, 0)
+	var listOfPropertyReferences []BACnetPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetPropertyReferenceParse(readBuffer)
@@ -236,19 +239,17 @@ func (m *_BACnetReadAccessSpecification) Serialize(writeBuffer utils.WriteBuffer
 	}
 
 	// Array Field (listOfPropertyReferences)
-	if m.GetListOfPropertyReferences() != nil {
-		if pushErr := writeBuffer.PushContext("listOfPropertyReferences", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfPropertyReferences")
+	if pushErr := writeBuffer.PushContext("listOfPropertyReferences", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfPropertyReferences")
+	}
+	for _, _element := range m.GetListOfPropertyReferences() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyReferences' field")
 		}
-		for _, _element := range m.GetListOfPropertyReferences() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyReferences' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfPropertyReferences", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfPropertyReferences")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfPropertyReferences", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfPropertyReferences")
 	}
 
 	// Simple Field (closingTag)
@@ -267,6 +268,10 @@ func (m *_BACnetReadAccessSpecification) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetReadAccessSpecification")
 	}
 	return nil
+}
+
+func (m *_BACnetReadAccessSpecification) isBACnetReadAccessSpecification() bool {
+	return true
 }
 
 func (m *_BACnetReadAccessSpecification) String() string {

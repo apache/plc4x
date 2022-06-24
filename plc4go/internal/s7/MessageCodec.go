@@ -43,7 +43,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 	return m
 }
 
-func (m *MessageCodec) Send(message interface{}) error {
+func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	tpktPacket := model.CastTPKTPacket(message)
@@ -62,7 +62,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *MessageCodec) Receive() (interface{}, error) {
+func (m *MessageCodec) Receive() (spi.Message, error) {
 	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumReadableBytes(); (err == nil) && (num >= 4) {

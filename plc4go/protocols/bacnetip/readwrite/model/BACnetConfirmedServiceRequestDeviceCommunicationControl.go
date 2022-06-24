@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestDeviceCommunicationControl is the corresponding interface of BACnetConfirmedServiceRequestDeviceCommunicationControl
 type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetTimeDuration returns TimeDuration (property field)
 	GetTimeDuration() BACnetContextTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	GetEnableDisable() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 	// GetPassword returns Password (property field)
 	GetPassword() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestDeviceCommunicationControlExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeviceCommunicationControl.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestDeviceCommunicationControlExactly interface {
+	BACnetConfirmedServiceRequestDeviceCommunicationControl
+	isBACnetConfirmedServiceRequestDeviceCommunicationControl() bool
 }
 
 // _BACnetConfirmedServiceRequestDeviceCommunicationControl is the data-structure of this message
@@ -51,9 +54,6 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 	TimeDuration  BACnetContextTagUnsignedInteger
 	EnableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 	Password      BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -225,10 +225,12 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
-		TimeDuration:                   timeDuration,
-		EnableDisable:                  enableDisable,
-		Password:                       password,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		TimeDuration:  timeDuration,
+		EnableDisable: enableDisable,
+		Password:      password,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -292,6 +294,10 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) isBACnetConfirmedServiceRequestDeviceCommunicationControl() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) String() string {

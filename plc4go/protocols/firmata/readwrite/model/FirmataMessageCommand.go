@@ -28,24 +28,24 @@ import (
 
 // FirmataMessageCommand is the corresponding interface of FirmataMessageCommand
 type FirmataMessageCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetCommand returns Command (property field)
 	GetCommand() FirmataCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataMessageCommandExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageCommand.
+// This is useful for switch cases.
+type FirmataMessageCommandExactly interface {
+	FirmataMessageCommand
+	isFirmataMessageCommand() bool
 }
 
 // _FirmataMessageCommand is the data-structure of this message
 type _FirmataMessageCommand struct {
 	*_FirmataMessage
 	Command FirmataCommand
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (Fir
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageCommand{
-		Command:         command,
-		_FirmataMessage: &_FirmataMessage{},
+		Command: command,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_FirmataMessageCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageCommand) isFirmataMessageCommand() bool {
+	return true
 }
 
 func (m *_FirmataMessageCommand) String() string {

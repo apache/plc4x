@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataScheduleDefault is the corresponding interface of BACnetConstructedDataScheduleDefault
 type BACnetConstructedDataScheduleDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetScheduleDefault returns ScheduleDefault (property field)
 	GetScheduleDefault() BACnetConstructedDataElement
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetConstructedDataElement
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataScheduleDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScheduleDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataScheduleDefaultExactly interface {
+	BACnetConstructedDataScheduleDefault
+	isBACnetConstructedDataScheduleDefault() bool
 }
 
 // _BACnetConstructedDataScheduleDefault is the data-structure of this message
 type _BACnetConstructedDataScheduleDefault struct {
 	*_BACnetConstructedData
 	ScheduleDefault BACnetConstructedDataElement
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataScheduleDefaultParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataScheduleDefault{
-		ScheduleDefault:        scheduleDefault,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ScheduleDefault: scheduleDefault,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataScheduleDefault) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataScheduleDefault) isBACnetConstructedDataScheduleDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataScheduleDefault) String() string {

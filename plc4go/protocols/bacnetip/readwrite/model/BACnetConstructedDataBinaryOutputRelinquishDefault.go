@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBinaryOutputRelinquishDefault is the corresponding interface of BACnetConstructedDataBinaryOutputRelinquishDefault
 type BACnetConstructedDataBinaryOutputRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBinaryOutputRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryOutputRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryOutputRelinquishDefaultExactly interface {
+	BACnetConstructedDataBinaryOutputRelinquishDefault
+	isBACnetConstructedDataBinaryOutputRelinquishDefault() bool
 }
 
 // _BACnetConstructedDataBinaryOutputRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataBinaryOutputRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetBinaryPVTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBinaryOutputRelinquishDefaultParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBinaryOutputRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		RelinquishDefault: relinquishDefault,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) isBACnetConstructedDataBinaryOutputRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) String() string {

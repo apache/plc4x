@@ -28,17 +28,20 @@ import (
 
 // ModbusPDUReadInputRegistersRequest is the corresponding interface of ModbusPDUReadInputRegistersRequest
 type ModbusPDUReadInputRegistersRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadInputRegistersRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadInputRegistersRequest.
+// This is useful for switch cases.
+type ModbusPDUReadInputRegistersRequestExactly interface {
+	ModbusPDUReadInputRegistersRequest
+	isModbusPDUReadInputRegistersRequest() bool
 }
 
 // _ModbusPDUReadInputRegistersRequest is the data-structure of this message
@@ -205,6 +208,10 @@ func (m *_ModbusPDUReadInputRegistersRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadInputRegistersRequest) isModbusPDUReadInputRegistersRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadInputRegistersRequest) String() string {

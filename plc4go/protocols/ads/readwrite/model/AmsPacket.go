@@ -28,6 +28,8 @@ import (
 
 // AmsPacket is the corresponding interface of AmsPacket
 type AmsPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTargetAmsNetId returns TargetAmsNetId (property field)
 	GetTargetAmsNetId() AmsNetId
 	// GetTargetAmsPort returns TargetAmsPort (property field)
@@ -46,12 +48,13 @@ type AmsPacket interface {
 	GetInvokeId() uint32
 	// GetData returns Data (property field)
 	GetData() AdsData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AmsPacketExactly can be used when we want exactly this type and not a type which fulfills AmsPacket.
+// This is useful for switch cases.
+type AmsPacketExactly interface {
+	AmsPacket
+	isAmsPacket() bool
 }
 
 // _AmsPacket is the data-structure of this message
@@ -400,6 +403,10 @@ func (m *_AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsPacket")
 	}
 	return nil
+}
+
+func (m *_AmsPacket) isAmsPacket() bool {
+	return true
 }
 
 func (m *_AmsPacket) String() string {

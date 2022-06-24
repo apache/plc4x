@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataReliabilityEvaluationInhibit is the corresponding interface of BACnetConstructedDataReliabilityEvaluationInhibit
 type BACnetConstructedDataReliabilityEvaluationInhibit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetReliabilityEvaluationInhibit returns ReliabilityEvaluationInhibit (property field)
 	GetReliabilityEvaluationInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataReliabilityEvaluationInhibitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReliabilityEvaluationInhibit.
+// This is useful for switch cases.
+type BACnetConstructedDataReliabilityEvaluationInhibitExactly interface {
+	BACnetConstructedDataReliabilityEvaluationInhibit
+	isBACnetConstructedDataReliabilityEvaluationInhibit() bool
 }
 
 // _BACnetConstructedDataReliabilityEvaluationInhibit is the data-structure of this message
 type _BACnetConstructedDataReliabilityEvaluationInhibit struct {
 	*_BACnetConstructedData
 	ReliabilityEvaluationInhibit BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.Rea
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataReliabilityEvaluationInhibit{
 		ReliabilityEvaluationInhibit: reliabilityEvaluationInhibit,
-		_BACnetConstructedData:       &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) isBACnetConstructedDataReliabilityEvaluationInhibit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) String() string {

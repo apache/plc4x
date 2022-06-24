@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtIndividualAddressSerialNumberWrite is the corresponding interface of ApduDataExtIndividualAddressSerialNumberWrite
 type ApduDataExtIndividualAddressSerialNumberWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtIndividualAddressSerialNumberWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtIndividualAddressSerialNumberWrite.
+// This is useful for switch cases.
+type ApduDataExtIndividualAddressSerialNumberWriteExactly interface {
+	ApduDataExtIndividualAddressSerialNumberWrite
+	isApduDataExtIndividualAddressSerialNumberWrite() bool
 }
 
 // _ApduDataExtIndividualAddressSerialNumberWrite is the data-structure of this message
 type _ApduDataExtIndividualAddressSerialNumberWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtIndividualAddressSerialNumberWriteParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtIndividualAddressSerialNumberWrite{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtIndividualAddressSerialNumberWrite) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtIndividualAddressSerialNumberWrite) isApduDataExtIndividualAddressSerialNumberWrite() bool {
+	return true
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberWrite) String() string {

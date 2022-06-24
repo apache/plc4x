@@ -28,6 +28,8 @@ import (
 
 // EipPacket is the corresponding interface of EipPacket
 type EipPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommand returns Command (discriminator field)
 	GetCommand() uint16
 	// GetSessionHandle returns SessionHandle (property field)
@@ -38,12 +40,13 @@ type EipPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// EipPacketExactly can be used when we want exactly this type and not a type which fulfills EipPacket.
+// This is useful for switch cases.
+type EipPacketExactly interface {
+	EipPacket
+	isEipPacket() bool
 }
 
 // _EipPacket is the data-structure of this message
@@ -56,10 +59,10 @@ type _EipPacket struct {
 }
 
 type _EipPacketChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommand() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type EipPacketParent interface {
@@ -68,7 +71,7 @@ type EipPacketParent interface {
 }
 
 type EipPacketChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
 	GetParent() *EipPacket
 
@@ -127,7 +130,7 @@ func (m *_EipPacket) GetParentLengthInBits() uint16 {
 	// Discriminator Field (command)
 	lengthInBits += 16
 
-	// Implicit Field (len)
+	// Implicit Field (packetLength)
 	lengthInBits += 16
 
 	// Simple field (sessionHandle)
@@ -166,11 +169,11 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
 
-	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	len, _lenErr := readBuffer.ReadUint16("len", 16)
-	_ = len
-	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
+	// Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	packetLength, _packetLengthErr := readBuffer.ReadUint16("packetLength", 16)
+	_ = packetLength
+	if _packetLengthErr != nil {
+		return nil, errors.Wrap(_packetLengthErr, "Error parsing 'packetLength' field")
 	}
 
 	// Simple Field (sessionHandle)
@@ -193,6 +196,10 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	}
 	// Count array
 	senderContext := make([]uint8, uint16(8))
+	// This happens when the size is set conditional to 0
+	if len(senderContext) == 0 {
+		senderContext = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -228,7 +235,7 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	case command == 0x0066: // EipDisconnectRequest
 		_childTemp, typeSwitchError = EipDisconnectRequestParse(readBuffer)
 	case command == 0x006F: // CipRRData
-		_childTemp, typeSwitchError = CipRRDataParse(readBuffer, len)
+		_childTemp, typeSwitchError = CipRRDataParse(readBuffer, packetLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -265,11 +272,11 @@ func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPa
 		return errors.Wrap(_commandErr, "Error serializing 'command' field")
 	}
 
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(24)))
-	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
-	if _lenErr != nil {
-		return errors.Wrap(_lenErr, "Error serializing 'len' field")
+	// Implicit Field (packetLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	packetLength := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(24)))
+	_packetLengthErr := writeBuffer.WriteUint16("packetLength", 16, (packetLength))
+	if _packetLengthErr != nil {
+		return errors.Wrap(_packetLengthErr, "Error serializing 'packetLength' field")
 	}
 
 	// Simple Field (sessionHandle)
@@ -287,19 +294,17 @@ func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPa
 	}
 
 	// Array Field (senderContext)
-	if m.GetSenderContext() != nil {
-		if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for senderContext")
+	if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for senderContext")
+	}
+	for _, _element := range m.GetSenderContext() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
 		}
-		for _, _element := range m.GetSenderContext() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for senderContext")
-		}
+	}
+	if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for senderContext")
 	}
 
 	// Simple Field (options)
@@ -318,6 +323,10 @@ func (pm *_EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child EipPa
 		return errors.Wrap(popErr, "Error popping for EipPacket")
 	}
 	return nil
+}
+
+func (m *_EipPacket) isEipPacket() bool {
+	return true
 }
 
 func (m *_EipPacket) String() string {

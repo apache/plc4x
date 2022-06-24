@@ -28,17 +28,20 @@ import (
 
 // ApduDataMemoryResponse is the corresponding interface of ApduDataMemoryResponse
 type ApduDataMemoryResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataMemoryResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryResponse.
+// This is useful for switch cases.
+type ApduDataMemoryResponseExactly interface {
+	ApduDataMemoryResponse
+	isApduDataMemoryResponse() bool
 }
 
 // _ApduDataMemoryResponse is the data-structure of this message
@@ -46,9 +49,6 @@ type _ApduDataMemoryResponse struct {
 	*_ApduData
 	Address uint16
 	Data    []byte
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -175,9 +175,11 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 
 	// Create a partially initialized instance
 	_child := &_ApduDataMemoryResponse{
-		Address:   address,
-		Data:      data,
-		_ApduData: &_ApduData{},
+		Address: address,
+		Data:    data,
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -206,12 +208,9 @@ func (m *_ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataMemoryResponse"); popErr != nil {
@@ -220,6 +219,10 @@ func (m *_ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataMemoryResponse) isApduDataMemoryResponse() bool {
+	return true
 }
 
 func (m *_ApduDataMemoryResponse) String() string {

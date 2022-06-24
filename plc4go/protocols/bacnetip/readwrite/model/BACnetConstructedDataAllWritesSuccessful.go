@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAllWritesSuccessful is the corresponding interface of BACnetConstructedDataAllWritesSuccessful
 type BACnetConstructedDataAllWritesSuccessful interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAllWritesSuccessful returns AllWritesSuccessful (property field)
 	GetAllWritesSuccessful() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAllWritesSuccessfulExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAllWritesSuccessful.
+// This is useful for switch cases.
+type BACnetConstructedDataAllWritesSuccessfulExactly interface {
+	BACnetConstructedDataAllWritesSuccessful
+	isBACnetConstructedDataAllWritesSuccessful() bool
 }
 
 // _BACnetConstructedDataAllWritesSuccessful is the data-structure of this message
 type _BACnetConstructedDataAllWritesSuccessful struct {
 	*_BACnetConstructedData
 	AllWritesSuccessful BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAllWritesSuccessful{
-		AllWritesSuccessful:    allWritesSuccessful,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AllWritesSuccessful: allWritesSuccessful,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessful) isBACnetConstructedDataAllWritesSuccessful() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) String() string {

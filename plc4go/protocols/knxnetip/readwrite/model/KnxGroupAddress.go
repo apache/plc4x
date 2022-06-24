@@ -28,14 +28,17 @@ import (
 
 // KnxGroupAddress is the corresponding interface of KnxGroupAddress
 type KnxGroupAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNumLevels returns NumLevels (discriminator field)
 	GetNumLevels() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// KnxGroupAddressExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddress.
+// This is useful for switch cases.
+type KnxGroupAddressExactly interface {
+	KnxGroupAddress
+	isKnxGroupAddress() bool
 }
 
 // _KnxGroupAddress is the data-structure of this message
@@ -44,10 +47,10 @@ type _KnxGroupAddress struct {
 }
 
 type _KnxGroupAddressChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetNumLevels() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type KnxGroupAddressParent interface {
@@ -56,7 +59,7 @@ type KnxGroupAddressParent interface {
 }
 
 type KnxGroupAddressChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent KnxGroupAddress)
 	GetParent() *KnxGroupAddress
 
@@ -156,6 +159,10 @@ func (pm *_KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(popErr, "Error popping for KnxGroupAddress")
 	}
 	return nil
+}
+
+func (m *_KnxGroupAddress) isKnxGroupAddress() bool {
+	return true
 }
 
 func (m *_KnxGroupAddress) String() string {

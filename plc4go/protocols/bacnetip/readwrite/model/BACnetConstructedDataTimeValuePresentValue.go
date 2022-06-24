@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimeValuePresentValue is the corresponding interface of BACnetConstructedDataTimeValuePresentValue
 type BACnetConstructedDataTimeValuePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimeValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeValuePresentValueExactly interface {
+	BACnetConstructedDataTimeValuePresentValue
+	isBACnetConstructedDataTimeValuePresentValue() bool
 }
 
 // _BACnetConstructedDataTimeValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataTimeValuePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimeValuePresentValueParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimeValuePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimeValuePresentValue) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeValuePresentValue) isBACnetConstructedDataTimeValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeValuePresentValue) String() string {

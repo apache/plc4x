@@ -28,6 +28,8 @@ import (
 
 // BACnetTagPayloadDate is the corresponding interface of BACnetTagPayloadDate
 type BACnetTagPayloadDate interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetYearMinus1900 returns YearMinus1900 (property field)
 	GetYearMinus1900() uint8
 	// GetMonth returns Month (property field)
@@ -58,12 +60,13 @@ type BACnetTagPayloadDate interface {
 	GetEvenDayOfMonthWildcard() bool
 	// GetDayOfWeekIsWildcard returns DayOfWeekIsWildcard (virtual field)
 	GetDayOfWeekIsWildcard() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadDateExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadDate.
+// This is useful for switch cases.
+type BACnetTagPayloadDateExactly interface {
+	BACnetTagPayloadDate
+	isBACnetTagPayloadDate() bool
 }
 
 // _BACnetTagPayloadDate is the data-structure of this message
@@ -404,6 +407,10 @@ func (m *_BACnetTagPayloadDate) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadDate")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadDate) isBACnetTagPayloadDate() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadDate) String() string {

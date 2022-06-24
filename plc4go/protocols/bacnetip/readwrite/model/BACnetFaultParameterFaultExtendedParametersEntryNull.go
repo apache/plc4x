@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryNull is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryNull
 type BACnetFaultParameterFaultExtendedParametersEntryNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryNullExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryNull.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryNullExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryNull
+	isBACnetFaultParameterFaultExtendedParametersEntryNull() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryNull is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) isBACnetFaultParameterFaultExtendedParametersEntryNull() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) String() string {

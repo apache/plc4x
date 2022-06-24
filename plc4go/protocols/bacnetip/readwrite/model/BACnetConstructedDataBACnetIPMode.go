@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBACnetIPMode is the corresponding interface of BACnetConstructedDataBACnetIPMode
 type BACnetConstructedDataBACnetIPMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBacnetIpMode returns BacnetIpMode (property field)
 	GetBacnetIpMode() BACnetIPModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetIPModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBACnetIPModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPMode.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPModeExactly interface {
+	BACnetConstructedDataBACnetIPMode
+	isBACnetConstructedDataBACnetIPMode() bool
 }
 
 // _BACnetConstructedDataBACnetIPMode is the data-structure of this message
 type _BACnetConstructedDataBACnetIPMode struct {
 	*_BACnetConstructedData
 	BacnetIpMode BACnetIPModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBACnetIPModeParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPMode{
-		BacnetIpMode:           bacnetIpMode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BacnetIpMode: bacnetIpMode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPMode) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPMode) isBACnetConstructedDataBACnetIPMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPMode) String() string {

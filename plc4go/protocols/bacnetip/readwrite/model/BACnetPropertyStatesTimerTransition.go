@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesTimerTransition is the corresponding interface of BACnetPropertyStatesTimerTransition
 type BACnetPropertyStatesTimerTransition interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetTimerTransition returns TimerTransition (property field)
 	GetTimerTransition() BACnetTimerTransitionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesTimerTransitionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesTimerTransition.
+// This is useful for switch cases.
+type BACnetPropertyStatesTimerTransitionExactly interface {
+	BACnetPropertyStatesTimerTransition
+	isBACnetPropertyStatesTimerTransition() bool
 }
 
 // _BACnetPropertyStatesTimerTransition is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesTimerTransition) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesTimerTransition) isBACnetPropertyStatesTimerTransition() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesTimerTransition) String() string {

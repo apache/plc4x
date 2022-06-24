@@ -28,26 +28,26 @@ import (
 
 // BACnetContextTagSignedInteger is the corresponding interface of BACnetContextTagSignedInteger
 type BACnetContextTagSignedInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagSignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagSignedInteger.
+// This is useful for switch cases.
+type BACnetContextTagSignedIntegerExactly interface {
+	BACnetContextTagSignedInteger
+	isBACnetContextTagSignedInteger() bool
 }
 
 // _BACnetContextTagSignedInteger is the data-structure of this message
 type _BACnetContextTagSignedInteger struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadSignedInteger
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -176,8 +176,10 @@ func BACnetContextTagSignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberAr
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagSignedInteger{
-		Payload:           payload,
-		_BACnetContextTag: &_BACnetContextTag{},
+		Payload: payload,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -213,6 +215,10 @@ func (m *_BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagSignedInteger) isBACnetContextTagSignedInteger() bool {
+	return true
 }
 
 func (m *_BACnetContextTagSignedInteger) String() string {

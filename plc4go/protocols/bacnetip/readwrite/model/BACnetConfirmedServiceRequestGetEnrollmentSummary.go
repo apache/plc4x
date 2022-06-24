@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummary is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummary
 type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetAcknowledgmentFilter returns AcknowledgmentFilter (property field)
 	GetAcknowledgmentFilter() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
@@ -43,12 +45,13 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
 	GetPriorityFilter() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 	// GetNotificationClassFilter returns NotificationClassFilter (property field)
 	GetNotificationClassFilter() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestGetEnrollmentSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummary.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestGetEnrollmentSummaryExactly interface {
+	BACnetConfirmedServiceRequestGetEnrollmentSummary
+	isBACnetConfirmedServiceRequestGetEnrollmentSummary() bool
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummary is the data-structure of this message
@@ -60,9 +63,6 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummary struct {
 	EventTypeFilter         BACnetEventTypeTagged
 	PriorityFilter          BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 	NotificationClassFilter BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -330,13 +330,15 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
-		AcknowledgmentFilter:           acknowledgmentFilter,
-		EnrollmentFilter:               enrollmentFilter,
-		EventStateFilter:               eventStateFilter,
-		EventTypeFilter:                eventTypeFilter,
-		PriorityFilter:                 priorityFilter,
-		NotificationClassFilter:        notificationClassFilter,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		AcknowledgmentFilter:    acknowledgmentFilter,
+		EnrollmentFilter:        enrollmentFilter,
+		EventStateFilter:        eventStateFilter,
+		EventTypeFilter:         eventTypeFilter,
+		PriorityFilter:          priorityFilter,
+		NotificationClassFilter: notificationClassFilter,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -448,6 +450,10 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) isBACnetConfirmedServiceRequestGetEnrollmentSummary() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {

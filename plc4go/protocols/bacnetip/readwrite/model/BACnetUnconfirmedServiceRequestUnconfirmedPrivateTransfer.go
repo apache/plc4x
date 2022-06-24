@@ -30,6 +30,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -37,12 +39,13 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetServiceParameters returns ServiceParameters (property field)
 	GetServiceParameters() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+	isBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer() bool
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer is the data-structure of this message
@@ -51,9 +54,6 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	VendorId          BACnetVendorIdTagged
 	ServiceNumber     BACnetContextTagUnsignedInteger
 	ServiceParameters BACnetConstructedData
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -214,10 +214,12 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
-		VendorId:                         vendorId,
-		ServiceNumber:                    serviceNumber,
-		ServiceParameters:                serviceParameters,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		VendorId:          vendorId,
+		ServiceNumber:     serviceNumber,
+		ServiceParameters: serviceParameters,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -277,6 +279,10 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) isBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) String() string {

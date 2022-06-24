@@ -28,24 +28,24 @@ import (
 
 // BACnetLogDataLogDataTimeChange is the corresponding interface of BACnetLogDataLogDataTimeChange
 type BACnetLogDataLogDataTimeChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogData
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataTimeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataTimeChange.
+// This is useful for switch cases.
+type BACnetLogDataLogDataTimeChangeExactly interface {
+	BACnetLogDataLogDataTimeChange
+	isBACnetLogDataLogDataTimeChange() bool
 }
 
 // _BACnetLogDataLogDataTimeChange is the data-structure of this message
 type _BACnetLogDataLogDataTimeChange struct {
 	*_BACnetLogData
 	TimeChange BACnetContextTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogDataLogDataTimeChangeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogDataTimeChange{
-		TimeChange:     timeChange,
-		_BACnetLogData: &_BACnetLogData{},
+		TimeChange: timeChange,
+		_BACnetLogData: &_BACnetLogData{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogData._BACnetLogDataChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogDataLogDataTimeChange) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataTimeChange) isBACnetLogDataLogDataTimeChange() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataTimeChange) String() string {

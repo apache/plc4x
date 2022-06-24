@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPv6ZoneIndex is the corresponding interface of BACnetConstructedDataIPv6ZoneIndex
 type BACnetConstructedDataIPv6ZoneIndex interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6ZoneIndex returns Ipv6ZoneIndex (property field)
 	GetIpv6ZoneIndex() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6ZoneIndexExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6ZoneIndex.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6ZoneIndexExactly interface {
+	BACnetConstructedDataIPv6ZoneIndex
+	isBACnetConstructedDataIPv6ZoneIndex() bool
 }
 
 // _BACnetConstructedDataIPv6ZoneIndex is the data-structure of this message
 type _BACnetConstructedDataIPv6ZoneIndex struct {
 	*_BACnetConstructedData
 	Ipv6ZoneIndex BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPv6ZoneIndexParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6ZoneIndex{
-		Ipv6ZoneIndex:          ipv6ZoneIndex,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Ipv6ZoneIndex: ipv6ZoneIndex,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndex) isBACnetConstructedDataIPv6ZoneIndex() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) String() string {

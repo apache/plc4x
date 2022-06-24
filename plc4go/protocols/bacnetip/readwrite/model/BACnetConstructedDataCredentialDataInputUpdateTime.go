@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCredentialDataInputUpdateTime is the corresponding interface of BACnetConstructedDataCredentialDataInputUpdateTime
 type BACnetConstructedDataCredentialDataInputUpdateTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUpdateTime returns UpdateTime (property field)
 	GetUpdateTime() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCredentialDataInputUpdateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDataInputUpdateTime.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialDataInputUpdateTimeExactly interface {
+	BACnetConstructedDataCredentialDataInputUpdateTime
+	isBACnetConstructedDataCredentialDataInputUpdateTime() bool
 }
 
 // _BACnetConstructedDataCredentialDataInputUpdateTime is the data-structure of this message
 type _BACnetConstructedDataCredentialDataInputUpdateTime struct {
 	*_BACnetConstructedData
 	UpdateTime BACnetTimeStamp
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCredentialDataInputUpdateTimeParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialDataInputUpdateTime{
-		UpdateTime:             updateTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		UpdateTime: updateTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) isBACnetConstructedDataCredentialDataInputUpdateTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) String() string {

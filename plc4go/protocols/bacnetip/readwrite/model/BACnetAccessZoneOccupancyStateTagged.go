@@ -28,6 +28,8 @@ import (
 
 // BACnetAccessZoneOccupancyStateTagged is the corresponding interface of BACnetAccessZoneOccupancyStateTagged
 type BACnetAccessZoneOccupancyStateTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetAccessZoneOccupancyStateTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAccessZoneOccupancyStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessZoneOccupancyStateTagged.
+// This is useful for switch cases.
+type BACnetAccessZoneOccupancyStateTaggedExactly interface {
+	BACnetAccessZoneOccupancyStateTagged
+	isBACnetAccessZoneOccupancyStateTagged() bool
 }
 
 // _BACnetAccessZoneOccupancyStateTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) Serialize(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetAccessZoneOccupancyStateTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTagged) isBACnetAccessZoneOccupancyStateTagged() bool {
+	return true
 }
 
 func (m *_BACnetAccessZoneOccupancyStateTagged) String() string {

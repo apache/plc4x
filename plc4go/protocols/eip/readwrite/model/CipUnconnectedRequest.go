@@ -33,6 +33,8 @@ const CipUnconnectedRequest_ROUTE uint16 = 0x0001
 
 // CipUnconnectedRequest is the corresponding interface of CipUnconnectedRequest
 type CipUnconnectedRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetUnconnectedService returns UnconnectedService (property field)
 	GetUnconnectedService() CipService
@@ -40,12 +42,13 @@ type CipUnconnectedRequest interface {
 	GetBackPlane() int8
 	// GetSlot returns Slot (property field)
 	GetSlot() int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipUnconnectedRequestExactly can be used when we want exactly this type and not a type which fulfills CipUnconnectedRequest.
+// This is useful for switch cases.
+type CipUnconnectedRequestExactly interface {
+	CipUnconnectedRequest
+	isCipUnconnectedRequest() bool
 }
 
 // _CipUnconnectedRequest is the data-structure of this message
@@ -54,9 +57,6 @@ type _CipUnconnectedRequest struct {
 	UnconnectedService CipService
 	BackPlane          int8
 	Slot               int8
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -333,7 +333,9 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		_CipService:        &_CipService{},
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -440,6 +442,10 @@ func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipUnconnectedRequest) isCipUnconnectedRequest() bool {
+	return true
 }
 
 func (m *_CipUnconnectedRequest) String() string {

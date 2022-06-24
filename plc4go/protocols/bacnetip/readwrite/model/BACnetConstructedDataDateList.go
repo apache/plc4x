@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataDateList is the corresponding interface of BACnetConstructedDataDateList
 type BACnetConstructedDataDateList interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDateList returns DateList (property field)
 	GetDateList() []BACnetCalendarEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDateListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDateList.
+// This is useful for switch cases.
+type BACnetConstructedDataDateListExactly interface {
+	BACnetConstructedDataDateList
+	isBACnetConstructedDataDateList() bool
 }
 
 // _BACnetConstructedDataDateList is the data-structure of this message
 type _BACnetConstructedDataDateList struct {
 	*_BACnetConstructedData
 	DateList []BACnetCalendarEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataDateListParse(readBuffer utils.ReadBuffer, tagNumber u
 		return nil, errors.Wrap(pullErr, "Error pulling for dateList")
 	}
 	// Terminated array
-	dateList := make([]BACnetCalendarEntry, 0)
+	var dateList []BACnetCalendarEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCalendarEntryParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataDateListParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDateList{
-		DateList:               dateList,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DateList: dateList,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataDateList) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (dateList)
-		if m.GetDateList() != nil {
-			if pushErr := writeBuffer.PushContext("dateList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for dateList")
+		if pushErr := writeBuffer.PushContext("dateList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for dateList")
+		}
+		for _, _element := range m.GetDateList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'dateList' field")
 			}
-			for _, _element := range m.GetDateList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'dateList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("dateList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for dateList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("dateList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for dateList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDateList"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataDateList) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDateList) isBACnetConstructedDataDateList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDateList) String() string {

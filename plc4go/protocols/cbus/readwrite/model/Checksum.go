@@ -28,14 +28,17 @@ import (
 
 // Checksum is the corresponding interface of Checksum
 type Checksum interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCrc returns Crc (property field)
 	GetCrc() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ChecksumExactly can be used when we want exactly this type and not a type which fulfills Checksum.
+// This is useful for switch cases.
+type ChecksumExactly interface {
+	Checksum
+	isChecksum() bool
 }
 
 // _Checksum is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for Checksum")
 	}
 	return nil
+}
+
+func (m *_Checksum) isChecksum() bool {
+	return true
 }
 
 func (m *_Checksum) String() string {

@@ -28,6 +28,8 @@ import (
 
 // BACnetContextTagObjectIdentifier is the corresponding interface of BACnetContextTagObjectIdentifier
 type BACnetContextTagObjectIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadObjectIdentifier
@@ -35,21 +37,19 @@ type BACnetContextTagObjectIdentifier interface {
 	GetObjectType() BACnetObjectType
 	// GetInstanceNumber returns InstanceNumber (virtual field)
 	GetInstanceNumber() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagObjectIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagObjectIdentifier.
+// This is useful for switch cases.
+type BACnetContextTagObjectIdentifierExactly interface {
+	BACnetContextTagObjectIdentifier
+	isBACnetContextTagObjectIdentifier() bool
 }
 
 // _BACnetContextTagObjectIdentifier is the data-structure of this message
 type _BACnetContextTagObjectIdentifier struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadObjectIdentifier
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -189,8 +189,10 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagObjectIdentifier{
-		Payload:           payload,
-		_BACnetContextTag: &_BACnetContextTag{},
+		Payload: payload,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -230,6 +232,10 @@ func (m *_BACnetContextTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagObjectIdentifier) isBACnetContextTagObjectIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetContextTagObjectIdentifier) String() string {

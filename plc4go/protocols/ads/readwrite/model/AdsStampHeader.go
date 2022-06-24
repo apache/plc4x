@@ -28,18 +28,21 @@ import (
 
 // AdsStampHeader is the corresponding interface of AdsStampHeader
 type AdsStampHeader interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint64
 	// GetSamples returns Samples (property field)
 	GetSamples() uint32
 	// GetAdsNotificationSamples returns AdsNotificationSamples (property field)
 	GetAdsNotificationSamples() []AdsNotificationSample
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsStampHeaderExactly can be used when we want exactly this type and not a type which fulfills AdsStampHeader.
+// This is useful for switch cases.
+type AdsStampHeaderExactly interface {
+	AdsStampHeader
+	isAdsStampHeader() bool
 }
 
 // _AdsStampHeader is the data-structure of this message
@@ -148,6 +151,10 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
 	}
 	// Count array
 	adsNotificationSamples := make([]AdsNotificationSample, samples)
+	// This happens when the size is set conditional to 0
+	if len(adsNotificationSamples) == 0 {
+		adsNotificationSamples = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(samples); curItem++ {
 			_item, _err := AdsNotificationSampleParse(readBuffer)
@@ -191,25 +198,27 @@ func (m *_AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (adsNotificationSamples)
-	if m.GetAdsNotificationSamples() != nil {
-		if pushErr := writeBuffer.PushContext("adsNotificationSamples", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for adsNotificationSamples")
+	if pushErr := writeBuffer.PushContext("adsNotificationSamples", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for adsNotificationSamples")
+	}
+	for _, _element := range m.GetAdsNotificationSamples() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
 		}
-		for _, _element := range m.GetAdsNotificationSamples() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("adsNotificationSamples", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for adsNotificationSamples")
-		}
+	}
+	if popErr := writeBuffer.PopContext("adsNotificationSamples", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for adsNotificationSamples")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsStampHeader"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for AdsStampHeader")
 	}
 	return nil
+}
+
+func (m *_AdsStampHeader) isAdsStampHeader() bool {
+	return true
 }
 
 func (m *_AdsStampHeader) String() string {

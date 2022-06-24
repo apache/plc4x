@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataOutOfService is the corresponding interface of BACnetConstructedDataOutOfService
 type BACnetConstructedDataOutOfService interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetOutOfService returns OutOfService (property field)
 	GetOutOfService() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOutOfServiceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOutOfService.
+// This is useful for switch cases.
+type BACnetConstructedDataOutOfServiceExactly interface {
+	BACnetConstructedDataOutOfService
+	isBACnetConstructedDataOutOfService() bool
 }
 
 // _BACnetConstructedDataOutOfService is the data-structure of this message
 type _BACnetConstructedDataOutOfService struct {
 	*_BACnetConstructedData
 	OutOfService BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOutOfService{
-		OutOfService:           outOfService,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		OutOfService: outOfService,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataOutOfService) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOutOfService) isBACnetConstructedDataOutOfService() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOutOfService) String() string {

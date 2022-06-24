@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataAccessCredentialAll is the corresponding interface of BACnetConstructedDataAccessCredentialAll
 type BACnetConstructedDataAccessCredentialAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessCredentialAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessCredentialAll.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessCredentialAllExactly interface {
+	BACnetConstructedDataAccessCredentialAll
+	isBACnetConstructedDataAccessCredentialAll() bool
 }
 
 // _BACnetConstructedDataAccessCredentialAll is the data-structure of this message
 type _BACnetConstructedDataAccessCredentialAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataAccessCredentialAllParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessCredentialAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataAccessCredentialAll) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessCredentialAll) isBACnetConstructedDataAccessCredentialAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessCredentialAll) String() string {

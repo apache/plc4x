@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataExecutionDelay is the corresponding interface of BACnetConstructedDataExecutionDelay
 type BACnetConstructedDataExecutionDelay interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataExecutionDelay interface {
 	GetExecutionDelay() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataExecutionDelayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExecutionDelay.
+// This is useful for switch cases.
+type BACnetConstructedDataExecutionDelayExactly interface {
+	BACnetConstructedDataExecutionDelay
+	isBACnetConstructedDataExecutionDelay() bool
 }
 
 // _BACnetConstructedDataExecutionDelay is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataExecutionDelay struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	ExecutionDelay       []BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataExecutionDelayParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for executionDelay")
 	}
 	// Terminated array
-	executionDelay := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var executionDelay []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataExecutionDelayParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataExecutionDelay{
-		NumberOfDataElements:   numberOfDataElements,
-		ExecutionDelay:         executionDelay,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		ExecutionDelay:       executionDelay,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataExecutionDelay) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (executionDelay)
-		if m.GetExecutionDelay() != nil {
-			if pushErr := writeBuffer.PushContext("executionDelay", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for executionDelay")
+		if pushErr := writeBuffer.PushContext("executionDelay", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for executionDelay")
+		}
+		for _, _element := range m.GetExecutionDelay() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'executionDelay' field")
 			}
-			for _, _element := range m.GetExecutionDelay() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'executionDelay' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("executionDelay", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for executionDelay")
-			}
+		}
+		if popErr := writeBuffer.PopContext("executionDelay", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for executionDelay")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExecutionDelay"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataExecutionDelay) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataExecutionDelay) isBACnetConstructedDataExecutionDelay() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataExecutionDelay) String() string {

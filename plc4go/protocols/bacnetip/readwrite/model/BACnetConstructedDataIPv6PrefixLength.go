@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPv6PrefixLength is the corresponding interface of BACnetConstructedDataIPv6PrefixLength
 type BACnetConstructedDataIPv6PrefixLength interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6PrefixLength returns Ipv6PrefixLength (property field)
 	GetIpv6PrefixLength() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6PrefixLengthExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6PrefixLength.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6PrefixLengthExactly interface {
+	BACnetConstructedDataIPv6PrefixLength
+	isBACnetConstructedDataIPv6PrefixLength() bool
 }
 
 // _BACnetConstructedDataIPv6PrefixLength is the data-structure of this message
 type _BACnetConstructedDataIPv6PrefixLength struct {
 	*_BACnetConstructedData
 	Ipv6PrefixLength BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPv6PrefixLengthParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6PrefixLength{
-		Ipv6PrefixLength:       ipv6PrefixLength,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Ipv6PrefixLength: ipv6PrefixLength,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6PrefixLength) isBACnetConstructedDataIPv6PrefixLength() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) String() string {

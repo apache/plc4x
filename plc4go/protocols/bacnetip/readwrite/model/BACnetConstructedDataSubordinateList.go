@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataSubordinateList is the corresponding interface of BACnetConstructedDataSubordinateList
 type BACnetConstructedDataSubordinateList interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataSubordinateList interface {
 	GetSubordinateList() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSubordinateListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubordinateList.
+// This is useful for switch cases.
+type BACnetConstructedDataSubordinateListExactly interface {
+	BACnetConstructedDataSubordinateList
+	isBACnetConstructedDataSubordinateList() bool
 }
 
 // _BACnetConstructedDataSubordinateList is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataSubordinateList struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	SubordinateList      []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataSubordinateListParse(readBuffer utils.ReadBuffer, tagN
 		return nil, errors.Wrap(pullErr, "Error pulling for subordinateList")
 	}
 	// Terminated array
-	subordinateList := make([]BACnetDeviceObjectReference, 0)
+	var subordinateList []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataSubordinateListParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSubordinateList{
-		NumberOfDataElements:   numberOfDataElements,
-		SubordinateList:        subordinateList,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		SubordinateList:      subordinateList,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataSubordinateList) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (subordinateList)
-		if m.GetSubordinateList() != nil {
-			if pushErr := writeBuffer.PushContext("subordinateList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for subordinateList")
+		if pushErr := writeBuffer.PushContext("subordinateList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for subordinateList")
+		}
+		for _, _element := range m.GetSubordinateList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'subordinateList' field")
 			}
-			for _, _element := range m.GetSubordinateList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'subordinateList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("subordinateList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for subordinateList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("subordinateList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for subordinateList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateList"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataSubordinateList) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSubordinateList) isBACnetConstructedDataSubordinateList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSubordinateList) String() string {

@@ -28,6 +28,8 @@ import (
 
 // ConnectionRequest is the corresponding interface of ConnectionRequest
 type ConnectionRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetHpaiDiscoveryEndpoint returns HpaiDiscoveryEndpoint (property field)
 	GetHpaiDiscoveryEndpoint() HPAIDiscoveryEndpoint
@@ -35,12 +37,13 @@ type ConnectionRequest interface {
 	GetHpaiDataEndpoint() HPAIDataEndpoint
 	// GetConnectionRequestInformation returns ConnectionRequestInformation (property field)
 	GetConnectionRequestInformation() ConnectionRequestInformation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequest.
+// This is useful for switch cases.
+type ConnectionRequestExactly interface {
+	ConnectionRequest
+	isConnectionRequest() bool
 }
 
 // _ConnectionRequest is the data-structure of this message
@@ -256,6 +259,10 @@ func (m *_ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionRequest) isConnectionRequest() bool {
+	return true
 }
 
 func (m *_ConnectionRequest) String() string {

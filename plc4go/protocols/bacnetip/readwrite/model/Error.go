@@ -28,16 +28,19 @@ import (
 
 // Error is the corresponding interface of Error
 type Error interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() ErrorClassTagged
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() ErrorCodeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ErrorExactly can be used when we want exactly this type and not a type which fulfills Error.
+// This is useful for switch cases.
+type ErrorExactly interface {
+	Error
+	isError() bool
 }
 
 // _Error is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_Error) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for Error")
 	}
 	return nil
+}
+
+func (m *_Error) isError() bool {
+	return true
 }
 
 func (m *_Error) String() string {

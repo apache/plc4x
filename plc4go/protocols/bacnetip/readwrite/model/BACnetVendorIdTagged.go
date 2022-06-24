@@ -28,6 +28,8 @@ import (
 
 // BACnetVendorIdTagged is the corresponding interface of BACnetVendorIdTagged
 type BACnetVendorIdTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetVendorIdTagged interface {
 	GetUnknownId() uint32
 	// GetIsUnknownId returns IsUnknownId (virtual field)
 	GetIsUnknownId() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetVendorIdTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetVendorIdTagged.
+// This is useful for switch cases.
+type BACnetVendorIdTaggedExactly interface {
+	BACnetVendorIdTagged
+	isBACnetVendorIdTagged() bool
 }
 
 // _BACnetVendorIdTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetVendorIdTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetVendorIdTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetVendorIdTagged) isBACnetVendorIdTagged() bool {
+	return true
 }
 
 func (m *_BACnetVendorIdTagged) String() string {

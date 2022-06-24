@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataNotificationForwarderAll is the corresponding interface of BACnetConstructedDataNotificationForwarderAll
 type BACnetConstructedDataNotificationForwarderAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNotificationForwarderAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotificationForwarderAll.
+// This is useful for switch cases.
+type BACnetConstructedDataNotificationForwarderAllExactly interface {
+	BACnetConstructedDataNotificationForwarderAll
+	isBACnetConstructedDataNotificationForwarderAll() bool
 }
 
 // _BACnetConstructedDataNotificationForwarderAll is the data-structure of this message
 type _BACnetConstructedDataNotificationForwarderAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataNotificationForwarderAllParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNotificationForwarderAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataNotificationForwarderAll) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAll) isBACnetConstructedDataNotificationForwarderAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNotificationForwarderAll) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueOctetString is the corresponding interface of BACnetChannelValueOctetString
 type BACnetChannelValueOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueOctetString.
+// This is useful for switch cases.
+type BACnetChannelValueOctetStringExactly interface {
+	BACnetChannelValueOctetString
+	isBACnetChannelValueOctetString() bool
 }
 
 // _BACnetChannelValueOctetString is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueOctetString) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueOctetString) isBACnetChannelValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueOctetString) String() string {

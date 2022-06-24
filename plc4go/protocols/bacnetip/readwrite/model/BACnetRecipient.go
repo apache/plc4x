@@ -28,16 +28,19 @@ import (
 
 // BACnetRecipient is the corresponding interface of BACnetRecipient
 type BACnetRecipient interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRecipientExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipient.
+// This is useful for switch cases.
+type BACnetRecipientExactly interface {
+	BACnetRecipient
+	isBACnetRecipient() bool
 }
 
 // _BACnetRecipient is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetRecipient struct {
 }
 
 type _BACnetRecipientChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetRecipientParent interface {
@@ -58,7 +61,7 @@ type BACnetRecipientParent interface {
 }
 
 type BACnetRecipientChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetRecipient, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetRecipient
 
@@ -202,6 +205,10 @@ func (pm *_BACnetRecipient) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(popErr, "Error popping for BACnetRecipient")
 	}
 	return nil
+}
+
+func (m *_BACnetRecipient) isBACnetRecipient() bool {
+	return true
 }
 
 func (m *_BACnetRecipient) String() string {

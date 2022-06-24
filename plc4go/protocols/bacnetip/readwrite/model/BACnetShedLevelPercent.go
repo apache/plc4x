@@ -28,15 +28,18 @@ import (
 
 // BACnetShedLevelPercent is the corresponding interface of BACnetShedLevelPercent
 type BACnetShedLevelPercent interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetShedLevel
 	// GetPercent returns Percent (property field)
 	GetPercent() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetShedLevelPercentExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevelPercent.
+// This is useful for switch cases.
+type BACnetShedLevelPercentExactly interface {
+	BACnetShedLevelPercent
+	isBACnetShedLevelPercent() bool
 }
 
 // _BACnetShedLevelPercent is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetShedLevelPercent) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetShedLevelPercent) isBACnetShedLevelPercent() bool {
+	return true
 }
 
 func (m *_BACnetShedLevelPercent) String() string {

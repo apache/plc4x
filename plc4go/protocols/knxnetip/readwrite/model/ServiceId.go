@@ -28,14 +28,17 @@ import (
 
 // ServiceId is the corresponding interface of ServiceId
 type ServiceId interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetServiceType returns ServiceType (discriminator field)
 	GetServiceType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ServiceIdExactly can be used when we want exactly this type and not a type which fulfills ServiceId.
+// This is useful for switch cases.
+type ServiceIdExactly interface {
+	ServiceId
+	isServiceId() bool
 }
 
 // _ServiceId is the data-structure of this message
@@ -44,10 +47,10 @@ type _ServiceId struct {
 }
 
 type _ServiceIdChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ServiceIdParent interface {
@@ -56,7 +59,7 @@ type ServiceIdParent interface {
 }
 
 type ServiceIdChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ServiceId)
 	GetParent() *ServiceId
 
@@ -180,6 +183,10 @@ func (pm *_ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child Servi
 		return errors.Wrap(popErr, "Error popping for ServiceId")
 	}
 	return nil
+}
+
+func (m *_ServiceId) isServiceId() bool {
+	return true
 }
 
 func (m *_ServiceId) String() string {

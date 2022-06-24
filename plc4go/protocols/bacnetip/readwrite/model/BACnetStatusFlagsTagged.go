@@ -28,6 +28,8 @@ import (
 
 // BACnetStatusFlagsTagged is the corresponding interface of BACnetStatusFlagsTagged
 type BACnetStatusFlagsTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -40,12 +42,13 @@ type BACnetStatusFlagsTagged interface {
 	GetOverridden() bool
 	// GetOutOfService returns OutOfService (virtual field)
 	GetOutOfService() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetStatusFlagsTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetStatusFlagsTagged.
+// This is useful for switch cases.
+type BACnetStatusFlagsTaggedExactly interface {
+	BACnetStatusFlagsTagged
+	isBACnetStatusFlagsTagged() bool
 }
 
 // _BACnetStatusFlagsTagged is the data-structure of this message
@@ -273,6 +276,10 @@ func (m *_BACnetStatusFlagsTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetStatusFlagsTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetStatusFlagsTagged) isBACnetStatusFlagsTagged() bool {
+	return true
 }
 
 func (m *_BACnetStatusFlagsTagged) String() string {

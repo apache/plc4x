@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueObjectidentifier is the corresponding interface of BACnetChannelValueObjectidentifier
 type BACnetChannelValueObjectidentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueObjectidentifier.
+// This is useful for switch cases.
+type BACnetChannelValueObjectidentifierExactly interface {
+	BACnetChannelValueObjectidentifier
+	isBACnetChannelValueObjectidentifier() bool
 }
 
 // _BACnetChannelValueObjectidentifier is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueObjectidentifier) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueObjectidentifier) isBACnetChannelValueObjectidentifier() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueObjectidentifier) String() string {

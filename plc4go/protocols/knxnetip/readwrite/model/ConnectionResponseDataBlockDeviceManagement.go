@@ -28,13 +28,16 @@ import (
 
 // ConnectionResponseDataBlockDeviceManagement is the corresponding interface of ConnectionResponseDataBlockDeviceManagement
 type ConnectionResponseDataBlockDeviceManagement interface {
+	utils.LengthAware
+	utils.Serializable
 	ConnectionResponseDataBlock
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConnectionResponseDataBlockDeviceManagementExactly can be used when we want exactly this type and not a type which fulfills ConnectionResponseDataBlockDeviceManagement.
+// This is useful for switch cases.
+type ConnectionResponseDataBlockDeviceManagementExactly interface {
+	ConnectionResponseDataBlockDeviceManagement
+	isConnectionResponseDataBlockDeviceManagement() bool
 }
 
 // _ConnectionResponseDataBlockDeviceManagement is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConnectionResponseDataBlockDeviceManagement) isConnectionResponseDataBlockDeviceManagement() bool {
+	return true
 }
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) String() string {

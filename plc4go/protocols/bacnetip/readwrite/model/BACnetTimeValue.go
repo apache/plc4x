@@ -28,16 +28,19 @@ import (
 
 // BACnetTimeValue is the corresponding interface of BACnetTimeValue
 type BACnetTimeValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
 	// GetValue returns Value (property field)
 	GetValue() BACnetConstructedDataElement
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimeValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeValue.
+// This is useful for switch cases.
+type BACnetTimeValueExactly interface {
+	BACnetTimeValue
+	isBACnetTimeValue() bool
 }
 
 // _BACnetTimeValue is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetTimeValue) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetTimeValue")
 	}
 	return nil
+}
+
+func (m *_BACnetTimeValue) isBACnetTimeValue() bool {
+	return true
 }
 
 func (m *_BACnetTimeValue) String() string {

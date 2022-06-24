@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueBoolean is the corresponding interface of BACnetTimerStateChangeValueBoolean
 type BACnetTimerStateChangeValueBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueBoolean.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueBooleanExactly interface {
+	BACnetTimerStateChangeValueBoolean
+	isBACnetTimerStateChangeValueBoolean() bool
 }
 
 // _BACnetTimerStateChangeValueBoolean is the data-structure of this message
 type _BACnetTimerStateChangeValueBoolean struct {
 	*_BACnetTimerStateChangeValue
 	BooleanValue BACnetApplicationTagBoolean
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueBooleanParse(readBuffer utils.ReadBuffer, object
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueBoolean{
-		BooleanValue:                 booleanValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		BooleanValue: booleanValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueBoolean) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueBoolean) isBACnetTimerStateChangeValueBoolean() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueBoolean) String() string {

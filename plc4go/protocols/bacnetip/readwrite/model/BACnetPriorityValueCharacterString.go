@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueCharacterString is the corresponding interface of BACnetPriorityValueCharacterString
 type BACnetPriorityValueCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueCharacterString.
+// This is useful for switch cases.
+type BACnetPriorityValueCharacterStringExactly interface {
+	BACnetPriorityValueCharacterString
+	isBACnetPriorityValueCharacterString() bool
 }
 
 // _BACnetPriorityValueCharacterString is the data-structure of this message
 type _BACnetPriorityValueCharacterString struct {
 	*_BACnetPriorityValue
 	CharacterStringValue BACnetApplicationTagCharacterString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +151,9 @@ func BACnetPriorityValueCharacterStringParse(readBuffer utils.ReadBuffer, object
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueCharacterString{
 		CharacterStringValue: characterStringValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueCharacterString) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueCharacterString) isBACnetPriorityValueCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueCharacterString) String() string {

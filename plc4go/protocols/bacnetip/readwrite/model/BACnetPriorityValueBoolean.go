@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueBoolean is the corresponding interface of BACnetPriorityValueBoolean
 type BACnetPriorityValueBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueBoolean.
+// This is useful for switch cases.
+type BACnetPriorityValueBooleanExactly interface {
+	BACnetPriorityValueBoolean
+	isBACnetPriorityValueBoolean() bool
 }
 
 // _BACnetPriorityValueBoolean is the data-structure of this message
 type _BACnetPriorityValueBoolean struct {
 	*_BACnetPriorityValue
 	BooleanValue BACnetApplicationTagBoolean
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueBooleanParse(readBuffer utils.ReadBuffer, objectTypeArgu
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueBoolean{
-		BooleanValue:         booleanValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		BooleanValue: booleanValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueBoolean) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueBoolean) isBACnetPriorityValueBoolean() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueBoolean) String() string {

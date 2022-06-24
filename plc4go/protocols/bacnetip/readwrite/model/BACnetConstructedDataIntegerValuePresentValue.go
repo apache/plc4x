@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIntegerValuePresentValue is the corresponding interface of BACnetConstructedDataIntegerValuePresentValue
 type BACnetConstructedDataIntegerValuePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIntegerValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValuePresentValueExactly interface {
+	BACnetConstructedDataIntegerValuePresentValue
+	isBACnetConstructedDataIntegerValuePresentValue() bool
 }
 
 // _BACnetConstructedDataIntegerValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataIntegerValuePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIntegerValuePresentValueParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegerValuePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValuePresentValue) isBACnetConstructedDataIntegerValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValuePresentValue) String() string {

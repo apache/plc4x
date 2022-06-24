@@ -28,15 +28,18 @@ import (
 
 // BACnetServiceAckReadPropertyMultiple is the corresponding interface of BACnetServiceAckReadPropertyMultiple
 type BACnetServiceAckReadPropertyMultiple interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetData returns Data (property field)
 	GetData() []BACnetReadAccessResult
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckReadPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyMultiple.
+// This is useful for switch cases.
+type BACnetServiceAckReadPropertyMultipleExactly interface {
+	BACnetServiceAckReadPropertyMultiple
+	isBACnetServiceAckReadPropertyMultiple() bool
 }
 
 // _BACnetServiceAckReadPropertyMultiple is the data-structure of this message
@@ -45,7 +48,6 @@ type _BACnetServiceAckReadPropertyMultiple struct {
 	Data []BACnetReadAccessResult
 
 	// Arguments.
-	ServiceAckLength        uint16
 	ServiceAckPayloadLength uint16
 }
 
@@ -143,7 +145,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
-	data := make([]BACnetReadAccessResult, 0)
+	var data []BACnetReadAccessResult
 	{
 		_dataLength := serviceAckPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
@@ -165,8 +167,10 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckReadPropertyMultiple{
-		Data:              data,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		Data: data,
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -181,19 +185,17 @@ func (m *_BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadPropertyMultiple"); popErr != nil {
@@ -202,6 +204,10 @@ func (m *_BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckReadPropertyMultiple) isBACnetServiceAckReadPropertyMultiple() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckReadPropertyMultiple) String() string {

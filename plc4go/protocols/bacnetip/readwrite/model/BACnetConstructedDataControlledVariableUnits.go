@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataControlledVariableUnits is the corresponding interface of BACnetConstructedDataControlledVariableUnits
 type BACnetConstructedDataControlledVariableUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataControlledVariableUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataControlledVariableUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataControlledVariableUnitsExactly interface {
+	BACnetConstructedDataControlledVariableUnits
+	isBACnetConstructedDataControlledVariableUnits() bool
 }
 
 // _BACnetConstructedDataControlledVariableUnits is the data-structure of this message
 type _BACnetConstructedDataControlledVariableUnits struct {
 	*_BACnetConstructedData
 	Units BACnetEngineeringUnitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataControlledVariableUnitsParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataControlledVariableUnits{
-		Units:                  units,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Units: units,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataControlledVariableUnits) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataControlledVariableUnits) isBACnetConstructedDataControlledVariableUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataControlledVariableUnits) String() string {

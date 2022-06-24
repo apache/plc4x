@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueTime is the corresponding interface of BACnetTimerStateChangeValueTime
 type BACnetTimerStateChangeValueTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueTime.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueTimeExactly interface {
+	BACnetTimerStateChangeValueTime
+	isBACnetTimerStateChangeValueTime() bool
 }
 
 // _BACnetTimerStateChangeValueTime is the data-structure of this message
 type _BACnetTimerStateChangeValueTime struct {
 	*_BACnetTimerStateChangeValue
 	TimeValue BACnetApplicationTagTime
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueTimeParse(readBuffer utils.ReadBuffer, objectTyp
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueTime{
-		TimeValue:                    timeValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		TimeValue: timeValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueTime) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueTime) isBACnetTimerStateChangeValueTime() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueTime) String() string {

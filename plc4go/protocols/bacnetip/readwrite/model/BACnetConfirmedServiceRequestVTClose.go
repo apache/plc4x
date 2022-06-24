@@ -28,15 +28,18 @@ import (
 
 // BACnetConfirmedServiceRequestVTClose is the corresponding interface of BACnetConfirmedServiceRequestVTClose
 type BACnetConfirmedServiceRequestVTClose interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetListOfRemoteVtSessionIdentifiers returns ListOfRemoteVtSessionIdentifiers (property field)
 	GetListOfRemoteVtSessionIdentifiers() []BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestVTCloseExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTClose.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestVTCloseExactly interface {
+	BACnetConfirmedServiceRequestVTClose
+	isBACnetConfirmedServiceRequestVTClose() bool
 }
 
 // _BACnetConfirmedServiceRequestVTClose is the data-structure of this message
@@ -45,7 +48,6 @@ type _BACnetConfirmedServiceRequestVTClose struct {
 	ListOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	ServiceRequestLength        uint16
 	ServiceRequestPayloadLength uint16
 }
 
@@ -144,7 +146,7 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serv
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfRemoteVtSessionIdentifiers")
 	}
 	// Length array
-	listOfRemoteVtSessionIdentifiers := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 	{
 		_listOfRemoteVtSessionIdentifiersLength := serviceRequestPayloadLength
 		_listOfRemoteVtSessionIdentifiersEndPos := positionAware.GetPos() + uint16(_listOfRemoteVtSessionIdentifiersLength)
@@ -167,7 +169,9 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, serv
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestVTClose{
 		ListOfRemoteVtSessionIdentifiers: listOfRemoteVtSessionIdentifiers,
-		_BACnetConfirmedServiceRequest:   &_BACnetConfirmedServiceRequest{},
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -182,19 +186,17 @@ func (m *_BACnetConfirmedServiceRequestVTClose) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (listOfRemoteVtSessionIdentifiers)
-		if m.GetListOfRemoteVtSessionIdentifiers() != nil {
-			if pushErr := writeBuffer.PushContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for listOfRemoteVtSessionIdentifiers")
+		if pushErr := writeBuffer.PushContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for listOfRemoteVtSessionIdentifiers")
+		}
+		for _, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'listOfRemoteVtSessionIdentifiers' field")
 			}
-			for _, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'listOfRemoteVtSessionIdentifiers' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for listOfRemoteVtSessionIdentifiers")
-			}
+		}
+		if popErr := writeBuffer.PopContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for listOfRemoteVtSessionIdentifiers")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestVTClose"); popErr != nil {
@@ -203,6 +205,10 @@ func (m *_BACnetConfirmedServiceRequestVTClose) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestVTClose) isBACnetConfirmedServiceRequestVTClose() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestVTClose) String() string {

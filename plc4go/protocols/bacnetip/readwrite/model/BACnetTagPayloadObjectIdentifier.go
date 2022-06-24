@@ -28,6 +28,8 @@ import (
 
 // BACnetTagPayloadObjectIdentifier is the corresponding interface of BACnetTagPayloadObjectIdentifier
 type BACnetTagPayloadObjectIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectType
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -36,12 +38,13 @@ type BACnetTagPayloadObjectIdentifier interface {
 	GetInstanceNumber() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadObjectIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadObjectIdentifier.
+// This is useful for switch cases.
+type BACnetTagPayloadObjectIdentifierExactly interface {
+	BACnetTagPayloadObjectIdentifier
+	isBACnetTagPayloadObjectIdentifier() bool
 }
 
 // _BACnetTagPayloadObjectIdentifier is the data-structure of this message
@@ -208,6 +211,10 @@ func (m *_BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuf
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadObjectIdentifier")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadObjectIdentifier) isBACnetTagPayloadObjectIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadObjectIdentifier) String() string {

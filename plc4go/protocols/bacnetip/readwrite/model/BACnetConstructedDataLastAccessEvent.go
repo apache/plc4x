@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastAccessEvent is the corresponding interface of BACnetConstructedDataLastAccessEvent
 type BACnetConstructedDataLastAccessEvent interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastAccessEvent returns LastAccessEvent (property field)
 	GetLastAccessEvent() BACnetAccessEventTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessEventTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastAccessEvent.
+// This is useful for switch cases.
+type BACnetConstructedDataLastAccessEventExactly interface {
+	BACnetConstructedDataLastAccessEvent
+	isBACnetConstructedDataLastAccessEvent() bool
 }
 
 // _BACnetConstructedDataLastAccessEvent is the data-structure of this message
 type _BACnetConstructedDataLastAccessEvent struct {
 	*_BACnetConstructedData
 	LastAccessEvent BACnetAccessEventTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastAccessEvent{
-		LastAccessEvent:        lastAccessEvent,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LastAccessEvent: lastAccessEvent,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastAccessEvent) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastAccessEvent) isBACnetConstructedDataLastAccessEvent() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastAccessEvent) String() string {

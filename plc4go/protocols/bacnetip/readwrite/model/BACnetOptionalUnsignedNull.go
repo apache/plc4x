@@ -28,15 +28,18 @@ import (
 
 // BACnetOptionalUnsignedNull is the corresponding interface of BACnetOptionalUnsignedNull
 type BACnetOptionalUnsignedNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetOptionalUnsigned
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetOptionalUnsignedNullExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsignedNull.
+// This is useful for switch cases.
+type BACnetOptionalUnsignedNullExactly interface {
+	BACnetOptionalUnsignedNull
+	isBACnetOptionalUnsignedNull() bool
 }
 
 // _BACnetOptionalUnsignedNull is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetOptionalUnsignedNull) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalUnsignedNull) isBACnetOptionalUnsignedNull() bool {
+	return true
 }
 
 func (m *_BACnetOptionalUnsignedNull) String() string {

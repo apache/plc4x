@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastRestartReason is the corresponding interface of BACnetConstructedDataLastRestartReason
 type BACnetConstructedDataLastRestartReason interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastRestartReason returns LastRestartReason (property field)
 	GetLastRestartReason() BACnetRestartReasonTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetRestartReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastRestartReasonExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastRestartReason.
+// This is useful for switch cases.
+type BACnetConstructedDataLastRestartReasonExactly interface {
+	BACnetConstructedDataLastRestartReason
+	isBACnetConstructedDataLastRestartReason() bool
 }
 
 // _BACnetConstructedDataLastRestartReason is the data-structure of this message
 type _BACnetConstructedDataLastRestartReason struct {
 	*_BACnetConstructedData
 	LastRestartReason BACnetRestartReasonTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLastRestartReasonParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastRestartReason{
-		LastRestartReason:      lastRestartReason,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LastRestartReason: lastRestartReason,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastRestartReason) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastRestartReason) isBACnetConstructedDataLastRestartReason() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastRestartReason) String() string {

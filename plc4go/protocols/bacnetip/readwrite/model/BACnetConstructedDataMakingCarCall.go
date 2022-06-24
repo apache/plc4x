@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataMakingCarCall is the corresponding interface of BACnetConstructedDataMakingCarCall
 type BACnetConstructedDataMakingCarCall interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataMakingCarCall interface {
 	GetMakingCarCall() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMakingCarCallExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMakingCarCall.
+// This is useful for switch cases.
+type BACnetConstructedDataMakingCarCallExactly interface {
+	BACnetConstructedDataMakingCarCall
+	isBACnetConstructedDataMakingCarCall() bool
 }
 
 // _BACnetConstructedDataMakingCarCall is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataMakingCarCall struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	MakingCarCall        []BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataMakingCarCallParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for makingCarCall")
 	}
 	// Terminated array
-	makingCarCall := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var makingCarCall []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataMakingCarCallParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMakingCarCall{
-		NumberOfDataElements:   numberOfDataElements,
-		MakingCarCall:          makingCarCall,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		MakingCarCall:        makingCarCall,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataMakingCarCall) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (makingCarCall)
-		if m.GetMakingCarCall() != nil {
-			if pushErr := writeBuffer.PushContext("makingCarCall", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for makingCarCall")
+		if pushErr := writeBuffer.PushContext("makingCarCall", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for makingCarCall")
+		}
+		for _, _element := range m.GetMakingCarCall() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'makingCarCall' field")
 			}
-			for _, _element := range m.GetMakingCarCall() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'makingCarCall' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("makingCarCall", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for makingCarCall")
-			}
+		}
+		if popErr := writeBuffer.PopContext("makingCarCall", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for makingCarCall")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMakingCarCall"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataMakingCarCall) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMakingCarCall) isBACnetConstructedDataMakingCarCall() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMakingCarCall) String() string {

@@ -28,26 +28,26 @@ import (
 
 // BACnetContextTagEnumerated is the corresponding interface of BACnetContextTagEnumerated
 type BACnetContextTagEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadEnumerated
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagEnumerated.
+// This is useful for switch cases.
+type BACnetContextTagEnumeratedExactly interface {
+	BACnetContextTagEnumerated
+	isBACnetContextTagEnumerated() bool
 }
 
 // _BACnetContextTagEnumerated is the data-structure of this message
 type _BACnetContextTagEnumerated struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadEnumerated
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -176,8 +176,10 @@ func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagEnumerated{
-		Payload:           payload,
-		_BACnetContextTag: &_BACnetContextTag{},
+		Payload: payload,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -213,6 +215,10 @@ func (m *_BACnetContextTagEnumerated) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagEnumerated) isBACnetContextTagEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetContextTagEnumerated) String() string {

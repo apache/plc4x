@@ -28,24 +28,24 @@ import (
 
 // COTPParameterChecksum is the corresponding interface of COTPParameterChecksum
 type COTPParameterChecksum interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPParameter
 	// GetCrc returns Crc (property field)
 	GetCrc() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPParameterChecksumExactly can be used when we want exactly this type and not a type which fulfills COTPParameterChecksum.
+// This is useful for switch cases.
+type COTPParameterChecksumExactly interface {
+	COTPParameterChecksum
+	isCOTPParameterChecksum() bool
 }
 
 // _COTPParameterChecksum is the data-structure of this message
 type _COTPParameterChecksum struct {
 	*_COTPParameter
 	Crc uint8
-
-	// Arguments.
-	Rest uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -146,8 +146,10 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (COTPPa
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterChecksum{
-		Crc:            crc,
-		_COTPParameter: &_COTPParameter{},
+		Crc: crc,
+		_COTPParameter: &_COTPParameter{
+			Rest: rest,
+		},
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil
@@ -174,6 +176,10 @@ func (m *_COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPParameterChecksum) isCOTPParameterChecksum() bool {
+	return true
 }
 
 func (m *_COTPParameterChecksum) String() string {

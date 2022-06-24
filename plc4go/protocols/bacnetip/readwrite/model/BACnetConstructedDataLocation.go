@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLocation is the corresponding interface of BACnetConstructedDataLocation
 type BACnetConstructedDataLocation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLocation returns Location (property field)
 	GetLocation() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLocationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocation.
+// This is useful for switch cases.
+type BACnetConstructedDataLocationExactly interface {
+	BACnetConstructedDataLocation
+	isBACnetConstructedDataLocation() bool
 }
 
 // _BACnetConstructedDataLocation is the data-structure of this message
 type _BACnetConstructedDataLocation struct {
 	*_BACnetConstructedData
 	Location BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLocationParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLocation{
-		Location:               location,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Location: location,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLocation) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLocation) isBACnetConstructedDataLocation() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLocation) String() string {

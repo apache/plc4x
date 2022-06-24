@@ -28,17 +28,20 @@ import (
 
 // TunnelingRequest is the corresponding interface of TunnelingRequest
 type TunnelingRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetTunnelingRequestDataBlock returns TunnelingRequestDataBlock (property field)
 	GetTunnelingRequestDataBlock() TunnelingRequestDataBlock
 	// GetCemi returns Cemi (property field)
 	GetCemi() CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// TunnelingRequestExactly can be used when we want exactly this type and not a type which fulfills TunnelingRequest.
+// This is useful for switch cases.
+type TunnelingRequestExactly interface {
+	TunnelingRequest
+	isTunnelingRequest() bool
 }
 
 // _TunnelingRequest is the data-structure of this message
@@ -222,6 +225,10 @@ func (m *_TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TunnelingRequest) isTunnelingRequest() bool {
+	return true
 }
 
 func (m *_TunnelingRequest) String() string {

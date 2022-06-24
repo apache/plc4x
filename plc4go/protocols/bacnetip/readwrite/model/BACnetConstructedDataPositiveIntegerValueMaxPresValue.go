@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueMaxPresValue is the corresponding interface of BACnetConstructedDataPositiveIntegerValueMaxPresValue
 type BACnetConstructedDataPositiveIntegerValueMaxPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPositiveIntegerValueMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueMaxPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueMaxPresValueExactly interface {
+	BACnetConstructedDataPositiveIntegerValueMaxPresValue
+	isBACnetConstructedDataPositiveIntegerValueMaxPresValue() bool
 }
 
 // _BACnetConstructedDataPositiveIntegerValueMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueMaxPresValue struct {
 	*_BACnetConstructedData
 	MaxPresValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPositiveIntegerValueMaxPresValueParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPositiveIntegerValueMaxPresValue{
-		MaxPresValue:           maxPresValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxPresValue: maxPresValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) isBACnetConstructedDataPositiveIntegerValueMaxPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) String() string {

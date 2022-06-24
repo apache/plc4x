@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataReadOnly is the corresponding interface of BACnetConstructedDataReadOnly
 type BACnetConstructedDataReadOnly interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetReadOnly returns ReadOnly (property field)
 	GetReadOnly() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataReadOnlyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReadOnly.
+// This is useful for switch cases.
+type BACnetConstructedDataReadOnlyExactly interface {
+	BACnetConstructedDataReadOnly
+	isBACnetConstructedDataReadOnly() bool
 }
 
 // _BACnetConstructedDataReadOnly is the data-structure of this message
 type _BACnetConstructedDataReadOnly struct {
 	*_BACnetConstructedData
 	ReadOnly BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataReadOnlyParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataReadOnly{
-		ReadOnly:               readOnly,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ReadOnly: readOnly,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataReadOnly) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReadOnly) isBACnetConstructedDataReadOnly() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReadOnly) String() string {

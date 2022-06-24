@@ -28,6 +28,8 @@ import (
 
 // BACnetEscalatorModeTagged is the corresponding interface of BACnetEscalatorModeTagged
 type BACnetEscalatorModeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetEscalatorModeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEscalatorModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEscalatorModeTagged.
+// This is useful for switch cases.
+type BACnetEscalatorModeTaggedExactly interface {
+	BACnetEscalatorModeTagged
+	isBACnetEscalatorModeTagged() bool
 }
 
 // _BACnetEscalatorModeTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetEscalatorModeTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetEscalatorModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetEscalatorModeTagged) isBACnetEscalatorModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetEscalatorModeTagged) String() string {

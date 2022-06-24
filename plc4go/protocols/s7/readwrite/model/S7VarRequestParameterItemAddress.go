@@ -28,15 +28,18 @@ import (
 
 // S7VarRequestParameterItemAddress is the corresponding interface of S7VarRequestParameterItemAddress
 type S7VarRequestParameterItemAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	S7VarRequestParameterItem
 	// GetAddress returns Address (property field)
 	GetAddress() S7Address
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7VarRequestParameterItemAddressExactly can be used when we want exactly this type and not a type which fulfills S7VarRequestParameterItemAddress.
+// This is useful for switch cases.
+type S7VarRequestParameterItemAddressExactly interface {
+	S7VarRequestParameterItemAddress
+	isS7VarRequestParameterItemAddress() bool
 }
 
 // _S7VarRequestParameterItemAddress is the data-structure of this message
@@ -199,6 +202,10 @@ func (m *_S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7VarRequestParameterItemAddress) isS7VarRequestParameterItemAddress() bool {
+	return true
 }
 
 func (m *_S7VarRequestParameterItemAddress) String() string {

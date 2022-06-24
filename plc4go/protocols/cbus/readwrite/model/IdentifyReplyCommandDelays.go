@@ -28,13 +28,16 @@ import (
 
 // IdentifyReplyCommandDelays is the corresponding interface of IdentifyReplyCommandDelays
 type IdentifyReplyCommandDelays interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandDelaysExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandDelays.
+// This is useful for switch cases.
+type IdentifyReplyCommandDelaysExactly interface {
+	IdentifyReplyCommandDelays
+	isIdentifyReplyCommandDelays() bool
 }
 
 // _IdentifyReplyCommandDelays is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_IdentifyReplyCommandDelays) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandDelays) isIdentifyReplyCommandDelays() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandDelays) String() string {

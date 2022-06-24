@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataBitText is the corresponding interface of BACnetConstructedDataBitText
 type BACnetConstructedDataBitText interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataBitText interface {
 	GetBitText() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBitTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitText.
+// This is useful for switch cases.
+type BACnetConstructedDataBitTextExactly interface {
+	BACnetConstructedDataBitText
+	isBACnetConstructedDataBitText() bool
 }
 
 // _BACnetConstructedDataBitText is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataBitText struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	BitText              []BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataBitTextParse(readBuffer utils.ReadBuffer, tagNumber ui
 		return nil, errors.Wrap(pullErr, "Error pulling for bitText")
 	}
 	// Terminated array
-	bitText := make([]BACnetApplicationTagCharacterString, 0)
+	var bitText []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataBitTextParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBitText{
-		NumberOfDataElements:   numberOfDataElements,
-		BitText:                bitText,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		BitText:              bitText,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataBitText) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		// Array Field (bitText)
-		if m.GetBitText() != nil {
-			if pushErr := writeBuffer.PushContext("bitText", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bitText")
+		if pushErr := writeBuffer.PushContext("bitText", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for bitText")
+		}
+		for _, _element := range m.GetBitText() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'bitText' field")
 			}
-			for _, _element := range m.GetBitText() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'bitText' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("bitText", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bitText")
-			}
+		}
+		if popErr := writeBuffer.PopContext("bitText", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for bitText")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBitText"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataBitText) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBitText) isBACnetConstructedDataBitText() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBitText) String() string {

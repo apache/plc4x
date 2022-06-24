@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesProtocolLevel is the corresponding interface of BACnetPropertyStatesProtocolLevel
 type BACnetPropertyStatesProtocolLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesProtocolLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesProtocolLevel.
+// This is useful for switch cases.
+type BACnetPropertyStatesProtocolLevelExactly interface {
+	BACnetPropertyStatesProtocolLevel
+	isBACnetPropertyStatesProtocolLevel() bool
 }
 
 // _BACnetPropertyStatesProtocolLevel is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesProtocolLevel) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesProtocolLevel) isBACnetPropertyStatesProtocolLevel() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) String() string {

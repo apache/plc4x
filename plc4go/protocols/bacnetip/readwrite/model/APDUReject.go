@@ -29,17 +29,20 @@ import (
 
 // APDUReject is the corresponding interface of APDUReject
 type APDUReject interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
 	// GetRejectReason returns RejectReason (property field)
 	GetRejectReason() BACnetRejectReasonTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// APDURejectExactly can be used when we want exactly this type and not a type which fulfills APDUReject.
+// This is useful for switch cases.
+type APDURejectExactly interface {
+	APDUReject
+	isAPDUReject() bool
 }
 
 // _APDUReject is the data-structure of this message
@@ -47,9 +50,6 @@ type _APDUReject struct {
 	*_APDU
 	OriginalInvokeId uint8
 	RejectReason     BACnetRejectReasonTagged
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -190,7 +190,9 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject
 	_child := &_APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		_APDU:            &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -237,6 +239,10 @@ func (m *_APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUReject) isAPDUReject() bool {
+	return true
 }
 
 func (m *_APDUReject) String() string {

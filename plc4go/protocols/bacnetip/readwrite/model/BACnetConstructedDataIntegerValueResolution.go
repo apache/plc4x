@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIntegerValueResolution is the corresponding interface of BACnetConstructedDataIntegerValueResolution
 type BACnetConstructedDataIntegerValueResolution interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIntegerValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueResolutionExactly interface {
+	BACnetConstructedDataIntegerValueResolution
+	isBACnetConstructedDataIntegerValueResolution() bool
 }
 
 // _BACnetConstructedDataIntegerValueResolution is the data-structure of this message
 type _BACnetConstructedDataIntegerValueResolution struct {
 	*_BACnetConstructedData
 	Resolution BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIntegerValueResolutionParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegerValueResolution{
-		Resolution:             resolution,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Resolution: resolution,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIntegerValueResolution) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolution) isBACnetConstructedDataIntegerValueResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueResolution) String() string {

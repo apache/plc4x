@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumUnsignedValue is the corresponding interface of BACnetLogRecordLogDatumUnsignedValue
 type BACnetLogRecordLogDatumUnsignedValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumUnsignedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumUnsignedValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumUnsignedValueExactly interface {
+	BACnetLogRecordLogDatumUnsignedValue
+	isBACnetLogRecordLogDatumUnsignedValue() bool
 }
 
 // _BACnetLogRecordLogDatumUnsignedValue is the data-structure of this message
 type _BACnetLogRecordLogDatumUnsignedValue struct {
 	*_BACnetLogRecordLogDatum
 	UnsignedValue BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumUnsignedValueParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumUnsignedValue{
-		UnsignedValue:            unsignedValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		UnsignedValue: unsignedValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumUnsignedValue) isBACnetLogRecordLogDatumUnsignedValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) String() string {

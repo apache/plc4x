@@ -29,16 +29,19 @@ import (
 
 // DeviceConfigurationRequestDataBlock is the corresponding interface of DeviceConfigurationRequestDataBlock
 type DeviceConfigurationRequestDataBlock interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DeviceConfigurationRequestDataBlockExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationRequestDataBlock.
+// This is useful for switch cases.
+type DeviceConfigurationRequestDataBlockExactly interface {
+	DeviceConfigurationRequestDataBlock
+	isDeviceConfigurationRequestDataBlock() bool
 }
 
 // _DeviceConfigurationRequestDataBlock is the data-structure of this message
@@ -203,6 +206,10 @@ func (m *_DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for DeviceConfigurationRequestDataBlock")
 	}
 	return nil
+}
+
+func (m *_DeviceConfigurationRequestDataBlock) isDeviceConfigurationRequestDataBlock() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationRequestDataBlock) String() string {

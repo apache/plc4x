@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPDHCPServer is the corresponding interface of BACnetConstructedDataIPDHCPServer
 type BACnetConstructedDataIPDHCPServer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDhcpServer returns DhcpServer (property field)
 	GetDhcpServer() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPDHCPServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDHCPServer.
+// This is useful for switch cases.
+type BACnetConstructedDataIPDHCPServerExactly interface {
+	BACnetConstructedDataIPDHCPServer
+	isBACnetConstructedDataIPDHCPServer() bool
 }
 
 // _BACnetConstructedDataIPDHCPServer is the data-structure of this message
 type _BACnetConstructedDataIPDHCPServer struct {
 	*_BACnetConstructedData
 	DhcpServer BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPDHCPServerParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPDHCPServer{
-		DhcpServer:             dhcpServer,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DhcpServer: dhcpServer,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPDHCPServer) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPDHCPServer) isBACnetConstructedDataIPDHCPServer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPDHCPServer) String() string {

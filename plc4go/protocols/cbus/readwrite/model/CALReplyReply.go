@@ -28,15 +28,18 @@ import (
 
 // CALReplyReply is the corresponding interface of CALReplyReply
 type CALReplyReply interface {
+	utils.LengthAware
+	utils.Serializable
 	Reply
 	// GetIsA returns IsA (property field)
 	GetIsA() CALReply
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALReplyReplyExactly can be used when we want exactly this type and not a type which fulfills CALReplyReply.
+// This is useful for switch cases.
+type CALReplyReplyExactly interface {
+	CALReplyReply
+	isCALReplyReply() bool
 }
 
 // _CALReplyReply is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_CALReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALReplyReply) isCALReplyReply() bool {
+	return true
 }
 
 func (m *_CALReplyReply) String() string {

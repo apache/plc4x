@@ -28,21 +28,21 @@ import (
 
 // FirmataCommandSystemReset is the corresponding interface of FirmataCommandSystemReset
 type FirmataCommandSystemReset interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataCommandSystemResetExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSystemReset.
+// This is useful for switch cases.
+type FirmataCommandSystemResetExactly interface {
+	FirmataCommandSystemReset
+	isFirmataCommandSystemReset() bool
 }
 
 // _FirmataCommandSystemReset is the data-structure of this message
 type _FirmataCommandSystemReset struct {
 	*_FirmataCommand
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) 
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSystemReset{
-		_FirmataCommand: &_FirmataCommand{},
+		_FirmataCommand: &_FirmataCommand{
+			Response: response,
+		},
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_FirmataCommandSystemReset) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSystemReset) isFirmataCommandSystemReset() bool {
+	return true
 }
 
 func (m *_FirmataCommandSystemReset) String() string {

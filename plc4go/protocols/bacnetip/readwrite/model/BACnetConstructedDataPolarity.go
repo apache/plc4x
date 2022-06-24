@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPolarity is the corresponding interface of BACnetConstructedDataPolarity
 type BACnetConstructedDataPolarity interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetPolarityTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPolarityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPolarity.
+// This is useful for switch cases.
+type BACnetConstructedDataPolarityExactly interface {
+	BACnetConstructedDataPolarity
+	isBACnetConstructedDataPolarity() bool
 }
 
 // _BACnetConstructedDataPolarity is the data-structure of this message
 type _BACnetConstructedDataPolarity struct {
 	*_BACnetConstructedData
 	Polarity BACnetPolarityTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPolarityParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPolarity{
-		Polarity:               polarity,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Polarity: polarity,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPolarity) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPolarity) isBACnetConstructedDataPolarity() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPolarity) String() string {

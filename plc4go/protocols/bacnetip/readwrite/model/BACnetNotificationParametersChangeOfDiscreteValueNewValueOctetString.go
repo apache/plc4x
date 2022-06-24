@@ -28,24 +28,24 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() bool
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	OctetStringValue BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringParse(r
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString{
 		OctetStringValue: octetStringValue,
-		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{},
+		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) String() string {

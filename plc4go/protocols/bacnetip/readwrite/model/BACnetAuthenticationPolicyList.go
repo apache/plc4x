@@ -28,18 +28,21 @@ import (
 
 // BACnetAuthenticationPolicyList is the corresponding interface of BACnetAuthenticationPolicyList
 type BACnetAuthenticationPolicyList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetEntries returns Entries (property field)
 	GetEntries() []BACnetAuthenticationPolicyListEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthenticationPolicyListExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicyList.
+// This is useful for switch cases.
+type BACnetAuthenticationPolicyListExactly interface {
+	BACnetAuthenticationPolicyList
+	isBACnetAuthenticationPolicyList() bool
 }
 
 // _BACnetAuthenticationPolicyList is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetAuthenticationPolicyListParse(readBuffer utils.ReadBuffer, tagNumber 
 		return nil, errors.Wrap(pullErr, "Error pulling for entries")
 	}
 	// Terminated array
-	entries := make([]BACnetAuthenticationPolicyListEntry, 0)
+	var entries []BACnetAuthenticationPolicyListEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAuthenticationPolicyListEntryParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetAuthenticationPolicyList) Serialize(writeBuffer utils.WriteBuffe
 	}
 
 	// Array Field (entries)
-	if m.GetEntries() != nil {
-		if pushErr := writeBuffer.PushContext("entries", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for entries")
+	if pushErr := writeBuffer.PushContext("entries", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for entries")
+	}
+	for _, _element := range m.GetEntries() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'entries' field")
 		}
-		for _, _element := range m.GetEntries() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'entries' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("entries", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for entries")
-		}
+	}
+	if popErr := writeBuffer.PopContext("entries", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for entries")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetAuthenticationPolicyList) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationPolicyList")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationPolicyList) isBACnetAuthenticationPolicyList() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationPolicyList) String() string {

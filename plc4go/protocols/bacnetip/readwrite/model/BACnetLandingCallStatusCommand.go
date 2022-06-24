@@ -28,16 +28,19 @@ import (
 
 // BACnetLandingCallStatusCommand is the corresponding interface of BACnetLandingCallStatusCommand
 type BACnetLandingCallStatusCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLandingCallStatusCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommand.
+// This is useful for switch cases.
+type BACnetLandingCallStatusCommandExactly interface {
+	BACnetLandingCallStatusCommand
+	isBACnetLandingCallStatusCommand() bool
 }
 
 // _BACnetLandingCallStatusCommand is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetLandingCallStatusCommand struct {
 }
 
 type _BACnetLandingCallStatusCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLandingCallStatusCommandParent interface {
@@ -58,7 +61,7 @@ type BACnetLandingCallStatusCommandParent interface {
 }
 
 type BACnetLandingCallStatusCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetLandingCallStatusCommand, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetLandingCallStatusCommand
 
@@ -202,6 +205,10 @@ func (pm *_BACnetLandingCallStatusCommand) SerializeParent(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for BACnetLandingCallStatusCommand")
 	}
 	return nil
+}
+
+func (m *_BACnetLandingCallStatusCommand) isBACnetLandingCallStatusCommand() bool {
+	return true
 }
 
 func (m *_BACnetLandingCallStatusCommand) String() string {

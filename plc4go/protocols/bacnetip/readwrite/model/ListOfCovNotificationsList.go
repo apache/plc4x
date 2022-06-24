@@ -28,18 +28,21 @@ import (
 
 // ListOfCovNotificationsList is the corresponding interface of ListOfCovNotificationsList
 type ListOfCovNotificationsList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetSpecifications returns Specifications (property field)
 	GetSpecifications() []ListOfCovNotifications
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ListOfCovNotificationsListExactly can be used when we want exactly this type and not a type which fulfills ListOfCovNotificationsList.
+// This is useful for switch cases.
+type ListOfCovNotificationsListExactly interface {
+	ListOfCovNotificationsList
+	isListOfCovNotificationsList() bool
 }
 
 // _ListOfCovNotificationsList is the data-structure of this message
@@ -148,7 +151,7 @@ func ListOfCovNotificationsListParse(readBuffer utils.ReadBuffer, tagNumber uint
 		return nil, errors.Wrap(pullErr, "Error pulling for specifications")
 	}
 	// Terminated array
-	specifications := make([]ListOfCovNotifications, 0)
+	var specifications []ListOfCovNotifications
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := ListOfCovNotificationsParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_ListOfCovNotificationsList) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	// Array Field (specifications)
-	if m.GetSpecifications() != nil {
-		if pushErr := writeBuffer.PushContext("specifications", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for specifications")
+	if pushErr := writeBuffer.PushContext("specifications", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for specifications")
+	}
+	for _, _element := range m.GetSpecifications() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'specifications' field")
 		}
-		for _, _element := range m.GetSpecifications() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'specifications' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("specifications", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for specifications")
-		}
+	}
+	if popErr := writeBuffer.PopContext("specifications", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for specifications")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_ListOfCovNotificationsList) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for ListOfCovNotificationsList")
 	}
 	return nil
+}
+
+func (m *_ListOfCovNotificationsList) isListOfCovNotificationsList() bool {
+	return true
 }
 
 func (m *_ListOfCovNotificationsList) String() string {

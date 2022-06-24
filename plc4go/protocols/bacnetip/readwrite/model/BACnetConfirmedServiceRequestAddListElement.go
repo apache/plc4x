@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestAddListElement is the corresponding interface of BACnetConfirmedServiceRequestAddListElement
 type BACnetConfirmedServiceRequestAddListElement interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -39,12 +41,13 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetListOfElements returns ListOfElements (property field)
 	GetListOfElements() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestAddListElementExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAddListElement.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAddListElementExactly interface {
+	BACnetConfirmedServiceRequestAddListElement
+	isBACnetConfirmedServiceRequestAddListElement() bool
 }
 
 // _BACnetConfirmedServiceRequestAddListElement is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetConfirmedServiceRequestAddListElement struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	ListOfElements     BACnetConstructedData
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,11 +249,13 @@ func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestAddListElement{
-		ObjectIdentifier:               objectIdentifier,
-		PropertyIdentifier:             propertyIdentifier,
-		ArrayIndex:                     arrayIndex,
-		ListOfElements:                 listOfElements,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		ObjectIdentifier:   objectIdentifier,
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+		ListOfElements:     listOfElements,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -329,6 +331,10 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAddListElement) isBACnetConfirmedServiceRequestAddListElement() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAddListElement) String() string {

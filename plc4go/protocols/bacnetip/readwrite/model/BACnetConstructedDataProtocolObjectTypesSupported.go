@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProtocolObjectTypesSupported is the corresponding interface of BACnetConstructedDataProtocolObjectTypesSupported
 type BACnetConstructedDataProtocolObjectTypesSupported interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProtocolObjectTypesSupported returns ProtocolObjectTypesSupported (property field)
 	GetProtocolObjectTypesSupported() BACnetObjectTypesSupportedTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectTypesSupportedTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProtocolObjectTypesSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolObjectTypesSupported.
+// This is useful for switch cases.
+type BACnetConstructedDataProtocolObjectTypesSupportedExactly interface {
+	BACnetConstructedDataProtocolObjectTypesSupported
+	isBACnetConstructedDataProtocolObjectTypesSupported() bool
 }
 
 // _BACnetConstructedDataProtocolObjectTypesSupported is the data-structure of this message
 type _BACnetConstructedDataProtocolObjectTypesSupported struct {
 	*_BACnetConstructedData
 	ProtocolObjectTypesSupported BACnetObjectTypesSupportedTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParse(readBuffer utils.Rea
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProtocolObjectTypesSupported{
 		ProtocolObjectTypesSupported: protocolObjectTypesSupported,
-		_BACnetConstructedData:       &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) isBACnetConstructedDataProtocolObjectTypesSupported() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) String() string {

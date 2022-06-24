@@ -28,16 +28,19 @@ import (
 
 // BACnetAssignedLandingCallsLandingCallsListEntry is the corresponding interface of BACnetAssignedLandingCallsLandingCallsListEntry
 type BACnetAssignedLandingCallsLandingCallsListEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDirection returns Direction (property field)
 	GetDirection() BACnetLiftCarDirectionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAssignedLandingCallsLandingCallsListEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetAssignedLandingCallsLandingCallsListEntry.
+// This is useful for switch cases.
+type BACnetAssignedLandingCallsLandingCallsListEntryExactly interface {
+	BACnetAssignedLandingCallsLandingCallsListEntry
+	isBACnetAssignedLandingCallsLandingCallsListEntry() bool
 }
 
 // _BACnetAssignedLandingCallsLandingCallsListEntry is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) Serialize(writeBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) isBACnetAssignedLandingCallsLandingCallsListEntry() bool {
+	return true
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) String() string {

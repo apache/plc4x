@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEnergyMeter is the corresponding interface of BACnetConstructedDataEnergyMeter
 type BACnetConstructedDataEnergyMeter interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEnergyMeter returns EnergyMeter (property field)
 	GetEnergyMeter() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEnergyMeterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEnergyMeter.
+// This is useful for switch cases.
+type BACnetConstructedDataEnergyMeterExactly interface {
+	BACnetConstructedDataEnergyMeter
+	isBACnetConstructedDataEnergyMeter() bool
 }
 
 // _BACnetConstructedDataEnergyMeter is the data-structure of this message
 type _BACnetConstructedDataEnergyMeter struct {
 	*_BACnetConstructedData
 	EnergyMeter BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEnergyMeterParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEnergyMeter{
-		EnergyMeter:            energyMeter,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EnergyMeter: energyMeter,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEnergyMeter) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEnergyMeter) isBACnetConstructedDataEnergyMeter() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) String() string {

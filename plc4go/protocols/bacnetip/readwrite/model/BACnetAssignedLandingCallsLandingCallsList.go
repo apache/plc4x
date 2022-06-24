@@ -28,18 +28,21 @@ import (
 
 // BACnetAssignedLandingCallsLandingCallsList is the corresponding interface of BACnetAssignedLandingCallsLandingCallsList
 type BACnetAssignedLandingCallsLandingCallsList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLandingCalls returns LandingCalls (property field)
 	GetLandingCalls() []BACnetAssignedLandingCallsLandingCallsListEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAssignedLandingCallsLandingCallsListExactly can be used when we want exactly this type and not a type which fulfills BACnetAssignedLandingCallsLandingCallsList.
+// This is useful for switch cases.
+type BACnetAssignedLandingCallsLandingCallsListExactly interface {
+	BACnetAssignedLandingCallsLandingCallsList
+	isBACnetAssignedLandingCallsLandingCallsList() bool
 }
 
 // _BACnetAssignedLandingCallsLandingCallsList is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetAssignedLandingCallsLandingCallsListParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCalls")
 	}
 	// Terminated array
-	landingCalls := make([]BACnetAssignedLandingCallsLandingCallsListEntry, 0)
+	var landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) Serialize(writeBuffer util
 	}
 
 	// Array Field (landingCalls)
-	if m.GetLandingCalls() != nil {
-		if pushErr := writeBuffer.PushContext("landingCalls", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for landingCalls")
+	if pushErr := writeBuffer.PushContext("landingCalls", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for landingCalls")
+	}
+	for _, _element := range m.GetLandingCalls() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'landingCalls' field")
 		}
-		for _, _element := range m.GetLandingCalls() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'landingCalls' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("landingCalls", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for landingCalls")
-		}
+	}
+	if popErr := writeBuffer.PopContext("landingCalls", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for landingCalls")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) Serialize(writeBuffer util
 		return errors.Wrap(popErr, "Error popping for BACnetAssignedLandingCallsLandingCallsList")
 	}
 	return nil
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsList) isBACnetAssignedLandingCallsLandingCallsList() bool {
+	return true
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsList) String() string {

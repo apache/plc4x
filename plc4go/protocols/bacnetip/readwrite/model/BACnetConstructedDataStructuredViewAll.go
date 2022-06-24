@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataStructuredViewAll is the corresponding interface of BACnetConstructedDataStructuredViewAll
 type BACnetConstructedDataStructuredViewAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataStructuredViewAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStructuredViewAll.
+// This is useful for switch cases.
+type BACnetConstructedDataStructuredViewAllExactly interface {
+	BACnetConstructedDataStructuredViewAll
+	isBACnetConstructedDataStructuredViewAll() bool
 }
 
 // _BACnetConstructedDataStructuredViewAll is the data-structure of this message
 type _BACnetConstructedDataStructuredViewAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataStructuredViewAllParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStructuredViewAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataStructuredViewAll) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStructuredViewAll) isBACnetConstructedDataStructuredViewAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStructuredViewAll) String() string {

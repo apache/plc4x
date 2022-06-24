@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumFailure is the corresponding interface of BACnetLogRecordLogDatumFailure
 type BACnetLogRecordLogDatumFailure interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumFailure.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumFailureExactly interface {
+	BACnetLogRecordLogDatumFailure
+	isBACnetLogRecordLogDatumFailure() bool
 }
 
 // _BACnetLogRecordLogDatumFailure is the data-structure of this message
 type _BACnetLogRecordLogDatumFailure struct {
 	*_BACnetLogRecordLogDatum
 	Failure ErrorEnclosed
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumFailureParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumFailure{
-		Failure:                  failure,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		Failure: failure,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumFailure) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumFailure) isBACnetLogRecordLogDatumFailure() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumFailure) String() string {

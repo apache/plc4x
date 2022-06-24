@@ -28,15 +28,18 @@ import (
 
 // BACnetContextTagUnknown is the corresponding interface of BACnetContextTagUnknown
 type BACnetContextTagUnknown interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagUnknown.
+// This is useful for switch cases.
+type BACnetContextTagUnknownExactly interface {
+	BACnetContextTagUnknown
+	isBACnetContextTagUnknown() bool
 }
 
 // _BACnetContextTagUnknown is the data-structure of this message
@@ -45,8 +48,7 @@ type _BACnetContextTagUnknown struct {
 	UnknownData []byte
 
 	// Arguments.
-	TagNumberArgument uint8
-	ActualLength      uint32
+	ActualLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +152,10 @@ func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagUnknown{
-		UnknownData:       unknownData,
-		_BACnetContextTag: &_BACnetContextTag{},
+		UnknownData: unknownData,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -166,12 +170,9 @@ func (m *_BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		// Array Field (unknownData)
-		if m.GetUnknownData() != nil {
-			// Byte Array field (unknownData)
-			_writeArrayErr := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'unknownData' field")
-			}
+		// Byte Array field (unknownData)
+		if err := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagUnknown"); popErr != nil {
@@ -180,6 +181,10 @@ func (m *_BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagUnknown) isBACnetContextTagUnknown() bool {
+	return true
 }
 
 func (m *_BACnetContextTagUnknown) String() string {

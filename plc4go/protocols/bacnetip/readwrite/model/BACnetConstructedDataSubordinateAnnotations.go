@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataSubordinateAnnotations is the corresponding interface of BACnetConstructedDataSubordinateAnnotations
 type BACnetConstructedDataSubordinateAnnotations interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataSubordinateAnnotations interface {
 	GetSubordinateAnnotations() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSubordinateAnnotationsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubordinateAnnotations.
+// This is useful for switch cases.
+type BACnetConstructedDataSubordinateAnnotationsExactly interface {
+	BACnetConstructedDataSubordinateAnnotations
+	isBACnetConstructedDataSubordinateAnnotations() bool
 }
 
 // _BACnetConstructedDataSubordinateAnnotations is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataSubordinateAnnotations struct {
 	*_BACnetConstructedData
 	NumberOfDataElements   BACnetApplicationTagUnsignedInteger
 	SubordinateAnnotations []BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataSubordinateAnnotationsParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for subordinateAnnotations")
 	}
 	// Terminated array
-	subordinateAnnotations := make([]BACnetApplicationTagCharacterString, 0)
+	var subordinateAnnotations []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -235,7 +234,10 @@ func BACnetConstructedDataSubordinateAnnotationsParse(readBuffer utils.ReadBuffe
 	_child := &_BACnetConstructedDataSubordinateAnnotations{
 		NumberOfDataElements:   numberOfDataElements,
 		SubordinateAnnotations: subordinateAnnotations,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) Serialize(writeBuffer uti
 		}
 
 		// Array Field (subordinateAnnotations)
-		if m.GetSubordinateAnnotations() != nil {
-			if pushErr := writeBuffer.PushContext("subordinateAnnotations", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for subordinateAnnotations")
+		if pushErr := writeBuffer.PushContext("subordinateAnnotations", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for subordinateAnnotations")
+		}
+		for _, _element := range m.GetSubordinateAnnotations() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'subordinateAnnotations' field")
 			}
-			for _, _element := range m.GetSubordinateAnnotations() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'subordinateAnnotations' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("subordinateAnnotations", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for subordinateAnnotations")
-			}
+		}
+		if popErr := writeBuffer.PopContext("subordinateAnnotations", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for subordinateAnnotations")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateAnnotations"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSubordinateAnnotations) isBACnetConstructedDataSubordinateAnnotations() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSubordinateAnnotations) String() string {

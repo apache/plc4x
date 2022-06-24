@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataClientCOVIncrement is the corresponding interface of BACnetConstructedDataClientCOVIncrement
 type BACnetConstructedDataClientCOVIncrement interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetClientCOV
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetClientCOV
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataClientCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataClientCOVIncrement.
+// This is useful for switch cases.
+type BACnetConstructedDataClientCOVIncrementExactly interface {
+	BACnetConstructedDataClientCOVIncrement
+	isBACnetConstructedDataClientCOVIncrement() bool
 }
 
 // _BACnetConstructedDataClientCOVIncrement is the data-structure of this message
 type _BACnetConstructedDataClientCOVIncrement struct {
 	*_BACnetConstructedData
 	CovIncrement BACnetClientCOV
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataClientCOVIncrementParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataClientCOVIncrement{
-		CovIncrement:           covIncrement,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CovIncrement: covIncrement,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataClientCOVIncrement) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataClientCOVIncrement) isBACnetConstructedDataClientCOVIncrement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataClientCOVIncrement) String() string {

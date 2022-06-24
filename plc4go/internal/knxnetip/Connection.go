@@ -160,7 +160,7 @@ type KnxDeviceAuthenticateResult struct {
 }
 
 type InternalResult struct {
-	responseMessage interface{}
+	responsemessage spi.Message
 	err             error
 }
 

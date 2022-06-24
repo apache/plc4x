@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOVProperty is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVProperty
 type BACnetConfirmedServiceRequestSubscribeCOVProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -43,12 +45,13 @@ type BACnetConfirmedServiceRequestSubscribeCOVProperty interface {
 	GetMonitoredPropertyIdentifier() BACnetPropertyReferenceEnclosed
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestSubscribeCOVPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestSubscribeCOVProperty.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestSubscribeCOVPropertyExactly interface {
+	BACnetConfirmedServiceRequestSubscribeCOVProperty
+	isBACnetConfirmedServiceRequestSubscribeCOVProperty() bool
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVProperty is the data-structure of this message
@@ -60,9 +63,6 @@ type _BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
 	Lifetime                    BACnetContextTagUnsignedInteger
 	MonitoredPropertyIdentifier BACnetPropertyReferenceEnclosed
 	CovIncrement                BACnetContextTagReal
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -308,13 +308,15 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestSubscribeCOVProperty{
-		SubscriberProcessIdentifier:    subscriberProcessIdentifier,
-		MonitoredObjectIdentifier:      monitoredObjectIdentifier,
-		IssueConfirmedNotifications:    issueConfirmedNotifications,
-		Lifetime:                       lifetime,
-		MonitoredPropertyIdentifier:    monitoredPropertyIdentifier,
-		CovIncrement:                   covIncrement,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		SubscriberProcessIdentifier: subscriberProcessIdentifier,
+		MonitoredObjectIdentifier:   monitoredObjectIdentifier,
+		IssueConfirmedNotifications: issueConfirmedNotifications,
+		Lifetime:                    lifetime,
+		MonitoredPropertyIdentifier: monitoredPropertyIdentifier,
+		CovIncrement:                covIncrement,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -418,6 +420,10 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) isBACnetConfirmedServiceRequestSubscribeCOVProperty() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) String() string {

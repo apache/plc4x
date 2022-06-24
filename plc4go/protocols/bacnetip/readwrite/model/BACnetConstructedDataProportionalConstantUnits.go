@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProportionalConstantUnits is the corresponding interface of BACnetConstructedDataProportionalConstantUnits
 type BACnetConstructedDataProportionalConstantUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProportionalConstantUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProportionalConstantUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataProportionalConstantUnitsExactly interface {
+	BACnetConstructedDataProportionalConstantUnits
+	isBACnetConstructedDataProportionalConstantUnits() bool
 }
 
 // _BACnetConstructedDataProportionalConstantUnits is the data-structure of this message
 type _BACnetConstructedDataProportionalConstantUnits struct {
 	*_BACnetConstructedData
 	Units BACnetEngineeringUnitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataProportionalConstantUnitsParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProportionalConstantUnits{
-		Units:                  units,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Units: units,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProportionalConstantUnits) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProportionalConstantUnits) isBACnetConstructedDataProportionalConstantUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProportionalConstantUnits) String() string {

@@ -30,18 +30,21 @@ import (
 
 // COTPPacket is the corresponding interface of COTPPacket
 type COTPPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTpduCode returns TpduCode (discriminator field)
 	GetTpduCode() uint8
 	// GetParameters returns Parameters (property field)
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Message
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPPacketExactly can be used when we want exactly this type and not a type which fulfills COTPPacket.
+// This is useful for switch cases.
+type COTPPacketExactly interface {
+	COTPPacket
+	isCOTPPacket() bool
 }
 
 // _COTPPacket is the data-structure of this message
@@ -55,10 +58,10 @@ type _COTPPacket struct {
 }
 
 type _COTPPacketChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetTpduCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type COTPPacketParent interface {
@@ -67,7 +70,7 @@ type COTPPacketParent interface {
 }
 
 type COTPPacketChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent COTPPacket, parameters []COTPParameter, payload S7Message)
 	GetParent() *COTPPacket
 
@@ -201,7 +204,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	}
 	curPos = positionAware.GetPos() - startPos
 	// Length array
-	parameters := make([]COTPParameter, 0)
+	var parameters []COTPParameter
 	{
 		_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
 		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
@@ -281,19 +284,17 @@ func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTP
 	}
 
 	// Array Field (parameters)
-	if m.GetParameters() != nil {
-		if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameters")
+	if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for parameters")
+	}
+	for _, _element := range m.GetParameters() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 		}
-		for _, _element := range m.GetParameters() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameters")
-		}
+	}
+	if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for parameters")
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)
@@ -316,6 +317,10 @@ func (pm *_COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child COTP
 		return errors.Wrap(popErr, "Error popping for COTPPacket")
 	}
 	return nil
+}
+
+func (m *_COTPPacket) isCOTPPacket() bool {
+	return true
 }
 
 func (m *_COTPPacket) String() string {

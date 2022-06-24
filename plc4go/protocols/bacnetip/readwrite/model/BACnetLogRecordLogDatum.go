@@ -28,6 +28,8 @@ import (
 
 // BACnetLogRecordLogDatum is the corresponding interface of BACnetLogRecordLogDatum
 type BACnetLogRecordLogDatum interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -36,12 +38,13 @@ type BACnetLogRecordLogDatum interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatum.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumExactly interface {
+	BACnetLogRecordLogDatum
+	isBACnetLogRecordLogDatum() bool
 }
 
 // _BACnetLogRecordLogDatum is the data-structure of this message
@@ -56,9 +59,9 @@ type _BACnetLogRecordLogDatum struct {
 }
 
 type _BACnetLogRecordLogDatumChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLogRecordLogDatumParent interface {
@@ -67,7 +70,7 @@ type BACnetLogRecordLogDatumParent interface {
 }
 
 type BACnetLogRecordLogDatumChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetLogRecordLogDatum, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetLogRecordLogDatum
 
@@ -293,6 +296,10 @@ func (pm *_BACnetLogRecordLogDatum) SerializeParent(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLogRecordLogDatum")
 	}
 	return nil
+}
+
+func (m *_BACnetLogRecordLogDatum) isBACnetLogRecordLogDatum() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatum) String() string {

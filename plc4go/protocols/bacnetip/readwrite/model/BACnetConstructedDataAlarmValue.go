@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAlarmValue is the corresponding interface of BACnetConstructedDataAlarmValue
 type BACnetConstructedDataAlarmValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAlarmValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAlarmValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAlarmValueExactly interface {
+	BACnetConstructedDataAlarmValue
+	isBACnetConstructedDataAlarmValue() bool
 }
 
 // _BACnetConstructedDataAlarmValue is the data-structure of this message
 type _BACnetConstructedDataAlarmValue struct {
 	*_BACnetConstructedData
 	BinaryPv BACnetBinaryPVTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAlarmValueParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAlarmValue{
-		BinaryPv:               binaryPv,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BinaryPv: binaryPv,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAlarmValue) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAlarmValue) isBACnetConstructedDataAlarmValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAlarmValue) String() string {

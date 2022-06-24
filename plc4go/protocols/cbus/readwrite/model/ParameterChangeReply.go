@@ -28,15 +28,18 @@ import (
 
 // ParameterChangeReply is the corresponding interface of ParameterChangeReply
 type ParameterChangeReply interface {
+	utils.LengthAware
+	utils.Serializable
 	Reply
 	// GetIsA returns IsA (property field)
 	GetIsA() ParameterChange
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ParameterChangeReplyExactly can be used when we want exactly this type and not a type which fulfills ParameterChangeReply.
+// This is useful for switch cases.
+type ParameterChangeReplyExactly interface {
+	ParameterChangeReply
+	isParameterChangeReply() bool
 }
 
 // _ParameterChangeReply is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_ParameterChangeReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ParameterChangeReply) isParameterChangeReply() bool {
+	return true
 }
 
 func (m *_ParameterChangeReply) String() string {

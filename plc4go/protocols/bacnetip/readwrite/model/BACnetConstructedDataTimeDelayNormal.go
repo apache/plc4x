@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimeDelayNormal is the corresponding interface of BACnetConstructedDataTimeDelayNormal
 type BACnetConstructedDataTimeDelayNormal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimeDelayNormal returns TimeDelayNormal (property field)
 	GetTimeDelayNormal() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimeDelayNormalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeDelayNormal.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeDelayNormalExactly interface {
+	BACnetConstructedDataTimeDelayNormal
+	isBACnetConstructedDataTimeDelayNormal() bool
 }
 
 // _BACnetConstructedDataTimeDelayNormal is the data-structure of this message
 type _BACnetConstructedDataTimeDelayNormal struct {
 	*_BACnetConstructedData
 	TimeDelayNormal BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimeDelayNormalParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimeDelayNormal{
-		TimeDelayNormal:        timeDelayNormal,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		TimeDelayNormal: timeDelayNormal,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimeDelayNormal) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeDelayNormal) isBACnetConstructedDataTimeDelayNormal() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeDelayNormal) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetTimerTransitionTagged is the corresponding interface of BACnetTimerTransitionTagged
 type BACnetTimerTransitionTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetTimerTransition
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerTransitionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerTransitionTagged.
+// This is useful for switch cases.
+type BACnetTimerTransitionTaggedExactly interface {
+	BACnetTimerTransitionTagged
+	isBACnetTimerTransitionTagged() bool
 }
 
 // _BACnetTimerTransitionTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetTimerTransitionTagged) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for BACnetTimerTransitionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetTimerTransitionTagged) isBACnetTimerTransitionTagged() bool {
+	return true
 }
 
 func (m *_BACnetTimerTransitionTagged) String() string {

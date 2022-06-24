@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataOperationDirection is the corresponding interface of BACnetConstructedDataOperationDirection
 type BACnetConstructedDataOperationDirection interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetOperationDirection returns OperationDirection (property field)
 	GetOperationDirection() BACnetEscalatorOperationDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEscalatorOperationDirectionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOperationDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOperationDirection.
+// This is useful for switch cases.
+type BACnetConstructedDataOperationDirectionExactly interface {
+	BACnetConstructedDataOperationDirection
+	isBACnetConstructedDataOperationDirection() bool
 }
 
 // _BACnetConstructedDataOperationDirection is the data-structure of this message
 type _BACnetConstructedDataOperationDirection struct {
 	*_BACnetConstructedData
 	OperationDirection BACnetEscalatorOperationDirectionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataOperationDirectionParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOperationDirection{
-		OperationDirection:     operationDirection,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		OperationDirection: operationDirection,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataOperationDirection) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOperationDirection) isBACnetConstructedDataOperationDirection() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOperationDirection) String() string {

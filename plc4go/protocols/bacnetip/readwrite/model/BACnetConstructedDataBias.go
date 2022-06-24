@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBias is the corresponding interface of BACnetConstructedDataBias
 type BACnetConstructedDataBias interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBias returns Bias (property field)
 	GetBias() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBiasExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBias.
+// This is useful for switch cases.
+type BACnetConstructedDataBiasExactly interface {
+	BACnetConstructedDataBias
+	isBACnetConstructedDataBias() bool
 }
 
 // _BACnetConstructedDataBias is the data-structure of this message
 type _BACnetConstructedDataBias struct {
 	*_BACnetConstructedData
 	Bias BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBias{
-		Bias:                   bias,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Bias: bias,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBias) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBias) isBACnetConstructedDataBias() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBias) String() string {

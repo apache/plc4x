@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMaximumOutput is the corresponding interface of BACnetConstructedDataMaximumOutput
 type BACnetConstructedDataMaximumOutput interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaximumOutput returns MaximumOutput (property field)
 	GetMaximumOutput() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaximumOutputExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaximumOutput.
+// This is useful for switch cases.
+type BACnetConstructedDataMaximumOutputExactly interface {
+	BACnetConstructedDataMaximumOutput
+	isBACnetConstructedDataMaximumOutput() bool
 }
 
 // _BACnetConstructedDataMaximumOutput is the data-structure of this message
 type _BACnetConstructedDataMaximumOutput struct {
 	*_BACnetConstructedData
 	MaximumOutput BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMaximumOutputParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaximumOutput{
-		MaximumOutput:          maximumOutput,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaximumOutput: maximumOutput,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMaximumOutput) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaximumOutput) isBACnetConstructedDataMaximumOutput() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaximumOutput) String() string {

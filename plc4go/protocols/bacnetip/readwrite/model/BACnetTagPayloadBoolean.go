@@ -28,18 +28,21 @@ import (
 
 // BACnetTagPayloadBoolean is the corresponding interface of BACnetTagPayloadBoolean
 type BACnetTagPayloadBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValue returns Value (virtual field)
 	GetValue() bool
 	// GetIsTrue returns IsTrue (virtual field)
 	GetIsTrue() bool
 	// GetIsFalse returns IsFalse (virtual field)
 	GetIsFalse() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadBoolean.
+// This is useful for switch cases.
+type BACnetTagPayloadBooleanExactly interface {
+	BACnetTagPayloadBoolean
+	isBACnetTagPayloadBoolean() bool
 }
 
 // _BACnetTagPayloadBoolean is the data-structure of this message
@@ -166,6 +169,10 @@ func (m *_BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadBoolean")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadBoolean) isBACnetTagPayloadBoolean() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadBoolean) String() string {

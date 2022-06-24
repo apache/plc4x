@@ -28,15 +28,18 @@ import (
 
 // ConfirmationReply is the corresponding interface of ConfirmationReply
 type ConfirmationReply interface {
+	utils.LengthAware
+	utils.Serializable
 	Reply
 	// GetIsA returns IsA (property field)
 	GetIsA() Confirmation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConfirmationReplyExactly can be used when we want exactly this type and not a type which fulfills ConfirmationReply.
+// This is useful for switch cases.
+type ConfirmationReplyExactly interface {
+	ConfirmationReply
+	isConfirmationReply() bool
 }
 
 // _ConfirmationReply is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_ConfirmationReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConfirmationReply) isConfirmationReply() bool {
+	return true
 }
 
 func (m *_ConfirmationReply) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesAction is the corresponding interface of BACnetPropertyStatesAction
 type BACnetPropertyStatesAction interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetAction returns Action (property field)
 	GetAction() BACnetActionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesActionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAction.
+// This is useful for switch cases.
+type BACnetPropertyStatesActionExactly interface {
+	BACnetPropertyStatesAction
+	isBACnetPropertyStatesAction() bool
 }
 
 // _BACnetPropertyStatesAction is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesAction) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesAction) isBACnetPropertyStatesAction() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesAction) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetNotificationParametersExtendedParameters is the corresponding interface of BACnetNotificationParametersExtendedParameters
 type BACnetNotificationParametersExtendedParameters interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -70,12 +72,13 @@ type BACnetNotificationParametersExtendedParameters interface {
 	GetIsOpeningTag() bool
 	// GetIsClosingTag returns IsClosingTag (virtual field)
 	GetIsClosingTag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersExtendedParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersExtendedParameters.
+// This is useful for switch cases.
+type BACnetNotificationParametersExtendedParametersExactly interface {
+	BACnetNotificationParametersExtendedParameters
+	isBACnetNotificationParametersExtendedParameters() bool
 }
 
 // _BACnetNotificationParametersExtendedParameters is the data-structure of this message
@@ -1046,6 +1049,10 @@ func (m *_BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer 
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersExtendedParameters")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParametersExtendedParameters) isBACnetNotificationParametersExtendedParameters() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersExtendedParameters) String() string {

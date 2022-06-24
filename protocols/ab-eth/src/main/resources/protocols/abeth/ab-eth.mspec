@@ -19,7 +19,7 @@
 
 [discriminatedType CIPEncapsulationPacket byteOrder='BIG_ENDIAN'
     [discriminator uint 16 commandType]
-    [implicit      uint 16 len 'lengthInBytes - 28']
+    [implicit      uint 16 packetLen 'lengthInBytes - 28']
     [simple        uint 32 sessionHandle]
     [simple        uint 32 status]
     [array         uint 8  senderContext count '8']
@@ -33,8 +33,8 @@
         ['0x0107' CIPEncapsulationReadRequest
             [simple   DF1RequestMessage  request]
         ]
-        ['0x0207' CIPEncapsulationReadResponse(uint 16 len)
-            [simple   DF1ResponseMessage('len') response]
+        ['0x0207' CIPEncapsulationReadResponse(uint 16 packetLen)
+            [simple   DF1ResponseMessage('packetLen') response]
         ]
     ]
 ]

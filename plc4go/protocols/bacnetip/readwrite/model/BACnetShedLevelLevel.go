@@ -28,15 +28,18 @@ import (
 
 // BACnetShedLevelLevel is the corresponding interface of BACnetShedLevelLevel
 type BACnetShedLevelLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetShedLevel
 	// GetLevel returns Level (property field)
 	GetLevel() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetShedLevelLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevelLevel.
+// This is useful for switch cases.
+type BACnetShedLevelLevelExactly interface {
+	BACnetShedLevelLevel
+	isBACnetShedLevelLevel() bool
 }
 
 // _BACnetShedLevelLevel is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetShedLevelLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetShedLevelLevel) isBACnetShedLevelLevel() bool {
+	return true
 }
 
 func (m *_BACnetShedLevelLevel) String() string {

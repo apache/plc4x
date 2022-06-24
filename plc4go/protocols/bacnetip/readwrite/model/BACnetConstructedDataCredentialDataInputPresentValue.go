@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCredentialDataInputPresentValue is the corresponding interface of BACnetConstructedDataCredentialDataInputPresentValue
 type BACnetConstructedDataCredentialDataInputPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetAuthenticationFactor
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthenticationFactor
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCredentialDataInputPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDataInputPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialDataInputPresentValueExactly interface {
+	BACnetConstructedDataCredentialDataInputPresentValue
+	isBACnetConstructedDataCredentialDataInputPresentValue() bool
 }
 
 // _BACnetConstructedDataCredentialDataInputPresentValue is the data-structure of this message
 type _BACnetConstructedDataCredentialDataInputPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetAuthenticationFactor
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCredentialDataInputPresentValueParse(readBuffer utils.
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialDataInputPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputPresentValue) isBACnetConstructedDataCredentialDataInputPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputPresentValue) String() string {

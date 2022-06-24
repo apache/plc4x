@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMaximumValueTimestamp is the corresponding interface of BACnetConstructedDataMaximumValueTimestamp
 type BACnetConstructedDataMaximumValueTimestamp interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaximumValueTimestamp returns MaximumValueTimestamp (property field)
 	GetMaximumValueTimestamp() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaximumValueTimestampExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaximumValueTimestamp.
+// This is useful for switch cases.
+type BACnetConstructedDataMaximumValueTimestampExactly interface {
+	BACnetConstructedDataMaximumValueTimestamp
+	isBACnetConstructedDataMaximumValueTimestamp() bool
 }
 
 // _BACnetConstructedDataMaximumValueTimestamp is the data-structure of this message
 type _BACnetConstructedDataMaximumValueTimestamp struct {
 	*_BACnetConstructedData
 	MaximumValueTimestamp BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMaximumValueTimestampParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaximumValueTimestamp{
-		MaximumValueTimestamp:  maximumValueTimestamp,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaximumValueTimestamp: maximumValueTimestamp,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaximumValueTimestamp) isBACnetConstructedDataMaximumValueTimestamp() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaximumValueTimestamp) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPSubnetMask is the corresponding interface of BACnetConstructedDataIPSubnetMask
 type BACnetConstructedDataIPSubnetMask interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpSubnetMask returns IpSubnetMask (property field)
 	GetIpSubnetMask() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPSubnetMaskExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPSubnetMask.
+// This is useful for switch cases.
+type BACnetConstructedDataIPSubnetMaskExactly interface {
+	BACnetConstructedDataIPSubnetMask
+	isBACnetConstructedDataIPSubnetMask() bool
 }
 
 // _BACnetConstructedDataIPSubnetMask is the data-structure of this message
 type _BACnetConstructedDataIPSubnetMask struct {
 	*_BACnetConstructedData
 	IpSubnetMask BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPSubnetMaskParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPSubnetMask{
-		IpSubnetMask:           ipSubnetMask,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		IpSubnetMask: ipSubnetMask,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPSubnetMask) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPSubnetMask) isBACnetConstructedDataIPSubnetMask() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPSubnetMask) String() string {

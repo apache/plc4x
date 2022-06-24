@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueLightingCommand is the corresponding interface of BACnetChannelValueLightingCommand
 type BACnetChannelValueLightingCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueLightingCommand.
+// This is useful for switch cases.
+type BACnetChannelValueLightingCommandExactly interface {
+	BACnetChannelValueLightingCommand
+	isBACnetChannelValueLightingCommand() bool
 }
 
 // _BACnetChannelValueLightingCommand is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueLightingCommand) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueLightingCommand) isBACnetChannelValueLightingCommand() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueLightingCommand) String() string {

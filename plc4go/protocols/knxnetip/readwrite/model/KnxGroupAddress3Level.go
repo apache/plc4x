@@ -28,6 +28,8 @@ import (
 
 // KnxGroupAddress3Level is the corresponding interface of KnxGroupAddress3Level
 type KnxGroupAddress3Level interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxGroupAddress
 	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
@@ -35,12 +37,13 @@ type KnxGroupAddress3Level interface {
 	GetMiddleGroup() uint8
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// KnxGroupAddress3LevelExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddress3Level.
+// This is useful for switch cases.
+type KnxGroupAddress3LevelExactly interface {
+	KnxGroupAddress3Level
+	isKnxGroupAddress3Level() bool
 }
 
 // _KnxGroupAddress3Level is the data-structure of this message
@@ -223,6 +226,10 @@ func (m *_KnxGroupAddress3Level) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxGroupAddress3Level) isKnxGroupAddress3Level() bool {
+	return true
 }
 
 func (m *_KnxGroupAddress3Level) String() string {

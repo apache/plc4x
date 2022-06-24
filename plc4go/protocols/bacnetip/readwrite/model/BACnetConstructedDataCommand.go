@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCommand is the corresponding interface of BACnetConstructedDataCommand
 type BACnetConstructedDataCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCommand returns Command (property field)
 	GetCommand() BACnetNetworkPortCommandTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNetworkPortCommandTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCommand.
+// This is useful for switch cases.
+type BACnetConstructedDataCommandExactly interface {
+	BACnetConstructedDataCommand
+	isBACnetConstructedDataCommand() bool
 }
 
 // _BACnetConstructedDataCommand is the data-structure of this message
 type _BACnetConstructedDataCommand struct {
 	*_BACnetConstructedData
 	Command BACnetNetworkPortCommandTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCommandParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCommand{
-		Command:                command,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Command: command,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCommand) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCommand) isBACnetConstructedDataCommand() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCommand) String() string {

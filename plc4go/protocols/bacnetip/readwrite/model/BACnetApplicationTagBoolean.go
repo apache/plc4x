@@ -28,17 +28,20 @@ import (
 
 // BACnetApplicationTagBoolean is the corresponding interface of BACnetApplicationTagBoolean
 type BACnetApplicationTagBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetApplicationTagBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagBoolean.
+// This is useful for switch cases.
+type BACnetApplicationTagBooleanExactly interface {
+	BACnetApplicationTagBoolean
+	isBACnetApplicationTagBoolean() bool
 }
 
 // _BACnetApplicationTagBoolean is the data-structure of this message
@@ -206,6 +209,10 @@ func (m *_BACnetApplicationTagBoolean) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagBoolean) isBACnetApplicationTagBoolean() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagBoolean) String() string {

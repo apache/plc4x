@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataActualShedLevel is the corresponding interface of BACnetConstructedDataActualShedLevel
 type BACnetConstructedDataActualShedLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActualShedLevel returns ActualShedLevel (property field)
 	GetActualShedLevel() BACnetShedLevel
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetShedLevel
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataActualShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActualShedLevel.
+// This is useful for switch cases.
+type BACnetConstructedDataActualShedLevelExactly interface {
+	BACnetConstructedDataActualShedLevel
+	isBACnetConstructedDataActualShedLevel() bool
 }
 
 // _BACnetConstructedDataActualShedLevel is the data-structure of this message
 type _BACnetConstructedDataActualShedLevel struct {
 	*_BACnetConstructedData
 	ActualShedLevel BACnetShedLevel
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataActualShedLevelParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActualShedLevel{
-		ActualShedLevel:        actualShedLevel,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ActualShedLevel: actualShedLevel,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataActualShedLevel) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActualShedLevel) isBACnetConstructedDataActualShedLevel() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActualShedLevel) String() string {

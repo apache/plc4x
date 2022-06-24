@@ -28,13 +28,16 @@ import (
 
 // SysexCommandStringData is the corresponding interface of SysexCommandStringData
 type SysexCommandStringData interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandStringDataExactly can be used when we want exactly this type and not a type which fulfills SysexCommandStringData.
+// This is useful for switch cases.
+type SysexCommandStringDataExactly interface {
+	SysexCommandStringData
+	isSysexCommandStringData() bool
 }
 
 // _SysexCommandStringData is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_SysexCommandStringData) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandStringData) isSysexCommandStringData() bool {
+	return true
 }
 
 func (m *_SysexCommandStringData) String() string {

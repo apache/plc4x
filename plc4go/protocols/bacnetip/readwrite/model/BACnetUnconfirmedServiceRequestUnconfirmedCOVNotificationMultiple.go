@@ -30,6 +30,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -41,12 +43,13 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple interface
 	GetTimestamp() BACnetTimeStampEnclosed
 	// GetListOfCovNotifications returns ListOfCovNotifications (property field)
 	GetListOfCovNotifications() ListOfCovNotificationsList
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+	isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple() bool
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple is the data-structure of this message
@@ -57,9 +60,6 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple struct {
 	TimeRemaining               BACnetContextTagUnsignedInteger
 	Timestamp                   BACnetTimeStampEnclosed
 	ListOfCovNotifications      ListOfCovNotificationsList
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -262,12 +262,14 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		SubscriberProcessIdentifier:      subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:       initiatingDeviceIdentifier,
-		TimeRemaining:                    timeRemaining,
-		Timestamp:                        timestamp,
-		ListOfCovNotifications:           listOfCovNotifications,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		SubscriberProcessIdentifier: subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:  initiatingDeviceIdentifier,
+		TimeRemaining:               timeRemaining,
+		Timestamp:                   timestamp,
+		ListOfCovNotifications:      listOfCovNotifications,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -351,6 +353,10 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Ser
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) isBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) String() string {

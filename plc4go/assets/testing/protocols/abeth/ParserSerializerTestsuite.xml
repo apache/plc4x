@@ -32,7 +32,7 @@
     <xml>
       <CIPEncapsulationPacket>
         <commandType dataType="uint" bitLength="16">257</commandType>
-        <len dataType="uint" bitLength="16">0</len>
+        <packetLen dataType="uint" bitLength="16">0</packetLen>
         <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -60,7 +60,7 @@
     <xml>
       <CIPEncapsulationPacket>
         <commandType dataType="uint" bitLength="16">513</commandType>
-        <len dataType="uint" bitLength="16">0</len>
+        <packetLen dataType="uint" bitLength="16">0</packetLen>
         <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -88,7 +88,7 @@
     <xml>
       <CIPEncapsulationPacket>
         <commandType dataType="uint" bitLength="16">263</commandType>
-        <len dataType="uint" bitLength="16">14</len>
+        <packetLen dataType="uint" bitLength="16">14</packetLen>
         <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">
@@ -140,7 +140,7 @@
     <xml>
       <CIPEncapsulationPacket>
         <commandType dataType="uint" bitLength="16">519</commandType>
-        <len dataType="uint" bitLength="16">32</len>
+        <packetLen dataType="uint" bitLength="16">32</packetLen>
         <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
         <senderContext isList="true">

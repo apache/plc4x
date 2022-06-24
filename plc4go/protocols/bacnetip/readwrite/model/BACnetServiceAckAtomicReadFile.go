@@ -28,17 +28,20 @@ import (
 
 // BACnetServiceAckAtomicReadFile is the corresponding interface of BACnetServiceAckAtomicReadFile
 type BACnetServiceAckAtomicReadFile interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetEndOfFile returns EndOfFile (property field)
 	GetEndOfFile() BACnetApplicationTagBoolean
 	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() BACnetServiceAckAtomicReadFileStreamOrRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckAtomicReadFileExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFile.
+// This is useful for switch cases.
+type BACnetServiceAckAtomicReadFileExactly interface {
+	BACnetServiceAckAtomicReadFile
+	isBACnetServiceAckAtomicReadFile() bool
 }
 
 // _BACnetServiceAckAtomicReadFile is the data-structure of this message
@@ -46,9 +49,6 @@ type _BACnetServiceAckAtomicReadFile struct {
 	*_BACnetServiceAck
 	EndOfFile    BACnetApplicationTagBoolean
 	AccessMethod BACnetServiceAckAtomicReadFileStreamOrRecord
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -176,9 +176,11 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckAtomicReadFile{
-		EndOfFile:         endOfFile,
-		AccessMethod:      accessMethod,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		EndOfFile:    endOfFile,
+		AccessMethod: accessMethod,
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -222,6 +224,10 @@ func (m *_BACnetServiceAckAtomicReadFile) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckAtomicReadFile) isBACnetServiceAckAtomicReadFile() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckAtomicReadFile) String() string {

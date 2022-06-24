@@ -28,13 +28,16 @@ import (
 
 // LDataFrameACK is the corresponding interface of LDataFrameACK
 type LDataFrameACK interface {
+	utils.LengthAware
+	utils.Serializable
 	LDataFrame
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// LDataFrameACKExactly can be used when we want exactly this type and not a type which fulfills LDataFrameACK.
+// This is useful for switch cases.
+type LDataFrameACKExactly interface {
+	LDataFrameACK
+	isLDataFrameACK() bool
 }
 
 // _LDataFrameACK is the data-structure of this message
@@ -145,6 +148,10 @@ func (m *_LDataFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LDataFrameACK) isLDataFrameACK() bool {
+	return true
 }
 
 func (m *_LDataFrameACK) String() string {

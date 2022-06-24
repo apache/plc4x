@@ -30,6 +30,8 @@ import (
 
 // BACnetCOVSubscription is the corresponding interface of BACnetCOVSubscription
 type BACnetCOVSubscription interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetMonitoredPropertyReference returns MonitoredPropertyReference (property field)
@@ -40,12 +42,13 @@ type BACnetCOVSubscription interface {
 	GetTimeRemaining() BACnetContextTagUnsignedInteger
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetCOVSubscriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVSubscription.
+// This is useful for switch cases.
+type BACnetCOVSubscriptionExactly interface {
+	BACnetCOVSubscription
+	isBACnetCOVSubscription() bool
 }
 
 // _BACnetCOVSubscription is the data-structure of this message
@@ -304,6 +307,10 @@ func (m *_BACnetCOVSubscription) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetCOVSubscription")
 	}
 	return nil
+}
+
+func (m *_BACnetCOVSubscription) isBACnetCOVSubscription() bool {
+	return true
 }
 
 func (m *_BACnetCOVSubscription) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesEscalatorFault is the corresponding interface of BACnetPropertyStatesEscalatorFault
 type BACnetPropertyStatesEscalatorFault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetEscalatorFault returns EscalatorFault (property field)
 	GetEscalatorFault() BACnetEscalatorFaultTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesEscalatorFaultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEscalatorFault.
+// This is useful for switch cases.
+type BACnetPropertyStatesEscalatorFaultExactly interface {
+	BACnetPropertyStatesEscalatorFault
+	isBACnetPropertyStatesEscalatorFault() bool
 }
 
 // _BACnetPropertyStatesEscalatorFault is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesEscalatorFault) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesEscalatorFault) isBACnetPropertyStatesEscalatorFault() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEscalatorFault) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFileSize is the corresponding interface of BACnetConstructedDataFileSize
 type BACnetConstructedDataFileSize interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFileSize returns FileSize (property field)
 	GetFileSize() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFileSizeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileSize.
+// This is useful for switch cases.
+type BACnetConstructedDataFileSizeExactly interface {
+	BACnetConstructedDataFileSize
+	isBACnetConstructedDataFileSize() bool
 }
 
 // _BACnetConstructedDataFileSize is the data-structure of this message
 type _BACnetConstructedDataFileSize struct {
 	*_BACnetConstructedData
 	FileSize BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFileSize{
-		FileSize:               fileSize,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FileSize: fileSize,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFileSize) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFileSize) isBACnetConstructedDataFileSize() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFileSize) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetServiceAckReadProperty is the corresponding interface of BACnetServiceAckReadProperty
 type BACnetServiceAckReadProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -39,12 +41,13 @@ type BACnetServiceAckReadProperty interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetValues returns Values (property field)
 	GetValues() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckReadPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadProperty.
+// This is useful for switch cases.
+type BACnetServiceAckReadPropertyExactly interface {
+	BACnetServiceAckReadProperty
+	isBACnetServiceAckReadProperty() bool
 }
 
 // _BACnetServiceAckReadProperty is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetServiceAckReadProperty struct {
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
 	Values             BACnetConstructedData
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -252,7 +252,9 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer, serviceAckLe
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
 		Values:             values,
-		_BACnetServiceAck:  &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -328,6 +330,10 @@ func (m *_BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckReadProperty) isBACnetServiceAckReadProperty() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckReadProperty) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataArchive is the corresponding interface of BACnetConstructedDataArchive
 type BACnetConstructedDataArchive interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetArchive returns Archive (property field)
 	GetArchive() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataArchiveExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataArchive.
+// This is useful for switch cases.
+type BACnetConstructedDataArchiveExactly interface {
+	BACnetConstructedDataArchive
+	isBACnetConstructedDataArchive() bool
 }
 
 // _BACnetConstructedDataArchive is the data-structure of this message
 type _BACnetConstructedDataArchive struct {
 	*_BACnetConstructedData
 	Archive BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataArchiveParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataArchive{
-		Archive:                archive,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Archive: archive,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataArchive) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataArchive) isBACnetConstructedDataArchive() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataArchive) String() string {

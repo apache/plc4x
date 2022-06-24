@@ -28,13 +28,16 @@ import (
 
 // CALDataRequestReset is the corresponding interface of CALDataRequestReset
 type CALDataRequestReset interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALDataRequestResetExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestReset.
+// This is useful for switch cases.
+type CALDataRequestResetExactly interface {
+	CALDataRequestReset
+	isCALDataRequestReset() bool
 }
 
 // _CALDataRequestReset is the data-structure of this message
@@ -133,6 +136,10 @@ func (m *_CALDataRequestReset) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataRequestReset) isCALDataRequestReset() bool {
+	return true
 }
 
 func (m *_CALDataRequestReset) String() string {

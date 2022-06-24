@@ -28,15 +28,18 @@ import (
 
 // IdentifyReplyCommandGAVValuesStored is the corresponding interface of IdentifyReplyCommandGAVValuesStored
 type IdentifyReplyCommandGAVValuesStored interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandGAVValuesStoredExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandGAVValuesStored.
+// This is useful for switch cases.
+type IdentifyReplyCommandGAVValuesStoredExactly interface {
+	IdentifyReplyCommandGAVValuesStored
+	isIdentifyReplyCommandGAVValuesStored() bool
 }
 
 // _IdentifyReplyCommandGAVValuesStored is the data-structure of this message
@@ -160,12 +163,9 @@ func (m *_IdentifyReplyCommandGAVValuesStored) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (values)
-		if m.GetValues() != nil {
-			// Byte Array field (values)
-			_writeArrayErr := writeBuffer.WriteByteArray("values", m.GetValues())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'values' field")
-			}
+		// Byte Array field (values)
+		if err := writeBuffer.WriteByteArray("values", m.GetValues()); err != nil {
+			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandGAVValuesStored"); popErr != nil {
@@ -174,6 +174,10 @@ func (m *_IdentifyReplyCommandGAVValuesStored) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandGAVValuesStored) isIdentifyReplyCommandGAVValuesStored() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandGAVValuesStored) String() string {

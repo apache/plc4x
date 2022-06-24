@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataOccupancyState is the corresponding interface of BACnetConstructedDataOccupancyState
 type BACnetConstructedDataOccupancyState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetOccupancyState returns OccupancyState (property field)
 	GetOccupancyState() BACnetAccessZoneOccupancyStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessZoneOccupancyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOccupancyStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyState.
+// This is useful for switch cases.
+type BACnetConstructedDataOccupancyStateExactly interface {
+	BACnetConstructedDataOccupancyState
+	isBACnetConstructedDataOccupancyState() bool
 }
 
 // _BACnetConstructedDataOccupancyState is the data-structure of this message
 type _BACnetConstructedDataOccupancyState struct {
 	*_BACnetConstructedData
 	OccupancyState BACnetAccessZoneOccupancyStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataOccupancyStateParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOccupancyState{
-		OccupancyState:         occupancyState,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		OccupancyState: occupancyState,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataOccupancyState) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOccupancyState) isBACnetConstructedDataOccupancyState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOccupancyState) String() string {

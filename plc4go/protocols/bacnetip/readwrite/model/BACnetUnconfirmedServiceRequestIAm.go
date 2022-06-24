@@ -28,6 +28,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestIAm is the corresponding interface of BACnetUnconfirmedServiceRequestIAm
 type BACnetUnconfirmedServiceRequestIAm interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -37,12 +39,13 @@ type BACnetUnconfirmedServiceRequestIAm interface {
 	GetSegmentationSupported() BACnetSegmentationTagged
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestIAmExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestIAm.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestIAmExactly interface {
+	BACnetUnconfirmedServiceRequestIAm
+	isBACnetUnconfirmedServiceRequestIAm() bool
 }
 
 // _BACnetUnconfirmedServiceRequestIAm is the data-structure of this message
@@ -52,9 +55,6 @@ type _BACnetUnconfirmedServiceRequestIAm struct {
 	MaximumApduLengthAcceptedLength BACnetApplicationTagUnsignedInteger
 	SegmentationSupported           BACnetSegmentationTagged
 	VendorId                        BACnetVendorIdTagged
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -225,11 +225,13 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, servic
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestIAm{
-		DeviceIdentifier:                 deviceIdentifier,
-		MaximumApduLengthAcceptedLength:  maximumApduLengthAcceptedLength,
-		SegmentationSupported:            segmentationSupported,
-		VendorId:                         vendorId,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		DeviceIdentifier:                deviceIdentifier,
+		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
+		SegmentationSupported:           segmentationSupported,
+		VendorId:                        vendorId,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -297,6 +299,10 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestIAm) isBACnetUnconfirmedServiceRequestIAm() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) String() string {

@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueNoValue is the corresponding interface of BACnetTimerStateChangeValueNoValue
 type BACnetTimerStateChangeValueNoValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetNoValue returns NoValue (property field)
 	GetNoValue() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueNoValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueNoValue.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueNoValueExactly interface {
+	BACnetTimerStateChangeValueNoValue
+	isBACnetTimerStateChangeValueNoValue() bool
 }
 
 // _BACnetTimerStateChangeValueNoValue is the data-structure of this message
 type _BACnetTimerStateChangeValueNoValue struct {
 	*_BACnetTimerStateChangeValue
 	NoValue BACnetContextTagNull
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueNoValueParse(readBuffer utils.ReadBuffer, object
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueNoValue{
-		NoValue:                      noValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		NoValue: noValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueNoValue) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueNoValue) isBACnetTimerStateChangeValueNoValue() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) String() string {

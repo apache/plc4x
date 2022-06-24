@@ -28,6 +28,8 @@ import (
 
 // AlarmMessagePushType is the corresponding interface of AlarmMessagePushType
 type AlarmMessagePushType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
 	// GetFunctionId returns FunctionId (property field)
@@ -36,12 +38,13 @@ type AlarmMessagePushType interface {
 	GetNumberOfObjects() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectPushType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AlarmMessagePushTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessagePushType.
+// This is useful for switch cases.
+type AlarmMessagePushTypeExactly interface {
+	AlarmMessagePushType
+	isAlarmMessagePushType() bool
 }
 
 // _AlarmMessagePushType is the data-structure of this message
@@ -171,6 +174,10 @@ func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessagePushTyp
 	}
 	// Count array
 	messageObjects := make([]AlarmMessageObjectPushType, numberOfObjects)
+	// This happens when the size is set conditional to 0
+	if len(messageObjects) == 0 {
+		messageObjects = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := AlarmMessageObjectPushTypeParse(readBuffer)
@@ -226,25 +233,27 @@ func (m *_AlarmMessagePushType) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (messageObjects)
-	if m.GetMessageObjects() != nil {
-		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for messageObjects")
+	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for messageObjects")
+	}
+	for _, _element := range m.GetMessageObjects() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 		}
-		for _, _element := range m.GetMessageObjects() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for messageObjects")
-		}
+	}
+	if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for messageObjects")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessagePushType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for AlarmMessagePushType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessagePushType) isAlarmMessagePushType() bool {
+	return true
 }
 
 func (m *_AlarmMessagePushType) String() string {

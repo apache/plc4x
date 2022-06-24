@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataMultiStateInputAll is the corresponding interface of BACnetConstructedDataMultiStateInputAll
 type BACnetConstructedDataMultiStateInputAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMultiStateInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateInputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataMultiStateInputAllExactly interface {
+	BACnetConstructedDataMultiStateInputAll
+	isBACnetConstructedDataMultiStateInputAll() bool
 }
 
 // _BACnetConstructedDataMultiStateInputAll is the data-structure of this message
 type _BACnetConstructedDataMultiStateInputAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataMultiStateInputAllParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMultiStateInputAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataMultiStateInputAll) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAll) isBACnetConstructedDataMultiStateInputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMultiStateInputAll) String() string {

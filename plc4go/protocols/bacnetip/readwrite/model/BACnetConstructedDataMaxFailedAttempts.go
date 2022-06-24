@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMaxFailedAttempts is the corresponding interface of BACnetConstructedDataMaxFailedAttempts
 type BACnetConstructedDataMaxFailedAttempts interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxFailedAttempts returns MaxFailedAttempts (property field)
 	GetMaxFailedAttempts() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaxFailedAttemptsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaxFailedAttempts.
+// This is useful for switch cases.
+type BACnetConstructedDataMaxFailedAttemptsExactly interface {
+	BACnetConstructedDataMaxFailedAttempts
+	isBACnetConstructedDataMaxFailedAttempts() bool
 }
 
 // _BACnetConstructedDataMaxFailedAttempts is the data-structure of this message
 type _BACnetConstructedDataMaxFailedAttempts struct {
 	*_BACnetConstructedData
 	MaxFailedAttempts BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMaxFailedAttemptsParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaxFailedAttempts{
-		MaxFailedAttempts:      maxFailedAttempts,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxFailedAttempts: maxFailedAttempts,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttempts) isBACnetConstructedDataMaxFailedAttempts() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataExtendedTimeEnable is the corresponding interface of BACnetConstructedDataExtendedTimeEnable
 type BACnetConstructedDataExtendedTimeEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetExtendedTimeEnable returns ExtendedTimeEnable (property field)
 	GetExtendedTimeEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataExtendedTimeEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExtendedTimeEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataExtendedTimeEnableExactly interface {
+	BACnetConstructedDataExtendedTimeEnable
+	isBACnetConstructedDataExtendedTimeEnable() bool
 }
 
 // _BACnetConstructedDataExtendedTimeEnable is the data-structure of this message
 type _BACnetConstructedDataExtendedTimeEnable struct {
 	*_BACnetConstructedData
 	ExtendedTimeEnable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataExtendedTimeEnable{
-		ExtendedTimeEnable:     extendedTimeEnable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ExtendedTimeEnable: extendedTimeEnable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataExtendedTimeEnable) isBACnetConstructedDataExtendedTimeEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) String() string {

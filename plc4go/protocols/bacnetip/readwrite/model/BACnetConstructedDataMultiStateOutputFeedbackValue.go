@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMultiStateOutputFeedbackValue is the corresponding interface of BACnetConstructedDataMultiStateOutputFeedbackValue
 type BACnetConstructedDataMultiStateOutputFeedbackValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMultiStateOutputFeedbackValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateOutputFeedbackValue.
+// This is useful for switch cases.
+type BACnetConstructedDataMultiStateOutputFeedbackValueExactly interface {
+	BACnetConstructedDataMultiStateOutputFeedbackValue
+	isBACnetConstructedDataMultiStateOutputFeedbackValue() bool
 }
 
 // _BACnetConstructedDataMultiStateOutputFeedbackValue is the data-structure of this message
 type _BACnetConstructedDataMultiStateOutputFeedbackValue struct {
 	*_BACnetConstructedData
 	FeedbackValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
-		FeedbackValue:          feedbackValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FeedbackValue: feedbackValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) isBACnetConstructedDataMultiStateOutputFeedbackValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) String() string {

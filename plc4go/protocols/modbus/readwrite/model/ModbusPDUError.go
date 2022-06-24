@@ -28,15 +28,18 @@ import (
 
 // ModbusPDUError is the corresponding interface of ModbusPDUError
 type ModbusPDUError interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetExceptionCode returns ExceptionCode (property field)
 	GetExceptionCode() ModbusErrorCode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUErrorExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUError.
+// This is useful for switch cases.
+type ModbusPDUErrorExactly interface {
+	ModbusPDUError
+	isModbusPDUError() bool
 }
 
 // _ModbusPDUError is the data-structure of this message
@@ -190,6 +193,10 @@ func (m *_ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUError) isModbusPDUError() bool {
+	return true
 }
 
 func (m *_ModbusPDUError) String() string {

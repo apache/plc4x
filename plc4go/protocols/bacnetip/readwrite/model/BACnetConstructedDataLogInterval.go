@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLogInterval is the corresponding interface of BACnetConstructedDataLogInterval
 type BACnetConstructedDataLogInterval interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLogInterval returns LogInterval (property field)
 	GetLogInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLogIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLogInterval.
+// This is useful for switch cases.
+type BACnetConstructedDataLogIntervalExactly interface {
+	BACnetConstructedDataLogInterval
+	isBACnetConstructedDataLogInterval() bool
 }
 
 // _BACnetConstructedDataLogInterval is the data-structure of this message
 type _BACnetConstructedDataLogInterval struct {
 	*_BACnetConstructedData
 	LogInterval BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLogIntervalParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLogInterval{
-		LogInterval:            logInterval,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LogInterval: logInterval,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLogInterval) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLogInterval) isBACnetConstructedDataLogInterval() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLogInterval) String() string {

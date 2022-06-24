@@ -28,15 +28,18 @@ import (
 
 // ModbusPDUReadWriteMultipleHoldingRegistersResponse is the corresponding interface of ModbusPDUReadWriteMultipleHoldingRegistersResponse
 type ModbusPDUReadWriteMultipleHoldingRegistersResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadWriteMultipleHoldingRegistersResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadWriteMultipleHoldingRegistersResponse.
+// This is useful for switch cases.
+type ModbusPDUReadWriteMultipleHoldingRegistersResponseExactly interface {
+	ModbusPDUReadWriteMultipleHoldingRegistersResponse
+	isModbusPDUReadWriteMultipleHoldingRegistersResponse() bool
 }
 
 // _ModbusPDUReadWriteMultipleHoldingRegistersResponse is the data-structure of this message
@@ -185,12 +188,9 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(writeBuf
 		}
 
 		// Array Field (value)
-		if m.GetValue() != nil {
-			// Byte Array field (value)
-			_writeArrayErr := writeBuffer.WriteByteArray("value", m.GetValue())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
-			}
+		// Byte Array field (value)
+		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse"); popErr != nil {
@@ -199,6 +199,10 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponse) isModbusPDUReadWriteMultipleHoldingRegistersResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponse) String() string {

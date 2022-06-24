@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataHigherDeck is the corresponding interface of BACnetConstructedDataHigherDeck
 type BACnetConstructedDataHigherDeck interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetHigherDeck returns HigherDeck (property field)
 	GetHigherDeck() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataHigherDeckExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataHigherDeck.
+// This is useful for switch cases.
+type BACnetConstructedDataHigherDeckExactly interface {
+	BACnetConstructedDataHigherDeck
+	isBACnetConstructedDataHigherDeck() bool
 }
 
 // _BACnetConstructedDataHigherDeck is the data-structure of this message
 type _BACnetConstructedDataHigherDeck struct {
 	*_BACnetConstructedData
 	HigherDeck BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataHigherDeckParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataHigherDeck{
-		HigherDeck:             higherDeck,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		HigherDeck: higherDeck,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataHigherDeck) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataHigherDeck) isBACnetConstructedDataHigherDeck() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataHigherDeck) String() string {

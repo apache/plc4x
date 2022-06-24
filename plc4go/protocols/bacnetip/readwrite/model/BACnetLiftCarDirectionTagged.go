@@ -28,6 +28,8 @@ import (
 
 // BACnetLiftCarDirectionTagged is the corresponding interface of BACnetLiftCarDirectionTagged
 type BACnetLiftCarDirectionTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetLiftCarDirectionTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLiftCarDirectionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDirectionTagged.
+// This is useful for switch cases.
+type BACnetLiftCarDirectionTaggedExactly interface {
+	BACnetLiftCarDirectionTagged
+	isBACnetLiftCarDirectionTagged() bool
 }
 
 // _BACnetLiftCarDirectionTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetLiftCarDirectionTagged) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarDirectionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarDirectionTagged) isBACnetLiftCarDirectionTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarDirectionTagged) String() string {

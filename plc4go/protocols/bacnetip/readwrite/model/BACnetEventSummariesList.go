@@ -28,18 +28,21 @@ import (
 
 // BACnetEventSummariesList is the corresponding interface of BACnetEventSummariesList
 type BACnetEventSummariesList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
 	GetListOfEventSummaries() []BACnetEventSummary
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventSummariesListExactly can be used when we want exactly this type and not a type which fulfills BACnetEventSummariesList.
+// This is useful for switch cases.
+type BACnetEventSummariesListExactly interface {
+	BACnetEventSummariesList
+	isBACnetEventSummariesList() bool
 }
 
 // _BACnetEventSummariesList is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetEventSummariesListParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfEventSummaries")
 	}
 	// Terminated array
-	listOfEventSummaries := make([]BACnetEventSummary, 0)
+	var listOfEventSummaries []BACnetEventSummary
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetEventSummaryParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetEventSummariesList) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	// Array Field (listOfEventSummaries)
-	if m.GetListOfEventSummaries() != nil {
-		if pushErr := writeBuffer.PushContext("listOfEventSummaries", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
+	if pushErr := writeBuffer.PushContext("listOfEventSummaries", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
+	}
+	for _, _element := range m.GetListOfEventSummaries() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfEventSummaries' field")
 		}
-		for _, _element := range m.GetListOfEventSummaries() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfEventSummaries' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfEventSummaries", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfEventSummaries", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetEventSummariesList) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetEventSummariesList")
 	}
 	return nil
+}
+
+func (m *_BACnetEventSummariesList) isBACnetEventSummariesList() bool {
+	return true
 }
 
 func (m *_BACnetEventSummariesList) String() string {

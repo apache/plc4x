@@ -28,15 +28,18 @@ import (
 
 // IdentifyReplyCommandManufacturer is the corresponding interface of IdentifyReplyCommandManufacturer
 type IdentifyReplyCommandManufacturer interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetManufacturerName returns ManufacturerName (property field)
 	GetManufacturerName() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandManufacturerExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandManufacturer.
+// This is useful for switch cases.
+type IdentifyReplyCommandManufacturerExactly interface {
+	IdentifyReplyCommandManufacturer
+	isIdentifyReplyCommandManufacturer() bool
 }
 
 // _IdentifyReplyCommandManufacturer is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_IdentifyReplyCommandManufacturer) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandManufacturer) isIdentifyReplyCommandManufacturer() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandManufacturer) String() string {

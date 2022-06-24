@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataFailedAttemptEvents is the corresponding interface of BACnetConstructedDataFailedAttemptEvents
 type BACnetConstructedDataFailedAttemptEvents interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFailedAttemptEvents returns FailedAttemptEvents (property field)
 	GetFailedAttemptEvents() []BACnetAccessEventTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFailedAttemptEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFailedAttemptEvents.
+// This is useful for switch cases.
+type BACnetConstructedDataFailedAttemptEventsExactly interface {
+	BACnetConstructedDataFailedAttemptEvents
+	isBACnetConstructedDataFailedAttemptEvents() bool
 }
 
 // _BACnetConstructedDataFailedAttemptEvents is the data-structure of this message
 type _BACnetConstructedDataFailedAttemptEvents struct {
 	*_BACnetConstructedData
 	FailedAttemptEvents []BACnetAccessEventTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataFailedAttemptEventsParse(readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(pullErr, "Error pulling for failedAttemptEvents")
 	}
 	// Terminated array
-	failedAttemptEvents := make([]BACnetAccessEventTagged, 0)
+	var failedAttemptEvents []BACnetAccessEventTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessEventTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -172,8 +171,11 @@ func BACnetConstructedDataFailedAttemptEventsParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFailedAttemptEvents{
-		FailedAttemptEvents:    failedAttemptEvents,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FailedAttemptEvents: failedAttemptEvents,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) Serialize(writeBuffer utils.
 		}
 
 		// Array Field (failedAttemptEvents)
-		if m.GetFailedAttemptEvents() != nil {
-			if pushErr := writeBuffer.PushContext("failedAttemptEvents", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for failedAttemptEvents")
+		if pushErr := writeBuffer.PushContext("failedAttemptEvents", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for failedAttemptEvents")
+		}
+		for _, _element := range m.GetFailedAttemptEvents() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'failedAttemptEvents' field")
 			}
-			for _, _element := range m.GetFailedAttemptEvents() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'failedAttemptEvents' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("failedAttemptEvents", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for failedAttemptEvents")
-			}
+		}
+		if popErr := writeBuffer.PopContext("failedAttemptEvents", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for failedAttemptEvents")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFailedAttemptEvents"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFailedAttemptEvents) isBACnetConstructedDataFailedAttemptEvents() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFailedAttemptEvents) String() string {

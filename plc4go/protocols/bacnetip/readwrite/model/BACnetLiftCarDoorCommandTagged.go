@@ -28,16 +28,19 @@ import (
 
 // BACnetLiftCarDoorCommandTagged is the corresponding interface of BACnetLiftCarDoorCommandTagged
 type BACnetLiftCarDoorCommandTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLiftCarDoorCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLiftCarDoorCommandTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDoorCommandTagged.
+// This is useful for switch cases.
+type BACnetLiftCarDoorCommandTaggedExactly interface {
+	BACnetLiftCarDoorCommandTagged
+	isBACnetLiftCarDoorCommandTagged() bool
 }
 
 // _BACnetLiftCarDoorCommandTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetLiftCarDoorCommandTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarDoorCommandTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarDoorCommandTagged) isBACnetLiftCarDoorCommandTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarDoorCommandTagged) String() string {

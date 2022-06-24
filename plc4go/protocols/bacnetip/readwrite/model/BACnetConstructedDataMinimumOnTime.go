@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMinimumOnTime is the corresponding interface of BACnetConstructedDataMinimumOnTime
 type BACnetConstructedDataMinimumOnTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinimumOnTime returns MinimumOnTime (property field)
 	GetMinimumOnTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMinimumOnTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumOnTime.
+// This is useful for switch cases.
+type BACnetConstructedDataMinimumOnTimeExactly interface {
+	BACnetConstructedDataMinimumOnTime
+	isBACnetConstructedDataMinimumOnTime() bool
 }
 
 // _BACnetConstructedDataMinimumOnTime is the data-structure of this message
 type _BACnetConstructedDataMinimumOnTime struct {
 	*_BACnetConstructedData
 	MinimumOnTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMinimumOnTimeParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMinimumOnTime{
-		MinimumOnTime:          minimumOnTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MinimumOnTime: minimumOnTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMinimumOnTime) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMinimumOnTime) isBACnetConstructedDataMinimumOnTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMinimumOnTime) String() string {

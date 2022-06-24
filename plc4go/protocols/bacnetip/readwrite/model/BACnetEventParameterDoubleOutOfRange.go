@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterDoubleOutOfRange is the corresponding interface of BACnetEventParameterDoubleOutOfRange
 type BACnetEventParameterDoubleOutOfRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -41,12 +43,13 @@ type BACnetEventParameterDoubleOutOfRange interface {
 	GetDeadband() BACnetContextTagDouble
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterDoubleOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterDoubleOutOfRange.
+// This is useful for switch cases.
+type BACnetEventParameterDoubleOutOfRangeExactly interface {
+	BACnetEventParameterDoubleOutOfRange
+	isBACnetEventParameterDoubleOutOfRange() bool
 }
 
 // _BACnetEventParameterDoubleOutOfRange is the data-structure of this message
@@ -365,6 +368,10 @@ func (m *_BACnetEventParameterDoubleOutOfRange) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterDoubleOutOfRange) isBACnetEventParameterDoubleOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterDoubleOutOfRange) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTransactionNotificationClass is the corresponding interface of BACnetConstructedDataTransactionNotificationClass
 type BACnetConstructedDataTransactionNotificationClass interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTransactionNotificationClass returns TransactionNotificationClass (property field)
 	GetTransactionNotificationClass() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTransactionNotificationClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTransactionNotificationClass.
+// This is useful for switch cases.
+type BACnetConstructedDataTransactionNotificationClassExactly interface {
+	BACnetConstructedDataTransactionNotificationClass
+	isBACnetConstructedDataTransactionNotificationClass() bool
 }
 
 // _BACnetConstructedDataTransactionNotificationClass is the data-structure of this message
 type _BACnetConstructedDataTransactionNotificationClass struct {
 	*_BACnetConstructedData
 	TransactionNotificationClass BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataTransactionNotificationClassParse(readBuffer utils.Rea
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTransactionNotificationClass{
 		TransactionNotificationClass: transactionNotificationClass,
-		_BACnetConstructedData:       &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClass) isBACnetConstructedDataTransactionNotificationClass() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTransactionNotificationClass) String() string {

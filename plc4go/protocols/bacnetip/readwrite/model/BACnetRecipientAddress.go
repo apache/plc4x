@@ -28,15 +28,18 @@ import (
 
 // BACnetRecipientAddress is the corresponding interface of BACnetRecipientAddress
 type BACnetRecipientAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetRecipient
 	// GetAddressValue returns AddressValue (property field)
 	GetAddressValue() BACnetAddressEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRecipientAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientAddress.
+// This is useful for switch cases.
+type BACnetRecipientAddressExactly interface {
+	BACnetRecipientAddress
+	isBACnetRecipientAddress() bool
 }
 
 // _BACnetRecipientAddress is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetRecipientAddress) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetRecipientAddress) isBACnetRecipientAddress() bool {
+	return true
 }
 
 func (m *_BACnetRecipientAddress) String() string {

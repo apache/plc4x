@@ -28,13 +28,16 @@ import (
 
 // RoutingIndication is the corresponding interface of RoutingIndication
 type RoutingIndication interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// RoutingIndicationExactly can be used when we want exactly this type and not a type which fulfills RoutingIndication.
+// This is useful for switch cases.
+type RoutingIndicationExactly interface {
+	RoutingIndication
+	isRoutingIndication() bool
 }
 
 // _RoutingIndication is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_RoutingIndication) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_RoutingIndication) isRoutingIndication() bool {
+	return true
 }
 
 func (m *_RoutingIndication) String() string {

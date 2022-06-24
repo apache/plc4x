@@ -30,17 +30,20 @@ import (
 
 // BACnetConfirmedServiceRequestReinitializeDevice is the corresponding interface of BACnetConfirmedServiceRequestReinitializeDevice
 type BACnetConfirmedServiceRequestReinitializeDevice interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetReinitializedStateOfDevice returns ReinitializedStateOfDevice (property field)
 	GetReinitializedStateOfDevice() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
 	// GetPassword returns Password (property field)
 	GetPassword() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestReinitializeDeviceExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReinitializeDevice.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReinitializeDeviceExactly interface {
+	BACnetConfirmedServiceRequestReinitializeDevice
+	isBACnetConfirmedServiceRequestReinitializeDevice() bool
 }
 
 // _BACnetConfirmedServiceRequestReinitializeDevice is the data-structure of this message
@@ -48,9 +51,6 @@ type _BACnetConfirmedServiceRequestReinitializeDevice struct {
 	*_BACnetConfirmedServiceRequest
 	ReinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
 	Password                   BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -190,9 +190,11 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestReinitializeDevice{
-		ReinitializedStateOfDevice:     reinitializedStateOfDevice,
-		Password:                       password,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		ReinitializedStateOfDevice: reinitializedStateOfDevice,
+		Password:                   password,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -240,6 +242,10 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) isBACnetConfirmedServiceRequestReinitializeDevice() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataEventTimeStamps is the corresponding interface of BACnetConstructedDataEventTimeStamps
 type BACnetConstructedDataEventTimeStamps interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -43,12 +45,13 @@ type BACnetConstructedDataEventTimeStamps interface {
 	GetToFault() BACnetTimeStamp
 	// GetToNormal returns ToNormal (virtual field)
 	GetToNormal() BACnetTimeStamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEventTimeStampsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventTimeStamps.
+// This is useful for switch cases.
+type BACnetConstructedDataEventTimeStampsExactly interface {
+	BACnetConstructedDataEventTimeStamps
+	isBACnetConstructedDataEventTimeStamps() bool
 }
 
 // _BACnetConstructedDataEventTimeStamps is the data-structure of this message
@@ -56,10 +59,6 @@ type _BACnetConstructedDataEventTimeStamps struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	EventTimeStamps      []BACnetTimeStamp
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -242,7 +241,7 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 		return nil, errors.Wrap(pullErr, "Error pulling for eventTimeStamps")
 	}
 	// Terminated array
-	eventTimeStamps := make([]BACnetTimeStamp, 0)
+	var eventTimeStamps []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParse(readBuffer)
@@ -283,9 +282,12 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventTimeStamps{
-		NumberOfDataElements:   numberOfDataElements,
-		EventTimeStamps:        eventTimeStamps,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		EventTimeStamps:      eventTimeStamps,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -320,19 +322,17 @@ func (m *_BACnetConstructedDataEventTimeStamps) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (eventTimeStamps)
-		if m.GetEventTimeStamps() != nil {
-			if pushErr := writeBuffer.PushContext("eventTimeStamps", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventTimeStamps")
+		if pushErr := writeBuffer.PushContext("eventTimeStamps", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for eventTimeStamps")
+		}
+		for _, _element := range m.GetEventTimeStamps() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'eventTimeStamps' field")
 			}
-			for _, _element := range m.GetEventTimeStamps() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'eventTimeStamps' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("eventTimeStamps", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventTimeStamps")
-			}
+		}
+		if popErr := writeBuffer.PopContext("eventTimeStamps", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for eventTimeStamps")
 		}
 		// Virtual field
 		if _toOffnormalErr := writeBuffer.WriteVirtual("toOffnormal", m.GetToOffnormal()); _toOffnormalErr != nil {
@@ -353,6 +353,10 @@ func (m *_BACnetConstructedDataEventTimeStamps) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventTimeStamps) isBACnetConstructedDataEventTimeStamps() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventTimeStamps) String() string {

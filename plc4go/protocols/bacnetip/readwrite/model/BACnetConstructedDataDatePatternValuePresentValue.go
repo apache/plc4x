@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDatePatternValuePresentValue is the corresponding interface of BACnetConstructedDataDatePatternValuePresentValue
 type BACnetConstructedDataDatePatternValuePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagDate
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDatePatternValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDatePatternValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataDatePatternValuePresentValueExactly interface {
+	BACnetConstructedDataDatePatternValuePresentValue
+	isBACnetConstructedDataDatePatternValuePresentValue() bool
 }
 
 // _BACnetConstructedDataDatePatternValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataDatePatternValuePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagDate
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDatePatternValuePresentValueParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDatePatternValuePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDatePatternValuePresentValue) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDatePatternValuePresentValue) isBACnetConstructedDataDatePatternValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDatePatternValuePresentValue) String() string {

@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataBinaryLightingOutputAll is the corresponding interface of BACnetConstructedDataBinaryLightingOutputAll
 type BACnetConstructedDataBinaryLightingOutputAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBinaryLightingOutputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryLightingOutputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryLightingOutputAllExactly interface {
+	BACnetConstructedDataBinaryLightingOutputAll
+	isBACnetConstructedDataBinaryLightingOutputAll() bool
 }
 
 // _BACnetConstructedDataBinaryLightingOutputAll is the data-structure of this message
 type _BACnetConstructedDataBinaryLightingOutputAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataBinaryLightingOutputAllParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBinaryLightingOutputAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataBinaryLightingOutputAll) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) isBACnetConstructedDataBinaryLightingOutputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputAll) String() string {

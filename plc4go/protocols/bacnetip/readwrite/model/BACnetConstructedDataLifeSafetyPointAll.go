@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataLifeSafetyPointAll is the corresponding interface of BACnetConstructedDataLifeSafetyPointAll
 type BACnetConstructedDataLifeSafetyPointAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLifeSafetyPointAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyPointAll.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyPointAllExactly interface {
+	BACnetConstructedDataLifeSafetyPointAll
+	isBACnetConstructedDataLifeSafetyPointAll() bool
 }
 
 // _BACnetConstructedDataLifeSafetyPointAll is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyPointAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataLifeSafetyPointAllParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLifeSafetyPointAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataLifeSafetyPointAll) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAll) isBACnetConstructedDataLifeSafetyPointAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointAll) String() string {

@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueDate is the corresponding interface of BACnetPriorityValueDate
 type BACnetPriorityValueDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueDateExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueDate.
+// This is useful for switch cases.
+type BACnetPriorityValueDateExactly interface {
+	BACnetPriorityValueDate
+	isBACnetPriorityValueDate() bool
 }
 
 // _BACnetPriorityValueDate is the data-structure of this message
 type _BACnetPriorityValueDate struct {
 	*_BACnetPriorityValue
 	DateValue BACnetApplicationTagDate
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueDateParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueDate{
-		DateValue:            dateValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		DateValue: dateValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueDate) isBACnetPriorityValueDate() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueDate) String() string {

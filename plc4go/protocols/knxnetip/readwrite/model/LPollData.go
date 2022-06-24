@@ -29,6 +29,8 @@ import (
 
 // LPollData is the corresponding interface of LPollData
 type LPollData interface {
+	utils.LengthAware
+	utils.Serializable
 	LDataFrame
 	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() KnxAddress
@@ -36,12 +38,13 @@ type LPollData interface {
 	GetTargetAddress() []byte
 	// GetNumberExpectedPollData returns NumberExpectedPollData (property field)
 	GetNumberExpectedPollData() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// LPollDataExactly can be used when we want exactly this type and not a type which fulfills LPollData.
+// This is useful for switch cases.
+type LPollDataExactly interface {
+	LPollData
+	isLPollData() bool
 }
 
 // _LPollData is the data-structure of this message
@@ -244,12 +247,9 @@ func (m *_LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (targetAddress)
-		if m.GetTargetAddress() != nil {
-			// Byte Array field (targetAddress)
-			_writeArrayErr := writeBuffer.WriteByteArray("targetAddress", m.GetTargetAddress())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'targetAddress' field")
-			}
+		// Byte Array field (targetAddress)
+		if err := writeBuffer.WriteByteArray("targetAddress", m.GetTargetAddress()); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetAddress' field")
 		}
 
 		// Reserved Field (reserved)
@@ -273,6 +273,10 @@ func (m *_LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LPollData) isLPollData() bool {
+	return true
 }
 
 func (m *_LPollData) String() string {

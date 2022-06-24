@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataWindowSamples is the corresponding interface of BACnetConstructedDataWindowSamples
 type BACnetConstructedDataWindowSamples interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetWindowSamples returns WindowSamples (property field)
 	GetWindowSamples() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataWindowSamplesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataWindowSamples.
+// This is useful for switch cases.
+type BACnetConstructedDataWindowSamplesExactly interface {
+	BACnetConstructedDataWindowSamples
+	isBACnetConstructedDataWindowSamples() bool
 }
 
 // _BACnetConstructedDataWindowSamples is the data-structure of this message
 type _BACnetConstructedDataWindowSamples struct {
 	*_BACnetConstructedData
 	WindowSamples BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataWindowSamples{
-		WindowSamples:          windowSamples,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		WindowSamples: windowSamples,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataWindowSamples) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataWindowSamples) isBACnetConstructedDataWindowSamples() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataWindowSamples) String() string {

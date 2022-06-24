@@ -29,6 +29,8 @@ import (
 
 // S7ParameterSetupCommunication is the corresponding interface of S7ParameterSetupCommunication
 type S7ParameterSetupCommunication interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Parameter
 	// GetMaxAmqCaller returns MaxAmqCaller (property field)
 	GetMaxAmqCaller() uint16
@@ -36,12 +38,13 @@ type S7ParameterSetupCommunication interface {
 	GetMaxAmqCallee() uint16
 	// GetPduLength returns PduLength (property field)
 	GetPduLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7ParameterSetupCommunicationExactly can be used when we want exactly this type and not a type which fulfills S7ParameterSetupCommunication.
+// This is useful for switch cases.
+type S7ParameterSetupCommunicationExactly interface {
+	S7ParameterSetupCommunication
+	isS7ParameterSetupCommunication() bool
 }
 
 // _S7ParameterSetupCommunication is the data-structure of this message
@@ -253,6 +256,10 @@ func (m *_S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterSetupCommunication) isS7ParameterSetupCommunication() bool {
+	return true
 }
 
 func (m *_S7ParameterSetupCommunication) String() string {

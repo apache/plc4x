@@ -29,17 +29,20 @@ import (
 
 // FirmataMessageSubscribeAnalogPinValue is the corresponding interface of FirmataMessageSubscribeAnalogPinValue
 type FirmataMessageSubscribeAnalogPinValue interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetEnable returns Enable (property field)
 	GetEnable() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataMessageSubscribeAnalogPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageSubscribeAnalogPinValue.
+// This is useful for switch cases.
+type FirmataMessageSubscribeAnalogPinValueExactly interface {
+	FirmataMessageSubscribeAnalogPinValue
+	isFirmataMessageSubscribeAnalogPinValue() bool
 }
 
 // _FirmataMessageSubscribeAnalogPinValue is the data-structure of this message
@@ -47,9 +50,6 @@ type _FirmataMessageSubscribeAnalogPinValue struct {
 	*_FirmataMessage
 	Pin    uint8
 	Enable bool
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -182,9 +182,11 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, res
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageSubscribeAnalogPinValue{
-		Pin:             pin,
-		Enable:          enable,
-		_FirmataMessage: &_FirmataMessage{},
+		Pin:    pin,
+		Enable: enable,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil
@@ -226,6 +228,10 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageSubscribeAnalogPinValue) isFirmataMessageSubscribeAnalogPinValue() bool {
+	return true
 }
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) String() string {

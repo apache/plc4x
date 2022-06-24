@@ -28,15 +28,18 @@ import (
 
 // MonitoredSALReply is the corresponding interface of MonitoredSALReply
 type MonitoredSALReply interface {
+	utils.LengthAware
+	utils.Serializable
 	Reply
 	// GetIsA returns IsA (property field)
 	GetIsA() MonitoredSAL
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MonitoredSALReplyExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALReply.
+// This is useful for switch cases.
+type MonitoredSALReplyExactly interface {
+	MonitoredSALReply
+	isMonitoredSALReply() bool
 }
 
 // _MonitoredSALReply is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_MonitoredSALReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MonitoredSALReply) isMonitoredSALReply() bool {
+	return true
 }
 
 func (m *_MonitoredSALReply) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimerMaxPresValue is the corresponding interface of BACnetConstructedDataTimerMaxPresValue
 type BACnetConstructedDataTimerMaxPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimerMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerMaxPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerMaxPresValueExactly interface {
+	BACnetConstructedDataTimerMaxPresValue
+	isBACnetConstructedDataTimerMaxPresValue() bool
 }
 
 // _BACnetConstructedDataTimerMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataTimerMaxPresValue struct {
 	*_BACnetConstructedData
 	MaxPresValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimerMaxPresValueParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimerMaxPresValue{
-		MaxPresValue:           maxPresValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxPresValue: maxPresValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerMaxPresValue) isBACnetConstructedDataTimerMaxPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerMaxPresValue) String() string {

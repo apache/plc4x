@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastCredentialAddedTime is the corresponding interface of BACnetConstructedDataLastCredentialAddedTime
 type BACnetConstructedDataLastCredentialAddedTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastCredentialAddedTime returns LastCredentialAddedTime (property field)
 	GetLastCredentialAddedTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastCredentialAddedTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCredentialAddedTime.
+// This is useful for switch cases.
+type BACnetConstructedDataLastCredentialAddedTimeExactly interface {
+	BACnetConstructedDataLastCredentialAddedTime
+	isBACnetConstructedDataLastCredentialAddedTime() bool
 }
 
 // _BACnetConstructedDataLastCredentialAddedTime is the data-structure of this message
 type _BACnetConstructedDataLastCredentialAddedTime struct {
 	*_BACnetConstructedData
 	LastCredentialAddedTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastCredentialAddedTime{
 		LastCredentialAddedTime: lastCredentialAddedTime,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastCredentialAddedTime) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastCredentialAddedTime) isBACnetConstructedDataLastCredentialAddedTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastCredentialAddedTime) String() string {

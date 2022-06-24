@@ -30,6 +30,8 @@ import (
 
 // ListOfCovNotificationsValue is the corresponding interface of ListOfCovNotificationsValue
 type ListOfCovNotificationsValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -38,12 +40,13 @@ type ListOfCovNotificationsValue interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetTimeOfChange returns TimeOfChange (property field)
 	GetTimeOfChange() BACnetContextTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ListOfCovNotificationsValueExactly can be used when we want exactly this type and not a type which fulfills ListOfCovNotificationsValue.
+// This is useful for switch cases.
+type ListOfCovNotificationsValueExactly interface {
+	ListOfCovNotificationsValue
+	isListOfCovNotificationsValue() bool
 }
 
 // _ListOfCovNotificationsValue is the data-structure of this message
@@ -287,6 +290,10 @@ func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for ListOfCovNotificationsValue")
 	}
 	return nil
+}
+
+func (m *_ListOfCovNotificationsValue) isListOfCovNotificationsValue() bool {
+	return true
 }
 
 func (m *_ListOfCovNotificationsValue) String() string {

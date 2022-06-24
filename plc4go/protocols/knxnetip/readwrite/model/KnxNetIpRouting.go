@@ -28,15 +28,18 @@ import (
 
 // KnxNetIpRouting is the corresponding interface of KnxNetIpRouting
 type KnxNetIpRouting interface {
+	utils.LengthAware
+	utils.Serializable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// KnxNetIpRoutingExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpRouting.
+// This is useful for switch cases.
+type KnxNetIpRoutingExactly interface {
+	KnxNetIpRouting
+	isKnxNetIpRouting() bool
 }
 
 // _KnxNetIpRouting is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_KnxNetIpRouting) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetIpRouting) isKnxNetIpRouting() bool {
+	return true
 }
 
 func (m *_KnxNetIpRouting) String() string {

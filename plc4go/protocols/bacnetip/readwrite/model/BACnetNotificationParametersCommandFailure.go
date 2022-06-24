@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersCommandFailure is the corresponding interface of BACnetNotificationParametersCommandFailure
 type BACnetNotificationParametersCommandFailure interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetNotificationParametersCommandFailure interface {
 	GetFeedbackValue() BACnetConstructedData
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersCommandFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersCommandFailure.
+// This is useful for switch cases.
+type BACnetNotificationParametersCommandFailureExactly interface {
+	BACnetNotificationParametersCommandFailure
+	isBACnetNotificationParametersCommandFailure() bool
 }
 
 // _BACnetNotificationParametersCommandFailure is the data-structure of this message
@@ -55,10 +58,6 @@ type _BACnetNotificationParametersCommandFailure struct {
 	StatusFlags     BACnetStatusFlagsTagged
 	FeedbackValue   BACnetConstructedData
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,12 +248,15 @@ func BACnetNotificationParametersCommandFailureParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersCommandFailure{
-		InnerOpeningTag:               innerOpeningTag,
-		CommandValue:                  commandValue,
-		StatusFlags:                   statusFlags,
-		FeedbackValue:                 feedbackValue,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		CommandValue:    commandValue,
+		StatusFlags:     statusFlags,
+		FeedbackValue:   feedbackValue,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -334,6 +336,10 @@ func (m *_BACnetNotificationParametersCommandFailure) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersCommandFailure) isBACnetNotificationParametersCommandFailure() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersCommandFailure) String() string {

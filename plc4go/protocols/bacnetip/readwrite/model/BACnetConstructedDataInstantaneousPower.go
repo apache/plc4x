@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataInstantaneousPower is the corresponding interface of BACnetConstructedDataInstantaneousPower
 type BACnetConstructedDataInstantaneousPower interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInstantaneousPower returns InstantaneousPower (property field)
 	GetInstantaneousPower() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataInstantaneousPowerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInstantaneousPower.
+// This is useful for switch cases.
+type BACnetConstructedDataInstantaneousPowerExactly interface {
+	BACnetConstructedDataInstantaneousPower
+	isBACnetConstructedDataInstantaneousPower() bool
 }
 
 // _BACnetConstructedDataInstantaneousPower is the data-structure of this message
 type _BACnetConstructedDataInstantaneousPower struct {
 	*_BACnetConstructedData
 	InstantaneousPower BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataInstantaneousPowerParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataInstantaneousPower{
-		InstantaneousPower:     instantaneousPower,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		InstantaneousPower: instantaneousPower,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataInstantaneousPower) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInstantaneousPower) isBACnetConstructedDataInstantaneousPower() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInstantaneousPower) String() string {

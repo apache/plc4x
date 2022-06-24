@@ -28,15 +28,18 @@ import (
 
 // BACnetLogDataLogDataEntryRealValue is the corresponding interface of BACnetLogDataLogDataEntryRealValue
 type BACnetLogDataLogDataEntryRealValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataEntryRealValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryRealValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryRealValueExactly interface {
+	BACnetLogDataLogDataEntryRealValue
+	isBACnetLogDataLogDataEntryRealValue() bool
 }
 
 // _BACnetLogDataLogDataEntryRealValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetLogDataLogDataEntryRealValue) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryRealValue) isBACnetLogDataLogDataEntryRealValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryRealValue) String() string {

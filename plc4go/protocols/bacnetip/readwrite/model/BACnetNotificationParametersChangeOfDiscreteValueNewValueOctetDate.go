@@ -28,24 +28,24 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() bool
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	DateValue BACnetApplicationTagDate
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateParse(rea
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{
 		DateValue: dateValue,
-		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{},
+		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) Se
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) isBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) String() string {

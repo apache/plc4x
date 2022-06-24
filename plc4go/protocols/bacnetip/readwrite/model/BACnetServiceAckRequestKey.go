@@ -28,15 +28,18 @@ import (
 
 // BACnetServiceAckRequestKey is the corresponding interface of BACnetServiceAckRequestKey
 type BACnetServiceAckRequestKey interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckRequestKeyExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckRequestKey.
+// This is useful for switch cases.
+type BACnetServiceAckRequestKeyExactly interface {
+	BACnetServiceAckRequestKey
+	isBACnetServiceAckRequestKey() bool
 }
 
 // _BACnetServiceAckRequestKey is the data-structure of this message
@@ -45,7 +48,6 @@ type _BACnetServiceAckRequestKey struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckLength        uint16
 	ServiceAckPayloadLength uint16
 }
 
@@ -149,7 +151,9 @@ func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLeng
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckRequestKey{
 		BytesOfRemovedService: bytesOfRemovedService,
-		_BACnetServiceAck:     &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -164,12 +168,9 @@ func (m *_BACnetServiceAckRequestKey) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Array Field (bytesOfRemovedService)
-		if m.GetBytesOfRemovedService() != nil {
-			// Byte Array field (bytesOfRemovedService)
-			_writeArrayErr := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'bytesOfRemovedService' field")
-			}
+		// Byte Array field (bytesOfRemovedService)
+		if err := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService()); err != nil {
+			return errors.Wrap(err, "Error serializing 'bytesOfRemovedService' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckRequestKey"); popErr != nil {
@@ -178,6 +179,10 @@ func (m *_BACnetServiceAckRequestKey) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckRequestKey) isBACnetServiceAckRequestKey() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckRequestKey) String() string {

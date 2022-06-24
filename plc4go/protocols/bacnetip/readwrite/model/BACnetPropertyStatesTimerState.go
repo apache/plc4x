@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesTimerState is the corresponding interface of BACnetPropertyStatesTimerState
 type BACnetPropertyStatesTimerState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetTimerState returns TimerState (property field)
 	GetTimerState() BACnetTimerStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesTimerStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesTimerState.
+// This is useful for switch cases.
+type BACnetPropertyStatesTimerStateExactly interface {
+	BACnetPropertyStatesTimerState
+	isBACnetPropertyStatesTimerState() bool
 }
 
 // _BACnetPropertyStatesTimerState is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesTimerState) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesTimerState) isBACnetPropertyStatesTimerState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesTimerState) String() string {

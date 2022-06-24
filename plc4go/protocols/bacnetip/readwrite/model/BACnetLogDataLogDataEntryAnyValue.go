@@ -30,15 +30,18 @@ import (
 
 // BACnetLogDataLogDataEntryAnyValue is the corresponding interface of BACnetLogDataLogDataEntryAnyValue
 type BACnetLogDataLogDataEntryAnyValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetAnyValue returns AnyValue (property field)
 	GetAnyValue() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataEntryAnyValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryAnyValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryAnyValueExactly interface {
+	BACnetLogDataLogDataEntryAnyValue
+	isBACnetLogDataLogDataEntryAnyValue() bool
 }
 
 // _BACnetLogDataLogDataEntryAnyValue is the data-structure of this message
@@ -197,6 +200,10 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValue) isBACnetLogDataLogDataEntryAnyValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) String() string {

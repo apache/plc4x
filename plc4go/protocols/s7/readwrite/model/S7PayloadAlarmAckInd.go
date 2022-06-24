@@ -28,15 +28,18 @@ import (
 
 // S7PayloadAlarmAckInd is the corresponding interface of S7PayloadAlarmAckInd
 type S7PayloadAlarmAckInd interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessageAckPushType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadAlarmAckIndExactly can be used when we want exactly this type and not a type which fulfills S7PayloadAlarmAckInd.
+// This is useful for switch cases.
+type S7PayloadAlarmAckIndExactly interface {
+	S7PayloadAlarmAckInd
+	isS7PayloadAlarmAckInd() bool
 }
 
 // _S7PayloadAlarmAckInd is the data-structure of this message
@@ -193,6 +196,10 @@ func (m *_S7PayloadAlarmAckInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadAlarmAckInd) isS7PayloadAlarmAckInd() bool {
+	return true
 }
 
 func (m *_S7PayloadAlarmAckInd) String() string {

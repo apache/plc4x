@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryBoolean is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryBoolean
 type BACnetFaultParameterFaultExtendedParametersEntryBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryBoolean.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryBooleanExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryBoolean
+	isBACnetFaultParameterFaultExtendedParametersEntryBoolean() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryBoolean is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) isBACnetFaultParameterFaultExtendedParametersEntryBoolean() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) String() string {

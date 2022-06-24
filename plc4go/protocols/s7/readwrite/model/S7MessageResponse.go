@@ -28,17 +28,20 @@ import (
 
 // S7MessageResponse is the corresponding interface of S7MessageResponse
 type S7MessageResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Message
 	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() uint8
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7MessageResponseExactly can be used when we want exactly this type and not a type which fulfills S7MessageResponse.
+// This is useful for switch cases.
+type S7MessageResponseExactly interface {
+	S7MessageResponse
+	isS7MessageResponse() bool
 }
 
 // _S7MessageResponse is the data-structure of this message
@@ -201,6 +204,10 @@ func (m *_S7MessageResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageResponse) isS7MessageResponse() bool {
+	return true
 }
 
 func (m *_S7MessageResponse) String() string {

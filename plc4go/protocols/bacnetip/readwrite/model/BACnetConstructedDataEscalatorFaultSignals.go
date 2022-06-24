@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataEscalatorFaultSignals is the corresponding interface of BACnetConstructedDataEscalatorFaultSignals
 type BACnetConstructedDataEscalatorFaultSignals interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultSignals returns FaultSignals (property field)
 	GetFaultSignals() []BACnetEscalatorFaultTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEscalatorFaultSignalsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEscalatorFaultSignals.
+// This is useful for switch cases.
+type BACnetConstructedDataEscalatorFaultSignalsExactly interface {
+	BACnetConstructedDataEscalatorFaultSignals
+	isBACnetConstructedDataEscalatorFaultSignals() bool
 }
 
 // _BACnetConstructedDataEscalatorFaultSignals is the data-structure of this message
 type _BACnetConstructedDataEscalatorFaultSignals struct {
 	*_BACnetConstructedData
 	FaultSignals []BACnetEscalatorFaultTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataEscalatorFaultSignalsParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for faultSignals")
 	}
 	// Terminated array
-	faultSignals := make([]BACnetEscalatorFaultTagged, 0)
+	var faultSignals []BACnetEscalatorFaultTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetEscalatorFaultTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -172,8 +171,11 @@ func BACnetConstructedDataEscalatorFaultSignalsParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEscalatorFaultSignals{
-		FaultSignals:           faultSignals,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FaultSignals: faultSignals,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) Serialize(writeBuffer util
 		}
 
 		// Array Field (faultSignals)
-		if m.GetFaultSignals() != nil {
-			if pushErr := writeBuffer.PushContext("faultSignals", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for faultSignals")
+		if pushErr := writeBuffer.PushContext("faultSignals", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for faultSignals")
+		}
+		for _, _element := range m.GetFaultSignals() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'faultSignals' field")
 			}
-			for _, _element := range m.GetFaultSignals() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'faultSignals' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("faultSignals", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for faultSignals")
-			}
+		}
+		if popErr := writeBuffer.PopContext("faultSignals", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for faultSignals")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEscalatorFaultSignals"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignals) isBACnetConstructedDataEscalatorFaultSignals() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEscalatorFaultSignals) String() string {

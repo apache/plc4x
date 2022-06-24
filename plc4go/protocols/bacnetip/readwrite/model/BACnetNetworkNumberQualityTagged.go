@@ -28,16 +28,19 @@ import (
 
 // BACnetNetworkNumberQualityTagged is the corresponding interface of BACnetNetworkNumberQualityTagged
 type BACnetNetworkNumberQualityTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNetworkNumberQuality
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNetworkNumberQualityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkNumberQualityTagged.
+// This is useful for switch cases.
+type BACnetNetworkNumberQualityTaggedExactly interface {
+	BACnetNetworkNumberQualityTagged
+	isBACnetNetworkNumberQualityTagged() bool
 }
 
 // _BACnetNetworkNumberQualityTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetNetworkNumberQualityTagged) Serialize(writeBuffer utils.WriteBuf
 		return errors.Wrap(popErr, "Error popping for BACnetNetworkNumberQualityTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetNetworkNumberQualityTagged) isBACnetNetworkNumberQualityTagged() bool {
+	return true
 }
 
 func (m *_BACnetNetworkNumberQualityTagged) String() string {

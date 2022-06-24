@@ -28,15 +28,18 @@ import (
 
 // BACnetTimeStampDateTime is the corresponding interface of BACnetTimeStampDateTime
 type BACnetTimeStampDateTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimeStamp
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimeStampDateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampDateTime.
+// This is useful for switch cases.
+type BACnetTimeStampDateTimeExactly interface {
+	BACnetTimeStampDateTime
+	isBACnetTimeStampDateTime() bool
 }
 
 // _BACnetTimeStampDateTime is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetTimeStampDateTime) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimeStampDateTime) isBACnetTimeStampDateTime() bool {
+	return true
 }
 
 func (m *_BACnetTimeStampDateTime) String() string {

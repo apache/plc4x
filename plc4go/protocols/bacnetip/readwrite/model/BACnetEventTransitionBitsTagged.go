@@ -28,6 +28,8 @@ import (
 
 // BACnetEventTransitionBitsTagged is the corresponding interface of BACnetEventTransitionBitsTagged
 type BACnetEventTransitionBitsTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -38,12 +40,13 @@ type BACnetEventTransitionBitsTagged interface {
 	GetToFault() bool
 	// GetToNormal returns ToNormal (virtual field)
 	GetToNormal() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventTransitionBitsTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetEventTransitionBitsTagged.
+// This is useful for switch cases.
+type BACnetEventTransitionBitsTaggedExactly interface {
+	BACnetEventTransitionBitsTagged
+	isBACnetEventTransitionBitsTagged() bool
 }
 
 // _BACnetEventTransitionBitsTagged is the data-structure of this message
@@ -256,6 +259,10 @@ func (m *_BACnetEventTransitionBitsTagged) Serialize(writeBuffer utils.WriteBuff
 		return errors.Wrap(popErr, "Error popping for BACnetEventTransitionBitsTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetEventTransitionBitsTagged) isBACnetEventTransitionBitsTagged() bool {
+	return true
 }
 
 func (m *_BACnetEventTransitionBitsTagged) String() string {

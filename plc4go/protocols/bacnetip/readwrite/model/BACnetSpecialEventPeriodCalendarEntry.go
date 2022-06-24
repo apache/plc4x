@@ -28,15 +28,18 @@ import (
 
 // BACnetSpecialEventPeriodCalendarEntry is the corresponding interface of BACnetSpecialEventPeriodCalendarEntry
 type BACnetSpecialEventPeriodCalendarEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetSpecialEventPeriod
 	// GetCalendarEntry returns CalendarEntry (property field)
 	GetCalendarEntry() BACnetCalendarEntryEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSpecialEventPeriodCalendarEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriodCalendarEntry.
+// This is useful for switch cases.
+type BACnetSpecialEventPeriodCalendarEntryExactly interface {
+	BACnetSpecialEventPeriodCalendarEntry
+	isBACnetSpecialEventPeriodCalendarEntry() bool
 }
 
 // _BACnetSpecialEventPeriodCalendarEntry is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntry) isBACnetSpecialEventPeriodCalendarEntry() bool {
+	return true
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetIPModeTagged is the corresponding interface of BACnetIPModeTagged
 type BACnetIPModeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetIPMode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetIPModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetIPModeTagged.
+// This is useful for switch cases.
+type BACnetIPModeTaggedExactly interface {
+	BACnetIPModeTagged
+	isBACnetIPModeTagged() bool
 }
 
 // _BACnetIPModeTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetIPModeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetIPModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetIPModeTagged) isBACnetIPModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetIPModeTagged) String() string {

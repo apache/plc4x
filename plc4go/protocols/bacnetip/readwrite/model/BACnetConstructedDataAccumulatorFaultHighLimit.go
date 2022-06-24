@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccumulatorFaultHighLimit is the corresponding interface of BACnetConstructedDataAccumulatorFaultHighLimit
 type BACnetConstructedDataAccumulatorFaultHighLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultHighLimit returns FaultHighLimit (property field)
 	GetFaultHighLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccumulatorFaultHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorFaultHighLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataAccumulatorFaultHighLimitExactly interface {
+	BACnetConstructedDataAccumulatorFaultHighLimit
+	isBACnetConstructedDataAccumulatorFaultHighLimit() bool
 }
 
 // _BACnetConstructedDataAccumulatorFaultHighLimit is the data-structure of this message
 type _BACnetConstructedDataAccumulatorFaultHighLimit struct {
 	*_BACnetConstructedData
 	FaultHighLimit BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccumulatorFaultHighLimitParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccumulatorFaultHighLimit{
-		FaultHighLimit:         faultHighLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FaultHighLimit: faultHighLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccumulatorFaultHighLimit) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccumulatorFaultHighLimit) isBACnetConstructedDataAccumulatorFaultHighLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccumulatorFaultHighLimit) String() string {

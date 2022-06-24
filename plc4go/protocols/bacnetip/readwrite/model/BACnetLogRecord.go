@@ -30,18 +30,21 @@ import (
 
 // BACnetLogRecord is the corresponding interface of BACnetLogRecord
 type BACnetLogRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogDatum returns LogDatum (property field)
 	GetLogDatum() BACnetLogRecordLogDatum
 	// GetStatusFlags returns StatusFlags (property field)
 	GetStatusFlags() BACnetStatusFlagsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecord.
+// This is useful for switch cases.
+type BACnetLogRecordExactly interface {
+	BACnetLogRecord
+	isBACnetLogRecord() bool
 }
 
 // _BACnetLogRecord is the data-structure of this message
@@ -234,6 +237,10 @@ func (m *_BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetLogRecord")
 	}
 	return nil
+}
+
+func (m *_BACnetLogRecord) isBACnetLogRecord() bool {
+	return true
 }
 
 func (m *_BACnetLogRecord) String() string {

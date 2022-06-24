@@ -28,15 +28,18 @@ import (
 
 // AdsDeleteDeviceNotificationRequest is the corresponding interface of AdsDeleteDeviceNotificationRequest
 type AdsDeleteDeviceNotificationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsDeleteDeviceNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills AdsDeleteDeviceNotificationRequest.
+// This is useful for switch cases.
+type AdsDeleteDeviceNotificationRequestExactly interface {
+	AdsDeleteDeviceNotificationRequest
+	isAdsDeleteDeviceNotificationRequest() bool
 }
 
 // _AdsDeleteDeviceNotificationRequest is the data-structure of this message
@@ -175,6 +178,10 @@ func (m *_AdsDeleteDeviceNotificationRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsDeleteDeviceNotificationRequest) isAdsDeleteDeviceNotificationRequest() bool {
+	return true
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) String() string {

@@ -28,13 +28,16 @@ import (
 
 // BVLCReadBroadcastDistributionTable is the corresponding interface of BVLCReadBroadcastDistributionTable
 type BVLCReadBroadcastDistributionTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCReadBroadcastDistributionTableExactly can be used when we want exactly this type and not a type which fulfills BVLCReadBroadcastDistributionTable.
+// This is useful for switch cases.
+type BVLCReadBroadcastDistributionTableExactly interface {
+	BVLCReadBroadcastDistributionTable
+	isBVLCReadBroadcastDistributionTable() bool
 }
 
 // _BVLCReadBroadcastDistributionTable is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_BVLCReadBroadcastDistributionTable) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCReadBroadcastDistributionTable) isBVLCReadBroadcastDistributionTable() bool {
+	return true
 }
 
 func (m *_BVLCReadBroadcastDistributionTable) String() string {

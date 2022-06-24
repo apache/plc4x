@@ -28,21 +28,21 @@ import (
 
 // MResetInd is the corresponding interface of MResetInd
 type MResetInd interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MResetIndExactly can be used when we want exactly this type and not a type which fulfills MResetInd.
+// This is useful for switch cases.
+type MResetIndExactly interface {
+	MResetInd
+	isMResetInd() bool
 }
 
 // _MResetInd is the data-structure of this message
 type _MResetInd struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func MResetIndParse(readBuffer utils.ReadBuffer, size uint16) (MResetInd, error)
 
 	// Create a partially initialized instance
 	_child := &_MResetInd{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_MResetInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MResetInd) isMResetInd() bool {
+	return true
 }
 
 func (m *_MResetInd) String() string {

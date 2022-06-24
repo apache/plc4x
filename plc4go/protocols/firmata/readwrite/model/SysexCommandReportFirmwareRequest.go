@@ -28,13 +28,16 @@ import (
 
 // SysexCommandReportFirmwareRequest is the corresponding interface of SysexCommandReportFirmwareRequest
 type SysexCommandReportFirmwareRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandReportFirmwareRequestExactly can be used when we want exactly this type and not a type which fulfills SysexCommandReportFirmwareRequest.
+// This is useful for switch cases.
+type SysexCommandReportFirmwareRequestExactly interface {
+	SysexCommandReportFirmwareRequest
+	isSysexCommandReportFirmwareRequest() bool
 }
 
 // _SysexCommandReportFirmwareRequest is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_SysexCommandReportFirmwareRequest) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandReportFirmwareRequest) isSysexCommandReportFirmwareRequest() bool {
+	return true
 }
 
 func (m *_SysexCommandReportFirmwareRequest) String() string {

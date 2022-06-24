@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataExitPoints is the corresponding interface of BACnetConstructedDataExitPoints
 type BACnetConstructedDataExitPoints interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetExitPoints returns ExitPoints (property field)
 	GetExitPoints() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataExitPointsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExitPoints.
+// This is useful for switch cases.
+type BACnetConstructedDataExitPointsExactly interface {
+	BACnetConstructedDataExitPoints
+	isBACnetConstructedDataExitPoints() bool
 }
 
 // _BACnetConstructedDataExitPoints is the data-structure of this message
 type _BACnetConstructedDataExitPoints struct {
 	*_BACnetConstructedData
 	ExitPoints []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataExitPointsParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, errors.Wrap(pullErr, "Error pulling for exitPoints")
 	}
 	// Terminated array
-	exitPoints := make([]BACnetDeviceObjectReference, 0)
+	var exitPoints []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataExitPointsParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataExitPoints{
-		ExitPoints:             exitPoints,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ExitPoints: exitPoints,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataExitPoints) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (exitPoints)
-		if m.GetExitPoints() != nil {
-			if pushErr := writeBuffer.PushContext("exitPoints", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for exitPoints")
+		if pushErr := writeBuffer.PushContext("exitPoints", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for exitPoints")
+		}
+		for _, _element := range m.GetExitPoints() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'exitPoints' field")
 			}
-			for _, _element := range m.GetExitPoints() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'exitPoints' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("exitPoints", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for exitPoints")
-			}
+		}
+		if popErr := writeBuffer.PopContext("exitPoints", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for exitPoints")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExitPoints"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataExitPoints) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataExitPoints) isBACnetConstructedDataExitPoints() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataExitPoints) String() string {

@@ -28,18 +28,21 @@ import (
 
 // BACnetTimeStampsEnclosed is the corresponding interface of BACnetTimeStampsEnclosed
 type BACnetTimeStampsEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetTimestamps returns Timestamps (property field)
 	GetTimestamps() []BACnetTimeStamp
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimeStampsEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampsEnclosed.
+// This is useful for switch cases.
+type BACnetTimeStampsEnclosedExactly interface {
+	BACnetTimeStampsEnclosed
+	isBACnetTimeStampsEnclosed() bool
 }
 
 // _BACnetTimeStampsEnclosed is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetTimeStampsEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamps")
 	}
 	// Terminated array
-	timestamps := make([]BACnetTimeStamp, 0)
+	var timestamps []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetTimeStampsEnclosed) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 
 	// Array Field (timestamps)
-	if m.GetTimestamps() != nil {
-		if pushErr := writeBuffer.PushContext("timestamps", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timestamps")
+	if pushErr := writeBuffer.PushContext("timestamps", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for timestamps")
+	}
+	for _, _element := range m.GetTimestamps() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'timestamps' field")
 		}
-		for _, _element := range m.GetTimestamps() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'timestamps' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("timestamps", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timestamps")
-		}
+	}
+	if popErr := writeBuffer.PopContext("timestamps", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for timestamps")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetTimeStampsEnclosed) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetTimeStampsEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetTimeStampsEnclosed) isBACnetTimeStampsEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetTimeStampsEnclosed) String() string {

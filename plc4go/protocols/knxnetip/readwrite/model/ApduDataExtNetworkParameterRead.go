@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtNetworkParameterRead is the corresponding interface of ApduDataExtNetworkParameterRead
 type ApduDataExtNetworkParameterRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtNetworkParameterReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtNetworkParameterRead.
+// This is useful for switch cases.
+type ApduDataExtNetworkParameterReadExactly interface {
+	ApduDataExtNetworkParameterRead
+	isApduDataExtNetworkParameterRead() bool
 }
 
 // _ApduDataExtNetworkParameterRead is the data-structure of this message
 type _ApduDataExtNetworkParameterRead struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length ui
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtNetworkParameterRead{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtNetworkParameterRead) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtNetworkParameterRead) isApduDataExtNetworkParameterRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtNetworkParameterRead) String() string {

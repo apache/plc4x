@@ -28,13 +28,16 @@ import (
 
 // BVLCReadForeignDeviceTable is the corresponding interface of BVLCReadForeignDeviceTable
 type BVLCReadForeignDeviceTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCReadForeignDeviceTableExactly can be used when we want exactly this type and not a type which fulfills BVLCReadForeignDeviceTable.
+// This is useful for switch cases.
+type BVLCReadForeignDeviceTableExactly interface {
+	BVLCReadForeignDeviceTable
+	isBVLCReadForeignDeviceTable() bool
 }
 
 // _BVLCReadForeignDeviceTable is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_BVLCReadForeignDeviceTable) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCReadForeignDeviceTable) isBVLCReadForeignDeviceTable() bool {
+	return true
 }
 
 func (m *_BVLCReadForeignDeviceTable) String() string {

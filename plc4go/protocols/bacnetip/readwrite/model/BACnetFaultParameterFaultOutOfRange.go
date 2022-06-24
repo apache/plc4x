@@ -28,6 +28,8 @@ import (
 
 // BACnetFaultParameterFaultOutOfRange is the corresponding interface of BACnetFaultParameterFaultOutOfRange
 type BACnetFaultParameterFaultOutOfRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -37,12 +39,13 @@ type BACnetFaultParameterFaultOutOfRange interface {
 	GetMaxNormalValue() BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRange.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeExactly interface {
+	BACnetFaultParameterFaultOutOfRange
+	isBACnetFaultParameterFaultOutOfRange() bool
 }
 
 // _BACnetFaultParameterFaultOutOfRange is the data-structure of this message
@@ -291,6 +294,10 @@ func (m *_BACnetFaultParameterFaultOutOfRange) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRange) isBACnetFaultParameterFaultOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRange) String() string {

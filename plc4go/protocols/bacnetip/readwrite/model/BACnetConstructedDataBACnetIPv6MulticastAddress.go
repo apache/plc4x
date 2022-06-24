@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBACnetIPv6MulticastAddress is the corresponding interface of BACnetConstructedDataBACnetIPv6MulticastAddress
 type BACnetConstructedDataBACnetIPv6MulticastAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6MulticastAddress returns Ipv6MulticastAddress (property field)
 	GetIpv6MulticastAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBACnetIPv6MulticastAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPv6MulticastAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPv6MulticastAddressExactly interface {
+	BACnetConstructedDataBACnetIPv6MulticastAddress
+	isBACnetConstructedDataBACnetIPv6MulticastAddress() bool
 }
 
 // _BACnetConstructedDataBACnetIPv6MulticastAddress is the data-structure of this message
 type _BACnetConstructedDataBACnetIPv6MulticastAddress struct {
 	*_BACnetConstructedData
 	Ipv6MulticastAddress BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
-		Ipv6MulticastAddress:   ipv6MulticastAddress,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Ipv6MulticastAddress: ipv6MulticastAddress,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) isBACnetConstructedDataBACnetIPv6MulticastAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataSilenced is the corresponding interface of BACnetConstructedDataSilenced
 type BACnetConstructedDataSilenced interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSilenced returns Silenced (property field)
 	GetSilenced() BACnetSilencedStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSilencedStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSilencedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSilenced.
+// This is useful for switch cases.
+type BACnetConstructedDataSilencedExactly interface {
+	BACnetConstructedDataSilenced
+	isBACnetConstructedDataSilenced() bool
 }
 
 // _BACnetConstructedDataSilenced is the data-structure of this message
 type _BACnetConstructedDataSilenced struct {
 	*_BACnetConstructedData
 	Silenced BACnetSilencedStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataSilencedParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSilenced{
-		Silenced:               silenced,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Silenced: silenced,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataSilenced) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSilenced) isBACnetConstructedDataSilenced() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSilenced) String() string {

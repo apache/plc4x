@@ -28,21 +28,21 @@ import (
 
 // ApduDataMemoryWrite is the corresponding interface of ApduDataMemoryWrite
 type ApduDataMemoryWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataMemoryWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryWrite.
+// This is useful for switch cases.
+type ApduDataMemoryWriteExactly interface {
+	ApduDataMemoryWrite
+	isApduDataMemoryWrite() bool
 }
 
 // _ApduDataMemoryWrite is the data-structure of this message
 type _ApduDataMemoryWrite struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (Ap
 
 	// Create a partially initialized instance
 	_child := &_ApduDataMemoryWrite{
-		_ApduData: &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataMemoryWrite) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataMemoryWrite) isApduDataMemoryWrite() bool {
+	return true
 }
 
 func (m *_ApduDataMemoryWrite) String() string {

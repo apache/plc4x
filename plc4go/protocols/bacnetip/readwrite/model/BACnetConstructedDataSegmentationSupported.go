@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataSegmentationSupported is the corresponding interface of BACnetConstructedDataSegmentationSupported
 type BACnetConstructedDataSegmentationSupported interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSegmentationSupported returns SegmentationSupported (property field)
 	GetSegmentationSupported() BACnetSegmentationTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSegmentationTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSegmentationSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSegmentationSupported.
+// This is useful for switch cases.
+type BACnetConstructedDataSegmentationSupportedExactly interface {
+	BACnetConstructedDataSegmentationSupported
+	isBACnetConstructedDataSegmentationSupported() bool
 }
 
 // _BACnetConstructedDataSegmentationSupported is the data-structure of this message
 type _BACnetConstructedDataSegmentationSupported struct {
 	*_BACnetConstructedData
 	SegmentationSupported BACnetSegmentationTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataSegmentationSupportedParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSegmentationSupported{
-		SegmentationSupported:  segmentationSupported,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		SegmentationSupported: segmentationSupported,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataSegmentationSupported) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSegmentationSupported) isBACnetConstructedDataSegmentationSupported() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSegmentationSupported) String() string {

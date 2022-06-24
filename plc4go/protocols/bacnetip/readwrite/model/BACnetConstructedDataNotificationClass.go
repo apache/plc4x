@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNotificationClass is the corresponding interface of BACnetConstructedDataNotificationClass
 type BACnetConstructedDataNotificationClass interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNotificationClass returns NotificationClass (property field)
 	GetNotificationClass() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNotificationClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotificationClass.
+// This is useful for switch cases.
+type BACnetConstructedDataNotificationClassExactly interface {
+	BACnetConstructedDataNotificationClass
+	isBACnetConstructedDataNotificationClass() bool
 }
 
 // _BACnetConstructedDataNotificationClass is the data-structure of this message
 type _BACnetConstructedDataNotificationClass struct {
 	*_BACnetConstructedData
 	NotificationClass BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNotificationClass{
-		NotificationClass:      notificationClass,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NotificationClass: notificationClass,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNotificationClass) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNotificationClass) isBACnetConstructedDataNotificationClass() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNotificationClass) String() string {

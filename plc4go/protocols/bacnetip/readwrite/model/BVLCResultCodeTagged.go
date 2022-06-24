@@ -28,16 +28,19 @@ import (
 
 // BVLCResultCodeTagged is the corresponding interface of BVLCResultCodeTagged
 type BVLCResultCodeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BVLCResultCode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCResultCodeTaggedExactly can be used when we want exactly this type and not a type which fulfills BVLCResultCodeTagged.
+// This is useful for switch cases.
+type BVLCResultCodeTaggedExactly interface {
+	BVLCResultCodeTagged
+	isBVLCResultCodeTagged() bool
 }
 
 // _BVLCResultCodeTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BVLCResultCodeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BVLCResultCodeTagged")
 	}
 	return nil
+}
+
+func (m *_BVLCResultCodeTagged) isBVLCResultCodeTagged() bool {
+	return true
 }
 
 func (m *_BVLCResultCodeTagged) String() string {

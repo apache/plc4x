@@ -28,15 +28,18 @@ import (
 
 // SysexCommandExtendedId is the corresponding interface of SysexCommandExtendedId
 type SysexCommandExtendedId interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
 	// GetId returns Id (property field)
 	GetId() []int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandExtendedIdExactly can be used when we want exactly this type and not a type which fulfills SysexCommandExtendedId.
+// This is useful for switch cases.
+type SysexCommandExtendedIdExactly interface {
+	SysexCommandExtendedId
+	isSysexCommandExtendedId() bool
 }
 
 // _SysexCommandExtendedId is the data-structure of this message
@@ -142,6 +145,10 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (Sy
 	}
 	// Count array
 	id := make([]int8, uint16(2))
+	// This happens when the size is set conditional to 0
+	if len(id) == 0 {
+		id = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 			_item, _err := readBuffer.ReadInt8("", 8)
@@ -177,19 +184,17 @@ func (m *_SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		// Array Field (id)
-		if m.GetId() != nil {
-			if pushErr := writeBuffer.PushContext("id", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for id")
+		if pushErr := writeBuffer.PushContext("id", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for id")
+		}
+		for _, _element := range m.GetId() {
+			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'id' field")
 			}
-			for _, _element := range m.GetId() {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'id' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("id", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for id")
-			}
+		}
+		if popErr := writeBuffer.PopContext("id", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for id")
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandExtendedId"); popErr != nil {
@@ -198,6 +203,10 @@ func (m *_SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandExtendedId) isSysexCommandExtendedId() bool {
+	return true
 }
 
 func (m *_SysexCommandExtendedId) String() string {

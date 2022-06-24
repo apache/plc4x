@@ -28,16 +28,19 @@ import (
 
 // BACnetSecurityLevelTagged is the corresponding interface of BACnetSecurityLevelTagged
 type BACnetSecurityLevelTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetSecurityLevel
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSecurityLevelTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityLevelTagged.
+// This is useful for switch cases.
+type BACnetSecurityLevelTaggedExactly interface {
+	BACnetSecurityLevelTagged
+	isBACnetSecurityLevelTagged() bool
 }
 
 // _BACnetSecurityLevelTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetSecurityLevelTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetSecurityLevelTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetSecurityLevelTagged) isBACnetSecurityLevelTagged() bool {
+	return true
 }
 
 func (m *_BACnetSecurityLevelTagged) String() string {

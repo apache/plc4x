@@ -32,6 +32,8 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = uin
 
 // S7PayloadUserDataItemCpuFunctionReadSzlResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionReadSzlResponse
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetSzlId returns SzlId (property field)
 	GetSzlId() SzlId
@@ -39,12 +41,13 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	GetSzlIndex() uint16
 	// GetItems returns Items (property field)
 	GetItems() []SzlDataTreeItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataItemCpuFunctionReadSzlResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionReadSzlResponse.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionReadSzlResponseExactly interface {
+	S7PayloadUserDataItemCpuFunctionReadSzlResponse
+	isS7PayloadUserDataItemCpuFunctionReadSzlResponse() bool
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlResponse is the data-structure of this message
@@ -233,6 +236,10 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	}
 	// Count array
 	items := make([]SzlDataTreeItem, szlItemCount)
+	// This happens when the size is set conditional to 0
+	if len(items) == 0 {
+		items = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
 			_item, _err := SzlDataTreeItemParse(readBuffer)
@@ -302,19 +309,17 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(writeBuffer
 		}
 
 		// Array Field (items)
-		if m.GetItems() != nil {
-			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for items")
+		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for items")
+		}
+		for _, _element := range m.GetItems() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
-			for _, _element := range m.GetItems() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'items' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for items")
-			}
+		}
+		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for items")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); popErr != nil {
@@ -323,6 +328,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) isS7PayloadUserDataItemCpuFunctionReadSzlResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) String() string {

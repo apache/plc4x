@@ -28,6 +28,8 @@ import (
 
 // StatusByte is the corresponding interface of StatusByte
 type StatusByte interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetGav3 returns Gav3 (property field)
 	GetGav3() GAVState
 	// GetGav2 returns Gav2 (property field)
@@ -36,12 +38,13 @@ type StatusByte interface {
 	GetGav1() GAVState
 	// GetGav0 returns Gav0 (property field)
 	GetGav0() GAVState
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// StatusByteExactly can be used when we want exactly this type and not a type which fulfills StatusByte.
+// This is useful for switch cases.
+type StatusByteExactly interface {
+	StatusByte
+	isStatusByte() bool
 }
 
 // _StatusByte is the data-structure of this message
@@ -252,6 +255,10 @@ func (m *_StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for StatusByte")
 	}
 	return nil
+}
+
+func (m *_StatusByte) isStatusByte() bool {
+	return true
 }
 
 func (m *_StatusByte) String() string {

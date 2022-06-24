@@ -28,6 +28,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestIHave is the corresponding interface of BACnetUnconfirmedServiceRequestIHave
 type BACnetUnconfirmedServiceRequestIHave interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -35,12 +37,13 @@ type BACnetUnconfirmedServiceRequestIHave interface {
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetObjectName returns ObjectName (property field)
 	GetObjectName() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestIHaveExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestIHave.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestIHaveExactly interface {
+	BACnetUnconfirmedServiceRequestIHave
+	isBACnetUnconfirmedServiceRequestIHave() bool
 }
 
 // _BACnetUnconfirmedServiceRequestIHave is the data-structure of this message
@@ -49,9 +52,6 @@ type _BACnetUnconfirmedServiceRequestIHave struct {
 	DeviceIdentifier BACnetApplicationTagObjectIdentifier
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
 	ObjectName       BACnetApplicationTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -201,10 +201,12 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, serv
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestIHave{
-		DeviceIdentifier:                 deviceIdentifier,
-		ObjectIdentifier:                 objectIdentifier,
-		ObjectName:                       objectName,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		DeviceIdentifier: deviceIdentifier,
+		ObjectIdentifier: objectIdentifier,
+		ObjectName:       objectName,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -260,6 +262,10 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestIHave) isBACnetUnconfirmedServiceRequestIHave() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIHave) String() string {

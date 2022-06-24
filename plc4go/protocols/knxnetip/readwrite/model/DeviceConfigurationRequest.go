@@ -28,17 +28,20 @@ import (
 
 // DeviceConfigurationRequest is the corresponding interface of DeviceConfigurationRequest
 type DeviceConfigurationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock (property field)
 	GetDeviceConfigurationRequestDataBlock() DeviceConfigurationRequestDataBlock
 	// GetCemi returns Cemi (property field)
 	GetCemi() CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DeviceConfigurationRequestExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationRequest.
+// This is useful for switch cases.
+type DeviceConfigurationRequestExactly interface {
+	DeviceConfigurationRequest
+	isDeviceConfigurationRequest() bool
 }
 
 // _DeviceConfigurationRequest is the data-structure of this message
@@ -222,6 +225,10 @@ func (m *_DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DeviceConfigurationRequest) isDeviceConfigurationRequest() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationRequest) String() string {

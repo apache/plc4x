@@ -28,13 +28,16 @@ import (
 
 // IdentifyReplyCommandCurrentSenseLevels is the corresponding interface of IdentifyReplyCommandCurrentSenseLevels
 type IdentifyReplyCommandCurrentSenseLevels interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandCurrentSenseLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandCurrentSenseLevels.
+// This is useful for switch cases.
+type IdentifyReplyCommandCurrentSenseLevelsExactly interface {
+	IdentifyReplyCommandCurrentSenseLevels
+	isIdentifyReplyCommandCurrentSenseLevels() bool
 }
 
 // _IdentifyReplyCommandCurrentSenseLevels is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandCurrentSenseLevels) isIdentifyReplyCommandCurrentSenseLevels() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) String() string {

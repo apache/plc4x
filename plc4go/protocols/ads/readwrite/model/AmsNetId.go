@@ -28,6 +28,8 @@ import (
 
 // AmsNetId is the corresponding interface of AmsNetId
 type AmsNetId interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() uint8
 	// GetOctet2 returns Octet2 (property field)
@@ -40,12 +42,13 @@ type AmsNetId interface {
 	GetOctet5() uint8
 	// GetOctet6 returns Octet6 (property field)
 	GetOctet6() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AmsNetIdExactly can be used when we want exactly this type and not a type which fulfills AmsNetId.
+// This is useful for switch cases.
+type AmsNetIdExactly interface {
+	AmsNetId
+	isAmsNetId() bool
 }
 
 // _AmsNetId is the data-structure of this message
@@ -256,6 +259,10 @@ func (m *_AmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for AmsNetId")
 	}
 	return nil
+}
+
+func (m *_AmsNetId) isAmsNetId() bool {
+	return true
 }
 
 func (m *_AmsNetId) String() string {

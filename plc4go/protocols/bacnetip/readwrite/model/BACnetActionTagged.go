@@ -28,16 +28,19 @@ import (
 
 // BACnetActionTagged is the corresponding interface of BACnetActionTagged
 type BACnetActionTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAction
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetActionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetActionTagged.
+// This is useful for switch cases.
+type BACnetActionTaggedExactly interface {
+	BACnetActionTagged
+	isBACnetActionTagged() bool
 }
 
 // _BACnetActionTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetActionTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetActionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetActionTagged) isBACnetActionTagged() bool {
+	return true
 }
 
 func (m *_BACnetActionTagged) String() string {

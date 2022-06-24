@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesLightningInProgress is the corresponding interface of BACnetPropertyStatesLightningInProgress
 type BACnetPropertyStatesLightningInProgress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLightningInProgress returns LightningInProgress (property field)
 	GetLightningInProgress() BACnetLightingInProgressTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesLightningInProgressExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLightningInProgress.
+// This is useful for switch cases.
+type BACnetPropertyStatesLightningInProgressExactly interface {
+	BACnetPropertyStatesLightningInProgress
+	isBACnetPropertyStatesLightningInProgress() bool
 }
 
 // _BACnetPropertyStatesLightningInProgress is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesLightningInProgress) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLightningInProgress) isBACnetPropertyStatesLightningInProgress() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLightningInProgress) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPv6AutoAddressingEnable is the corresponding interface of BACnetConstructedDataIPv6AutoAddressingEnable
 type BACnetConstructedDataIPv6AutoAddressingEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAutoAddressingEnable returns AutoAddressingEnable (property field)
 	GetAutoAddressingEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6AutoAddressingEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6AutoAddressingEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6AutoAddressingEnableExactly interface {
+	BACnetConstructedDataIPv6AutoAddressingEnable
+	isBACnetConstructedDataIPv6AutoAddressingEnable() bool
 }
 
 // _BACnetConstructedDataIPv6AutoAddressingEnable is the data-structure of this message
 type _BACnetConstructedDataIPv6AutoAddressingEnable struct {
 	*_BACnetConstructedData
 	AutoAddressingEnable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6AutoAddressingEnable{
-		AutoAddressingEnable:   autoAddressingEnable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AutoAddressingEnable: autoAddressingEnable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) isBACnetConstructedDataIPv6AutoAddressingEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) String() string {

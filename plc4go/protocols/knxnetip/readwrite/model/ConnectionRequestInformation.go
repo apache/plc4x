@@ -28,14 +28,17 @@ import (
 
 // ConnectionRequestInformation is the corresponding interface of ConnectionRequestInformation
 type ConnectionRequestInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConnectionRequestInformationExactly can be used when we want exactly this type and not a type which fulfills ConnectionRequestInformation.
+// This is useful for switch cases.
+type ConnectionRequestInformationExactly interface {
+	ConnectionRequestInformation
+	isConnectionRequestInformation() bool
 }
 
 // _ConnectionRequestInformation is the data-structure of this message
@@ -44,10 +47,10 @@ type _ConnectionRequestInformation struct {
 }
 
 type _ConnectionRequestInformationChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetConnectionType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ConnectionRequestInformationParent interface {
@@ -56,7 +59,7 @@ type ConnectionRequestInformationParent interface {
 }
 
 type ConnectionRequestInformationChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ConnectionRequestInformation)
 	GetParent() *ConnectionRequestInformation
 
@@ -187,6 +190,10 @@ func (pm *_ConnectionRequestInformation) SerializeParent(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for ConnectionRequestInformation")
 	}
 	return nil
+}
+
+func (m *_ConnectionRequestInformation) isConnectionRequestInformation() bool {
+	return true
 }
 
 func (m *_ConnectionRequestInformation) String() string {

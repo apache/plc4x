@@ -28,15 +28,18 @@ import (
 
 // BACnetServiceAckReadPropertyConditional is the corresponding interface of BACnetServiceAckReadPropertyConditional
 type BACnetServiceAckReadPropertyConditional interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckReadPropertyConditionalExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadPropertyConditional.
+// This is useful for switch cases.
+type BACnetServiceAckReadPropertyConditionalExactly interface {
+	BACnetServiceAckReadPropertyConditional
+	isBACnetServiceAckReadPropertyConditional() bool
 }
 
 // _BACnetServiceAckReadPropertyConditional is the data-structure of this message
@@ -45,7 +48,6 @@ type _BACnetServiceAckReadPropertyConditional struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckLength        uint16
 	ServiceAckPayloadLength uint16
 }
 
@@ -149,7 +151,9 @@ func BACnetServiceAckReadPropertyConditionalParse(readBuffer utils.ReadBuffer, s
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckReadPropertyConditional{
 		BytesOfRemovedService: bytesOfRemovedService,
-		_BACnetServiceAck:     &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -164,12 +168,9 @@ func (m *_BACnetServiceAckReadPropertyConditional) Serialize(writeBuffer utils.W
 		}
 
 		// Array Field (bytesOfRemovedService)
-		if m.GetBytesOfRemovedService() != nil {
-			// Byte Array field (bytesOfRemovedService)
-			_writeArrayErr := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'bytesOfRemovedService' field")
-			}
+		// Byte Array field (bytesOfRemovedService)
+		if err := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService()); err != nil {
+			return errors.Wrap(err, "Error serializing 'bytesOfRemovedService' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadPropertyConditional"); popErr != nil {
@@ -178,6 +179,10 @@ func (m *_BACnetServiceAckReadPropertyConditional) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckReadPropertyConditional) isBACnetServiceAckReadPropertyConditional() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckReadPropertyConditional) String() string {

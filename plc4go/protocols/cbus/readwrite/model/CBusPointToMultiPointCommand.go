@@ -28,14 +28,17 @@ import (
 
 // CBusPointToMultiPointCommand is the corresponding interface of CBusPointToMultiPointCommand
 type CBusPointToMultiPointCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusPointToMultiPointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommand.
+// This is useful for switch cases.
+type CBusPointToMultiPointCommandExactly interface {
+	CBusPointToMultiPointCommand
+	isCBusPointToMultiPointCommand() bool
 }
 
 // _CBusPointToMultiPointCommand is the data-structure of this message
@@ -48,9 +51,9 @@ type _CBusPointToMultiPointCommand struct {
 }
 
 type _CBusPointToMultiPointCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CBusPointToMultiPointCommandParent interface {
@@ -59,7 +62,7 @@ type CBusPointToMultiPointCommandParent interface {
 }
 
 type CBusPointToMultiPointCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CBusPointToMultiPointCommand, peekedApplication byte)
 	GetParent() *CBusPointToMultiPointCommand
 
@@ -180,6 +183,10 @@ func (pm *_CBusPointToMultiPointCommand) SerializeParent(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for CBusPointToMultiPointCommand")
 	}
 	return nil
+}
+
+func (m *_CBusPointToMultiPointCommand) isCBusPointToMultiPointCommand() bool {
+	return true
 }
 
 func (m *_CBusPointToMultiPointCommand) String() string {

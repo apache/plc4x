@@ -40,61 +40,61 @@
     [virtual       uint 8   actualTagNumber 'header.actualTagNumber'                                                    ]
     [virtual       uint 32  actualLength    'header.actualLength'                                                       ]
     [typeSwitch actualTagNumber
-        ['0x0' BACnetApplicationTagNull
+        ['0x0' *Null
         ]
-        ['0x1' BACnetApplicationTagBoolean(BACnetTagHeader header)
+        ['0x1' *Boolean(BACnetTagHeader header)
             [simple BACnetTagPayloadBoolean('header.actualLength')
                                 payload                                                                                 ]
             [virtual    bit     actualValue 'payload.value'                                                             ]
         ]
-        ['0x2' BACnetApplicationTagUnsignedInteger(BACnetTagHeader header)
+        ['0x2' *UnsignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadUnsignedInteger('header.actualLength')
                                 payload                                                                                 ]
             [virtual    uint 64 actualValue   'payload.actualValue'                                                     ]
         ]
-        ['0x3' BACnetApplicationTagSignedInteger(BACnetTagHeader header)
+        ['0x3' *SignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
             [virtual    uint 64    actualValue   'payload.actualValue'                                                  ]
         ]
-        ['0x4' BACnetApplicationTagReal
+        ['0x4' *Real
             [simple BACnetTagPayloadReal
                                 payload                                                                                 ]
 
             [virtual    float 32     actualValue 'payload.value'                                                        ]
         ]
-        ['0x5' BACnetApplicationTagDouble
+        ['0x5' *Double
             [simple BACnetTagPayloadDouble
                                 payload                                                                                 ]
             [virtual    float 64     actualValue 'payload.value'                                                        ]
         ]
-        ['0x6' BACnetApplicationTagOctetString(BACnetTagHeader header)
+        ['0x6' *OctetString(BACnetTagHeader header)
             [simple BACnetTagPayloadOctetString('header.actualLength')
                                 payload                                                                                 ]
         ]
-        ['0x7' BACnetApplicationTagCharacterString(BACnetTagHeader header)
+        ['0x7' *CharacterString(BACnetTagHeader header)
             [simple BACnetTagPayloadCharacterString('header.actualLength')
                                 payload                                                                                 ]
             [virtual vstring     value             'payload.value'                                                      ]
         ]
-        ['0x8' BACnetApplicationTagBitString(BACnetTagHeader header)
+        ['0x8' *BitString(BACnetTagHeader header)
             [simple BACnetTagPayloadBitString('header.actualLength')
                                 payload                                                                                 ]
         ]
-        ['0x9' BACnetApplicationTagEnumerated(BACnetTagHeader header)
+        ['0x9' *Enumerated(BACnetTagHeader header)
             [simple BACnetTagPayloadEnumerated('header.actualLength')
                                 payload                                                                                 ]
             [virtual  uint 32   actualValue 'payload.actualValue'                                                       ]
         ]
-        ['0xA' BACnetApplicationTagDate
+        ['0xA' *Date
             [simple BACnetTagPayloadDate
                                 payload                                                                                 ]
         ]
-        ['0xB' BACnetApplicationTagTime
+        ['0xB' *Time
             [simple BACnetTagPayloadTime
                                 payload                                                                                 ]
         ]
-        ['0xC' BACnetApplicationTagObjectIdentifier
+        ['0xC' *ObjectIdentifier
             [simple BACnetTagPayloadObjectIdentifier
                                 payload                                                                                 ]
             [virtual    BACnetObjectType
@@ -116,64 +116,64 @@
     [validation    'header.lengthValueType != 6 && header.lengthValueType != 7'
                    "length 6 and 7 reserved for opening and closing tag" shouldFail=false                               ]
     [typeSwitch dataType
-        ['NULL' BACnetContextTagNull(BACnetTagHeader header)
+        ['NULL' *Null(BACnetTagHeader header)
             [validation 'header.actualLength == 0' "length field should be 0"                                           ]
         ]
-        ['BOOLEAN' BACnetContextTagBoolean(BACnetTagHeader header)
+        ['BOOLEAN' *Boolean(BACnetTagHeader header)
             [validation 'header.actualLength == 1' "length field should be 1"                                           ]
             [simple  uint 8 value                                                                                       ]
             [simple BACnetTagPayloadBoolean('value')
                             payload                                                                                     ]
             [virtual bit    actualValue 'payload.value'                                                                 ]
         ]
-        ['UNSIGNED_INTEGER' BACnetContextTagUnsignedInteger(BACnetTagHeader header)
+        ['UNSIGNED_INTEGER' *UnsignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadUnsignedInteger('header.actualLength')
                                 payload                                                                                 ]
             [virtual    uint 64 actualValue 'payload.actualValue'                                                       ]
         ]
-        ['SIGNED_INTEGER' BACnetContextTagSignedInteger(BACnetTagHeader header)
+        ['SIGNED_INTEGER' *SignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
             [virtual    uint 64     actualValue 'payload.actualValue'                                                   ]
         ]
-        ['REAL' BACnetContextTagReal
+        ['REAL' *Real
             [simple BACnetTagPayloadReal
                                     payload                                                                             ]
             [virtual    float 32     actualValue 'payload.value'                                                        ]
         ]
-        ['DOUBLE' BACnetContextTagDouble
+        ['DOUBLE' *Double
             [simple BACnetTagPayloadDouble
                                 payload                                                                                 ]
 
             [virtual    float 64     actualValue 'payload.value'                                                        ]
         ]
-        ['OCTET_STRING' BACnetContextTagOctetString(BACnetTagHeader header)
+        ['OCTET_STRING' *OctetString(BACnetTagHeader header)
             [simple BACnetTagPayloadOctetString('header.actualLength')
                                 payload                                                                                 ]
         ]
-        ['CHARACTER_STRING' BACnetContextTagCharacterString(BACnetTagHeader header)
+        ['CHARACTER_STRING' *CharacterString(BACnetTagHeader header)
             [simple BACnetTagPayloadCharacterString('header.actualLength')
                                 payload                                                                                 ]
             [virtual vstring     value             'payload.value'                                                      ]
         ]
-        ['BIT_STRING' BACnetContextTagBitString(BACnetTagHeader header)
+        ['BIT_STRING' *BitString(BACnetTagHeader header)
             [simple BACnetTagPayloadBitString('header.actualLength')
                                 payload                                                                                 ]
         ]
-        ['ENUMERATED' BACnetContextTagEnumerated(BACnetTagHeader header)
+        ['ENUMERATED' *Enumerated(BACnetTagHeader header)
             [simple BACnetTagPayloadEnumerated('header.actualLength')
                                 payload                                                                                 ]
             [virtual  uint 32   actualValue 'payload.actualValue'                                                       ]
         ]
-        ['DATE' BACnetContextTagDate
+        ['DATE' *Date
             [simple BACnetTagPayloadDate
                                 payload                                                                                 ]
         ]
-        ['TIME' BACnetContextTagTime
+        ['TIME' *Time
             [simple     BACnetTagPayloadTime
                                 payload                                                                                 ]
         ]
-        ['BACNET_OBJECT_IDENTIFIER' BACnetContextTagObjectIdentifier
+        ['BACNET_OBJECT_IDENTIFIER' *ObjectIdentifier
             [simple  BACnetTagPayloadObjectIdentifier
                                 payload                                                                                 ]
             [virtual BACnetObjectType
@@ -181,7 +181,7 @@
             [virtual uint 22    instanceNumber
                                                'payload.instanceNumber'                                                 ]
         ]
-        ['UNKNOWN' BACnetContextTagUnknown(uint 32 actualLength)
+        ['UNKNOWN' *Unknown(uint 32 actualLength)
             [array byte unknownData length 'actualLength'                                                               ]
         ]
     ]

@@ -34,17 +34,20 @@ const S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ uint8 
 
 // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetPudicfReturnCode returns PudicfReturnCode (property field)
 	GetPudicfReturnCode() DataTransportErrorCode
 	// GetPudicftransportSize returns PudicftransportSize (property field)
 	GetPudicftransportSize() DataTransportSize
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataItemCpuFunctionAlarmQueryResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionAlarmQueryResponseExactly interface {
+	S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+	isS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() bool
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the data-structure of this message
@@ -314,6 +317,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) isS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {

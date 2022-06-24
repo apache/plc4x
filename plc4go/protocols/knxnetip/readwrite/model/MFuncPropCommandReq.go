@@ -28,21 +28,21 @@ import (
 
 // MFuncPropCommandReq is the corresponding interface of MFuncPropCommandReq
 type MFuncPropCommandReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MFuncPropCommandReqExactly can be used when we want exactly this type and not a type which fulfills MFuncPropCommandReq.
+// This is useful for switch cases.
+type MFuncPropCommandReqExactly interface {
+	MFuncPropCommandReq
+	isMFuncPropCommandReq() bool
 }
 
 // _MFuncPropCommandReq is the data-structure of this message
 type _MFuncPropCommandReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (MFuncPr
 
 	// Create a partially initialized instance
 	_child := &_MFuncPropCommandReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_MFuncPropCommandReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MFuncPropCommandReq) isMFuncPropCommandReq() bool {
+	return true
 }
 
 func (m *_MFuncPropCommandReq) String() string {

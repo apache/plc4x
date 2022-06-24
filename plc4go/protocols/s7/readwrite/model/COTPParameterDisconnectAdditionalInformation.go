@@ -28,24 +28,24 @@ import (
 
 // COTPParameterDisconnectAdditionalInformation is the corresponding interface of COTPParameterDisconnectAdditionalInformation
 type COTPParameterDisconnectAdditionalInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPParameter
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPParameterDisconnectAdditionalInformationExactly can be used when we want exactly this type and not a type which fulfills COTPParameterDisconnectAdditionalInformation.
+// This is useful for switch cases.
+type COTPParameterDisconnectAdditionalInformationExactly interface {
+	COTPParameterDisconnectAdditionalInformation
+	isCOTPParameterDisconnectAdditionalInformation() bool
 }
 
 // _COTPParameterDisconnectAdditionalInformation is the data-structure of this message
 type _COTPParameterDisconnectAdditionalInformation struct {
 	*_COTPParameter
 	Data []byte
-
-	// Arguments.
-	Rest uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -147,8 +147,10 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterDisconnectAdditionalInformation{
-		Data:           data,
-		_COTPParameter: &_COTPParameter{},
+		Data: data,
+		_COTPParameter: &_COTPParameter{
+			Rest: rest,
+		},
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil
@@ -163,12 +165,9 @@ func (m *_COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer ut
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterDisconnectAdditionalInformation"); popErr != nil {
@@ -177,6 +176,10 @@ func (m *_COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPParameterDisconnectAdditionalInformation) isCOTPParameterDisconnectAdditionalInformation() bool {
+	return true
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) String() string {

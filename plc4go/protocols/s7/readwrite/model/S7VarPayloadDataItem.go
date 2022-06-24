@@ -29,18 +29,21 @@ import (
 
 // S7VarPayloadDataItem is the corresponding interface of S7VarPayloadDataItem
 type S7VarPayloadDataItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7VarPayloadDataItemExactly can be used when we want exactly this type and not a type which fulfills S7VarPayloadDataItem.
+// This is useful for switch cases.
+type S7VarPayloadDataItemExactly interface {
+	S7VarPayloadDataItem
+	isS7VarPayloadDataItem() bool
 }
 
 // _S7VarPayloadDataItem is the data-structure of this message
@@ -241,12 +244,9 @@ func (m *_S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		// Byte Array field (data)
-		_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-		}
+	// Byte Array field (data)
+	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
 	// Padding Field (padding)
@@ -271,6 +271,10 @@ func (m *_S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for S7VarPayloadDataItem")
 	}
 	return nil
+}
+
+func (m *_S7VarPayloadDataItem) isS7VarPayloadDataItem() bool {
+	return true
 }
 
 func (m *_S7VarPayloadDataItem) String() string {

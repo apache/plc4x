@@ -28,16 +28,19 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedExactly interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
+	isBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged() bool
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) isBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) String() string {

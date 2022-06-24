@@ -28,15 +28,18 @@ import (
 
 // BACnetLogDataLogDataEntryBooleanValue is the corresponding interface of BACnetLogDataLogDataEntryBooleanValue
 type BACnetLogDataLogDataEntryBooleanValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataEntryBooleanValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryBooleanValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryBooleanValueExactly interface {
+	BACnetLogDataLogDataEntryBooleanValue
+	isBACnetLogDataLogDataEntryBooleanValue() bool
 }
 
 // _BACnetLogDataLogDataEntryBooleanValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryBooleanValue) isBACnetLogDataLogDataEntryBooleanValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) String() string {

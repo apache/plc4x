@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccumulatorLowLimit is the corresponding interface of BACnetConstructedDataAccumulatorLowLimit
 type BACnetConstructedDataAccumulatorLowLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLowLimit returns LowLimit (property field)
 	GetLowLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccumulatorLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorLowLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataAccumulatorLowLimitExactly interface {
+	BACnetConstructedDataAccumulatorLowLimit
+	isBACnetConstructedDataAccumulatorLowLimit() bool
 }
 
 // _BACnetConstructedDataAccumulatorLowLimit is the data-structure of this message
 type _BACnetConstructedDataAccumulatorLowLimit struct {
 	*_BACnetConstructedData
 	LowLimit BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccumulatorLowLimitParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccumulatorLowLimit{
-		LowLimit:               lowLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LowLimit: lowLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccumulatorLowLimit) isBACnetConstructedDataAccumulatorLowLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccumulatorLowLimit) String() string {

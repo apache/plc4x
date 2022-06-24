@@ -28,17 +28,20 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionAlarmAckResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmAckResponse
 type S7PayloadUserDataItemCpuFunctionAlarmAckResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataItemCpuFunctionAlarmAckResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionAlarmAckResponse.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionAlarmAckResponseExactly interface {
+	S7PayloadUserDataItemCpuFunctionAlarmAckResponse
+	isS7PayloadUserDataItemCpuFunctionAlarmAckResponse() bool
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAckResponse is the data-structure of this message
@@ -177,6 +180,10 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 	}
 	// Count array
 	messageObjects := make([]uint8, numberOfObjects)
+	// This happens when the size is set conditional to 0
+	if len(messageObjects) == 0 {
+		messageObjects = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -227,19 +234,17 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffe
 		}
 
 		// Array Field (messageObjects)
-		if m.GetMessageObjects() != nil {
-			if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for messageObjects")
+		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for messageObjects")
+		}
+		for _, _element := range m.GetMessageObjects() {
+			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 			}
-			for _, _element := range m.GetMessageObjects() {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for messageObjects")
-			}
+		}
+		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for messageObjects")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); popErr != nil {
@@ -248,6 +253,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) isS7PayloadUserDataItemCpuFunctionAlarmAckResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) String() string {

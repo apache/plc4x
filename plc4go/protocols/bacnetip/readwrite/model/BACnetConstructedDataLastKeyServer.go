@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastKeyServer is the corresponding interface of BACnetConstructedDataLastKeyServer
 type BACnetConstructedDataLastKeyServer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastKeyServer returns LastKeyServer (property field)
 	GetLastKeyServer() BACnetAddressBinding
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAddressBinding
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastKeyServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastKeyServer.
+// This is useful for switch cases.
+type BACnetConstructedDataLastKeyServerExactly interface {
+	BACnetConstructedDataLastKeyServer
+	isBACnetConstructedDataLastKeyServer() bool
 }
 
 // _BACnetConstructedDataLastKeyServer is the data-structure of this message
 type _BACnetConstructedDataLastKeyServer struct {
 	*_BACnetConstructedData
 	LastKeyServer BACnetAddressBinding
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLastKeyServerParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastKeyServer{
-		LastKeyServer:          lastKeyServer,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LastKeyServer: lastKeyServer,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastKeyServer) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastKeyServer) isBACnetConstructedDataLastKeyServer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastKeyServer) String() string {

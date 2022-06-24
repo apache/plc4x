@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryBitString is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryBitString
 type BACnetFaultParameterFaultExtendedParametersEntryBitString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryBitString.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryBitStringExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryBitString
+	isBACnetFaultParameterFaultExtendedParametersEntryBitString() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryBitString is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) isBACnetFaultParameterFaultExtendedParametersEntryBitString() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) String() string {

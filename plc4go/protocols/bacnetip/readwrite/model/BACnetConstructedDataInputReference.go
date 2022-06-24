@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataInputReference is the corresponding interface of BACnetConstructedDataInputReference
 type BACnetConstructedDataInputReference interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInputReference returns InputReference (property field)
 	GetInputReference() BACnetObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectPropertyReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataInputReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInputReference.
+// This is useful for switch cases.
+type BACnetConstructedDataInputReferenceExactly interface {
+	BACnetConstructedDataInputReference
+	isBACnetConstructedDataInputReference() bool
 }
 
 // _BACnetConstructedDataInputReference is the data-structure of this message
 type _BACnetConstructedDataInputReference struct {
 	*_BACnetConstructedData
 	InputReference BACnetObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataInputReferenceParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataInputReference{
-		InputReference:         inputReference,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		InputReference: inputReference,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataInputReference) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInputReference) isBACnetConstructedDataInputReference() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInputReference) String() string {

@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataAuthorizationExemptions is the corresponding interface of BACnetConstructedDataAuthorizationExemptions
 type BACnetConstructedDataAuthorizationExemptions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAuthorizationExemption returns AuthorizationExemption (property field)
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAuthorizationExemptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthorizationExemptions.
+// This is useful for switch cases.
+type BACnetConstructedDataAuthorizationExemptionsExactly interface {
+	BACnetConstructedDataAuthorizationExemptions
+	isBACnetConstructedDataAuthorizationExemptions() bool
 }
 
 // _BACnetConstructedDataAuthorizationExemptions is the data-structure of this message
 type _BACnetConstructedDataAuthorizationExemptions struct {
 	*_BACnetConstructedData
 	AuthorizationExemption []BACnetAuthorizationExemptionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataAuthorizationExemptionsParse(readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for authorizationExemption")
 	}
 	// Terminated array
-	authorizationExemption := make([]BACnetAuthorizationExemptionTagged, 0)
+	var authorizationExemption []BACnetAuthorizationExemptionTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAuthorizationExemptionTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -173,7 +172,10 @@ func BACnetConstructedDataAuthorizationExemptionsParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAuthorizationExemptions{
 		AuthorizationExemption: authorizationExemption,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) Serialize(writeBuffer ut
 		}
 
 		// Array Field (authorizationExemption)
-		if m.GetAuthorizationExemption() != nil {
-			if pushErr := writeBuffer.PushContext("authorizationExemption", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authorizationExemption")
+		if pushErr := writeBuffer.PushContext("authorizationExemption", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for authorizationExemption")
+		}
+		for _, _element := range m.GetAuthorizationExemption() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'authorizationExemption' field")
 			}
-			for _, _element := range m.GetAuthorizationExemption() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'authorizationExemption' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("authorizationExemption", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authorizationExemption")
-			}
+		}
+		if popErr := writeBuffer.PopContext("authorizationExemption", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for authorizationExemption")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthorizationExemptions"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptions) isBACnetConstructedDataAuthorizationExemptions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) String() string {

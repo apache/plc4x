@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataAuthenticationFactors is the corresponding interface of BACnetConstructedDataAuthenticationFactors
 type BACnetConstructedDataAuthenticationFactors interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataAuthenticationFactors interface {
 	GetAuthenticationFactors() []BACnetCredentialAuthenticationFactor
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAuthenticationFactorsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthenticationFactors.
+// This is useful for switch cases.
+type BACnetConstructedDataAuthenticationFactorsExactly interface {
+	BACnetConstructedDataAuthenticationFactors
+	isBACnetConstructedDataAuthenticationFactors() bool
 }
 
 // _BACnetConstructedDataAuthenticationFactors is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataAuthenticationFactors struct {
 	*_BACnetConstructedData
 	NumberOfDataElements  BACnetApplicationTagUnsignedInteger
 	AuthenticationFactors []BACnetCredentialAuthenticationFactor
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataAuthenticationFactorsParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactors")
 	}
 	// Terminated array
-	authenticationFactors := make([]BACnetCredentialAuthenticationFactor, 0)
+	var authenticationFactors []BACnetCredentialAuthenticationFactor
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCredentialAuthenticationFactorParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataAuthenticationFactorsParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAuthenticationFactors{
-		NumberOfDataElements:   numberOfDataElements,
-		AuthenticationFactors:  authenticationFactors,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements:  numberOfDataElements,
+		AuthenticationFactors: authenticationFactors,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataAuthenticationFactors) Serialize(writeBuffer util
 		}
 
 		// Array Field (authenticationFactors)
-		if m.GetAuthenticationFactors() != nil {
-			if pushErr := writeBuffer.PushContext("authenticationFactors", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authenticationFactors")
+		if pushErr := writeBuffer.PushContext("authenticationFactors", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for authenticationFactors")
+		}
+		for _, _element := range m.GetAuthenticationFactors() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'authenticationFactors' field")
 			}
-			for _, _element := range m.GetAuthenticationFactors() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'authenticationFactors' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("authenticationFactors", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authenticationFactors")
-			}
+		}
+		if popErr := writeBuffer.PopContext("authenticationFactors", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for authenticationFactors")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationFactors"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataAuthenticationFactors) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactors) isBACnetConstructedDataAuthenticationFactors() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAuthenticationFactors) String() string {

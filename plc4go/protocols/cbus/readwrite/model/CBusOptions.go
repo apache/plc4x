@@ -28,6 +28,8 @@ import (
 
 // CBusOptions is the corresponding interface of CBusOptions
 type CBusOptions interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetConnect returns Connect (property field)
 	GetConnect() bool
 	// GetSmart returns Smart (property field)
@@ -44,12 +46,13 @@ type CBusOptions interface {
 	GetPun() bool
 	// GetPcn returns Pcn (property field)
 	GetPcn() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusOptionsExactly can be used when we want exactly this type and not a type which fulfills CBusOptions.
+// This is useful for switch cases.
+type CBusOptionsExactly interface {
+	CBusOptions
+	isCBusOptions() bool
 }
 
 // _CBusOptions is the data-structure of this message
@@ -304,6 +307,10 @@ func (m *_CBusOptions) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CBusOptions")
 	}
 	return nil
+}
+
+func (m *_CBusOptions) isCBusOptions() bool {
+	return true
 }
 
 func (m *_CBusOptions) String() string {

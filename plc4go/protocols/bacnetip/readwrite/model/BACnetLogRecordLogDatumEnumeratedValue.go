@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumEnumeratedValue is the corresponding interface of BACnetLogRecordLogDatumEnumeratedValue
 type BACnetLogRecordLogDatumEnumeratedValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumEnumeratedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumEnumeratedValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumEnumeratedValueExactly interface {
+	BACnetLogRecordLogDatumEnumeratedValue
+	isBACnetLogRecordLogDatumEnumeratedValue() bool
 }
 
 // _BACnetLogRecordLogDatumEnumeratedValue is the data-structure of this message
 type _BACnetLogRecordLogDatumEnumeratedValue struct {
 	*_BACnetLogRecordLogDatum
 	EnumeratedValue BACnetContextTagEnumerated
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumEnumeratedValueParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumEnumeratedValue{
-		EnumeratedValue:          enumeratedValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		EnumeratedValue: enumeratedValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) isBACnetLogRecordLogDatumEnumeratedValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumEnumeratedValue) String() string {

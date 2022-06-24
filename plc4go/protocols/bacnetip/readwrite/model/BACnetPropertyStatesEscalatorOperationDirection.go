@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesEscalatorOperationDirection is the corresponding interface of BACnetPropertyStatesEscalatorOperationDirection
 type BACnetPropertyStatesEscalatorOperationDirection interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetEscalatorOperationDirection returns EscalatorOperationDirection (property field)
 	GetEscalatorOperationDirection() BACnetEscalatorOperationDirectionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesEscalatorOperationDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEscalatorOperationDirection.
+// This is useful for switch cases.
+type BACnetPropertyStatesEscalatorOperationDirectionExactly interface {
+	BACnetPropertyStatesEscalatorOperationDirection
+	isBACnetPropertyStatesEscalatorOperationDirection() bool
 }
 
 // _BACnetPropertyStatesEscalatorOperationDirection is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) isBACnetPropertyStatesEscalatorOperationDirection() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) String() string {

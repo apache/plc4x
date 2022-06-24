@@ -28,6 +28,8 @@ import (
 
 // ApduDataExtPropertyDescriptionRead is the corresponding interface of ApduDataExtPropertyDescriptionRead
 type ApduDataExtPropertyDescriptionRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -35,12 +37,13 @@ type ApduDataExtPropertyDescriptionRead interface {
 	GetPropertyId() uint8
 	// GetIndex returns Index (property field)
 	GetIndex() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtPropertyDescriptionReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyDescriptionRead.
+// This is useful for switch cases.
+type ApduDataExtPropertyDescriptionReadExactly interface {
+	ApduDataExtPropertyDescriptionRead
+	isApduDataExtPropertyDescriptionRead() bool
 }
 
 // _ApduDataExtPropertyDescriptionRead is the data-structure of this message
@@ -49,9 +52,6 @@ type _ApduDataExtPropertyDescriptionRead struct {
 	ObjectIndex uint8
 	PropertyId  uint8
 	Index       uint8
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -182,10 +182,12 @@ func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtPropertyDescriptionRead{
-		ObjectIndex:  objectIndex,
-		PropertyId:   propertyId,
-		Index:        index,
-		_ApduDataExt: &_ApduDataExt{},
+		ObjectIndex: objectIndex,
+		PropertyId:  propertyId,
+		Index:       index,
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -226,6 +228,10 @@ func (m *_ApduDataExtPropertyDescriptionRead) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtPropertyDescriptionRead) isApduDataExtPropertyDescriptionRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtPropertyDescriptionRead) String() string {

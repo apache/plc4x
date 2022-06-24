@@ -28,18 +28,21 @@ import (
 
 // BACnetActionList is the corresponding interface of BACnetActionList
 type BACnetActionList interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetAction returns Action (property field)
 	GetAction() []BACnetActionCommand
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetActionListExactly can be used when we want exactly this type and not a type which fulfills BACnetActionList.
+// This is useful for switch cases.
+type BACnetActionListExactly interface {
+	BACnetActionList
+	isBACnetActionList() bool
 }
 
 // _BACnetActionList is the data-structure of this message
@@ -145,7 +148,7 @@ func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error
 		return nil, errors.Wrap(pullErr, "Error pulling for action")
 	}
 	// Terminated array
-	action := make([]BACnetActionCommand, 0)
+	var action []BACnetActionCommand
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
 			_item, _err := BACnetActionCommandParse(readBuffer)
@@ -201,19 +204,17 @@ func (m *_BACnetActionList) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (action)
-	if m.GetAction() != nil {
-		if pushErr := writeBuffer.PushContext("action", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for action")
+	if pushErr := writeBuffer.PushContext("action", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for action")
+	}
+	for _, _element := range m.GetAction() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'action' field")
 		}
-		for _, _element := range m.GetAction() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'action' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("action", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for action")
-		}
+	}
+	if popErr := writeBuffer.PopContext("action", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for action")
 	}
 
 	// Simple Field (innerClosingTag)
@@ -232,6 +233,10 @@ func (m *_BACnetActionList) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetActionList")
 	}
 	return nil
+}
+
+func (m *_BACnetActionList) isBACnetActionList() bool {
+	return true
 }
 
 func (m *_BACnetActionList) String() string {

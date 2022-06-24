@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataFloorText is the corresponding interface of BACnetConstructedDataFloorText
 type BACnetConstructedDataFloorText interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataFloorText interface {
 	GetFloorText() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFloorTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFloorText.
+// This is useful for switch cases.
+type BACnetConstructedDataFloorTextExactly interface {
+	BACnetConstructedDataFloorText
+	isBACnetConstructedDataFloorText() bool
 }
 
 // _BACnetConstructedDataFloorText is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataFloorText struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	FloorText            []BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataFloorTextParse(readBuffer utils.ReadBuffer, tagNumber 
 		return nil, errors.Wrap(pullErr, "Error pulling for floorText")
 	}
 	// Terminated array
-	floorText := make([]BACnetApplicationTagCharacterString, 0)
+	var floorText []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataFloorTextParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFloorText{
-		NumberOfDataElements:   numberOfDataElements,
-		FloorText:              floorText,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		FloorText:            floorText,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataFloorText) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Array Field (floorText)
-		if m.GetFloorText() != nil {
-			if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for floorText")
+		if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for floorText")
+		}
+		for _, _element := range m.GetFloorText() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
 			}
-			for _, _element := range m.GetFloorText() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for floorText")
-			}
+		}
+		if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for floorText")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFloorText"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataFloorText) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFloorText) isBACnetConstructedDataFloorText() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFloorText) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetCredentialAuthenticationFactor is the corresponding interface of BACnetCredentialAuthenticationFactor
 type BACnetCredentialAuthenticationFactor interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDisable returns Disable (property field)
 	GetDisable() BACnetAccessAuthenticationFactorDisableTagged
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
 	GetAuthenticationFactor() BACnetAuthenticationFactorEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetCredentialAuthenticationFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetCredentialAuthenticationFactor.
+// This is useful for switch cases.
+type BACnetCredentialAuthenticationFactorExactly interface {
+	BACnetCredentialAuthenticationFactor
+	isBACnetCredentialAuthenticationFactor() bool
 }
 
 // _BACnetCredentialAuthenticationFactor is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetCredentialAuthenticationFactor")
 	}
 	return nil
+}
+
+func (m *_BACnetCredentialAuthenticationFactor) isBACnetCredentialAuthenticationFactor() bool {
+	return true
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) String() string {

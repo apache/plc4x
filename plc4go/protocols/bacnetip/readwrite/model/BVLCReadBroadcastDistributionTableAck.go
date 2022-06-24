@@ -28,15 +28,18 @@ import (
 
 // BVLCReadBroadcastDistributionTableAck is the corresponding interface of BVLCReadBroadcastDistributionTableAck
 type BVLCReadBroadcastDistributionTableAck interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCBroadcastDistributionTableEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCReadBroadcastDistributionTableAckExactly can be used when we want exactly this type and not a type which fulfills BVLCReadBroadcastDistributionTableAck.
+// This is useful for switch cases.
+type BVLCReadBroadcastDistributionTableAckExactly interface {
+	BVLCReadBroadcastDistributionTableAck
+	isBVLCReadBroadcastDistributionTableAck() bool
 }
 
 // _BVLCReadBroadcastDistributionTableAck is the data-structure of this message
@@ -142,7 +145,7 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer, bvl
 		return nil, errors.Wrap(pullErr, "Error pulling for table")
 	}
 	// Length array
-	table := make([]BVLCBroadcastDistributionTableEntry, 0)
+	var table []BVLCBroadcastDistributionTableEntry
 	{
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
@@ -180,19 +183,17 @@ func (m *_BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (table)
-		if m.GetTable() != nil {
-			if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for table")
+		if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for table")
+		}
+		for _, _element := range m.GetTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'table' field")
 			}
-			for _, _element := range m.GetTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'table' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for table")
-			}
+		}
+		if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for table")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCReadBroadcastDistributionTableAck"); popErr != nil {
@@ -201,6 +202,10 @@ func (m *_BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCReadBroadcastDistributionTableAck) isBVLCReadBroadcastDistributionTableAck() bool {
+	return true
 }
 
 func (m *_BVLCReadBroadcastDistributionTableAck) String() string {

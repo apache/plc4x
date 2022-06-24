@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProportionalConstant is the corresponding interface of BACnetConstructedDataProportionalConstant
 type BACnetConstructedDataProportionalConstant interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProportionalConstant returns ProportionalConstant (property field)
 	GetProportionalConstant() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProportionalConstantExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProportionalConstant.
+// This is useful for switch cases.
+type BACnetConstructedDataProportionalConstantExactly interface {
+	BACnetConstructedDataProportionalConstant
+	isBACnetConstructedDataProportionalConstant() bool
 }
 
 // _BACnetConstructedDataProportionalConstant is the data-structure of this message
 type _BACnetConstructedDataProportionalConstant struct {
 	*_BACnetConstructedData
 	ProportionalConstant BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataProportionalConstantParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProportionalConstant{
-		ProportionalConstant:   proportionalConstant,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ProportionalConstant: proportionalConstant,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProportionalConstant) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProportionalConstant) isBACnetConstructedDataProportionalConstant() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProportionalConstant) String() string {

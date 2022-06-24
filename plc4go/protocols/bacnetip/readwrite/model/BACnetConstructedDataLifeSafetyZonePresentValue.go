@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLifeSafetyZonePresentValue is the corresponding interface of BACnetConstructedDataLifeSafetyZonePresentValue
 type BACnetConstructedDataLifeSafetyZonePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetLifeSafetyStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLifeSafetyZonePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyZonePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyZonePresentValueExactly interface {
+	BACnetConstructedDataLifeSafetyZonePresentValue
+	isBACnetConstructedDataLifeSafetyZonePresentValue() bool
 }
 
 // _BACnetConstructedDataLifeSafetyZonePresentValue is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyZonePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetLifeSafetyStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLifeSafetyZonePresentValueParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLifeSafetyZonePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLifeSafetyZonePresentValue) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValue) isBACnetConstructedDataLifeSafetyZonePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZonePresentValue) String() string {

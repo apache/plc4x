@@ -28,6 +28,8 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMaxNormalValue is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -36,12 +38,13 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValue interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultOutOfRangeMaxNormalValueExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMaxNormalValue.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMaxNormalValueExactly interface {
+	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
+	isBACnetFaultParameterFaultOutOfRangeMaxNormalValue() bool
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValue is the data-structure of this message
@@ -56,9 +59,9 @@ type _BACnetFaultParameterFaultOutOfRangeMaxNormalValue struct {
 }
 
 type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValueParent interface {
@@ -67,7 +70,7 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueParent interface {
 }
 
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetFaultParameterFaultOutOfRangeMaxNormalValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 
@@ -284,6 +287,10 @@ func (pm *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) SerializeParent(wr
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultOutOfRangeMaxNormalValue")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) isBACnetFaultParameterFaultOutOfRangeMaxNormalValue() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) String() string {

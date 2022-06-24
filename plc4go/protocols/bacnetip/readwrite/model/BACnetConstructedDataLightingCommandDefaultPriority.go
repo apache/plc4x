@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLightingCommandDefaultPriority is the corresponding interface of BACnetConstructedDataLightingCommandDefaultPriority
 type BACnetConstructedDataLightingCommandDefaultPriority interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLightingCommandDefaultPriority returns LightingCommandDefaultPriority (property field)
 	GetLightingCommandDefaultPriority() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLightingCommandDefaultPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingCommandDefaultPriority.
+// This is useful for switch cases.
+type BACnetConstructedDataLightingCommandDefaultPriorityExactly interface {
+	BACnetConstructedDataLightingCommandDefaultPriority
+	isBACnetConstructedDataLightingCommandDefaultPriority() bool
 }
 
 // _BACnetConstructedDataLightingCommandDefaultPriority is the data-structure of this message
 type _BACnetConstructedDataLightingCommandDefaultPriority struct {
 	*_BACnetConstructedData
 	LightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.R
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLightingCommandDefaultPriority{
 		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
-		_BACnetConstructedData:         &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) isBACnetConstructedDataLightingCommandDefaultPriority() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) String() string {

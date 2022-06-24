@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesSilencedState is the corresponding interface of BACnetPropertyStatesSilencedState
 type BACnetPropertyStatesSilencedState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetSilencedState returns SilencedState (property field)
 	GetSilencedState() BACnetSilencedStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesSilencedStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesSilencedState.
+// This is useful for switch cases.
+type BACnetPropertyStatesSilencedStateExactly interface {
+	BACnetPropertyStatesSilencedState
+	isBACnetPropertyStatesSilencedState() bool
 }
 
 // _BACnetPropertyStatesSilencedState is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesSilencedState) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesSilencedState) isBACnetPropertyStatesSilencedState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesSilencedState) String() string {

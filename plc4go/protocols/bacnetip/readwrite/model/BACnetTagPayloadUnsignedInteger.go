@@ -28,6 +28,8 @@ import (
 
 // BACnetTagPayloadUnsignedInteger is the corresponding interface of BACnetTagPayloadUnsignedInteger
 type BACnetTagPayloadUnsignedInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValueUint8 returns ValueUint8 (property field)
 	GetValueUint8() *uint8
 	// GetValueUint16 returns ValueUint16 (property field)
@@ -62,12 +64,13 @@ type BACnetTagPayloadUnsignedInteger interface {
 	GetIsUint64() bool
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadUnsignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadUnsignedInteger.
+// This is useful for switch cases.
+type BACnetTagPayloadUnsignedIntegerExactly interface {
+	BACnetTagPayloadUnsignedInteger
+	isBACnetTagPayloadUnsignedInteger() bool
 }
 
 // _BACnetTagPayloadUnsignedInteger is the data-structure of this message
@@ -706,6 +709,10 @@ func (m *_BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuff
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadUnsignedInteger")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadUnsignedInteger) isBACnetTagPayloadUnsignedInteger() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadUnsignedInteger) String() string {

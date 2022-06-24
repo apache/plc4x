@@ -28,24 +28,24 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueReal is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultOutOfRangeMinNormalValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValueReal.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMinNormalValueRealExactly interface {
+	BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
+	isBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() bool
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueReal is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueReal struct {
 	*_BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	RealValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParse(readBuffer utils
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal{
 		RealValue: realValue,
-		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{},
+		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) isBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) String() string {

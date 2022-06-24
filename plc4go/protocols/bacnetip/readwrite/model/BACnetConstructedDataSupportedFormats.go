@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataSupportedFormats is the corresponding interface of BACnetConstructedDataSupportedFormats
 type BACnetConstructedDataSupportedFormats interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataSupportedFormats interface {
 	GetSupportedFormats() []BACnetAuthenticationFactorFormat
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSupportedFormatsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSupportedFormats.
+// This is useful for switch cases.
+type BACnetConstructedDataSupportedFormatsExactly interface {
+	BACnetConstructedDataSupportedFormats
+	isBACnetConstructedDataSupportedFormats() bool
 }
 
 // _BACnetConstructedDataSupportedFormats is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataSupportedFormats struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	SupportedFormats     []BACnetAuthenticationFactorFormat
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataSupportedFormatsParse(readBuffer utils.ReadBuffer, tag
 		return nil, errors.Wrap(pullErr, "Error pulling for supportedFormats")
 	}
 	// Terminated array
-	supportedFormats := make([]BACnetAuthenticationFactorFormat, 0)
+	var supportedFormats []BACnetAuthenticationFactorFormat
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAuthenticationFactorFormatParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataSupportedFormatsParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSupportedFormats{
-		NumberOfDataElements:   numberOfDataElements,
-		SupportedFormats:       supportedFormats,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		SupportedFormats:     supportedFormats,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataSupportedFormats) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (supportedFormats)
-		if m.GetSupportedFormats() != nil {
-			if pushErr := writeBuffer.PushContext("supportedFormats", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for supportedFormats")
+		if pushErr := writeBuffer.PushContext("supportedFormats", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for supportedFormats")
+		}
+		for _, _element := range m.GetSupportedFormats() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'supportedFormats' field")
 			}
-			for _, _element := range m.GetSupportedFormats() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'supportedFormats' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("supportedFormats", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for supportedFormats")
-			}
+		}
+		if popErr := writeBuffer.PopContext("supportedFormats", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for supportedFormats")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSupportedFormats"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataSupportedFormats) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSupportedFormats) isBACnetConstructedDataSupportedFormats() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSupportedFormats) String() string {

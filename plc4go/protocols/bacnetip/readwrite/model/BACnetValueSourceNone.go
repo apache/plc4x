@@ -28,15 +28,18 @@ import (
 
 // BACnetValueSourceNone is the corresponding interface of BACnetValueSourceNone
 type BACnetValueSourceNone interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetValueSource
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetValueSourceNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSourceNone.
+// This is useful for switch cases.
+type BACnetValueSourceNoneExactly interface {
+	BACnetValueSourceNone
+	isBACnetValueSourceNone() bool
 }
 
 // _BACnetValueSourceNone is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetValueSourceNone) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetValueSourceNone) isBACnetValueSourceNone() bool {
+	return true
 }
 
 func (m *_BACnetValueSourceNone) String() string {

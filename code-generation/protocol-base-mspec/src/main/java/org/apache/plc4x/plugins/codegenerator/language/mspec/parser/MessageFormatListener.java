@@ -159,7 +159,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 typeName, attributes, parserArguments, abstractType, fields);
             // Link the fields and the complex types.
             if (fields != null) {
-                fields.forEach(field -> ((DefaultField) field).setParentTypeDefinition(type));
+                fields.forEach(field -> ((DefaultField) field).setOwner(type));
             }
             dispatchType(typeName, type);
 
@@ -517,7 +517,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
-        String typeName = ctx.name.getText();
+        String namePrefix = "";
+        if (ctx.nameWildcard != null) {
+            namePrefix = currentTypeName;
+        }
+        String typeName = namePrefix + ctx.name.getText();
 
         final Map<String, Term> attributes = batchSetAttributes.peek();
 
@@ -547,7 +551,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 discriminatorValues, fields);
         // Link the fields and the complex types.
         if (fields != null) {
-            fields.forEach(field -> ((DefaultField) field).setParentTypeDefinition(type));
+            fields.forEach(field -> ((DefaultField) field).setOwner(type));
         }
 
         // For DataIO we don't need to generate the sub-types as these will be PlcValues.
@@ -703,13 +707,13 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 int propertySizeInBits = 32;
                 if (attributes.containsKey("propertySizeInBits")) {
                     final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
-                    if(!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
                         throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
                     }
                     NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
                     propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
                 }
-                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT,propertySizeInBits);
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, propertySizeInBits);
                 return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
             }
             case VUINT: {
@@ -718,13 +722,13 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 int propertySizeInBits = 32;
                 if (attributes.containsKey("propertySizeInBits")) {
                     final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
-                    if(!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
                         throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
                     }
                     NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
                     propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
                 }
-                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT,propertySizeInBits);
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, propertySizeInBits);
                 return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
             }
             case FLOAT:

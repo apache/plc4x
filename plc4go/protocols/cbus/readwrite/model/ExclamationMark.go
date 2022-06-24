@@ -28,12 +28,15 @@ import (
 
 // ExclamationMark is the corresponding interface of ExclamationMark
 type ExclamationMark interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.LengthAware
+	utils.Serializable
+}
+
+// ExclamationMarkExactly can be used when we want exactly this type and not a type which fulfills ExclamationMark.
+// This is useful for switch cases.
+type ExclamationMarkExactly interface {
+	ExclamationMark
+	isExclamationMark() bool
 }
 
 // _ExclamationMark is the data-structure of this message
@@ -102,6 +105,10 @@ func (m *_ExclamationMark) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ExclamationMark")
 	}
 	return nil
+}
+
+func (m *_ExclamationMark) isExclamationMark() bool {
+	return true
 }
 
 func (m *_ExclamationMark) String() string {

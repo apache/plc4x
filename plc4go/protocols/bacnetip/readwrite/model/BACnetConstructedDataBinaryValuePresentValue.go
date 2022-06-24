@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBinaryValuePresentValue is the corresponding interface of BACnetConstructedDataBinaryValuePresentValue
 type BACnetConstructedDataBinaryValuePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBinaryValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryValuePresentValueExactly interface {
+	BACnetConstructedDataBinaryValuePresentValue
+	isBACnetConstructedDataBinaryValuePresentValue() bool
 }
 
 // _BACnetConstructedDataBinaryValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataBinaryValuePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetBinaryPVTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBinaryValuePresentValueParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBinaryValuePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBinaryValuePresentValue) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryValuePresentValue) isBACnetConstructedDataBinaryValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryValuePresentValue) String() string {

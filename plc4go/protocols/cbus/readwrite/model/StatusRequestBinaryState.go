@@ -29,15 +29,18 @@ import (
 
 // StatusRequestBinaryState is the corresponding interface of StatusRequestBinaryState
 type StatusRequestBinaryState interface {
+	utils.LengthAware
+	utils.Serializable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// StatusRequestBinaryStateExactly can be used when we want exactly this type and not a type which fulfills StatusRequestBinaryState.
+// This is useful for switch cases.
+type StatusRequestBinaryStateExactly interface {
+	StatusRequestBinaryState
+	isStatusRequestBinaryState() bool
 }
 
 // _StatusRequestBinaryState is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_StatusRequestBinaryState) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_StatusRequestBinaryState) isStatusRequestBinaryState() bool {
+	return true
 }
 
 func (m *_StatusRequestBinaryState) String() string {

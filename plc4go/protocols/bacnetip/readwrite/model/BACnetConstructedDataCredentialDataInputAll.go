@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataCredentialDataInputAll is the corresponding interface of BACnetConstructedDataCredentialDataInputAll
 type BACnetConstructedDataCredentialDataInputAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCredentialDataInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDataInputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialDataInputAllExactly interface {
+	BACnetConstructedDataCredentialDataInputAll
+	isBACnetConstructedDataCredentialDataInputAll() bool
 }
 
 // _BACnetConstructedDataCredentialDataInputAll is the data-structure of this message
 type _BACnetConstructedDataCredentialDataInputAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataCredentialDataInputAllParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialDataInputAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataCredentialDataInputAll) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputAll) isBACnetConstructedDataCredentialDataInputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputAll) String() string {

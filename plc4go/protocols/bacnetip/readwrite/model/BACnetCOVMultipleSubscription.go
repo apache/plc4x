@@ -28,6 +28,8 @@ import (
 
 // BACnetCOVMultipleSubscription is the corresponding interface of BACnetCOVMultipleSubscription
 type BACnetCOVMultipleSubscription interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetIssueConfirmedNotifications returns IssueConfirmedNotifications (property field)
@@ -38,12 +40,13 @@ type BACnetCOVMultipleSubscription interface {
 	GetMaxNotificationDelay() BACnetContextTagUnsignedInteger
 	// GetListOfCovSubscriptionSpecification returns ListOfCovSubscriptionSpecification (property field)
 	GetListOfCovSubscriptionSpecification() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetCOVMultipleSubscriptionExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscription.
+// This is useful for switch cases.
+type BACnetCOVMultipleSubscriptionExactly interface {
+	BACnetCOVMultipleSubscription
+	isBACnetCOVMultipleSubscription() bool
 }
 
 // _BACnetCOVMultipleSubscription is the data-structure of this message
@@ -287,6 +290,10 @@ func (m *_BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetCOVMultipleSubscription")
 	}
 	return nil
+}
+
+func (m *_BACnetCOVMultipleSubscription) isBACnetCOVMultipleSubscription() bool {
+	return true
 }
 
 func (m *_BACnetCOVMultipleSubscription) String() string {

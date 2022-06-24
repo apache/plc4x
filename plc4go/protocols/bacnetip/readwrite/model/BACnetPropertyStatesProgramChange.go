@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesProgramChange is the corresponding interface of BACnetPropertyStatesProgramChange
 type BACnetPropertyStatesProgramChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetProgramState returns ProgramState (property field)
 	GetProgramState() BACnetProgramStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesProgramChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesProgramChange.
+// This is useful for switch cases.
+type BACnetPropertyStatesProgramChangeExactly interface {
+	BACnetPropertyStatesProgramChange
+	isBACnetPropertyStatesProgramChange() bool
 }
 
 // _BACnetPropertyStatesProgramChange is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesProgramChange) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesProgramChange) isBACnetPropertyStatesProgramChange() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesProgramChange) String() string {

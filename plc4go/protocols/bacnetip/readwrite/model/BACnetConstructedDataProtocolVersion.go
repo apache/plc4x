@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProtocolVersion is the corresponding interface of BACnetConstructedDataProtocolVersion
 type BACnetConstructedDataProtocolVersion interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProtocolVersion returns ProtocolVersion (property field)
 	GetProtocolVersion() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProtocolVersionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolVersion.
+// This is useful for switch cases.
+type BACnetConstructedDataProtocolVersionExactly interface {
+	BACnetConstructedDataProtocolVersion
+	isBACnetConstructedDataProtocolVersion() bool
 }
 
 // _BACnetConstructedDataProtocolVersion is the data-structure of this message
 type _BACnetConstructedDataProtocolVersion struct {
 	*_BACnetConstructedData
 	ProtocolVersion BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataProtocolVersionParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProtocolVersion{
-		ProtocolVersion:        protocolVersion,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ProtocolVersion: protocolVersion,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProtocolVersion) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProtocolVersion) isBACnetConstructedDataProtocolVersion() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) String() string {

@@ -28,18 +28,21 @@ import (
 
 // BACnetAbortReasonTagged is the corresponding interface of BACnetAbortReasonTagged
 type BACnetAbortReasonTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() BACnetAbortReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAbortReasonTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAbortReasonTagged.
+// This is useful for switch cases.
+type BACnetAbortReasonTaggedExactly interface {
+	BACnetAbortReasonTagged
+	isBACnetAbortReasonTagged() bool
 }
 
 // _BACnetAbortReasonTagged is the data-structure of this message
@@ -187,6 +190,10 @@ func (m *_BACnetAbortReasonTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetAbortReasonTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAbortReasonTagged) isBACnetAbortReasonTagged() bool {
+	return true
 }
 
 func (m *_BACnetAbortReasonTagged) String() string {

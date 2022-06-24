@@ -30,6 +30,8 @@ import (
 
 // ConfirmedEventNotificationRequest is the corresponding interface of ConfirmedEventNotificationRequest
 type ConfirmedEventNotificationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
 	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier (property field)
@@ -56,12 +58,13 @@ type ConfirmedEventNotificationRequest interface {
 	GetToState() BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() BACnetNotificationParameters
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConfirmedEventNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills ConfirmedEventNotificationRequest.
+// This is useful for switch cases.
+type ConfirmedEventNotificationRequestExactly interface {
+	ConfirmedEventNotificationRequest
+	isConfirmedEventNotificationRequest() bool
 }
 
 // _ConfirmedEventNotificationRequest is the data-structure of this message
@@ -629,6 +632,10 @@ func (m *_ConfirmedEventNotificationRequest) Serialize(writeBuffer utils.WriteBu
 		return errors.Wrap(popErr, "Error popping for ConfirmedEventNotificationRequest")
 	}
 	return nil
+}
+
+func (m *_ConfirmedEventNotificationRequest) isConfirmedEventNotificationRequest() bool {
+	return true
 }
 
 func (m *_ConfirmedEventNotificationRequest) String() string {

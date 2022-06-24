@@ -30,6 +30,8 @@ import (
 
 // BACnetServiceAckReadRange is the corresponding interface of BACnetServiceAckReadRange
 type BACnetServiceAckReadRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -45,12 +47,13 @@ type BACnetServiceAckReadRange interface {
 	GetItemData() BACnetConstructedData
 	// GetFirstSequenceNumber returns FirstSequenceNumber (property field)
 	GetFirstSequenceNumber() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckReadRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckReadRange.
+// This is useful for switch cases.
+type BACnetServiceAckReadRangeExactly interface {
+	BACnetServiceAckReadRange
+	isBACnetServiceAckReadRange() bool
 }
 
 // _BACnetServiceAckReadRange is the data-structure of this message
@@ -63,9 +66,6 @@ type _BACnetServiceAckReadRange struct {
 	ItemCount           BACnetContextTagUnsignedInteger
 	ItemData            BACnetConstructedData
 	FirstSequenceNumber BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -338,7 +338,9 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		ItemCount:           itemCount,
 		ItemData:            itemData,
 		FirstSequenceNumber: firstSequenceNumber,
-		_BACnetServiceAck:   &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -454,6 +456,10 @@ func (m *_BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckReadRange) isBACnetServiceAckReadRange() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckReadRange) String() string {

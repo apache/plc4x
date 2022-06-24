@@ -114,10 +114,10 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		log.Debug().Msg("Sending UnregisterSession EIP Packet")
 		_ = m.messageCodec.SendRequest(
 			readWriteModel.NewEipDisconnectRequest(m.sessionHandle, 0, make([]byte, 8), 0),
-			func(message interface{}) bool {
+			func(message spi.Message) bool {
 				return true
 			},
-			func(message interface{}) error {
+			func(message spi.Message) error {
 				return nil
 			},
 			func(err error) error {
@@ -134,7 +134,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	log.Debug().Msg("Sending EIP Connection Request")
 	if err := m.messageCodec.SendRequest(
 		readWriteModel.NewEipConnectionRequest(0, 0, make([]byte, 8), 0),
-		func(message interface{}) bool {
+		func(message spi.Message) bool {
 			eipPacket := message.(readWriteModel.EipPacket)
 			if eipPacket == nil {
 				return false
@@ -142,7 +142,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			eipPacketConnectionRequest := eipPacket.(readWriteModel.EipConnectionRequest)
 			return eipPacketConnectionRequest != nil
 		},
-		func(message interface{}) error {
+		func(message spi.Message) error {
 			eipPacket := message.(readWriteModel.EipPacket)
 			if eipPacket.GetStatus() == 0 {
 				m.sessionHandle = eipPacket.GetSessionHandle()

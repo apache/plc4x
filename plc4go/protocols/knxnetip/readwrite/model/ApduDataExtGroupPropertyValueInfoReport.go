@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtGroupPropertyValueInfoReport is the corresponding interface of ApduDataExtGroupPropertyValueInfoReport
 type ApduDataExtGroupPropertyValueInfoReport interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtGroupPropertyValueInfoReportExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtGroupPropertyValueInfoReport.
+// This is useful for switch cases.
+type ApduDataExtGroupPropertyValueInfoReportExactly interface {
+	ApduDataExtGroupPropertyValueInfoReport
+	isApduDataExtGroupPropertyValueInfoReport() bool
 }
 
 // _ApduDataExtGroupPropertyValueInfoReport is the data-structure of this message
 type _ApduDataExtGroupPropertyValueInfoReport struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtGroupPropertyValueInfoReportParse(readBuffer utils.ReadBuffer, l
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtGroupPropertyValueInfoReport{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtGroupPropertyValueInfoReport) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReport) isApduDataExtGroupPropertyValueInfoReport() bool {
+	return true
 }
 
 func (m *_ApduDataExtGroupPropertyValueInfoReport) String() string {

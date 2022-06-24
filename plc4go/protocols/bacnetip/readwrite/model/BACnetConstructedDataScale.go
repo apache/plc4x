@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataScale is the corresponding interface of BACnetConstructedDataScale
 type BACnetConstructedDataScale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetScale returns Scale (property field)
 	GetScale() BACnetScale
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetScale
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScale.
+// This is useful for switch cases.
+type BACnetConstructedDataScaleExactly interface {
+	BACnetConstructedDataScale
+	isBACnetConstructedDataScale() bool
 }
 
 // _BACnetConstructedDataScale is the data-structure of this message
 type _BACnetConstructedDataScale struct {
 	*_BACnetConstructedData
 	Scale BACnetScale
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataScaleParse(readBuffer utils.ReadBuffer, tagNumber uint
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataScale{
-		Scale:                  scale,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Scale: scale,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataScale) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataScale) isBACnetConstructedDataScale() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataScale) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAverageValue is the corresponding interface of BACnetConstructedDataAverageValue
 type BACnetConstructedDataAverageValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAverageValue returns AverageValue (property field)
 	GetAverageValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAverageValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAverageValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAverageValueExactly interface {
+	BACnetConstructedDataAverageValue
+	isBACnetConstructedDataAverageValue() bool
 }
 
 // _BACnetConstructedDataAverageValue is the data-structure of this message
 type _BACnetConstructedDataAverageValue struct {
 	*_BACnetConstructedData
 	AverageValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAverageValue{
-		AverageValue:           averageValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AverageValue: averageValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAverageValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAverageValue) isBACnetConstructedDataAverageValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAverageValue) String() string {

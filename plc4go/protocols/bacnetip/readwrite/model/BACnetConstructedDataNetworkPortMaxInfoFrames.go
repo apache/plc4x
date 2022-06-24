@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNetworkPortMaxInfoFrames is the corresponding interface of BACnetConstructedDataNetworkPortMaxInfoFrames
 type BACnetConstructedDataNetworkPortMaxInfoFrames interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxInfoFrames returns MaxInfoFrames (property field)
 	GetMaxInfoFrames() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNetworkPortMaxInfoFramesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortMaxInfoFrames.
+// This is useful for switch cases.
+type BACnetConstructedDataNetworkPortMaxInfoFramesExactly interface {
+	BACnetConstructedDataNetworkPortMaxInfoFrames
+	isBACnetConstructedDataNetworkPortMaxInfoFrames() bool
 }
 
 // _BACnetConstructedDataNetworkPortMaxInfoFrames is the data-structure of this message
 type _BACnetConstructedDataNetworkPortMaxInfoFrames struct {
 	*_BACnetConstructedData
 	MaxInfoFrames BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNetworkPortMaxInfoFramesParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNetworkPortMaxInfoFrames{
-		MaxInfoFrames:          maxInfoFrames,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxInfoFrames: maxInfoFrames,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) isBACnetConstructedDataNetworkPortMaxInfoFrames() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) String() string {

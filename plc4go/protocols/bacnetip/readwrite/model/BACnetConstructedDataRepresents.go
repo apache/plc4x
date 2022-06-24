@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataRepresents is the corresponding interface of BACnetConstructedDataRepresents
 type BACnetConstructedDataRepresents interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRepresents returns Represents (property field)
 	GetRepresents() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataRepresentsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRepresents.
+// This is useful for switch cases.
+type BACnetConstructedDataRepresentsExactly interface {
+	BACnetConstructedDataRepresents
+	isBACnetConstructedDataRepresents() bool
 }
 
 // _BACnetConstructedDataRepresents is the data-structure of this message
 type _BACnetConstructedDataRepresents struct {
 	*_BACnetConstructedData
 	Represents BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataRepresentsParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRepresents{
-		Represents:             represents,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Represents: represents,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataRepresents) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRepresents) isBACnetConstructedDataRepresents() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRepresents) String() string {

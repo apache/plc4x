@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesAccessEvent is the corresponding interface of BACnetPropertyStatesAccessEvent
 type BACnetPropertyStatesAccessEvent interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetAccessEvent returns AccessEvent (property field)
 	GetAccessEvent() BACnetAccessEventTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAccessEvent.
+// This is useful for switch cases.
+type BACnetPropertyStatesAccessEventExactly interface {
+	BACnetPropertyStatesAccessEvent
+	isBACnetPropertyStatesAccessEvent() bool
 }
 
 // _BACnetPropertyStatesAccessEvent is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesAccessEvent) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesAccessEvent) isBACnetPropertyStatesAccessEvent() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesAccessEvent) String() string {

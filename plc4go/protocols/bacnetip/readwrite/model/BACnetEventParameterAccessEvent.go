@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterAccessEvent is the corresponding interface of BACnetEventParameterAccessEvent
 type BACnetEventParameterAccessEvent interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -37,12 +39,13 @@ type BACnetEventParameterAccessEvent interface {
 	GetAccessEventTimeReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterAccessEventExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterAccessEvent.
+// This is useful for switch cases.
+type BACnetEventParameterAccessEventExactly interface {
+	BACnetEventParameterAccessEvent
+	isBACnetEventParameterAccessEvent() bool
 }
 
 // _BACnetEventParameterAccessEvent is the data-structure of this message
@@ -291,6 +294,10 @@ func (m *_BACnetEventParameterAccessEvent) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterAccessEvent) isBACnetEventParameterAccessEvent() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterAccessEvent) String() string {

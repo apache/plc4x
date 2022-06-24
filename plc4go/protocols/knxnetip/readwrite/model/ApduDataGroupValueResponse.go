@@ -28,17 +28,20 @@ import (
 
 // ApduDataGroupValueResponse is the corresponding interface of ApduDataGroupValueResponse
 type ApduDataGroupValueResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataGroupValueResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueResponse.
+// This is useful for switch cases.
+type ApduDataGroupValueResponseExactly interface {
+	ApduDataGroupValueResponse
+	isApduDataGroupValueResponse() bool
 }
 
 // _ApduDataGroupValueResponse is the data-structure of this message
@@ -46,9 +49,6 @@ type _ApduDataGroupValueResponse struct {
 	*_ApduData
 	DataFirstByte int8
 	Data          []byte
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -167,7 +167,9 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	_child := &_ApduDataGroupValueResponse{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		_ApduData:     &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -189,12 +191,9 @@ func (m *_ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataGroupValueResponse"); popErr != nil {
@@ -203,6 +202,10 @@ func (m *_ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataGroupValueResponse) isApduDataGroupValueResponse() bool {
+	return true
 }
 
 func (m *_ApduDataGroupValueResponse) String() string {

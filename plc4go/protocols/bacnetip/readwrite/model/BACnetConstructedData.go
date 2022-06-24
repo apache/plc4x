@@ -28,6 +28,8 @@ import (
 
 // BACnetConstructedData is the corresponding interface of BACnetConstructedData
 type BACnetConstructedData interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectTypeArgument returns ObjectTypeArgument (discriminator field)
 	GetObjectTypeArgument() BACnetObjectType
 	// GetPropertyIdentifierArgument returns PropertyIdentifierArgument (discriminator field)
@@ -40,12 +42,13 @@ type BACnetConstructedData interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedData.
+// This is useful for switch cases.
+type BACnetConstructedDataExactly interface {
+	BACnetConstructedData
+	isBACnetConstructedData() bool
 }
 
 // _BACnetConstructedData is the data-structure of this message
@@ -61,11 +64,11 @@ type _BACnetConstructedData struct {
 }
 
 type _BACnetConstructedDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetObjectTypeArgument() BACnetObjectType
 	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConstructedDataParent interface {
@@ -74,7 +77,7 @@ type BACnetConstructedDataParent interface {
 }
 
 type BACnetConstructedDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConstructedData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetConstructedData
 
@@ -1594,6 +1597,10 @@ func (pm *_BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer,
 		return errors.Wrap(popErr, "Error popping for BACnetConstructedData")
 	}
 	return nil
+}
+
+func (m *_BACnetConstructedData) isBACnetConstructedData() bool {
+	return true
 }
 
 func (m *_BACnetConstructedData) String() string {

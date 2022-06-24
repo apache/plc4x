@@ -28,16 +28,19 @@ import (
 
 // MaxSegmentsAcceptedTagged is the corresponding interface of MaxSegmentsAcceptedTagged
 type MaxSegmentsAcceptedTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() MaxSegmentsAccepted
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MaxSegmentsAcceptedTaggedExactly can be used when we want exactly this type and not a type which fulfills MaxSegmentsAcceptedTagged.
+// This is useful for switch cases.
+type MaxSegmentsAcceptedTaggedExactly interface {
+	MaxSegmentsAcceptedTagged
+	isMaxSegmentsAcceptedTagged() bool
 }
 
 // _MaxSegmentsAcceptedTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_MaxSegmentsAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for MaxSegmentsAcceptedTagged")
 	}
 	return nil
+}
+
+func (m *_MaxSegmentsAcceptedTagged) isMaxSegmentsAcceptedTagged() bool {
+	return true
 }
 
 func (m *_MaxSegmentsAcceptedTagged) String() string {

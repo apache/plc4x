@@ -28,6 +28,8 @@ import (
 
 // LDataFrame is the corresponding interface of LDataFrame
 type LDataFrame interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNotAckFrame returns NotAckFrame (discriminator field)
 	GetNotAckFrame() bool
 	// GetPolling returns Polling (discriminator field)
@@ -42,12 +44,13 @@ type LDataFrame interface {
 	GetAcknowledgeRequested() bool
 	// GetErrorFlag returns ErrorFlag (property field)
 	GetErrorFlag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// LDataFrameExactly can be used when we want exactly this type and not a type which fulfills LDataFrame.
+// This is useful for switch cases.
+type LDataFrameExactly interface {
+	LDataFrame
+	isLDataFrame() bool
 }
 
 // _LDataFrame is the data-structure of this message
@@ -61,11 +64,11 @@ type _LDataFrame struct {
 }
 
 type _LDataFrameChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetNotAckFrame() bool
 	GetPolling() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type LDataFrameParent interface {
@@ -74,7 +77,7 @@ type LDataFrameParent interface {
 }
 
 type LDataFrameChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
 	GetParent() *LDataFrame
 
@@ -332,6 +335,10 @@ func (pm *_LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child LDat
 		return errors.Wrap(popErr, "Error popping for LDataFrame")
 	}
 	return nil
+}
+
+func (m *_LDataFrame) isLDataFrame() bool {
+	return true
 }
 
 func (m *_LDataFrame) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAdjustValue is the corresponding interface of BACnetConstructedDataAdjustValue
 type BACnetConstructedDataAdjustValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAdjustValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAdjustValueExactly interface {
+	BACnetConstructedDataAdjustValue
+	isBACnetConstructedDataAdjustValue() bool
 }
 
 // _BACnetConstructedDataAdjustValue is the data-structure of this message
 type _BACnetConstructedDataAdjustValue struct {
 	*_BACnetConstructedData
 	AdjustValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAdjustValueParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAdjustValue{
-		AdjustValue:            adjustValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AdjustValue: adjustValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAdjustValue) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAdjustValue) isBACnetConstructedDataAdjustValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAdjustValue) String() string {

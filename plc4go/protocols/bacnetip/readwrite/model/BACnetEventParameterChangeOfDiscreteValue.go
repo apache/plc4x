@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterChangeOfDiscreteValue is the corresponding interface of BACnetEventParameterChangeOfDiscreteValue
 type BACnetEventParameterChangeOfDiscreteValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -35,12 +37,13 @@ type BACnetEventParameterChangeOfDiscreteValue interface {
 	GetTimeDelay() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfDiscreteValueExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfDiscreteValue.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfDiscreteValueExactly interface {
+	BACnetEventParameterChangeOfDiscreteValue
+	isBACnetEventParameterChangeOfDiscreteValue() bool
 }
 
 // _BACnetEventParameterChangeOfDiscreteValue is the data-structure of this message
@@ -254,6 +257,10 @@ func (m *_BACnetEventParameterChangeOfDiscreteValue) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfDiscreteValue) isBACnetEventParameterChangeOfDiscreteValue() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfDiscreteValue) String() string {

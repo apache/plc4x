@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIntegerValueCOVIncrement is the corresponding interface of BACnetConstructedDataIntegerValueCOVIncrement
 type BACnetConstructedDataIntegerValueCOVIncrement interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIntegerValueCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueCOVIncrement.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueCOVIncrementExactly interface {
+	BACnetConstructedDataIntegerValueCOVIncrement
+	isBACnetConstructedDataIntegerValueCOVIncrement() bool
 }
 
 // _BACnetConstructedDataIntegerValueCOVIncrement is the data-structure of this message
 type _BACnetConstructedDataIntegerValueCOVIncrement struct {
 	*_BACnetConstructedData
 	CovIncrement BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIntegerValueCOVIncrementParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegerValueCOVIncrement{
-		CovIncrement:           covIncrement,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CovIncrement: covIncrement,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIntegerValueCOVIncrement) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueCOVIncrement) isBACnetConstructedDataIntegerValueCOVIncrement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueCOVIncrement) String() string {

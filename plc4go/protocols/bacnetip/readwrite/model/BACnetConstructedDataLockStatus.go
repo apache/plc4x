@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLockStatus is the corresponding interface of BACnetConstructedDataLockStatus
 type BACnetConstructedDataLockStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLockStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLockStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLockStatus.
+// This is useful for switch cases.
+type BACnetConstructedDataLockStatusExactly interface {
+	BACnetConstructedDataLockStatus
+	isBACnetConstructedDataLockStatus() bool
 }
 
 // _BACnetConstructedDataLockStatus is the data-structure of this message
 type _BACnetConstructedDataLockStatus struct {
 	*_BACnetConstructedData
 	LockStatus BACnetLockStatusTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLockStatus{
-		LockStatus:             lockStatus,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LockStatus: lockStatus,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLockStatus) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLockStatus) isBACnetConstructedDataLockStatus() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLockStatus) String() string {

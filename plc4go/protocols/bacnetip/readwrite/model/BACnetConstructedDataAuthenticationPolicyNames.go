@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataAuthenticationPolicyNames is the corresponding interface of BACnetConstructedDataAuthenticationPolicyNames
 type BACnetConstructedDataAuthenticationPolicyNames interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataAuthenticationPolicyNames interface {
 	GetAuthenticationPolicyNames() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAuthenticationPolicyNamesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAuthenticationPolicyNames.
+// This is useful for switch cases.
+type BACnetConstructedDataAuthenticationPolicyNamesExactly interface {
+	BACnetConstructedDataAuthenticationPolicyNames
+	isBACnetConstructedDataAuthenticationPolicyNames() bool
 }
 
 // _BACnetConstructedDataAuthenticationPolicyNames is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataAuthenticationPolicyNames struct {
 	*_BACnetConstructedData
 	NumberOfDataElements      BACnetApplicationTagUnsignedInteger
 	AuthenticationPolicyNames []BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationPolicyNames")
 	}
 	// Terminated array
-	authenticationPolicyNames := make([]BACnetApplicationTagCharacterString, 0)
+	var authenticationPolicyNames []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -235,7 +234,10 @@ func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBu
 	_child := &_BACnetConstructedDataAuthenticationPolicyNames{
 		NumberOfDataElements:      numberOfDataElements,
 		AuthenticationPolicyNames: authenticationPolicyNames,
-		_BACnetConstructedData:    &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) Serialize(writeBuffer 
 		}
 
 		// Array Field (authenticationPolicyNames)
-		if m.GetAuthenticationPolicyNames() != nil {
-			if pushErr := writeBuffer.PushContext("authenticationPolicyNames", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authenticationPolicyNames")
+		if pushErr := writeBuffer.PushContext("authenticationPolicyNames", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for authenticationPolicyNames")
+		}
+		for _, _element := range m.GetAuthenticationPolicyNames() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'authenticationPolicyNames' field")
 			}
-			for _, _element := range m.GetAuthenticationPolicyNames() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'authenticationPolicyNames' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("authenticationPolicyNames", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authenticationPolicyNames")
-			}
+		}
+		if popErr := writeBuffer.PopContext("authenticationPolicyNames", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for authenticationPolicyNames")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationPolicyNames"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyNames) isBACnetConstructedDataAuthenticationPolicyNames() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAuthenticationPolicyNames) String() string {

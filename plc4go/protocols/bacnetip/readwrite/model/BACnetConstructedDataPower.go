@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPower is the corresponding interface of BACnetConstructedDataPower
 type BACnetConstructedDataPower interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPower returns Power (property field)
 	GetPower() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPowerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPower.
+// This is useful for switch cases.
+type BACnetConstructedDataPowerExactly interface {
+	BACnetConstructedDataPower
+	isBACnetConstructedDataPower() bool
 }
 
 // _BACnetConstructedDataPower is the data-structure of this message
 type _BACnetConstructedDataPower struct {
 	*_BACnetConstructedData
 	Power BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPowerParse(readBuffer utils.ReadBuffer, tagNumber uint
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPower{
-		Power:                  power,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Power: power,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPower) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPower) isBACnetConstructedDataPower() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPower) String() string {

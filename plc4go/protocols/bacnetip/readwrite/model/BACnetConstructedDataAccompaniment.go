@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccompaniment is the corresponding interface of BACnetConstructedDataAccompaniment
 type BACnetConstructedDataAccompaniment interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAccompaniment returns Accompaniment (property field)
 	GetAccompaniment() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccompanimentExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccompaniment.
+// This is useful for switch cases.
+type BACnetConstructedDataAccompanimentExactly interface {
+	BACnetConstructedDataAccompaniment
+	isBACnetConstructedDataAccompaniment() bool
 }
 
 // _BACnetConstructedDataAccompaniment is the data-structure of this message
 type _BACnetConstructedDataAccompaniment struct {
 	*_BACnetConstructedData
 	Accompaniment BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccompanimentParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccompaniment{
-		Accompaniment:          accompaniment,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Accompaniment: accompaniment,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccompaniment) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccompaniment) isBACnetConstructedDataAccompaniment() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccompaniment) String() string {

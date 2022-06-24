@@ -28,17 +28,20 @@ import (
 
 // ApduDataDeviceDescriptorResponse is the corresponding interface of ApduDataDeviceDescriptorResponse
 type ApduDataDeviceDescriptorResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetDescriptorType returns DescriptorType (property field)
 	GetDescriptorType() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataDeviceDescriptorResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataDeviceDescriptorResponse.
+// This is useful for switch cases.
+type ApduDataDeviceDescriptorResponseExactly interface {
+	ApduDataDeviceDescriptorResponse
+	isApduDataDeviceDescriptorResponse() bool
 }
 
 // _ApduDataDeviceDescriptorResponse is the data-structure of this message
@@ -46,9 +49,6 @@ type _ApduDataDeviceDescriptorResponse struct {
 	*_ApduData
 	DescriptorType uint8
 	Data           []byte
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -167,7 +167,9 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 	_child := &_ApduDataDeviceDescriptorResponse{
 		DescriptorType: descriptorType,
 		Data:           data,
-		_ApduData:      &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -189,12 +191,9 @@ func (m *_ApduDataDeviceDescriptorResponse) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataDeviceDescriptorResponse"); popErr != nil {
@@ -203,6 +202,10 @@ func (m *_ApduDataDeviceDescriptorResponse) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataDeviceDescriptorResponse) isApduDataDeviceDescriptorResponse() bool {
+	return true
 }
 
 func (m *_ApduDataDeviceDescriptorResponse) String() string {

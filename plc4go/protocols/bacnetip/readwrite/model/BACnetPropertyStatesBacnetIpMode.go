@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesBacnetIpMode is the corresponding interface of BACnetPropertyStatesBacnetIpMode
 type BACnetPropertyStatesBacnetIpMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetBacnetIpMode returns BacnetIpMode (property field)
 	GetBacnetIpMode() BACnetIPModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesBacnetIpModeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBacnetIpMode.
+// This is useful for switch cases.
+type BACnetPropertyStatesBacnetIpModeExactly interface {
+	BACnetPropertyStatesBacnetIpMode
+	isBACnetPropertyStatesBacnetIpMode() bool
 }
 
 // _BACnetPropertyStatesBacnetIpMode is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesBacnetIpMode) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesBacnetIpMode) isBACnetPropertyStatesBacnetIpMode() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) String() string {

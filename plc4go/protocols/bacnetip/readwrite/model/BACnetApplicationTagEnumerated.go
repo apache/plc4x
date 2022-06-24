@@ -28,17 +28,20 @@ import (
 
 // BACnetApplicationTagEnumerated is the corresponding interface of BACnetApplicationTagEnumerated
 type BACnetApplicationTagEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadEnumerated
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetApplicationTagEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagEnumerated.
+// This is useful for switch cases.
+type BACnetApplicationTagEnumeratedExactly interface {
+	BACnetApplicationTagEnumerated
+	isBACnetApplicationTagEnumerated() bool
 }
 
 // _BACnetApplicationTagEnumerated is the data-structure of this message
@@ -206,6 +209,10 @@ func (m *_BACnetApplicationTagEnumerated) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagEnumerated) isBACnetApplicationTagEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagEnumerated) String() string {

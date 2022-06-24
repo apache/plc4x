@@ -29,6 +29,8 @@ import (
 
 // ApduDataExtPropertyDescriptionResponse is the corresponding interface of ApduDataExtPropertyDescriptionResponse
 type ApduDataExtPropertyDescriptionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -46,12 +48,13 @@ type ApduDataExtPropertyDescriptionResponse interface {
 	GetReadLevel() AccessLevel
 	// GetWriteLevel returns WriteLevel (property field)
 	GetWriteLevel() AccessLevel
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtPropertyDescriptionResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyDescriptionResponse.
+// This is useful for switch cases.
+type ApduDataExtPropertyDescriptionResponseExactly interface {
+	ApduDataExtPropertyDescriptionResponse
+	isApduDataExtPropertyDescriptionResponse() bool
 }
 
 // _ApduDataExtPropertyDescriptionResponse is the data-structure of this message
@@ -65,9 +68,6 @@ type _ApduDataExtPropertyDescriptionResponse struct {
 	MaxNrOfElements  uint16
 	ReadLevel        AccessLevel
 	WriteLevel       AccessLevel
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -333,7 +333,9 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 		MaxNrOfElements:  maxNrOfElements,
 		ReadLevel:        readLevel,
 		WriteLevel:       writeLevel,
-		_ApduDataExt:     &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -440,6 +442,10 @@ func (m *_ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponse) isApduDataExtPropertyDescriptionResponse() bool {
+	return true
 }
 
 func (m *_ApduDataExtPropertyDescriptionResponse) String() string {

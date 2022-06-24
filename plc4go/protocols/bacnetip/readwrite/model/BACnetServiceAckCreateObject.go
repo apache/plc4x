@@ -28,24 +28,24 @@ import (
 
 // BACnetServiceAckCreateObject is the corresponding interface of BACnetServiceAckCreateObject
 type BACnetServiceAckCreateObject interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckCreateObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckCreateObject.
+// This is useful for switch cases.
+type BACnetServiceAckCreateObjectExactly interface {
+	BACnetServiceAckCreateObject
+	isBACnetServiceAckCreateObject() bool
 }
 
 // _BACnetServiceAckCreateObject is the data-structure of this message
 type _BACnetServiceAckCreateObject struct {
 	*_BACnetServiceAck
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer, serviceAckLe
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckCreateObject{
-		ObjectIdentifier:  objectIdentifier,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		ObjectIdentifier: objectIdentifier,
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetServiceAckCreateObject) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckCreateObject) isBACnetServiceAckCreateObject() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckCreateObject) String() string {

@@ -28,14 +28,17 @@ import (
 
 // FirmataCommand is the corresponding interface of FirmataCommand
 type FirmataCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataCommandExactly can be used when we want exactly this type and not a type which fulfills FirmataCommand.
+// This is useful for switch cases.
+type FirmataCommandExactly interface {
+	FirmataCommand
+	isFirmataCommand() bool
 }
 
 // _FirmataCommand is the data-structure of this message
@@ -47,10 +50,10 @@ type _FirmataCommand struct {
 }
 
 type _FirmataCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type FirmataCommandParent interface {
@@ -59,7 +62,7 @@ type FirmataCommandParent interface {
 }
 
 type FirmataCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent FirmataCommand)
 	GetParent() *FirmataCommand
 
@@ -179,6 +182,10 @@ func (pm *_FirmataCommand) SerializeParent(writeBuffer utils.WriteBuffer, child 
 		return errors.Wrap(popErr, "Error popping for FirmataCommand")
 	}
 	return nil
+}
+
+func (m *_FirmataCommand) isFirmataCommand() bool {
+	return true
 }
 
 func (m *_FirmataCommand) String() string {

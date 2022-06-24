@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataInProcess is the corresponding interface of BACnetConstructedDataInProcess
 type BACnetConstructedDataInProcess interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInProcess returns InProcess (property field)
 	GetInProcess() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataInProcessExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInProcess.
+// This is useful for switch cases.
+type BACnetConstructedDataInProcessExactly interface {
+	BACnetConstructedDataInProcess
+	isBACnetConstructedDataInProcess() bool
 }
 
 // _BACnetConstructedDataInProcess is the data-structure of this message
 type _BACnetConstructedDataInProcess struct {
 	*_BACnetConstructedData
 	InProcess BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataInProcess{
-		InProcess:              inProcess,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		InProcess: inProcess,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataInProcess) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInProcess) isBACnetConstructedDataInProcess() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInProcess) String() string {

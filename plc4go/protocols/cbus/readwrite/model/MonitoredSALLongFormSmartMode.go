@@ -30,6 +30,8 @@ import (
 
 // MonitoredSALLongFormSmartMode is the corresponding interface of MonitoredSALLongFormSmartMode
 type MonitoredSALLongFormSmartMode interface {
+	utils.LengthAware
+	utils.Serializable
 	MonitoredSAL
 	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
@@ -45,12 +47,13 @@ type MonitoredSALLongFormSmartMode interface {
 	GetReplyNetwork() ReplyNetwork
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MonitoredSALLongFormSmartModeExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALLongFormSmartMode.
+// This is useful for switch cases.
+type MonitoredSALLongFormSmartModeExactly interface {
+	MonitoredSALLongFormSmartMode
+	isMonitoredSALLongFormSmartMode() bool
 }
 
 // _MonitoredSALLongFormSmartMode is the data-structure of this message
@@ -455,6 +458,10 @@ func (m *_MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MonitoredSALLongFormSmartMode) isMonitoredSALLongFormSmartMode() bool {
+	return true
 }
 
 func (m *_MonitoredSALLongFormSmartMode) String() string {

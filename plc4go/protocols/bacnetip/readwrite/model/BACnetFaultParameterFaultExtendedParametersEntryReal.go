@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryReal is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryReal
 type BACnetFaultParameterFaultExtendedParametersEntryReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryRealExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryReal.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryRealExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryReal
+	isBACnetFaultParameterFaultExtendedParametersEntryReal() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryReal is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) isBACnetFaultParameterFaultExtendedParametersEntryReal() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) String() string {

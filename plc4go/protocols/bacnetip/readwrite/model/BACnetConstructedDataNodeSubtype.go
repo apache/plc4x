@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNodeSubtype is the corresponding interface of BACnetConstructedDataNodeSubtype
 type BACnetConstructedDataNodeSubtype interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNodeSubType returns NodeSubType (property field)
 	GetNodeSubType() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNodeSubtypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNodeSubtype.
+// This is useful for switch cases.
+type BACnetConstructedDataNodeSubtypeExactly interface {
+	BACnetConstructedDataNodeSubtype
+	isBACnetConstructedDataNodeSubtype() bool
 }
 
 // _BACnetConstructedDataNodeSubtype is the data-structure of this message
 type _BACnetConstructedDataNodeSubtype struct {
 	*_BACnetConstructedData
 	NodeSubType BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNodeSubtypeParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNodeSubtype{
-		NodeSubType:            nodeSubType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NodeSubType: nodeSubType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNodeSubtype) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNodeSubtype) isBACnetConstructedDataNodeSubtype() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNodeSubtype) String() string {

@@ -28,13 +28,16 @@ import (
 
 // SysexCommandSamplingInterval is the corresponding interface of SysexCommandSamplingInterval
 type SysexCommandSamplingInterval interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandSamplingIntervalExactly can be used when we want exactly this type and not a type which fulfills SysexCommandSamplingInterval.
+// This is useful for switch cases.
+type SysexCommandSamplingIntervalExactly interface {
+	SysexCommandSamplingInterval
+	isSysexCommandSamplingInterval() bool
 }
 
 // _SysexCommandSamplingInterval is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_SysexCommandSamplingInterval) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandSamplingInterval) isSysexCommandSamplingInterval() bool {
+	return true
 }
 
 func (m *_SysexCommandSamplingInterval) String() string {

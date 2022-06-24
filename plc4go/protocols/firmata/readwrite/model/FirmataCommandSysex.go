@@ -29,24 +29,24 @@ import (
 
 // FirmataCommandSysex is the corresponding interface of FirmataCommandSysex
 type FirmataCommandSysex interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataCommand
 	// GetCommand returns Command (property field)
 	GetCommand() SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataCommandSysexExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSysex.
+// This is useful for switch cases.
+type FirmataCommandSysexExactly interface {
+	FirmataCommandSysex
+	isFirmataCommandSysex() bool
 }
 
 // _FirmataCommandSysex is the data-structure of this message
 type _FirmataCommandSysex struct {
 	*_FirmataCommand
 	Command SysexCommand
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -170,8 +170,10 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSysex{
-		Command:         command,
-		_FirmataCommand: &_FirmataCommand{},
+		Command: command,
+		_FirmataCommand: &_FirmataCommand{
+			Response: response,
+		},
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil
@@ -211,6 +213,10 @@ func (m *_FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSysex) isFirmataCommandSysex() bool {
+	return true
 }
 
 func (m *_FirmataCommandSysex) String() string {

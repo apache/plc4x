@@ -29,17 +29,20 @@ import (
 
 // FirmataMessageSubscribeDigitalPinValue is the corresponding interface of FirmataMessageSubscribeDigitalPinValue
 type FirmataMessageSubscribeDigitalPinValue interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetEnable returns Enable (property field)
 	GetEnable() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataMessageSubscribeDigitalPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageSubscribeDigitalPinValue.
+// This is useful for switch cases.
+type FirmataMessageSubscribeDigitalPinValueExactly interface {
+	FirmataMessageSubscribeDigitalPinValue
+	isFirmataMessageSubscribeDigitalPinValue() bool
 }
 
 // _FirmataMessageSubscribeDigitalPinValue is the data-structure of this message
@@ -47,9 +50,6 @@ type _FirmataMessageSubscribeDigitalPinValue struct {
 	*_FirmataMessage
 	Pin    uint8
 	Enable bool
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -182,9 +182,11 @@ func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, re
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageSubscribeDigitalPinValue{
-		Pin:             pin,
-		Enable:          enable,
-		_FirmataMessage: &_FirmataMessage{},
+		Pin:    pin,
+		Enable: enable,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil
@@ -226,6 +228,10 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageSubscribeDigitalPinValue) isFirmataMessageSubscribeDigitalPinValue() bool {
+	return true
 }
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) String() string {

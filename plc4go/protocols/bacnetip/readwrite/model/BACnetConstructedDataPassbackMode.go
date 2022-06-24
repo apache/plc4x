@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPassbackMode is the corresponding interface of BACnetConstructedDataPassbackMode
 type BACnetConstructedDataPassbackMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPassbackMode returns PassbackMode (property field)
 	GetPassbackMode() BACnetAccessPassbackModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessPassbackModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPassbackModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPassbackMode.
+// This is useful for switch cases.
+type BACnetConstructedDataPassbackModeExactly interface {
+	BACnetConstructedDataPassbackMode
+	isBACnetConstructedDataPassbackMode() bool
 }
 
 // _BACnetConstructedDataPassbackMode is the data-structure of this message
 type _BACnetConstructedDataPassbackMode struct {
 	*_BACnetConstructedData
 	PassbackMode BACnetAccessPassbackModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPassbackModeParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPassbackMode{
-		PassbackMode:           passbackMode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PassbackMode: passbackMode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPassbackMode) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPassbackMode) isBACnetConstructedDataPassbackMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPassbackMode) String() string {

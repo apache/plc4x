@@ -28,16 +28,19 @@ import (
 
 // CALData is the corresponding interface of CALData
 type CALData interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() CALCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() CALCommandType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALDataExactly can be used when we want exactly this type and not a type which fulfills CALData.
+// This is useful for switch cases.
+type CALDataExactly interface {
+	CALData
+	isCALData() bool
 }
 
 // _CALData is the data-structure of this message
@@ -47,9 +50,9 @@ type _CALData struct {
 }
 
 type _CALDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CALDataParent interface {
@@ -58,7 +61,7 @@ type CALDataParent interface {
 }
 
 type CALDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer)
 	GetParent() *CALData
 
@@ -234,6 +237,10 @@ func (pm *_CALData) SerializeParent(writeBuffer utils.WriteBuffer, child CALData
 		return errors.Wrap(popErr, "Error popping for CALData")
 	}
 	return nil
+}
+
+func (m *_CALData) isCALData() bool {
+	return true
 }
 
 func (m *_CALData) String() string {

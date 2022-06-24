@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataAlertEnrollmentAll is the corresponding interface of BACnetConstructedDataAlertEnrollmentAll
 type BACnetConstructedDataAlertEnrollmentAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAlertEnrollmentAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAlertEnrollmentAll.
+// This is useful for switch cases.
+type BACnetConstructedDataAlertEnrollmentAllExactly interface {
+	BACnetConstructedDataAlertEnrollmentAll
+	isBACnetConstructedDataAlertEnrollmentAll() bool
 }
 
 // _BACnetConstructedDataAlertEnrollmentAll is the data-structure of this message
 type _BACnetConstructedDataAlertEnrollmentAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataAlertEnrollmentAllParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAlertEnrollmentAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataAlertEnrollmentAll) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentAll) isBACnetConstructedDataAlertEnrollmentAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAlertEnrollmentAll) String() string {

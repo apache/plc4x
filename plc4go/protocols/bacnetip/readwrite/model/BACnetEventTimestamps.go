@@ -28,18 +28,21 @@ import (
 
 // BACnetEventTimestamps is the corresponding interface of BACnetEventTimestamps
 type BACnetEventTimestamps interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetToOffnormal returns ToOffnormal (property field)
 	GetToOffnormal() BACnetTimeStamp
 	// GetToFault returns ToFault (property field)
 	GetToFault() BACnetTimeStamp
 	// GetToNormal returns ToNormal (property field)
 	GetToNormal() BACnetTimeStamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventTimestampsExactly can be used when we want exactly this type and not a type which fulfills BACnetEventTimestamps.
+// This is useful for switch cases.
+type BACnetEventTimestampsExactly interface {
+	BACnetEventTimestamps
+	isBACnetEventTimestamps() bool
 }
 
 // _BACnetEventTimestamps is the data-structure of this message
@@ -217,6 +220,10 @@ func (m *_BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetEventTimestamps")
 	}
 	return nil
+}
+
+func (m *_BACnetEventTimestamps) isBACnetEventTimestamps() bool {
+	return true
 }
 
 func (m *_BACnetEventTimestamps) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetNotifyTypeTagged is the corresponding interface of BACnetNotifyTypeTagged
 type BACnetNotifyTypeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNotifyType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotifyTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNotifyTypeTagged.
+// This is useful for switch cases.
+type BACnetNotifyTypeTaggedExactly interface {
+	BACnetNotifyTypeTagged
+	isBACnetNotifyTypeTagged() bool
 }
 
 // _BACnetNotifyTypeTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetNotifyTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetNotifyTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetNotifyTypeTagged) isBACnetNotifyTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetNotifyTypeTagged) String() string {

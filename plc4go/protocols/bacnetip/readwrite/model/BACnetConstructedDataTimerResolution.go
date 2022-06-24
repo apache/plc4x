@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimerResolution is the corresponding interface of BACnetConstructedDataTimerResolution
 type BACnetConstructedDataTimerResolution interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimerResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerResolutionExactly interface {
+	BACnetConstructedDataTimerResolution
+	isBACnetConstructedDataTimerResolution() bool
 }
 
 // _BACnetConstructedDataTimerResolution is the data-structure of this message
 type _BACnetConstructedDataTimerResolution struct {
 	*_BACnetConstructedData
 	Resolution BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimerResolutionParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimerResolution{
-		Resolution:             resolution,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Resolution: resolution,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimerResolution) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerResolution) isBACnetConstructedDataTimerResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerResolution) String() string {

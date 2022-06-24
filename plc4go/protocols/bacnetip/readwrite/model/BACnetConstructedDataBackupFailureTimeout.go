@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBackupFailureTimeout is the corresponding interface of BACnetConstructedDataBackupFailureTimeout
 type BACnetConstructedDataBackupFailureTimeout interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBackupFailureTimeout returns BackupFailureTimeout (property field)
 	GetBackupFailureTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBackupFailureTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBackupFailureTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataBackupFailureTimeoutExactly interface {
+	BACnetConstructedDataBackupFailureTimeout
+	isBACnetConstructedDataBackupFailureTimeout() bool
 }
 
 // _BACnetConstructedDataBackupFailureTimeout is the data-structure of this message
 type _BACnetConstructedDataBackupFailureTimeout struct {
 	*_BACnetConstructedData
 	BackupFailureTimeout BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBackupFailureTimeoutParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBackupFailureTimeout{
-		BackupFailureTimeout:   backupFailureTimeout,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BackupFailureTimeout: backupFailureTimeout,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeout) isBACnetConstructedDataBackupFailureTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) String() string {

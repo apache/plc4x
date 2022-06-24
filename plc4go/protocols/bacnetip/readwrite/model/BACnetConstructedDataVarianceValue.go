@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataVarianceValue is the corresponding interface of BACnetConstructedDataVarianceValue
 type BACnetConstructedDataVarianceValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetVarianceValue returns VarianceValue (property field)
 	GetVarianceValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataVarianceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVarianceValue.
+// This is useful for switch cases.
+type BACnetConstructedDataVarianceValueExactly interface {
+	BACnetConstructedDataVarianceValue
+	isBACnetConstructedDataVarianceValue() bool
 }
 
 // _BACnetConstructedDataVarianceValue is the data-structure of this message
 type _BACnetConstructedDataVarianceValue struct {
 	*_BACnetConstructedData
 	VarianceValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataVarianceValueParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataVarianceValue{
-		VarianceValue:          varianceValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		VarianceValue: varianceValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataVarianceValue) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataVarianceValue) isBACnetConstructedDataVarianceValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataVarianceValue) String() string {

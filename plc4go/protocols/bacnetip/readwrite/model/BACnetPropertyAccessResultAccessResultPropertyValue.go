@@ -28,26 +28,24 @@ import (
 
 // BACnetPropertyAccessResultAccessResultPropertyValue is the corresponding interface of BACnetPropertyAccessResultAccessResultPropertyValue
 type BACnetPropertyAccessResultAccessResultPropertyValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyValue returns PropertyValue (property field)
 	GetPropertyValue() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyAccessResultAccessResultPropertyValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResultAccessResultPropertyValue.
+// This is useful for switch cases.
+type BACnetPropertyAccessResultAccessResultPropertyValueExactly interface {
+	BACnetPropertyAccessResultAccessResultPropertyValue
+	isBACnetPropertyAccessResultAccessResultPropertyValue() bool
 }
 
 // _BACnetPropertyAccessResultAccessResultPropertyValue is the data-structure of this message
 type _BACnetPropertyAccessResultAccessResultPropertyValue struct {
 	*_BACnetPropertyAccessResultAccessResult
 	PropertyValue BACnetConstructedData
-
-	// Arguments.
-	ObjectTypeArgument         BACnetObjectType
-	PropertyIdentifierArgument BACnetPropertyIdentifier
-	PropertyArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +150,12 @@ func BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_BACnetPropertyAccessResultAccessResultPropertyValue{
-		PropertyValue:                           propertyValue,
-		_BACnetPropertyAccessResultAccessResult: &_BACnetPropertyAccessResultAccessResult{},
+		PropertyValue: propertyValue,
+		_BACnetPropertyAccessResultAccessResult: &_BACnetPropertyAccessResultAccessResult{
+			ObjectTypeArgument:         objectTypeArgument,
+			PropertyIdentifierArgument: propertyIdentifierArgument,
+			PropertyArrayIndexArgument: propertyArrayIndexArgument,
+		},
 	}
 	_child._BACnetPropertyAccessResultAccessResult._BACnetPropertyAccessResultAccessResultChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) isBACnetPropertyAccessResultAccessResultPropertyValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) String() string {

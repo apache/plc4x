@@ -28,13 +28,16 @@ import (
 
 // ApduControlConnect is the corresponding interface of ApduControlConnect
 type ApduControlConnect interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduControl
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduControlConnectExactly can be used when we want exactly this type and not a type which fulfills ApduControlConnect.
+// This is useful for switch cases.
+type ApduControlConnectExactly interface {
+	ApduControlConnect
+	isApduControlConnect() bool
 }
 
 // _ApduControlConnect is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_ApduControlConnect) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduControlConnect) isApduControlConnect() bool {
+	return true
 }
 
 func (m *_ApduControlConnect) String() string {

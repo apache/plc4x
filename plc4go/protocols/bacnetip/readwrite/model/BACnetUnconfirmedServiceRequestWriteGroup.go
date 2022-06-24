@@ -30,6 +30,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestWriteGroup is the corresponding interface of BACnetUnconfirmedServiceRequestWriteGroup
 type BACnetUnconfirmedServiceRequestWriteGroup interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetGroupNumber returns GroupNumber (property field)
 	GetGroupNumber() BACnetContextTagUnsignedInteger
@@ -39,12 +41,13 @@ type BACnetUnconfirmedServiceRequestWriteGroup interface {
 	GetChangeList() BACnetGroupChannelValueList
 	// GetInhibitDelay returns InhibitDelay (property field)
 	GetInhibitDelay() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestWriteGroupExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWriteGroup.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestWriteGroupExactly interface {
+	BACnetUnconfirmedServiceRequestWriteGroup
+	isBACnetUnconfirmedServiceRequestWriteGroup() bool
 }
 
 // _BACnetUnconfirmedServiceRequestWriteGroup is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetUnconfirmedServiceRequestWriteGroup struct {
 	WritePriority BACnetContextTagUnsignedInteger
 	ChangeList    BACnetGroupChannelValueList
 	InhibitDelay  BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -238,11 +238,13 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestWriteGroup{
-		GroupNumber:                      groupNumber,
-		WritePriority:                    writePriority,
-		ChangeList:                       changeList,
-		InhibitDelay:                     inhibitDelay,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		GroupNumber:   groupNumber,
+		WritePriority: writePriority,
+		ChangeList:    changeList,
+		InhibitDelay:  inhibitDelay,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -314,6 +316,10 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) isBACnetUnconfirmedServiceRequestWriteGroup() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) String() string {

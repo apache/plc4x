@@ -28,14 +28,17 @@ import (
 
 // S7VarRequestParameterItem is the corresponding interface of S7VarRequestParameterItem
 type S7VarRequestParameterItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7VarRequestParameterItemExactly can be used when we want exactly this type and not a type which fulfills S7VarRequestParameterItem.
+// This is useful for switch cases.
+type S7VarRequestParameterItemExactly interface {
+	S7VarRequestParameterItem
+	isS7VarRequestParameterItem() bool
 }
 
 // _S7VarRequestParameterItem is the data-structure of this message
@@ -44,10 +47,10 @@ type _S7VarRequestParameterItem struct {
 }
 
 type _S7VarRequestParameterItemChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetItemType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7VarRequestParameterItemParent interface {
@@ -56,7 +59,7 @@ type S7VarRequestParameterItemParent interface {
 }
 
 type S7VarRequestParameterItemChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7VarRequestParameterItem)
 	GetParent() *S7VarRequestParameterItem
 
@@ -168,6 +171,10 @@ func (pm *_S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuf
 		return errors.Wrap(popErr, "Error popping for S7VarRequestParameterItem")
 	}
 	return nil
+}
+
+func (m *_S7VarRequestParameterItem) isS7VarRequestParameterItem() bool {
+	return true
 }
 
 func (m *_S7VarRequestParameterItem) String() string {

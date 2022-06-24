@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataManipulatedVariableReference is the corresponding interface of BACnetConstructedDataManipulatedVariableReference
 type BACnetConstructedDataManipulatedVariableReference interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetManipulatedVariableReference returns ManipulatedVariableReference (property field)
 	GetManipulatedVariableReference() BACnetObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectPropertyReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataManipulatedVariableReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataManipulatedVariableReference.
+// This is useful for switch cases.
+type BACnetConstructedDataManipulatedVariableReferenceExactly interface {
+	BACnetConstructedDataManipulatedVariableReference
+	isBACnetConstructedDataManipulatedVariableReference() bool
 }
 
 // _BACnetConstructedDataManipulatedVariableReference is the data-structure of this message
 type _BACnetConstructedDataManipulatedVariableReference struct {
 	*_BACnetConstructedData
 	ManipulatedVariableReference BACnetObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer utils.Rea
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataManipulatedVariableReference{
 		ManipulatedVariableReference: manipulatedVariableReference,
-		_BACnetConstructedData:       &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataManipulatedVariableReference) isBACnetConstructedDataManipulatedVariableReference() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataManipulatedVariableReference) String() string {

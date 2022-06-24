@@ -28,14 +28,17 @@ import (
 
 // UnitAddress is the corresponding interface of UnitAddress
 type UnitAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// UnitAddressExactly can be used when we want exactly this type and not a type which fulfills UnitAddress.
+// This is useful for switch cases.
+type UnitAddressExactly interface {
+	UnitAddress
+	isUnitAddress() bool
 }
 
 // _UnitAddress is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_UnitAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for UnitAddress")
 	}
 	return nil
+}
+
+func (m *_UnitAddress) isUnitAddress() bool {
+	return true
 }
 
 func (m *_UnitAddress) String() string {

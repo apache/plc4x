@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataReferencePort is the corresponding interface of BACnetConstructedDataReferencePort
 type BACnetConstructedDataReferencePort interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetReferencePort returns ReferencePort (property field)
 	GetReferencePort() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataReferencePortExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReferencePort.
+// This is useful for switch cases.
+type BACnetConstructedDataReferencePortExactly interface {
+	BACnetConstructedDataReferencePort
+	isBACnetConstructedDataReferencePort() bool
 }
 
 // _BACnetConstructedDataReferencePort is the data-structure of this message
 type _BACnetConstructedDataReferencePort struct {
 	*_BACnetConstructedData
 	ReferencePort BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataReferencePortParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataReferencePort{
-		ReferencePort:          referencePort,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ReferencePort: referencePort,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataReferencePort) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReferencePort) isBACnetConstructedDataReferencePort() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReferencePort) String() string {

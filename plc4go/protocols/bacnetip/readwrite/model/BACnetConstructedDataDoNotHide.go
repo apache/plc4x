@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDoNotHide is the corresponding interface of BACnetConstructedDataDoNotHide
 type BACnetConstructedDataDoNotHide interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDoNotHide returns DoNotHide (property field)
 	GetDoNotHide() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDoNotHideExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoNotHide.
+// This is useful for switch cases.
+type BACnetConstructedDataDoNotHideExactly interface {
+	BACnetConstructedDataDoNotHide
+	isBACnetConstructedDataDoNotHide() bool
 }
 
 // _BACnetConstructedDataDoNotHide is the data-structure of this message
 type _BACnetConstructedDataDoNotHide struct {
 	*_BACnetConstructedData
 	DoNotHide BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDoNotHideParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDoNotHide{
-		DoNotHide:              doNotHide,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DoNotHide: doNotHide,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDoNotHide) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoNotHide) isBACnetConstructedDataDoNotHide() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoNotHide) String() string {

@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataListOfGroupMembers is the corresponding interface of BACnetConstructedDataListOfGroupMembers
 type BACnetConstructedDataListOfGroupMembers interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetListOfGroupMembers returns ListOfGroupMembers (property field)
 	GetListOfGroupMembers() []BACnetReadAccessSpecification
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataListOfGroupMembersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataListOfGroupMembers.
+// This is useful for switch cases.
+type BACnetConstructedDataListOfGroupMembersExactly interface {
+	BACnetConstructedDataListOfGroupMembers
+	isBACnetConstructedDataListOfGroupMembers() bool
 }
 
 // _BACnetConstructedDataListOfGroupMembers is the data-structure of this message
 type _BACnetConstructedDataListOfGroupMembers struct {
 	*_BACnetConstructedData
 	ListOfGroupMembers []BACnetReadAccessSpecification
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataListOfGroupMembersParse(readBuffer utils.ReadBuffer, t
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfGroupMembers")
 	}
 	// Terminated array
-	listOfGroupMembers := make([]BACnetReadAccessSpecification, 0)
+	var listOfGroupMembers []BACnetReadAccessSpecification
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessSpecificationParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataListOfGroupMembersParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataListOfGroupMembers{
-		ListOfGroupMembers:     listOfGroupMembers,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ListOfGroupMembers: listOfGroupMembers,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataListOfGroupMembers) Serialize(writeBuffer utils.W
 		}
 
 		// Array Field (listOfGroupMembers)
-		if m.GetListOfGroupMembers() != nil {
-			if pushErr := writeBuffer.PushContext("listOfGroupMembers", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for listOfGroupMembers")
+		if pushErr := writeBuffer.PushContext("listOfGroupMembers", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for listOfGroupMembers")
+		}
+		for _, _element := range m.GetListOfGroupMembers() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'listOfGroupMembers' field")
 			}
-			for _, _element := range m.GetListOfGroupMembers() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'listOfGroupMembers' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("listOfGroupMembers", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for listOfGroupMembers")
-			}
+		}
+		if popErr := writeBuffer.PopContext("listOfGroupMembers", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for listOfGroupMembers")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataListOfGroupMembers"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataListOfGroupMembers) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataListOfGroupMembers) isBACnetConstructedDataListOfGroupMembers() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataListOfGroupMembers) String() string {

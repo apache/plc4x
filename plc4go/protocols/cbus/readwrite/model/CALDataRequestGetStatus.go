@@ -28,17 +28,20 @@ import (
 
 // CALDataRequestGetStatus is the corresponding interface of CALDataRequestGetStatus
 type CALDataRequestGetStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() uint8
 	// GetCount returns Count (property field)
 	GetCount() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALDataRequestGetStatusExactly can be used when we want exactly this type and not a type which fulfills CALDataRequestGetStatus.
+// This is useful for switch cases.
+type CALDataRequestGetStatusExactly interface {
+	CALDataRequestGetStatus
+	isCALDataRequestGetStatus() bool
 }
 
 // _CALDataRequestGetStatus is the data-structure of this message
@@ -195,6 +198,10 @@ func (m *_CALDataRequestGetStatus) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataRequestGetStatus) isCALDataRequestGetStatus() bool {
+	return true
 }
 
 func (m *_CALDataRequestGetStatus) String() string {

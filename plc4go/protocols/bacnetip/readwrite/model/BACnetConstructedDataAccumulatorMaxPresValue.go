@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccumulatorMaxPresValue is the corresponding interface of BACnetConstructedDataAccumulatorMaxPresValue
 type BACnetConstructedDataAccumulatorMaxPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccumulatorMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorMaxPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAccumulatorMaxPresValueExactly interface {
+	BACnetConstructedDataAccumulatorMaxPresValue
+	isBACnetConstructedDataAccumulatorMaxPresValue() bool
 }
 
 // _BACnetConstructedDataAccumulatorMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataAccumulatorMaxPresValue struct {
 	*_BACnetConstructedData
 	MaxPresValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccumulatorMaxPresValueParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccumulatorMaxPresValue{
-		MaxPresValue:           maxPresValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxPresValue: maxPresValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccumulatorMaxPresValue) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) isBACnetConstructedDataAccumulatorMaxPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccumulatorMaxPresValue) String() string {

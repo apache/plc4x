@@ -30,16 +30,19 @@ import (
 
 // BACnetVMACEntry is the corresponding interface of BACnetVMACEntry
 type BACnetVMACEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetVirtualMacAddress returns VirtualMacAddress (property field)
 	GetVirtualMacAddress() BACnetContextTagOctetString
 	// GetNativeMacAddress returns NativeMacAddress (property field)
 	GetNativeMacAddress() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetVMACEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetVMACEntry.
+// This is useful for switch cases.
+type BACnetVMACEntryExactly interface {
+	BACnetVMACEntry
+	isBACnetVMACEntry() bool
 }
 
 // _BACnetVMACEntry is the data-structure of this message
@@ -214,6 +217,10 @@ func (m *_BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetVMACEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetVMACEntry) isBACnetVMACEntry() bool {
+	return true
 }
 
 func (m *_BACnetVMACEntry) String() string {

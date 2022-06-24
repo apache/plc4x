@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataReliability is the corresponding interface of BACnetConstructedDataReliability
 type BACnetConstructedDataReliability interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetReliabilityTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataReliabilityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataReliability.
+// This is useful for switch cases.
+type BACnetConstructedDataReliabilityExactly interface {
+	BACnetConstructedDataReliability
+	isBACnetConstructedDataReliability() bool
 }
 
 // _BACnetConstructedDataReliability is the data-structure of this message
 type _BACnetConstructedDataReliability struct {
 	*_BACnetConstructedData
 	Reliability BACnetReliabilityTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataReliabilityParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataReliability{
-		Reliability:            reliability,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Reliability: reliability,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataReliability) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataReliability) isBACnetConstructedDataReliability() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataReliability) String() string {

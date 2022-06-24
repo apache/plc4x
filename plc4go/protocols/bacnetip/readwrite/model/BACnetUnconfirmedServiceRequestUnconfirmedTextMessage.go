@@ -30,6 +30,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetTextMessageSourceDevice returns TextMessageSourceDevice (property field)
 	GetTextMessageSourceDevice() BACnetContextTagObjectIdentifier
@@ -39,12 +41,13 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
 	GetMessagePriority() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	// GetMessage returns Message (property field)
 	GetMessage() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestUnconfirmedTextMessageExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedTextMessage.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUnconfirmedTextMessageExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+	isBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() bool
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage struct {
 	MessageClass            BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	MessagePriority         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	Message                 BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -238,11 +238,13 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
-		TextMessageSourceDevice:          textMessageSourceDevice,
-		MessageClass:                     messageClass,
-		MessagePriority:                  messagePriority,
-		Message:                          message,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		TextMessageSourceDevice: textMessageSourceDevice,
+		MessageClass:            messageClass,
+		MessagePriority:         messagePriority,
+		Message:                 message,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -314,6 +316,10 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) isBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) String() string {

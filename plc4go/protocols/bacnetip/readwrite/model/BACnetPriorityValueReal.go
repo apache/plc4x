@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueReal is the corresponding interface of BACnetPriorityValueReal
 type BACnetPriorityValueReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueReal.
+// This is useful for switch cases.
+type BACnetPriorityValueRealExactly interface {
+	BACnetPriorityValueReal
+	isBACnetPriorityValueReal() bool
 }
 
 // _BACnetPriorityValueReal is the data-structure of this message
 type _BACnetPriorityValueReal struct {
 	*_BACnetPriorityValue
 	RealValue BACnetApplicationTagReal
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueRealParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueReal{
-		RealValue:            realValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		RealValue: realValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueReal) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueReal) isBACnetPriorityValueReal() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueReal) String() string {

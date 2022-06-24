@@ -28,16 +28,19 @@ import (
 
 // NPDUNetworkPriorityTagged is the corresponding interface of NPDUNetworkPriorityTagged
 type NPDUNetworkPriorityTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() NPDUNetworkPriority
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NPDUNetworkPriorityTaggedExactly can be used when we want exactly this type and not a type which fulfills NPDUNetworkPriorityTagged.
+// This is useful for switch cases.
+type NPDUNetworkPriorityTaggedExactly interface {
+	NPDUNetworkPriorityTagged
+	isNPDUNetworkPriorityTagged() bool
 }
 
 // _NPDUNetworkPriorityTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_NPDUNetworkPriorityTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for NPDUNetworkPriorityTagged")
 	}
 	return nil
+}
+
+func (m *_NPDUNetworkPriorityTagged) isNPDUNetworkPriorityTagged() bool {
+	return true
 }
 
 func (m *_NPDUNetworkPriorityTagged) String() string {

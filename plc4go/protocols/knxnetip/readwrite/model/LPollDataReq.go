@@ -28,21 +28,21 @@ import (
 
 // LPollDataReq is the corresponding interface of LPollDataReq
 type LPollDataReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// LPollDataReqExactly can be used when we want exactly this type and not a type which fulfills LPollDataReq.
+// This is useful for switch cases.
+type LPollDataReqExactly interface {
+	LPollDataReq
+	isLPollDataReq() bool
 }
 
 // _LPollDataReq is the data-structure of this message
 type _LPollDataReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func LPollDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LPollDataReq, 
 
 	// Create a partially initialized instance
 	_child := &_LPollDataReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_LPollDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_LPollDataReq) isLPollDataReq() bool {
+	return true
 }
 
 func (m *_LPollDataReq) String() string {

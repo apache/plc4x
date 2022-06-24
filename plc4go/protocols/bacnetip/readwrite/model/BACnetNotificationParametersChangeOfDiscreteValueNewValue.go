@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValue is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValue
 type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -38,12 +40,13 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValue.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValue
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValue() bool
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValue is the data-structure of this message
@@ -58,9 +61,9 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 }
 
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueParent interface {
@@ -69,7 +72,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueParent interface {
 }
 
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetNotificationParametersChangeOfDiscreteValueNewValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetNotificationParametersChangeOfDiscreteValueNewValue
 
@@ -313,6 +316,10 @@ func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) SerializeP
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) isBACnetNotificationParametersChangeOfDiscreteValueNewValue() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) String() string {

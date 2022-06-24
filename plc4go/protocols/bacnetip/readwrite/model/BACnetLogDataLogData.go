@@ -28,6 +28,8 @@ import (
 
 // BACnetLogDataLogData is the corresponding interface of BACnetLogDataLogData
 type BACnetLogDataLogData interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogData
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -35,12 +37,13 @@ type BACnetLogDataLogData interface {
 	GetLogData() []BACnetLogDataLogDataEntry
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogData.
+// This is useful for switch cases.
+type BACnetLogDataLogDataExactly interface {
+	BACnetLogDataLogData
+	isBACnetLogDataLogData() bool
 }
 
 // _BACnetLogDataLogData is the data-structure of this message
@@ -49,9 +52,6 @@ type _BACnetLogDataLogData struct {
 	InnerOpeningTag BACnetOpeningTag
 	LogData         []BACnetLogDataLogDataEntry
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -177,7 +177,7 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BA
 		return nil, errors.Wrap(pullErr, "Error pulling for logData")
 	}
 	// Terminated array
-	logData := make([]BACnetLogDataLogDataEntry, 0)
+	var logData []BACnetLogDataLogDataEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetLogDataLogDataEntryParse(readBuffer)
@@ -214,7 +214,9 @@ func BACnetLogDataLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BA
 		InnerOpeningTag: innerOpeningTag,
 		LogData:         logData,
 		InnerClosingTag: innerClosingTag,
-		_BACnetLogData:  &_BACnetLogData{},
+		_BACnetLogData: &_BACnetLogData{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogData._BACnetLogDataChildRequirements = _child
 	return _child, nil
@@ -241,19 +243,17 @@ func (m *_BACnetLogDataLogData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (logData)
-		if m.GetLogData() != nil {
-			if pushErr := writeBuffer.PushContext("logData", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for logData")
+		if pushErr := writeBuffer.PushContext("logData", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for logData")
+		}
+		for _, _element := range m.GetLogData() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'logData' field")
 			}
-			for _, _element := range m.GetLogData() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'logData' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("logData", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for logData")
-			}
+		}
+		if popErr := writeBuffer.PopContext("logData", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for logData")
 		}
 
 		// Simple Field (innerClosingTag)
@@ -274,6 +274,10 @@ func (m *_BACnetLogDataLogData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogData) isBACnetLogDataLogData() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogData) String() string {

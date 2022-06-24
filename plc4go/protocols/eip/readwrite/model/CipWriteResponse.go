@@ -29,17 +29,20 @@ import (
 
 // CipWriteResponse is the corresponding interface of CipWriteResponse
 type CipWriteResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetExtStatus returns ExtStatus (property field)
 	GetExtStatus() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipWriteResponseExactly can be used when we want exactly this type and not a type which fulfills CipWriteResponse.
+// This is useful for switch cases.
+type CipWriteResponseExactly interface {
+	CipWriteResponse
+	isCipWriteResponse() bool
 }
 
 // _CipWriteResponse is the data-structure of this message
@@ -47,9 +50,6 @@ type _CipWriteResponse struct {
 	*_CipService
 	Status    uint8
 	ExtStatus uint8
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -182,9 +182,11 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipW
 
 	// Create a partially initialized instance
 	_child := &_CipWriteResponse{
-		Status:      status,
-		ExtStatus:   extStatus,
-		_CipService: &_CipService{},
+		Status:    status,
+		ExtStatus: extStatus,
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -226,6 +228,10 @@ func (m *_CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipWriteResponse) isCipWriteResponse() bool {
+	return true
 }
 
 func (m *_CipWriteResponse) String() string {

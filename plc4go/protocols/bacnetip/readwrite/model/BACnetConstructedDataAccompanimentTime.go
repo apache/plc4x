@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccompanimentTime is the corresponding interface of BACnetConstructedDataAccompanimentTime
 type BACnetConstructedDataAccompanimentTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAccompanimentTime returns AccompanimentTime (property field)
 	GetAccompanimentTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccompanimentTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccompanimentTime.
+// This is useful for switch cases.
+type BACnetConstructedDataAccompanimentTimeExactly interface {
+	BACnetConstructedDataAccompanimentTime
+	isBACnetConstructedDataAccompanimentTime() bool
 }
 
 // _BACnetConstructedDataAccompanimentTime is the data-structure of this message
 type _BACnetConstructedDataAccompanimentTime struct {
 	*_BACnetConstructedData
 	AccompanimentTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccompanimentTime{
-		AccompanimentTime:      accompanimentTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AccompanimentTime: accompanimentTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccompanimentTime) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccompanimentTime) isBACnetConstructedDataAccompanimentTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) String() string {

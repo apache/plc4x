@@ -28,6 +28,8 @@ import (
 
 // DIBDeviceInfo is the corresponding interface of DIBDeviceInfo
 type DIBDeviceInfo interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetKnxMedium returns KnxMedium (property field)
@@ -46,12 +48,13 @@ type DIBDeviceInfo interface {
 	GetKnxNetIpDeviceMacAddress() MACAddress
 	// GetDeviceFriendlyName returns DeviceFriendlyName (property field)
 	GetDeviceFriendlyName() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DIBDeviceInfoExactly can be used when we want exactly this type and not a type which fulfills DIBDeviceInfo.
+// This is useful for switch cases.
+type DIBDeviceInfoExactly interface {
+	DIBDeviceInfo
+	isDIBDeviceInfo() bool
 }
 
 // _DIBDeviceInfo is the data-structure of this message
@@ -372,12 +375,9 @@ func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (knxNetIpDeviceSerialNumber)
-	if m.GetKnxNetIpDeviceSerialNumber() != nil {
-		// Byte Array field (knxNetIpDeviceSerialNumber)
-		_writeArrayErr := writeBuffer.WriteByteArray("knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
-		}
+	// Byte Array field (knxNetIpDeviceSerialNumber)
+	if err := writeBuffer.WriteByteArray("knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber()); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
@@ -405,18 +405,19 @@ func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (deviceFriendlyName)
-	if m.GetDeviceFriendlyName() != nil {
-		// Byte Array field (deviceFriendlyName)
-		_writeArrayErr := writeBuffer.WriteByteArray("deviceFriendlyName", m.GetDeviceFriendlyName())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'deviceFriendlyName' field")
-		}
+	// Byte Array field (deviceFriendlyName)
+	if err := writeBuffer.WriteByteArray("deviceFriendlyName", m.GetDeviceFriendlyName()); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceFriendlyName' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DIBDeviceInfo"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for DIBDeviceInfo")
 	}
 	return nil
+}
+
+func (m *_DIBDeviceInfo) isDIBDeviceInfo() bool {
+	return true
 }
 
 func (m *_DIBDeviceInfo) String() string {

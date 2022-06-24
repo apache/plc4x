@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesWriteStatus is the corresponding interface of BACnetPropertyStatesWriteStatus
 type BACnetPropertyStatesWriteStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() BACnetWriteStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesWriteStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesWriteStatus.
+// This is useful for switch cases.
+type BACnetPropertyStatesWriteStatusExactly interface {
+	BACnetPropertyStatesWriteStatus
+	isBACnetPropertyStatesWriteStatus() bool
 }
 
 // _BACnetPropertyStatesWriteStatus is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesWriteStatus) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesWriteStatus) isBACnetPropertyStatesWriteStatus() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesWriteStatus) String() string {

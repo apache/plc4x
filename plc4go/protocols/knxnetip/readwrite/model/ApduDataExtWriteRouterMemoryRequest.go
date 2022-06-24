@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtWriteRouterMemoryRequest is the corresponding interface of ApduDataExtWriteRouterMemoryRequest
 type ApduDataExtWriteRouterMemoryRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtWriteRouterMemoryRequestExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtWriteRouterMemoryRequest.
+// This is useful for switch cases.
+type ApduDataExtWriteRouterMemoryRequestExactly interface {
+	ApduDataExtWriteRouterMemoryRequest
+	isApduDataExtWriteRouterMemoryRequest() bool
 }
 
 // _ApduDataExtWriteRouterMemoryRequest is the data-structure of this message
 type _ApduDataExtWriteRouterMemoryRequest struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, lengt
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtWriteRouterMemoryRequest{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtWriteRouterMemoryRequest) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtWriteRouterMemoryRequest) isApduDataExtWriteRouterMemoryRequest() bool {
+	return true
 }
 
 func (m *_ApduDataExtWriteRouterMemoryRequest) String() string {

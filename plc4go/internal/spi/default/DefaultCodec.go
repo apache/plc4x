@@ -38,8 +38,8 @@ import (
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
 type DefaultCodecRequirements interface {
 	GetCodec() spi.MessageCodec
-	Send(message interface{}) error
-	Receive() (interface{}, error)
+	Send(message spi.Message) error
+	Receive() (spi.Message, error)
 }
 
 // DefaultCodec is a default codec implementation which has so sensitive defaults for message handling and a built-in worker
@@ -60,7 +60,7 @@ type DefaultExpectation struct {
 	HandleError    spi.HandleError
 }
 
-func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool) options.WithOption {
+func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequirements, message spi.Message) bool) options.WithOption {
 	return withCustomMessageHandler{customMessageHandler: customMessageHandler}
 }
 
@@ -72,20 +72,20 @@ func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequi
 
 type withCustomMessageHandler struct {
 	options.Option
-	customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool
+	customMessageHandler func(codec *DefaultCodecRequirements, message spi.Message) bool
 }
 
 type defaultCodec struct {
 	DefaultCodecRequirements
 	transportInstance             transports.TransportInstance
-	defaultIncomingMessageChannel chan interface{}
+	defaultIncomingMessageChannel chan spi.Message
 	expectations                  []spi.Expectation
 	running                       bool
-	customMessageHandling         func(codec *DefaultCodecRequirements, message interface{}) bool
+	customMessageHandling         func(codec *DefaultCodecRequirements, message spi.Message) bool
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
-	var customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool
+	var customMessageHandler func(codec *DefaultCodecRequirements, message spi.Message) bool
 
 	for _, option := range options {
 		switch option.(type) {
@@ -98,7 +98,7 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 	return &defaultCodec{
 		defaultCodecRequirements,
 		transportInstance,
-		make(chan interface{}),
+		make(chan spi.Message),
 		[]spi.Expectation{},
 		false,
 		customMessageHandler,
@@ -135,21 +135,26 @@ func (m *defaultCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
 }
 
-func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan interface{} {
+func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
 	return m.defaultIncomingMessageChannel
 }
 
 func (m *defaultCodec) Connect() error {
 	log.Trace().Msg("Connecting")
-	err := m.transportInstance.Connect()
-	if err == nil {
-		if !m.running {
-			log.Debug().Msg("Message codec currently not running, starting worker now")
-			go m.Work(&m.DefaultCodecRequirements)
+	if !m.transportInstance.IsConnected() {
+		if err := m.transportInstance.Connect(); err != nil {
+			return err
 		}
-		m.running = true
+	} else {
+		log.Info().Msg("Transport instance already connected")
 	}
-	return err
+
+	if !m.running {
+		log.Debug().Msg("Message codec currently not running, starting worker now")
+		go m.Work(&m.DefaultCodecRequirements)
+	}
+	m.running = true
+	return nil
 }
 
 func (m *defaultCodec) Disconnect() error {
@@ -173,7 +178,7 @@ func (m *defaultCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage s
 	return nil
 }
 
-func (m *defaultCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *defaultCodec) SendRequest(message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	log.Trace().Msg("Sending request")
 	// Send the actual message
 	err := m.Send(message)
@@ -199,7 +204,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 	}
 }
 
-func (m *defaultCodec) HandleMessages(message interface{}) bool {
+func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	messageHandled := false
 	for index, expectation := range m.expectations {
 		// Check if the current message matches the expectations

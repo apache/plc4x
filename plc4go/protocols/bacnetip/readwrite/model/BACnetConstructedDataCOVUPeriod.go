@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCOVUPeriod is the corresponding interface of BACnetConstructedDataCOVUPeriod
 type BACnetConstructedDataCOVUPeriod interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCovuPeriod returns CovuPeriod (property field)
 	GetCovuPeriod() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCOVUPeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVUPeriod.
+// This is useful for switch cases.
+type BACnetConstructedDataCOVUPeriodExactly interface {
+	BACnetConstructedDataCOVUPeriod
+	isBACnetConstructedDataCOVUPeriod() bool
 }
 
 // _BACnetConstructedDataCOVUPeriod is the data-structure of this message
 type _BACnetConstructedDataCOVUPeriod struct {
 	*_BACnetConstructedData
 	CovuPeriod BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCOVUPeriodParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCOVUPeriod{
-		CovuPeriod:             covuPeriod,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CovuPeriod: covuPeriod,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCOVUPeriod) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCOVUPeriod) isBACnetConstructedDataCOVUPeriod() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCOVUPeriod) String() string {

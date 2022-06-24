@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFaultParameters is the corresponding interface of BACnetConstructedDataFaultParameters
 type BACnetConstructedDataFaultParameters interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultParameters returns FaultParameters (property field)
 	GetFaultParameters() BACnetFaultParameter
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetFaultParameter
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFaultParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFaultParameters.
+// This is useful for switch cases.
+type BACnetConstructedDataFaultParametersExactly interface {
+	BACnetConstructedDataFaultParameters
+	isBACnetConstructedDataFaultParameters() bool
 }
 
 // _BACnetConstructedDataFaultParameters is the data-structure of this message
 type _BACnetConstructedDataFaultParameters struct {
 	*_BACnetConstructedData
 	FaultParameters BACnetFaultParameter
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFaultParametersParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFaultParameters{
-		FaultParameters:        faultParameters,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FaultParameters: faultParameters,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFaultParameters) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFaultParameters) isBACnetConstructedDataFaultParameters() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFaultParameters) String() string {

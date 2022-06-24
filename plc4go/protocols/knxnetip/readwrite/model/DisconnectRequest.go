@@ -29,17 +29,20 @@ import (
 
 // DisconnectRequest is the corresponding interface of DisconnectRequest
 type DisconnectRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills DisconnectRequest.
+// This is useful for switch cases.
+type DisconnectRequestExactly interface {
+	DisconnectRequest
+	isDisconnectRequest() bool
 }
 
 // _DisconnectRequest is the data-structure of this message
@@ -234,6 +237,10 @@ func (m *_DisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DisconnectRequest) isDisconnectRequest() bool {
+	return true
 }
 
 func (m *_DisconnectRequest) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMinActualValue is the corresponding interface of BACnetConstructedDataMinActualValue
 type BACnetConstructedDataMinActualValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinActualValue returns MinActualValue (property field)
 	GetMinActualValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMinActualValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinActualValue.
+// This is useful for switch cases.
+type BACnetConstructedDataMinActualValueExactly interface {
+	BACnetConstructedDataMinActualValue
+	isBACnetConstructedDataMinActualValue() bool
 }
 
 // _BACnetConstructedDataMinActualValue is the data-structure of this message
 type _BACnetConstructedDataMinActualValue struct {
 	*_BACnetConstructedData
 	MinActualValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMinActualValueParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMinActualValue{
-		MinActualValue:         minActualValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MinActualValue: minActualValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMinActualValue) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMinActualValue) isBACnetConstructedDataMinActualValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMinActualValue) String() string {

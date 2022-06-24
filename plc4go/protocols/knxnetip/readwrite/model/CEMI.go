@@ -28,14 +28,17 @@ import (
 
 // CEMI is the corresponding interface of CEMI
 type CEMI interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageCode returns MessageCode (discriminator field)
 	GetMessageCode() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CEMIExactly can be used when we want exactly this type and not a type which fulfills CEMI.
+// This is useful for switch cases.
+type CEMIExactly interface {
+	CEMI
+	isCEMI() bool
 }
 
 // _CEMI is the data-structure of this message
@@ -47,10 +50,10 @@ type _CEMI struct {
 }
 
 type _CEMIChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CEMIParent interface {
@@ -59,7 +62,7 @@ type CEMIParent interface {
 }
 
 type CEMIChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CEMI)
 	GetParent() *CEMI
 
@@ -215,6 +218,10 @@ func (pm *_CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child CEMI, seri
 		return errors.Wrap(popErr, "Error popping for CEMI")
 	}
 	return nil
+}
+
+func (m *_CEMI) isCEMI() bool {
+	return true
 }
 
 func (m *_CEMI) String() string {

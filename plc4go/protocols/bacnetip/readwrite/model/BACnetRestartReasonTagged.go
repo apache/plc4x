@@ -28,6 +28,8 @@ import (
 
 // BACnetRestartReasonTagged is the corresponding interface of BACnetRestartReasonTagged
 type BACnetRestartReasonTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetRestartReasonTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRestartReasonTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRestartReasonTagged.
+// This is useful for switch cases.
+type BACnetRestartReasonTaggedExactly interface {
+	BACnetRestartReasonTagged
+	isBACnetRestartReasonTagged() bool
 }
 
 // _BACnetRestartReasonTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetRestartReasonTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetRestartReasonTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetRestartReasonTagged) isBACnetRestartReasonTagged() bool {
+	return true
 }
 
 func (m *_BACnetRestartReasonTagged) String() string {

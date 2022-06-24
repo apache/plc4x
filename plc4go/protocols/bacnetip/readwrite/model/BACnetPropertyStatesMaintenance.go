@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesMaintenance is the corresponding interface of BACnetPropertyStatesMaintenance
 type BACnetPropertyStatesMaintenance interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetMaintenance returns Maintenance (property field)
 	GetMaintenance() BACnetMaintenanceTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesMaintenanceExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesMaintenance.
+// This is useful for switch cases.
+type BACnetPropertyStatesMaintenanceExactly interface {
+	BACnetPropertyStatesMaintenance
+	isBACnetPropertyStatesMaintenance() bool
 }
 
 // _BACnetPropertyStatesMaintenance is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesMaintenance) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesMaintenance) isBACnetPropertyStatesMaintenance() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesMaintenance) String() string {

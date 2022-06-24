@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueInteger is the corresponding interface of BACnetTimerStateChangeValueInteger
 type BACnetTimerStateChangeValueInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueInteger.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueIntegerExactly interface {
+	BACnetTimerStateChangeValueInteger
+	isBACnetTimerStateChangeValueInteger() bool
 }
 
 // _BACnetTimerStateChangeValueInteger is the data-structure of this message
 type _BACnetTimerStateChangeValueInteger struct {
 	*_BACnetTimerStateChangeValue
 	IntegerValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueIntegerParse(readBuffer utils.ReadBuffer, object
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueInteger{
-		IntegerValue:                 integerValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		IntegerValue: integerValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueInteger) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueInteger) isBACnetTimerStateChangeValueInteger() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueInteger) String() string {

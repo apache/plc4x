@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLoopPresentValue is the corresponding interface of BACnetConstructedDataLoopPresentValue
 type BACnetConstructedDataLoopPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLoopPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoopPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLoopPresentValueExactly interface {
+	BACnetConstructedDataLoopPresentValue
+	isBACnetConstructedDataLoopPresentValue() bool
 }
 
 // _BACnetConstructedDataLoopPresentValue is the data-structure of this message
 type _BACnetConstructedDataLoopPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLoopPresentValueParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLoopPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLoopPresentValue) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLoopPresentValue) isBACnetConstructedDataLoopPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLoopPresentValue) String() string {

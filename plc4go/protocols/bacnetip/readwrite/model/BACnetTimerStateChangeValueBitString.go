@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueBitString is the corresponding interface of BACnetTimerStateChangeValueBitString
 type BACnetTimerStateChangeValueBitString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueBitString.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueBitStringExactly interface {
+	BACnetTimerStateChangeValueBitString
+	isBACnetTimerStateChangeValueBitString() bool
 }
 
 // _BACnetTimerStateChangeValueBitString is the data-structure of this message
 type _BACnetTimerStateChangeValueBitString struct {
 	*_BACnetTimerStateChangeValue
 	BitStringValue BACnetApplicationTagBitString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueBitStringParse(readBuffer utils.ReadBuffer, obje
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueBitString{
-		BitStringValue:               bitStringValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		BitStringValue: bitStringValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueBitString) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueBitString) isBACnetTimerStateChangeValueBitString() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueBitString) String() string {

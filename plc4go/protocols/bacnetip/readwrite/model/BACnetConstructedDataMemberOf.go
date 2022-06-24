@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataMemberOf is the corresponding interface of BACnetConstructedDataMemberOf
 type BACnetConstructedDataMemberOf interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetZones returns Zones (property field)
 	GetZones() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMemberOfExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMemberOf.
+// This is useful for switch cases.
+type BACnetConstructedDataMemberOfExactly interface {
+	BACnetConstructedDataMemberOf
+	isBACnetConstructedDataMemberOf() bool
 }
 
 // _BACnetConstructedDataMemberOf is the data-structure of this message
 type _BACnetConstructedDataMemberOf struct {
 	*_BACnetConstructedData
 	Zones []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataMemberOfParse(readBuffer utils.ReadBuffer, tagNumber u
 		return nil, errors.Wrap(pullErr, "Error pulling for zones")
 	}
 	// Terminated array
-	zones := make([]BACnetDeviceObjectReference, 0)
+	var zones []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataMemberOfParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMemberOf{
-		Zones:                  zones,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Zones: zones,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataMemberOf) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (zones)
-		if m.GetZones() != nil {
-			if pushErr := writeBuffer.PushContext("zones", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for zones")
+		if pushErr := writeBuffer.PushContext("zones", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for zones")
+		}
+		for _, _element := range m.GetZones() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'zones' field")
 			}
-			for _, _element := range m.GetZones() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'zones' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("zones", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for zones")
-			}
+		}
+		if popErr := writeBuffer.PopContext("zones", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for zones")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMemberOf"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataMemberOf) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMemberOf) isBACnetConstructedDataMemberOf() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMemberOf) String() string {

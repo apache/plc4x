@@ -28,21 +28,21 @@ import (
 
 // ApduDataAdcResponse is the corresponding interface of ApduDataAdcResponse
 type ApduDataAdcResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataAdcResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataAdcResponse.
+// This is useful for switch cases.
+type ApduDataAdcResponseExactly interface {
+	ApduDataAdcResponse
+	isApduDataAdcResponse() bool
 }
 
 // _ApduDataAdcResponse is the data-structure of this message
 type _ApduDataAdcResponse struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataAdcResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (Ap
 
 	// Create a partially initialized instance
 	_child := &_ApduDataAdcResponse{
-		_ApduData: &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataAdcResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataAdcResponse) isApduDataAdcResponse() bool {
+	return true
 }
 
 func (m *_ApduDataAdcResponse) String() string {

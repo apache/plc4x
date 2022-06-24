@@ -30,6 +30,8 @@ import (
 
 // BACnetNotificationParametersChangeOfTimer is the corresponding interface of BACnetNotificationParametersChangeOfTimer
 type BACnetNotificationParametersChangeOfTimer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -47,12 +49,13 @@ type BACnetNotificationParametersChangeOfTimer interface {
 	GetExpirationTime() BACnetDateTimeEnclosed
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfTimerExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfTimer.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfTimerExactly interface {
+	BACnetNotificationParametersChangeOfTimer
+	isBACnetNotificationParametersChangeOfTimer() bool
 }
 
 // _BACnetNotificationParametersChangeOfTimer is the data-structure of this message
@@ -66,10 +69,6 @@ type _BACnetNotificationParametersChangeOfTimer struct {
 	InitialTimeout  BACnetContextTagUnsignedInteger
 	ExpirationTime  BACnetDateTimeEnclosed
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -356,15 +355,18 @@ func BACnetNotificationParametersChangeOfTimerParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfTimer{
-		InnerOpeningTag:               innerOpeningTag,
-		NewValue:                      newValue,
-		StatusFlags:                   statusFlags,
-		UpdateTime:                    updateTime,
-		LastStateChange:               lastStateChange,
-		InitialTimeout:                initialTimeout,
-		ExpirationTime:                expirationTime,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		NewValue:        newValue,
+		StatusFlags:     statusFlags,
+		UpdateTime:      updateTime,
+		LastStateChange: lastStateChange,
+		InitialTimeout:  initialTimeout,
+		ExpirationTime:  expirationTime,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -492,6 +494,10 @@ func (m *_BACnetNotificationParametersChangeOfTimer) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfTimer) isBACnetNotificationParametersChangeOfTimer() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfTimer) String() string {

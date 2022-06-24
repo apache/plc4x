@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataScaleFactor is the corresponding interface of BACnetConstructedDataScaleFactor
 type BACnetConstructedDataScaleFactor interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetScaleFactor returns ScaleFactor (property field)
 	GetScaleFactor() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataScaleFactorExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataScaleFactor.
+// This is useful for switch cases.
+type BACnetConstructedDataScaleFactorExactly interface {
+	BACnetConstructedDataScaleFactor
+	isBACnetConstructedDataScaleFactor() bool
 }
 
 // _BACnetConstructedDataScaleFactor is the data-structure of this message
 type _BACnetConstructedDataScaleFactor struct {
 	*_BACnetConstructedData
 	ScaleFactor BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataScaleFactorParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataScaleFactor{
-		ScaleFactor:            scaleFactor,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ScaleFactor: scaleFactor,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataScaleFactor) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataScaleFactor) isBACnetConstructedDataScaleFactor() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataScaleFactor) String() string {

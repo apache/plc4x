@@ -28,6 +28,8 @@ import (
 
 // S7PayloadUserDataItem is the corresponding interface of S7PayloadUserDataItem
 type S7PayloadUserDataItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
 	// GetCpuSubfunction returns CpuSubfunction (discriminator field)
@@ -38,12 +40,13 @@ type S7PayloadUserDataItem interface {
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataItemExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItem.
+// This is useful for switch cases.
+type S7PayloadUserDataItemExactly interface {
+	S7PayloadUserDataItem
+	isS7PayloadUserDataItem() bool
 }
 
 // _S7PayloadUserDataItem is the data-structure of this message
@@ -54,12 +57,12 @@ type _S7PayloadUserDataItem struct {
 }
 
 type _S7PayloadUserDataItemChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCpuFunctionType() uint8
 	GetCpuSubfunction() uint8
 	GetDataLength() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type S7PayloadUserDataItemParent interface {
@@ -68,7 +71,7 @@ type S7PayloadUserDataItemParent interface {
 }
 
 type S7PayloadUserDataItemChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize)
 	GetParent() *S7PayloadUserDataItem
 
@@ -289,6 +292,10 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer,
 		return errors.Wrap(popErr, "Error popping for S7PayloadUserDataItem")
 	}
 	return nil
+}
+
+func (m *_S7PayloadUserDataItem) isS7PayloadUserDataItem() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItem) String() string {

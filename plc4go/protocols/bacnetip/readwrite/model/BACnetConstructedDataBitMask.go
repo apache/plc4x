@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBitMask is the corresponding interface of BACnetConstructedDataBitMask
 type BACnetConstructedDataBitMask interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBitString returns BitString (property field)
 	GetBitString() BACnetApplicationTagBitString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBitMaskExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBitMask.
+// This is useful for switch cases.
+type BACnetConstructedDataBitMaskExactly interface {
+	BACnetConstructedDataBitMask
+	isBACnetConstructedDataBitMask() bool
 }
 
 // _BACnetConstructedDataBitMask is the data-structure of this message
 type _BACnetConstructedDataBitMask struct {
 	*_BACnetConstructedData
 	BitString BACnetApplicationTagBitString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBitMaskParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBitMask{
-		BitString:              bitString,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BitString: bitString,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBitMask) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBitMask) isBACnetConstructedDataBitMask() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBitMask) String() string {

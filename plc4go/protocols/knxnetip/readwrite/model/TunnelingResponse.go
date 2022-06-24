@@ -28,15 +28,18 @@ import (
 
 // TunnelingResponse is the corresponding interface of TunnelingResponse
 type TunnelingResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock (property field)
 	GetTunnelingResponseDataBlock() TunnelingResponseDataBlock
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// TunnelingResponseExactly can be used when we want exactly this type and not a type which fulfills TunnelingResponse.
+// This is useful for switch cases.
+type TunnelingResponseExactly interface {
+	TunnelingResponse
+	isTunnelingResponse() bool
 }
 
 // _TunnelingResponse is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TunnelingResponse) isTunnelingResponse() bool {
+	return true
 }
 
 func (m *_TunnelingResponse) String() string {

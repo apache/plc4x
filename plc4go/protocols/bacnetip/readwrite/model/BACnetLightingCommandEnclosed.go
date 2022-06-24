@@ -28,18 +28,21 @@ import (
 
 // BACnetLightingCommandEnclosed is the corresponding interface of BACnetLightingCommandEnclosed
 type BACnetLightingCommandEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLightingCommand returns LightingCommand (property field)
 	GetLightingCommand() BACnetLightingCommand
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLightingCommandEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetLightingCommandEnclosed.
+// This is useful for switch cases.
+type BACnetLightingCommandEnclosedExactly interface {
+	BACnetLightingCommandEnclosed
+	isBACnetLightingCommandEnclosed() bool
 }
 
 // _BACnetLightingCommandEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_BACnetLightingCommandEnclosed) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetLightingCommandEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetLightingCommandEnclosed) isBACnetLightingCommandEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetLightingCommandEnclosed) String() string {

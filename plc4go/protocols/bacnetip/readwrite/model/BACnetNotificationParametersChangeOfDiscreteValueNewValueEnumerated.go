@@ -28,24 +28,24 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedExactly interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
+	isBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() bool
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	EnumeratedValue BACnetApplicationTagEnumerated
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedParse(re
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{
 		EnumeratedValue: enumeratedValue,
-		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{},
+		_BACnetNotificationParametersChangeOfDiscreteValueNewValue: &_BACnetNotificationParametersChangeOfDiscreteValueNewValue{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetNotificationParametersChangeOfDiscreteValueNewValue._BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) S
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) isBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) String() string {

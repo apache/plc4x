@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMaintenanceRequired is the corresponding interface of BACnetConstructedDataMaintenanceRequired
 type BACnetConstructedDataMaintenanceRequired interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() BACnetMaintenanceTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetMaintenanceTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaintenanceRequiredExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaintenanceRequired.
+// This is useful for switch cases.
+type BACnetConstructedDataMaintenanceRequiredExactly interface {
+	BACnetConstructedDataMaintenanceRequired
+	isBACnetConstructedDataMaintenanceRequired() bool
 }
 
 // _BACnetConstructedDataMaintenanceRequired is the data-structure of this message
 type _BACnetConstructedDataMaintenanceRequired struct {
 	*_BACnetConstructedData
 	MaintenanceRequired BACnetMaintenanceTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMaintenanceRequiredParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaintenanceRequired{
-		MaintenanceRequired:    maintenanceRequired,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaintenanceRequired: maintenanceRequired,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMaintenanceRequired) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaintenanceRequired) isBACnetConstructedDataMaintenanceRequired() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaintenanceRequired) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessage is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessage
 type BACnetConfirmedServiceRequestConfirmedTextMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetTextMessageSourceDevice returns TextMessageSourceDevice (property field)
 	GetTextMessageSourceDevice() BACnetContextTagObjectIdentifier
@@ -39,12 +41,13 @@ type BACnetConfirmedServiceRequestConfirmedTextMessage interface {
 	GetMessagePriority() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	// GetMessage returns Message (property field)
 	GetMessage() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessage.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedTextMessageExactly interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessage
+	isBACnetConfirmedServiceRequestConfirmedTextMessage() bool
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessage is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 	MessageClass            BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	MessagePriority         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 	Message                 BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -238,11 +238,13 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
-		TextMessageSourceDevice:        textMessageSourceDevice,
-		MessageClass:                   messageClass,
-		MessagePriority:                messagePriority,
-		Message:                        message,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		TextMessageSourceDevice: textMessageSourceDevice,
+		MessageClass:            messageClass,
+		MessagePriority:         messagePriority,
+		Message:                 message,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -314,6 +316,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) isBACnetConfirmedServiceRequestConfirmedTextMessage() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) String() string {

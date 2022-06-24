@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestReadProperty is the corresponding interface of BACnetConfirmedServiceRequestReadProperty
 type BACnetConfirmedServiceRequestReadProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -37,12 +39,13 @@ type BACnetConfirmedServiceRequestReadProperty interface {
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestReadPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadProperty.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadPropertyExactly interface {
+	BACnetConfirmedServiceRequestReadProperty
+	isBACnetConfirmedServiceRequestReadProperty() bool
 }
 
 // _BACnetConfirmedServiceRequestReadProperty is the data-structure of this message
@@ -51,9 +54,6 @@ type _BACnetConfirmedServiceRequestReadProperty struct {
 	ObjectIdentifier   BACnetContextTagObjectIdentifier
 	PropertyIdentifier BACnetPropertyIdentifierTagged
 	ArrayIndex         BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -214,10 +214,12 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestReadProperty{
-		ObjectIdentifier:               objectIdentifier,
-		PropertyIdentifier:             propertyIdentifier,
-		ArrayIndex:                     arrayIndex,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		ObjectIdentifier:   objectIdentifier,
+		PropertyIdentifier: propertyIdentifier,
+		ArrayIndex:         arrayIndex,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -277,6 +279,10 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadProperty) isBACnetConfirmedServiceRequestReadProperty() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadProperty) String() string {

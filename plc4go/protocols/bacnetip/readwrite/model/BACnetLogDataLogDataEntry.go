@@ -28,16 +28,19 @@ import (
 
 // BACnetLogDataLogDataEntry is the corresponding interface of BACnetLogDataLogDataEntry
 type BACnetLogDataLogDataEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntry.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryExactly interface {
+	BACnetLogDataLogDataEntry
+	isBACnetLogDataLogDataEntry() bool
 }
 
 // _BACnetLogDataLogDataEntry is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetLogDataLogDataEntry struct {
 }
 
 type _BACnetLogDataLogDataEntryChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLogDataLogDataEntryParent interface {
@@ -58,7 +61,7 @@ type BACnetLogDataLogDataEntryParent interface {
 }
 
 type BACnetLogDataLogDataEntryChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetLogDataLogDataEntry, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetLogDataLogDataEntry
 
@@ -216,6 +219,10 @@ func (pm *_BACnetLogDataLogDataEntry) SerializeParent(writeBuffer utils.WriteBuf
 		return errors.Wrap(popErr, "Error popping for BACnetLogDataLogDataEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetLogDataLogDataEntry) isBACnetLogDataLogDataEntry() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntry) String() string {

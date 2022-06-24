@@ -28,18 +28,21 @@ import (
 
 // BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues is the corresponding interface of BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues
 type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfAlarmValues returns ListOfAlarmValues (property field)
 	GetListOfAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesExactly interface {
+	BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues
+	isBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues() bool
 }
 
 // _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParse(readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfAlarmValues")
 	}
 	// Terminated array
-	listOfAlarmValues := make([]BACnetLifeSafetyStateTagged, 0)
+	var listOfAlarmValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -204,19 +207,17 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) Serialize(wri
 	}
 
 	// Array Field (listOfAlarmValues)
-	if m.GetListOfAlarmValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfAlarmValues")
+	if pushErr := writeBuffer.PushContext("listOfAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfAlarmValues")
+	}
+	for _, _element := range m.GetListOfAlarmValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfAlarmValues' field")
 		}
-		for _, _element := range m.GetListOfAlarmValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfAlarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfAlarmValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfAlarmValues")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) Serialize(wri
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) isBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) String() string {

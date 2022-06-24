@@ -28,18 +28,21 @@ import (
 
 // VTCloseErrorListOfVTSessionIdentifiers is the corresponding interface of VTCloseErrorListOfVTSessionIdentifiers
 type VTCloseErrorListOfVTSessionIdentifiers interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfVtSessionIdentifiers returns ListOfVtSessionIdentifiers (property field)
 	GetListOfVtSessionIdentifiers() []BACnetApplicationTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// VTCloseErrorListOfVTSessionIdentifiersExactly can be used when we want exactly this type and not a type which fulfills VTCloseErrorListOfVTSessionIdentifiers.
+// This is useful for switch cases.
+type VTCloseErrorListOfVTSessionIdentifiersExactly interface {
+	VTCloseErrorListOfVTSessionIdentifiers
+	isVTCloseErrorListOfVTSessionIdentifiers() bool
 }
 
 // _VTCloseErrorListOfVTSessionIdentifiers is the data-structure of this message
@@ -148,7 +151,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
 	}
 	// Terminated array
-	listOfVtSessionIdentifiers := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.Wr
 	}
 
 	// Array Field (listOfVtSessionIdentifiers)
-	if m.GetListOfVtSessionIdentifiers() != nil {
-		if pushErr := writeBuffer.PushContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfVtSessionIdentifiers")
+	if pushErr := writeBuffer.PushContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfVtSessionIdentifiers")
+	}
+	for _, _element := range m.GetListOfVtSessionIdentifiers() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfVtSessionIdentifiers' field")
 		}
-		for _, _element := range m.GetListOfVtSessionIdentifiers() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfVtSessionIdentifiers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfVtSessionIdentifiers")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfVtSessionIdentifiers")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) Serialize(writeBuffer utils.Wr
 		return errors.Wrap(popErr, "Error popping for VTCloseErrorListOfVTSessionIdentifiers")
 	}
 	return nil
+}
+
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) isVTCloseErrorListOfVTSessionIdentifiers() bool {
+	return true
 }
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetClientCOVObject is the corresponding interface of BACnetClientCOVObject
 type BACnetClientCOVObject interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetClientCOV
 	// GetRealIncrement returns RealIncrement (property field)
 	GetRealIncrement() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetClientCOVObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOVObject.
+// This is useful for switch cases.
+type BACnetClientCOVObjectExactly interface {
+	BACnetClientCOVObject
+	isBACnetClientCOVObject() bool
 }
 
 // _BACnetClientCOVObject is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetClientCOVObject) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetClientCOVObject) isBACnetClientCOVObject() bool {
+	return true
 }
 
 func (m *_BACnetClientCOVObject) String() string {

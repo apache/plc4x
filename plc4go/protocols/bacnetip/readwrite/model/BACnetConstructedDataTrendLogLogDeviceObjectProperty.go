@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTrendLogLogDeviceObjectProperty is the corresponding interface of BACnetConstructedDataTrendLogLogDeviceObjectProperty
 type BACnetConstructedDataTrendLogLogDeviceObjectProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLogDeviceObjectProperty returns LogDeviceObjectProperty (property field)
 	GetLogDeviceObjectProperty() BACnetDeviceObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectPropertyReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTrendLogLogDeviceObjectPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogLogDeviceObjectProperty.
+// This is useful for switch cases.
+type BACnetConstructedDataTrendLogLogDeviceObjectPropertyExactly interface {
+	BACnetConstructedDataTrendLogLogDeviceObjectProperty
+	isBACnetConstructedDataTrendLogLogDeviceObjectProperty() bool
 }
 
 // _BACnetConstructedDataTrendLogLogDeviceObjectProperty is the data-structure of this message
 type _BACnetConstructedDataTrendLogLogDeviceObjectProperty struct {
 	*_BACnetConstructedData
 	LogDeviceObjectProperty BACnetDeviceObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTrendLogLogDeviceObjectProperty{
 		LogDeviceObjectProperty: logDeviceObjectProperty,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) isBACnetConstructedDataTrendLogLogDeviceObjectProperty() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) String() string {

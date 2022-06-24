@@ -28,14 +28,17 @@ import (
 
 // COTPParameter is the corresponding interface of COTPParameter
 type COTPParameter interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPParameterExactly can be used when we want exactly this type and not a type which fulfills COTPParameter.
+// This is useful for switch cases.
+type COTPParameterExactly interface {
+	COTPParameter
+	isCOTPParameter() bool
 }
 
 // _COTPParameter is the data-structure of this message
@@ -47,10 +50,10 @@ type _COTPParameter struct {
 }
 
 type _COTPParameterChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetParameterType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type COTPParameterParent interface {
@@ -59,7 +62,7 @@ type COTPParameterParent interface {
 }
 
 type COTPParameterChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent COTPParameter)
 	GetParent() *COTPParameter
 
@@ -196,6 +199,10 @@ func (pm *_COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child C
 		return errors.Wrap(popErr, "Error popping for COTPParameter")
 	}
 	return nil
+}
+
+func (m *_COTPParameter) isCOTPParameter() bool {
+	return true
 }
 
 func (m *_COTPParameter) String() string {

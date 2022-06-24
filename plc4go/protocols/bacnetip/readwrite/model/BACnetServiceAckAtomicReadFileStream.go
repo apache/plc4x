@@ -28,17 +28,20 @@ import (
 
 // BACnetServiceAckAtomicReadFileStream is the corresponding interface of BACnetServiceAckAtomicReadFileStream
 type BACnetServiceAckAtomicReadFileStream interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
 	// GetFileData returns FileData (property field)
 	GetFileData() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckAtomicReadFileStreamExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFileStream.
+// This is useful for switch cases.
+type BACnetServiceAckAtomicReadFileStreamExactly interface {
+	BACnetServiceAckAtomicReadFileStream
+	isBACnetServiceAckAtomicReadFileStream() bool
 }
 
 // _BACnetServiceAckAtomicReadFileStream is the data-structure of this message
@@ -219,6 +222,10 @@ func (m *_BACnetServiceAckAtomicReadFileStream) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStream) isBACnetServiceAckAtomicReadFileStream() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStream) String() string {

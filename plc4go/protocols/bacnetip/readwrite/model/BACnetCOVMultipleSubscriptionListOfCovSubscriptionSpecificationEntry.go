@@ -28,16 +28,19 @@ import (
 
 // BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is the corresponding interface of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
 	GetMonitoredObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfCovReferences returns ListOfCovReferences (property field)
 	GetListOfCovReferences() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry.
+// This is useful for switch cases.
+type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryExactly interface {
+	BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
+	isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() bool
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 		return errors.Wrap(popErr, "Error popping for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) isBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() bool {
+	return true
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) String() string {

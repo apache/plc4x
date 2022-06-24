@@ -28,6 +28,8 @@ import (
 
 // BACnetSecurityKeySet is the corresponding interface of BACnetSecurityKeySet
 type BACnetSecurityKeySet interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetKeyRevision returns KeyRevision (property field)
 	GetKeyRevision() BACnetContextTagUnsignedInteger
 	// GetActivationTime returns ActivationTime (property field)
@@ -36,12 +38,13 @@ type BACnetSecurityKeySet interface {
 	GetExpirationTime() BACnetDateTimeEnclosed
 	// GetKeyIds returns KeyIds (property field)
 	GetKeyIds() BACnetSecurityKeySetKeyIds
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSecurityKeySetExactly can be used when we want exactly this type and not a type which fulfills BACnetSecurityKeySet.
+// This is useful for switch cases.
+type BACnetSecurityKeySetExactly interface {
+	BACnetSecurityKeySet
+	isBACnetSecurityKeySet() bool
 }
 
 // _BACnetSecurityKeySet is the data-structure of this message
@@ -252,6 +255,10 @@ func (m *_BACnetSecurityKeySet) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetSecurityKeySet")
 	}
 	return nil
+}
+
+func (m *_BACnetSecurityKeySet) isBACnetSecurityKeySet() bool {
+	return true
 }
 
 func (m *_BACnetSecurityKeySet) String() string {

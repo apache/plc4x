@@ -28,15 +28,18 @@ import (
 
 // BVLCSecureBVLL is the corresponding interface of BVLCSecureBVLL
 type BVLCSecureBVLL interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetSecurityWrapper returns SecurityWrapper (property field)
 	GetSecurityWrapper() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCSecureBVLLExactly can be used when we want exactly this type and not a type which fulfills BVLCSecureBVLL.
+// This is useful for switch cases.
+type BVLCSecureBVLLExactly interface {
+	BVLCSecureBVLL
+	isBVLCSecureBVLL() bool
 }
 
 // _BVLCSecureBVLL is the data-structure of this message
@@ -163,12 +166,9 @@ func (m *_BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (securityWrapper)
-		if m.GetSecurityWrapper() != nil {
-			// Byte Array field (securityWrapper)
-			_writeArrayErr := writeBuffer.WriteByteArray("securityWrapper", m.GetSecurityWrapper())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'securityWrapper' field")
-			}
+		// Byte Array field (securityWrapper)
+		if err := writeBuffer.WriteByteArray("securityWrapper", m.GetSecurityWrapper()); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityWrapper' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCSecureBVLL"); popErr != nil {
@@ -177,6 +177,10 @@ func (m *_BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCSecureBVLL) isBVLCSecureBVLL() bool {
+	return true
 }
 
 func (m *_BVLCSecureBVLL) String() string {

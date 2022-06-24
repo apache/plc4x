@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIntegralConstantUnits is the corresponding interface of BACnetConstructedDataIntegralConstantUnits
 type BACnetConstructedDataIntegralConstantUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIntegralConstantUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegralConstantUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegralConstantUnitsExactly interface {
+	BACnetConstructedDataIntegralConstantUnits
+	isBACnetConstructedDataIntegralConstantUnits() bool
 }
 
 // _BACnetConstructedDataIntegralConstantUnits is the data-structure of this message
 type _BACnetConstructedDataIntegralConstantUnits struct {
 	*_BACnetConstructedData
 	Units BACnetEngineeringUnitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIntegralConstantUnitsParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegralConstantUnits{
-		Units:                  units,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Units: units,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegralConstantUnits) isBACnetConstructedDataIntegralConstantUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegralConstantUnits) String() string {

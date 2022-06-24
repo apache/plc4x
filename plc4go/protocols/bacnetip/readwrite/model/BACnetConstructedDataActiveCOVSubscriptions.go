@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataActiveCOVSubscriptions is the corresponding interface of BACnetConstructedDataActiveCOVSubscriptions
 type BACnetConstructedDataActiveCOVSubscriptions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveCOVSubscriptions returns ActiveCOVSubscriptions (property field)
 	GetActiveCOVSubscriptions() []BACnetCOVSubscription
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataActiveCOVSubscriptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveCOVSubscriptions.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveCOVSubscriptionsExactly interface {
+	BACnetConstructedDataActiveCOVSubscriptions
+	isBACnetConstructedDataActiveCOVSubscriptions() bool
 }
 
 // _BACnetConstructedDataActiveCOVSubscriptions is the data-structure of this message
 type _BACnetConstructedDataActiveCOVSubscriptions struct {
 	*_BACnetConstructedData
 	ActiveCOVSubscriptions []BACnetCOVSubscription
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for activeCOVSubscriptions")
 	}
 	// Terminated array
-	activeCOVSubscriptions := make([]BACnetCOVSubscription, 0)
+	var activeCOVSubscriptions []BACnetCOVSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVSubscriptionParse(readBuffer)
@@ -173,7 +172,10 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActiveCOVSubscriptions{
 		ActiveCOVSubscriptions: activeCOVSubscriptions,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) Serialize(writeBuffer uti
 		}
 
 		// Array Field (activeCOVSubscriptions)
-		if m.GetActiveCOVSubscriptions() != nil {
-			if pushErr := writeBuffer.PushContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for activeCOVSubscriptions")
+		if pushErr := writeBuffer.PushContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for activeCOVSubscriptions")
+		}
+		for _, _element := range m.GetActiveCOVSubscriptions() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'activeCOVSubscriptions' field")
 			}
-			for _, _element := range m.GetActiveCOVSubscriptions() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'activeCOVSubscriptions' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for activeCOVSubscriptions")
-			}
+		}
+		if popErr := writeBuffer.PopContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for activeCOVSubscriptions")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveCOVSubscriptions"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) isBACnetConstructedDataActiveCOVSubscriptions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveCOVSubscriptions) String() string {

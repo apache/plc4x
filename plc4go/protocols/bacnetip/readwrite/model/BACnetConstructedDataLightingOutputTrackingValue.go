@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLightingOutputTrackingValue is the corresponding interface of BACnetConstructedDataLightingOutputTrackingValue
 type BACnetConstructedDataLightingOutputTrackingValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLightingOutputTrackingValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingOutputTrackingValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLightingOutputTrackingValueExactly interface {
+	BACnetConstructedDataLightingOutputTrackingValue
+	isBACnetConstructedDataLightingOutputTrackingValue() bool
 }
 
 // _BACnetConstructedDataLightingOutputTrackingValue is the data-structure of this message
 type _BACnetConstructedDataLightingOutputTrackingValue struct {
 	*_BACnetConstructedData
 	TrackingValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLightingOutputTrackingValue{
-		TrackingValue:          trackingValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		TrackingValue: trackingValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) isBACnetConstructedDataLightingOutputTrackingValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) String() string {

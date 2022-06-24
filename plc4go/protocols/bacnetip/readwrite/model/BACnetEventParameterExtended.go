@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterExtended is the corresponding interface of BACnetEventParameterExtended
 type BACnetEventParameterExtended interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetEventParameterExtended interface {
 	GetParameters() BACnetEventParameterExtendedParameters
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterExtendedExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterExtended.
+// This is useful for switch cases.
+type BACnetEventParameterExtendedExactly interface {
+	BACnetEventParameterExtended
+	isBACnetEventParameterExtended() bool
 }
 
 // _BACnetEventParameterExtended is the data-structure of this message
@@ -328,6 +331,10 @@ func (m *_BACnetEventParameterExtended) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterExtended) isBACnetEventParameterExtended() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterExtended) String() string {

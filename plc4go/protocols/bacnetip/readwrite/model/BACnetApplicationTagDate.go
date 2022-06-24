@@ -28,15 +28,18 @@ import (
 
 // BACnetApplicationTagDate is the corresponding interface of BACnetApplicationTagDate
 type BACnetApplicationTagDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetApplicationTagDateExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagDate.
+// This is useful for switch cases.
+type BACnetApplicationTagDateExactly interface {
+	BACnetApplicationTagDate
+	isBACnetApplicationTagDate() bool
 }
 
 // _BACnetApplicationTagDate is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetApplicationTagDate) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagDate) isBACnetApplicationTagDate() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagDate) String() string {

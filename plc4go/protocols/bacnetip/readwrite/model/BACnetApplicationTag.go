@@ -28,18 +28,21 @@ import (
 
 // BACnetApplicationTag is the corresponding interface of BACnetApplicationTag
 type BACnetApplicationTag interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetActualTagNumber returns ActualTagNumber (virtual field)
 	GetActualTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetApplicationTagExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTag.
+// This is useful for switch cases.
+type BACnetApplicationTagExactly interface {
+	BACnetApplicationTag
+	isBACnetApplicationTag() bool
 }
 
 // _BACnetApplicationTag is the data-structure of this message
@@ -49,9 +52,9 @@ type _BACnetApplicationTag struct {
 }
 
 type _BACnetApplicationTagChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetApplicationTagParent interface {
@@ -60,7 +63,7 @@ type BACnetApplicationTagParent interface {
 }
 
 type BACnetApplicationTagChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetApplicationTag, header BACnetTagHeader)
 	GetParent() *BACnetApplicationTag
 
@@ -266,6 +269,10 @@ func (pm *_BACnetApplicationTag) SerializeParent(writeBuffer utils.WriteBuffer, 
 		return errors.Wrap(popErr, "Error popping for BACnetApplicationTag")
 	}
 	return nil
+}
+
+func (m *_BACnetApplicationTag) isBACnetApplicationTag() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTag) String() string {

@@ -33,6 +33,8 @@ const DF1SymbolMessageFrame_ENDTRANSACTION uint8 = 0x03
 
 // DF1SymbolMessageFrame is the corresponding interface of DF1SymbolMessageFrame
 type DF1SymbolMessageFrame interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1Symbol
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
@@ -40,12 +42,13 @@ type DF1SymbolMessageFrame interface {
 	GetSourceAddress() uint8
 	// GetCommand returns Command (property field)
 	GetCommand() DF1Command
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1SymbolMessageFrameExactly can be used when we want exactly this type and not a type which fulfills DF1SymbolMessageFrame.
+// This is useful for switch cases.
+type DF1SymbolMessageFrameExactly interface {
+	DF1SymbolMessageFrame
+	isDF1SymbolMessageFrame() bool
 }
 
 // _DF1SymbolMessageFrame is the data-structure of this message
@@ -322,6 +325,10 @@ func (m *_DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1SymbolMessageFrame) isDF1SymbolMessageFrame() bool {
+	return true
 }
 
 func (m *_DF1SymbolMessageFrame) String() string {

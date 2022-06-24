@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEventType is the corresponding interface of BACnetConstructedDataEventType
 type BACnetConstructedDataEventType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventType returns EventType (property field)
 	GetEventType() BACnetEventTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventType.
+// This is useful for switch cases.
+type BACnetConstructedDataEventTypeExactly interface {
+	BACnetConstructedDataEventType
+	isBACnetConstructedDataEventType() bool
 }
 
 // _BACnetConstructedDataEventType is the data-structure of this message
 type _BACnetConstructedDataEventType struct {
 	*_BACnetConstructedData
 	EventType BACnetEventTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEventTypeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventType{
-		EventType:              eventType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EventType: eventType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEventType) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventType) isBACnetConstructedDataEventType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventType) String() string {

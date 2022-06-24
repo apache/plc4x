@@ -28,13 +28,16 @@ import (
 
 // NotTransmittedCorruption is the corresponding interface of NotTransmittedCorruption
 type NotTransmittedCorruption interface {
+	utils.LengthAware
+	utils.Serializable
 	Confirmation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NotTransmittedCorruptionExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedCorruption.
+// This is useful for switch cases.
+type NotTransmittedCorruptionExactly interface {
+	NotTransmittedCorruption
+	isNotTransmittedCorruption() bool
 }
 
 // _NotTransmittedCorruption is the data-structure of this message
@@ -137,6 +140,10 @@ func (m *_NotTransmittedCorruption) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NotTransmittedCorruption) isNotTransmittedCorruption() bool {
+	return true
 }
 
 func (m *_NotTransmittedCorruption) String() string {

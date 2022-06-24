@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueRelinquishDefault is the corresponding interface of BACnetConstructedDataLargeAnalogValueRelinquishDefault
 type BACnetConstructedDataLargeAnalogValueRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLargeAnalogValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueRelinquishDefaultExactly interface {
+	BACnetConstructedDataLargeAnalogValueRelinquishDefault
+	isBACnetConstructedDataLargeAnalogValueRelinquishDefault() bool
 }
 
 // _BACnetConstructedDataLargeAnalogValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLargeAnalogValueRelinquishDefaultParse(readBuffer util
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLargeAnalogValueRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		RelinquishDefault: relinquishDefault,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) Serialize(writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) isBACnetConstructedDataLargeAnalogValueRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMaxAPDULengthAccepted is the corresponding interface of BACnetConstructedDataMaxAPDULengthAccepted
 type BACnetConstructedDataMaxAPDULengthAccepted interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted (property field)
 	GetMaxApduLengthAccepted() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaxAPDULengthAcceptedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaxAPDULengthAccepted.
+// This is useful for switch cases.
+type BACnetConstructedDataMaxAPDULengthAcceptedExactly interface {
+	BACnetConstructedDataMaxAPDULengthAccepted
+	isBACnetConstructedDataMaxAPDULengthAccepted() bool
 }
 
 // _BACnetConstructedDataMaxAPDULengthAccepted is the data-structure of this message
 type _BACnetConstructedDataMaxAPDULengthAccepted struct {
 	*_BACnetConstructedData
 	MaxApduLengthAccepted BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaxAPDULengthAccepted{
-		MaxApduLengthAccepted:  maxApduLengthAccepted,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxApduLengthAccepted: maxApduLengthAccepted,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) isBACnetConstructedDataMaxAPDULengthAccepted() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) String() string {

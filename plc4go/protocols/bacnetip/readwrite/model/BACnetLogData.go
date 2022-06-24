@@ -28,6 +28,8 @@ import (
 
 // BACnetLogData is the corresponding interface of BACnetLogData
 type BACnetLogData interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -36,12 +38,13 @@ type BACnetLogData interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataExactly can be used when we want exactly this type and not a type which fulfills BACnetLogData.
+// This is useful for switch cases.
+type BACnetLogDataExactly interface {
+	BACnetLogData
+	isBACnetLogData() bool
 }
 
 // _BACnetLogData is the data-structure of this message
@@ -56,9 +59,9 @@ type _BACnetLogData struct {
 }
 
 type _BACnetLogDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetLogDataParent interface {
@@ -67,7 +70,7 @@ type BACnetLogDataParent interface {
 }
 
 type BACnetLogDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetLogData, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetLogData
 
@@ -277,6 +280,10 @@ func (pm *_BACnetLogData) SerializeParent(writeBuffer utils.WriteBuffer, child B
 		return errors.Wrap(popErr, "Error popping for BACnetLogData")
 	}
 	return nil
+}
+
+func (m *_BACnetLogData) isBACnetLogData() bool {
+	return true
 }
 
 func (m *_BACnetLogData) String() string {

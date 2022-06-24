@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLargeAnalogValuePresentValue is the corresponding interface of BACnetConstructedDataLargeAnalogValuePresentValue
 type BACnetConstructedDataLargeAnalogValuePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLargeAnalogValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValuePresentValueExactly interface {
+	BACnetConstructedDataLargeAnalogValuePresentValue
+	isBACnetConstructedDataLargeAnalogValuePresentValue() bool
 }
 
 // _BACnetConstructedDataLargeAnalogValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValuePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLargeAnalogValuePresentValueParse(readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLargeAnalogValuePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValuePresentValue) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValue) isBACnetConstructedDataLargeAnalogValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValuePresentValue) String() string {

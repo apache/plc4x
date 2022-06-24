@@ -30,18 +30,21 @@ import (
 
 // BACnetAuthenticationFactorFormat is the corresponding interface of BACnetAuthenticationFactorFormat
 type BACnetAuthenticationFactorFormat interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFormatType returns FormatType (property field)
 	GetFormatType() BACnetAuthenticationFactorTypeTagged
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
 	// GetVendorFormat returns VendorFormat (property field)
 	GetVendorFormat() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthenticationFactorFormatExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationFactorFormat.
+// This is useful for switch cases.
+type BACnetAuthenticationFactorFormatExactly interface {
+	BACnetAuthenticationFactorFormat
+	isBACnetAuthenticationFactorFormat() bool
 }
 
 // _BACnetAuthenticationFactorFormat is the data-structure of this message
@@ -249,6 +252,10 @@ func (m *_BACnetAuthenticationFactorFormat) Serialize(writeBuffer utils.WriteBuf
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationFactorFormat")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationFactorFormat) isBACnetAuthenticationFactorFormat() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationFactorFormat) String() string {

@@ -33,6 +33,8 @@ const AlarmMessageObjectAckType_LENGTH uint8 = 0x08
 
 // AlarmMessageObjectAckType is the corresponding interface of AlarmMessageObjectAckType
 type AlarmMessageObjectAckType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
 	// GetNumberOfValues returns NumberOfValues (property field)
@@ -43,12 +45,13 @@ type AlarmMessageObjectAckType interface {
 	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() State
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AlarmMessageObjectAckTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageObjectAckType.
+// This is useful for switch cases.
+type AlarmMessageObjectAckTypeExactly interface {
+	AlarmMessageObjectAckType
+	isAlarmMessageObjectAckType() bool
 }
 
 // _AlarmMessageObjectAckType is the data-structure of this message
@@ -323,6 +326,10 @@ func (m *_AlarmMessageObjectAckType) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for AlarmMessageObjectAckType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageObjectAckType) isAlarmMessageObjectAckType() bool {
+	return true
 }
 
 func (m *_AlarmMessageObjectAckType) String() string {

@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataNetworkPortAll is the corresponding interface of BACnetConstructedDataNetworkPortAll
 type BACnetConstructedDataNetworkPortAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNetworkPortAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortAll.
+// This is useful for switch cases.
+type BACnetConstructedDataNetworkPortAllExactly interface {
+	BACnetConstructedDataNetworkPortAll
+	isBACnetConstructedDataNetworkPortAll() bool
 }
 
 // _BACnetConstructedDataNetworkPortAll is the data-structure of this message
 type _BACnetConstructedDataNetworkPortAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataNetworkPortAllParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNetworkPortAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataNetworkPortAll) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNetworkPortAll) isBACnetConstructedDataNetworkPortAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNetworkPortAll) String() string {

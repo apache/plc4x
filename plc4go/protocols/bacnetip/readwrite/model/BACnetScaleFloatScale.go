@@ -28,15 +28,18 @@ import (
 
 // BACnetScaleFloatScale is the corresponding interface of BACnetScaleFloatScale
 type BACnetScaleFloatScale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetScale
 	// GetFloatScale returns FloatScale (property field)
 	GetFloatScale() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetScaleFloatScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScaleFloatScale.
+// This is useful for switch cases.
+type BACnetScaleFloatScaleExactly interface {
+	BACnetScaleFloatScale
+	isBACnetScaleFloatScale() bool
 }
 
 // _BACnetScaleFloatScale is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetScaleFloatScale) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetScaleFloatScale) isBACnetScaleFloatScale() bool {
+	return true
 }
 
 func (m *_BACnetScaleFloatScale) String() string {

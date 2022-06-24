@@ -28,6 +28,8 @@ import (
 
 // BACnetReliabilityTagged is the corresponding interface of BACnetReliabilityTagged
 type BACnetReliabilityTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetReliabilityTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetReliabilityTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetReliabilityTagged.
+// This is useful for switch cases.
+type BACnetReliabilityTaggedExactly interface {
+	BACnetReliabilityTagged
+	isBACnetReliabilityTagged() bool
 }
 
 // _BACnetReliabilityTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetReliabilityTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetReliabilityTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetReliabilityTagged) isBACnetReliabilityTagged() bool {
+	return true
 }
 
 func (m *_BACnetReliabilityTagged) String() string {

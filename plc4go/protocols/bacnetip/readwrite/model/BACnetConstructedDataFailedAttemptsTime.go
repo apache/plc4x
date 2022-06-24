@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFailedAttemptsTime is the corresponding interface of BACnetConstructedDataFailedAttemptsTime
 type BACnetConstructedDataFailedAttemptsTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFailedAttemptsTime returns FailedAttemptsTime (property field)
 	GetFailedAttemptsTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFailedAttemptsTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFailedAttemptsTime.
+// This is useful for switch cases.
+type BACnetConstructedDataFailedAttemptsTimeExactly interface {
+	BACnetConstructedDataFailedAttemptsTime
+	isBACnetConstructedDataFailedAttemptsTime() bool
 }
 
 // _BACnetConstructedDataFailedAttemptsTime is the data-structure of this message
 type _BACnetConstructedDataFailedAttemptsTime struct {
 	*_BACnetConstructedData
 	FailedAttemptsTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFailedAttemptsTimeParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFailedAttemptsTime{
-		FailedAttemptsTime:     failedAttemptsTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FailedAttemptsTime: failedAttemptsTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFailedAttemptsTime) isBACnetConstructedDataFailedAttemptsTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFailedAttemptsTime) String() string {

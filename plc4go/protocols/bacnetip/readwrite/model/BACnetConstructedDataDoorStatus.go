@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDoorStatus is the corresponding interface of BACnetConstructedDataDoorStatus
 type BACnetConstructedDataDoorStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDoorStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorStatus.
+// This is useful for switch cases.
+type BACnetConstructedDataDoorStatusExactly interface {
+	BACnetConstructedDataDoorStatus
+	isBACnetConstructedDataDoorStatus() bool
 }
 
 // _BACnetConstructedDataDoorStatus is the data-structure of this message
 type _BACnetConstructedDataDoorStatus struct {
 	*_BACnetConstructedData
 	DoorStatus BACnetDoorStatusTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDoorStatusParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDoorStatus{
-		DoorStatus:             doorStatus,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DoorStatus: doorStatus,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDoorStatus) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoorStatus) isBACnetConstructedDataDoorStatus() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoorStatus) String() string {

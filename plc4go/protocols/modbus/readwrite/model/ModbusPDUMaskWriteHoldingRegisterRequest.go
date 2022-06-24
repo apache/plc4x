@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUMaskWriteHoldingRegisterRequest is the corresponding interface of ModbusPDUMaskWriteHoldingRegisterRequest
 type ModbusPDUMaskWriteHoldingRegisterRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetReferenceAddress returns ReferenceAddress (property field)
 	GetReferenceAddress() uint16
@@ -35,12 +37,13 @@ type ModbusPDUMaskWriteHoldingRegisterRequest interface {
 	GetAndMask() uint16
 	// GetOrMask returns OrMask (property field)
 	GetOrMask() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUMaskWriteHoldingRegisterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUMaskWriteHoldingRegisterRequest.
+// This is useful for switch cases.
+type ModbusPDUMaskWriteHoldingRegisterRequestExactly interface {
+	ModbusPDUMaskWriteHoldingRegisterRequest
+	isModbusPDUMaskWriteHoldingRegisterRequest() bool
 }
 
 // _ModbusPDUMaskWriteHoldingRegisterRequest is the data-structure of this message
@@ -231,6 +234,10 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) isModbusPDUMaskWriteHoldingRegisterRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) String() string {

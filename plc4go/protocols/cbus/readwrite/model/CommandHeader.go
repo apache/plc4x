@@ -28,14 +28,17 @@ import (
 
 // CommandHeader is the corresponding interface of CommandHeader
 type CommandHeader interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CommandHeaderExactly can be used when we want exactly this type and not a type which fulfills CommandHeader.
+// This is useful for switch cases.
+type CommandHeaderExactly interface {
+	CommandHeader
+	isCommandHeader() bool
 }
 
 // _CommandHeader is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_CommandHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CommandHeader")
 	}
 	return nil
+}
+
+func (m *_CommandHeader) isCommandHeader() bool {
+	return true
 }
 
 func (m *_CommandHeader) String() string {

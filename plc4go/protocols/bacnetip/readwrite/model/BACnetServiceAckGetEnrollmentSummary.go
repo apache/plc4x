@@ -30,6 +30,8 @@ import (
 
 // BACnetServiceAckGetEnrollmentSummary is the corresponding interface of BACnetServiceAckGetEnrollmentSummary
 type BACnetServiceAckGetEnrollmentSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -41,12 +43,13 @@ type BACnetServiceAckGetEnrollmentSummary interface {
 	GetPriority() BACnetApplicationTagUnsignedInteger
 	// GetNotificationClass returns NotificationClass (property field)
 	GetNotificationClass() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckGetEnrollmentSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetEnrollmentSummary.
+// This is useful for switch cases.
+type BACnetServiceAckGetEnrollmentSummaryExactly interface {
+	BACnetServiceAckGetEnrollmentSummary
+	isBACnetServiceAckGetEnrollmentSummary() bool
 }
 
 // _BACnetServiceAckGetEnrollmentSummary is the data-structure of this message
@@ -57,9 +60,6 @@ type _BACnetServiceAckGetEnrollmentSummary struct {
 	EventState        BACnetEventStateTagged
 	Priority          BACnetApplicationTagUnsignedInteger
 	NotificationClass BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -266,7 +266,9 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serv
 		EventState:        eventState,
 		Priority:          priority,
 		NotificationClass: notificationClass,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -350,6 +352,10 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckGetEnrollmentSummary) isBACnetServiceAckGetEnrollmentSummary() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckGetEnrollmentSummary) String() string {

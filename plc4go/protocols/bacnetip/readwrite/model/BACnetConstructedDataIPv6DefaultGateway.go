@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPv6DefaultGateway is the corresponding interface of BACnetConstructedDataIPv6DefaultGateway
 type BACnetConstructedDataIPv6DefaultGateway interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6DefaultGateway returns Ipv6DefaultGateway (property field)
 	GetIpv6DefaultGateway() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6DefaultGatewayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DefaultGateway.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6DefaultGatewayExactly interface {
+	BACnetConstructedDataIPv6DefaultGateway
+	isBACnetConstructedDataIPv6DefaultGateway() bool
 }
 
 // _BACnetConstructedDataIPv6DefaultGateway is the data-structure of this message
 type _BACnetConstructedDataIPv6DefaultGateway struct {
 	*_BACnetConstructedData
 	Ipv6DefaultGateway BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIPv6DefaultGatewayParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6DefaultGateway{
-		Ipv6DefaultGateway:     ipv6DefaultGateway,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Ipv6DefaultGateway: ipv6DefaultGateway,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6DefaultGateway) isBACnetConstructedDataIPv6DefaultGateway() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6DefaultGateway) String() string {

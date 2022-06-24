@@ -30,6 +30,8 @@ import (
 
 // BACnetPropertyAccessResult is the corresponding interface of BACnetPropertyAccessResult
 type BACnetPropertyAccessResult interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -40,12 +42,13 @@ type BACnetPropertyAccessResult interface {
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetAccessResult returns AccessResult (property field)
 	GetAccessResult() BACnetPropertyAccessResultAccessResult
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResult.
+// This is useful for switch cases.
+type BACnetPropertyAccessResultExactly interface {
+	BACnetPropertyAccessResult
+	isBACnetPropertyAccessResult() bool
 }
 
 // _BACnetPropertyAccessResult is the data-structure of this message
@@ -319,6 +322,10 @@ func (m *_BACnetPropertyAccessResult) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyAccessResult")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyAccessResult) isBACnetPropertyAccessResult() bool {
+	return true
 }
 
 func (m *_BACnetPropertyAccessResult) String() string {

@@ -28,15 +28,18 @@ import (
 
 // SysexCommandAnalogMappingQueryResponse is the corresponding interface of SysexCommandAnalogMappingQueryResponse
 type SysexCommandAnalogMappingQueryResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandAnalogMappingQueryResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingQueryResponse.
+// This is useful for switch cases.
+type SysexCommandAnalogMappingQueryResponseExactly interface {
+	SysexCommandAnalogMappingQueryResponse
+	isSysexCommandAnalogMappingQueryResponse() bool
 }
 
 // _SysexCommandAnalogMappingQueryResponse is the data-structure of this message
@@ -175,6 +178,10 @@ func (m *_SysexCommandAnalogMappingQueryResponse) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandAnalogMappingQueryResponse) isSysexCommandAnalogMappingQueryResponse() bool {
+	return true
 }
 
 func (m *_SysexCommandAnalogMappingQueryResponse) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBinaryInputInterfaceValue is the corresponding interface of BACnetConstructedDataBinaryInputInterfaceValue
 type BACnetConstructedDataBinaryInputInterfaceValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInterfaceValue returns InterfaceValue (property field)
 	GetInterfaceValue() BACnetOptionalBinaryPV
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalBinaryPV
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBinaryInputInterfaceValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryInputInterfaceValue.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryInputInterfaceValueExactly interface {
+	BACnetConstructedDataBinaryInputInterfaceValue
+	isBACnetConstructedDataBinaryInputInterfaceValue() bool
 }
 
 // _BACnetConstructedDataBinaryInputInterfaceValue is the data-structure of this message
 type _BACnetConstructedDataBinaryInputInterfaceValue struct {
 	*_BACnetConstructedData
 	InterfaceValue BACnetOptionalBinaryPV
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBinaryInputInterfaceValueParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBinaryInputInterfaceValue{
-		InterfaceValue:         interfaceValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		InterfaceValue: interfaceValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBinaryInputInterfaceValue) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValue) isBACnetConstructedDataBinaryInputInterfaceValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryInputInterfaceValue) String() string {

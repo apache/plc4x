@@ -34,6 +34,8 @@ const S7MessageObjectRequest_LENGTH uint8 = 0x08
 
 // S7MessageObjectRequest is the corresponding interface of S7MessageObjectRequest
 type S7MessageObjectRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	S7DataAlarmMessage
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -41,12 +43,13 @@ type S7MessageObjectRequest interface {
 	GetQueryType() QueryType
 	// GetAlarmType returns AlarmType (property field)
 	GetAlarmType() AlarmType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7MessageObjectRequestExactly can be used when we want exactly this type and not a type which fulfills S7MessageObjectRequest.
+// This is useful for switch cases.
+type S7MessageObjectRequestExactly interface {
+	S7MessageObjectRequest
+	isS7MessageObjectRequest() bool
 }
 
 // _S7MessageObjectRequest is the data-structure of this message
@@ -365,6 +368,10 @@ func (m *_S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageObjectRequest) isS7MessageObjectRequest() bool {
+	return true
 }
 
 func (m *_S7MessageObjectRequest) String() string {

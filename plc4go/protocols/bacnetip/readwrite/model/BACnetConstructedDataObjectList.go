@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataObjectList is the corresponding interface of BACnetConstructedDataObjectList
 type BACnetConstructedDataObjectList interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataObjectList interface {
 	GetObjectList() []BACnetApplicationTagObjectIdentifier
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataObjectListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataObjectList.
+// This is useful for switch cases.
+type BACnetConstructedDataObjectListExactly interface {
+	BACnetConstructedDataObjectList
+	isBACnetConstructedDataObjectList() bool
 }
 
 // _BACnetConstructedDataObjectList is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataObjectList struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	ObjectList           []BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataObjectListParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, errors.Wrap(pullErr, "Error pulling for objectList")
 	}
 	// Terminated array
-	objectList := make([]BACnetApplicationTagObjectIdentifier, 0)
+	var objectList []BACnetApplicationTagObjectIdentifier
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataObjectListParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataObjectList{
-		NumberOfDataElements:   numberOfDataElements,
-		ObjectList:             objectList,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		ObjectList:           objectList,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataObjectList) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (objectList)
-		if m.GetObjectList() != nil {
-			if pushErr := writeBuffer.PushContext("objectList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for objectList")
+		if pushErr := writeBuffer.PushContext("objectList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for objectList")
+		}
+		for _, _element := range m.GetObjectList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'objectList' field")
 			}
-			for _, _element := range m.GetObjectList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'objectList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("objectList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for objectList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("objectList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for objectList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataObjectList"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataObjectList) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataObjectList) isBACnetConstructedDataObjectList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataObjectList) String() string {

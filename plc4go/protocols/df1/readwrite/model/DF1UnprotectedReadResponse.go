@@ -28,15 +28,18 @@ import (
 
 // DF1UnprotectedReadResponse is the corresponding interface of DF1UnprotectedReadResponse
 type DF1UnprotectedReadResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1Command
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1UnprotectedReadResponseExactly can be used when we want exactly this type and not a type which fulfills DF1UnprotectedReadResponse.
+// This is useful for switch cases.
+type DF1UnprotectedReadResponseExactly interface {
+	DF1UnprotectedReadResponse
+	isDF1UnprotectedReadResponse() bool
 }
 
 // _DF1UnprotectedReadResponse is the data-structure of this message
@@ -137,7 +140,7 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (DF1Unprotecte
 	}
 	// Manual Array Field (data)
 	// Terminated array
-	_dataList := make([]byte, 0)
+	var _dataList []byte
 	{
 		_values := &_dataList
 		_ = _values
@@ -173,16 +176,14 @@ func (m *_DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Manual Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
-			}
-			for _, m := range m.GetData() {
-				WriteData(writeBuffer, m)
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, m := range m.GetData() {
+			WriteData(writeBuffer, m)
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1UnprotectedReadResponse"); popErr != nil {
@@ -191,6 +192,10 @@ func (m *_DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1UnprotectedReadResponse) isDF1UnprotectedReadResponse() bool {
+	return true
 }
 
 func (m *_DF1UnprotectedReadResponse) String() string {

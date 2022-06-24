@@ -28,6 +28,8 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
 type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetResult returns Result (property field)
 	GetResult() uint8
@@ -39,12 +41,13 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
 	GetReserved02() uint8
 	// GetReserved03 returns Reserved03 (property field)
 	GetReserved03() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseExactly interface {
+	S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+	isS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() bool
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse is the data-structure of this message
@@ -297,6 +300,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serializ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) isS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) String() string {

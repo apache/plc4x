@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBinaryLightingOutputFeedbackValue is the corresponding interface of BACnetConstructedDataBinaryLightingOutputFeedbackValue
 type BACnetConstructedDataBinaryLightingOutputFeedbackValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() BACnetBinaryLightingPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryLightingPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBinaryLightingOutputFeedbackValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryLightingOutputFeedbackValue.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryLightingOutputFeedbackValueExactly interface {
+	BACnetConstructedDataBinaryLightingOutputFeedbackValue
+	isBACnetConstructedDataBinaryLightingOutputFeedbackValue() bool
 }
 
 // _BACnetConstructedDataBinaryLightingOutputFeedbackValue is the data-structure of this message
 type _BACnetConstructedDataBinaryLightingOutputFeedbackValue struct {
 	*_BACnetConstructedData
 	FeedbackValue BACnetBinaryLightingPVTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(readBuffer util
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBinaryLightingOutputFeedbackValue{
-		FeedbackValue:          feedbackValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FeedbackValue: feedbackValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) Serialize(writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) isBACnetConstructedDataBinaryLightingOutputFeedbackValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) String() string {

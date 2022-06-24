@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLocalDate is the corresponding interface of BACnetConstructedDataLocalDate
 type BACnetConstructedDataLocalDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLocalDate returns LocalDate (property field)
 	GetLocalDate() BACnetApplicationTagDate
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLocalDateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocalDate.
+// This is useful for switch cases.
+type BACnetConstructedDataLocalDateExactly interface {
+	BACnetConstructedDataLocalDate
+	isBACnetConstructedDataLocalDate() bool
 }
 
 // _BACnetConstructedDataLocalDate is the data-structure of this message
 type _BACnetConstructedDataLocalDate struct {
 	*_BACnetConstructedData
 	LocalDate BACnetApplicationTagDate
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLocalDateParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLocalDate{
-		LocalDate:              localDate,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LocalDate: localDate,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLocalDate) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLocalDate) isBACnetConstructedDataLocalDate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLocalDate) String() string {

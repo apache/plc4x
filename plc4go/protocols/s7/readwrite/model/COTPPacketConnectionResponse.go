@@ -28,6 +28,8 @@ import (
 
 // COTPPacketConnectionResponse is the corresponding interface of COTPPacketConnectionResponse
 type COTPPacketConnectionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -35,12 +37,13 @@ type COTPPacketConnectionResponse interface {
 	GetSourceReference() uint16
 	// GetProtocolClass returns ProtocolClass (property field)
 	GetProtocolClass() COTPProtocolClass
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPPacketConnectionResponseExactly can be used when we want exactly this type and not a type which fulfills COTPPacketConnectionResponse.
+// This is useful for switch cases.
+type COTPPacketConnectionResponseExactly interface {
+	COTPPacketConnectionResponse
+	isCOTPPacketConnectionResponse() bool
 }
 
 // _COTPPacketConnectionResponse is the data-structure of this message
@@ -49,9 +52,6 @@ type _COTPPacketConnectionResponse struct {
 	DestinationReference uint16
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
-
-	// Arguments.
-	CotpLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -194,7 +194,9 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
-		_COTPPacket:          &_COTPPacket{},
+		_COTPPacket: &_COTPPacket{
+			CotpLen: cotpLen,
+		},
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil
@@ -240,6 +242,10 @@ func (m *_COTPPacketConnectionResponse) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketConnectionResponse) isCOTPPacketConnectionResponse() bool {
+	return true
 }
 
 func (m *_COTPPacketConnectionResponse) String() string {

@@ -28,17 +28,20 @@ import (
 
 // ApduDataMemoryRead is the corresponding interface of ApduDataMemoryRead
 type ApduDataMemoryRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetNumBytes returns NumBytes (property field)
 	GetNumBytes() uint8
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataMemoryReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataMemoryRead.
+// This is useful for switch cases.
+type ApduDataMemoryReadExactly interface {
+	ApduDataMemoryRead
+	isApduDataMemoryRead() bool
 }
 
 // _ApduDataMemoryRead is the data-structure of this message
@@ -46,9 +49,6 @@ type _ApduDataMemoryRead struct {
 	*_ApduData
 	NumBytes uint8
 	Address  uint16
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -164,9 +164,11 @@ func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apd
 
 	// Create a partially initialized instance
 	_child := &_ApduDataMemoryRead{
-		NumBytes:  numBytes,
-		Address:   address,
-		_ApduData: &_ApduData{},
+		NumBytes: numBytes,
+		Address:  address,
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -200,6 +202,10 @@ func (m *_ApduDataMemoryRead) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataMemoryRead) isApduDataMemoryRead() bool {
+	return true
 }
 
 func (m *_ApduDataMemoryRead) String() string {

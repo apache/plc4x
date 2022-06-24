@@ -28,6 +28,8 @@ import (
 
 // BACnetEventLogRecordLogDatumNotification is the corresponding interface of BACnetEventLogRecordLogDatumNotification
 type BACnetEventLogRecordLogDatumNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventLogRecordLogDatum
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -35,12 +37,13 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	GetNotification() ConfirmedEventNotificationRequest
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventLogRecordLogDatumNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecordLogDatumNotification.
+// This is useful for switch cases.
+type BACnetEventLogRecordLogDatumNotificationExactly interface {
+	BACnetEventLogRecordLogDatumNotification
+	isBACnetEventLogRecordLogDatumNotification() bool
 }
 
 // _BACnetEventLogRecordLogDatumNotification is the data-structure of this message
@@ -49,9 +52,6 @@ type _BACnetEventLogRecordLogDatumNotification struct {
 	InnerOpeningTag BACnetOpeningTag
 	Notification    ConfirmedEventNotificationRequest
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -200,10 +200,12 @@ func BACnetEventLogRecordLogDatumNotificationParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventLogRecordLogDatumNotification{
-		InnerOpeningTag:               innerOpeningTag,
-		Notification:                  notification,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{},
+		InnerOpeningTag: innerOpeningTag,
+		Notification:    notification,
+		InnerClosingTag: innerClosingTag,
+		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -259,6 +261,10 @@ func (m *_BACnetEventLogRecordLogDatumNotification) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotification) isBACnetEventLogRecordLogDatumNotification() bool {
+	return true
 }
 
 func (m *_BACnetEventLogRecordLogDatumNotification) String() string {

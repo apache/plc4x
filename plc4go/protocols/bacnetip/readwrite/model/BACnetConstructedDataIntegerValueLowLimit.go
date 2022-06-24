@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIntegerValueLowLimit is the corresponding interface of BACnetConstructedDataIntegerValueLowLimit
 type BACnetConstructedDataIntegerValueLowLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLowLimit returns LowLimit (property field)
 	GetLowLimit() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIntegerValueLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueLowLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueLowLimitExactly interface {
+	BACnetConstructedDataIntegerValueLowLimit
+	isBACnetConstructedDataIntegerValueLowLimit() bool
 }
 
 // _BACnetConstructedDataIntegerValueLowLimit is the data-structure of this message
 type _BACnetConstructedDataIntegerValueLowLimit struct {
 	*_BACnetConstructedData
 	LowLimit BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIntegerValueLowLimitParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegerValueLowLimit{
-		LowLimit:               lowLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LowLimit: lowLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIntegerValueLowLimit) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueLowLimit) isBACnetConstructedDataIntegerValueLowLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueLowLimit) String() string {

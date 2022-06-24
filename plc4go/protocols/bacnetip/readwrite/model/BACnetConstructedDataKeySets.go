@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataKeySets is the corresponding interface of BACnetConstructedDataKeySets
 type BACnetConstructedDataKeySets interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataKeySets interface {
 	GetKeySets() []BACnetSecurityKeySet
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataKeySetsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataKeySets.
+// This is useful for switch cases.
+type BACnetConstructedDataKeySetsExactly interface {
+	BACnetConstructedDataKeySets
+	isBACnetConstructedDataKeySets() bool
 }
 
 // _BACnetConstructedDataKeySets is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataKeySets struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	KeySets              []BACnetSecurityKeySet
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber ui
 		return nil, errors.Wrap(pullErr, "Error pulling for keySets")
 	}
 	// Terminated array
-	keySets := make([]BACnetSecurityKeySet, 0)
+	var keySets []BACnetSecurityKeySet
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetSecurityKeySetParse(readBuffer)
@@ -238,9 +237,12 @@ func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataKeySets{
-		NumberOfDataElements:   numberOfDataElements,
-		KeySets:                keySets,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		KeySets:              keySets,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -275,19 +277,17 @@ func (m *_BACnetConstructedDataKeySets) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		// Array Field (keySets)
-		if m.GetKeySets() != nil {
-			if pushErr := writeBuffer.PushContext("keySets", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for keySets")
+		if pushErr := writeBuffer.PushContext("keySets", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for keySets")
+		}
+		for _, _element := range m.GetKeySets() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'keySets' field")
 			}
-			for _, _element := range m.GetKeySets() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'keySets' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("keySets", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for keySets")
-			}
+		}
+		if popErr := writeBuffer.PopContext("keySets", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for keySets")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataKeySets"); popErr != nil {
@@ -296,6 +296,10 @@ func (m *_BACnetConstructedDataKeySets) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataKeySets) isBACnetConstructedDataKeySets() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataKeySets) String() string {

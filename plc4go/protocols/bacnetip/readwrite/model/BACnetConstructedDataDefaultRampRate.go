@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDefaultRampRate is the corresponding interface of BACnetConstructedDataDefaultRampRate
 type BACnetConstructedDataDefaultRampRate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDefaultRampRate returns DefaultRampRate (property field)
 	GetDefaultRampRate() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDefaultRampRateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDefaultRampRate.
+// This is useful for switch cases.
+type BACnetConstructedDataDefaultRampRateExactly interface {
+	BACnetConstructedDataDefaultRampRate
+	isBACnetConstructedDataDefaultRampRate() bool
 }
 
 // _BACnetConstructedDataDefaultRampRate is the data-structure of this message
 type _BACnetConstructedDataDefaultRampRate struct {
 	*_BACnetConstructedData
 	DefaultRampRate BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDefaultRampRate{
-		DefaultRampRate:        defaultRampRate,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DefaultRampRate: defaultRampRate,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDefaultRampRate) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDefaultRampRate) isBACnetConstructedDataDefaultRampRate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDefaultRampRate) String() string {

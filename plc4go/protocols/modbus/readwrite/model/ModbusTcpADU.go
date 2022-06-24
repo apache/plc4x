@@ -32,6 +32,8 @@ const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
 // ModbusTcpADU is the corresponding interface of ModbusTcpADU
 type ModbusTcpADU interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusADU
 	// GetTransactionIdentifier returns TransactionIdentifier (property field)
 	GetTransactionIdentifier() uint16
@@ -39,12 +41,13 @@ type ModbusTcpADU interface {
 	GetUnitIdentifier() uint8
 	// GetPdu returns Pdu (property field)
 	GetPdu() ModbusPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusTcpADUExactly can be used when we want exactly this type and not a type which fulfills ModbusTcpADU.
+// This is useful for switch cases.
+type ModbusTcpADUExactly interface {
+	ModbusTcpADU
+	isModbusTcpADU() bool
 }
 
 // _ModbusTcpADU is the data-structure of this message
@@ -53,9 +56,6 @@ type _ModbusTcpADU struct {
 	TransactionIdentifier uint16
 	UnitIdentifier        uint8
 	Pdu                   ModbusPDU
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -230,7 +230,9 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, driverType DriverType, respo
 		TransactionIdentifier: transactionIdentifier,
 		UnitIdentifier:        unitIdentifier,
 		Pdu:                   pdu,
-		_ModbusADU:            &_ModbusADU{},
+		_ModbusADU: &_ModbusADU{
+			Response: response,
+		},
 	}
 	_child._ModbusADU._ModbusADUChildRequirements = _child
 	return _child, nil
@@ -289,6 +291,10 @@ func (m *_ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusTcpADU) isModbusTcpADU() bool {
+	return true
 }
 
 func (m *_ModbusTcpADU) String() string {

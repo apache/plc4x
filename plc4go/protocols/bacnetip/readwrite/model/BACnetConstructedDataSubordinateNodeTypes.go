@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataSubordinateNodeTypes is the corresponding interface of BACnetConstructedDataSubordinateNodeTypes
 type BACnetConstructedDataSubordinateNodeTypes interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataSubordinateNodeTypes interface {
 	GetSubordinateNodeTypes() []BACnetNodeTypeTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSubordinateNodeTypesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSubordinateNodeTypes.
+// This is useful for switch cases.
+type BACnetConstructedDataSubordinateNodeTypesExactly interface {
+	BACnetConstructedDataSubordinateNodeTypes
+	isBACnetConstructedDataSubordinateNodeTypes() bool
 }
 
 // _BACnetConstructedDataSubordinateNodeTypes is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataSubordinateNodeTypes struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	SubordinateNodeTypes []BACnetNodeTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataSubordinateNodeTypesParse(readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(pullErr, "Error pulling for subordinateNodeTypes")
 	}
 	// Terminated array
-	subordinateNodeTypes := make([]BACnetNodeTypeTagged, 0)
+	var subordinateNodeTypes []BACnetNodeTypeTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNodeTypeTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -233,9 +232,12 @@ func BACnetConstructedDataSubordinateNodeTypesParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSubordinateNodeTypes{
-		NumberOfDataElements:   numberOfDataElements,
-		SubordinateNodeTypes:   subordinateNodeTypes,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		SubordinateNodeTypes: subordinateNodeTypes,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataSubordinateNodeTypes) Serialize(writeBuffer utils
 		}
 
 		// Array Field (subordinateNodeTypes)
-		if m.GetSubordinateNodeTypes() != nil {
-			if pushErr := writeBuffer.PushContext("subordinateNodeTypes", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for subordinateNodeTypes")
+		if pushErr := writeBuffer.PushContext("subordinateNodeTypes", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for subordinateNodeTypes")
+		}
+		for _, _element := range m.GetSubordinateNodeTypes() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'subordinateNodeTypes' field")
 			}
-			for _, _element := range m.GetSubordinateNodeTypes() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'subordinateNodeTypes' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("subordinateNodeTypes", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for subordinateNodeTypes")
-			}
+		}
+		if popErr := writeBuffer.PopContext("subordinateNodeTypes", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for subordinateNodeTypes")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateNodeTypes"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataSubordinateNodeTypes) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSubordinateNodeTypes) isBACnetConstructedDataSubordinateNodeTypes() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSubordinateNodeTypes) String() string {

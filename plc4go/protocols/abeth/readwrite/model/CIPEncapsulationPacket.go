@@ -29,6 +29,8 @@ import (
 
 // CIPEncapsulationPacket is the corresponding interface of CIPEncapsulationPacket
 type CIPEncapsulationPacket interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint16
 	// GetSessionHandle returns SessionHandle (property field)
@@ -39,12 +41,13 @@ type CIPEncapsulationPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CIPEncapsulationPacketExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationPacket.
+// This is useful for switch cases.
+type CIPEncapsulationPacketExactly interface {
+	CIPEncapsulationPacket
+	isCIPEncapsulationPacket() bool
 }
 
 // _CIPEncapsulationPacket is the data-structure of this message
@@ -57,10 +60,10 @@ type _CIPEncapsulationPacket struct {
 }
 
 type _CIPEncapsulationPacketChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandType() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CIPEncapsulationPacketParent interface {
@@ -69,7 +72,7 @@ type CIPEncapsulationPacketParent interface {
 }
 
 type CIPEncapsulationPacketChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
 	GetParent() *CIPEncapsulationPacket
 
@@ -128,7 +131,7 @@ func (m *_CIPEncapsulationPacket) GetParentLengthInBits() uint16 {
 	// Discriminator Field (commandType)
 	lengthInBits += 16
 
-	// Implicit Field (len)
+	// Implicit Field (packetLen)
 	lengthInBits += 16
 
 	// Simple field (sessionHandle)
@@ -170,11 +173,11 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field")
 	}
 
-	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	len, _lenErr := readBuffer.ReadUint16("len", 16)
-	_ = len
-	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
+	// Implicit Field (packetLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	packetLen, _packetLenErr := readBuffer.ReadUint16("packetLen", 16)
+	_ = packetLen
+	if _packetLenErr != nil {
+		return nil, errors.Wrap(_packetLenErr, "Error parsing 'packetLen' field")
 	}
 
 	// Simple Field (sessionHandle)
@@ -197,6 +200,10 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	}
 	// Count array
 	senderContext := make([]uint8, uint16(8))
+	// This happens when the size is set conditional to 0
+	if len(senderContext) == 0 {
+		senderContext = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -248,7 +255,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
 		_childTemp, typeSwitchError = CIPEncapsulationReadRequestParse(readBuffer)
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, len)
+		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, packetLen)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -285,11 +292,11 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(28)))
-	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
-	if _lenErr != nil {
-		return errors.Wrap(_lenErr, "Error serializing 'len' field")
+	// Implicit Field (packetLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	packetLen := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(28)))
+	_packetLenErr := writeBuffer.WriteUint16("packetLen", 16, (packetLen))
+	if _packetLenErr != nil {
+		return errors.Wrap(_packetLenErr, "Error serializing 'packetLen' field")
 	}
 
 	// Simple Field (sessionHandle)
@@ -307,19 +314,17 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer
 	}
 
 	// Array Field (senderContext)
-	if m.GetSenderContext() != nil {
-		if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for senderContext")
+	if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for senderContext")
+	}
+	for _, _element := range m.GetSenderContext() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
 		}
-		for _, _element := range m.GetSenderContext() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for senderContext")
-		}
+	}
+	if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for senderContext")
 	}
 
 	// Simple Field (options)
@@ -346,6 +351,10 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for CIPEncapsulationPacket")
 	}
 	return nil
+}
+
+func (m *_CIPEncapsulationPacket) isCIPEncapsulationPacket() bool {
+	return true
 }
 
 func (m *_CIPEncapsulationPacket) String() string {

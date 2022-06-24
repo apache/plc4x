@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataObjectIdentifier is the corresponding interface of BACnetConstructedDataObjectIdentifier
 type BACnetConstructedDataObjectIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataObjectIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataObjectIdentifier.
+// This is useful for switch cases.
+type BACnetConstructedDataObjectIdentifierExactly interface {
+	BACnetConstructedDataObjectIdentifier
+	isBACnetConstructedDataObjectIdentifier() bool
 }
 
 // _BACnetConstructedDataObjectIdentifier is the data-structure of this message
 type _BACnetConstructedDataObjectIdentifier struct {
 	*_BACnetConstructedData
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataObjectIdentifierParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataObjectIdentifier{
-		ObjectIdentifier:       objectIdentifier,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ObjectIdentifier: objectIdentifier,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataObjectIdentifier) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataObjectIdentifier) isBACnetConstructedDataObjectIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataObjectIdentifier) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEnable is the corresponding interface of BACnetConstructedDataEnable
 type BACnetConstructedDataEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataEnableExactly interface {
+	BACnetConstructedDataEnable
+	isBACnetConstructedDataEnable() bool
 }
 
 // _BACnetConstructedDataEnable is the data-structure of this message
 type _BACnetConstructedDataEnable struct {
 	*_BACnetConstructedData
 	Enable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEnableParse(readBuffer utils.ReadBuffer, tagNumber uin
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEnable{
-		Enable:                 enable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Enable: enable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEnable) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEnable) isBACnetConstructedDataEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEnable) String() string {

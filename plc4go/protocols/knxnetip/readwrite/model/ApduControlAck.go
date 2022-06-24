@@ -28,13 +28,16 @@ import (
 
 // ApduControlAck is the corresponding interface of ApduControlAck
 type ApduControlAck interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduControl
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduControlAckExactly can be used when we want exactly this type and not a type which fulfills ApduControlAck.
+// This is useful for switch cases.
+type ApduControlAckExactly interface {
+	ApduControlAck
+	isApduControlAck() bool
 }
 
 // _ApduControlAck is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_ApduControlAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduControlAck) isApduControlAck() bool {
+	return true
 }
 
 func (m *_ApduControlAck) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBACnetIPNATTraversal is the corresponding interface of BACnetConstructedDataBACnetIPNATTraversal
 type BACnetConstructedDataBACnetIPNATTraversal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBacnetIPNATTraversal returns BacnetIPNATTraversal (property field)
 	GetBacnetIPNATTraversal() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBACnetIPNATTraversalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPNATTraversal.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPNATTraversalExactly interface {
+	BACnetConstructedDataBACnetIPNATTraversal
+	isBACnetConstructedDataBACnetIPNATTraversal() bool
 }
 
 // _BACnetConstructedDataBACnetIPNATTraversal is the data-structure of this message
 type _BACnetConstructedDataBACnetIPNATTraversal struct {
 	*_BACnetConstructedData
 	BacnetIPNATTraversal BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPNATTraversal{
-		BacnetIPNATTraversal:   bacnetIPNATTraversal,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BacnetIPNATTraversal: bacnetIPNATTraversal,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) isBACnetConstructedDataBACnetIPNATTraversal() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) String() string {

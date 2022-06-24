@@ -28,6 +28,8 @@ import (
 
 // BACnetFaultParameterFaultState is the corresponding interface of BACnetFaultParameterFaultState
 type BACnetFaultParameterFaultState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -35,12 +37,13 @@ type BACnetFaultParameterFaultState interface {
 	GetListOfFaultValues() BACnetFaultParameterFaultStateListOfFaultValues
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultStateExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultState.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultStateExactly interface {
+	BACnetFaultParameterFaultState
+	isBACnetFaultParameterFaultState() bool
 }
 
 // _BACnetFaultParameterFaultState is the data-structure of this message
@@ -254,6 +257,10 @@ func (m *_BACnetFaultParameterFaultState) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultState) isBACnetFaultParameterFaultState() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultState) String() string {

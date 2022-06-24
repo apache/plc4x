@@ -28,16 +28,19 @@ import (
 
 // BACnetAddressBinding is the corresponding interface of BACnetAddressBinding
 type BACnetAddressBinding interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetDeviceAddress returns DeviceAddress (property field)
 	GetDeviceAddress() BACnetAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetAddressBinding.
+// This is useful for switch cases.
+type BACnetAddressBindingExactly interface {
+	BACnetAddressBinding
+	isBACnetAddressBinding() bool
 }
 
 // _BACnetAddressBinding is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetAddressBinding) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetAddressBinding")
 	}
 	return nil
+}
+
+func (m *_BACnetAddressBinding) isBACnetAddressBinding() bool {
+	return true
 }
 
 func (m *_BACnetAddressBinding) String() string {

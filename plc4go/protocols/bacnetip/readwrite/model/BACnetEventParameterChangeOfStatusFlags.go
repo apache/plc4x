@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterChangeOfStatusFlags is the corresponding interface of BACnetEventParameterChangeOfStatusFlags
 type BACnetEventParameterChangeOfStatusFlags interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -37,12 +39,13 @@ type BACnetEventParameterChangeOfStatusFlags interface {
 	GetSelectedFlags() BACnetStatusFlagsTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfStatusFlagsExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfStatusFlags.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfStatusFlagsExactly interface {
+	BACnetEventParameterChangeOfStatusFlags
+	isBACnetEventParameterChangeOfStatusFlags() bool
 }
 
 // _BACnetEventParameterChangeOfStatusFlags is the data-structure of this message
@@ -291,6 +294,10 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfStatusFlags) isBACnetEventParameterChangeOfStatusFlags() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfStatusFlags) String() string {

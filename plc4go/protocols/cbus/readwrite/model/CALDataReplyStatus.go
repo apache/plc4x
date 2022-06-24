@@ -28,6 +28,8 @@ import (
 
 // CALDataReplyStatus is the corresponding interface of CALDataReplyStatus
 type CALDataReplyStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -35,12 +37,13 @@ type CALDataReplyStatus interface {
 	GetBlockStart() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALDataReplyStatusExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyStatus.
+// This is useful for switch cases.
+type CALDataReplyStatusExactly interface {
+	CALDataReplyStatus
+	isCALDataReplyStatus() bool
 }
 
 // _CALDataReplyStatus is the data-structure of this message
@@ -221,12 +224,9 @@ func (m *_CALDataReplyStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataReplyStatus"); popErr != nil {
@@ -235,6 +235,10 @@ func (m *_CALDataReplyStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataReplyStatus) isCALDataReplyStatus() bool {
+	return true
 }
 
 func (m *_CALDataReplyStatus) String() string {

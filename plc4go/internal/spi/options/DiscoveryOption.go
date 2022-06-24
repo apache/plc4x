@@ -24,14 +24,6 @@ type WithDiscoveryOption interface {
 	isDiscoveryOption() bool
 }
 
-// DiscoveryOption is a marker struct which can be used to mark an option
-type DiscoveryOption struct {
-}
-
-func (_ DiscoveryOption) isDiscoveryOption() bool {
-	return true
-}
-
 func WithDiscoveryOptionProtocol(protocolName string) WithDiscoveryOption {
 	return discoveryOptionProtocol{
 		protocolName: protocolName,
@@ -127,9 +119,9 @@ func FilterDiscoveryOptionsRemoteAddress(options []WithDiscoveryOption) []Discov
 func FilterDiscoveryOptionProtocolSpecific(options []WithDiscoveryOption) []DiscoveryOptionProtocolSpecific {
 	var filtered []DiscoveryOptionProtocolSpecific
 	for _, option := range options {
-		switch option.(type) {
+		switch option := option.(type) {
 		case DiscoveryOptionProtocolSpecific:
-			filtered = append(filtered, option.(DiscoveryOptionProtocolSpecific))
+			filtered = append(filtered, option)
 		}
 	}
 	return filtered
@@ -141,16 +133,23 @@ func FilterDiscoveryOptionProtocolSpecific(options []WithDiscoveryOption) []Disc
 // Internal section
 //
 
+type discoveryOption struct {
+}
+
+func (_ discoveryOption) isDiscoveryOption() bool {
+	return true
+}
+
 type DiscoveryOptionProtocol interface {
 	GetProtocolName() string
 }
 
 type discoveryOptionProtocol struct {
-	DiscoveryOption
+	discoveryOption
 	protocolName string
 }
 
-func (d *discoveryOptionProtocol) GetProtocolName() string {
+func (d discoveryOptionProtocol) GetProtocolName() string {
 	return d.protocolName
 }
 
@@ -159,11 +158,11 @@ type DiscoveryOptionTransport interface {
 }
 
 type discoveryOptionTransport struct {
-	DiscoveryOption
+	discoveryOption
 	transportName string
 }
 
-func (d *discoveryOptionTransport) GetTransportName() string {
+func (d discoveryOptionTransport) GetTransportName() string {
 	return d.transportName
 }
 
@@ -172,11 +171,11 @@ type DiscoveryOptionDeviceName interface {
 }
 
 type discoveryOptionDeviceName struct {
-	DiscoveryOption
+	discoveryOption
 	deviceName string
 }
 
-func (d *discoveryOptionDeviceName) GetDeviceName() string {
+func (d discoveryOptionDeviceName) GetDeviceName() string {
 	return d.deviceName
 }
 
@@ -185,11 +184,11 @@ type DiscoveryOptionLocalAddress interface {
 }
 
 type discoveryOptionLocalAddress struct {
-	DiscoveryOption
+	discoveryOption
 	localAddress string
 }
 
-func (d *discoveryOptionLocalAddress) GetLocalAddress() string {
+func (d discoveryOptionLocalAddress) GetLocalAddress() string {
 	return d.localAddress
 }
 
@@ -198,11 +197,11 @@ type DiscoveryOptionRemoteAddress interface {
 }
 
 type discoveryOptionRemoteAddress struct {
-	DiscoveryOption
+	discoveryOption
 	remoteAddress string
 }
 
-func (d *discoveryOptionRemoteAddress) GetRemoteAddress() string {
+func (d discoveryOptionRemoteAddress) GetRemoteAddress() string {
 	return d.remoteAddress
 }
 
@@ -212,16 +211,16 @@ type DiscoveryOptionProtocolSpecific interface {
 }
 
 type discoveryOptionProtocolSpecific struct {
-	DiscoveryOption
+	discoveryOption
 	key   string
 	value interface{}
 }
 
-func (d *discoveryOptionProtocolSpecific) GetKey() string {
+func (d discoveryOptionProtocolSpecific) GetKey() string {
 	return d.key
 }
 
-func (d *discoveryOptionProtocolSpecific) GetValue() interface{} {
+func (d discoveryOptionProtocolSpecific) GetValue() interface{} {
 	return d.value
 }
 

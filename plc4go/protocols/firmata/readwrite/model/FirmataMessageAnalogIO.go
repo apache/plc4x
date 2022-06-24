@@ -28,17 +28,20 @@ import (
 
 // FirmataMessageAnalogIO is the corresponding interface of FirmataMessageAnalogIO
 type FirmataMessageAnalogIO interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetData returns Data (property field)
 	GetData() []int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataMessageAnalogIOExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageAnalogIO.
+// This is useful for switch cases.
+type FirmataMessageAnalogIOExactly interface {
+	FirmataMessageAnalogIO
+	isFirmataMessageAnalogIO() bool
 }
 
 // _FirmataMessageAnalogIO is the data-structure of this message
@@ -46,9 +49,6 @@ type _FirmataMessageAnalogIO struct {
 	*_FirmataMessage
 	Pin  uint8
 	Data []int8
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,6 +159,10 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (Fi
 	}
 	// Count array
 	data := make([]int8, uint16(2))
+	// This happens when the size is set conditional to 0
+	if len(data) == 0 {
+		data = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 			_item, _err := readBuffer.ReadInt8("", 8)
@@ -178,9 +182,11 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (Fi
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageAnalogIO{
-		Pin:             pin,
-		Data:            data,
-		_FirmataMessage: &_FirmataMessage{},
+		Pin:  pin,
+		Data: data,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil
@@ -202,19 +208,17 @@ func (m *_FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageAnalogIO"); popErr != nil {
@@ -223,6 +227,10 @@ func (m *_FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageAnalogIO) isFirmataMessageAnalogIO() bool {
+	return true
 }
 
 func (m *_FirmataMessageAnalogIO) String() string {

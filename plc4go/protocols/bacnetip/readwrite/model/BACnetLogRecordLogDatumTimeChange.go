@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumTimeChange is the corresponding interface of BACnetLogRecordLogDatumTimeChange
 type BACnetLogRecordLogDatumTimeChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumTimeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumTimeChange.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumTimeChangeExactly interface {
+	BACnetLogRecordLogDatumTimeChange
+	isBACnetLogRecordLogDatumTimeChange() bool
 }
 
 // _BACnetLogRecordLogDatumTimeChange is the data-structure of this message
 type _BACnetLogRecordLogDatumTimeChange struct {
 	*_BACnetLogRecordLogDatum
 	TimeChange BACnetContextTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumTimeChangeParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumTimeChange{
-		TimeChange:               timeChange,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		TimeChange: timeChange,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumTimeChange) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumTimeChange) isBACnetLogRecordLogDatumTimeChange() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumTimeChange) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetErrorGeneral is the corresponding interface of BACnetErrorGeneral
 type BACnetErrorGeneral interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetError returns Error (property field)
 	GetError() Error
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetErrorGeneralExactly can be used when we want exactly this type and not a type which fulfills BACnetErrorGeneral.
+// This is useful for switch cases.
+type BACnetErrorGeneralExactly interface {
+	BACnetErrorGeneral
+	isBACnetErrorGeneral() bool
 }
 
 // _BACnetErrorGeneral is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetErrorGeneral) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetErrorGeneral) isBACnetErrorGeneral() bool {
+	return true
 }
 
 func (m *_BACnetErrorGeneral) String() string {

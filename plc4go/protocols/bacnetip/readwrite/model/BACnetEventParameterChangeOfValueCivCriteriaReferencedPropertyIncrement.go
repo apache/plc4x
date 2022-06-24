@@ -28,24 +28,24 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetReferencedPropertyIncrement returns ReferencedPropertyIncrement (property field)
 	GetReferencedPropertyIncrement() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementExactly interface {
+	BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
+	isBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() bool
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement struct {
 	*_BACnetEventParameterChangeOfValueCivCriteria
 	ReferencedPropertyIncrement BACnetContextTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
-		ReferencedPropertyIncrement:                   referencedPropertyIncrement,
-		_BACnetEventParameterChangeOfValueCivCriteria: &_BACnetEventParameterChangeOfValueCivCriteria{},
+		ReferencedPropertyIncrement: referencedPropertyIncrement,
+		_BACnetEventParameterChangeOfValueCivCriteria: &_BACnetEventParameterChangeOfValueCivCriteria{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventParameterChangeOfValueCivCriteria._BACnetEventParameterChangeOfValueCivCriteriaChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) isBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) String() string {

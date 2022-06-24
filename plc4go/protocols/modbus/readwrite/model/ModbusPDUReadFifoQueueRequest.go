@@ -28,15 +28,18 @@ import (
 
 // ModbusPDUReadFifoQueueRequest is the corresponding interface of ModbusPDUReadFifoQueueRequest
 type ModbusPDUReadFifoQueueRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetFifoPointerAddress returns FifoPointerAddress (property field)
 	GetFifoPointerAddress() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadFifoQueueRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadFifoQueueRequest.
+// This is useful for switch cases.
+type ModbusPDUReadFifoQueueRequestExactly interface {
+	ModbusPDUReadFifoQueueRequest
+	isModbusPDUReadFifoQueueRequest() bool
 }
 
 // _ModbusPDUReadFifoQueueRequest is the data-structure of this message
@@ -179,6 +182,10 @@ func (m *_ModbusPDUReadFifoQueueRequest) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadFifoQueueRequest) isModbusPDUReadFifoQueueRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadFifoQueueRequest) String() string {

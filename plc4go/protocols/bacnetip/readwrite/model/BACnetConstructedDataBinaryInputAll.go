@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataBinaryInputAll is the corresponding interface of BACnetConstructedDataBinaryInputAll
 type BACnetConstructedDataBinaryInputAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBinaryInputAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBinaryInputAll.
+// This is useful for switch cases.
+type BACnetConstructedDataBinaryInputAllExactly interface {
+	BACnetConstructedDataBinaryInputAll
+	isBACnetConstructedDataBinaryInputAll() bool
 }
 
 // _BACnetConstructedDataBinaryInputAll is the data-structure of this message
 type _BACnetConstructedDataBinaryInputAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataBinaryInputAllParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBinaryInputAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataBinaryInputAll) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBinaryInputAll) isBACnetConstructedDataBinaryInputAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBinaryInputAll) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetPropertyWriteDefinition is the corresponding interface of BACnetPropertyWriteDefinition
 type BACnetPropertyWriteDefinition interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -38,12 +40,13 @@ type BACnetPropertyWriteDefinition interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyWriteDefinitionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyWriteDefinition.
+// This is useful for switch cases.
+type BACnetPropertyWriteDefinitionExactly interface {
+	BACnetPropertyWriteDefinition
+	isBACnetPropertyWriteDefinition() bool
 }
 
 // _BACnetPropertyWriteDefinition is the data-structure of this message
@@ -302,6 +305,10 @@ func (m *_BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyWriteDefinition")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyWriteDefinition) isBACnetPropertyWriteDefinition() bool {
+	return true
 }
 
 func (m *_BACnetPropertyWriteDefinition) String() string {

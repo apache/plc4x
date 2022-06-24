@@ -32,17 +32,20 @@ const ModbusPDUReadDeviceIdentificationRequest_MEITYPE uint8 = 0x0E
 
 // ModbusPDUReadDeviceIdentificationRequest is the corresponding interface of ModbusPDUReadDeviceIdentificationRequest
 type ModbusPDUReadDeviceIdentificationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetLevel returns Level (property field)
 	GetLevel() ModbusDeviceInformationLevel
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadDeviceIdentificationRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDeviceIdentificationRequest.
+// This is useful for switch cases.
+type ModbusPDUReadDeviceIdentificationRequestExactly interface {
+	ModbusPDUReadDeviceIdentificationRequest
+	isModbusPDUReadDeviceIdentificationRequest() bool
 }
 
 // _ModbusPDUReadDeviceIdentificationRequest is the data-structure of this message
@@ -251,6 +254,10 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequest) isModbusPDUReadDeviceIdentificationRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) String() string {

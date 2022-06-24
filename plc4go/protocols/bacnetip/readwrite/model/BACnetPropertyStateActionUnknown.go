@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStateActionUnknown is the corresponding interface of BACnetPropertyStateActionUnknown
 type BACnetPropertyStateActionUnknown interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetUnknownValue returns UnknownValue (property field)
 	GetUnknownValue() BACnetContextTagUnknown
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStateActionUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStateActionUnknown.
+// This is useful for switch cases.
+type BACnetPropertyStateActionUnknownExactly interface {
+	BACnetPropertyStateActionUnknown
+	isBACnetPropertyStateActionUnknown() bool
 }
 
 // _BACnetPropertyStateActionUnknown is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStateActionUnknown) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStateActionUnknown) isBACnetPropertyStateActionUnknown() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStateActionUnknown) String() string {

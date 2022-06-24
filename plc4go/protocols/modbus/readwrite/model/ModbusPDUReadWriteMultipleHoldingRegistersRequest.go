@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUReadWriteMultipleHoldingRegistersRequest is the corresponding interface of ModbusPDUReadWriteMultipleHoldingRegistersRequest
 type ModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetReadStartingAddress returns ReadStartingAddress (property field)
 	GetReadStartingAddress() uint16
@@ -39,12 +41,13 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	GetWriteQuantity() uint16
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadWriteMultipleHoldingRegistersRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadWriteMultipleHoldingRegistersRequest.
+// This is useful for switch cases.
+type ModbusPDUReadWriteMultipleHoldingRegistersRequestExactly interface {
+	ModbusPDUReadWriteMultipleHoldingRegistersRequest
+	isModbusPDUReadWriteMultipleHoldingRegistersRequest() bool
 }
 
 // _ModbusPDUReadWriteMultipleHoldingRegistersRequest is the data-structure of this message
@@ -289,12 +292,9 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuff
 		}
 
 		// Array Field (value)
-		if m.GetValue() != nil {
-			// Byte Array field (value)
-			_writeArrayErr := writeBuffer.WriteByteArray("value", m.GetValue())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
-			}
+		// Byte Array field (value)
+		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest"); popErr != nil {
@@ -303,6 +303,10 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) isModbusPDUReadWriteMultipleHoldingRegistersRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {

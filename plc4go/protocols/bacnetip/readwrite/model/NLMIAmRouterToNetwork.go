@@ -28,24 +28,24 @@ import (
 
 // NLMIAmRouterToNetwork is the corresponding interface of NLMIAmRouterToNetwork
 type NLMIAmRouterToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() []uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NLMIAmRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMIAmRouterToNetwork.
+// This is useful for switch cases.
+type NLMIAmRouterToNetworkExactly interface {
+	NLMIAmRouterToNetwork
+	isNLMIAmRouterToNetwork() bool
 }
 
 // _NLMIAmRouterToNetwork is the data-structure of this message
 type _NLMIAmRouterToNetwork struct {
 	*_NLM
 	DestinationNetworkAddress []uint16
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 		return nil, errors.Wrap(pullErr, "Error pulling for destinationNetworkAddress")
 	}
 	// Length array
-	destinationNetworkAddress := make([]uint16, 0)
+	var destinationNetworkAddress []uint16
 	{
 		_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() interface{} { return uint16(uint16(3)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
 		_destinationNetworkAddressEndPos := positionAware.GetPos() + uint16(_destinationNetworkAddressLength)
@@ -165,7 +165,9 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 	// Create a partially initialized instance
 	_child := &_NLMIAmRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      &_NLM{},
+		_NLM: &_NLM{
+			ApduLength: apduLength,
+		},
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil
@@ -180,19 +182,17 @@ func (m *_NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		// Array Field (destinationNetworkAddress)
-		if m.GetDestinationNetworkAddress() != nil {
-			if pushErr := writeBuffer.PushContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddress")
+		if pushErr := writeBuffer.PushContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddress")
+		}
+		for _, _element := range m.GetDestinationNetworkAddress() {
+			_elementErr := writeBuffer.WriteUint16("", 16, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
 			}
-			for _, _element := range m.GetDestinationNetworkAddress() {
-				_elementErr := writeBuffer.WriteUint16("", 16, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("destinationNetworkAddress", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for destinationNetworkAddress")
-			}
+		}
+		if popErr := writeBuffer.PopContext("destinationNetworkAddress", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for destinationNetworkAddress")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMIAmRouterToNetwork"); popErr != nil {
@@ -201,6 +201,10 @@ func (m *_NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMIAmRouterToNetwork) isNLMIAmRouterToNetwork() bool {
+	return true
 }
 
 func (m *_NLMIAmRouterToNetwork) String() string {

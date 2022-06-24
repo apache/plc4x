@@ -28,18 +28,21 @@ import (
 
 // BACnetEventParameterChangeOfTimerAlarmValue is the corresponding interface of BACnetEventParameterChangeOfTimerAlarmValue
 type BACnetEventParameterChangeOfTimerAlarmValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetTimerStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfTimerAlarmValueExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfTimerAlarmValue.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfTimerAlarmValueExactly interface {
+	BACnetEventParameterChangeOfTimerAlarmValue
+	isBACnetEventParameterChangeOfTimerAlarmValue() bool
 }
 
 // _BACnetEventParameterChangeOfTimerAlarmValue is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
 	// Terminated array
-	alarmValues := make([]BACnetTimerStateTagged, 0)
+	var alarmValues []BACnetTimerStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimerStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -204,19 +207,17 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize(writeBuffer uti
 	}
 
 	// Array Field (alarmValues)
-	if m.GetAlarmValues() != nil {
-		if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmValues")
+	if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for alarmValues")
+	}
+	for _, _element := range m.GetAlarmValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
 		}
-		for _, _element := range m.GetAlarmValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for alarmValues")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize(writeBuffer uti
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfTimerAlarmValue")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) isBACnetEventParameterChangeOfTimerAlarmValue() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) String() string {

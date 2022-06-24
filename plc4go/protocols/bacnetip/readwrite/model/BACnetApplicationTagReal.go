@@ -28,17 +28,20 @@ import (
 
 // BACnetApplicationTagReal is the corresponding interface of BACnetApplicationTagReal
 type BACnetApplicationTagReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() float32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetApplicationTagRealExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTagReal.
+// This is useful for switch cases.
+type BACnetApplicationTagRealExactly interface {
+	BACnetApplicationTagReal
+	isBACnetApplicationTagReal() bool
 }
 
 // _BACnetApplicationTagReal is the data-structure of this message
@@ -206,6 +209,10 @@ func (m *_BACnetApplicationTagReal) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetApplicationTagReal) isBACnetApplicationTagReal() bool {
+	return true
 }
 
 func (m *_BACnetApplicationTagReal) String() string {

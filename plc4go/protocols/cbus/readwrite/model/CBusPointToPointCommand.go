@@ -34,6 +34,8 @@ const CBusPointToPointCommand_CR byte = 0xD
 
 // CBusPointToPointCommand is the corresponding interface of CBusPointToPointCommand
 type CBusPointToPointCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetBridgeAddressCountPeek returns BridgeAddressCountPeek (property field)
 	GetBridgeAddressCountPeek() uint16
 	// GetCalData returns CalData (property field)
@@ -46,12 +48,13 @@ type CBusPointToPointCommand interface {
 	GetAlpha() Alpha
 	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusPointToPointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommand.
+// This is useful for switch cases.
+type CBusPointToPointCommandExactly interface {
+	CBusPointToPointCommand
+	isCBusPointToPointCommand() bool
 }
 
 // _CBusPointToPointCommand is the data-structure of this message
@@ -68,9 +71,9 @@ type _CBusPointToPointCommand struct {
 }
 
 type _CBusPointToPointCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CBusPointToPointCommandParent interface {
@@ -79,7 +82,7 @@ type CBusPointToPointCommandParent interface {
 }
 
 type CBusPointToPointCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, peekAlpha byte, alpha Alpha)
 	GetParent() *CBusPointToPointCommand
 
@@ -398,6 +401,10 @@ func (pm *_CBusPointToPointCommand) SerializeParent(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for CBusPointToPointCommand")
 	}
 	return nil
+}
+
+func (m *_CBusPointToPointCommand) isCBusPointToPointCommand() bool {
+	return true
 }
 
 func (m *_CBusPointToPointCommand) String() string {

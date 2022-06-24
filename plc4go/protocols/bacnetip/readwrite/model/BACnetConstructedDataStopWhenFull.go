@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataStopWhenFull is the corresponding interface of BACnetConstructedDataStopWhenFull
 type BACnetConstructedDataStopWhenFull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetStopWhenFull returns StopWhenFull (property field)
 	GetStopWhenFull() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataStopWhenFullExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStopWhenFull.
+// This is useful for switch cases.
+type BACnetConstructedDataStopWhenFullExactly interface {
+	BACnetConstructedDataStopWhenFull
+	isBACnetConstructedDataStopWhenFull() bool
 }
 
 // _BACnetConstructedDataStopWhenFull is the data-structure of this message
 type _BACnetConstructedDataStopWhenFull struct {
 	*_BACnetConstructedData
 	StopWhenFull BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataStopWhenFullParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStopWhenFull{
-		StopWhenFull:           stopWhenFull,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		StopWhenFull: stopWhenFull,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataStopWhenFull) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStopWhenFull) isBACnetConstructedDataStopWhenFull() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStopWhenFull) String() string {

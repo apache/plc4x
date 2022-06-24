@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFileType is the corresponding interface of BACnetConstructedDataFileType
 type BACnetConstructedDataFileType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFileType returns FileType (property field)
 	GetFileType() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFileTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFileType.
+// This is useful for switch cases.
+type BACnetConstructedDataFileTypeExactly interface {
+	BACnetConstructedDataFileType
+	isBACnetConstructedDataFileType() bool
 }
 
 // _BACnetConstructedDataFileType is the data-structure of this message
 type _BACnetConstructedDataFileType struct {
 	*_BACnetConstructedData
 	FileType BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFileTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFileType{
-		FileType:               fileType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FileType: fileType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFileType) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFileType) isBACnetConstructedDataFileType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFileType) String() string {

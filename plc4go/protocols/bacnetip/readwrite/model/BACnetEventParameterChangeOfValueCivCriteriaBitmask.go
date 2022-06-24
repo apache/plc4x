@@ -28,24 +28,24 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteriaBitmask is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteriaBitmask
 type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetBitmask returns Bitmask (property field)
 	GetBitmask() BACnetContextTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteriaBitmask.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfValueCivCriteriaBitmaskExactly interface {
+	BACnetEventParameterChangeOfValueCivCriteriaBitmask
+	isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaBitmask is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 	*_BACnetEventParameterChangeOfValueCivCriteria
 	Bitmask BACnetContextTagBitString
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(readBuffer utils.R
 	// Create a partially initialized instance
 	_child := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
 		Bitmask: bitmask,
-		_BACnetEventParameterChangeOfValueCivCriteria: &_BACnetEventParameterChangeOfValueCivCriteria{},
+		_BACnetEventParameterChangeOfValueCivCriteria: &_BACnetEventParameterChangeOfValueCivCriteria{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventParameterChangeOfValueCivCriteria._BACnetEventParameterChangeOfValueCivCriteriaChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) isBACnetEventParameterChangeOfValueCivCriteriaBitmask() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataRequestedUpdateInterval is the corresponding interface of BACnetConstructedDataRequestedUpdateInterval
 type BACnetConstructedDataRequestedUpdateInterval interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRequestedUpdateInterval returns RequestedUpdateInterval (property field)
 	GetRequestedUpdateInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataRequestedUpdateIntervalExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRequestedUpdateInterval.
+// This is useful for switch cases.
+type BACnetConstructedDataRequestedUpdateIntervalExactly interface {
+	BACnetConstructedDataRequestedUpdateInterval
+	isBACnetConstructedDataRequestedUpdateInterval() bool
 }
 
 // _BACnetConstructedDataRequestedUpdateInterval is the data-structure of this message
 type _BACnetConstructedDataRequestedUpdateInterval struct {
 	*_BACnetConstructedData
 	RequestedUpdateInterval BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataRequestedUpdateIntervalParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRequestedUpdateInterval{
 		RequestedUpdateInterval: requestedUpdateInterval,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataRequestedUpdateInterval) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRequestedUpdateInterval) isBACnetConstructedDataRequestedUpdateInterval() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRequestedUpdateInterval) String() string {

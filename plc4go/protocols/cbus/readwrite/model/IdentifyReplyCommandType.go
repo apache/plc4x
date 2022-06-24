@@ -28,15 +28,18 @@ import (
 
 // IdentifyReplyCommandType is the corresponding interface of IdentifyReplyCommandType
 type IdentifyReplyCommandType interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetUnitType returns UnitType (property field)
 	GetUnitType() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandTypeExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandType.
+// This is useful for switch cases.
+type IdentifyReplyCommandTypeExactly interface {
+	IdentifyReplyCommandType
+	isIdentifyReplyCommandType() bool
 }
 
 // _IdentifyReplyCommandType is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_IdentifyReplyCommandType) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandType) isIdentifyReplyCommandType() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandType) String() string {

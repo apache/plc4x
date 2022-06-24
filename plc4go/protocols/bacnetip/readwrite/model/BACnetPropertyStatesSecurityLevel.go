@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesSecurityLevel is the corresponding interface of BACnetPropertyStatesSecurityLevel
 type BACnetPropertyStatesSecurityLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityLevelTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesSecurityLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesSecurityLevel.
+// This is useful for switch cases.
+type BACnetPropertyStatesSecurityLevelExactly interface {
+	BACnetPropertyStatesSecurityLevel
+	isBACnetPropertyStatesSecurityLevel() bool
 }
 
 // _BACnetPropertyStatesSecurityLevel is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesSecurityLevel) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesSecurityLevel) isBACnetPropertyStatesSecurityLevel() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesSecurityLevel) String() string {

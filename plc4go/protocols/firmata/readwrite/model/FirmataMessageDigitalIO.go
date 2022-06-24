@@ -28,17 +28,20 @@ import (
 
 // FirmataMessageDigitalIO is the corresponding interface of FirmataMessageDigitalIO
 type FirmataMessageDigitalIO interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataMessage
 	// GetPinBlock returns PinBlock (property field)
 	GetPinBlock() uint8
 	// GetData returns Data (property field)
 	GetData() []int8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataMessageDigitalIOExactly can be used when we want exactly this type and not a type which fulfills FirmataMessageDigitalIO.
+// This is useful for switch cases.
+type FirmataMessageDigitalIOExactly interface {
+	FirmataMessageDigitalIO
+	isFirmataMessageDigitalIO() bool
 }
 
 // _FirmataMessageDigitalIO is the data-structure of this message
@@ -46,9 +49,6 @@ type _FirmataMessageDigitalIO struct {
 	*_FirmataMessage
 	PinBlock uint8
 	Data     []int8
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,6 +159,10 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (F
 	}
 	// Count array
 	data := make([]int8, uint16(2))
+	// This happens when the size is set conditional to 0
+	if len(data) == 0 {
+		data = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 			_item, _err := readBuffer.ReadInt8("", 8)
@@ -178,9 +182,11 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (F
 
 	// Create a partially initialized instance
 	_child := &_FirmataMessageDigitalIO{
-		PinBlock:        pinBlock,
-		Data:            data,
-		_FirmataMessage: &_FirmataMessage{},
+		PinBlock: pinBlock,
+		Data:     data,
+		_FirmataMessage: &_FirmataMessage{
+			Response: response,
+		},
 	}
 	_child._FirmataMessage._FirmataMessageChildRequirements = _child
 	return _child, nil
@@ -202,19 +208,17 @@ func (m *_FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageDigitalIO"); popErr != nil {
@@ -223,6 +227,10 @@ func (m *_FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataMessageDigitalIO) isFirmataMessageDigitalIO() bool {
+	return true
 }
 
 func (m *_FirmataMessageDigitalIO) String() string {

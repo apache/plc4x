@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueDouble is the corresponding interface of BACnetPriorityValueDouble
 type BACnetPriorityValueDouble interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueDouble.
+// This is useful for switch cases.
+type BACnetPriorityValueDoubleExactly interface {
+	BACnetPriorityValueDouble
+	isBACnetPriorityValueDouble() bool
 }
 
 // _BACnetPriorityValueDouble is the data-structure of this message
 type _BACnetPriorityValueDouble struct {
 	*_BACnetPriorityValue
 	DoubleValue BACnetApplicationTagDouble
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgum
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueDouble{
-		DoubleValue:          doubleValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		DoubleValue: doubleValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueDouble) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueDouble) isBACnetPriorityValueDouble() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueDouble) String() string {

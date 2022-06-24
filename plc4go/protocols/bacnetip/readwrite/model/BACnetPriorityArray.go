@@ -30,6 +30,8 @@ import (
 
 // BACnetPriorityArray is the corresponding interface of BACnetPriorityArray
 type BACnetPriorityArray interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
 	// GetData returns Data (property field)
@@ -72,12 +74,13 @@ type BACnetPriorityArray interface {
 	GetIsIndexedAccess() bool
 	// GetIndexEntry returns IndexEntry (virtual field)
 	GetIndexEntry() BACnetPriorityValue
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityArray.
+// This is useful for switch cases.
+type BACnetPriorityArrayExactly interface {
+	BACnetPriorityArray
+	isBACnetPriorityArray() bool
 }
 
 // _BACnetPriorityArray is the data-structure of this message
@@ -357,7 +360,7 @@ func BACnetPriorityArrayParse(readBuffer utils.ReadBuffer, objectTypeArgument BA
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Terminated array
-	data := make([]BACnetPriorityValue, 0)
+	var data []BACnetPriorityValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPriorityValueParse(readBuffer, objectTypeArgument)
@@ -503,19 +506,17 @@ func (m *_BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
+	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for data")
+	}
+	for _, _element := range m.GetData() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}
-		for _, _element := range m.GetData() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
-		}
+	}
+	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for data")
 	}
 	// Virtual field
 	if _priorityValue01Err := writeBuffer.WriteVirtual("priorityValue01", m.GetPriorityValue01()); _priorityValue01Err != nil {
@@ -594,6 +595,10 @@ func (m *_BACnetPriorityArray) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPriorityArray")
 	}
 	return nil
+}
+
+func (m *_BACnetPriorityArray) isBACnetPriorityArray() bool {
+	return true
 }
 
 func (m *_BACnetPriorityArray) String() string {

@@ -28,6 +28,8 @@ import (
 
 // BACnetContextTagBoolean is the corresponding interface of BACnetContextTagBoolean
 type BACnetContextTagBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetValue returns Value (property field)
 	GetValue() uint8
@@ -35,12 +37,13 @@ type BACnetContextTagBoolean interface {
 	GetPayload() BACnetTagPayloadBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagBoolean.
+// This is useful for switch cases.
+type BACnetContextTagBooleanExactly interface {
+	BACnetContextTagBoolean
+	isBACnetContextTagBoolean() bool
 }
 
 // _BACnetContextTagBoolean is the data-structure of this message
@@ -48,9 +51,6 @@ type _BACnetContextTagBoolean struct {
 	*_BACnetContextTag
 	Value   uint8
 	Payload BACnetTagPayloadBoolean
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -199,9 +199,11 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagBoolean{
-		Value:             value,
-		Payload:           payload,
-		_BACnetContextTag: &_BACnetContextTag{},
+		Value:   value,
+		Payload: payload,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -244,6 +246,10 @@ func (m *_BACnetContextTagBoolean) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagBoolean) isBACnetContextTagBoolean() bool {
+	return true
 }
 
 func (m *_BACnetContextTagBoolean) String() string {

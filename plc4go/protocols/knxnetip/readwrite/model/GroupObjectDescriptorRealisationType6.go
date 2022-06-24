@@ -28,12 +28,15 @@ import (
 
 // GroupObjectDescriptorRealisationType6 is the corresponding interface of GroupObjectDescriptorRealisationType6
 type GroupObjectDescriptorRealisationType6 interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.LengthAware
+	utils.Serializable
+}
+
+// GroupObjectDescriptorRealisationType6Exactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationType6.
+// This is useful for switch cases.
+type GroupObjectDescriptorRealisationType6Exactly interface {
+	GroupObjectDescriptorRealisationType6
+	isGroupObjectDescriptorRealisationType6() bool
 }
 
 // _GroupObjectDescriptorRealisationType6 is the data-structure of this message
@@ -102,6 +105,10 @@ func (m *_GroupObjectDescriptorRealisationType6) Serialize(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for GroupObjectDescriptorRealisationType6")
 	}
 	return nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType6) isGroupObjectDescriptorRealisationType6() bool {
+	return true
 }
 
 func (m *_GroupObjectDescriptorRealisationType6) String() string {

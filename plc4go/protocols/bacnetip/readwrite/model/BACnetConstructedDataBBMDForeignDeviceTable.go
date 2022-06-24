@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataBBMDForeignDeviceTable is the corresponding interface of BACnetConstructedDataBBMDForeignDeviceTable
 type BACnetConstructedDataBBMDForeignDeviceTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBbmdForeignDeviceTable returns BbmdForeignDeviceTable (property field)
 	GetBbmdForeignDeviceTable() []BACnetBDTEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBBMDForeignDeviceTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBBMDForeignDeviceTable.
+// This is useful for switch cases.
+type BACnetConstructedDataBBMDForeignDeviceTableExactly interface {
+	BACnetConstructedDataBBMDForeignDeviceTable
+	isBACnetConstructedDataBBMDForeignDeviceTable() bool
 }
 
 // _BACnetConstructedDataBBMDForeignDeviceTable is the data-structure of this message
 type _BACnetConstructedDataBBMDForeignDeviceTable struct {
 	*_BACnetConstructedData
 	BbmdForeignDeviceTable []BACnetBDTEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for bbmdForeignDeviceTable")
 	}
 	// Terminated array
-	bbmdForeignDeviceTable := make([]BACnetBDTEntry, 0)
+	var bbmdForeignDeviceTable []BACnetBDTEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetBDTEntryParse(readBuffer)
@@ -173,7 +172,10 @@ func BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBBMDForeignDeviceTable{
 		BbmdForeignDeviceTable: bbmdForeignDeviceTable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) Serialize(writeBuffer uti
 		}
 
 		// Array Field (bbmdForeignDeviceTable)
-		if m.GetBbmdForeignDeviceTable() != nil {
-			if pushErr := writeBuffer.PushContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bbmdForeignDeviceTable")
+		if pushErr := writeBuffer.PushContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for bbmdForeignDeviceTable")
+		}
+		for _, _element := range m.GetBbmdForeignDeviceTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'bbmdForeignDeviceTable' field")
 			}
-			for _, _element := range m.GetBbmdForeignDeviceTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'bbmdForeignDeviceTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bbmdForeignDeviceTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for bbmdForeignDeviceTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDForeignDeviceTable"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBBMDForeignDeviceTable) isBACnetConstructedDataBBMDForeignDeviceTable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBBMDForeignDeviceTable) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetActionCommand is the corresponding interface of BACnetActionCommand
 type BACnetActionCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
@@ -48,12 +50,13 @@ type BACnetActionCommand interface {
 	GetQuitOnFailure() BACnetContextTagBoolean
 	// GetWriteSuccessful returns WriteSuccessful (property field)
 	GetWriteSuccessful() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetActionCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetActionCommand.
+// This is useful for switch cases.
+type BACnetActionCommandExactly interface {
+	BACnetActionCommand
+	isBACnetActionCommand() bool
 }
 
 // _BACnetActionCommand is the data-structure of this message
@@ -504,6 +507,10 @@ func (m *_BACnetActionCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetActionCommand")
 	}
 	return nil
+}
+
+func (m *_BACnetActionCommand) isBACnetActionCommand() bool {
+	return true
 }
 
 func (m *_BACnetActionCommand) String() string {

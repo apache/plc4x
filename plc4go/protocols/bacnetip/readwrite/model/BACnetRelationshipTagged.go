@@ -28,6 +28,8 @@ import (
 
 // BACnetRelationshipTagged is the corresponding interface of BACnetRelationshipTagged
 type BACnetRelationshipTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetRelationshipTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRelationshipTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRelationshipTagged.
+// This is useful for switch cases.
+type BACnetRelationshipTaggedExactly interface {
+	BACnetRelationshipTagged
+	isBACnetRelationshipTagged() bool
 }
 
 // _BACnetRelationshipTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetRelationshipTagged) Serialize(writeBuffer utils.WriteBuffer) err
 		return errors.Wrap(popErr, "Error popping for BACnetRelationshipTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetRelationshipTagged) isBACnetRelationshipTagged() bool {
+	return true
 }
 
 func (m *_BACnetRelationshipTagged) String() string {

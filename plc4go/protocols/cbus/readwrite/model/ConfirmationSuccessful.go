@@ -28,13 +28,16 @@ import (
 
 // ConfirmationSuccessful is the corresponding interface of ConfirmationSuccessful
 type ConfirmationSuccessful interface {
+	utils.LengthAware
+	utils.Serializable
 	Confirmation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConfirmationSuccessfulExactly can be used when we want exactly this type and not a type which fulfills ConfirmationSuccessful.
+// This is useful for switch cases.
+type ConfirmationSuccessfulExactly interface {
+	ConfirmationSuccessful
+	isConfirmationSuccessful() bool
 }
 
 // _ConfirmationSuccessful is the data-structure of this message
@@ -137,6 +140,10 @@ func (m *_ConfirmationSuccessful) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConfirmationSuccessful) isConfirmationSuccessful() bool {
+	return true
 }
 
 func (m *_ConfirmationSuccessful) String() string {

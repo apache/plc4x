@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataDeviceAddressBinding is the corresponding interface of BACnetConstructedDataDeviceAddressBinding
 type BACnetConstructedDataDeviceAddressBinding interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDeviceAddressBinding returns DeviceAddressBinding (property field)
 	GetDeviceAddressBinding() []BACnetAddressBinding
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDeviceAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceAddressBinding.
+// This is useful for switch cases.
+type BACnetConstructedDataDeviceAddressBindingExactly interface {
+	BACnetConstructedDataDeviceAddressBinding
+	isBACnetConstructedDataDeviceAddressBinding() bool
 }
 
 // _BACnetConstructedDataDeviceAddressBinding is the data-structure of this message
 type _BACnetConstructedDataDeviceAddressBinding struct {
 	*_BACnetConstructedData
 	DeviceAddressBinding []BACnetAddressBinding
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataDeviceAddressBindingParse(readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceAddressBinding")
 	}
 	// Terminated array
-	deviceAddressBinding := make([]BACnetAddressBinding, 0)
+	var deviceAddressBinding []BACnetAddressBinding
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAddressBindingParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataDeviceAddressBindingParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDeviceAddressBinding{
-		DeviceAddressBinding:   deviceAddressBinding,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DeviceAddressBinding: deviceAddressBinding,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) Serialize(writeBuffer utils
 		}
 
 		// Array Field (deviceAddressBinding)
-		if m.GetDeviceAddressBinding() != nil {
-			if pushErr := writeBuffer.PushContext("deviceAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for deviceAddressBinding")
+		if pushErr := writeBuffer.PushContext("deviceAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for deviceAddressBinding")
+		}
+		for _, _element := range m.GetDeviceAddressBinding() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'deviceAddressBinding' field")
 			}
-			for _, _element := range m.GetDeviceAddressBinding() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'deviceAddressBinding' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("deviceAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for deviceAddressBinding")
-			}
+		}
+		if popErr := writeBuffer.PopContext("deviceAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for deviceAddressBinding")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataDeviceAddressBinding"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBinding) isBACnetConstructedDataDeviceAddressBinding() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeviceAddressBinding) String() string {

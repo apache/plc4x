@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCurrentCommandPriority is the corresponding interface of BACnetConstructedDataCurrentCommandPriority
 type BACnetConstructedDataCurrentCommandPriority interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCurrentCommandPriority returns CurrentCommandPriority (property field)
 	GetCurrentCommandPriority() BACnetOptionalUnsigned
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalUnsigned
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCurrentCommandPriorityExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCurrentCommandPriority.
+// This is useful for switch cases.
+type BACnetConstructedDataCurrentCommandPriorityExactly interface {
+	BACnetConstructedDataCurrentCommandPriority
+	isBACnetConstructedDataCurrentCommandPriority() bool
 }
 
 // _BACnetConstructedDataCurrentCommandPriority is the data-structure of this message
 type _BACnetConstructedDataCurrentCommandPriority struct {
 	*_BACnetConstructedData
 	CurrentCommandPriority BACnetOptionalUnsigned
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCurrentCommandPriority{
 		CurrentCommandPriority: currentCommandPriority,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriority) isBACnetConstructedDataCurrentCommandPriority() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetNetworkSecurityPolicy is the corresponding interface of BACnetNetworkSecurityPolicy
 type BACnetNetworkSecurityPolicy interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPortId returns PortId (property field)
 	GetPortId() BACnetContextTagUnsignedInteger
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityPolicyTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNetworkSecurityPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkSecurityPolicy.
+// This is useful for switch cases.
+type BACnetNetworkSecurityPolicyExactly interface {
+	BACnetNetworkSecurityPolicy
+	isBACnetNetworkSecurityPolicy() bool
 }
 
 // _BACnetNetworkSecurityPolicy is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetNetworkSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for BACnetNetworkSecurityPolicy")
 	}
 	return nil
+}
+
+func (m *_BACnetNetworkSecurityPolicy) isBACnetNetworkSecurityPolicy() bool {
+	return true
 }
 
 func (m *_BACnetNetworkSecurityPolicy) String() string {

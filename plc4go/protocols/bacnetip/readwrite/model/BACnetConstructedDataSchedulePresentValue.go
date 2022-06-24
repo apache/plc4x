@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataSchedulePresentValue is the corresponding interface of BACnetConstructedDataSchedulePresentValue
 type BACnetConstructedDataSchedulePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetConstructedDataElement
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetConstructedDataElement
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSchedulePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSchedulePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataSchedulePresentValueExactly interface {
+	BACnetConstructedDataSchedulePresentValue
+	isBACnetConstructedDataSchedulePresentValue() bool
 }
 
 // _BACnetConstructedDataSchedulePresentValue is the data-structure of this message
 type _BACnetConstructedDataSchedulePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetConstructedDataElement
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataSchedulePresentValueParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSchedulePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataSchedulePresentValue) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSchedulePresentValue) isBACnetConstructedDataSchedulePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSchedulePresentValue) String() string {

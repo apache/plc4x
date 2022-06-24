@@ -115,7 +115,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				log.Trace().Msg("Send ")
 				if err := m.messageCodec.SendRequest(
 					pkt,
-					func(message interface{}) bool {
+					func(message spi.Message) bool {
 						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
 							return false
@@ -136,7 +136,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						}
 						return true
 					},
-					func(message interface{}) error {
+					func(message spi.Message) error {
 						// Convert the response into an
 						log.Trace().Msg("convert response to ")
 						eipPacket := message.(readWriteModel.EipPacket)
@@ -201,7 +201,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				log.Trace().Msg("Send ")
 				if err := m.messageCodec.SendRequest(
 					pkt,
-					func(message interface{}) bool {
+					func(message spi.Message) bool {
 						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
 							return false
@@ -219,7 +219,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						}
 						return true
 					},
-					func(message interface{}) error {
+					func(message spi.Message) error {
 						// Convert the response into an
 						log.Trace().Msg("convert response to ")
 						eipPacket := message.(readWriteModel.EipPacket)

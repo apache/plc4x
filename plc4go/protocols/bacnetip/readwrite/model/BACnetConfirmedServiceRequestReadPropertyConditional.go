@@ -28,15 +28,18 @@ import (
 
 // BACnetConfirmedServiceRequestReadPropertyConditional is the corresponding interface of BACnetConfirmedServiceRequestReadPropertyConditional
 type BACnetConfirmedServiceRequestReadPropertyConditional interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestReadPropertyConditionalExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadPropertyConditional.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadPropertyConditionalExactly interface {
+	BACnetConfirmedServiceRequestReadPropertyConditional
+	isBACnetConfirmedServiceRequestReadPropertyConditional() bool
 }
 
 // _BACnetConfirmedServiceRequestReadPropertyConditional is the data-structure of this message
@@ -45,7 +48,6 @@ type _BACnetConfirmedServiceRequestReadPropertyConditional struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceRequestLength        uint16
 	ServiceRequestPayloadLength uint16
 }
 
@@ -149,8 +151,10 @@ func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestReadPropertyConditional{
-		BytesOfRemovedService:          bytesOfRemovedService,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		BytesOfRemovedService: bytesOfRemovedService,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -165,12 +169,9 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) Serialize(writeB
 		}
 
 		// Array Field (bytesOfRemovedService)
-		if m.GetBytesOfRemovedService() != nil {
-			// Byte Array field (bytesOfRemovedService)
-			_writeArrayErr := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'bytesOfRemovedService' field")
-			}
+		// Byte Array field (bytesOfRemovedService)
+		if err := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService()); err != nil {
+			return errors.Wrap(err, "Error serializing 'bytesOfRemovedService' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadPropertyConditional"); popErr != nil {
@@ -179,6 +180,10 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) isBACnetConfirmedServiceRequestReadPropertyConditional() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) String() string {

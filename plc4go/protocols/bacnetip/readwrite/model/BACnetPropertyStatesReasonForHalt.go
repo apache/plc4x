@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesReasonForHalt is the corresponding interface of BACnetPropertyStatesReasonForHalt
 type BACnetPropertyStatesReasonForHalt interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetReasonForHalt returns ReasonForHalt (property field)
 	GetReasonForHalt() BACnetProgramErrorTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesReasonForHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesReasonForHalt.
+// This is useful for switch cases.
+type BACnetPropertyStatesReasonForHaltExactly interface {
+	BACnetPropertyStatesReasonForHalt
+	isBACnetPropertyStatesReasonForHalt() bool
 }
 
 // _BACnetPropertyStatesReasonForHalt is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesReasonForHalt) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesReasonForHalt) isBACnetPropertyStatesReasonForHalt() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesReasonForHalt) String() string {

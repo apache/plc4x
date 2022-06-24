@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBackupPreparationTime is the corresponding interface of BACnetConstructedDataBackupPreparationTime
 type BACnetConstructedDataBackupPreparationTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBackupPreparationTime returns BackupPreparationTime (property field)
 	GetBackupPreparationTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBackupPreparationTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBackupPreparationTime.
+// This is useful for switch cases.
+type BACnetConstructedDataBackupPreparationTimeExactly interface {
+	BACnetConstructedDataBackupPreparationTime
+	isBACnetConstructedDataBackupPreparationTime() bool
 }
 
 // _BACnetConstructedDataBackupPreparationTime is the data-structure of this message
 type _BACnetConstructedDataBackupPreparationTime struct {
 	*_BACnetConstructedData
 	BackupPreparationTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBackupPreparationTimeParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBackupPreparationTime{
-		BackupPreparationTime:  backupPreparationTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BackupPreparationTime: backupPreparationTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBackupPreparationTime) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBackupPreparationTime) isBACnetConstructedDataBackupPreparationTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBackupPreparationTime) String() string {

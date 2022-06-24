@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFaultLowLimit is the corresponding interface of BACnetConstructedDataFaultLowLimit
 type BACnetConstructedDataFaultLowLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFaultLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFaultLowLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataFaultLowLimitExactly interface {
+	BACnetConstructedDataFaultLowLimit
+	isBACnetConstructedDataFaultLowLimit() bool
 }
 
 // _BACnetConstructedDataFaultLowLimit is the data-structure of this message
 type _BACnetConstructedDataFaultLowLimit struct {
 	*_BACnetConstructedData
 	FaultLowLimit BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFaultLowLimitParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFaultLowLimit{
-		FaultLowLimit:          faultLowLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FaultLowLimit: faultLowLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFaultLowLimit) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFaultLowLimit) isBACnetConstructedDataFaultLowLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFaultLowLimit) String() string {

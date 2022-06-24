@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMinimumOutput is the corresponding interface of BACnetConstructedDataMinimumOutput
 type BACnetConstructedDataMinimumOutput interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinimumOutput returns MinimumOutput (property field)
 	GetMinimumOutput() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMinimumOutputExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumOutput.
+// This is useful for switch cases.
+type BACnetConstructedDataMinimumOutputExactly interface {
+	BACnetConstructedDataMinimumOutput
+	isBACnetConstructedDataMinimumOutput() bool
 }
 
 // _BACnetConstructedDataMinimumOutput is the data-structure of this message
 type _BACnetConstructedDataMinimumOutput struct {
 	*_BACnetConstructedData
 	MinimumOutput BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMinimumOutputParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMinimumOutput{
-		MinimumOutput:          minimumOutput,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MinimumOutput: minimumOutput,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMinimumOutput) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMinimumOutput) isBACnetConstructedDataMinimumOutput() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMinimumOutput) String() string {

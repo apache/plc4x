@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtDomainAddressSelectiveRead is the corresponding interface of ApduDataExtDomainAddressSelectiveRead
 type ApduDataExtDomainAddressSelectiveRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtDomainAddressSelectiveReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtDomainAddressSelectiveRead.
+// This is useful for switch cases.
+type ApduDataExtDomainAddressSelectiveReadExactly interface {
+	ApduDataExtDomainAddressSelectiveRead
+	isApduDataExtDomainAddressSelectiveRead() bool
 }
 
 // _ApduDataExtDomainAddressSelectiveRead is the data-structure of this message
 type _ApduDataExtDomainAddressSelectiveRead struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtDomainAddressSelectiveReadParse(readBuffer utils.ReadBuffer, len
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtDomainAddressSelectiveRead{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtDomainAddressSelectiveRead) isApduDataExtDomainAddressSelectiveRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) String() string {

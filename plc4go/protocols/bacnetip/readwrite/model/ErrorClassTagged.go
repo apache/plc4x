@@ -28,6 +28,8 @@ import (
 
 // ErrorClassTagged is the corresponding interface of ErrorClassTagged
 type ErrorClassTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type ErrorClassTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ErrorClassTaggedExactly can be used when we want exactly this type and not a type which fulfills ErrorClassTagged.
+// This is useful for switch cases.
+type ErrorClassTaggedExactly interface {
+	ErrorClassTagged
+	isErrorClassTagged() bool
 }
 
 // _ErrorClassTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_ErrorClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ErrorClassTagged")
 	}
 	return nil
+}
+
+func (m *_ErrorClassTagged) isErrorClassTagged() bool {
+	return true
 }
 
 func (m *_ErrorClassTagged) String() string {

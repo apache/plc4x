@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesFileAccessMethod is the corresponding interface of BACnetPropertyStatesFileAccessMethod
 type BACnetPropertyStatesFileAccessMethod interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesFileAccessMethodExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesFileAccessMethod.
+// This is useful for switch cases.
+type BACnetPropertyStatesFileAccessMethodExactly interface {
+	BACnetPropertyStatesFileAccessMethod
+	isBACnetPropertyStatesFileAccessMethod() bool
 }
 
 // _BACnetPropertyStatesFileAccessMethod is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesFileAccessMethod) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethod) isBACnetPropertyStatesFileAccessMethod() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesFileAccessMethod) String() string {

@@ -129,12 +129,12 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		// Send the ADU over the wire
 		err = m.messageCodec.SendRequest(
 			requestAdu,
-			func(message interface{}) bool {
+			func(message spi.Message) bool {
 				responseAdu := message.(readWriteModel.ModbusTcpADU)
 				return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
 					responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
 			},
-			func(message interface{}) error {
+			func(message spi.Message) error {
 				// Convert the response into an ADU
 				responseAdu := message.(readWriteModel.ModbusTcpADU)
 				// Convert the modbus response into a PLC4X response

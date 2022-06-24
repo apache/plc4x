@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimeDelay is the corresponding interface of BACnetConstructedDataTimeDelay
 type BACnetConstructedDataTimeDelay interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimeDelay returns TimeDelay (property field)
 	GetTimeDelay() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimeDelayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeDelay.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeDelayExactly interface {
+	BACnetConstructedDataTimeDelay
+	isBACnetConstructedDataTimeDelay() bool
 }
 
 // _BACnetConstructedDataTimeDelay is the data-structure of this message
 type _BACnetConstructedDataTimeDelay struct {
 	*_BACnetConstructedData
 	TimeDelay BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimeDelayParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimeDelay{
-		TimeDelay:              timeDelay,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		TimeDelay: timeDelay,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimeDelay) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeDelay) isBACnetConstructedDataTimeDelay() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeDelay) String() string {

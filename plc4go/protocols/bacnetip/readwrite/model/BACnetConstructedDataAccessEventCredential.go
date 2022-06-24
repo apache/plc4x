@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccessEventCredential is the corresponding interface of BACnetConstructedDataAccessEventCredential
 type BACnetConstructedDataAccessEventCredential interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAccessEventCredential returns AccessEventCredential (property field)
 	GetAccessEventCredential() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessEventCredentialExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessEventCredential.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessEventCredentialExactly interface {
+	BACnetConstructedDataAccessEventCredential
+	isBACnetConstructedDataAccessEventCredential() bool
 }
 
 // _BACnetConstructedDataAccessEventCredential is the data-structure of this message
 type _BACnetConstructedDataAccessEventCredential struct {
 	*_BACnetConstructedData
 	AccessEventCredential BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccessEventCredentialParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessEventCredential{
-		AccessEventCredential:  accessEventCredential,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AccessEventCredential: accessEventCredential,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccessEventCredential) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessEventCredential) isBACnetConstructedDataAccessEventCredential() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessEventCredential) String() string {

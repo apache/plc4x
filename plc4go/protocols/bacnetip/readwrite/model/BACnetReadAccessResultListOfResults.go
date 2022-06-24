@@ -28,18 +28,21 @@ import (
 
 // BACnetReadAccessResultListOfResults is the corresponding interface of BACnetReadAccessResultListOfResults
 type BACnetReadAccessResultListOfResults interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfReadAccessProperty returns ListOfReadAccessProperty (property field)
 	GetListOfReadAccessProperty() []BACnetReadAccessProperty
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetReadAccessResultListOfResultsExactly can be used when we want exactly this type and not a type which fulfills BACnetReadAccessResultListOfResults.
+// This is useful for switch cases.
+type BACnetReadAccessResultListOfResultsExactly interface {
+	BACnetReadAccessResultListOfResults
+	isBACnetReadAccessResultListOfResults() bool
 }
 
 // _BACnetReadAccessResultListOfResults is the data-structure of this message
@@ -149,7 +152,7 @@ func BACnetReadAccessResultListOfResultsParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfReadAccessProperty")
 	}
 	// Terminated array
-	listOfReadAccessProperty := make([]BACnetReadAccessProperty, 0)
+	var listOfReadAccessProperty []BACnetReadAccessProperty
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessPropertyParse(readBuffer, objectTypeArgument)
@@ -205,19 +208,17 @@ func (m *_BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.Write
 	}
 
 	// Array Field (listOfReadAccessProperty)
-	if m.GetListOfReadAccessProperty() != nil {
-		if pushErr := writeBuffer.PushContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfReadAccessProperty")
+	if pushErr := writeBuffer.PushContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfReadAccessProperty")
+	}
+	for _, _element := range m.GetListOfReadAccessProperty() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfReadAccessProperty' field")
 		}
-		for _, _element := range m.GetListOfReadAccessProperty() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfReadAccessProperty' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfReadAccessProperty")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfReadAccessProperty")
 	}
 
 	// Simple Field (closingTag)
@@ -236,6 +237,10 @@ func (m *_BACnetReadAccessResultListOfResults) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetReadAccessResultListOfResults")
 	}
 	return nil
+}
+
+func (m *_BACnetReadAccessResultListOfResults) isBACnetReadAccessResultListOfResults() bool {
+	return true
 }
 
 func (m *_BACnetReadAccessResultListOfResults) String() string {

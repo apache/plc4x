@@ -28,15 +28,18 @@ import (
 
 // ModbusPDUReadDiscreteInputsResponse is the corresponding interface of ModbusPDUReadDiscreteInputsResponse
 type ModbusPDUReadDiscreteInputsResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadDiscreteInputsResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDiscreteInputsResponse.
+// This is useful for switch cases.
+type ModbusPDUReadDiscreteInputsResponseExactly interface {
+	ModbusPDUReadDiscreteInputsResponse
+	isModbusPDUReadDiscreteInputsResponse() bool
 }
 
 // _ModbusPDUReadDiscreteInputsResponse is the data-structure of this message
@@ -185,12 +188,9 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (value)
-		if m.GetValue() != nil {
-			// Byte Array field (value)
-			_writeArrayErr := writeBuffer.WriteByteArray("value", m.GetValue())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
-			}
+		// Byte Array field (value)
+		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDiscreteInputsResponse"); popErr != nil {
@@ -199,6 +199,10 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadDiscreteInputsResponse) isModbusPDUReadDiscreteInputsResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadDiscreteInputsResponse) String() string {

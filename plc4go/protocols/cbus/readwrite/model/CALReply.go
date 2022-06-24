@@ -33,16 +33,19 @@ const CALReply_LF byte = 0x0A
 
 // CALReply is the corresponding interface of CALReply
 type CALReply interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCalType returns CalType (property field)
 	GetCalType() byte
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALReplyExactly can be used when we want exactly this type and not a type which fulfills CALReply.
+// This is useful for switch cases.
+type CALReplyExactly interface {
+	CALReply
+	isCALReply() bool
 }
 
 // _CALReply is the data-structure of this message
@@ -53,9 +56,9 @@ type _CALReply struct {
 }
 
 type _CALReplyChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CALReplyParent interface {
@@ -64,7 +67,7 @@ type CALReplyParent interface {
 }
 
 type CALReplyChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CALReply, calType byte, calData CALData)
 	GetParent() *CALReply
 
@@ -270,6 +273,10 @@ func (pm *_CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child CALRep
 		return errors.Wrap(popErr, "Error popping for CALReply")
 	}
 	return nil
+}
+
+func (m *_CALReply) isCALReply() bool {
+	return true
 }
 
 func (m *_CALReply) String() string {

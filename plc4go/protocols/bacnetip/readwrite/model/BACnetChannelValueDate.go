@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueDate is the corresponding interface of BACnetChannelValueDate
 type BACnetChannelValueDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueDateExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueDate.
+// This is useful for switch cases.
+type BACnetChannelValueDateExactly interface {
+	BACnetChannelValueDate
+	isBACnetChannelValueDate() bool
 }
 
 // _BACnetChannelValueDate is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueDate) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueDate) isBACnetChannelValueDate() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueDate) String() string {

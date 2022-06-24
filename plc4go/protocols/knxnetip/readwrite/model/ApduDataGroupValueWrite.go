@@ -28,17 +28,20 @@ import (
 
 // ApduDataGroupValueWrite is the corresponding interface of ApduDataGroupValueWrite
 type ApduDataGroupValueWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataGroupValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataGroupValueWrite.
+// This is useful for switch cases.
+type ApduDataGroupValueWriteExactly interface {
+	ApduDataGroupValueWrite
+	isApduDataGroupValueWrite() bool
 }
 
 // _ApduDataGroupValueWrite is the data-structure of this message
@@ -46,9 +49,6 @@ type _ApduDataGroupValueWrite struct {
 	*_ApduData
 	DataFirstByte int8
 	Data          []byte
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -167,7 +167,9 @@ func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8)
 	_child := &_ApduDataGroupValueWrite{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		_ApduData:     &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -189,12 +191,9 @@ func (m *_ApduDataGroupValueWrite) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataGroupValueWrite"); popErr != nil {
@@ -203,6 +202,10 @@ func (m *_ApduDataGroupValueWrite) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataGroupValueWrite) isApduDataGroupValueWrite() bool {
+	return true
 }
 
 func (m *_ApduDataGroupValueWrite) String() string {

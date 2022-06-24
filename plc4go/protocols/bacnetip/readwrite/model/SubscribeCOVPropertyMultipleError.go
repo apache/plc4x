@@ -28,17 +28,20 @@ import (
 
 // SubscribeCOVPropertyMultipleError is the corresponding interface of SubscribeCOVPropertyMultipleError
 type SubscribeCOVPropertyMultipleError interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedSubscription returns FirstFailedSubscription (property field)
 	GetFirstFailedSubscription() SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SubscribeCOVPropertyMultipleErrorExactly can be used when we want exactly this type and not a type which fulfills SubscribeCOVPropertyMultipleError.
+// This is useful for switch cases.
+type SubscribeCOVPropertyMultipleErrorExactly interface {
+	SubscribeCOVPropertyMultipleError
+	isSubscribeCOVPropertyMultipleError() bool
 }
 
 // _SubscribeCOVPropertyMultipleError is the data-structure of this message
@@ -219,6 +222,10 @@ func (m *_SubscribeCOVPropertyMultipleError) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SubscribeCOVPropertyMultipleError) isSubscribeCOVPropertyMultipleError() bool {
+	return true
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) String() string {

@@ -28,13 +28,16 @@ import (
 
 // SysexCommandSysexRealtime is the corresponding interface of SysexCommandSysexRealtime
 type SysexCommandSysexRealtime interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandSysexRealtimeExactly can be used when we want exactly this type and not a type which fulfills SysexCommandSysexRealtime.
+// This is useful for switch cases.
+type SysexCommandSysexRealtimeExactly interface {
+	SysexCommandSysexRealtime
+	isSysexCommandSysexRealtime() bool
 }
 
 // _SysexCommandSysexRealtime is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_SysexCommandSysexRealtime) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandSysexRealtime) isSysexCommandSysexRealtime() bool {
+	return true
 }
 
 func (m *_SysexCommandSysexRealtime) String() string {

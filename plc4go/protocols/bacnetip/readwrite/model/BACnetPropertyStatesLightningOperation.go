@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesLightningOperation is the corresponding interface of BACnetPropertyStatesLightningOperation
 type BACnetPropertyStatesLightningOperation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLightningOperation returns LightningOperation (property field)
 	GetLightningOperation() BACnetLightingOperationTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesLightningOperationExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLightningOperation.
+// This is useful for switch cases.
+type BACnetPropertyStatesLightningOperationExactly interface {
+	BACnetPropertyStatesLightningOperation
+	isBACnetPropertyStatesLightningOperation() bool
 }
 
 // _BACnetPropertyStatesLightningOperation is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesLightningOperation) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLightningOperation) isBACnetPropertyStatesLightningOperation() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLightningOperation) String() string {

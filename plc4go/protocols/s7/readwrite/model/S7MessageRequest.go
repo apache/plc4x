@@ -28,13 +28,16 @@ import (
 
 // S7MessageRequest is the corresponding interface of S7MessageRequest
 type S7MessageRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Message
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7MessageRequestExactly can be used when we want exactly this type and not a type which fulfills S7MessageRequest.
+// This is useful for switch cases.
+type S7MessageRequestExactly interface {
+	S7MessageRequest
+	isS7MessageRequest() bool
 }
 
 // _S7MessageRequest is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_S7MessageRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7MessageRequest) isS7MessageRequest() bool {
+	return true
 }
 
 func (m *_S7MessageRequest) String() string {

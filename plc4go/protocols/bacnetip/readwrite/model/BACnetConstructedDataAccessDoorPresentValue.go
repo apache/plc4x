@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccessDoorPresentValue is the corresponding interface of BACnetConstructedDataAccessDoorPresentValue
 type BACnetConstructedDataAccessDoorPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetDoorValueTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorValueTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessDoorPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoorPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessDoorPresentValueExactly interface {
+	BACnetConstructedDataAccessDoorPresentValue
+	isBACnetConstructedDataAccessDoorPresentValue() bool
 }
 
 // _BACnetConstructedDataAccessDoorPresentValue is the data-structure of this message
 type _BACnetConstructedDataAccessDoorPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetDoorValueTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessDoorPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccessDoorPresentValue) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessDoorPresentValue) isBACnetConstructedDataAccessDoorPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessDoorPresentValue) String() string {

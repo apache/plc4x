@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataStopTime is the corresponding interface of BACnetConstructedDataStopTime
 type BACnetConstructedDataStopTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetStopTime returns StopTime (property field)
 	GetStopTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataStopTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStopTime.
+// This is useful for switch cases.
+type BACnetConstructedDataStopTimeExactly interface {
+	BACnetConstructedDataStopTime
+	isBACnetConstructedDataStopTime() bool
 }
 
 // _BACnetConstructedDataStopTime is the data-structure of this message
 type _BACnetConstructedDataStopTime struct {
 	*_BACnetConstructedData
 	StopTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataStopTimeParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStopTime{
-		StopTime:               stopTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		StopTime: stopTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataStopTime) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStopTime) isBACnetConstructedDataStopTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStopTime) String() string {

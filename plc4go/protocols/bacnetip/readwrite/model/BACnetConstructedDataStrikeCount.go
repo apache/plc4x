@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataStrikeCount is the corresponding interface of BACnetConstructedDataStrikeCount
 type BACnetConstructedDataStrikeCount interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetStrikeCount returns StrikeCount (property field)
 	GetStrikeCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataStrikeCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStrikeCount.
+// This is useful for switch cases.
+type BACnetConstructedDataStrikeCountExactly interface {
+	BACnetConstructedDataStrikeCount
+	isBACnetConstructedDataStrikeCount() bool
 }
 
 // _BACnetConstructedDataStrikeCount is the data-structure of this message
 type _BACnetConstructedDataStrikeCount struct {
 	*_BACnetConstructedData
 	StrikeCount BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataStrikeCountParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStrikeCount{
-		StrikeCount:            strikeCount,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		StrikeCount: strikeCount,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataStrikeCount) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStrikeCount) isBACnetConstructedDataStrikeCount() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStrikeCount) String() string {

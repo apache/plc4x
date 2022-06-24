@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEffectivePeriod is the corresponding interface of BACnetConstructedDataEffectivePeriod
 type BACnetConstructedDataEffectivePeriod interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() BACnetDateRange
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateRange
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEffectivePeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEffectivePeriod.
+// This is useful for switch cases.
+type BACnetConstructedDataEffectivePeriodExactly interface {
+	BACnetConstructedDataEffectivePeriod
+	isBACnetConstructedDataEffectivePeriod() bool
 }
 
 // _BACnetConstructedDataEffectivePeriod is the data-structure of this message
 type _BACnetConstructedDataEffectivePeriod struct {
 	*_BACnetConstructedData
 	DateRange BACnetDateRange
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEffectivePeriod{
-		DateRange:              dateRange,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DateRange: dateRange,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEffectivePeriod) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEffectivePeriod) isBACnetConstructedDataEffectivePeriod() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEffectivePeriod) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCredentialStatus is the corresponding interface of BACnetConstructedDataCredentialStatus
 type BACnetConstructedDataCredentialStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCredentialStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialStatus.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialStatusExactly interface {
+	BACnetConstructedDataCredentialStatus
+	isBACnetConstructedDataCredentialStatus() bool
 }
 
 // _BACnetConstructedDataCredentialStatus is the data-structure of this message
 type _BACnetConstructedDataCredentialStatus struct {
 	*_BACnetConstructedData
 	BinaryPv BACnetBinaryPVTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCredentialStatusParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialStatus{
-		BinaryPv:               binaryPv,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BinaryPv: binaryPv,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCredentialStatus) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialStatus) isBACnetConstructedDataCredentialStatus() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialStatus) String() string {

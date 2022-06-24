@@ -28,6 +28,8 @@ import (
 
 // MPropReadReq is the corresponding interface of MPropReadReq
 type MPropReadReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
 	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
@@ -39,12 +41,13 @@ type MPropReadReq interface {
 	GetNumberOfElements() uint8
 	// GetStartIndex returns StartIndex (property field)
 	GetStartIndex() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MPropReadReqExactly can be used when we want exactly this type and not a type which fulfills MPropReadReq.
+// This is useful for switch cases.
+type MPropReadReqExactly interface {
+	MPropReadReq
+	isMPropReadReq() bool
 }
 
 // _MPropReadReq is the data-structure of this message
@@ -55,9 +58,6 @@ type _MPropReadReq struct {
 	PropertyId          uint8
 	NumberOfElements    uint8
 	StartIndex          uint16
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -223,7 +223,9 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (MPropReadReq, 
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		_CEMI:               &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -278,6 +280,10 @@ func (m *_MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MPropReadReq) isMPropReadReq() bool {
+	return true
 }
 
 func (m *_MPropReadReq) String() string {

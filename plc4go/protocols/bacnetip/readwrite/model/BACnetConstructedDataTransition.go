@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTransition is the corresponding interface of BACnetConstructedDataTransition
 type BACnetConstructedDataTransition interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTransition returns Transition (property field)
 	GetTransition() BACnetLightingTransitionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLightingTransitionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTransitionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTransition.
+// This is useful for switch cases.
+type BACnetConstructedDataTransitionExactly interface {
+	BACnetConstructedDataTransition
+	isBACnetConstructedDataTransition() bool
 }
 
 // _BACnetConstructedDataTransition is the data-structure of this message
 type _BACnetConstructedDataTransition struct {
 	*_BACnetConstructedData
 	Transition BACnetLightingTransitionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTransitionParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTransition{
-		Transition:             transition,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Transition: transition,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTransition) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTransition) isBACnetConstructedDataTransition() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTransition) String() string {

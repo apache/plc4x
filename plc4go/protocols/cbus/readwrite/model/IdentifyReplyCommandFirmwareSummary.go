@@ -28,6 +28,8 @@ import (
 
 // IdentifyReplyCommandFirmwareSummary is the corresponding interface of IdentifyReplyCommandFirmwareSummary
 type IdentifyReplyCommandFirmwareSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetFirmwareVersion returns FirmwareVersion (property field)
 	GetFirmwareVersion() string
@@ -35,12 +37,13 @@ type IdentifyReplyCommandFirmwareSummary interface {
 	GetUnitServiceType() byte
 	// GetVersion returns Version (property field)
 	GetVersion() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandFirmwareSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandFirmwareSummary.
+// This is useful for switch cases.
+type IdentifyReplyCommandFirmwareSummaryExactly interface {
+	IdentifyReplyCommandFirmwareSummary
+	isIdentifyReplyCommandFirmwareSummary() bool
 }
 
 // _IdentifyReplyCommandFirmwareSummary is the data-structure of this message
@@ -223,6 +226,10 @@ func (m *_IdentifyReplyCommandFirmwareSummary) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandFirmwareSummary) isIdentifyReplyCommandFirmwareSummary() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandFirmwareSummary) String() string {

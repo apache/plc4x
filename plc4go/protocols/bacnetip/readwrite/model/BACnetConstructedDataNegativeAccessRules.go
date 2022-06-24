@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataNegativeAccessRules is the corresponding interface of BACnetConstructedDataNegativeAccessRules
 type BACnetConstructedDataNegativeAccessRules interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataNegativeAccessRules interface {
 	GetNegativeAccessRules() []BACnetAccessRule
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNegativeAccessRulesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNegativeAccessRules.
+// This is useful for switch cases.
+type BACnetConstructedDataNegativeAccessRulesExactly interface {
+	BACnetConstructedDataNegativeAccessRules
+	isBACnetConstructedDataNegativeAccessRules() bool
 }
 
 // _BACnetConstructedDataNegativeAccessRules is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataNegativeAccessRules struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	NegativeAccessRules  []BACnetAccessRule
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataNegativeAccessRulesParse(readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(pullErr, "Error pulling for negativeAccessRules")
 	}
 	// Terminated array
-	negativeAccessRules := make([]BACnetAccessRule, 0)
+	var negativeAccessRules []BACnetAccessRule
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessRuleParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataNegativeAccessRulesParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNegativeAccessRules{
-		NumberOfDataElements:   numberOfDataElements,
-		NegativeAccessRules:    negativeAccessRules,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		NegativeAccessRules:  negativeAccessRules,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataNegativeAccessRules) Serialize(writeBuffer utils.
 		}
 
 		// Array Field (negativeAccessRules)
-		if m.GetNegativeAccessRules() != nil {
-			if pushErr := writeBuffer.PushContext("negativeAccessRules", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for negativeAccessRules")
+		if pushErr := writeBuffer.PushContext("negativeAccessRules", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for negativeAccessRules")
+		}
+		for _, _element := range m.GetNegativeAccessRules() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'negativeAccessRules' field")
 			}
-			for _, _element := range m.GetNegativeAccessRules() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'negativeAccessRules' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("negativeAccessRules", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for negativeAccessRules")
-			}
+		}
+		if popErr := writeBuffer.PopContext("negativeAccessRules", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for negativeAccessRules")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNegativeAccessRules"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataNegativeAccessRules) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNegativeAccessRules) isBACnetConstructedDataNegativeAccessRules() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNegativeAccessRules) String() string {

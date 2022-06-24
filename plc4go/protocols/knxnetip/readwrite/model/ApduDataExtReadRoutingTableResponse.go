@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtReadRoutingTableResponse is the corresponding interface of ApduDataExtReadRoutingTableResponse
 type ApduDataExtReadRoutingTableResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtReadRoutingTableResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtReadRoutingTableResponse.
+// This is useful for switch cases.
+type ApduDataExtReadRoutingTableResponseExactly interface {
+	ApduDataExtReadRoutingTableResponse
+	isApduDataExtReadRoutingTableResponse() bool
 }
 
 // _ApduDataExtReadRoutingTableResponse is the data-structure of this message
 type _ApduDataExtReadRoutingTableResponse struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtReadRoutingTableResponseParse(readBuffer utils.ReadBuffer, lengt
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtReadRoutingTableResponse{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtReadRoutingTableResponse) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtReadRoutingTableResponse) isApduDataExtReadRoutingTableResponse() bool {
+	return true
 }
 
 func (m *_ApduDataExtReadRoutingTableResponse) String() string {

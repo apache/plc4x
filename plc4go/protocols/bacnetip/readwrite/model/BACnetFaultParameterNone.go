@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterNone is the corresponding interface of BACnetFaultParameterNone
 type BACnetFaultParameterNone interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterNone.
+// This is useful for switch cases.
+type BACnetFaultParameterNoneExactly interface {
+	BACnetFaultParameterNone
+	isBACnetFaultParameterNone() bool
 }
 
 // _BACnetFaultParameterNone is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterNone) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterNone) isBACnetFaultParameterNone() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterNone) String() string {

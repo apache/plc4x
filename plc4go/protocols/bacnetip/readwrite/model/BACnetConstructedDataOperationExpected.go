@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataOperationExpected is the corresponding interface of BACnetConstructedDataOperationExpected
 type BACnetConstructedDataOperationExpected interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLifeSafetyOperations returns LifeSafetyOperations (property field)
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyOperationTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOperationExpectedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOperationExpected.
+// This is useful for switch cases.
+type BACnetConstructedDataOperationExpectedExactly interface {
+	BACnetConstructedDataOperationExpected
+	isBACnetConstructedDataOperationExpected() bool
 }
 
 // _BACnetConstructedDataOperationExpected is the data-structure of this message
 type _BACnetConstructedDataOperationExpected struct {
 	*_BACnetConstructedData
 	LifeSafetyOperations BACnetLifeSafetyOperationTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOperationExpected{
-		LifeSafetyOperations:   lifeSafetyOperations,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LifeSafetyOperations: lifeSafetyOperations,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataOperationExpected) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOperationExpected) isBACnetConstructedDataOperationExpected() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOperationExpected) String() string {

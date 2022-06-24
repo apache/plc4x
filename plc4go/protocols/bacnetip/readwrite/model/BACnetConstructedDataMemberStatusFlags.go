@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMemberStatusFlags is the corresponding interface of BACnetConstructedDataMemberStatusFlags
 type BACnetConstructedDataMemberStatusFlags interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetStatusFlags returns StatusFlags (property field)
 	GetStatusFlags() BACnetStatusFlagsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetStatusFlagsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMemberStatusFlagsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMemberStatusFlags.
+// This is useful for switch cases.
+type BACnetConstructedDataMemberStatusFlagsExactly interface {
+	BACnetConstructedDataMemberStatusFlags
+	isBACnetConstructedDataMemberStatusFlags() bool
 }
 
 // _BACnetConstructedDataMemberStatusFlags is the data-structure of this message
 type _BACnetConstructedDataMemberStatusFlags struct {
 	*_BACnetConstructedData
 	StatusFlags BACnetStatusFlagsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMemberStatusFlagsParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMemberStatusFlags{
-		StatusFlags:            statusFlags,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		StatusFlags: statusFlags,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMemberStatusFlags) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMemberStatusFlags) isBACnetConstructedDataMemberStatusFlags() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMemberStatusFlags) String() string {

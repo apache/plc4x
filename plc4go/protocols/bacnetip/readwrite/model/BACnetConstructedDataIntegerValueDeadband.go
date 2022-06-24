@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIntegerValueDeadband is the corresponding interface of BACnetConstructedDataIntegerValueDeadband
 type BACnetConstructedDataIntegerValueDeadband interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIntegerValueDeadbandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueDeadband.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueDeadbandExactly interface {
+	BACnetConstructedDataIntegerValueDeadband
+	isBACnetConstructedDataIntegerValueDeadband() bool
 }
 
 // _BACnetConstructedDataIntegerValueDeadband is the data-structure of this message
 type _BACnetConstructedDataIntegerValueDeadband struct {
 	*_BACnetConstructedData
 	Deadband BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIntegerValueDeadbandParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegerValueDeadband{
-		Deadband:               deadband,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Deadband: deadband,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIntegerValueDeadband) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueDeadband) isBACnetConstructedDataIntegerValueDeadband() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueDeadband) String() string {

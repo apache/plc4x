@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesNotifyType is the corresponding interface of BACnetPropertyStatesNotifyType
 type BACnetPropertyStatesNotifyType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesNotifyTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNotifyType.
+// This is useful for switch cases.
+type BACnetPropertyStatesNotifyTypeExactly interface {
+	BACnetPropertyStatesNotifyType
+	isBACnetPropertyStatesNotifyType() bool
 }
 
 // _BACnetPropertyStatesNotifyType is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesNotifyType) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesNotifyType) isBACnetPropertyStatesNotifyType() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesNotifyType) String() string {

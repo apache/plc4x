@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAPDUSegmentTimeout is the corresponding interface of BACnetConstructedDataAPDUSegmentTimeout
 type BACnetConstructedDataAPDUSegmentTimeout interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetApduSegmentTimeout returns ApduSegmentTimeout (property field)
 	GetApduSegmentTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAPDUSegmentTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDUSegmentTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataAPDUSegmentTimeoutExactly interface {
+	BACnetConstructedDataAPDUSegmentTimeout
+	isBACnetConstructedDataAPDUSegmentTimeout() bool
 }
 
 // _BACnetConstructedDataAPDUSegmentTimeout is the data-structure of this message
 type _BACnetConstructedDataAPDUSegmentTimeout struct {
 	*_BACnetConstructedData
 	ApduSegmentTimeout BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAPDUSegmentTimeout{
-		ApduSegmentTimeout:     apduSegmentTimeout,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ApduSegmentTimeout: apduSegmentTimeout,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) isBACnetConstructedDataAPDUSegmentTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) String() string {

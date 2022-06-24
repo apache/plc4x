@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMusterPoint is the corresponding interface of BACnetConstructedDataMusterPoint
 type BACnetConstructedDataMusterPoint interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMusterPoint returns MusterPoint (property field)
 	GetMusterPoint() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMusterPointExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMusterPoint.
+// This is useful for switch cases.
+type BACnetConstructedDataMusterPointExactly interface {
+	BACnetConstructedDataMusterPoint
+	isBACnetConstructedDataMusterPoint() bool
 }
 
 // _BACnetConstructedDataMusterPoint is the data-structure of this message
 type _BACnetConstructedDataMusterPoint struct {
 	*_BACnetConstructedData
 	MusterPoint BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMusterPointParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMusterPoint{
-		MusterPoint:            musterPoint,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MusterPoint: musterPoint,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMusterPoint) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMusterPoint) isBACnetConstructedDataMusterPoint() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMusterPoint) String() string {

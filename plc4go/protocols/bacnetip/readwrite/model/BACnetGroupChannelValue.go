@@ -30,18 +30,21 @@ import (
 
 // BACnetGroupChannelValue is the corresponding interface of BACnetGroupChannelValue
 type BACnetGroupChannelValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetChannel returns Channel (property field)
 	GetChannel() BACnetContextTagUnsignedInteger
 	// GetOverridingPriority returns OverridingPriority (property field)
 	GetOverridingPriority() BACnetContextTagUnsignedInteger
 	// GetValue returns Value (property field)
 	GetValue() BACnetChannelValue
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetGroupChannelValueExactly can be used when we want exactly this type and not a type which fulfills BACnetGroupChannelValue.
+// This is useful for switch cases.
+type BACnetGroupChannelValueExactly interface {
+	BACnetGroupChannelValue
+	isBACnetGroupChannelValue() bool
 }
 
 // _BACnetGroupChannelValue is the data-structure of this message
@@ -234,6 +237,10 @@ func (m *_BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetGroupChannelValue")
 	}
 	return nil
+}
+
+func (m *_BACnetGroupChannelValue) isBACnetGroupChannelValue() bool {
+	return true
 }
 
 func (m *_BACnetGroupChannelValue) String() string {

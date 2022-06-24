@@ -28,17 +28,20 @@ import (
 
 // DF1UnprotectedReadRequest is the corresponding interface of DF1UnprotectedReadRequest
 type DF1UnprotectedReadRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1Command
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
 	// GetSize returns Size (property field)
 	GetSize() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1UnprotectedReadRequestExactly can be used when we want exactly this type and not a type which fulfills DF1UnprotectedReadRequest.
+// This is useful for switch cases.
+type DF1UnprotectedReadRequestExactly interface {
+	DF1UnprotectedReadRequest
+	isDF1UnprotectedReadRequest() bool
 }
 
 // _DF1UnprotectedReadRequest is the data-structure of this message
@@ -200,6 +203,10 @@ func (m *_DF1UnprotectedReadRequest) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1UnprotectedReadRequest) isDF1UnprotectedReadRequest() bool {
+	return true
 }
 
 func (m *_DF1UnprotectedReadRequest) String() string {

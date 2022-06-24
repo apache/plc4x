@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataRestoreCompletionTime is the corresponding interface of BACnetConstructedDataRestoreCompletionTime
 type BACnetConstructedDataRestoreCompletionTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCompletionTime returns CompletionTime (property field)
 	GetCompletionTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataRestoreCompletionTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRestoreCompletionTime.
+// This is useful for switch cases.
+type BACnetConstructedDataRestoreCompletionTimeExactly interface {
+	BACnetConstructedDataRestoreCompletionTime
+	isBACnetConstructedDataRestoreCompletionTime() bool
 }
 
 // _BACnetConstructedDataRestoreCompletionTime is the data-structure of this message
 type _BACnetConstructedDataRestoreCompletionTime struct {
 	*_BACnetConstructedData
 	CompletionTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataRestoreCompletionTimeParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRestoreCompletionTime{
-		CompletionTime:         completionTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CompletionTime: completionTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTime) isBACnetConstructedDataRestoreCompletionTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) String() string {

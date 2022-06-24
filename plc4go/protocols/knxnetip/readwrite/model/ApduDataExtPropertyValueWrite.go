@@ -28,6 +28,8 @@ import (
 
 // ApduDataExtPropertyValueWrite is the corresponding interface of ApduDataExtPropertyValueWrite
 type ApduDataExtPropertyValueWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -39,12 +41,13 @@ type ApduDataExtPropertyValueWrite interface {
 	GetIndex() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtPropertyValueWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyValueWrite.
+// This is useful for switch cases.
+type ApduDataExtPropertyValueWriteExactly interface {
+	ApduDataExtPropertyValueWrite
+	isApduDataExtPropertyValueWrite() bool
 }
 
 // _ApduDataExtPropertyValueWrite is the data-structure of this message
@@ -55,9 +58,6 @@ type _ApduDataExtPropertyValueWrite struct {
 	Count       uint8
 	Index       uint16
 	Data        []byte
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -219,12 +219,14 @@ func ApduDataExtPropertyValueWriteParse(readBuffer utils.ReadBuffer, length uint
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtPropertyValueWrite{
-		ObjectIndex:  objectIndex,
-		PropertyId:   propertyId,
-		Count:        count,
-		Index:        index,
-		Data:         data,
-		_ApduDataExt: &_ApduDataExt{},
+		ObjectIndex: objectIndex,
+		PropertyId:  propertyId,
+		Count:       count,
+		Index:       index,
+		Data:        data,
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -267,12 +269,9 @@ func (m *_ApduDataExtPropertyValueWrite) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtPropertyValueWrite"); popErr != nil {
@@ -281,6 +280,10 @@ func (m *_ApduDataExtPropertyValueWrite) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtPropertyValueWrite) isApduDataExtPropertyValueWrite() bool {
+	return true
 }
 
 func (m *_ApduDataExtPropertyValueWrite) String() string {

@@ -30,24 +30,24 @@ import (
 
 // BACnetLogRecordLogDatumAnyValue is the corresponding interface of BACnetLogRecordLogDatumAnyValue
 type BACnetLogRecordLogDatumAnyValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetAnyValue returns AnyValue (property field)
 	GetAnyValue() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumAnyValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumAnyValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumAnyValueExactly interface {
+	BACnetLogRecordLogDatumAnyValue
+	isBACnetLogRecordLogDatumAnyValue() bool
 }
 
 // _BACnetLogRecordLogDatumAnyValue is the data-structure of this message
 type _BACnetLogRecordLogDatumAnyValue struct {
 	*_BACnetLogRecordLogDatum
 	AnyValue BACnetConstructedData
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -165,8 +165,10 @@ func BACnetLogRecordLogDatumAnyValueParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumAnyValue{
-		AnyValue:                 anyValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		AnyValue: anyValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -202,6 +204,10 @@ func (m *_BACnetLogRecordLogDatumAnyValue) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumAnyValue) isBACnetLogRecordLogDatumAnyValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumAnyValue) String() string {

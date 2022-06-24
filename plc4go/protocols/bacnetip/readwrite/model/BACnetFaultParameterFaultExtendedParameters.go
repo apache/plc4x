@@ -28,18 +28,21 @@ import (
 
 // BACnetFaultParameterFaultExtendedParameters is the corresponding interface of BACnetFaultParameterFaultExtendedParameters
 type BACnetFaultParameterFaultExtendedParameters interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetParameters returns Parameters (property field)
 	GetParameters() []BACnetFaultParameterFaultExtendedParametersEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParameters.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersExactly interface {
+	BACnetFaultParameterFaultExtendedParameters
+	isBACnetFaultParameterFaultExtendedParameters() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParameters is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetFaultParameterFaultExtendedParametersParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
 	}
 	// Terminated array
-	parameters := make([]BACnetFaultParameterFaultExtendedParametersEntry, 0)
+	var parameters []BACnetFaultParameterFaultExtendedParametersEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetFaultParameterFaultExtendedParametersEntryParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) Serialize(writeBuffer uti
 	}
 
 	// Array Field (parameters)
-	if m.GetParameters() != nil {
-		if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameters")
+	if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for parameters")
+	}
+	for _, _element := range m.GetParameters() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 		}
-		for _, _element := range m.GetParameters() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameters")
-		}
+	}
+	if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for parameters")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) Serialize(writeBuffer uti
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParameters")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParameters) isBACnetFaultParameterFaultExtendedParameters() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) String() string {

@@ -30,14 +30,17 @@ import (
 
 // BACnetSetpointReference is the corresponding interface of BACnetSetpointReference
 type BACnetSetpointReference interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetSetPointReference returns SetPointReference (property field)
 	GetSetPointReference() BACnetObjectPropertyReferenceEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSetpointReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetSetpointReference.
+// This is useful for switch cases.
+type BACnetSetpointReferenceExactly interface {
+	BACnetSetpointReference
+	isBACnetSetpointReference() bool
 }
 
 // _BACnetSetpointReference is the data-structure of this message
@@ -164,6 +167,10 @@ func (m *_BACnetSetpointReference) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetSetpointReference")
 	}
 	return nil
+}
+
+func (m *_BACnetSetpointReference) isBACnetSetpointReference() bool {
+	return true
 }
 
 func (m *_BACnetSetpointReference) String() string {

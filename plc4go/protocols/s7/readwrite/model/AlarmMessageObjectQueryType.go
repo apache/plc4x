@@ -33,6 +33,8 @@ const AlarmMessageObjectQueryType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
 type AlarmMessageObjectQueryType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetLengthDataset returns LengthDataset (property field)
 	GetLengthDataset() uint8
 	// GetEventState returns EventState (property field)
@@ -49,12 +51,13 @@ type AlarmMessageObjectQueryType interface {
 	GetTimeGoing() DateAndTime
 	// GetValueGoing returns ValueGoing (property field)
 	GetValueGoing() AssociatedValueType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AlarmMessageObjectQueryTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageObjectQueryType.
+// This is useful for switch cases.
+type AlarmMessageObjectQueryTypeExactly interface {
+	AlarmMessageObjectQueryType
+	isAlarmMessageObjectQueryType() bool
 }
 
 // _AlarmMessageObjectQueryType is the data-structure of this message
@@ -442,6 +445,10 @@ func (m *_AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) 
 		return errors.Wrap(popErr, "Error popping for AlarmMessageObjectQueryType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageObjectQueryType) isAlarmMessageObjectQueryType() bool {
+	return true
 }
 
 func (m *_AlarmMessageObjectQueryType) String() string {

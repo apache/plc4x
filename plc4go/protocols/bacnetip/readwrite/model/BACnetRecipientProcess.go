@@ -30,16 +30,19 @@ import (
 
 // BACnetRecipientProcess is the corresponding interface of BACnetRecipientProcess
 type BACnetRecipientProcess interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRecipientProcessExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientProcess.
+// This is useful for switch cases.
+type BACnetRecipientProcessExactly interface {
+	BACnetRecipientProcess
+	isBACnetRecipientProcess() bool
 }
 
 // _BACnetRecipientProcess is the data-structure of this message
@@ -199,6 +202,10 @@ func (m *_BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetRecipientProcess")
 	}
 	return nil
+}
+
+func (m *_BACnetRecipientProcess) isBACnetRecipientProcess() bool {
+	return true
 }
 
 func (m *_BACnetRecipientProcess) String() string {

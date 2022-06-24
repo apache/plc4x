@@ -28,24 +28,24 @@ import (
 
 // ApduDataDeviceDescriptorRead is the corresponding interface of ApduDataDeviceDescriptorRead
 type ApduDataDeviceDescriptorRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetDescriptorType returns DescriptorType (property field)
 	GetDescriptorType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataDeviceDescriptorReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataDeviceDescriptorRead.
+// This is useful for switch cases.
+type ApduDataDeviceDescriptorReadExactly interface {
+	ApduDataDeviceDescriptorRead
+	isApduDataDeviceDescriptorRead() bool
 }
 
 // _ApduDataDeviceDescriptorRead is the data-structure of this message
 type _ApduDataDeviceDescriptorRead struct {
 	*_ApduData
 	DescriptorType uint8
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -147,7 +147,9 @@ func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength u
 	// Create a partially initialized instance
 	_child := &_ApduDataDeviceDescriptorRead{
 		DescriptorType: descriptorType,
-		_ApduData:      &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -174,6 +176,10 @@ func (m *_ApduDataDeviceDescriptorRead) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataDeviceDescriptorRead) isApduDataDeviceDescriptorRead() bool {
+	return true
 }
 
 func (m *_ApduDataDeviceDescriptorRead) String() string {

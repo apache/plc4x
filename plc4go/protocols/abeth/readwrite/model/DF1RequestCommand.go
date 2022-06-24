@@ -28,14 +28,17 @@ import (
 
 // DF1RequestCommand is the corresponding interface of DF1RequestCommand
 type DF1RequestCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFunctionCode returns FunctionCode (discriminator field)
 	GetFunctionCode() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1RequestCommandExactly can be used when we want exactly this type and not a type which fulfills DF1RequestCommand.
+// This is useful for switch cases.
+type DF1RequestCommandExactly interface {
+	DF1RequestCommand
+	isDF1RequestCommand() bool
 }
 
 // _DF1RequestCommand is the data-structure of this message
@@ -44,10 +47,10 @@ type _DF1RequestCommand struct {
 }
 
 type _DF1RequestCommandChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetFunctionCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1RequestCommandParent interface {
@@ -56,7 +59,7 @@ type DF1RequestCommandParent interface {
 }
 
 type DF1RequestCommandChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent DF1RequestCommand)
 	GetParent() *DF1RequestCommand
 
@@ -168,6 +171,10 @@ func (pm *_DF1RequestCommand) SerializeParent(writeBuffer utils.WriteBuffer, chi
 		return errors.Wrap(popErr, "Error popping for DF1RequestCommand")
 	}
 	return nil
+}
+
+func (m *_DF1RequestCommand) isDF1RequestCommand() bool {
+	return true
 }
 
 func (m *_DF1RequestCommand) String() string {

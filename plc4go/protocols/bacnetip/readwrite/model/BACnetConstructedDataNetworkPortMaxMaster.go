@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNetworkPortMaxMaster is the corresponding interface of BACnetConstructedDataNetworkPortMaxMaster
 type BACnetConstructedDataNetworkPortMaxMaster interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxMaster returns MaxMaster (property field)
 	GetMaxMaster() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNetworkPortMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkPortMaxMaster.
+// This is useful for switch cases.
+type BACnetConstructedDataNetworkPortMaxMasterExactly interface {
+	BACnetConstructedDataNetworkPortMaxMaster
+	isBACnetConstructedDataNetworkPortMaxMaster() bool
 }
 
 // _BACnetConstructedDataNetworkPortMaxMaster is the data-structure of this message
 type _BACnetConstructedDataNetworkPortMaxMaster struct {
 	*_BACnetConstructedData
 	MaxMaster BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNetworkPortMaxMasterParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNetworkPortMaxMaster{
-		MaxMaster:              maxMaster,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxMaster: maxMaster,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) isBACnetConstructedDataNetworkPortMaxMaster() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) String() string {

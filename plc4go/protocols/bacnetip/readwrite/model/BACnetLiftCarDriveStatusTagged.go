@@ -28,6 +28,8 @@ import (
 
 // BACnetLiftCarDriveStatusTagged is the corresponding interface of BACnetLiftCarDriveStatusTagged
 type BACnetLiftCarDriveStatusTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetLiftCarDriveStatusTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLiftCarDriveStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftCarDriveStatusTagged.
+// This is useful for switch cases.
+type BACnetLiftCarDriveStatusTaggedExactly interface {
+	BACnetLiftCarDriveStatusTagged
+	isBACnetLiftCarDriveStatusTagged() bool
 }
 
 // _BACnetLiftCarDriveStatusTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetLiftCarDriveStatusTagged) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetLiftCarDriveStatusTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftCarDriveStatusTagged) isBACnetLiftCarDriveStatusTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftCarDriveStatusTagged) String() string {

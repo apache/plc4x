@@ -29,17 +29,20 @@ import (
 
 // StatusRequestLevel is the corresponding interface of StatusRequestLevel
 type StatusRequestLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() byte
 	// GetStartingGroupAddressLabel returns StartingGroupAddressLabel (property field)
 	GetStartingGroupAddressLabel() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// StatusRequestLevelExactly can be used when we want exactly this type and not a type which fulfills StatusRequestLevel.
+// This is useful for switch cases.
+type StatusRequestLevelExactly interface {
+	StatusRequestLevel
+	isStatusRequestLevel() bool
 }
 
 // _StatusRequestLevel is the data-structure of this message
@@ -251,6 +254,10 @@ func (m *_StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_StatusRequestLevel) isStatusRequestLevel() bool {
+	return true
 }
 
 func (m *_StatusRequestLevel) String() string {

@@ -28,14 +28,17 @@ import (
 
 // BACnetUnconfirmedServiceRequest is the corresponding interface of BACnetUnconfirmedServiceRequest
 type BACnetUnconfirmedServiceRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequest.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestExactly interface {
+	BACnetUnconfirmedServiceRequest
+	isBACnetUnconfirmedServiceRequest() bool
 }
 
 // _BACnetUnconfirmedServiceRequest is the data-structure of this message
@@ -47,10 +50,10 @@ type _BACnetUnconfirmedServiceRequest struct {
 }
 
 type _BACnetUnconfirmedServiceRequestChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetUnconfirmedServiceRequestParent interface {
@@ -59,7 +62,7 @@ type BACnetUnconfirmedServiceRequestParent interface {
 }
 
 type BACnetUnconfirmedServiceRequestChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetUnconfirmedServiceRequest)
 	GetParent() *BACnetUnconfirmedServiceRequest
 
@@ -155,8 +158,8 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer, serviceRequestLength)
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer, serviceRequestLength)
-	case true: // BACnetUnconfirmedServiceRequestUnconfirmedUnknown
-		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedUnknownParse(readBuffer, serviceRequestLength)
+	case true: // BACnetUnconfirmedServiceRequestUnknown
+		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnknownParse(readBuffer, serviceRequestLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -208,6 +211,10 @@ func (pm *_BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Wr
 		return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceRequest")
 	}
 	return nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequest) isBACnetUnconfirmedServiceRequest() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequest) String() string {

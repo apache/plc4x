@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersDoubleOutOfRange is the corresponding interface of BACnetNotificationParametersDoubleOutOfRange
 type BACnetNotificationParametersDoubleOutOfRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -41,12 +43,13 @@ type BACnetNotificationParametersDoubleOutOfRange interface {
 	GetExceededLimit() BACnetContextTagDouble
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersDoubleOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersDoubleOutOfRange.
+// This is useful for switch cases.
+type BACnetNotificationParametersDoubleOutOfRangeExactly interface {
+	BACnetNotificationParametersDoubleOutOfRange
+	isBACnetNotificationParametersDoubleOutOfRange() bool
 }
 
 // _BACnetNotificationParametersDoubleOutOfRange is the data-structure of this message
@@ -58,10 +61,6 @@ type _BACnetNotificationParametersDoubleOutOfRange struct {
 	Deadband        BACnetContextTagDouble
 	ExceededLimit   BACnetContextTagDouble
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -273,13 +272,16 @@ func BACnetNotificationParametersDoubleOutOfRangeParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersDoubleOutOfRange{
-		InnerOpeningTag:               innerOpeningTag,
-		ExceedingValue:                exceedingValue,
-		StatusFlags:                   statusFlags,
-		Deadband:                      deadband,
-		ExceededLimit:                 exceededLimit,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		ExceedingValue:  exceedingValue,
+		StatusFlags:     statusFlags,
+		Deadband:        deadband,
+		ExceededLimit:   exceededLimit,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -371,6 +373,10 @@ func (m *_BACnetNotificationParametersDoubleOutOfRange) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersDoubleOutOfRange) isBACnetNotificationParametersDoubleOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersDoubleOutOfRange) String() string {

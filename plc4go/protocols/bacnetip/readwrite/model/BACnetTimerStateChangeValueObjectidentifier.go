@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueObjectidentifier is the corresponding interface of BACnetTimerStateChangeValueObjectidentifier
 type BACnetTimerStateChangeValueObjectidentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueObjectidentifier.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueObjectidentifierExactly interface {
+	BACnetTimerStateChangeValueObjectidentifier
+	isBACnetTimerStateChangeValueObjectidentifier() bool
 }
 
 // _BACnetTimerStateChangeValueObjectidentifier is the data-structure of this message
 type _BACnetTimerStateChangeValueObjectidentifier struct {
 	*_BACnetTimerStateChangeValue
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueObjectidentifierParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueObjectidentifier{
-		ObjectidentifierValue:        objectidentifierValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		ObjectidentifierValue: objectidentifierValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueObjectidentifier) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueObjectidentifier) isBACnetTimerStateChangeValueObjectidentifier() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueObjectidentifier) String() string {

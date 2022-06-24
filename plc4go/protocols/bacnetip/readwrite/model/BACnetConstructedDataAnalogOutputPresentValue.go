@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAnalogOutputPresentValue is the corresponding interface of BACnetConstructedDataAnalogOutputPresentValue
 type BACnetConstructedDataAnalogOutputPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAnalogOutputPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogOutputPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAnalogOutputPresentValueExactly interface {
+	BACnetConstructedDataAnalogOutputPresentValue
+	isBACnetConstructedDataAnalogOutputPresentValue() bool
 }
 
 // _BACnetConstructedDataAnalogOutputPresentValue is the data-structure of this message
 type _BACnetConstructedDataAnalogOutputPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAnalogOutputPresentValueParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAnalogOutputPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAnalogOutputPresentValue) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAnalogOutputPresentValue) isBACnetConstructedDataAnalogOutputPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAnalogOutputPresentValue) String() string {

@@ -28,14 +28,17 @@ import (
 
 // CipService is the corresponding interface of CipService
 type CipService interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetService returns Service (discriminator field)
 	GetService() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipServiceExactly can be used when we want exactly this type and not a type which fulfills CipService.
+// This is useful for switch cases.
+type CipServiceExactly interface {
+	CipService
+	isCipService() bool
 }
 
 // _CipService is the data-structure of this message
@@ -47,10 +50,10 @@ type _CipService struct {
 }
 
 type _CipServiceChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetService() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type CipServiceParent interface {
@@ -59,7 +62,7 @@ type CipServiceParent interface {
 }
 
 type CipServiceChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent CipService)
 	GetParent() *CipService
 
@@ -183,6 +186,10 @@ func (pm *_CipService) SerializeParent(writeBuffer utils.WriteBuffer, child CipS
 		return errors.Wrap(popErr, "Error popping for CipService")
 	}
 	return nil
+}
+
+func (m *_CipService) isCipService() bool {
+	return true
 }
 
 func (m *_CipService) String() string {

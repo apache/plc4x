@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProcessIdentifier is the corresponding interface of BACnetConstructedDataProcessIdentifier
 type BACnetConstructedDataProcessIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProcessIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProcessIdentifier.
+// This is useful for switch cases.
+type BACnetConstructedDataProcessIdentifierExactly interface {
+	BACnetConstructedDataProcessIdentifier
+	isBACnetConstructedDataProcessIdentifier() bool
 }
 
 // _BACnetConstructedDataProcessIdentifier is the data-structure of this message
 type _BACnetConstructedDataProcessIdentifier struct {
 	*_BACnetConstructedData
 	ProcessIdentifier BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataProcessIdentifierParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProcessIdentifier{
-		ProcessIdentifier:      processIdentifier,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ProcessIdentifier: processIdentifier,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProcessIdentifier) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProcessIdentifier) isBACnetConstructedDataProcessIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProcessIdentifier) String() string {

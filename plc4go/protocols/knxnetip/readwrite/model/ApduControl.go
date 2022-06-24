@@ -28,14 +28,17 @@ import (
 
 // ApduControl is the corresponding interface of ApduControl
 type ApduControl interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetControlType returns ControlType (discriminator field)
 	GetControlType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduControlExactly can be used when we want exactly this type and not a type which fulfills ApduControl.
+// This is useful for switch cases.
+type ApduControlExactly interface {
+	ApduControl
+	isApduControl() bool
 }
 
 // _ApduControl is the data-structure of this message
@@ -44,10 +47,10 @@ type _ApduControl struct {
 }
 
 type _ApduControlChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetControlType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ApduControlParent interface {
@@ -56,7 +59,7 @@ type ApduControlParent interface {
 }
 
 type ApduControlChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ApduControl)
 	GetParent() *ApduControl
 
@@ -174,6 +177,10 @@ func (pm *_ApduControl) SerializeParent(writeBuffer utils.WriteBuffer, child Apd
 		return errors.Wrap(popErr, "Error popping for ApduControl")
 	}
 	return nil
+}
+
+func (m *_ApduControl) isApduControl() bool {
+	return true
 }
 
 func (m *_ApduControl) String() string {

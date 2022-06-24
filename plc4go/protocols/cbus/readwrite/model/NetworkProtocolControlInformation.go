@@ -29,16 +29,19 @@ import (
 
 // NetworkProtocolControlInformation is the corresponding interface of NetworkProtocolControlInformation
 type NetworkProtocolControlInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetStackCounter returns StackCounter (property field)
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
 	GetStackDepth() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NetworkProtocolControlInformationExactly can be used when we want exactly this type and not a type which fulfills NetworkProtocolControlInformation.
+// This is useful for switch cases.
+type NetworkProtocolControlInformationExactly interface {
+	NetworkProtocolControlInformation
+	isNetworkProtocolControlInformation() bool
 }
 
 // _NetworkProtocolControlInformation is the data-structure of this message
@@ -186,6 +189,10 @@ func (m *_NetworkProtocolControlInformation) Serialize(writeBuffer utils.WriteBu
 		return errors.Wrap(popErr, "Error popping for NetworkProtocolControlInformation")
 	}
 	return nil
+}
+
+func (m *_NetworkProtocolControlInformation) isNetworkProtocolControlInformation() bool {
+	return true
 }
 
 func (m *_NetworkProtocolControlInformation) String() string {

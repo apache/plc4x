@@ -28,17 +28,20 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRangeByTime is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRangeByTime
 type BACnetConfirmedServiceRequestReadRangeRangeByTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceTime returns ReferenceTime (property field)
 	GetReferenceTime() BACnetDateTime
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestReadRangeRangeByTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeByTime.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeByTimeExactly interface {
+	BACnetConfirmedServiceRequestReadRangeRangeByTime
+	isBACnetConfirmedServiceRequestReadRangeRangeByTime() bool
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeByTime is the data-structure of this message
@@ -219,6 +222,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) isBACnetConfirmedServiceRequestReadRangeRangeByTime() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) String() string {

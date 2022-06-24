@@ -29,24 +29,24 @@ import (
 
 // CBusPointToPointCommandDirect is the corresponding interface of CBusPointToPointCommandDirect
 type CBusPointToPointCommandDirect interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusPointToPointCommand
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusPointToPointCommandDirectExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommandDirect.
+// This is useful for switch cases.
+type CBusPointToPointCommandDirectExactly interface {
+	CBusPointToPointCommandDirect
+	isCBusPointToPointCommandDirect() bool
 }
 
 // _CBusPointToPointCommandDirect is the data-structure of this message
 type _CBusPointToPointCommandDirect struct {
 	*_CBusPointToPointCommand
 	UnitAddress UnitAddress
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -172,8 +172,10 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, srchk bool)
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToPointCommandDirect{
-		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: &_CBusPointToPointCommand{},
+		UnitAddress: unitAddress,
+		_CBusPointToPointCommand: &_CBusPointToPointCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child
 	return _child, nil
@@ -213,6 +215,10 @@ func (m *_CBusPointToPointCommandDirect) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusPointToPointCommandDirect) isCBusPointToPointCommandDirect() bool {
+	return true
 }
 
 func (m *_CBusPointToPointCommandDirect) String() string {

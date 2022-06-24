@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataTrendLogMultipleLogBuffer is the corresponding interface of BACnetConstructedDataTrendLogMultipleLogBuffer
 type BACnetConstructedDataTrendLogMultipleLogBuffer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogMultipleRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTrendLogMultipleLogBufferExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogMultipleLogBuffer.
+// This is useful for switch cases.
+type BACnetConstructedDataTrendLogMultipleLogBufferExactly interface {
+	BACnetConstructedDataTrendLogMultipleLogBuffer
+	isBACnetConstructedDataTrendLogMultipleLogBuffer() bool
 }
 
 // _BACnetConstructedDataTrendLogMultipleLogBuffer is the data-structure of this message
 type _BACnetConstructedDataTrendLogMultipleLogBuffer struct {
 	*_BACnetConstructedData
 	FloorText []BACnetLogMultipleRecord
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataTrendLogMultipleLogBufferParse(readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for floorText")
 	}
 	// Terminated array
-	floorText := make([]BACnetLogMultipleRecord, 0)
+	var floorText []BACnetLogMultipleRecord
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLogMultipleRecordParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataTrendLogMultipleLogBufferParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
-		FloorText:              floorText,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FloorText: floorText,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) Serialize(writeBuffer 
 		}
 
 		// Array Field (floorText)
-		if m.GetFloorText() != nil {
-			if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for floorText")
+		if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for floorText")
+		}
+		for _, _element := range m.GetFloorText() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
 			}
-			for _, _element := range m.GetFloorText() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for floorText")
-			}
+		}
+		if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for floorText")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTrendLogMultipleLogBuffer"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) isBACnetConstructedDataTrendLogMultipleLogBuffer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) String() string {

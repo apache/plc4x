@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataSecurityTimeWindow is the corresponding interface of BACnetConstructedDataSecurityTimeWindow
 type BACnetConstructedDataSecurityTimeWindow interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSecurityTimeWindow returns SecurityTimeWindow (property field)
 	GetSecurityTimeWindow() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSecurityTimeWindowExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSecurityTimeWindow.
+// This is useful for switch cases.
+type BACnetConstructedDataSecurityTimeWindowExactly interface {
+	BACnetConstructedDataSecurityTimeWindow
+	isBACnetConstructedDataSecurityTimeWindow() bool
 }
 
 // _BACnetConstructedDataSecurityTimeWindow is the data-structure of this message
 type _BACnetConstructedDataSecurityTimeWindow struct {
 	*_BACnetConstructedData
 	SecurityTimeWindow BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSecurityTimeWindow{
-		SecurityTimeWindow:     securityTimeWindow,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		SecurityTimeWindow: securityTimeWindow,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindow) isBACnetConstructedDataSecurityTimeWindow() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) String() string {

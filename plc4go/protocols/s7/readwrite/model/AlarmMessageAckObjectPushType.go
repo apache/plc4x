@@ -32,6 +32,8 @@ const AlarmMessageAckObjectPushType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageAckObjectPushType is the corresponding interface of AlarmMessageAckObjectPushType
 type AlarmMessageAckObjectPushType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -44,12 +46,13 @@ type AlarmMessageAckObjectPushType interface {
 	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() State
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AlarmMessageAckObjectPushTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageAckObjectPushType.
+// This is useful for switch cases.
+type AlarmMessageAckObjectPushTypeExactly interface {
+	AlarmMessageAckObjectPushType
+	isAlarmMessageAckObjectPushType() bool
 }
 
 // _AlarmMessageAckObjectPushType is the data-structure of this message
@@ -324,6 +327,10 @@ func (m *_AlarmMessageAckObjectPushType) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for AlarmMessageAckObjectPushType")
 	}
 	return nil
+}
+
+func (m *_AlarmMessageAckObjectPushType) isAlarmMessageAckObjectPushType() bool {
+	return true
 }
 
 func (m *_AlarmMessageAckObjectPushType) String() string {

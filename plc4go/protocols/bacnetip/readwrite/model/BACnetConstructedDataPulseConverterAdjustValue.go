@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPulseConverterAdjustValue is the corresponding interface of BACnetConstructedDataPulseConverterAdjustValue
 type BACnetConstructedDataPulseConverterAdjustValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPulseConverterAdjustValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseConverterAdjustValue.
+// This is useful for switch cases.
+type BACnetConstructedDataPulseConverterAdjustValueExactly interface {
+	BACnetConstructedDataPulseConverterAdjustValue
+	isBACnetConstructedDataPulseConverterAdjustValue() bool
 }
 
 // _BACnetConstructedDataPulseConverterAdjustValue is the data-structure of this message
 type _BACnetConstructedDataPulseConverterAdjustValue struct {
 	*_BACnetConstructedData
 	AdjustValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPulseConverterAdjustValueParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPulseConverterAdjustValue{
-		AdjustValue:            adjustValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AdjustValue: adjustValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) isBACnetConstructedDataPulseConverterAdjustValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) String() string {

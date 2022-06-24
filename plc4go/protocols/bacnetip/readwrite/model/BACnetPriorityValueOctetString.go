@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueOctetString is the corresponding interface of BACnetPriorityValueOctetString
 type BACnetPriorityValueOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueOctetString.
+// This is useful for switch cases.
+type BACnetPriorityValueOctetStringExactly interface {
+	BACnetPriorityValueOctetString
+	isBACnetPriorityValueOctetString() bool
 }
 
 // _BACnetPriorityValueOctetString is the data-structure of this message
 type _BACnetPriorityValueOctetString struct {
 	*_BACnetPriorityValue
 	OctetStringValue BACnetApplicationTagOctetString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueOctetStringParse(readBuffer utils.ReadBuffer, objectType
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueOctetString{
-		OctetStringValue:     octetStringValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		OctetStringValue: octetStringValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueOctetString) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueOctetString) isBACnetPriorityValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueOctetString) String() string {

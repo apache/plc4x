@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFullDutyBaseline is the corresponding interface of BACnetConstructedDataFullDutyBaseline
 type BACnetConstructedDataFullDutyBaseline interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFullDutyBaseLine returns FullDutyBaseLine (property field)
 	GetFullDutyBaseLine() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFullDutyBaselineExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFullDutyBaseline.
+// This is useful for switch cases.
+type BACnetConstructedDataFullDutyBaselineExactly interface {
+	BACnetConstructedDataFullDutyBaseline
+	isBACnetConstructedDataFullDutyBaseline() bool
 }
 
 // _BACnetConstructedDataFullDutyBaseline is the data-structure of this message
 type _BACnetConstructedDataFullDutyBaseline struct {
 	*_BACnetConstructedData
 	FullDutyBaseLine BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataFullDutyBaselineParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFullDutyBaseline{
-		FullDutyBaseLine:       fullDutyBaseLine,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FullDutyBaseLine: fullDutyBaseLine,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFullDutyBaseline) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFullDutyBaseline) isBACnetConstructedDataFullDutyBaseline() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFullDutyBaseline) String() string {

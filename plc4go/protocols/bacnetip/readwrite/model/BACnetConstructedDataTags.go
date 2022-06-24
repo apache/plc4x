@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataTags is the corresponding interface of BACnetConstructedDataTags
 type BACnetConstructedDataTags interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataTags interface {
 	GetTags() []BACnetNameValue
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTagsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTags.
+// This is useful for switch cases.
+type BACnetConstructedDataTagsExactly interface {
+	BACnetConstructedDataTags
+	isBACnetConstructedDataTags() bool
 }
 
 // _BACnetConstructedDataTags is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataTags struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	Tags                 []BACnetNameValue
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataTagsParse(readBuffer utils.ReadBuffer, tagNumber uint8
 		return nil, errors.Wrap(pullErr, "Error pulling for tags")
 	}
 	// Terminated array
-	tags := make([]BACnetNameValue, 0)
+	var tags []BACnetNameValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNameValueParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataTagsParse(readBuffer utils.ReadBuffer, tagNumber uint8
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTags{
-		NumberOfDataElements:   numberOfDataElements,
-		Tags:                   tags,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		Tags:                 tags,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataTags) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		// Array Field (tags)
-		if m.GetTags() != nil {
-			if pushErr := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for tags")
+		if pushErr := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for tags")
+		}
+		for _, _element := range m.GetTags() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'tags' field")
 			}
-			for _, _element := range m.GetTags() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'tags' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("tags", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for tags")
-			}
+		}
+		if popErr := writeBuffer.PopContext("tags", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for tags")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTags"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataTags) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTags) isBACnetConstructedDataTags() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTags) String() string {

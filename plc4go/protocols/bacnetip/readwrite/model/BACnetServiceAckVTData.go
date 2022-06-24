@@ -28,6 +28,8 @@ import (
 
 // BACnetServiceAckVTData is the corresponding interface of BACnetServiceAckVTData
 type BACnetServiceAckVTData interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -35,12 +37,13 @@ type BACnetServiceAckVTData interface {
 	GetVtNewData() BACnetApplicationTagOctetString
 	// GetVtDataFlag returns VtDataFlag (property field)
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckVTDataExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckVTData.
+// This is useful for switch cases.
+type BACnetServiceAckVTDataExactly interface {
+	BACnetServiceAckVTData
+	isBACnetServiceAckVTData() bool
 }
 
 // _BACnetServiceAckVTData is the data-structure of this message
@@ -49,9 +52,6 @@ type _BACnetServiceAckVTData struct {
 	VtSessionIdentifier BACnetApplicationTagUnsignedInteger
 	VtNewData           BACnetApplicationTagOctetString
 	VtDataFlag          BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -203,7 +203,9 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength u
 		VtSessionIdentifier: vtSessionIdentifier,
 		VtNewData:           vtNewData,
 		VtDataFlag:          vtDataFlag,
-		_BACnetServiceAck:   &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -259,6 +261,10 @@ func (m *_BACnetServiceAckVTData) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckVTData) isBACnetServiceAckVTData() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckVTData) String() string {

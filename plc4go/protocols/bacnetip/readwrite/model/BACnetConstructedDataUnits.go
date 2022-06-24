@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataUnits is the corresponding interface of BACnetConstructedDataUnits
 type BACnetConstructedDataUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataUnitsExactly interface {
+	BACnetConstructedDataUnits
+	isBACnetConstructedDataUnits() bool
 }
 
 // _BACnetConstructedDataUnits is the data-structure of this message
 type _BACnetConstructedDataUnits struct {
 	*_BACnetConstructedData
 	Units BACnetEngineeringUnitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataUnitsParse(readBuffer utils.ReadBuffer, tagNumber uint
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUnits{
-		Units:                  units,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Units: units,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataUnits) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUnits) isBACnetConstructedDataUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUnits) String() string {

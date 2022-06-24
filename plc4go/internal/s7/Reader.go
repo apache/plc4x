@@ -99,7 +99,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			log.Trace().Msg("Send ")
 			if err := m.messageCodec.SendRequest(
 				tpktPacket,
-				func(message interface{}) bool {
+				func(message spi.Message) bool {
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					if tpktPacket == nil {
 						return false
@@ -114,7 +114,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 					}
 					return payload.GetTpduReference() == tpduId
 				},
-				func(message interface{}) error {
+				func(message spi.Message) error {
 					// Convert the response into an
 					log.Trace().Msg("convert response to ")
 					tpktPacket := readWriteModel.CastTPKTPacket(message)

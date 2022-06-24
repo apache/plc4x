@@ -28,21 +28,21 @@ import (
 
 // TDataConnectedReq is the corresponding interface of TDataConnectedReq
 type TDataConnectedReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// TDataConnectedReqExactly can be used when we want exactly this type and not a type which fulfills TDataConnectedReq.
+// This is useful for switch cases.
+type TDataConnectedReqExactly interface {
+	TDataConnectedReq
+	isTDataConnectedReq() bool
 }
 
 // _TDataConnectedReq is the data-structure of this message
 type _TDataConnectedReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func TDataConnectedReqParse(readBuffer utils.ReadBuffer, size uint16) (TDataConn
 
 	// Create a partially initialized instance
 	_child := &_TDataConnectedReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_TDataConnectedReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TDataConnectedReq) isTDataConnectedReq() bool {
+	return true
 }
 
 func (m *_TDataConnectedReq) String() string {

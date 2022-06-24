@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNotifyType is the corresponding interface of BACnetConstructedDataNotifyType
 type BACnetConstructedDataNotifyType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNotifyTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNotifyTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNotifyType.
+// This is useful for switch cases.
+type BACnetConstructedDataNotifyTypeExactly interface {
+	BACnetConstructedDataNotifyType
+	isBACnetConstructedDataNotifyType() bool
 }
 
 // _BACnetConstructedDataNotifyType is the data-structure of this message
 type _BACnetConstructedDataNotifyType struct {
 	*_BACnetConstructedData
 	NotifyType BACnetNotifyTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNotifyType{
-		NotifyType:             notifyType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NotifyType: notifyType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNotifyType) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNotifyType) isBACnetConstructedDataNotifyType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNotifyType) String() string {

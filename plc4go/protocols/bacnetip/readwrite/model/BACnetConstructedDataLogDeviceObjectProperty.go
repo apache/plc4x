@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLogDeviceObjectProperty is the corresponding interface of BACnetConstructedDataLogDeviceObjectProperty
 type BACnetConstructedDataLogDeviceObjectProperty interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLogDeviceObjectProperty returns LogDeviceObjectProperty (property field)
 	GetLogDeviceObjectProperty() BACnetDeviceObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectPropertyReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLogDeviceObjectPropertyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLogDeviceObjectProperty.
+// This is useful for switch cases.
+type BACnetConstructedDataLogDeviceObjectPropertyExactly interface {
+	BACnetConstructedDataLogDeviceObjectProperty
+	isBACnetConstructedDataLogDeviceObjectProperty() bool
 }
 
 // _BACnetConstructedDataLogDeviceObjectProperty is the data-structure of this message
 type _BACnetConstructedDataLogDeviceObjectProperty struct {
 	*_BACnetConstructedData
 	LogDeviceObjectProperty BACnetDeviceObjectPropertyReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataLogDeviceObjectPropertyParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLogDeviceObjectProperty{
 		LogDeviceObjectProperty: logDeviceObjectProperty,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) isBACnetConstructedDataLogDeviceObjectProperty() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLogDeviceObjectProperty) String() string {

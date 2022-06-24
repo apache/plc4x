@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueBitString is the corresponding interface of BACnetChannelValueBitString
 type BACnetChannelValueBitString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueBitString.
+// This is useful for switch cases.
+type BACnetChannelValueBitStringExactly interface {
+	BACnetChannelValueBitString
+	isBACnetChannelValueBitString() bool
 }
 
 // _BACnetChannelValueBitString is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueBitString) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueBitString) isBACnetChannelValueBitString() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueBitString) String() string {

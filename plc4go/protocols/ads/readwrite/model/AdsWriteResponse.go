@@ -28,15 +28,18 @@ import (
 
 // AdsWriteResponse is the corresponding interface of AdsWriteResponse
 type AdsWriteResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsWriteResponseExactly can be used when we want exactly this type and not a type which fulfills AdsWriteResponse.
+// This is useful for switch cases.
+type AdsWriteResponseExactly interface {
+	AdsWriteResponse
+	isAdsWriteResponse() bool
 }
 
 // _AdsWriteResponse is the data-structure of this message
@@ -186,6 +189,10 @@ func (m *_AdsWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsWriteResponse) isAdsWriteResponse() bool {
+	return true
 }
 
 func (m *_AdsWriteResponse) String() string {

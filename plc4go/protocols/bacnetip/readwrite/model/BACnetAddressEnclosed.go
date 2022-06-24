@@ -28,18 +28,21 @@ import (
 
 // BACnetAddressEnclosed is the corresponding interface of BACnetAddressEnclosed
 type BACnetAddressEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddress
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAddressEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetAddressEnclosed.
+// This is useful for switch cases.
+type BACnetAddressEnclosedExactly interface {
+	BACnetAddressEnclosed
+	isBACnetAddressEnclosed() bool
 }
 
 // _BACnetAddressEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_BACnetAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetAddressEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetAddressEnclosed) isBACnetAddressEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetAddressEnclosed) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOV is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOV
 type BACnetConfirmedServiceRequestSubscribeCOV interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -39,12 +41,13 @@ type BACnetConfirmedServiceRequestSubscribeCOV interface {
 	GetIssueConfirmed() BACnetContextTagBoolean
 	// GetLifetimeInSeconds returns LifetimeInSeconds (property field)
 	GetLifetimeInSeconds() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestSubscribeCOVExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestSubscribeCOV.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestSubscribeCOVExactly interface {
+	BACnetConfirmedServiceRequestSubscribeCOV
+	isBACnetConfirmedServiceRequestSubscribeCOV() bool
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOV is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetConfirmedServiceRequestSubscribeCOV struct {
 	MonitoredObjectIdentifier   BACnetContextTagObjectIdentifier
 	IssueConfirmed              BACnetContextTagBoolean
 	LifetimeInSeconds           BACnetContextTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,11 +249,13 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestSubscribeCOV{
-		SubscriberProcessIdentifier:    subscriberProcessIdentifier,
-		MonitoredObjectIdentifier:      monitoredObjectIdentifier,
-		IssueConfirmed:                 issueConfirmed,
-		LifetimeInSeconds:              lifetimeInSeconds,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		SubscriberProcessIdentifier: subscriberProcessIdentifier,
+		MonitoredObjectIdentifier:   monitoredObjectIdentifier,
+		IssueConfirmed:              issueConfirmed,
+		LifetimeInSeconds:           lifetimeInSeconds,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -329,6 +331,10 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) isBACnetConfirmedServiceRequestSubscribeCOV() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOV) String() string {

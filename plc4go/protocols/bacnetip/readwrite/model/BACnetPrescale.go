@@ -28,16 +28,19 @@ import (
 
 // BACnetPrescale is the corresponding interface of BACnetPrescale
 type BACnetPrescale interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMultiplier returns Multiplier (property field)
 	GetMultiplier() BACnetContextTagUnsignedInteger
 	// GetModuloDivide returns ModuloDivide (property field)
 	GetModuloDivide() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPrescaleExactly can be used when we want exactly this type and not a type which fulfills BACnetPrescale.
+// This is useful for switch cases.
+type BACnetPrescaleExactly interface {
+	BACnetPrescale
+	isBACnetPrescale() bool
 }
 
 // _BACnetPrescale is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetPrescale) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPrescale")
 	}
 	return nil
+}
+
+func (m *_BACnetPrescale) isBACnetPrescale() bool {
+	return true
 }
 
 func (m *_BACnetPrescale) String() string {

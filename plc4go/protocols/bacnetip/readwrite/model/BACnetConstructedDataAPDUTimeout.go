@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAPDUTimeout is the corresponding interface of BACnetConstructedDataAPDUTimeout
 type BACnetConstructedDataAPDUTimeout interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetApduTimeout returns ApduTimeout (property field)
 	GetApduTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAPDUTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDUTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataAPDUTimeoutExactly interface {
+	BACnetConstructedDataAPDUTimeout
+	isBACnetConstructedDataAPDUTimeout() bool
 }
 
 // _BACnetConstructedDataAPDUTimeout is the data-structure of this message
 type _BACnetConstructedDataAPDUTimeout struct {
 	*_BACnetConstructedData
 	ApduTimeout BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAPDUTimeoutParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAPDUTimeout{
-		ApduTimeout:            apduTimeout,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ApduTimeout: apduTimeout,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAPDUTimeout) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAPDUTimeout) isBACnetConstructedDataAPDUTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAPDUTimeout) String() string {

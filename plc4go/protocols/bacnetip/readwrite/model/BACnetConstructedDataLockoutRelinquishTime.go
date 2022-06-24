@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLockoutRelinquishTime is the corresponding interface of BACnetConstructedDataLockoutRelinquishTime
 type BACnetConstructedDataLockoutRelinquishTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLockoutRelinquishTime returns LockoutRelinquishTime (property field)
 	GetLockoutRelinquishTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLockoutRelinquishTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLockoutRelinquishTime.
+// This is useful for switch cases.
+type BACnetConstructedDataLockoutRelinquishTimeExactly interface {
+	BACnetConstructedDataLockoutRelinquishTime
+	isBACnetConstructedDataLockoutRelinquishTime() bool
 }
 
 // _BACnetConstructedDataLockoutRelinquishTime is the data-structure of this message
 type _BACnetConstructedDataLockoutRelinquishTime struct {
 	*_BACnetConstructedData
 	LockoutRelinquishTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLockoutRelinquishTime{
-		LockoutRelinquishTime:  lockoutRelinquishTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LockoutRelinquishTime: lockoutRelinquishTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTime) isBACnetConstructedDataLockoutRelinquishTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) String() string {

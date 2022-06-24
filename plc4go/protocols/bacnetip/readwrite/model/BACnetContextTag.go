@@ -28,6 +28,8 @@ import (
 
 // BACnetContextTag is the corresponding interface of BACnetContextTag
 type BACnetContextTag interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDataType returns DataType (discriminator field)
 	GetDataType() BACnetDataType
 	// GetHeader returns Header (property field)
@@ -36,12 +38,13 @@ type BACnetContextTag interface {
 	GetTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTag.
+// This is useful for switch cases.
+type BACnetContextTagExactly interface {
+	BACnetContextTag
+	isBACnetContextTag() bool
 }
 
 // _BACnetContextTag is the data-structure of this message
@@ -54,10 +57,10 @@ type _BACnetContextTag struct {
 }
 
 type _BACnetContextTagChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetDataType() BACnetDataType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetContextTagParent interface {
@@ -66,7 +69,7 @@ type BACnetContextTagParent interface {
 }
 
 type BACnetContextTagChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetContextTag, header BACnetTagHeader)
 	GetParent() *BACnetContextTag
 
@@ -284,6 +287,10 @@ func (pm *_BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, chil
 		return errors.Wrap(popErr, "Error popping for BACnetContextTag")
 	}
 	return nil
+}
+
+func (m *_BACnetContextTag) isBACnetContextTag() bool {
+	return true
 }
 
 func (m *_BACnetContextTag) String() string {

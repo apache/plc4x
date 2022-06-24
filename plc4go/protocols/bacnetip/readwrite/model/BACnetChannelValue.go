@@ -28,18 +28,21 @@ import (
 
 // BACnetChannelValue is the corresponding interface of BACnetChannelValue
 type BACnetChannelValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValue.
+// This is useful for switch cases.
+type BACnetChannelValueExactly interface {
+	BACnetChannelValue
+	isBACnetChannelValue() bool
 }
 
 // _BACnetChannelValue is the data-structure of this message
@@ -49,9 +52,9 @@ type _BACnetChannelValue struct {
 }
 
 type _BACnetChannelValueChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetChannelValueParent interface {
@@ -60,7 +63,7 @@ type BACnetChannelValueParent interface {
 }
 
 type BACnetChannelValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetChannelValue, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetChannelValue
 
@@ -248,6 +251,10 @@ func (pm *_BACnetChannelValue) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(popErr, "Error popping for BACnetChannelValue")
 	}
 	return nil
+}
+
+func (m *_BACnetChannelValue) isBACnetChannelValue() bool {
+	return true
 }
 
 func (m *_BACnetChannelValue) String() string {

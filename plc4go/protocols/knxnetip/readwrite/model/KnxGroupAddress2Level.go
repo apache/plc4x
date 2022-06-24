@@ -28,17 +28,20 @@ import (
 
 // KnxGroupAddress2Level is the corresponding interface of KnxGroupAddress2Level
 type KnxGroupAddress2Level interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxGroupAddress
 	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// KnxGroupAddress2LevelExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddress2Level.
+// This is useful for switch cases.
+type KnxGroupAddress2LevelExactly interface {
+	KnxGroupAddress2Level
+	isKnxGroupAddress2Level() bool
 }
 
 // _KnxGroupAddress2Level is the data-structure of this message
@@ -197,6 +200,10 @@ func (m *_KnxGroupAddress2Level) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxGroupAddress2Level) isKnxGroupAddress2Level() bool {
+	return true
 }
 
 func (m *_KnxGroupAddress2Level) String() string {

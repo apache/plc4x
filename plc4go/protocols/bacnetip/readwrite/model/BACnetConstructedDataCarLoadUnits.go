@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCarLoadUnits is the corresponding interface of BACnetConstructedDataCarLoadUnits
 type BACnetConstructedDataCarLoadUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCarLoadUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarLoadUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataCarLoadUnitsExactly interface {
+	BACnetConstructedDataCarLoadUnits
+	isBACnetConstructedDataCarLoadUnits() bool
 }
 
 // _BACnetConstructedDataCarLoadUnits is the data-structure of this message
 type _BACnetConstructedDataCarLoadUnits struct {
 	*_BACnetConstructedData
 	Units BACnetEngineeringUnitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCarLoadUnitsParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCarLoadUnits{
-		Units:                  units,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Units: units,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCarLoadUnits) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarLoadUnits) isBACnetConstructedDataCarLoadUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarLoadUnits) String() string {

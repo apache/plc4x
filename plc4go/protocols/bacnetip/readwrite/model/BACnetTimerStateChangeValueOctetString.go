@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueOctetString is the corresponding interface of BACnetTimerStateChangeValueOctetString
 type BACnetTimerStateChangeValueOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueOctetString.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueOctetStringExactly interface {
+	BACnetTimerStateChangeValueOctetString
+	isBACnetTimerStateChangeValueOctetString() bool
 }
 
 // _BACnetTimerStateChangeValueOctetString is the data-structure of this message
 type _BACnetTimerStateChangeValueOctetString struct {
 	*_BACnetTimerStateChangeValue
 	OctetStringValue BACnetApplicationTagOctetString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueOctetStringParse(readBuffer utils.ReadBuffer, ob
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueOctetString{
-		OctetStringValue:             octetStringValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		OctetStringValue: octetStringValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueOctetString) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueOctetString) isBACnetTimerStateChangeValueOctetString() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueOctetString) String() string {

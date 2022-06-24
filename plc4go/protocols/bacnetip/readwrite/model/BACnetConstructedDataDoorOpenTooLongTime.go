@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDoorOpenTooLongTime is the corresponding interface of BACnetConstructedDataDoorOpenTooLongTime
 type BACnetConstructedDataDoorOpenTooLongTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDoorOpenTooLongTime returns DoorOpenTooLongTime (property field)
 	GetDoorOpenTooLongTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDoorOpenTooLongTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorOpenTooLongTime.
+// This is useful for switch cases.
+type BACnetConstructedDataDoorOpenTooLongTimeExactly interface {
+	BACnetConstructedDataDoorOpenTooLongTime
+	isBACnetConstructedDataDoorOpenTooLongTime() bool
 }
 
 // _BACnetConstructedDataDoorOpenTooLongTime is the data-structure of this message
 type _BACnetConstructedDataDoorOpenTooLongTime struct {
 	*_BACnetConstructedData
 	DoorOpenTooLongTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDoorOpenTooLongTime{
-		DoorOpenTooLongTime:    doorOpenTooLongTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DoorOpenTooLongTime: doorOpenTooLongTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) isBACnetConstructedDataDoorOpenTooLongTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoorOpenTooLongTime) String() string {

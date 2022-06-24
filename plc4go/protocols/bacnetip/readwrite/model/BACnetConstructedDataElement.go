@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataElement is the corresponding interface of BACnetConstructedDataElement
 type BACnetConstructedDataElement interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetApplicationTag returns ApplicationTag (property field)
@@ -46,12 +48,13 @@ type BACnetConstructedDataElement interface {
 	GetIsConstructedData() bool
 	// GetIsContextTag returns IsContextTag (virtual field)
 	GetIsContextTag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataElementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElement.
+// This is useful for switch cases.
+type BACnetConstructedDataElementExactly interface {
+	BACnetConstructedDataElement
+	isBACnetConstructedDataElement() bool
 }
 
 // _BACnetConstructedDataElement is the data-structure of this message
@@ -395,6 +398,10 @@ func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetConstructedDataElement")
 	}
 	return nil
+}
+
+func (m *_BACnetConstructedDataElement) isBACnetConstructedDataElement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataElement) String() string {

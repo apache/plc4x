@@ -28,15 +28,18 @@ import (
 
 // KnxNetIpTunneling is the corresponding interface of KnxNetIpTunneling
 type KnxNetIpTunneling interface {
+	utils.LengthAware
+	utils.Serializable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// KnxNetIpTunnelingExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpTunneling.
+// This is useful for switch cases.
+type KnxNetIpTunnelingExactly interface {
+	KnxNetIpTunneling
+	isKnxNetIpTunneling() bool
 }
 
 // _KnxNetIpTunneling is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetIpTunneling) isKnxNetIpTunneling() bool {
+	return true
 }
 
 func (m *_KnxNetIpTunneling) String() string {

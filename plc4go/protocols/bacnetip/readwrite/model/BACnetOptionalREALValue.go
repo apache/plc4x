@@ -28,15 +28,18 @@ import (
 
 // BACnetOptionalREALValue is the corresponding interface of BACnetOptionalREALValue
 type BACnetOptionalREALValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetOptionalREAL
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetOptionalREALValueExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREALValue.
+// This is useful for switch cases.
+type BACnetOptionalREALValueExactly interface {
+	BACnetOptionalREALValue
+	isBACnetOptionalREALValue() bool
 }
 
 // _BACnetOptionalREALValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetOptionalREALValue) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetOptionalREALValue) isBACnetOptionalREALValue() bool {
+	return true
 }
 
 func (m *_BACnetOptionalREALValue) String() string {

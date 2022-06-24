@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIsUTC is the corresponding interface of BACnetConstructedDataIsUTC
 type BACnetConstructedDataIsUTC interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIsUtc returns IsUtc (property field)
 	GetIsUtc() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIsUTCExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIsUTC.
+// This is useful for switch cases.
+type BACnetConstructedDataIsUTCExactly interface {
+	BACnetConstructedDataIsUTC
+	isBACnetConstructedDataIsUTC() bool
 }
 
 // _BACnetConstructedDataIsUTC is the data-structure of this message
 type _BACnetConstructedDataIsUTC struct {
 	*_BACnetConstructedData
 	IsUtc BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataIsUTCParse(readBuffer utils.ReadBuffer, tagNumber uint
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIsUTC{
-		IsUtc:                  isUtc,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		IsUtc: isUtc,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIsUTC) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIsUTC) isBACnetConstructedDataIsUTC() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIsUTC) String() string {

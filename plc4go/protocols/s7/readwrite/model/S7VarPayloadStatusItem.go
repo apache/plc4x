@@ -28,14 +28,17 @@ import (
 
 // S7VarPayloadStatusItem is the corresponding interface of S7VarPayloadStatusItem
 type S7VarPayloadStatusItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7VarPayloadStatusItemExactly can be used when we want exactly this type and not a type which fulfills S7VarPayloadStatusItem.
+// This is useful for switch cases.
+type S7VarPayloadStatusItemExactly interface {
+	S7VarPayloadStatusItem
+	isS7VarPayloadStatusItem() bool
 }
 
 // _S7VarPayloadStatusItem is the data-structure of this message
@@ -147,6 +150,10 @@ func (m *_S7VarPayloadStatusItem) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for S7VarPayloadStatusItem")
 	}
 	return nil
+}
+
+func (m *_S7VarPayloadStatusItem) isS7VarPayloadStatusItem() bool {
+	return true
 }
 
 func (m *_S7VarPayloadStatusItem) String() string {

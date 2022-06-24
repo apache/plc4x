@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueHighLimit is the corresponding interface of BACnetConstructedDataPositiveIntegerValueHighLimit
 type BACnetConstructedDataPositiveIntegerValueHighLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetHighLimit returns HighLimit (property field)
 	GetHighLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPositiveIntegerValueHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueHighLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueHighLimitExactly interface {
+	BACnetConstructedDataPositiveIntegerValueHighLimit
+	isBACnetConstructedDataPositiveIntegerValueHighLimit() bool
 }
 
 // _BACnetConstructedDataPositiveIntegerValueHighLimit is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueHighLimit struct {
 	*_BACnetConstructedData
 	HighLimit BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPositiveIntegerValueHighLimitParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPositiveIntegerValueHighLimit{
-		HighLimit:              highLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		HighLimit: highLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) isBACnetConstructedDataPositiveIntegerValueHighLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) String() string {

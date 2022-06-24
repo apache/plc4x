@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUGetComEventLogResponse is the corresponding interface of ModbusPDUGetComEventLogResponse
 type ModbusPDUGetComEventLogResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStatus returns Status (property field)
 	GetStatus() uint16
@@ -37,12 +39,13 @@ type ModbusPDUGetComEventLogResponse interface {
 	GetMessageCount() uint16
 	// GetEvents returns Events (property field)
 	GetEvents() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUGetComEventLogResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUGetComEventLogResponse.
+// This is useful for switch cases.
+type ModbusPDUGetComEventLogResponseExactly interface {
+	ModbusPDUGetComEventLogResponse
+	isModbusPDUGetComEventLogResponse() bool
 }
 
 // _ModbusPDUGetComEventLogResponse is the data-structure of this message
@@ -263,12 +266,9 @@ func (m *_ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (events)
-		if m.GetEvents() != nil {
-			// Byte Array field (events)
-			_writeArrayErr := writeBuffer.WriteByteArray("events", m.GetEvents())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'events' field")
-			}
+		// Byte Array field (events)
+		if err := writeBuffer.WriteByteArray("events", m.GetEvents()); err != nil {
+			return errors.Wrap(err, "Error serializing 'events' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUGetComEventLogResponse"); popErr != nil {
@@ -277,6 +277,10 @@ func (m *_ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUGetComEventLogResponse) isModbusPDUGetComEventLogResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUGetComEventLogResponse) String() string {

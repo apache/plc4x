@@ -28,24 +28,24 @@ import (
 
 // CBusCommandPointToPoint is the corresponding interface of CBusCommandPointToPoint
 type CBusCommandPointToPoint interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToPointCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusCommandPointToPointExactly can be used when we want exactly this type and not a type which fulfills CBusCommandPointToPoint.
+// This is useful for switch cases.
+type CBusCommandPointToPointExactly interface {
+	CBusCommandPointToPoint
+	isCBusCommandPointToPoint() bool
 }
 
 // _CBusCommandPointToPoint is the data-structure of this message
 type _CBusCommandPointToPoint struct {
 	*_CBusCommand
 	Command CBusPointToPointCommand
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (CBus
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToPoint{
-		Command:      command,
-		_CBusCommand: &_CBusCommand{},
+		Command: command,
+		_CBusCommand: &_CBusCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_CBusCommandPointToPoint) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusCommandPointToPoint) isCBusCommandPointToPoint() bool {
+	return true
 }
 
 func (m *_CBusCommandPointToPoint) String() string {

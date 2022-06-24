@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataGlobalGroupAll is the corresponding interface of BACnetConstructedDataGlobalGroupAll
 type BACnetConstructedDataGlobalGroupAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataGlobalGroupAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGlobalGroupAll.
+// This is useful for switch cases.
+type BACnetConstructedDataGlobalGroupAllExactly interface {
+	BACnetConstructedDataGlobalGroupAll
+	isBACnetConstructedDataGlobalGroupAll() bool
 }
 
 // _BACnetConstructedDataGlobalGroupAll is the data-structure of this message
 type _BACnetConstructedDataGlobalGroupAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataGlobalGroupAllParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataGlobalGroupAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataGlobalGroupAll) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGlobalGroupAll) isBACnetConstructedDataGlobalGroupAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGlobalGroupAll) String() string {

@@ -28,14 +28,17 @@ import (
 
 // BACnetAccessThreatLevel is the corresponding interface of BACnetAccessThreatLevel
 type BACnetAccessThreatLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetThreatLevel returns ThreatLevel (property field)
 	GetThreatLevel() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAccessThreatLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetAccessThreatLevel.
+// This is useful for switch cases.
+type BACnetAccessThreatLevelExactly interface {
+	BACnetAccessThreatLevel
+	isBACnetAccessThreatLevel() bool
 }
 
 // _BACnetAccessThreatLevel is the data-structure of this message
@@ -147,6 +150,10 @@ func (m *_BACnetAccessThreatLevel) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetAccessThreatLevel")
 	}
 	return nil
+}
+
+func (m *_BACnetAccessThreatLevel) isBACnetAccessThreatLevel() bool {
+	return true
 }
 
 func (m *_BACnetAccessThreatLevel) String() string {

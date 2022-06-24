@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataAccessDoorAlarmValues is the corresponding interface of BACnetConstructedDataAccessDoorAlarmValues
 type BACnetConstructedDataAccessDoorAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetDoorAlarmStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessDoorAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoorAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessDoorAlarmValuesExactly interface {
+	BACnetConstructedDataAccessDoorAlarmValues
+	isBACnetConstructedDataAccessDoorAlarmValues() bool
 }
 
 // _BACnetConstructedDataAccessDoorAlarmValues is the data-structure of this message
 type _BACnetConstructedDataAccessDoorAlarmValues struct {
 	*_BACnetConstructedData
 	AlarmValues []BACnetDoorAlarmStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataAccessDoorAlarmValuesParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
 	// Terminated array
-	alarmValues := make([]BACnetDoorAlarmStateTagged, 0)
+	var alarmValues []BACnetDoorAlarmStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDoorAlarmStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -172,8 +171,11 @@ func BACnetConstructedDataAccessDoorAlarmValuesParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessDoorAlarmValues{
-		AlarmValues:            alarmValues,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AlarmValues: alarmValues,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataAccessDoorAlarmValues) Serialize(writeBuffer util
 		}
 
 		// Array Field (alarmValues)
-		if m.GetAlarmValues() != nil {
-			if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alarmValues")
+		if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for alarmValues")
+		}
+		for _, _element := range m.GetAlarmValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
 			}
-			for _, _element := range m.GetAlarmValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alarmValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for alarmValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessDoorAlarmValues"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataAccessDoorAlarmValues) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessDoorAlarmValues) isBACnetConstructedDataAccessDoorAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessDoorAlarmValues) String() string {

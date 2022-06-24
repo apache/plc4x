@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueTime is the corresponding interface of BACnetChannelValueTime
 type BACnetChannelValueTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueTime.
+// This is useful for switch cases.
+type BACnetChannelValueTimeExactly interface {
+	BACnetChannelValueTime
+	isBACnetChannelValueTime() bool
 }
 
 // _BACnetChannelValueTime is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueTime) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueTime) isBACnetChannelValueTime() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueTime) String() string {

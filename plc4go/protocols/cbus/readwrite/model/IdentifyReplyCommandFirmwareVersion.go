@@ -28,15 +28,18 @@ import (
 
 // IdentifyReplyCommandFirmwareVersion is the corresponding interface of IdentifyReplyCommandFirmwareVersion
 type IdentifyReplyCommandFirmwareVersion interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetFirmwareVersion returns FirmwareVersion (property field)
 	GetFirmwareVersion() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandFirmwareVersionExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandFirmwareVersion.
+// This is useful for switch cases.
+type IdentifyReplyCommandFirmwareVersionExactly interface {
+	IdentifyReplyCommandFirmwareVersion
+	isIdentifyReplyCommandFirmwareVersion() bool
 }
 
 // _IdentifyReplyCommandFirmwareVersion is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_IdentifyReplyCommandFirmwareVersion) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersion) isIdentifyReplyCommandFirmwareVersion() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandFirmwareVersion) String() string {

@@ -28,21 +28,21 @@ import (
 
 // TDataIndividualReq is the corresponding interface of TDataIndividualReq
 type TDataIndividualReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// TDataIndividualReqExactly can be used when we want exactly this type and not a type which fulfills TDataIndividualReq.
+// This is useful for switch cases.
+type TDataIndividualReqExactly interface {
+	TDataIndividualReq
+	isTDataIndividualReq() bool
 }
 
 // _TDataIndividualReq is the data-structure of this message
 type _TDataIndividualReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (TDataInd
 
 	// Create a partially initialized instance
 	_child := &_TDataIndividualReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_TDataIndividualReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_TDataIndividualReq) isTDataIndividualReq() bool {
+	return true
 }
 
 func (m *_TDataIndividualReq) String() string {

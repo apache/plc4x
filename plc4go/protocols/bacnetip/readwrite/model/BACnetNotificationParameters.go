@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParameters is the corresponding interface of BACnetNotificationParameters
 type BACnetNotificationParameters interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -36,12 +38,13 @@ type BACnetNotificationParameters interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParameters.
+// This is useful for switch cases.
+type BACnetNotificationParametersExactly interface {
+	BACnetNotificationParameters
+	isBACnetNotificationParameters() bool
 }
 
 // _BACnetNotificationParameters is the data-structure of this message
@@ -57,9 +60,9 @@ type _BACnetNotificationParameters struct {
 }
 
 type _BACnetNotificationParametersChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetNotificationParametersParent interface {
@@ -68,7 +71,7 @@ type BACnetNotificationParametersParent interface {
 }
 
 type BACnetNotificationParametersChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetNotificationParameters, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetNotificationParameters
 
@@ -312,6 +315,10 @@ func (pm *_BACnetNotificationParameters) SerializeParent(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetNotificationParameters")
 	}
 	return nil
+}
+
+func (m *_BACnetNotificationParameters) isBACnetNotificationParameters() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParameters) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDateTimePatternValueRelinquishDefault is the corresponding interface of BACnetConstructedDataDateTimePatternValueRelinquishDefault
 type BACnetConstructedDataDateTimePatternValueRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDateTimePatternValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDateTimePatternValueRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataDateTimePatternValueRelinquishDefaultExactly interface {
+	BACnetConstructedDataDateTimePatternValueRelinquishDefault
+	isBACnetConstructedDataDateTimePatternValueRelinquishDefault() bool
 }
 
 // _BACnetConstructedDataDateTimePatternValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataDateTimePatternValueRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDateTimePatternValueRelinquishDefaultParse(readBuffer 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDateTimePatternValueRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		RelinquishDefault: relinquishDefault,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) Serialize(
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) isBACnetConstructedDataDateTimePatternValueRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) String() string {

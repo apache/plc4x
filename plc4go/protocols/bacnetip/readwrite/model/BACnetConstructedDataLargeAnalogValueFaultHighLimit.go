@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueFaultHighLimit is the corresponding interface of BACnetConstructedDataLargeAnalogValueFaultHighLimit
 type BACnetConstructedDataLargeAnalogValueFaultHighLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultHighLimit returns FaultHighLimit (property field)
 	GetFaultHighLimit() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLargeAnalogValueFaultHighLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueFaultHighLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueFaultHighLimitExactly interface {
+	BACnetConstructedDataLargeAnalogValueFaultHighLimit
+	isBACnetConstructedDataLargeAnalogValueFaultHighLimit() bool
 }
 
 // _BACnetConstructedDataLargeAnalogValueFaultHighLimit is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueFaultHighLimit struct {
 	*_BACnetConstructedData
 	FaultHighLimit BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLargeAnalogValueFaultHighLimitParse(readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLargeAnalogValueFaultHighLimit{
-		FaultHighLimit:         faultHighLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FaultHighLimit: faultHighLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) isBACnetConstructedDataLargeAnalogValueFaultHighLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestCreateObjectObjectSpecifier is the corresponding interface of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetRawObjectType returns RawObjectType (property field)
@@ -44,12 +46,13 @@ type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
 	GetObjectType() BACnetObjectType
 	// GetIsObjectIdentifier returns IsObjectIdentifier (virtual field)
 	GetIsObjectIdentifier() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestCreateObjectObjectSpecifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestCreateObjectObjectSpecifierExactly interface {
+	BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
+	isBACnetConfirmedServiceRequestCreateObjectObjectSpecifier() bool
 }
 
 // _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier is the data-structure of this message
@@ -364,6 +367,10 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) Serialize(wr
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) isBACnetConfirmedServiceRequestCreateObjectObjectSpecifier() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) String() string {

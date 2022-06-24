@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLoopAction is the corresponding interface of BACnetConstructedDataLoopAction
 type BACnetConstructedDataLoopAction interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAction returns Action (property field)
 	GetAction() BACnetActionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetActionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLoopActionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoopAction.
+// This is useful for switch cases.
+type BACnetConstructedDataLoopActionExactly interface {
+	BACnetConstructedDataLoopAction
+	isBACnetConstructedDataLoopAction() bool
 }
 
 // _BACnetConstructedDataLoopAction is the data-structure of this message
 type _BACnetConstructedDataLoopAction struct {
 	*_BACnetConstructedData
 	Action BACnetActionTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLoopActionParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLoopAction{
-		Action:                 action,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Action: action,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLoopAction) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLoopAction) isBACnetConstructedDataLoopAction() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLoopAction) String() string {

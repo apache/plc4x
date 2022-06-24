@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataDatetimepatternValueAll is the corresponding interface of BACnetConstructedDataDatetimepatternValueAll
 type BACnetConstructedDataDatetimepatternValueAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDatetimepatternValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDatetimepatternValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataDatetimepatternValueAllExactly interface {
+	BACnetConstructedDataDatetimepatternValueAll
+	isBACnetConstructedDataDatetimepatternValueAll() bool
 }
 
 // _BACnetConstructedDataDatetimepatternValueAll is the data-structure of this message
 type _BACnetConstructedDataDatetimepatternValueAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataDatetimepatternValueAllParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDatetimepatternValueAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataDatetimepatternValueAll) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDatetimepatternValueAll) isBACnetConstructedDataDatetimepatternValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDatetimepatternValueAll) String() string {

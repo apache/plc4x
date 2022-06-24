@@ -28,16 +28,19 @@ import (
 
 // BACnetServiceAck is the corresponding interface of BACnetServiceAck
 type BACnetServiceAck interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
 	GetServiceAckPayloadLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAck.
+// This is useful for switch cases.
+type BACnetServiceAckExactly interface {
+	BACnetServiceAck
+	isBACnetServiceAck() bool
 }
 
 // _BACnetServiceAck is the data-structure of this message
@@ -49,10 +52,10 @@ type _BACnetServiceAck struct {
 }
 
 type _BACnetServiceAckChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceChoice() BACnetConfirmedServiceChoice
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetServiceAckParent interface {
@@ -61,7 +64,7 @@ type BACnetServiceAckParent interface {
 }
 
 type BACnetServiceAckChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetServiceAck)
 	GetParent() *BACnetServiceAck
 
@@ -239,6 +242,10 @@ func (pm *_BACnetServiceAck) SerializeParent(writeBuffer utils.WriteBuffer, chil
 		return errors.Wrap(popErr, "Error popping for BACnetServiceAck")
 	}
 	return nil
+}
+
+func (m *_BACnetServiceAck) isBACnetServiceAck() bool {
+	return true
 }
 
 func (m *_BACnetServiceAck) String() string {

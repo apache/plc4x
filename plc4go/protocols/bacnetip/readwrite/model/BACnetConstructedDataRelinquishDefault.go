@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataRelinquishDefault is the corresponding interface of BACnetConstructedDataRelinquishDefault
 type BACnetConstructedDataRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataRelinquishDefaultExactly interface {
+	BACnetConstructedDataRelinquishDefault
+	isBACnetConstructedDataRelinquishDefault() bool
 }
 
 // _BACnetConstructedDataRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataRelinquishDefaultParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		RelinquishDefault: relinquishDefault,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataRelinquishDefault) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRelinquishDefault) isBACnetConstructedDataRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRelinquishDefault) String() string {

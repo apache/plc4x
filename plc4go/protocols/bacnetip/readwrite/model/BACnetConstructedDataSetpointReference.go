@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataSetpointReference is the corresponding interface of BACnetConstructedDataSetpointReference
 type BACnetConstructedDataSetpointReference interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSetpointReference returns SetpointReference (property field)
 	GetSetpointReference() BACnetSetpointReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSetpointReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSetpointReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSetpointReference.
+// This is useful for switch cases.
+type BACnetConstructedDataSetpointReferenceExactly interface {
+	BACnetConstructedDataSetpointReference
+	isBACnetConstructedDataSetpointReference() bool
 }
 
 // _BACnetConstructedDataSetpointReference is the data-structure of this message
 type _BACnetConstructedDataSetpointReference struct {
 	*_BACnetConstructedData
 	SetpointReference BACnetSetpointReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSetpointReference{
-		SetpointReference:      setpointReference,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		SetpointReference: setpointReference,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataSetpointReference) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSetpointReference) isBACnetConstructedDataSetpointReference() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSetpointReference) String() string {

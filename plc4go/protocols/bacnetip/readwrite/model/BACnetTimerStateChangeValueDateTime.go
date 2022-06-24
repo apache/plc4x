@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueDateTime is the corresponding interface of BACnetTimerStateChangeValueDateTime
 type BACnetTimerStateChangeValueDateTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueDateTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueDateTime.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueDateTimeExactly interface {
+	BACnetTimerStateChangeValueDateTime
+	isBACnetTimerStateChangeValueDateTime() bool
 }
 
 // _BACnetTimerStateChangeValueDateTime is the data-structure of this message
 type _BACnetTimerStateChangeValueDateTime struct {
 	*_BACnetTimerStateChangeValue
 	DateTimeValue BACnetDateTimeEnclosed
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueDateTimeParse(readBuffer utils.ReadBuffer, objec
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueDateTime{
-		DateTimeValue:                dateTimeValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		DateTimeValue: dateTimeValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueDateTime) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueDateTime) isBACnetTimerStateChangeValueDateTime() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueDateTime) String() string {

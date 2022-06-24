@@ -29,6 +29,8 @@ import (
 
 // AdsAddDeviceNotificationRequest is the corresponding interface of AdsAddDeviceNotificationRequest
 type AdsAddDeviceNotificationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
@@ -42,12 +44,13 @@ type AdsAddDeviceNotificationRequest interface {
 	GetMaxDelay() uint32
 	// GetCycleTime returns CycleTime (property field)
 	GetCycleTime() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsAddDeviceNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills AdsAddDeviceNotificationRequest.
+// This is useful for switch cases.
+type AdsAddDeviceNotificationRequestExactly interface {
+	AdsAddDeviceNotificationRequest
+	isAdsAddDeviceNotificationRequest() bool
 }
 
 // _AdsAddDeviceNotificationRequest is the data-structure of this message
@@ -356,6 +359,10 @@ func (m *_AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsAddDeviceNotificationRequest) isAdsAddDeviceNotificationRequest() bool {
+	return true
 }
 
 func (m *_AdsAddDeviceNotificationRequest) String() string {

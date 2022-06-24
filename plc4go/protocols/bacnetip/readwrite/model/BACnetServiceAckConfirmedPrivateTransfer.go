@@ -30,6 +30,8 @@ import (
 
 // BACnetServiceAckConfirmedPrivateTransfer is the corresponding interface of BACnetServiceAckConfirmedPrivateTransfer
 type BACnetServiceAckConfirmedPrivateTransfer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -37,12 +39,13 @@ type BACnetServiceAckConfirmedPrivateTransfer interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetResultBlock returns ResultBlock (property field)
 	GetResultBlock() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckConfirmedPrivateTransferExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckConfirmedPrivateTransfer.
+// This is useful for switch cases.
+type BACnetServiceAckConfirmedPrivateTransferExactly interface {
+	BACnetServiceAckConfirmedPrivateTransfer
+	isBACnetServiceAckConfirmedPrivateTransfer() bool
 }
 
 // _BACnetServiceAckConfirmedPrivateTransfer is the data-structure of this message
@@ -51,9 +54,6 @@ type _BACnetServiceAckConfirmedPrivateTransfer struct {
 	VendorId      BACnetVendorIdTagged
 	ServiceNumber BACnetContextTagUnsignedInteger
 	ResultBlock   BACnetConstructedData
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -213,10 +213,12 @@ func BACnetServiceAckConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckConfirmedPrivateTransfer{
-		VendorId:          vendorId,
-		ServiceNumber:     serviceNumber,
-		ResultBlock:       resultBlock,
-		_BACnetServiceAck: &_BACnetServiceAck{},
+		VendorId:      vendorId,
+		ServiceNumber: serviceNumber,
+		ResultBlock:   resultBlock,
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -276,6 +278,10 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) isBACnetServiceAckConfirmedPrivateTransfer() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) String() string {

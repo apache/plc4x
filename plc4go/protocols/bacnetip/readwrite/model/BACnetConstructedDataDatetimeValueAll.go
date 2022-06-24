@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataDatetimeValueAll is the corresponding interface of BACnetConstructedDataDatetimeValueAll
 type BACnetConstructedDataDatetimeValueAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDatetimeValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDatetimeValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataDatetimeValueAllExactly interface {
+	BACnetConstructedDataDatetimeValueAll
+	isBACnetConstructedDataDatetimeValueAll() bool
 }
 
 // _BACnetConstructedDataDatetimeValueAll is the data-structure of this message
 type _BACnetConstructedDataDatetimeValueAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataDatetimeValueAllParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDatetimeValueAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataDatetimeValueAll) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDatetimeValueAll) isBACnetConstructedDataDatetimeValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDatetimeValueAll) String() string {

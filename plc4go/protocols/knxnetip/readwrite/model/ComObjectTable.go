@@ -28,14 +28,17 @@ import (
 
 // ComObjectTable is the corresponding interface of ComObjectTable
 type ComObjectTable interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFirmwareType returns FirmwareType (discriminator field)
 	GetFirmwareType() FirmwareType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ComObjectTableExactly can be used when we want exactly this type and not a type which fulfills ComObjectTable.
+// This is useful for switch cases.
+type ComObjectTableExactly interface {
+	ComObjectTable
+	isComObjectTable() bool
 }
 
 // _ComObjectTable is the data-structure of this message
@@ -44,10 +47,10 @@ type _ComObjectTable struct {
 }
 
 type _ComObjectTableChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetFirmwareType() FirmwareType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ComObjectTableParent interface {
@@ -56,7 +59,7 @@ type ComObjectTableParent interface {
 }
 
 type ComObjectTableChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ComObjectTable)
 	GetParent() *ComObjectTable
 
@@ -156,6 +159,10 @@ func (pm *_ComObjectTable) SerializeParent(writeBuffer utils.WriteBuffer, child 
 		return errors.Wrap(popErr, "Error popping for ComObjectTable")
 	}
 	return nil
+}
+
+func (m *_ComObjectTable) isComObjectTable() bool {
+	return true
 }
 
 func (m *_ComObjectTable) String() string {

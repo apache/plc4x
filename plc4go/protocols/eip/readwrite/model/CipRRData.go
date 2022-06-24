@@ -29,15 +29,18 @@ import (
 
 // CipRRData is the corresponding interface of CipRRData
 type CipRRData interface {
+	utils.LengthAware
+	utils.Serializable
 	EipPacket
 	// GetExchange returns Exchange (property field)
 	GetExchange() CipExchange
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipRRDataExactly can be used when we want exactly this type and not a type which fulfills CipRRData.
+// This is useful for switch cases.
+type CipRRDataExactly interface {
+	CipRRData
+	isCipRRData() bool
 }
 
 // _CipRRData is the data-structure of this message
@@ -46,7 +49,7 @@ type _CipRRData struct {
 	Exchange CipExchange
 
 	// Arguments.
-	Len uint16
+	PacketLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +92,7 @@ func (m *_CipRRData) GetExchange() CipExchange {
 ///////////////////////////////////////////////////////////
 
 // NewCipRRData factory function for _CipRRData
-func NewCipRRData(exchange CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, len uint16) *_CipRRData {
+func NewCipRRData(exchange CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLength uint16) *_CipRRData {
 	_result := &_CipRRData{
 		Exchange:   exchange,
 		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
@@ -136,7 +139,7 @@ func (m *_CipRRData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (CipRRData, error) {
+func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
@@ -177,7 +180,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (CipRRData, error) 
 	if pullErr := readBuffer.PullContext("exchange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for exchange")
 	}
-	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(len)-uint16(uint16(6))))
+	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
 	if _exchangeErr != nil {
 		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field")
 	}
@@ -241,6 +244,10 @@ func (m *_CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipRRData) isCipRRData() bool {
+	return true
 }
 
 func (m *_CipRRData) String() string {

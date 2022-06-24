@@ -28,6 +28,8 @@ import (
 
 // BACnetDoorStatusTagged is the corresponding interface of BACnetDoorStatusTagged
 type BACnetDoorStatusTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetDoorStatusTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetDoorStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDoorStatusTagged.
+// This is useful for switch cases.
+type BACnetDoorStatusTaggedExactly interface {
+	BACnetDoorStatusTagged
+	isBACnetDoorStatusTagged() bool
 }
 
 // _BACnetDoorStatusTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetDoorStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetDoorStatusTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetDoorStatusTagged) isBACnetDoorStatusTagged() bool {
+	return true
 }
 
 func (m *_BACnetDoorStatusTagged) String() string {

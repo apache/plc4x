@@ -34,14 +34,17 @@ const CipExchange_UNCONNECTEDDATA uint16 = 0x00B2
 
 // CipExchange is the corresponding interface of CipExchange
 type CipExchange interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetService returns Service (property field)
 	GetService() CipService
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipExchangeExactly can be used when we want exactly this type and not a type which fulfills CipExchange.
+// This is useful for switch cases.
+type CipExchangeExactly interface {
+	CipExchange
+	isCipExchange() bool
 }
 
 // _CipExchange is the data-structure of this message
@@ -248,6 +251,10 @@ func (m *_CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CipExchange")
 	}
 	return nil
+}
+
+func (m *_CipExchange) isCipExchange() bool {
+	return true
 }
 
 func (m *_CipExchange) String() string {

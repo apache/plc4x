@@ -28,6 +28,8 @@ import (
 
 // AdsWriteControlRequest is the corresponding interface of AdsWriteControlRequest
 type AdsWriteControlRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetAdsState returns AdsState (property field)
 	GetAdsState() uint16
@@ -35,12 +37,13 @@ type AdsWriteControlRequest interface {
 	GetDeviceState() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsWriteControlRequestExactly can be used when we want exactly this type and not a type which fulfills AdsWriteControlRequest.
+// This is useful for switch cases.
+type AdsWriteControlRequestExactly interface {
+	AdsWriteControlRequest
+	isAdsWriteControlRequest() bool
 }
 
 // _AdsWriteControlRequest is the data-structure of this message
@@ -233,12 +236,9 @@ func (m *_AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsWriteControlRequest"); popErr != nil {
@@ -247,6 +247,10 @@ func (m *_AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsWriteControlRequest) isAdsWriteControlRequest() bool {
+	return true
 }
 
 func (m *_AdsWriteControlRequest) String() string {

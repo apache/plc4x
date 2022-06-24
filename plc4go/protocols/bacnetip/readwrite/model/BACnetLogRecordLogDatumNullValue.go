@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumNullValue is the corresponding interface of BACnetLogRecordLogDatumNullValue
 type BACnetLogRecordLogDatumNullValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetContextTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumNullValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumNullValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumNullValueExactly interface {
+	BACnetLogRecordLogDatumNullValue
+	isBACnetLogRecordLogDatumNullValue() bool
 }
 
 // _BACnetLogRecordLogDatumNullValue is the data-structure of this message
 type _BACnetLogRecordLogDatumNullValue struct {
 	*_BACnetLogRecordLogDatum
 	NullValue BACnetContextTagNull
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumNullValueParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumNullValue{
-		NullValue:                nullValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		NullValue: nullValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumNullValue) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumNullValue) isBACnetLogRecordLogDatumNullValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumNullValue) String() string {

@@ -28,15 +28,18 @@ import (
 
 // DeviceConfigurationAck is the corresponding interface of DeviceConfigurationAck
 type DeviceConfigurationAck interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock (property field)
 	GetDeviceConfigurationAckDataBlock() DeviceConfigurationAckDataBlock
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DeviceConfigurationAckExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationAck.
+// This is useful for switch cases.
+type DeviceConfigurationAckExactly interface {
+	DeviceConfigurationAck
+	isDeviceConfigurationAck() bool
 }
 
 // _DeviceConfigurationAck is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DeviceConfigurationAck) isDeviceConfigurationAck() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationAck) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCountBeforeChange is the corresponding interface of BACnetConstructedDataCountBeforeChange
 type BACnetConstructedDataCountBeforeChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCountBeforeChange returns CountBeforeChange (property field)
 	GetCountBeforeChange() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCountBeforeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCountBeforeChange.
+// This is useful for switch cases.
+type BACnetConstructedDataCountBeforeChangeExactly interface {
+	BACnetConstructedDataCountBeforeChange
+	isBACnetConstructedDataCountBeforeChange() bool
 }
 
 // _BACnetConstructedDataCountBeforeChange is the data-structure of this message
 type _BACnetConstructedDataCountBeforeChange struct {
 	*_BACnetConstructedData
 	CountBeforeChange BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCountBeforeChangeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCountBeforeChange{
-		CountBeforeChange:      countBeforeChange,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CountBeforeChange: countBeforeChange,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCountBeforeChange) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCountBeforeChange) isBACnetConstructedDataCountBeforeChange() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCountBeforeChange) String() string {

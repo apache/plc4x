@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueAll is the corresponding interface of BACnetConstructedDataPositiveIntegerValueAll
 type BACnetConstructedDataPositiveIntegerValueAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPositiveIntegerValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueAllExactly interface {
+	BACnetConstructedDataPositiveIntegerValueAll
+	isBACnetConstructedDataPositiveIntegerValueAll() bool
 }
 
 // _BACnetConstructedDataPositiveIntegerValueAll is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataPositiveIntegerValueAllParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPositiveIntegerValueAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueAll) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueAll) isBACnetConstructedDataPositiveIntegerValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueAll) String() string {

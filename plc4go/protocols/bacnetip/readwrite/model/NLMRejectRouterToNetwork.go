@@ -28,17 +28,20 @@ import (
 
 // NLMRejectRouterToNetwork is the corresponding interface of NLMRejectRouterToNetwork
 type NLMRejectRouterToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetRejectReason returns RejectReason (property field)
 	GetRejectReason() NLMRejectRouterToNetworkRejectReason
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NLMRejectRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMRejectRouterToNetwork.
+// This is useful for switch cases.
+type NLMRejectRouterToNetworkExactly interface {
+	NLMRejectRouterToNetwork
+	isNLMRejectRouterToNetwork() bool
 }
 
 // _NLMRejectRouterToNetwork is the data-structure of this message
@@ -46,9 +49,6 @@ type _NLMRejectRouterToNetwork struct {
 	*_NLM
 	RejectReason              NLMRejectRouterToNetworkRejectReason
 	DestinationNetworkAddress uint16
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -174,7 +174,9 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	_child := &_NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      &_NLM{},
+		_NLM: &_NLM{
+			ApduLength: apduLength,
+		},
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil
@@ -213,6 +215,10 @@ func (m *_NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMRejectRouterToNetwork) isNLMRejectRouterToNetwork() bool {
+	return true
 }
 
 func (m *_NLMRejectRouterToNetwork) String() string {

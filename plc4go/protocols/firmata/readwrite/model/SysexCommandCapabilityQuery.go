@@ -28,13 +28,16 @@ import (
 
 // SysexCommandCapabilityQuery is the corresponding interface of SysexCommandCapabilityQuery
 type SysexCommandCapabilityQuery interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandCapabilityQueryExactly can be used when we want exactly this type and not a type which fulfills SysexCommandCapabilityQuery.
+// This is useful for switch cases.
+type SysexCommandCapabilityQueryExactly interface {
+	SysexCommandCapabilityQuery
+	isSysexCommandCapabilityQuery() bool
 }
 
 // _SysexCommandCapabilityQuery is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_SysexCommandCapabilityQuery) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandCapabilityQuery) isSysexCommandCapabilityQuery() bool {
+	return true
 }
 
 func (m *_SysexCommandCapabilityQuery) String() string {

@@ -28,18 +28,21 @@ import (
 
 // ErrorEnclosed is the corresponding interface of ErrorEnclosed
 type ErrorEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetError returns Error (property field)
 	GetError() Error
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ErrorEnclosedExactly can be used when we want exactly this type and not a type which fulfills ErrorEnclosed.
+// This is useful for switch cases.
+type ErrorEnclosedExactly interface {
+	ErrorEnclosed
+	isErrorEnclosed() bool
 }
 
 // _ErrorEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ErrorEnclosed")
 	}
 	return nil
+}
+
+func (m *_ErrorEnclosed) isErrorEnclosed() bool {
+	return true
 }
 
 func (m *_ErrorEnclosed) String() string {

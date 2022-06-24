@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedPrivateTransfer is the corresponding interface of BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 type BACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -37,12 +39,13 @@ type BACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetServiceParameters returns ServiceParameters (property field)
 	GetServiceParameters() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestConfirmedPrivateTransferExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedPrivateTransfer.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedPrivateTransferExactly interface {
+	BACnetConfirmedServiceRequestConfirmedPrivateTransfer
+	isBACnetConfirmedServiceRequestConfirmedPrivateTransfer() bool
 }
 
 // _BACnetConfirmedServiceRequestConfirmedPrivateTransfer is the data-structure of this message
@@ -51,9 +54,6 @@ type _BACnetConfirmedServiceRequestConfirmedPrivateTransfer struct {
 	VendorId          BACnetVendorIdTagged
 	ServiceNumber     BACnetContextTagUnsignedInteger
 	ServiceParameters BACnetConstructedData
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -214,10 +214,12 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedPrivateTransfer{
-		VendorId:                       vendorId,
-		ServiceNumber:                  serviceNumber,
-		ServiceParameters:              serviceParameters,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		VendorId:          vendorId,
+		ServiceNumber:     serviceNumber,
+		ServiceParameters: serviceParameters,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -277,6 +279,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) isBACnetConfirmedServiceRequestConfirmedPrivateTransfer() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) String() string {

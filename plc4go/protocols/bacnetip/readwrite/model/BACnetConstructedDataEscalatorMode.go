@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEscalatorMode is the corresponding interface of BACnetConstructedDataEscalatorMode
 type BACnetConstructedDataEscalatorMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() BACnetEscalatorModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEscalatorModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEscalatorModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEscalatorMode.
+// This is useful for switch cases.
+type BACnetConstructedDataEscalatorModeExactly interface {
+	BACnetConstructedDataEscalatorMode
+	isBACnetConstructedDataEscalatorMode() bool
 }
 
 // _BACnetConstructedDataEscalatorMode is the data-structure of this message
 type _BACnetConstructedDataEscalatorMode struct {
 	*_BACnetConstructedData
 	EscalatorMode BACnetEscalatorModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEscalatorModeParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEscalatorMode{
-		EscalatorMode:          escalatorMode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EscalatorMode: escalatorMode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEscalatorMode) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEscalatorMode) isBACnetConstructedDataEscalatorMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEscalatorMode) String() string {

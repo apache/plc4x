@@ -28,17 +28,20 @@ import (
 
 // SALDataRampToLevel is the corresponding interface of SALDataRampToLevel
 type SALDataRampToLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	SALData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
 	// GetLevel returns Level (property field)
 	GetLevel() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SALDataRampToLevelExactly can be used when we want exactly this type and not a type which fulfills SALDataRampToLevel.
+// This is useful for switch cases.
+type SALDataRampToLevelExactly interface {
+	SALDataRampToLevel
+	isSALDataRampToLevel() bool
 }
 
 // _SALDataRampToLevel is the data-structure of this message
@@ -195,6 +198,10 @@ func (m *_SALDataRampToLevel) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SALDataRampToLevel) isSALDataRampToLevel() bool {
+	return true
 }
 
 func (m *_SALDataRampToLevel) String() string {

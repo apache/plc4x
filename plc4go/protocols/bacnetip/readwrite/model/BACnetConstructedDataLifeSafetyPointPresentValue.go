@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLifeSafetyPointPresentValue is the corresponding interface of BACnetConstructedDataLifeSafetyPointPresentValue
 type BACnetConstructedDataLifeSafetyPointPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetLifeSafetyStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLifeSafetyPointPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLifeSafetyPointPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataLifeSafetyPointPresentValueExactly interface {
+	BACnetConstructedDataLifeSafetyPointPresentValue
+	isBACnetConstructedDataLifeSafetyPointPresentValue() bool
 }
 
 // _BACnetConstructedDataLifeSafetyPointPresentValue is the data-structure of this message
 type _BACnetConstructedDataLifeSafetyPointPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetLifeSafetyStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLifeSafetyPointPresentValueParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLifeSafetyPointPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) isBACnetConstructedDataLifeSafetyPointPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) String() string {

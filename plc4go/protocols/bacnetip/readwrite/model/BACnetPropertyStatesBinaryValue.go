@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesBinaryValue is the corresponding interface of BACnetPropertyStatesBinaryValue
 type BACnetPropertyStatesBinaryValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetBinaryValue returns BinaryValue (property field)
 	GetBinaryValue() BACnetBinaryPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesBinaryValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBinaryValue.
+// This is useful for switch cases.
+type BACnetPropertyStatesBinaryValueExactly interface {
+	BACnetPropertyStatesBinaryValue
+	isBACnetPropertyStatesBinaryValue() bool
 }
 
 // _BACnetPropertyStatesBinaryValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesBinaryValue) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesBinaryValue) isBACnetPropertyStatesBinaryValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesBinaryValue) String() string {

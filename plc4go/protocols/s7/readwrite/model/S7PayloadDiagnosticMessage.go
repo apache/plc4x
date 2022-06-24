@@ -28,6 +28,8 @@ import (
 
 // S7PayloadDiagnosticMessage is the corresponding interface of S7PayloadDiagnosticMessage
 type S7PayloadDiagnosticMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
 	// GetEventId returns EventId (property field)
 	GetEventId() uint16
@@ -43,12 +45,13 @@ type S7PayloadDiagnosticMessage interface {
 	GetInfo2() uint32
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadDiagnosticMessageExactly can be used when we want exactly this type and not a type which fulfills S7PayloadDiagnosticMessage.
+// This is useful for switch cases.
+type S7PayloadDiagnosticMessageExactly interface {
+	S7PayloadDiagnosticMessage
+	isS7PayloadDiagnosticMessage() bool
 }
 
 // _S7PayloadDiagnosticMessage is the data-structure of this message
@@ -349,6 +352,10 @@ func (m *_S7PayloadDiagnosticMessage) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadDiagnosticMessage) isS7PayloadDiagnosticMessage() bool {
+	return true
 }
 
 func (m *_S7PayloadDiagnosticMessage) String() string {

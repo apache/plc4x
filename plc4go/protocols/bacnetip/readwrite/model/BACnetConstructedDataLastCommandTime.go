@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastCommandTime is the corresponding interface of BACnetConstructedDataLastCommandTime
 type BACnetConstructedDataLastCommandTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastCommandTime returns LastCommandTime (property field)
 	GetLastCommandTime() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastCommandTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCommandTime.
+// This is useful for switch cases.
+type BACnetConstructedDataLastCommandTimeExactly interface {
+	BACnetConstructedDataLastCommandTime
+	isBACnetConstructedDataLastCommandTime() bool
 }
 
 // _BACnetConstructedDataLastCommandTime is the data-structure of this message
 type _BACnetConstructedDataLastCommandTime struct {
 	*_BACnetConstructedData
 	LastCommandTime BACnetTimeStamp
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLastCommandTimeParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastCommandTime{
-		LastCommandTime:        lastCommandTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LastCommandTime: lastCommandTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastCommandTime) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastCommandTime) isBACnetConstructedDataLastCommandTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastCommandTime) String() string {

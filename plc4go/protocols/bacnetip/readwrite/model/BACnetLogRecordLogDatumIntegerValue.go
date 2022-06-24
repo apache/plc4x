@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumIntegerValue is the corresponding interface of BACnetLogRecordLogDatumIntegerValue
 type BACnetLogRecordLogDatumIntegerValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumIntegerValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumIntegerValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumIntegerValueExactly interface {
+	BACnetLogRecordLogDatumIntegerValue
+	isBACnetLogRecordLogDatumIntegerValue() bool
 }
 
 // _BACnetLogRecordLogDatumIntegerValue is the data-structure of this message
 type _BACnetLogRecordLogDatumIntegerValue struct {
 	*_BACnetLogRecordLogDatum
 	IntegerValue BACnetContextTagSignedInteger
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumIntegerValueParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumIntegerValue{
-		IntegerValue:             integerValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		IntegerValue: integerValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumIntegerValue) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumIntegerValue) isBACnetLogRecordLogDatumIntegerValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumIntegerValue) String() string {

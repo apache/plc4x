@@ -29,6 +29,8 @@ import (
 
 // State is the corresponding interface of State
 type State interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetInitCommand returns InitCommand (property field)
 	GetInitCommand() bool
 	// GetUpdCommand returns UpdCommand (property field)
@@ -47,12 +49,13 @@ type State interface {
 	GetResponse() bool
 	// GetBroadcast returns Broadcast (property field)
 	GetBroadcast() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// StateExactly can be used when we want exactly this type and not a type which fulfills State.
+// This is useful for switch cases.
+type StateExactly interface {
+	State
+	isState() bool
 }
 
 // _State is the data-structure of this message
@@ -354,6 +357,10 @@ func (m *_State) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for State")
 	}
 	return nil
+}
+
+func (m *_State) isState() bool {
+	return true
 }
 
 func (m *_State) String() string {

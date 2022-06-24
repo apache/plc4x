@@ -28,24 +28,24 @@ import (
 
 // NLMDisconnectConnectionToNetwork is the corresponding interface of NLMDisconnectConnectionToNetwork
 type NLMDisconnectConnectionToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NLMDisconnectConnectionToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMDisconnectConnectionToNetwork.
+// This is useful for switch cases.
+type NLMDisconnectConnectionToNetworkExactly interface {
+	NLMDisconnectConnectionToNetwork
+	isNLMDisconnectConnectionToNetwork() bool
 }
 
 // _NLMDisconnectConnectionToNetwork is the data-structure of this message
 type _NLMDisconnectConnectionToNetwork struct {
 	*_NLM
 	DestinationNetworkAddress uint16
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -149,7 +149,9 @@ func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLeng
 	// Create a partially initialized instance
 	_child := &_NLMDisconnectConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      &_NLM{},
+		_NLM: &_NLM{
+			ApduLength: apduLength,
+		},
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil
@@ -176,6 +178,10 @@ func (m *_NLMDisconnectConnectionToNetwork) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMDisconnectConnectionToNetwork) isNLMDisconnectConnectionToNetwork() bool {
+	return true
 }
 
 func (m *_NLMDisconnectConnectionToNetwork) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDistributionKeyRevision is the corresponding interface of BACnetConstructedDataDistributionKeyRevision
 type BACnetConstructedDataDistributionKeyRevision interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDistributionKeyRevision returns DistributionKeyRevision (property field)
 	GetDistributionKeyRevision() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDistributionKeyRevisionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDistributionKeyRevision.
+// This is useful for switch cases.
+type BACnetConstructedDataDistributionKeyRevisionExactly interface {
+	BACnetConstructedDataDistributionKeyRevision
+	isBACnetConstructedDataDistributionKeyRevision() bool
 }
 
 // _BACnetConstructedDataDistributionKeyRevision is the data-structure of this message
 type _BACnetConstructedDataDistributionKeyRevision struct {
 	*_BACnetConstructedData
 	DistributionKeyRevision BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDistributionKeyRevision{
 		DistributionKeyRevision: distributionKeyRevision,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDistributionKeyRevision) isBACnetConstructedDataDistributionKeyRevision() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) String() string {

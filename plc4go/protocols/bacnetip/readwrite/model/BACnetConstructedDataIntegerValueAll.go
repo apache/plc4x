@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataIntegerValueAll is the corresponding interface of BACnetConstructedDataIntegerValueAll
 type BACnetConstructedDataIntegerValueAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIntegerValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIntegerValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataIntegerValueAllExactly interface {
+	BACnetConstructedDataIntegerValueAll
+	isBACnetConstructedDataIntegerValueAll() bool
 }
 
 // _BACnetConstructedDataIntegerValueAll is the data-structure of this message
 type _BACnetConstructedDataIntegerValueAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataIntegerValueAllParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIntegerValueAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataIntegerValueAll) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIntegerValueAll) isBACnetConstructedDataIntegerValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIntegerValueAll) String() string {

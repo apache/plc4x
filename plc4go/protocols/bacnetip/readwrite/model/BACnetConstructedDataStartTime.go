@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataStartTime is the corresponding interface of BACnetConstructedDataStartTime
 type BACnetConstructedDataStartTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetStartTime returns StartTime (property field)
 	GetStartTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataStartTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStartTime.
+// This is useful for switch cases.
+type BACnetConstructedDataStartTimeExactly interface {
+	BACnetConstructedDataStartTime
+	isBACnetConstructedDataStartTime() bool
 }
 
 // _BACnetConstructedDataStartTime is the data-structure of this message
 type _BACnetConstructedDataStartTime struct {
 	*_BACnetConstructedData
 	StartTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataStartTimeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStartTime{
-		StartTime:              startTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		StartTime: startTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataStartTime) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStartTime) isBACnetConstructedDataStartTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStartTime) String() string {

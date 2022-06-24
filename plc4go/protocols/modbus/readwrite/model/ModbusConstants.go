@@ -32,12 +32,15 @@ const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = uint16(502)
 
 // ModbusConstants is the corresponding interface of ModbusConstants
 type ModbusConstants interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.LengthAware
+	utils.Serializable
+}
+
+// ModbusConstantsExactly can be used when we want exactly this type and not a type which fulfills ModbusConstants.
+// This is useful for switch cases.
+type ModbusConstantsExactly interface {
+	ModbusConstants
+	isModbusConstants() bool
 }
 
 // _ModbusConstants is the data-structure of this message
@@ -138,6 +141,10 @@ func (m *_ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ModbusConstants")
 	}
 	return nil
+}
+
+func (m *_ModbusConstants) isModbusConstants() bool {
+	return true
 }
 
 func (m *_ModbusConstants) String() string {

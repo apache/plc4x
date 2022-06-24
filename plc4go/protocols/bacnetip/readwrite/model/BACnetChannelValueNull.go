@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueNull is the corresponding interface of BACnetChannelValueNull
 type BACnetChannelValueNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueNullExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueNull.
+// This is useful for switch cases.
+type BACnetChannelValueNullExactly interface {
+	BACnetChannelValueNull
+	isBACnetChannelValueNull() bool
 }
 
 // _BACnetChannelValueNull is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueNull) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueNull) isBACnetChannelValueNull() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueNull) String() string {

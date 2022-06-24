@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLimitEnable is the corresponding interface of BACnetConstructedDataLimitEnable
 type BACnetConstructedDataLimitEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLimitEnable returns LimitEnable (property field)
 	GetLimitEnable() BACnetLimitEnableTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLimitEnableTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLimitEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLimitEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataLimitEnableExactly interface {
+	BACnetConstructedDataLimitEnable
+	isBACnetConstructedDataLimitEnable() bool
 }
 
 // _BACnetConstructedDataLimitEnable is the data-structure of this message
 type _BACnetConstructedDataLimitEnable struct {
 	*_BACnetConstructedData
 	LimitEnable BACnetLimitEnableTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLimitEnable{
-		LimitEnable:            limitEnable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LimitEnable: limitEnable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLimitEnable) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLimitEnable) isBACnetConstructedDataLimitEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLimitEnable) String() string {

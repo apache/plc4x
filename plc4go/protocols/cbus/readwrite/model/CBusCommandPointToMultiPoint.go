@@ -28,24 +28,24 @@ import (
 
 // CBusCommandPointToMultiPoint is the corresponding interface of CBusCommandPointToMultiPoint
 type CBusCommandPointToMultiPoint interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToMultiPointCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusCommandPointToMultiPointExactly can be used when we want exactly this type and not a type which fulfills CBusCommandPointToMultiPoint.
+// This is useful for switch cases.
+type CBusCommandPointToMultiPointExactly interface {
+	CBusCommandPointToMultiPoint
+	isCBusCommandPointToMultiPoint() bool
 }
 
 // _CBusCommandPointToMultiPoint is the data-structure of this message
 type _CBusCommandPointToMultiPoint struct {
 	*_CBusCommand
 	Command CBusPointToMultiPointCommand
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, srchk bool) 
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToMultiPoint{
-		Command:      command,
-		_CBusCommand: &_CBusCommand{},
+		Command: command,
+		_CBusCommand: &_CBusCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusCommand._CBusCommandChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_CBusCommandPointToMultiPoint) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusCommandPointToMultiPoint) isCBusCommandPointToMultiPoint() bool {
+	return true
 }
 
 func (m *_CBusCommandPointToMultiPoint) String() string {

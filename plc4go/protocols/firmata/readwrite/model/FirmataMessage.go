@@ -28,14 +28,17 @@ import (
 
 // FirmataMessage is the corresponding interface of FirmataMessage
 type FirmataMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataMessageExactly can be used when we want exactly this type and not a type which fulfills FirmataMessage.
+// This is useful for switch cases.
+type FirmataMessageExactly interface {
+	FirmataMessage
+	isFirmataMessage() bool
 }
 
 // _FirmataMessage is the data-structure of this message
@@ -47,10 +50,10 @@ type _FirmataMessage struct {
 }
 
 type _FirmataMessageChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetMessageType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type FirmataMessageParent interface {
@@ -59,7 +62,7 @@ type FirmataMessageParent interface {
 }
 
 type FirmataMessageChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent FirmataMessage)
 	GetParent() *FirmataMessage
 
@@ -179,6 +182,10 @@ func (pm *_FirmataMessage) SerializeParent(writeBuffer utils.WriteBuffer, child 
 		return errors.Wrap(popErr, "Error popping for FirmataMessage")
 	}
 	return nil
+}
+
+func (m *_FirmataMessage) isFirmataMessage() bool {
+	return true
 }
 
 func (m *_FirmataMessage) String() string {

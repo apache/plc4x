@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataUserExternalIdentifier is the corresponding interface of BACnetConstructedDataUserExternalIdentifier
 type BACnetConstructedDataUserExternalIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUserExternalIdentifier returns UserExternalIdentifier (property field)
 	GetUserExternalIdentifier() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataUserExternalIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserExternalIdentifier.
+// This is useful for switch cases.
+type BACnetConstructedDataUserExternalIdentifierExactly interface {
+	BACnetConstructedDataUserExternalIdentifier
+	isBACnetConstructedDataUserExternalIdentifier() bool
 }
 
 // _BACnetConstructedDataUserExternalIdentifier is the data-structure of this message
 type _BACnetConstructedDataUserExternalIdentifier struct {
 	*_BACnetConstructedData
 	UserExternalIdentifier BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataUserExternalIdentifierParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUserExternalIdentifier{
 		UserExternalIdentifier: userExternalIdentifier,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUserExternalIdentifier) isBACnetConstructedDataUserExternalIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUserExternalIdentifier) String() string {

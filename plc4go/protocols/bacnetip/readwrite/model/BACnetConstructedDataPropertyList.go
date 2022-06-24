@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataPropertyList is the corresponding interface of BACnetConstructedDataPropertyList
 type BACnetConstructedDataPropertyList interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataPropertyList interface {
 	GetPropertyList() []BACnetPropertyIdentifierTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPropertyListExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPropertyList.
+// This is useful for switch cases.
+type BACnetConstructedDataPropertyListExactly interface {
+	BACnetConstructedDataPropertyList
+	isBACnetConstructedDataPropertyList() bool
 }
 
 // _BACnetConstructedDataPropertyList is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataPropertyList struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	PropertyList         []BACnetPropertyIdentifierTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataPropertyListParse(readBuffer utils.ReadBuffer, tagNumb
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyList")
 	}
 	// Terminated array
-	propertyList := make([]BACnetPropertyIdentifierTagged, 0)
+	var propertyList []BACnetPropertyIdentifierTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -233,9 +232,12 @@ func BACnetConstructedDataPropertyListParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPropertyList{
-		NumberOfDataElements:   numberOfDataElements,
-		PropertyList:           propertyList,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		PropertyList:         propertyList,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataPropertyList) Serialize(writeBuffer utils.WriteBu
 		}
 
 		// Array Field (propertyList)
-		if m.GetPropertyList() != nil {
-			if pushErr := writeBuffer.PushContext("propertyList", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for propertyList")
+		if pushErr := writeBuffer.PushContext("propertyList", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for propertyList")
+		}
+		for _, _element := range m.GetPropertyList() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'propertyList' field")
 			}
-			for _, _element := range m.GetPropertyList() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'propertyList' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("propertyList", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for propertyList")
-			}
+		}
+		if popErr := writeBuffer.PopContext("propertyList", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for propertyList")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPropertyList"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataPropertyList) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPropertyList) isBACnetConstructedDataPropertyList() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPropertyList) String() string {

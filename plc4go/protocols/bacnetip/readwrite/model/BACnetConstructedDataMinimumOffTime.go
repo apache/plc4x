@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMinimumOffTime is the corresponding interface of BACnetConstructedDataMinimumOffTime
 type BACnetConstructedDataMinimumOffTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinimumOffTime returns MinimumOffTime (property field)
 	GetMinimumOffTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMinimumOffTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMinimumOffTime.
+// This is useful for switch cases.
+type BACnetConstructedDataMinimumOffTimeExactly interface {
+	BACnetConstructedDataMinimumOffTime
+	isBACnetConstructedDataMinimumOffTime() bool
 }
 
 // _BACnetConstructedDataMinimumOffTime is the data-structure of this message
 type _BACnetConstructedDataMinimumOffTime struct {
 	*_BACnetConstructedData
 	MinimumOffTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMinimumOffTimeParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMinimumOffTime{
-		MinimumOffTime:         minimumOffTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MinimumOffTime: minimumOffTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMinimumOffTime) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMinimumOffTime) isBACnetConstructedDataMinimumOffTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMinimumOffTime) String() string {

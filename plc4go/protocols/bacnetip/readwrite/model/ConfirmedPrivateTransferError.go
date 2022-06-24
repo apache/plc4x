@@ -30,6 +30,8 @@ import (
 
 // ConfirmedPrivateTransferError is the corresponding interface of ConfirmedPrivateTransferError
 type ConfirmedPrivateTransferError interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -39,12 +41,13 @@ type ConfirmedPrivateTransferError interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetErrorParameters returns ErrorParameters (property field)
 	GetErrorParameters() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ConfirmedPrivateTransferErrorExactly can be used when we want exactly this type and not a type which fulfills ConfirmedPrivateTransferError.
+// This is useful for switch cases.
+type ConfirmedPrivateTransferErrorExactly interface {
+	ConfirmedPrivateTransferError
+	isConfirmedPrivateTransferError() bool
 }
 
 // _ConfirmedPrivateTransferError is the data-structure of this message
@@ -310,6 +313,10 @@ func (m *_ConfirmedPrivateTransferError) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ConfirmedPrivateTransferError) isConfirmedPrivateTransferError() bool {
+	return true
 }
 
 func (m *_ConfirmedPrivateTransferError) String() string {

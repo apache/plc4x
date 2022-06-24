@@ -28,15 +28,18 @@ import (
 
 // KnxNetRemoteConfigurationAndDiagnosis is the corresponding interface of KnxNetRemoteConfigurationAndDiagnosis
 type KnxNetRemoteConfigurationAndDiagnosis interface {
+	utils.LengthAware
+	utils.Serializable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// KnxNetRemoteConfigurationAndDiagnosisExactly can be used when we want exactly this type and not a type which fulfills KnxNetRemoteConfigurationAndDiagnosis.
+// This is useful for switch cases.
+type KnxNetRemoteConfigurationAndDiagnosisExactly interface {
+	KnxNetRemoteConfigurationAndDiagnosis
+	isKnxNetRemoteConfigurationAndDiagnosis() bool
 }
 
 // _KnxNetRemoteConfigurationAndDiagnosis is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) isKnxNetRemoteConfigurationAndDiagnosis() bool {
+	return true
 }
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) String() string {

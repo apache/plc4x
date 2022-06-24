@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUWriteMultipleCoilsRequest is the corresponding interface of ModbusPDUWriteMultipleCoilsRequest
 type ModbusPDUWriteMultipleCoilsRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -35,12 +37,13 @@ type ModbusPDUWriteMultipleCoilsRequest interface {
 	GetQuantity() uint16
 	// GetValue returns Value (property field)
 	GetValue() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUWriteMultipleCoilsRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleCoilsRequest.
+// This is useful for switch cases.
+type ModbusPDUWriteMultipleCoilsRequestExactly interface {
+	ModbusPDUWriteMultipleCoilsRequest
+	isModbusPDUWriteMultipleCoilsRequest() bool
 }
 
 // _ModbusPDUWriteMultipleCoilsRequest is the data-structure of this message
@@ -237,12 +240,9 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (value)
-		if m.GetValue() != nil {
-			// Byte Array field (value)
-			_writeArrayErr := writeBuffer.WriteByteArray("value", m.GetValue())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
-			}
+		// Byte Array field (value)
+		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUWriteMultipleCoilsRequest"); popErr != nil {
@@ -251,6 +251,10 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsRequest) isModbusPDUWriteMultipleCoilsRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) String() string {

@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataGroupPresentValue is the corresponding interface of BACnetConstructedDataGroupPresentValue
 type BACnetConstructedDataGroupPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() []BACnetReadAccessResult
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataGroupPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGroupPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataGroupPresentValueExactly interface {
+	BACnetConstructedDataGroupPresentValue
+	isBACnetConstructedDataGroupPresentValue() bool
 }
 
 // _BACnetConstructedDataGroupPresentValue is the data-structure of this message
 type _BACnetConstructedDataGroupPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue []BACnetReadAccessResult
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataGroupPresentValueParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
 	// Terminated array
-	presentValue := make([]BACnetReadAccessResult, 0)
+	var presentValue []BACnetReadAccessResult
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetReadAccessResultParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataGroupPresentValueParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataGroupPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataGroupPresentValue) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (presentValue)
-		if m.GetPresentValue() != nil {
-			if pushErr := writeBuffer.PushContext("presentValue", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for presentValue")
+		if pushErr := writeBuffer.PushContext("presentValue", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for presentValue")
+		}
+		for _, _element := range m.GetPresentValue() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'presentValue' field")
 			}
-			for _, _element := range m.GetPresentValue() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'presentValue' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("presentValue", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for presentValue")
-			}
+		}
+		if popErr := writeBuffer.PopContext("presentValue", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for presentValue")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGroupPresentValue"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataGroupPresentValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGroupPresentValue) isBACnetConstructedDataGroupPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGroupPresentValue) String() string {

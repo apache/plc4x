@@ -28,14 +28,17 @@ import (
 
 // BridgeCount is the corresponding interface of BridgeCount
 type BridgeCount interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCount returns Count (property field)
 	GetCount() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BridgeCountExactly can be used when we want exactly this type and not a type which fulfills BridgeCount.
+// This is useful for switch cases.
+type BridgeCountExactly interface {
+	BridgeCount
+	isBridgeCount() bool
 }
 
 // _BridgeCount is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_BridgeCount) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BridgeCount")
 	}
 	return nil
+}
+
+func (m *_BridgeCount) isBridgeCount() bool {
+	return true
 }
 
 func (m *_BridgeCount) String() string {

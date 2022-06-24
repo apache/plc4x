@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCarPosition is the corresponding interface of BACnetConstructedDataCarPosition
 type BACnetConstructedDataCarPosition interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCarPosition returns CarPosition (property field)
 	GetCarPosition() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCarPositionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarPosition.
+// This is useful for switch cases.
+type BACnetConstructedDataCarPositionExactly interface {
+	BACnetConstructedDataCarPosition
+	isBACnetConstructedDataCarPosition() bool
 }
 
 // _BACnetConstructedDataCarPosition is the data-structure of this message
 type _BACnetConstructedDataCarPosition struct {
 	*_BACnetConstructedData
 	CarPosition BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCarPositionParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCarPosition{
-		CarPosition:            carPosition,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CarPosition: carPosition,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCarPosition) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarPosition) isBACnetConstructedDataCarPosition() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarPosition) String() string {

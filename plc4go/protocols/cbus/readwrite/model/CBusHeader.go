@@ -29,16 +29,19 @@ import (
 
 // CBusHeader is the corresponding interface of CBusHeader
 type CBusHeader interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPriorityClass returns PriorityClass (property field)
 	GetPriorityClass() PriorityClass
 	// GetDestinationAddressType returns DestinationAddressType (property field)
 	GetDestinationAddressType() DestinationAddressType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusHeaderExactly can be used when we want exactly this type and not a type which fulfills CBusHeader.
+// This is useful for switch cases.
+type CBusHeaderExactly interface {
+	CBusHeader
+	isCBusHeader() bool
 }
 
 // _CBusHeader is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_CBusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for CBusHeader")
 	}
 	return nil
+}
+
+func (m *_CBusHeader) isCBusHeader() bool {
+	return true
 }
 
 func (m *_CBusHeader) String() string {

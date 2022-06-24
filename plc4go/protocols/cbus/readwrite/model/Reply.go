@@ -28,14 +28,17 @@ import (
 
 // Reply is the corresponding interface of Reply
 type Reply interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMagicByte returns MagicByte (property field)
 	GetMagicByte() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ReplyExactly can be used when we want exactly this type and not a type which fulfills Reply.
+// This is useful for switch cases.
+type ReplyExactly interface {
+	Reply
+	isReply() bool
 }
 
 // _Reply is the data-structure of this message
@@ -45,9 +48,9 @@ type _Reply struct {
 }
 
 type _ReplyChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ReplyParent interface {
@@ -56,7 +59,7 @@ type ReplyParent interface {
 }
 
 type ReplyChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent Reply, magicByte byte)
 	GetParent() *Reply
 
@@ -185,6 +188,10 @@ func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, se
 		return errors.Wrap(popErr, "Error popping for Reply")
 	}
 	return nil
+}
+
+func (m *_Reply) isReply() bool {
+	return true
 }
 
 func (m *_Reply) String() string {

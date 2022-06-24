@@ -28,6 +28,8 @@ import (
 
 // AssociatedValueType is the corresponding interface of AssociatedValueType
 type AssociatedValueType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -36,12 +38,13 @@ type AssociatedValueType interface {
 	GetValueLength() uint16
 	// GetData returns Data (property field)
 	GetData() []uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AssociatedValueTypeExactly can be used when we want exactly this type and not a type which fulfills AssociatedValueType.
+// This is useful for switch cases.
+type AssociatedValueTypeExactly interface {
+	AssociatedValueType
+	isAssociatedValueType() bool
 }
 
 // _AssociatedValueType is the data-structure of this message
@@ -174,6 +177,10 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (AssociatedValueType,
 	}
 	// Count array
 	data := make([]uint8, EventItemLength(readBuffer, valueLength))
+	// This happens when the size is set conditional to 0
+	if len(data) == 0 {
+		data = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(EventItemLength(readBuffer, valueLength)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -233,25 +240,27 @@ func (m *_AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
+	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for data")
+	}
+	for _, _element := range m.GetData() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}
-		for _, _element := range m.GetData() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
-		}
+	}
+	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for data")
 	}
 
 	if popErr := writeBuffer.PopContext("AssociatedValueType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for AssociatedValueType")
 	}
 	return nil
+}
+
+func (m *_AssociatedValueType) isAssociatedValueType() bool {
+	return true
 }
 
 func (m *_AssociatedValueType) String() string {

@@ -28,24 +28,24 @@ import (
 
 // BACnetConfirmedServiceRequestDeleteObject is the corresponding interface of BACnetConfirmedServiceRequestDeleteObject
 type BACnetConfirmedServiceRequestDeleteObject interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestDeleteObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestDeleteObject.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestDeleteObjectExactly interface {
+	BACnetConfirmedServiceRequestDeleteObject
+	isBACnetConfirmedServiceRequestDeleteObject() bool
 }
 
 // _BACnetConfirmedServiceRequestDeleteObject is the data-structure of this message
 type _BACnetConfirmedServiceRequestDeleteObject struct {
 	*_BACnetConfirmedServiceRequest
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,8 +153,10 @@ func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestDeleteObject{
-		ObjectIdentifier:               objectIdentifier,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		ObjectIdentifier: objectIdentifier,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -186,6 +188,10 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObject) isBACnetConfirmedServiceRequestDeleteObject() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestDeleteObject) String() string {

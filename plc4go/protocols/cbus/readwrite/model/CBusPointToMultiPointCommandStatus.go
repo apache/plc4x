@@ -34,6 +34,8 @@ const CBusPointToMultiPointCommandStatus_CR byte = 0xD
 
 // CBusPointToMultiPointCommandStatus is the corresponding interface of CBusPointToMultiPointCommandStatus
 type CBusPointToMultiPointCommandStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() StatusRequest
@@ -43,12 +45,13 @@ type CBusPointToMultiPointCommandStatus interface {
 	GetPeekAlpha() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusPointToMultiPointCommandStatusExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommandStatus.
+// This is useful for switch cases.
+type CBusPointToMultiPointCommandStatusExactly interface {
+	CBusPointToMultiPointCommandStatus
+	isCBusPointToMultiPointCommandStatus() bool
 }
 
 // _CBusPointToMultiPointCommandStatus is the data-structure of this message
@@ -58,9 +61,6 @@ type _CBusPointToMultiPointCommandStatus struct {
 	Crc           Checksum
 	PeekAlpha     byte
 	Alpha         Alpha
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -302,11 +302,13 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, srchk 
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToMultiPointCommandStatus{
-		StatusRequest:                 statusRequest,
-		Crc:                           crc,
-		PeekAlpha:                     peekAlpha,
-		Alpha:                         alpha,
-		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{},
+		StatusRequest: statusRequest,
+		Crc:           crc,
+		PeekAlpha:     peekAlpha,
+		Alpha:         alpha,
+		_CBusPointToMultiPointCommand: &_CBusPointToMultiPointCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _child
 	return _child, nil
@@ -392,6 +394,10 @@ func (m *_CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusPointToMultiPointCommandStatus) isCBusPointToMultiPointCommandStatus() bool {
+	return true
 }
 
 func (m *_CBusPointToMultiPointCommandStatus) String() string {

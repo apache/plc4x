@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCredentialDisable is the corresponding interface of BACnetConstructedDataCredentialDisable
 type BACnetConstructedDataCredentialDisable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCredentialDisable returns CredentialDisable (property field)
 	GetCredentialDisable() BACnetAccessCredentialDisableTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessCredentialDisableTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCredentialDisableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialDisable.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialDisableExactly interface {
+	BACnetConstructedDataCredentialDisable
+	isBACnetConstructedDataCredentialDisable() bool
 }
 
 // _BACnetConstructedDataCredentialDisable is the data-structure of this message
 type _BACnetConstructedDataCredentialDisable struct {
 	*_BACnetConstructedData
 	CredentialDisable BACnetAccessCredentialDisableTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCredentialDisableParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialDisable{
-		CredentialDisable:      credentialDisable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CredentialDisable: credentialDisable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCredentialDisable) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialDisable) isBACnetConstructedDataCredentialDisable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialDisable) String() string {

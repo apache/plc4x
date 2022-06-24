@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueRelinquishDefault is the corresponding interface of BACnetConstructedDataPositiveIntegerValueRelinquishDefault
 type BACnetConstructedDataPositiveIntegerValueRelinquishDefault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPositiveIntegerValueRelinquishDefaultExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueRelinquishDefault.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueRelinquishDefaultExactly interface {
+	BACnetConstructedDataPositiveIntegerValueRelinquishDefault
+	isBACnetConstructedDataPositiveIntegerValueRelinquishDefault() bool
 }
 
 // _BACnetConstructedDataPositiveIntegerValueRelinquishDefault is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueRelinquishDefault struct {
 	*_BACnetConstructedData
 	RelinquishDefault BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPositiveIntegerValueRelinquishDefaultParse(readBuffer 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPositiveIntegerValueRelinquishDefault{
-		RelinquishDefault:      relinquishDefault,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		RelinquishDefault: relinquishDefault,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) Serialize(
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) isBACnetConstructedDataPositiveIntegerValueRelinquishDefault() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) String() string {

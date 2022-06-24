@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataCarDoorCommand is the corresponding interface of BACnetConstructedDataCarDoorCommand
 type BACnetConstructedDataCarDoorCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataCarDoorCommand interface {
 	GetCarDoorCommand() []BACnetLiftCarDoorCommandTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCarDoorCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarDoorCommand.
+// This is useful for switch cases.
+type BACnetConstructedDataCarDoorCommandExactly interface {
+	BACnetConstructedDataCarDoorCommand
+	isBACnetConstructedDataCarDoorCommand() bool
 }
 
 // _BACnetConstructedDataCarDoorCommand is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataCarDoorCommand struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	CarDoorCommand       []BACnetLiftCarDoorCommandTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataCarDoorCommandParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for carDoorCommand")
 	}
 	// Terminated array
-	carDoorCommand := make([]BACnetLiftCarDoorCommandTagged, 0)
+	var carDoorCommand []BACnetLiftCarDoorCommandTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLiftCarDoorCommandTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -233,9 +232,12 @@ func BACnetConstructedDataCarDoorCommandParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCarDoorCommand{
-		NumberOfDataElements:   numberOfDataElements,
-		CarDoorCommand:         carDoorCommand,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		CarDoorCommand:       carDoorCommand,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataCarDoorCommand) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (carDoorCommand)
-		if m.GetCarDoorCommand() != nil {
-			if pushErr := writeBuffer.PushContext("carDoorCommand", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for carDoorCommand")
+		if pushErr := writeBuffer.PushContext("carDoorCommand", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for carDoorCommand")
+		}
+		for _, _element := range m.GetCarDoorCommand() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'carDoorCommand' field")
 			}
-			for _, _element := range m.GetCarDoorCommand() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'carDoorCommand' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("carDoorCommand", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for carDoorCommand")
-			}
+		}
+		if popErr := writeBuffer.PopContext("carDoorCommand", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for carDoorCommand")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarDoorCommand"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataCarDoorCommand) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarDoorCommand) isBACnetConstructedDataCarDoorCommand() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarDoorCommand) String() string {

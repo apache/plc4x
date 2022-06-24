@@ -28,17 +28,20 @@ import (
 
 // ModbusPDUWriteSingleRegisterResponse is the corresponding interface of ModbusPDUWriteSingleRegisterResponse
 type ModbusPDUWriteSingleRegisterResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
 	// GetValue returns Value (property field)
 	GetValue() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUWriteSingleRegisterResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteSingleRegisterResponse.
+// This is useful for switch cases.
+type ModbusPDUWriteSingleRegisterResponseExactly interface {
+	ModbusPDUWriteSingleRegisterResponse
+	isModbusPDUWriteSingleRegisterResponse() bool
 }
 
 // _ModbusPDUWriteSingleRegisterResponse is the data-structure of this message
@@ -205,6 +208,10 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteSingleRegisterResponse) isModbusPDUWriteSingleRegisterResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteSingleRegisterResponse) String() string {

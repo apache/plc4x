@@ -28,13 +28,16 @@ import (
 
 // ApduControlDisconnect is the corresponding interface of ApduControlDisconnect
 type ApduControlDisconnect interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduControl
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduControlDisconnectExactly can be used when we want exactly this type and not a type which fulfills ApduControlDisconnect.
+// This is useful for switch cases.
+type ApduControlDisconnectExactly interface {
+	ApduControlDisconnect
+	isApduControlDisconnect() bool
 }
 
 // _ApduControlDisconnect is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_ApduControlDisconnect) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduControlDisconnect) isApduControlDisconnect() bool {
+	return true
 }
 
 func (m *_ApduControlDisconnect) String() string {

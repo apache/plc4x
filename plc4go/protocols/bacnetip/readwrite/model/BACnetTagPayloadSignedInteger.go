@@ -28,6 +28,8 @@ import (
 
 // BACnetTagPayloadSignedInteger is the corresponding interface of BACnetTagPayloadSignedInteger
 type BACnetTagPayloadSignedInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValueInt8 returns ValueInt8 (property field)
 	GetValueInt8() *int8
 	// GetValueInt16 returns ValueInt16 (property field)
@@ -62,12 +64,13 @@ type BACnetTagPayloadSignedInteger interface {
 	GetIsInt64() bool
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadSignedIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadSignedInteger.
+// This is useful for switch cases.
+type BACnetTagPayloadSignedIntegerExactly interface {
+	BACnetTagPayloadSignedInteger
+	isBACnetTagPayloadSignedInteger() bool
 }
 
 // _BACnetTagPayloadSignedInteger is the data-structure of this message
@@ -706,6 +709,10 @@ func (m *_BACnetTagPayloadSignedInteger) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadSignedInteger")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadSignedInteger) isBACnetTagPayloadSignedInteger() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadSignedInteger) String() string {

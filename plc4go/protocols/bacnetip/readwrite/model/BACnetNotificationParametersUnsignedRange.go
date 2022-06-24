@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersUnsignedRange is the corresponding interface of BACnetNotificationParametersUnsignedRange
 type BACnetNotificationParametersUnsignedRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetNotificationParametersUnsignedRange interface {
 	GetExceededLimit() BACnetContextTagUnsignedInteger
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersUnsignedRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersUnsignedRange.
+// This is useful for switch cases.
+type BACnetNotificationParametersUnsignedRangeExactly interface {
+	BACnetNotificationParametersUnsignedRange
+	isBACnetNotificationParametersUnsignedRange() bool
 }
 
 // _BACnetNotificationParametersUnsignedRange is the data-structure of this message
@@ -55,10 +58,6 @@ type _BACnetNotificationParametersUnsignedRange struct {
 	StatusFlags     BACnetStatusFlagsTagged
 	ExceededLimit   BACnetContextTagUnsignedInteger
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,12 +248,15 @@ func BACnetNotificationParametersUnsignedRangeParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersUnsignedRange{
-		InnerOpeningTag:               innerOpeningTag,
-		SequenceNumber:                sequenceNumber,
-		StatusFlags:                   statusFlags,
-		ExceededLimit:                 exceededLimit,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		SequenceNumber:  sequenceNumber,
+		StatusFlags:     statusFlags,
+		ExceededLimit:   exceededLimit,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -334,6 +336,10 @@ func (m *_BACnetNotificationParametersUnsignedRange) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersUnsignedRange) isBACnetNotificationParametersUnsignedRange() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersUnsignedRange) String() string {

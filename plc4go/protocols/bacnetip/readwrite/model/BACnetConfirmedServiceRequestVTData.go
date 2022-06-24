@@ -28,6 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestVTData is the corresponding interface of BACnetConfirmedServiceRequestVTData
 type BACnetConfirmedServiceRequestVTData interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -35,12 +37,13 @@ type BACnetConfirmedServiceRequestVTData interface {
 	GetVtNewData() BACnetApplicationTagOctetString
 	// GetVtDataFlag returns VtDataFlag (property field)
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestVTDataExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTData.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestVTDataExactly interface {
+	BACnetConfirmedServiceRequestVTData
+	isBACnetConfirmedServiceRequestVTData() bool
 }
 
 // _BACnetConfirmedServiceRequestVTData is the data-structure of this message
@@ -49,9 +52,6 @@ type _BACnetConfirmedServiceRequestVTData struct {
 	VtSessionIdentifier BACnetApplicationTagUnsignedInteger
 	VtNewData           BACnetApplicationTagOctetString
 	VtDataFlag          BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -201,10 +201,12 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestVTData{
-		VtSessionIdentifier:            vtSessionIdentifier,
-		VtNewData:                      vtNewData,
-		VtDataFlag:                     vtDataFlag,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		VtSessionIdentifier: vtSessionIdentifier,
+		VtNewData:           vtNewData,
+		VtDataFlag:          vtDataFlag,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -260,6 +262,10 @@ func (m *_BACnetConfirmedServiceRequestVTData) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestVTData) isBACnetConfirmedServiceRequestVTData() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestVTData) String() string {

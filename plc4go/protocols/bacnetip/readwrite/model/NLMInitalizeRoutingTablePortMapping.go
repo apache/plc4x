@@ -28,6 +28,8 @@ import (
 
 // NLMInitalizeRoutingTablePortMapping is the corresponding interface of NLMInitalizeRoutingTablePortMapping
 type NLMInitalizeRoutingTablePortMapping interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// GetPortId returns PortId (property field)
@@ -36,12 +38,13 @@ type NLMInitalizeRoutingTablePortMapping interface {
 	GetPortInfoLength() uint8
 	// GetPortInfo returns PortInfo (property field)
 	GetPortInfo() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NLMInitalizeRoutingTablePortMappingExactly can be used when we want exactly this type and not a type which fulfills NLMInitalizeRoutingTablePortMapping.
+// This is useful for switch cases.
+type NLMInitalizeRoutingTablePortMappingExactly interface {
+	NLMInitalizeRoutingTablePortMapping
+	isNLMInitalizeRoutingTablePortMapping() bool
 }
 
 // _NLMInitalizeRoutingTablePortMapping is the data-structure of this message
@@ -199,18 +202,19 @@ func (m *_NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.Write
 	}
 
 	// Array Field (portInfo)
-	if m.GetPortInfo() != nil {
-		// Byte Array field (portInfo)
-		_writeArrayErr := writeBuffer.WriteByteArray("portInfo", m.GetPortInfo())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'portInfo' field")
-		}
+	// Byte Array field (portInfo)
+	if err := writeBuffer.WriteByteArray("portInfo", m.GetPortInfo()); err != nil {
+		return errors.Wrap(err, "Error serializing 'portInfo' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NLMInitalizeRoutingTablePortMapping"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for NLMInitalizeRoutingTablePortMapping")
 	}
 	return nil
+}
+
+func (m *_NLMInitalizeRoutingTablePortMapping) isNLMInitalizeRoutingTablePortMapping() bool {
+	return true
 }
 
 func (m *_NLMInitalizeRoutingTablePortMapping) String() string {

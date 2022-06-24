@@ -28,18 +28,21 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntry is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntry
 type BACnetFaultParameterFaultExtendedParametersEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntry.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntry
+	isBACnetFaultParameterFaultExtendedParametersEntry() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntry is the data-structure of this message
@@ -49,9 +52,9 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 }
 
 type _BACnetFaultParameterFaultExtendedParametersEntryChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetFaultParameterFaultExtendedParametersEntryParent interface {
@@ -60,7 +63,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryParent interface {
 }
 
 type BACnetFaultParameterFaultExtendedParametersEntryChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetFaultParameterFaultExtendedParametersEntry, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetFaultParameterFaultExtendedParametersEntry
 
@@ -248,6 +251,10 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) SerializeParent(wri
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultExtendedParametersEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) isBACnetFaultParameterFaultExtendedParametersEntry() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) String() string {

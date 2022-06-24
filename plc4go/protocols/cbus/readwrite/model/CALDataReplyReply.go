@@ -28,17 +28,20 @@ import (
 
 // CALDataReplyReply is the corresponding interface of CALDataReplyReply
 type CALDataReplyReply interface {
+	utils.LengthAware
+	utils.Serializable
 	CALData
 	// GetParamNumber returns ParamNumber (property field)
 	GetParamNumber() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALDataReplyReplyExactly can be used when we want exactly this type and not a type which fulfills CALDataReplyReply.
+// This is useful for switch cases.
+type CALDataReplyReplyExactly interface {
+	CALDataReplyReply
+	isCALDataReplyReply() bool
 }
 
 // _CALDataReplyReply is the data-structure of this message
@@ -184,12 +187,9 @@ func (m *_CALDataReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataReplyReply"); popErr != nil {
@@ -198,6 +198,10 @@ func (m *_CALDataReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALDataReplyReply) isCALDataReplyReply() bool {
+	return true
 }
 
 func (m *_CALDataReplyReply) String() string {

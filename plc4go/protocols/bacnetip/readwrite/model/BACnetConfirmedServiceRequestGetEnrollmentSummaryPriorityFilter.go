@@ -28,6 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMinPriority returns MinPriority (property field)
@@ -36,12 +38,13 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	GetMaxPriority() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterExactly interface {
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
+	isBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() bool
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the data-structure of this message
@@ -255,6 +258,10 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Seria
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) isBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) String() string {

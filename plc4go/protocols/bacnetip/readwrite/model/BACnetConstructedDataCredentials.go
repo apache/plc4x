@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataCredentials is the corresponding interface of BACnetConstructedDataCredentials
 type BACnetConstructedDataCredentials interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCredentials returns Credentials (property field)
 	GetCredentials() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCredentialsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentials.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialsExactly interface {
+	BACnetConstructedDataCredentials
+	isBACnetConstructedDataCredentials() bool
 }
 
 // _BACnetConstructedDataCredentials is the data-structure of this message
 type _BACnetConstructedDataCredentials struct {
 	*_BACnetConstructedData
 	Credentials []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataCredentialsParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, errors.Wrap(pullErr, "Error pulling for credentials")
 	}
 	// Terminated array
-	credentials := make([]BACnetDeviceObjectReference, 0)
+	var credentials []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataCredentialsParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentials{
-		Credentials:            credentials,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Credentials: credentials,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataCredentials) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (credentials)
-		if m.GetCredentials() != nil {
-			if pushErr := writeBuffer.PushContext("credentials", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for credentials")
+		if pushErr := writeBuffer.PushContext("credentials", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for credentials")
+		}
+		for _, _element := range m.GetCredentials() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'credentials' field")
 			}
-			for _, _element := range m.GetCredentials() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'credentials' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("credentials", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for credentials")
-			}
+		}
+		if popErr := writeBuffer.PopContext("credentials", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for credentials")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentials"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataCredentials) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentials) isBACnetConstructedDataCredentials() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentials) String() string {

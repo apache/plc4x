@@ -28,18 +28,21 @@ import (
 
 // DeviceConfigurationAckDataBlock is the corresponding interface of DeviceConfigurationAckDataBlock
 type DeviceConfigurationAckDataBlock interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DeviceConfigurationAckDataBlockExactly can be used when we want exactly this type and not a type which fulfills DeviceConfigurationAckDataBlock.
+// This is useful for switch cases.
+type DeviceConfigurationAckDataBlockExactly interface {
+	DeviceConfigurationAckDataBlock
+	isDeviceConfigurationAckDataBlock() bool
 }
 
 // _DeviceConfigurationAckDataBlock is the data-structure of this message
@@ -212,6 +215,10 @@ func (m *_DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuff
 		return errors.Wrap(popErr, "Error popping for DeviceConfigurationAckDataBlock")
 	}
 	return nil
+}
+
+func (m *_DeviceConfigurationAckDataBlock) isDeviceConfigurationAckDataBlock() bool {
+	return true
 }
 
 func (m *_DeviceConfigurationAckDataBlock) String() string {

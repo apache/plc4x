@@ -34,6 +34,8 @@ const CBusCommandPointToPointToMultiPointNormal_CR byte = 0xD
 
 // CBusCommandPointToPointToMultiPointNormal is the corresponding interface of CBusCommandPointToPointToMultiPointNormal
 type CBusCommandPointToPointToMultiPointNormal interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusPointToPointToMultipointCommand
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -45,12 +47,13 @@ type CBusCommandPointToPointToMultiPointNormal interface {
 	GetPeekAlpha() byte
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusCommandPointToPointToMultiPointNormalExactly can be used when we want exactly this type and not a type which fulfills CBusCommandPointToPointToMultiPointNormal.
+// This is useful for switch cases.
+type CBusCommandPointToPointToMultiPointNormalExactly interface {
+	CBusCommandPointToPointToMultiPointNormal
+	isCBusCommandPointToPointToMultiPointNormal() bool
 }
 
 // _CBusCommandPointToPointToMultiPointNormal is the data-structure of this message
@@ -61,9 +64,6 @@ type _CBusCommandPointToPointToMultiPointNormal struct {
 	Crc         Checksum
 	PeekAlpha   byte
 	Alpha       Alpha
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -294,12 +294,14 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_CBusCommandPointToPointToMultiPointNormal{
-		Application:                          application,
-		SalData:                              salData,
-		Crc:                                  crc,
-		PeekAlpha:                            peekAlpha,
-		Alpha:                                alpha,
-		_CBusPointToPointToMultipointCommand: &_CBusPointToPointToMultipointCommand{},
+		Application: application,
+		SalData:     salData,
+		Crc:         crc,
+		PeekAlpha:   peekAlpha,
+		Alpha:       alpha,
+		_CBusPointToPointToMultipointCommand: &_CBusPointToPointToMultipointCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusPointToPointToMultipointCommand._CBusPointToPointToMultipointCommandChildRequirements = _child
 	return _child, nil
@@ -381,6 +383,10 @@ func (m *_CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusCommandPointToPointToMultiPointNormal) isCBusCommandPointToPointToMultiPointNormal() bool {
+	return true
 }
 
 func (m *_CBusCommandPointToPointToMultiPointNormal) String() string {

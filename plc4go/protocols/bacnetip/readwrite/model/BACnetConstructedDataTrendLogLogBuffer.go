@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataTrendLogLogBuffer is the corresponding interface of BACnetConstructedDataTrendLogLogBuffer
 type BACnetConstructedDataTrendLogLogBuffer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTrendLogLogBufferExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTrendLogLogBuffer.
+// This is useful for switch cases.
+type BACnetConstructedDataTrendLogLogBufferExactly interface {
+	BACnetConstructedDataTrendLogLogBuffer
+	isBACnetConstructedDataTrendLogLogBuffer() bool
 }
 
 // _BACnetConstructedDataTrendLogLogBuffer is the data-structure of this message
 type _BACnetConstructedDataTrendLogLogBuffer struct {
 	*_BACnetConstructedData
 	FloorText []BACnetLogRecord
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataTrendLogLogBufferParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for floorText")
 	}
 	// Terminated array
-	floorText := make([]BACnetLogRecord, 0)
+	var floorText []BACnetLogRecord
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLogRecordParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataTrendLogLogBufferParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTrendLogLogBuffer{
-		FloorText:              floorText,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FloorText: floorText,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (floorText)
-		if m.GetFloorText() != nil {
-			if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for floorText")
+		if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for floorText")
+		}
+		for _, _element := range m.GetFloorText() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
 			}
-			for _, _element := range m.GetFloorText() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for floorText")
-			}
+		}
+		if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for floorText")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTrendLogLogBuffer"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTrendLogLogBuffer) isBACnetConstructedDataTrendLogLogBuffer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTrendLogLogBuffer) String() string {

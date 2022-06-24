@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteria is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteria
 type BACnetEventParameterChangeOfValueCivCriteria interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -36,12 +38,13 @@ type BACnetEventParameterChangeOfValueCivCriteria interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfValueCivCriteriaExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteria.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfValueCivCriteriaExactly interface {
+	BACnetEventParameterChangeOfValueCivCriteria
+	isBACnetEventParameterChangeOfValueCivCriteria() bool
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteria is the data-structure of this message
@@ -56,9 +59,9 @@ type _BACnetEventParameterChangeOfValueCivCriteria struct {
 }
 
 type _BACnetEventParameterChangeOfValueCivCriteriaChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetEventParameterChangeOfValueCivCriteriaParent interface {
@@ -67,7 +70,7 @@ type BACnetEventParameterChangeOfValueCivCriteriaParent interface {
 }
 
 type BACnetEventParameterChangeOfValueCivCriteriaChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetEventParameterChangeOfValueCivCriteria, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag)
 	GetParent() *BACnetEventParameterChangeOfValueCivCriteria
 
@@ -275,6 +278,10 @@ func (pm *_BACnetEventParameterChangeOfValueCivCriteria) SerializeParent(writeBu
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfValueCivCriteria")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) isBACnetEventParameterChangeOfValueCivCriteria() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) String() string {

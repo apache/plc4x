@@ -28,18 +28,21 @@ import (
 
 // AdsNotificationSample is the corresponding interface of AdsNotificationSample
 type AdsNotificationSample interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 	// GetSampleSize returns SampleSize (property field)
 	GetSampleSize() uint32
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsNotificationSampleExactly can be used when we want exactly this type and not a type which fulfills AdsNotificationSample.
+// This is useful for switch cases.
+type AdsNotificationSampleExactly interface {
+	AdsNotificationSample
+	isAdsNotificationSample() bool
 }
 
 // _AdsNotificationSample is the data-structure of this message
@@ -175,18 +178,19 @@ func (m *_AdsNotificationSample) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		// Byte Array field (data)
-		_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-		}
+	// Byte Array field (data)
+	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsNotificationSample"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for AdsNotificationSample")
 	}
 	return nil
+}
+
+func (m *_AdsNotificationSample) isAdsNotificationSample() bool {
+	return true
 }
 
 func (m *_AdsNotificationSample) String() string {

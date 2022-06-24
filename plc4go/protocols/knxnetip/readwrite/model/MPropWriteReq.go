@@ -28,21 +28,21 @@ import (
 
 // MPropWriteReq is the corresponding interface of MPropWriteReq
 type MPropWriteReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MPropWriteReqExactly can be used when we want exactly this type and not a type which fulfills MPropWriteReq.
+// This is useful for switch cases.
+type MPropWriteReqExactly interface {
+	MPropWriteReq
+	isMPropWriteReq() bool
 }
 
 // _MPropWriteReq is the data-structure of this message
 type _MPropWriteReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func MPropWriteReqParse(readBuffer utils.ReadBuffer, size uint16) (MPropWriteReq
 
 	// Create a partially initialized instance
 	_child := &_MPropWriteReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_MPropWriteReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MPropWriteReq) isMPropWriteReq() bool {
+	return true
 }
 
 func (m *_MPropWriteReq) String() string {

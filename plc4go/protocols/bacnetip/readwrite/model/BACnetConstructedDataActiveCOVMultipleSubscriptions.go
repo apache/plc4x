@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataActiveCOVMultipleSubscriptions is the corresponding interface of BACnetConstructedDataActiveCOVMultipleSubscriptions
 type BACnetConstructedDataActiveCOVMultipleSubscriptions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveCOVMultipleSubscriptions returns ActiveCOVMultipleSubscriptions (property field)
 	GetActiveCOVMultipleSubscriptions() []BACnetCOVMultipleSubscription
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataActiveCOVMultipleSubscriptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveCOVMultipleSubscriptions.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveCOVMultipleSubscriptionsExactly interface {
+	BACnetConstructedDataActiveCOVMultipleSubscriptions
+	isBACnetConstructedDataActiveCOVMultipleSubscriptions() bool
 }
 
 // _BACnetConstructedDataActiveCOVMultipleSubscriptions is the data-structure of this message
 type _BACnetConstructedDataActiveCOVMultipleSubscriptions struct {
 	*_BACnetConstructedData
 	ActiveCOVMultipleSubscriptions []BACnetCOVMultipleSubscription
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for activeCOVMultipleSubscriptions")
 	}
 	// Terminated array
-	activeCOVMultipleSubscriptions := make([]BACnetCOVMultipleSubscription, 0)
+	var activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetCOVMultipleSubscriptionParse(readBuffer)
@@ -173,7 +172,10 @@ func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.R
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
 		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
-		_BACnetConstructedData:         &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) Serialize(writeBu
 		}
 
 		// Array Field (activeCOVMultipleSubscriptions)
-		if m.GetActiveCOVMultipleSubscriptions() != nil {
-			if pushErr := writeBuffer.PushContext("activeCOVMultipleSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for activeCOVMultipleSubscriptions")
+		if pushErr := writeBuffer.PushContext("activeCOVMultipleSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for activeCOVMultipleSubscriptions")
+		}
+		for _, _element := range m.GetActiveCOVMultipleSubscriptions() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'activeCOVMultipleSubscriptions' field")
 			}
-			for _, _element := range m.GetActiveCOVMultipleSubscriptions() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'activeCOVMultipleSubscriptions' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("activeCOVMultipleSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for activeCOVMultipleSubscriptions")
-			}
+		}
+		if popErr := writeBuffer.PopContext("activeCOVMultipleSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for activeCOVMultipleSubscriptions")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveCOVMultipleSubscriptions"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) isBACnetConstructedDataActiveCOVMultipleSubscriptions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) String() string {

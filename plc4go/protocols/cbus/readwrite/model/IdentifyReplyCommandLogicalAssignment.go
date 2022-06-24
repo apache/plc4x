@@ -28,13 +28,16 @@ import (
 
 // IdentifyReplyCommandLogicalAssignment is the corresponding interface of IdentifyReplyCommandLogicalAssignment
 type IdentifyReplyCommandLogicalAssignment interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandLogicalAssignmentExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandLogicalAssignment.
+// This is useful for switch cases.
+type IdentifyReplyCommandLogicalAssignmentExactly interface {
+	IdentifyReplyCommandLogicalAssignment
+	isIdentifyReplyCommandLogicalAssignment() bool
 }
 
 // _IdentifyReplyCommandLogicalAssignment is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_IdentifyReplyCommandLogicalAssignment) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandLogicalAssignment) isIdentifyReplyCommandLogicalAssignment() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) String() string {

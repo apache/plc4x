@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEventAlgorithmInhibit is the corresponding interface of BACnetConstructedDataEventAlgorithmInhibit
 type BACnetConstructedDataEventAlgorithmInhibit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventAlgorithmInhibit returns EventAlgorithmInhibit (property field)
 	GetEventAlgorithmInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEventAlgorithmInhibitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventAlgorithmInhibit.
+// This is useful for switch cases.
+type BACnetConstructedDataEventAlgorithmInhibitExactly interface {
+	BACnetConstructedDataEventAlgorithmInhibit
+	isBACnetConstructedDataEventAlgorithmInhibit() bool
 }
 
 // _BACnetConstructedDataEventAlgorithmInhibit is the data-structure of this message
 type _BACnetConstructedDataEventAlgorithmInhibit struct {
 	*_BACnetConstructedData
 	EventAlgorithmInhibit BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEventAlgorithmInhibitParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventAlgorithmInhibit{
-		EventAlgorithmInhibit:  eventAlgorithmInhibit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EventAlgorithmInhibit: eventAlgorithmInhibit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) isBACnetConstructedDataEventAlgorithmInhibit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) String() string {

@@ -28,6 +28,8 @@ import (
 
 // BACnetDaysOfWeekTagged is the corresponding interface of BACnetDaysOfWeekTagged
 type BACnetDaysOfWeekTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -46,12 +48,13 @@ type BACnetDaysOfWeekTagged interface {
 	GetSaturday() bool
 	// GetSunday returns Sunday (virtual field)
 	GetSunday() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetDaysOfWeekTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetDaysOfWeekTagged.
+// This is useful for switch cases.
+type BACnetDaysOfWeekTaggedExactly interface {
+	BACnetDaysOfWeekTagged
+	isBACnetDaysOfWeekTagged() bool
 }
 
 // _BACnetDaysOfWeekTagged is the data-structure of this message
@@ -324,6 +327,10 @@ func (m *_BACnetDaysOfWeekTagged) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetDaysOfWeekTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetDaysOfWeekTagged) isBACnetDaysOfWeekTagged() bool {
+	return true
 }
 
 func (m *_BACnetDaysOfWeekTagged) String() string {

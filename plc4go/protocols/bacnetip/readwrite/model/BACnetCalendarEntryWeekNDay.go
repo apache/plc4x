@@ -28,15 +28,18 @@ import (
 
 // BACnetCalendarEntryWeekNDay is the corresponding interface of BACnetCalendarEntryWeekNDay
 type BACnetCalendarEntryWeekNDay interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetCalendarEntry
 	// GetWeekNDay returns WeekNDay (property field)
 	GetWeekNDay() BACnetWeekNDayTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetCalendarEntryWeekNDayExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntryWeekNDay.
+// This is useful for switch cases.
+type BACnetCalendarEntryWeekNDayExactly interface {
+	BACnetCalendarEntryWeekNDay
+	isBACnetCalendarEntryWeekNDay() bool
 }
 
 // _BACnetCalendarEntryWeekNDay is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetCalendarEntryWeekNDay) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetCalendarEntryWeekNDay) isBACnetCalendarEntryWeekNDay() bool {
+	return true
 }
 
 func (m *_BACnetCalendarEntryWeekNDay) String() string {

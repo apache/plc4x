@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCount is the corresponding interface of BACnetConstructedDataCount
 type BACnetConstructedDataCount interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCountExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCount.
+// This is useful for switch cases.
+type BACnetConstructedDataCountExactly interface {
+	BACnetConstructedDataCount
+	isBACnetConstructedDataCount() bool
 }
 
 // _BACnetConstructedDataCount is the data-structure of this message
 type _BACnetConstructedDataCount struct {
 	*_BACnetConstructedData
 	Count BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCountParse(readBuffer utils.ReadBuffer, tagNumber uint
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCount{
-		Count:                  count,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Count: count,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCount) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCount) isBACnetConstructedDataCount() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCount) String() string {

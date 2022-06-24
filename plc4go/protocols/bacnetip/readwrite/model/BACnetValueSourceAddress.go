@@ -28,15 +28,18 @@ import (
 
 // BACnetValueSourceAddress is the corresponding interface of BACnetValueSourceAddress
 type BACnetValueSourceAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetValueSource
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddressEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetValueSourceAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSourceAddress.
+// This is useful for switch cases.
+type BACnetValueSourceAddressExactly interface {
+	BACnetValueSourceAddress
+	isBACnetValueSourceAddress() bool
 }
 
 // _BACnetValueSourceAddress is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetValueSourceAddress) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetValueSourceAddress) isBACnetValueSourceAddress() bool {
+	return true
 }
 
 func (m *_BACnetValueSourceAddress) String() string {

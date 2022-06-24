@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLoggingType is the corresponding interface of BACnetConstructedDataLoggingType
 type BACnetConstructedDataLoggingType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLoggingType returns LoggingType (property field)
 	GetLoggingType() BACnetLoggingTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLoggingTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLoggingTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLoggingType.
+// This is useful for switch cases.
+type BACnetConstructedDataLoggingTypeExactly interface {
+	BACnetConstructedDataLoggingType
+	isBACnetConstructedDataLoggingType() bool
 }
 
 // _BACnetConstructedDataLoggingType is the data-structure of this message
 type _BACnetConstructedDataLoggingType struct {
 	*_BACnetConstructedData
 	LoggingType BACnetLoggingTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLoggingTypeParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLoggingType{
-		LoggingType:            loggingType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LoggingType: loggingType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLoggingType) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLoggingType) isBACnetConstructedDataLoggingType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLoggingType) String() string {

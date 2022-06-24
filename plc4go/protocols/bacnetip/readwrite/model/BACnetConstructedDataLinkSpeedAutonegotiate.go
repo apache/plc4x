@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLinkSpeedAutonegotiate is the corresponding interface of BACnetConstructedDataLinkSpeedAutonegotiate
 type BACnetConstructedDataLinkSpeedAutonegotiate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLinkSpeedAutonegotiate returns LinkSpeedAutonegotiate (property field)
 	GetLinkSpeedAutonegotiate() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLinkSpeedAutonegotiateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLinkSpeedAutonegotiate.
+// This is useful for switch cases.
+type BACnetConstructedDataLinkSpeedAutonegotiateExactly interface {
+	BACnetConstructedDataLinkSpeedAutonegotiate
+	isBACnetConstructedDataLinkSpeedAutonegotiate() bool
 }
 
 // _BACnetConstructedDataLinkSpeedAutonegotiate is the data-structure of this message
 type _BACnetConstructedDataLinkSpeedAutonegotiate struct {
 	*_BACnetConstructedData
 	LinkSpeedAutonegotiate BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLinkSpeedAutonegotiate{
 		LinkSpeedAutonegotiate: linkSpeedAutonegotiate,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) isBACnetConstructedDataLinkSpeedAutonegotiate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) String() string {

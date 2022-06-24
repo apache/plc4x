@@ -28,6 +28,8 @@ import (
 
 // BACnetAuthorizationModeTagged is the corresponding interface of BACnetAuthorizationModeTagged
 type BACnetAuthorizationModeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetAuthorizationModeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthorizationModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthorizationModeTagged.
+// This is useful for switch cases.
+type BACnetAuthorizationModeTaggedExactly interface {
+	BACnetAuthorizationModeTagged
+	isBACnetAuthorizationModeTagged() bool
 }
 
 // _BACnetAuthorizationModeTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetAuthorizationModeTagged) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetAuthorizationModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthorizationModeTagged) isBACnetAuthorizationModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetAuthorizationModeTagged) String() string {

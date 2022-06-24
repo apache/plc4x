@@ -28,18 +28,21 @@ import (
 
 // BACnetSpecialEvent is the corresponding interface of BACnetSpecialEvent
 type BACnetSpecialEvent interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeriod returns Period (property field)
 	GetPeriod() BACnetSpecialEventPeriod
 	// GetListOfTimeValues returns ListOfTimeValues (property field)
 	GetListOfTimeValues() BACnetSpecialEventListOfTimeValues
 	// GetEventPriority returns EventPriority (property field)
 	GetEventPriority() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSpecialEventExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEvent.
+// This is useful for switch cases.
+type BACnetSpecialEventExactly interface {
+	BACnetSpecialEvent
+	isBACnetSpecialEvent() bool
 }
 
 // _BACnetSpecialEvent is the data-structure of this message
@@ -217,6 +220,10 @@ func (m *_BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetSpecialEvent")
 	}
 	return nil
+}
+
+func (m *_BACnetSpecialEvent) isBACnetSpecialEvent() bool {
+	return true
 }
 
 func (m *_BACnetSpecialEvent) String() string {

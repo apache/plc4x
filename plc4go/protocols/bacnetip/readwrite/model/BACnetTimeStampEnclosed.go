@@ -28,18 +28,21 @@ import (
 
 // BACnetTimeStampEnclosed is the corresponding interface of BACnetTimeStampEnclosed
 type BACnetTimeStampEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetTimeStamp
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimeStampEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampEnclosed.
+// This is useful for switch cases.
+type BACnetTimeStampEnclosedExactly interface {
+	BACnetTimeStampEnclosed
+	isBACnetTimeStampEnclosed() bool
 }
 
 // _BACnetTimeStampEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_BACnetTimeStampEnclosed) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetTimeStampEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetTimeStampEnclosed) isBACnetTimeStampEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetTimeStampEnclosed) String() string {

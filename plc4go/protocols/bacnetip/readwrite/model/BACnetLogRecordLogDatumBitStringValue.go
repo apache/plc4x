@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumBitStringValue is the corresponding interface of BACnetLogRecordLogDatumBitStringValue
 type BACnetLogRecordLogDatumBitStringValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumBitStringValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumBitStringValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumBitStringValueExactly interface {
+	BACnetLogRecordLogDatumBitStringValue
+	isBACnetLogRecordLogDatumBitStringValue() bool
 }
 
 // _BACnetLogRecordLogDatumBitStringValue is the data-structure of this message
 type _BACnetLogRecordLogDatumBitStringValue struct {
 	*_BACnetLogRecordLogDatum
 	BitStringValue BACnetContextTagBitString
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumBitStringValueParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumBitStringValue{
-		BitStringValue:           bitStringValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		BitStringValue: bitStringValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumBitStringValue) isBACnetLogRecordLogDatumBitStringValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) String() string {

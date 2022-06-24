@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNumberOfAPDURetries is the corresponding interface of BACnetConstructedDataNumberOfAPDURetries
 type BACnetConstructedDataNumberOfAPDURetries interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfApduRetries returns NumberOfApduRetries (property field)
 	GetNumberOfApduRetries() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNumberOfAPDURetriesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNumberOfAPDURetries.
+// This is useful for switch cases.
+type BACnetConstructedDataNumberOfAPDURetriesExactly interface {
+	BACnetConstructedDataNumberOfAPDURetries
+	isBACnetConstructedDataNumberOfAPDURetries() bool
 }
 
 // _BACnetConstructedDataNumberOfAPDURetries is the data-structure of this message
 type _BACnetConstructedDataNumberOfAPDURetries struct {
 	*_BACnetConstructedData
 	NumberOfApduRetries BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNumberOfAPDURetries{
-		NumberOfApduRetries:    numberOfApduRetries,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfApduRetries: numberOfApduRetries,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNumberOfAPDURetries) isBACnetConstructedDataNumberOfAPDURetries() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) String() string {

@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersChangeOfReliability is the corresponding interface of BACnetNotificationParametersChangeOfReliability
 type BACnetNotificationParametersChangeOfReliability interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetNotificationParametersChangeOfReliability interface {
 	GetPropertyValues() BACnetPropertyValues
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfReliabilityExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfReliability.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfReliabilityExactly interface {
+	BACnetNotificationParametersChangeOfReliability
+	isBACnetNotificationParametersChangeOfReliability() bool
 }
 
 // _BACnetNotificationParametersChangeOfReliability is the data-structure of this message
@@ -55,10 +58,6 @@ type _BACnetNotificationParametersChangeOfReliability struct {
 	StatusFlags     BACnetStatusFlagsTagged
 	PropertyValues  BACnetPropertyValues
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,12 +248,15 @@ func BACnetNotificationParametersChangeOfReliabilityParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfReliability{
-		InnerOpeningTag:               innerOpeningTag,
-		Reliability:                   reliability,
-		StatusFlags:                   statusFlags,
-		PropertyValues:                propertyValues,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		Reliability:     reliability,
+		StatusFlags:     statusFlags,
+		PropertyValues:  propertyValues,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -334,6 +336,10 @@ func (m *_BACnetNotificationParametersChangeOfReliability) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfReliability) isBACnetNotificationParametersChangeOfReliability() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfReliability) String() string {

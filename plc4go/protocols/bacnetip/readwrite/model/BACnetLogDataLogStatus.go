@@ -28,24 +28,24 @@ import (
 
 // BACnetLogDataLogStatus is the corresponding interface of BACnetLogDataLogStatus
 type BACnetLogDataLogStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogData
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogStatus.
+// This is useful for switch cases.
+type BACnetLogDataLogStatusExactly interface {
+	BACnetLogDataLogStatus
+	isBACnetLogDataLogStatus() bool
 }
 
 // _BACnetLogDataLogStatus is the data-structure of this message
 type _BACnetLogDataLogStatus struct {
 	*_BACnetLogData
 	LogStatus BACnetLogStatusTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogDataLogStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8) (
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogDataLogStatus{
-		LogStatus:      logStatus,
-		_BACnetLogData: &_BACnetLogData{},
+		LogStatus: logStatus,
+		_BACnetLogData: &_BACnetLogData{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogData._BACnetLogDataChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogDataLogStatus) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogStatus) isBACnetLogDataLogStatus() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogStatus) String() string {

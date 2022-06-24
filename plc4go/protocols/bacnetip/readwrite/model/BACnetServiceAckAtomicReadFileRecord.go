@@ -28,6 +28,8 @@ import (
 
 // BACnetServiceAckAtomicReadFileRecord is the corresponding interface of BACnetServiceAckAtomicReadFileRecord
 type BACnetServiceAckAtomicReadFileRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetFileStartRecord returns FileStartRecord (property field)
 	GetFileStartRecord() BACnetApplicationTagSignedInteger
@@ -35,12 +37,13 @@ type BACnetServiceAckAtomicReadFileRecord interface {
 	GetReturnedRecordCount() BACnetApplicationTagUnsignedInteger
 	// GetFileRecordData returns FileRecordData (property field)
 	GetFileRecordData() []BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckAtomicReadFileRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFileRecord.
+// This is useful for switch cases.
+type BACnetServiceAckAtomicReadFileRecordExactly interface {
+	BACnetServiceAckAtomicReadFileRecord
+	isBACnetServiceAckAtomicReadFileRecord() bool
 }
 
 // _BACnetServiceAckAtomicReadFileRecord is the data-structure of this message
@@ -189,6 +192,10 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (BAC
 	}
 	// Count array
 	fileRecordData := make([]BACnetApplicationTagOctetString, returnedRecordCount.GetPayload().GetActualValue())
+	// This happens when the size is set conditional to 0
+	if len(fileRecordData) == 0 {
+		fileRecordData = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(returnedRecordCount.GetPayload().GetActualValue()); curItem++ {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -250,19 +257,17 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) Serialize(writeBuffer utils.Writ
 		}
 
 		// Array Field (fileRecordData)
-		if m.GetFileRecordData() != nil {
-			if pushErr := writeBuffer.PushContext("fileRecordData", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for fileRecordData")
+		if pushErr := writeBuffer.PushContext("fileRecordData", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for fileRecordData")
+		}
+		for _, _element := range m.GetFileRecordData() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'fileRecordData' field")
 			}
-			for _, _element := range m.GetFileRecordData() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'fileRecordData' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("fileRecordData", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for fileRecordData")
-			}
+		}
+		if popErr := writeBuffer.PopContext("fileRecordData", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for fileRecordData")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicReadFileRecord"); popErr != nil {
@@ -271,6 +276,10 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecord) isBACnetServiceAckAtomicReadFileRecord() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPulseConverterPresentValue is the corresponding interface of BACnetConstructedDataPulseConverterPresentValue
 type BACnetConstructedDataPulseConverterPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPulseConverterPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseConverterPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataPulseConverterPresentValueExactly interface {
+	BACnetConstructedDataPulseConverterPresentValue
+	isBACnetConstructedDataPulseConverterPresentValue() bool
 }
 
 // _BACnetConstructedDataPulseConverterPresentValue is the data-structure of this message
 type _BACnetConstructedDataPulseConverterPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPulseConverterPresentValueParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPulseConverterPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPulseConverterPresentValue) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPulseConverterPresentValue) isBACnetConstructedDataPulseConverterPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPulseConverterPresentValue) String() string {

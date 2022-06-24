@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataBBMDBroadcastDistributionTable is the corresponding interface of BACnetConstructedDataBBMDBroadcastDistributionTable
 type BACnetConstructedDataBBMDBroadcastDistributionTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBbmdBroadcastDistributionTable returns BbmdBroadcastDistributionTable (property field)
 	GetBbmdBroadcastDistributionTable() []BACnetBDTEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBBMDBroadcastDistributionTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBBMDBroadcastDistributionTable.
+// This is useful for switch cases.
+type BACnetConstructedDataBBMDBroadcastDistributionTableExactly interface {
+	BACnetConstructedDataBBMDBroadcastDistributionTable
+	isBACnetConstructedDataBBMDBroadcastDistributionTable() bool
 }
 
 // _BACnetConstructedDataBBMDBroadcastDistributionTable is the data-structure of this message
 type _BACnetConstructedDataBBMDBroadcastDistributionTable struct {
 	*_BACnetConstructedData
 	BbmdBroadcastDistributionTable []BACnetBDTEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for bbmdBroadcastDistributionTable")
 	}
 	// Terminated array
-	bbmdBroadcastDistributionTable := make([]BACnetBDTEntry, 0)
+	var bbmdBroadcastDistributionTable []BACnetBDTEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetBDTEntryParse(readBuffer)
@@ -173,7 +172,10 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
 		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
-		_BACnetConstructedData:         &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize(writeBu
 		}
 
 		// Array Field (bbmdBroadcastDistributionTable)
-		if m.GetBbmdBroadcastDistributionTable() != nil {
-			if pushErr := writeBuffer.PushContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bbmdBroadcastDistributionTable")
+		if pushErr := writeBuffer.PushContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for bbmdBroadcastDistributionTable")
+		}
+		for _, _element := range m.GetBbmdBroadcastDistributionTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'bbmdBroadcastDistributionTable' field")
 			}
-			for _, _element := range m.GetBbmdBroadcastDistributionTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'bbmdBroadcastDistributionTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bbmdBroadcastDistributionTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for bbmdBroadcastDistributionTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) isBACnetConstructedDataBBMDBroadcastDistributionTable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) String() string {

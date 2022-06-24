@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPulseRate is the corresponding interface of BACnetConstructedDataPulseRate
 type BACnetConstructedDataPulseRate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPulseRate returns PulseRate (property field)
 	GetPulseRate() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPulseRateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPulseRate.
+// This is useful for switch cases.
+type BACnetConstructedDataPulseRateExactly interface {
+	BACnetConstructedDataPulseRate
+	isBACnetConstructedDataPulseRate() bool
 }
 
 // _BACnetConstructedDataPulseRate is the data-structure of this message
 type _BACnetConstructedDataPulseRate struct {
 	*_BACnetConstructedData
 	PulseRate BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPulseRateParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPulseRate{
-		PulseRate:              pulseRate,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PulseRate: pulseRate,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPulseRate) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPulseRate) isBACnetConstructedDataPulseRate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPulseRate) String() string {

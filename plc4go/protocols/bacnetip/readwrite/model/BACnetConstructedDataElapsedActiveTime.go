@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataElapsedActiveTime is the corresponding interface of BACnetConstructedDataElapsedActiveTime
 type BACnetConstructedDataElapsedActiveTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetElapsedActiveTime returns ElapsedActiveTime (property field)
 	GetElapsedActiveTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataElapsedActiveTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataElapsedActiveTime.
+// This is useful for switch cases.
+type BACnetConstructedDataElapsedActiveTimeExactly interface {
+	BACnetConstructedDataElapsedActiveTime
+	isBACnetConstructedDataElapsedActiveTime() bool
 }
 
 // _BACnetConstructedDataElapsedActiveTime is the data-structure of this message
 type _BACnetConstructedDataElapsedActiveTime struct {
 	*_BACnetConstructedData
 	ElapsedActiveTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataElapsedActiveTime{
-		ElapsedActiveTime:      elapsedActiveTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ElapsedActiveTime: elapsedActiveTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataElapsedActiveTime) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataElapsedActiveTime) isBACnetConstructedDataElapsedActiveTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataElapsedActiveTime) String() string {

@@ -28,6 +28,8 @@ import (
 
 // CBusPointToPointCommandIndirect is the corresponding interface of CBusPointToPointCommandIndirect
 type CBusPointToPointCommandIndirect interface {
+	utils.LengthAware
+	utils.Serializable
 	CBusPointToPointCommand
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
@@ -35,12 +37,13 @@ type CBusPointToPointCommandIndirect interface {
 	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CBusPointToPointCommandIndirectExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommandIndirect.
+// This is useful for switch cases.
+type CBusPointToPointCommandIndirectExactly interface {
+	CBusPointToPointCommandIndirect
+	isCBusPointToPointCommandIndirect() bool
 }
 
 // _CBusPointToPointCommandIndirect is the data-structure of this message
@@ -49,9 +52,6 @@ type _CBusPointToPointCommandIndirect struct {
 	BridgeAddress BridgeAddress
 	NetworkRoute  NetworkRoute
 	UnitAddress   UnitAddress
-
-	// Arguments.
-	Srchk bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -202,10 +202,12 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk boo
 
 	// Create a partially initialized instance
 	_child := &_CBusPointToPointCommandIndirect{
-		BridgeAddress:            bridgeAddress,
-		NetworkRoute:             networkRoute,
-		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: &_CBusPointToPointCommand{},
+		BridgeAddress: bridgeAddress,
+		NetworkRoute:  networkRoute,
+		UnitAddress:   unitAddress,
+		_CBusPointToPointCommand: &_CBusPointToPointCommand{
+			Srchk: srchk,
+		},
 	}
 	_child._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _child
 	return _child, nil
@@ -261,6 +263,10 @@ func (m *_CBusPointToPointCommandIndirect) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CBusPointToPointCommandIndirect) isCBusPointToPointCommandIndirect() bool {
+	return true
 }
 
 func (m *_CBusPointToPointCommandIndirect) String() string {

@@ -32,14 +32,17 @@ const DF1Symbol_MESSAGESTART uint8 = 0x10
 
 // DF1Symbol is the corresponding interface of DF1Symbol
 type DF1Symbol interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetSymbolType returns SymbolType (discriminator field)
 	GetSymbolType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1SymbolExactly can be used when we want exactly this type and not a type which fulfills DF1Symbol.
+// This is useful for switch cases.
+type DF1SymbolExactly interface {
+	DF1Symbol
+	isDF1Symbol() bool
 }
 
 // _DF1Symbol is the data-structure of this message
@@ -48,10 +51,10 @@ type _DF1Symbol struct {
 }
 
 type _DF1SymbolChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetSymbolType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1SymbolParent interface {
@@ -60,7 +63,7 @@ type DF1SymbolParent interface {
 }
 
 type DF1SymbolChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent DF1Symbol)
 	GetParent() *DF1Symbol
 
@@ -208,6 +211,10 @@ func (pm *_DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child DF1Sy
 		return errors.Wrap(popErr, "Error popping for DF1Symbol")
 	}
 	return nil
+}
+
+func (m *_DF1Symbol) isDF1Symbol() bool {
+	return true
 }
 
 func (m *_DF1Symbol) String() string {

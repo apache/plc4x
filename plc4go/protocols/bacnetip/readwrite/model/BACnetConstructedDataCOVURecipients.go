@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataCOVURecipients is the corresponding interface of BACnetConstructedDataCOVURecipients
 type BACnetConstructedDataCOVURecipients interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCovuRecipients returns CovuRecipients (property field)
 	GetCovuRecipients() []BACnetRecipient
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCOVURecipientsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVURecipients.
+// This is useful for switch cases.
+type BACnetConstructedDataCOVURecipientsExactly interface {
+	BACnetConstructedDataCOVURecipients
+	isBACnetConstructedDataCOVURecipients() bool
 }
 
 // _BACnetConstructedDataCOVURecipients is the data-structure of this message
 type _BACnetConstructedDataCOVURecipients struct {
 	*_BACnetConstructedData
 	CovuRecipients []BACnetRecipient
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for covuRecipients")
 	}
 	// Terminated array
-	covuRecipients := make([]BACnetRecipient, 0)
+	var covuRecipients []BACnetRecipient
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRecipientParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataCOVURecipientsParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCOVURecipients{
-		CovuRecipients:         covuRecipients,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CovuRecipients: covuRecipients,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataCOVURecipients) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (covuRecipients)
-		if m.GetCovuRecipients() != nil {
-			if pushErr := writeBuffer.PushContext("covuRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for covuRecipients")
+		if pushErr := writeBuffer.PushContext("covuRecipients", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for covuRecipients")
+		}
+		for _, _element := range m.GetCovuRecipients() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'covuRecipients' field")
 			}
-			for _, _element := range m.GetCovuRecipients() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'covuRecipients' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("covuRecipients", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for covuRecipients")
-			}
+		}
+		if popErr := writeBuffer.PopContext("covuRecipients", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for covuRecipients")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCOVURecipients"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataCOVURecipients) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCOVURecipients) isBACnetConstructedDataCOVURecipients() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCOVURecipients) String() string {

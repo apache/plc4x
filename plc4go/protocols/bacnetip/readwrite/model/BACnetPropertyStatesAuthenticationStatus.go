@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesAuthenticationStatus is the corresponding interface of BACnetPropertyStatesAuthenticationStatus
 type BACnetPropertyStatesAuthenticationStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetAuthenticationStatus returns AuthenticationStatus (property field)
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesAuthenticationStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAuthenticationStatus.
+// This is useful for switch cases.
+type BACnetPropertyStatesAuthenticationStatusExactly interface {
+	BACnetPropertyStatesAuthenticationStatus
+	isBACnetPropertyStatesAuthenticationStatus() bool
 }
 
 // _BACnetPropertyStatesAuthenticationStatus is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesAuthenticationStatus) isBACnetPropertyStatesAuthenticationStatus() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesAuthenticationStatus) String() string {

@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueUnsigned is the corresponding interface of BACnetPriorityValueUnsigned
 type BACnetPriorityValueUnsigned interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueUnsigned.
+// This is useful for switch cases.
+type BACnetPriorityValueUnsignedExactly interface {
+	BACnetPriorityValueUnsigned
+	isBACnetPriorityValueUnsigned() bool
 }
 
 // _BACnetPriorityValueUnsigned is the data-structure of this message
 type _BACnetPriorityValueUnsigned struct {
 	*_BACnetPriorityValue
 	UnsignedValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueUnsignedParse(readBuffer utils.ReadBuffer, objectTypeArg
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueUnsigned{
-		UnsignedValue:        unsignedValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		UnsignedValue: unsignedValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueUnsigned) isBACnetPriorityValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueUnsigned) String() string {

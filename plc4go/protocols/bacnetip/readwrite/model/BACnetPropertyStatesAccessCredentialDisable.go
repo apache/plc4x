@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesAccessCredentialDisable is the corresponding interface of BACnetPropertyStatesAccessCredentialDisable
 type BACnetPropertyStatesAccessCredentialDisable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetAccessCredentialDisable returns AccessCredentialDisable (property field)
 	GetAccessCredentialDisable() BACnetAccessCredentialDisableTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesAccessCredentialDisableExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesAccessCredentialDisable.
+// This is useful for switch cases.
+type BACnetPropertyStatesAccessCredentialDisableExactly interface {
+	BACnetPropertyStatesAccessCredentialDisable
+	isBACnetPropertyStatesAccessCredentialDisable() bool
 }
 
 // _BACnetPropertyStatesAccessCredentialDisable is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesAccessCredentialDisable) isBACnetPropertyStatesAccessCredentialDisable() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisable) String() string {

@@ -28,24 +28,24 @@ import (
 
 // BACnetContextTagTime is the corresponding interface of BACnetContextTagTime
 type BACnetContextTagTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagTime.
+// This is useful for switch cases.
+type BACnetContextTagTimeExactly interface {
+	BACnetContextTagTime
+	isBACnetContextTagTime() bool
 }
 
 // _BACnetContextTagTime is the data-structure of this message
 type _BACnetContextTagTime struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadTime
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -154,8 +154,10 @@ func BACnetContextTagTimeParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagTime{
-		Payload:           payload,
-		_BACnetContextTag: &_BACnetContextTag{},
+		Payload: payload,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -187,6 +189,10 @@ func (m *_BACnetContextTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagTime) isBACnetContextTagTime() bool {
+	return true
 }
 
 func (m *_BACnetContextTagTime) String() string {

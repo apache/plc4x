@@ -28,17 +28,20 @@ import (
 
 // NLMEstablishConnectionToNetwork is the corresponding interface of NLMEstablishConnectionToNetwork
 type NLMEstablishConnectionToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// GetTerminationTime returns TerminationTime (property field)
 	GetTerminationTime() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NLMEstablishConnectionToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMEstablishConnectionToNetwork.
+// This is useful for switch cases.
+type NLMEstablishConnectionToNetworkExactly interface {
+	NLMEstablishConnectionToNetwork
+	isNLMEstablishConnectionToNetwork() bool
 }
 
 // _NLMEstablishConnectionToNetwork is the data-structure of this message
@@ -46,9 +49,6 @@ type _NLMEstablishConnectionToNetwork struct {
 	*_NLM
 	DestinationNetworkAddress uint16
 	TerminationTime           uint8
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -168,7 +168,9 @@ func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLengt
 	_child := &_NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
-		_NLM:                      &_NLM{},
+		_NLM: &_NLM{
+			ApduLength: apduLength,
+		},
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil
@@ -202,6 +204,10 @@ func (m *_NLMEstablishConnectionToNetwork) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMEstablishConnectionToNetwork) isNLMEstablishConnectionToNetwork() bool {
+	return true
 }
 
 func (m *_NLMEstablishConnectionToNetwork) String() string {

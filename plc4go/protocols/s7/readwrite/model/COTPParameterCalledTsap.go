@@ -28,24 +28,24 @@ import (
 
 // COTPParameterCalledTsap is the corresponding interface of COTPParameterCalledTsap
 type COTPParameterCalledTsap interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPParameter
 	// GetTsapId returns TsapId (property field)
 	GetTsapId() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPParameterCalledTsapExactly can be used when we want exactly this type and not a type which fulfills COTPParameterCalledTsap.
+// This is useful for switch cases.
+type COTPParameterCalledTsapExactly interface {
+	COTPParameterCalledTsap
+	isCOTPParameterCalledTsap() bool
 }
 
 // _COTPParameterCalledTsap is the data-structure of this message
 type _COTPParameterCalledTsap struct {
 	*_COTPParameter
 	TsapId uint16
-
-	// Arguments.
-	Rest uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -146,8 +146,10 @@ func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (COTP
 
 	// Create a partially initialized instance
 	_child := &_COTPParameterCalledTsap{
-		TsapId:         tsapId,
-		_COTPParameter: &_COTPParameter{},
+		TsapId: tsapId,
+		_COTPParameter: &_COTPParameter{
+			Rest: rest,
+		},
 	}
 	_child._COTPParameter._COTPParameterChildRequirements = _child
 	return _child, nil
@@ -174,6 +176,10 @@ func (m *_COTPParameterCalledTsap) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPParameterCalledTsap) isCOTPParameterCalledTsap() bool {
+	return true
 }
 
 func (m *_COTPParameterCalledTsap) String() string {

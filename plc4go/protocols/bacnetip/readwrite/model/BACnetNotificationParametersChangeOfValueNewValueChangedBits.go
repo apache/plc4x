@@ -28,24 +28,24 @@ import (
 
 // BACnetNotificationParametersChangeOfValueNewValueChangedBits is the corresponding interface of BACnetNotificationParametersChangeOfValueNewValueChangedBits
 type BACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedBits returns ChangedBits (property field)
 	GetChangedBits() BACnetContextTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersChangeOfValueNewValueChangedBitsExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfValueNewValueChangedBits.
+// This is useful for switch cases.
+type BACnetNotificationParametersChangeOfValueNewValueChangedBitsExactly interface {
+	BACnetNotificationParametersChangeOfValueNewValueChangedBits
+	isBACnetNotificationParametersChangeOfValueNewValueChangedBits() bool
 }
 
 // _BACnetNotificationParametersChangeOfValueNewValueChangedBits is the data-structure of this message
 type _BACnetNotificationParametersChangeOfValueNewValueChangedBits struct {
 	*_BACnetNotificationParametersChangeOfValueNewValue
 	ChangedBits BACnetContextTagBitString
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
 		ChangedBits: changedBits,
-		_BACnetNotificationParametersChangeOfValueNewValue: &_BACnetNotificationParametersChangeOfValueNewValue{},
+		_BACnetNotificationParametersChangeOfValueNewValue: &_BACnetNotificationParametersChangeOfValueNewValue{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetNotificationParametersChangeOfValueNewValue._BACnetNotificationParametersChangeOfValueNewValueChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) Serializ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) isBACnetNotificationParametersChangeOfValueNewValueChangedBits() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) String() string {

@@ -28,6 +28,8 @@ import (
 
 // CipReadRequest is the corresponding interface of CipReadRequest
 type CipReadRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetRequestPathSize returns RequestPathSize (property field)
 	GetRequestPathSize() int8
@@ -35,12 +37,13 @@ type CipReadRequest interface {
 	GetTag() []byte
 	// GetElementNb returns ElementNb (property field)
 	GetElementNb() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipReadRequestExactly can be used when we want exactly this type and not a type which fulfills CipReadRequest.
+// This is useful for switch cases.
+type CipReadRequestExactly interface {
+	CipReadRequest
+	isCipReadRequest() bool
 }
 
 // _CipReadRequest is the data-structure of this message
@@ -49,9 +52,6 @@ type _CipReadRequest struct {
 	RequestPathSize int8
 	Tag             []byte
 	ElementNb       uint16
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -186,7 +186,9 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipRea
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		ElementNb:       elementNb,
-		_CipService:     &_CipService{},
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -208,12 +210,9 @@ func (m *_CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (tag)
-		if m.GetTag() != nil {
-			// Byte Array field (tag)
-			_writeArrayErr := writeBuffer.WriteByteArray("tag", m.GetTag())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'tag' field")
-			}
+		// Byte Array field (tag)
+		if err := writeBuffer.WriteByteArray("tag", m.GetTag()); err != nil {
+			return errors.Wrap(err, "Error serializing 'tag' field")
 		}
 
 		// Simple Field (elementNb)
@@ -229,6 +228,10 @@ func (m *_CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipReadRequest) isCipReadRequest() bool {
+	return true
 }
 
 func (m *_CipReadRequest) String() string {

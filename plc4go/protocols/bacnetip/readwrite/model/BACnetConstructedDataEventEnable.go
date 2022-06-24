@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEventEnable is the corresponding interface of BACnetConstructedDataEventEnable
 type BACnetConstructedDataEventEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventEnable returns EventEnable (property field)
 	GetEventEnable() BACnetEventTransitionBitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEventEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataEventEnableExactly interface {
+	BACnetConstructedDataEventEnable
+	isBACnetConstructedDataEventEnable() bool
 }
 
 // _BACnetConstructedDataEventEnable is the data-structure of this message
 type _BACnetConstructedDataEventEnable struct {
 	*_BACnetConstructedData
 	EventEnable BACnetEventTransitionBitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEventEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventEnable{
-		EventEnable:            eventEnable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EventEnable: eventEnable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEventEnable) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventEnable) isBACnetConstructedDataEventEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventEnable) String() string {

@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtLinkWrite is the corresponding interface of ApduDataExtLinkWrite
 type ApduDataExtLinkWrite interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtLinkWriteExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtLinkWrite.
+// This is useful for switch cases.
+type ApduDataExtLinkWriteExactly interface {
+	ApduDataExtLinkWrite
+	isApduDataExtLinkWrite() bool
 }
 
 // _ApduDataExtLinkWrite is the data-structure of this message
 type _ApduDataExtLinkWrite struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtLinkWriteParse(readBuffer utils.ReadBuffer, length uint8) (ApduD
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtLinkWrite{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtLinkWrite) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtLinkWrite) isApduDataExtLinkWrite() bool {
+	return true
 }
 
 func (m *_ApduDataExtLinkWrite) String() string {

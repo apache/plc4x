@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueBitString is the corresponding interface of BACnetPriorityValueBitString
 type BACnetPriorityValueBitString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueBitStringExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueBitString.
+// This is useful for switch cases.
+type BACnetPriorityValueBitStringExactly interface {
+	BACnetPriorityValueBitString
+	isBACnetPriorityValueBitString() bool
 }
 
 // _BACnetPriorityValueBitString is the data-structure of this message
 type _BACnetPriorityValueBitString struct {
 	*_BACnetPriorityValue
 	BitStringValue BACnetApplicationTagBitString
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueBitStringParse(readBuffer utils.ReadBuffer, objectTypeAr
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueBitString{
-		BitStringValue:       bitStringValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		BitStringValue: bitStringValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueBitString) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueBitString) isBACnetPriorityValueBitString() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueBitString) String() string {

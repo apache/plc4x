@@ -28,15 +28,18 @@ import (
 
 // BACnetRecipientDevice is the corresponding interface of BACnetRecipientDevice
 type BACnetRecipientDevice interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetRecipient
 	// GetDeviceValue returns DeviceValue (property field)
 	GetDeviceValue() BACnetContextTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRecipientDeviceExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipientDevice.
+// This is useful for switch cases.
+type BACnetRecipientDeviceExactly interface {
+	BACnetRecipientDevice
+	isBACnetRecipientDevice() bool
 }
 
 // _BACnetRecipientDevice is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetRecipientDevice) Serialize(writeBuffer utils.WriteBuffer) error 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetRecipientDevice) isBACnetRecipientDevice() bool {
+	return true
 }
 
 func (m *_BACnetRecipientDevice) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLightingCommand is the corresponding interface of BACnetConstructedDataLightingCommand
 type BACnetConstructedDataLightingCommand interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLightingCommand returns LightingCommand (property field)
 	GetLightingCommand() BACnetLightingCommand
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLightingCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLightingCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLightingCommand.
+// This is useful for switch cases.
+type BACnetConstructedDataLightingCommandExactly interface {
+	BACnetConstructedDataLightingCommand
+	isBACnetConstructedDataLightingCommand() bool
 }
 
 // _BACnetConstructedDataLightingCommand is the data-structure of this message
 type _BACnetConstructedDataLightingCommand struct {
 	*_BACnetConstructedData
 	LightingCommand BACnetLightingCommand
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLightingCommandParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLightingCommand{
-		LightingCommand:        lightingCommand,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LightingCommand: lightingCommand,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLightingCommand) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLightingCommand) isBACnetConstructedDataLightingCommand() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLightingCommand) String() string {

@@ -28,6 +28,8 @@ import (
 
 // ErrorCodeTagged is the corresponding interface of ErrorCodeTagged
 type ErrorCodeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type ErrorCodeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ErrorCodeTaggedExactly can be used when we want exactly this type and not a type which fulfills ErrorCodeTagged.
+// This is useful for switch cases.
+type ErrorCodeTaggedExactly interface {
+	ErrorCodeTagged
+	isErrorCodeTagged() bool
 }
 
 // _ErrorCodeTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_ErrorCodeTagged) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ErrorCodeTagged")
 	}
 	return nil
+}
+
+func (m *_ErrorCodeTagged) isErrorCodeTagged() bool {
+	return true
 }
 
 func (m *_ErrorCodeTagged) String() string {

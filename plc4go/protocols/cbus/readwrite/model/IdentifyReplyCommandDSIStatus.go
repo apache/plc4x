@@ -28,6 +28,8 @@ import (
 
 // IdentifyReplyCommandDSIStatus is the corresponding interface of IdentifyReplyCommandDSIStatus
 type IdentifyReplyCommandDSIStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetChannelStatus1 returns ChannelStatus1 (property field)
 	GetChannelStatus1() ChannelStatus
@@ -49,12 +51,13 @@ type IdentifyReplyCommandDSIStatus interface {
 	GetUnitStatus() UnitStatus
 	// GetDimmingUCRevisionNumber returns DimmingUCRevisionNumber (property field)
 	GetDimmingUCRevisionNumber() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandDSIStatusExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandDSIStatus.
+// This is useful for switch cases.
+type IdentifyReplyCommandDSIStatusExactly interface {
+	IdentifyReplyCommandDSIStatus
+	isIdentifyReplyCommandDSIStatus() bool
 }
 
 // _IdentifyReplyCommandDSIStatus is the data-structure of this message
@@ -504,6 +507,10 @@ func (m *_IdentifyReplyCommandDSIStatus) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandDSIStatus) isIdentifyReplyCommandDSIStatus() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandDSIStatus) String() string {

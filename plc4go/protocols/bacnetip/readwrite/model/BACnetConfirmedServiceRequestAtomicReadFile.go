@@ -28,17 +28,20 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicReadFile is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFile
 type BACnetConfirmedServiceRequestAtomicReadFile interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetFileIdentifier returns FileIdentifier (property field)
 	GetFileIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestAtomicReadFileExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFile.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAtomicReadFileExactly interface {
+	BACnetConfirmedServiceRequestAtomicReadFile
+	isBACnetConfirmedServiceRequestAtomicReadFile() bool
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFile is the data-structure of this message
@@ -46,9 +49,6 @@ type _BACnetConfirmedServiceRequestAtomicReadFile struct {
 	*_BACnetConfirmedServiceRequest
 	FileIdentifier BACnetApplicationTagObjectIdentifier
 	AccessMethod   BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -177,9 +177,11 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestAtomicReadFile{
-		FileIdentifier:                 fileIdentifier,
-		AccessMethod:                   accessMethod,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		FileIdentifier: fileIdentifier,
+		AccessMethod:   accessMethod,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -223,6 +225,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) isBACnetConfirmedServiceRequestAtomicReadFile() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetClientCOV is the corresponding interface of BACnetClientCOV
 type BACnetClientCOV interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetClientCOVExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOV.
+// This is useful for switch cases.
+type BACnetClientCOVExactly interface {
+	BACnetClientCOV
+	isBACnetClientCOV() bool
 }
 
 // _BACnetClientCOV is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetClientCOV struct {
 }
 
 type _BACnetClientCOVChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetClientCOVParent interface {
@@ -58,7 +61,7 @@ type BACnetClientCOVParent interface {
 }
 
 type BACnetClientCOVChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetClientCOV, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetClientCOV
 
@@ -202,6 +205,10 @@ func (pm *_BACnetClientCOV) SerializeParent(writeBuffer utils.WriteBuffer, child
 		return errors.Wrap(popErr, "Error popping for BACnetClientCOV")
 	}
 	return nil
+}
+
+func (m *_BACnetClientCOV) isBACnetClientCOV() bool {
+	return true
 }
 
 func (m *_BACnetClientCOV) String() string {

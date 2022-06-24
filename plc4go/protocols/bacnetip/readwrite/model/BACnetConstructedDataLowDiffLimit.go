@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLowDiffLimit is the corresponding interface of BACnetConstructedDataLowDiffLimit
 type BACnetConstructedDataLowDiffLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLowDiffLimit returns LowDiffLimit (property field)
 	GetLowDiffLimit() BACnetOptionalREAL
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalREAL
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLowDiffLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLowDiffLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataLowDiffLimitExactly interface {
+	BACnetConstructedDataLowDiffLimit
+	isBACnetConstructedDataLowDiffLimit() bool
 }
 
 // _BACnetConstructedDataLowDiffLimit is the data-structure of this message
 type _BACnetConstructedDataLowDiffLimit struct {
 	*_BACnetConstructedData
 	LowDiffLimit BACnetOptionalREAL
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLowDiffLimitParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLowDiffLimit{
-		LowDiffLimit:           lowDiffLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LowDiffLimit: lowDiffLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLowDiffLimit) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLowDiffLimit) isBACnetConstructedDataLowDiffLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLowDiffLimit) String() string {

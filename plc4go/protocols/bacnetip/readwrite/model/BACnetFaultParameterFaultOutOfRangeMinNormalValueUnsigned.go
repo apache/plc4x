@@ -28,24 +28,24 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedExactly interface {
+	BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
+	isBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() bool
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned struct {
 	*_BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	UnsignedValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(readBuffer u
 	// Create a partially initialized instance
 	_child := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned{
 		UnsignedValue: unsignedValue,
-		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{},
+		_BACnetFaultParameterFaultOutOfRangeMinNormalValue: &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetFaultParameterFaultOutOfRangeMinNormalValue._BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) isBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) String() string {

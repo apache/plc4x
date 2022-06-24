@@ -28,6 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestAcknowledgeAlarm is the corresponding interface of BACnetConfirmedServiceRequestAcknowledgeAlarm
 type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetAcknowledgingProcessIdentifier returns AcknowledgingProcessIdentifier (property field)
 	GetAcknowledgingProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -41,12 +43,13 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	GetAcknowledgmentSource() BACnetContextTagCharacterString
 	// GetTimeOfAcknowledgment returns TimeOfAcknowledgment (property field)
 	GetTimeOfAcknowledgment() BACnetTimeStampEnclosed
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestAcknowledgeAlarmExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAcknowledgeAlarm.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAcknowledgeAlarmExactly interface {
+	BACnetConfirmedServiceRequestAcknowledgeAlarm
+	isBACnetConfirmedServiceRequestAcknowledgeAlarm() bool
 }
 
 // _BACnetConfirmedServiceRequestAcknowledgeAlarm is the data-structure of this message
@@ -58,9 +61,6 @@ type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	Timestamp                      BACnetTimeStampEnclosed
 	AcknowledgmentSource           BACnetContextTagCharacterString
 	TimeOfAcknowledgment           BACnetTimeStampEnclosed
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -279,7 +279,9 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 		Timestamp:                      timestamp,
 		AcknowledgmentSource:           acknowledgmentSource,
 		TimeOfAcknowledgment:           timeOfAcknowledgment,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -371,6 +373,10 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) isBACnetConfirmedServiceRequestAcknowledgeAlarm() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDaysRemaining is the corresponding interface of BACnetConstructedDataDaysRemaining
 type BACnetConstructedDataDaysRemaining interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDaysRemaining returns DaysRemaining (property field)
 	GetDaysRemaining() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDaysRemainingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDaysRemaining.
+// This is useful for switch cases.
+type BACnetConstructedDataDaysRemainingExactly interface {
+	BACnetConstructedDataDaysRemaining
+	isBACnetConstructedDataDaysRemaining() bool
 }
 
 // _BACnetConstructedDataDaysRemaining is the data-structure of this message
 type _BACnetConstructedDataDaysRemaining struct {
 	*_BACnetConstructedData
 	DaysRemaining BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDaysRemainingParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDaysRemaining{
-		DaysRemaining:          daysRemaining,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DaysRemaining: daysRemaining,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDaysRemaining) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDaysRemaining) isBACnetConstructedDataDaysRemaining() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDaysRemaining) String() string {

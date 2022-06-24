@@ -28,14 +28,17 @@ import (
 
 // Dummy is the corresponding interface of Dummy
 type Dummy interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDummy returns Dummy (property field)
 	GetDummy() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DummyExactly can be used when we want exactly this type and not a type which fulfills Dummy.
+// This is useful for switch cases.
+type DummyExactly interface {
+	Dummy
+	isDummy() bool
 }
 
 // _Dummy is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_Dummy) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for Dummy")
 	}
 	return nil
+}
+
+func (m *_Dummy) isDummy() bool {
+	return true
 }
 
 func (m *_Dummy) String() string {

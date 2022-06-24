@@ -28,21 +28,21 @@ import (
 
 // BACnetContextTagNull is the corresponding interface of BACnetContextTagNull
 type BACnetContextTagNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagNullExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagNull.
+// This is useful for switch cases.
+type BACnetContextTagNullExactly interface {
+	BACnetContextTagNull
+	isBACnetContextTagNull() bool
 }
 
 // _BACnetContextTagNull is the data-structure of this message
 type _BACnetContextTagNull struct {
 	*_BACnetContextTag
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -125,7 +125,9 @@ func BACnetContextTagNullParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagNull{
-		_BACnetContextTag: &_BACnetContextTag{},
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -145,6 +147,10 @@ func (m *_BACnetContextTagNull) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagNull) isBACnetContextTagNull() bool {
+	return true
 }
 
 func (m *_BACnetContextTagNull) String() string {

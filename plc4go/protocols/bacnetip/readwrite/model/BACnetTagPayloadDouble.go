@@ -28,14 +28,17 @@ import (
 
 // BACnetTagPayloadDouble is the corresponding interface of BACnetTagPayloadDouble
 type BACnetTagPayloadDouble interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() float64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadDoubleExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadDouble.
+// This is useful for switch cases.
+type BACnetTagPayloadDoubleExactly interface {
+	BACnetTagPayloadDouble
+	isBACnetTagPayloadDouble() bool
 }
 
 // _BACnetTagPayloadDouble is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_BACnetTagPayloadDouble) Serialize(writeBuffer utils.WriteBuffer) error
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadDouble")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadDouble) isBACnetTagPayloadDouble() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadDouble) String() string {

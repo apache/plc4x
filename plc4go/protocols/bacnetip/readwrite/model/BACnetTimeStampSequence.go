@@ -28,15 +28,18 @@ import (
 
 // BACnetTimeStampSequence is the corresponding interface of BACnetTimeStampSequence
 type BACnetTimeStampSequence interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimeStamp
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimeStampSequenceExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStampSequence.
+// This is useful for switch cases.
+type BACnetTimeStampSequenceExactly interface {
+	BACnetTimeStampSequence
+	isBACnetTimeStampSequence() bool
 }
 
 // _BACnetTimeStampSequence is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetTimeStampSequence) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimeStampSequence) isBACnetTimeStampSequence() bool {
+	return true
 }
 
 func (m *_BACnetTimeStampSequence) String() string {

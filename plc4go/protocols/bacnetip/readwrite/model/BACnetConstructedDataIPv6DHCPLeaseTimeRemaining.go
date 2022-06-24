@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataIPv6DHCPLeaseTimeRemaining is the corresponding interface of BACnetConstructedDataIPv6DHCPLeaseTimeRemaining
 type BACnetConstructedDataIPv6DHCPLeaseTimeRemaining interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6DhcpLeaseTimeRemaining returns Ipv6DhcpLeaseTimeRemaining (property field)
 	GetIpv6DhcpLeaseTimeRemaining() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPv6DHCPLeaseTimeRemainingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPv6DHCPLeaseTimeRemaining.
+// This is useful for switch cases.
+type BACnetConstructedDataIPv6DHCPLeaseTimeRemainingExactly interface {
+	BACnetConstructedDataIPv6DHCPLeaseTimeRemaining
+	isBACnetConstructedDataIPv6DHCPLeaseTimeRemaining() bool
 }
 
 // _BACnetConstructedDataIPv6DHCPLeaseTimeRemaining is the data-structure of this message
 type _BACnetConstructedDataIPv6DHCPLeaseTimeRemaining struct {
 	*_BACnetConstructedData
 	Ipv6DhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParse(readBuffer utils.ReadB
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining{
 		Ipv6DhcpLeaseTimeRemaining: ipv6DhcpLeaseTimeRemaining,
-		_BACnetConstructedData:     &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) isBACnetConstructedDataIPv6DHCPLeaseTimeRemaining() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) String() string {

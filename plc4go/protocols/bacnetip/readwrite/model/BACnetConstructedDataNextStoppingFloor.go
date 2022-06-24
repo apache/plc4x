@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNextStoppingFloor is the corresponding interface of BACnetConstructedDataNextStoppingFloor
 type BACnetConstructedDataNextStoppingFloor interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNextStoppingFloor returns NextStoppingFloor (property field)
 	GetNextStoppingFloor() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNextStoppingFloorExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNextStoppingFloor.
+// This is useful for switch cases.
+type BACnetConstructedDataNextStoppingFloorExactly interface {
+	BACnetConstructedDataNextStoppingFloor
+	isBACnetConstructedDataNextStoppingFloor() bool
 }
 
 // _BACnetConstructedDataNextStoppingFloor is the data-structure of this message
 type _BACnetConstructedDataNextStoppingFloor struct {
 	*_BACnetConstructedData
 	NextStoppingFloor BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNextStoppingFloor{
-		NextStoppingFloor:      nextStoppingFloor,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NextStoppingFloor: nextStoppingFloor,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNextStoppingFloor) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNextStoppingFloor) isBACnetConstructedDataNextStoppingFloor() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNextStoppingFloor) String() string {

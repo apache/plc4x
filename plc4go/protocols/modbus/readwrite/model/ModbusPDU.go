@@ -28,18 +28,21 @@ import (
 
 // ModbusPDU is the corresponding interface of ModbusPDU
 type ModbusPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetErrorFlag returns ErrorFlag (discriminator field)
 	GetErrorFlag() bool
 	// GetFunctionFlag returns FunctionFlag (discriminator field)
 	GetFunctionFlag() uint8
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUExactly can be used when we want exactly this type and not a type which fulfills ModbusPDU.
+// This is useful for switch cases.
+type ModbusPDUExactly interface {
+	ModbusPDU
+	isModbusPDU() bool
 }
 
 // _ModbusPDU is the data-structure of this message
@@ -48,12 +51,12 @@ type _ModbusPDU struct {
 }
 
 type _ModbusPDUChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetErrorFlag() bool
 	GetFunctionFlag() uint8
 	GetResponse() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ModbusPDUParent interface {
@@ -62,7 +65,7 @@ type ModbusPDUParent interface {
 }
 
 type ModbusPDUChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ModbusPDU)
 	GetParent() *ModbusPDU
 
@@ -266,6 +269,10 @@ func (pm *_ModbusPDU) SerializeParent(writeBuffer utils.WriteBuffer, child Modbu
 		return errors.Wrap(popErr, "Error popping for ModbusPDU")
 	}
 	return nil
+}
+
+func (m *_ModbusPDU) isModbusPDU() bool {
+	return true
 }
 
 func (m *_ModbusPDU) String() string {

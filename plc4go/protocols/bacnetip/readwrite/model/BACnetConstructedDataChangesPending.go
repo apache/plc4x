@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataChangesPending is the corresponding interface of BACnetConstructedDataChangesPending
 type BACnetConstructedDataChangesPending interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetChangesPending returns ChangesPending (property field)
 	GetChangesPending() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataChangesPendingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChangesPending.
+// This is useful for switch cases.
+type BACnetConstructedDataChangesPendingExactly interface {
+	BACnetConstructedDataChangesPending
+	isBACnetConstructedDataChangesPending() bool
 }
 
 // _BACnetConstructedDataChangesPending is the data-structure of this message
 type _BACnetConstructedDataChangesPending struct {
 	*_BACnetConstructedData
 	ChangesPending BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataChangesPendingParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataChangesPending{
-		ChangesPending:         changesPending,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ChangesPending: changesPending,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataChangesPending) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataChangesPending) isBACnetConstructedDataChangesPending() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataChangesPending) String() string {

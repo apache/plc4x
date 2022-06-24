@@ -28,6 +28,8 @@ import (
 
 // BACnetSilencedStateTagged is the corresponding interface of BACnetSilencedStateTagged
 type BACnetSilencedStateTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetSilencedStateTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSilencedStateTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetSilencedStateTagged.
+// This is useful for switch cases.
+type BACnetSilencedStateTaggedExactly interface {
+	BACnetSilencedStateTagged
+	isBACnetSilencedStateTagged() bool
 }
 
 // _BACnetSilencedStateTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetSilencedStateTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetSilencedStateTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetSilencedStateTagged) isBACnetSilencedStateTagged() bool {
+	return true
 }
 
 func (m *_BACnetSilencedStateTagged) String() string {

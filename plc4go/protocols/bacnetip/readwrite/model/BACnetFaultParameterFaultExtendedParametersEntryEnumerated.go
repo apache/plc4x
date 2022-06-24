@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryEnumerated is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryEnumerated
 type BACnetFaultParameterFaultExtendedParametersEntryEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryEnumerated.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryEnumeratedExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryEnumerated
+	isBACnetFaultParameterFaultExtendedParametersEntryEnumerated() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryEnumerated is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) Serialize(
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) isBACnetFaultParameterFaultExtendedParametersEntryEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) String() string {

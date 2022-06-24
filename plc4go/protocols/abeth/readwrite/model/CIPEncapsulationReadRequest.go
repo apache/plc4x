@@ -28,15 +28,18 @@ import (
 
 // CIPEncapsulationReadRequest is the corresponding interface of CIPEncapsulationReadRequest
 type CIPEncapsulationReadRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CIPEncapsulationPacket
 	// GetRequest returns Request (property field)
 	GetRequest() DF1RequestMessage
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CIPEncapsulationReadRequestExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationReadRequest.
+// This is useful for switch cases.
+type CIPEncapsulationReadRequestExactly interface {
+	CIPEncapsulationReadRequest
+	isCIPEncapsulationReadRequest() bool
 }
 
 // _CIPEncapsulationReadRequest is the data-structure of this message
@@ -187,6 +190,10 @@ func (m *_CIPEncapsulationReadRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CIPEncapsulationReadRequest) isCIPEncapsulationReadRequest() bool {
+	return true
 }
 
 func (m *_CIPEncapsulationReadRequest) String() string {

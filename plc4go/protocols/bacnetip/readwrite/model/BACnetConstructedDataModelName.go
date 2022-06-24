@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataModelName is the corresponding interface of BACnetConstructedDataModelName
 type BACnetConstructedDataModelName interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetModelName returns ModelName (property field)
 	GetModelName() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataModelNameExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataModelName.
+// This is useful for switch cases.
+type BACnetConstructedDataModelNameExactly interface {
+	BACnetConstructedDataModelName
+	isBACnetConstructedDataModelName() bool
 }
 
 // _BACnetConstructedDataModelName is the data-structure of this message
 type _BACnetConstructedDataModelName struct {
 	*_BACnetConstructedData
 	ModelName BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataModelNameParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataModelName{
-		ModelName:              modelName,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ModelName: modelName,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataModelName) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataModelName) isBACnetConstructedDataModelName() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataModelName) String() string {

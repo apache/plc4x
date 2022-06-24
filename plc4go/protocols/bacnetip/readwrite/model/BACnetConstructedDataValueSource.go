@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataValueSource is the corresponding interface of BACnetConstructedDataValueSource
 type BACnetConstructedDataValueSource interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetValueSource returns ValueSource (property field)
 	GetValueSource() BACnetValueSource
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetValueSource
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataValueSourceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataValueSource.
+// This is useful for switch cases.
+type BACnetConstructedDataValueSourceExactly interface {
+	BACnetConstructedDataValueSource
+	isBACnetConstructedDataValueSource() bool
 }
 
 // _BACnetConstructedDataValueSource is the data-structure of this message
 type _BACnetConstructedDataValueSource struct {
 	*_BACnetConstructedData
 	ValueSource BACnetValueSource
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataValueSourceParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataValueSource{
-		ValueSource:            valueSource,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ValueSource: valueSource,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataValueSource) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataValueSource) isBACnetConstructedDataValueSource() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataValueSource) String() string {

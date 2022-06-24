@@ -28,14 +28,17 @@ import (
 
 // BridgeAddress is the corresponding interface of BridgeAddress
 type BridgeAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BridgeAddressExactly can be used when we want exactly this type and not a type which fulfills BridgeAddress.
+// This is useful for switch cases.
+type BridgeAddressExactly interface {
+	BridgeAddress
+	isBridgeAddress() bool
 }
 
 // _BridgeAddress is the data-structure of this message
@@ -136,6 +139,10 @@ func (m *_BridgeAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BridgeAddress")
 	}
 	return nil
+}
+
+func (m *_BridgeAddress) isBridgeAddress() bool {
+	return true
 }
 
 func (m *_BridgeAddress) String() string {

@@ -28,14 +28,17 @@ import (
 
 // BACnetTagPayloadOctetString is the corresponding interface of BACnetTagPayloadOctetString
 type BACnetTagPayloadOctetString interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOctets returns Octets (property field)
 	GetOctets() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadOctetStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadOctetString.
+// This is useful for switch cases.
+type BACnetTagPayloadOctetStringExactly interface {
+	BACnetTagPayloadOctetString
+	isBACnetTagPayloadOctetString() bool
 }
 
 // _BACnetTagPayloadOctetString is the data-structure of this message
@@ -130,18 +133,19 @@ func (m *_BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) 
 	}
 
 	// Array Field (octets)
-	if m.GetOctets() != nil {
-		// Byte Array field (octets)
-		_writeArrayErr := writeBuffer.WriteByteArray("octets", m.GetOctets())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'octets' field")
-		}
+	// Byte Array field (octets)
+	if err := writeBuffer.WriteByteArray("octets", m.GetOctets()); err != nil {
+		return errors.Wrap(err, "Error serializing 'octets' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadOctetString"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadOctetString")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadOctetString) isBACnetTagPayloadOctetString() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadOctetString) String() string {

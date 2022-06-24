@@ -28,25 +28,24 @@ import (
 
 // BACnetNotificationParametersComplexEventType is the corresponding interface of BACnetNotificationParametersComplexEventType
 type BACnetNotificationParametersComplexEventType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersComplexEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersComplexEventType.
+// This is useful for switch cases.
+type BACnetNotificationParametersComplexEventTypeExactly interface {
+	BACnetNotificationParametersComplexEventType
+	isBACnetNotificationParametersComplexEventType() bool
 }
 
 // _BACnetNotificationParametersComplexEventType is the data-structure of this message
 type _BACnetNotificationParametersComplexEventType struct {
 	*_BACnetNotificationParameters
 	ListOfValues BACnetPropertyValues
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,8 +152,11 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersComplexEventType{
-		ListOfValues:                  listOfValues,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		ListOfValues: listOfValues,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -186,6 +188,10 @@ func (m *_BACnetNotificationParametersComplexEventType) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersComplexEventType) isBACnetNotificationParametersComplexEventType() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) String() string {

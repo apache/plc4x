@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBACnetIPMulticastAddress is the corresponding interface of BACnetConstructedDataBACnetIPMulticastAddress
 type BACnetConstructedDataBACnetIPMulticastAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpMulticastAddress returns IpMulticastAddress (property field)
 	GetIpMulticastAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBACnetIPMulticastAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPMulticastAddress.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPMulticastAddressExactly interface {
+	BACnetConstructedDataBACnetIPMulticastAddress
+	isBACnetConstructedDataBACnetIPMulticastAddress() bool
 }
 
 // _BACnetConstructedDataBACnetIPMulticastAddress is the data-structure of this message
 type _BACnetConstructedDataBACnetIPMulticastAddress struct {
 	*_BACnetConstructedData
 	IpMulticastAddress BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPMulticastAddress{
-		IpMulticastAddress:     ipMulticastAddress,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		IpMulticastAddress: ipMulticastAddress,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPMulticastAddress) isBACnetConstructedDataBACnetIPMulticastAddress() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPMulticastAddress) String() string {

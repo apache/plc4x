@@ -28,16 +28,19 @@ import (
 
 // BACnetOptionalREAL is the corresponding interface of BACnetOptionalREAL
 type BACnetOptionalREAL interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetOptionalREALExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREAL.
+// This is useful for switch cases.
+type BACnetOptionalREALExactly interface {
+	BACnetOptionalREAL
+	isBACnetOptionalREAL() bool
 }
 
 // _BACnetOptionalREAL is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetOptionalREAL struct {
 }
 
 type _BACnetOptionalREALChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetOptionalREALParent interface {
@@ -58,7 +61,7 @@ type BACnetOptionalREALParent interface {
 }
 
 type BACnetOptionalREALChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetOptionalREAL, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetOptionalREAL
 
@@ -202,6 +205,10 @@ func (pm *_BACnetOptionalREAL) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(popErr, "Error popping for BACnetOptionalREAL")
 	}
 	return nil
+}
+
+func (m *_BACnetOptionalREAL) isBACnetOptionalREAL() bool {
+	return true
 }
 
 func (m *_BACnetOptionalREAL) String() string {

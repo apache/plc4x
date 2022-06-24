@@ -28,16 +28,19 @@ import (
 
 // BACnetUnconfirmedServiceChoiceTagged is the corresponding interface of BACnetUnconfirmedServiceChoiceTagged
 type BACnetUnconfirmedServiceChoiceTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetUnconfirmedServiceChoice
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceChoiceTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceChoiceTagged.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceChoiceTaggedExactly interface {
+	BACnetUnconfirmedServiceChoiceTagged
+	isBACnetUnconfirmedServiceChoiceTagged() bool
 }
 
 // _BACnetUnconfirmedServiceChoiceTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) Serialize(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetUnconfirmedServiceChoiceTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTagged) isBACnetUnconfirmedServiceChoiceTagged() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) String() string {

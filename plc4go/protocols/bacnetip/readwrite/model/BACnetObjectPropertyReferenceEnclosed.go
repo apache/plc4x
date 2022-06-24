@@ -28,18 +28,21 @@ import (
 
 // BACnetObjectPropertyReferenceEnclosed is the corresponding interface of BACnetObjectPropertyReferenceEnclosed
 type BACnetObjectPropertyReferenceEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetObjectPropertyReference returns ObjectPropertyReference (property field)
 	GetObjectPropertyReference() BACnetObjectPropertyReference
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetObjectPropertyReferenceEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetObjectPropertyReferenceEnclosed.
+// This is useful for switch cases.
+type BACnetObjectPropertyReferenceEnclosedExactly interface {
+	BACnetObjectPropertyReferenceEnclosed
+	isBACnetObjectPropertyReferenceEnclosed() bool
 }
 
 // _BACnetObjectPropertyReferenceEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_BACnetObjectPropertyReferenceEnclosed) Serialize(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for BACnetObjectPropertyReferenceEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetObjectPropertyReferenceEnclosed) isBACnetObjectPropertyReferenceEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetObjectPropertyReferenceEnclosed) String() string {

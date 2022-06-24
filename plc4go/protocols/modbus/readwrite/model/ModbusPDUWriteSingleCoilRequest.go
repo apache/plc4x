@@ -28,17 +28,20 @@ import (
 
 // ModbusPDUWriteSingleCoilRequest is the corresponding interface of ModbusPDUWriteSingleCoilRequest
 type ModbusPDUWriteSingleCoilRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
 	// GetValue returns Value (property field)
 	GetValue() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUWriteSingleCoilRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteSingleCoilRequest.
+// This is useful for switch cases.
+type ModbusPDUWriteSingleCoilRequestExactly interface {
+	ModbusPDUWriteSingleCoilRequest
+	isModbusPDUWriteSingleCoilRequest() bool
 }
 
 // _ModbusPDUWriteSingleCoilRequest is the data-structure of this message
@@ -205,6 +208,10 @@ func (m *_ModbusPDUWriteSingleCoilRequest) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteSingleCoilRequest) isModbusPDUWriteSingleCoilRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteSingleCoilRequest) String() string {

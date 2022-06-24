@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterChangeOfTimer is the corresponding interface of BACnetEventParameterChangeOfTimer
 type BACnetEventParameterChangeOfTimer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetEventParameterChangeOfTimer interface {
 	GetUpdateTimeReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfTimerExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfTimer.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfTimerExactly interface {
+	BACnetEventParameterChangeOfTimer
+	isBACnetEventParameterChangeOfTimer() bool
 }
 
 // _BACnetEventParameterChangeOfTimer is the data-structure of this message
@@ -328,6 +331,10 @@ func (m *_BACnetEventParameterChangeOfTimer) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfTimer) isBACnetEventParameterChangeOfTimer() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfTimer) String() string {

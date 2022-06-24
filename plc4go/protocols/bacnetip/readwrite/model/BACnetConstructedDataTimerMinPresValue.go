@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimerMinPresValue is the corresponding interface of BACnetConstructedDataTimerMinPresValue
 type BACnetConstructedDataTimerMinPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimerMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerMinPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerMinPresValueExactly interface {
+	BACnetConstructedDataTimerMinPresValue
+	isBACnetConstructedDataTimerMinPresValue() bool
 }
 
 // _BACnetConstructedDataTimerMinPresValue is the data-structure of this message
 type _BACnetConstructedDataTimerMinPresValue struct {
 	*_BACnetConstructedData
 	MinPresValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimerMinPresValueParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimerMinPresValue{
-		MinPresValue:           minPresValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MinPresValue: minPresValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimerMinPresValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerMinPresValue) isBACnetConstructedDataTimerMinPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerMinPresValue) String() string {

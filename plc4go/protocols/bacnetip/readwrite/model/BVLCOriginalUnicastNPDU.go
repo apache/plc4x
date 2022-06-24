@@ -28,15 +28,18 @@ import (
 
 // BVLCOriginalUnicastNPDU is the corresponding interface of BVLCOriginalUnicastNPDU
 type BVLCOriginalUnicastNPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCOriginalUnicastNPDUExactly can be used when we want exactly this type and not a type which fulfills BVLCOriginalUnicastNPDU.
+// This is useful for switch cases.
+type BVLCOriginalUnicastNPDUExactly interface {
+	BVLCOriginalUnicastNPDU
+	isBVLCOriginalUnicastNPDU() bool
 }
 
 // _BVLCOriginalUnicastNPDU is the data-structure of this message
@@ -185,6 +188,10 @@ func (m *_BVLCOriginalUnicastNPDU) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCOriginalUnicastNPDU) isBVLCOriginalUnicastNPDU() bool {
+	return true
 }
 
 func (m *_BVLCOriginalUnicastNPDU) String() string {

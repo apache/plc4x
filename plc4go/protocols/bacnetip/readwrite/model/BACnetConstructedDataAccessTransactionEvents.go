@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataAccessTransactionEvents is the corresponding interface of BACnetConstructedDataAccessTransactionEvents
 type BACnetConstructedDataAccessTransactionEvents interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAccessTransactionEvents returns AccessTransactionEvents (property field)
 	GetAccessTransactionEvents() []BACnetAccessEventTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessTransactionEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessTransactionEvents.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessTransactionEventsExactly interface {
+	BACnetConstructedDataAccessTransactionEvents
+	isBACnetConstructedDataAccessTransactionEvents() bool
 }
 
 // _BACnetConstructedDataAccessTransactionEvents is the data-structure of this message
 type _BACnetConstructedDataAccessTransactionEvents struct {
 	*_BACnetConstructedData
 	AccessTransactionEvents []BACnetAccessEventTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for accessTransactionEvents")
 	}
 	// Terminated array
-	accessTransactionEvents := make([]BACnetAccessEventTagged, 0)
+	var accessTransactionEvents []BACnetAccessEventTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAccessEventTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -173,7 +172,10 @@ func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuff
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessTransactionEvents{
 		AccessTransactionEvents: accessTransactionEvents,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) Serialize(writeBuffer ut
 		}
 
 		// Array Field (accessTransactionEvents)
-		if m.GetAccessTransactionEvents() != nil {
-			if pushErr := writeBuffer.PushContext("accessTransactionEvents", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for accessTransactionEvents")
+		if pushErr := writeBuffer.PushContext("accessTransactionEvents", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for accessTransactionEvents")
+		}
+		for _, _element := range m.GetAccessTransactionEvents() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'accessTransactionEvents' field")
 			}
-			for _, _element := range m.GetAccessTransactionEvents() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'accessTransactionEvents' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("accessTransactionEvents", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for accessTransactionEvents")
-			}
+		}
+		if popErr := writeBuffer.PopContext("accessTransactionEvents", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for accessTransactionEvents")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessTransactionEvents"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessTransactionEvents) isBACnetConstructedDataAccessTransactionEvents() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessTransactionEvents) String() string {

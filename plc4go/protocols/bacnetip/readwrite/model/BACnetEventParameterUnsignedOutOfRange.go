@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterUnsignedOutOfRange is the corresponding interface of BACnetEventParameterUnsignedOutOfRange
 type BACnetEventParameterUnsignedOutOfRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -41,12 +43,13 @@ type BACnetEventParameterUnsignedOutOfRange interface {
 	GetDeadband() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterUnsignedOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterUnsignedOutOfRange.
+// This is useful for switch cases.
+type BACnetEventParameterUnsignedOutOfRangeExactly interface {
+	BACnetEventParameterUnsignedOutOfRange
+	isBACnetEventParameterUnsignedOutOfRange() bool
 }
 
 // _BACnetEventParameterUnsignedOutOfRange is the data-structure of this message
@@ -365,6 +368,10 @@ func (m *_BACnetEventParameterUnsignedOutOfRange) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterUnsignedOutOfRange) isBACnetEventParameterUnsignedOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterUnsignedOutOfRange) String() string {

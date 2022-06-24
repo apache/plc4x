@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEventParameters is the corresponding interface of BACnetConstructedDataEventParameters
 type BACnetConstructedDataEventParameters interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventParameter returns EventParameter (property field)
 	GetEventParameter() BACnetEventParameter
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventParameter
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEventParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventParameters.
+// This is useful for switch cases.
+type BACnetConstructedDataEventParametersExactly interface {
+	BACnetConstructedDataEventParameters
+	isBACnetConstructedDataEventParameters() bool
 }
 
 // _BACnetConstructedDataEventParameters is the data-structure of this message
 type _BACnetConstructedDataEventParameters struct {
 	*_BACnetConstructedData
 	EventParameter BACnetEventParameter
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEventParametersParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventParameters{
-		EventParameter:         eventParameter,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EventParameter: eventParameter,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEventParameters) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventParameters) isBACnetConstructedDataEventParameters() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventParameters) String() string {

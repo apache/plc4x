@@ -28,18 +28,21 @@ import (
 
 // BACnetEventParameterChangeOfBitstringListOfBitstringValues is the corresponding interface of BACnetEventParameterChangeOfBitstringListOfBitstringValues
 type BACnetEventParameterChangeOfBitstringListOfBitstringValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfBitstringValues returns ListOfBitstringValues (property field)
 	GetListOfBitstringValues() []BACnetApplicationTagBitString
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfBitstringListOfBitstringValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfBitstringListOfBitstringValues.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfBitstringListOfBitstringValuesExactly interface {
+	BACnetEventParameterChangeOfBitstringListOfBitstringValues
+	isBACnetEventParameterChangeOfBitstringListOfBitstringValues() bool
 }
 
 // _BACnetEventParameterChangeOfBitstringListOfBitstringValues is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParse(readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfBitstringValues")
 	}
 	// Terminated array
-	listOfBitstringValues := make([]BACnetApplicationTagBitString, 0)
+	var listOfBitstringValues []BACnetApplicationTagBitString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) Serialize(
 	}
 
 	// Array Field (listOfBitstringValues)
-	if m.GetListOfBitstringValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfBitstringValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfBitstringValues")
+	if pushErr := writeBuffer.PushContext("listOfBitstringValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfBitstringValues")
+	}
+	for _, _element := range m.GetListOfBitstringValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfBitstringValues' field")
 		}
-		for _, _element := range m.GetListOfBitstringValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfBitstringValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfBitstringValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfBitstringValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfBitstringValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfBitstringValues")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) Serialize(
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfBitstringListOfBitstringValues")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) isBACnetEventParameterChangeOfBitstringListOfBitstringValues() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) String() string {

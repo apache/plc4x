@@ -28,16 +28,19 @@ import (
 
 // ModbusDeviceInformationObject is the corresponding interface of ModbusDeviceInformationObject
 type ModbusDeviceInformationObject interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusDeviceInformationObjectExactly can be used when we want exactly this type and not a type which fulfills ModbusDeviceInformationObject.
+// This is useful for switch cases.
+type ModbusDeviceInformationObjectExactly interface {
+	ModbusDeviceInformationObject
+	isModbusDeviceInformationObject() bool
 }
 
 // _ModbusDeviceInformationObject is the data-structure of this message
@@ -168,18 +171,19 @@ func (m *_ModbusDeviceInformationObject) Serialize(writeBuffer utils.WriteBuffer
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		// Byte Array field (data)
-		_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-		}
+	// Byte Array field (data)
+	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusDeviceInformationObject"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ModbusDeviceInformationObject")
 	}
 	return nil
+}
+
+func (m *_ModbusDeviceInformationObject) isModbusDeviceInformationObject() bool {
+	return true
 }
 
 func (m *_ModbusDeviceInformationObject) String() string {

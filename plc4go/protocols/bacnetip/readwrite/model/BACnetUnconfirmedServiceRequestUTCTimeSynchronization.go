@@ -28,17 +28,20 @@ import (
 
 // BACnetUnconfirmedServiceRequestUTCTimeSynchronization is the corresponding interface of BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 type BACnetUnconfirmedServiceRequestUTCTimeSynchronization interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetSynchronizedDate returns SynchronizedDate (property field)
 	GetSynchronizedDate() BACnetApplicationTagDate
 	// GetSynchronizedTime returns SynchronizedTime (property field)
 	GetSynchronizedTime() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestUTCTimeSynchronizationExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUTCTimeSynchronization.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUTCTimeSynchronizationExactly interface {
+	BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+	isBACnetUnconfirmedServiceRequestUTCTimeSynchronization() bool
 }
 
 // _BACnetUnconfirmedServiceRequestUTCTimeSynchronization is the data-structure of this message
@@ -46,9 +49,6 @@ type _BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
 	*_BACnetUnconfirmedServiceRequest
 	SynchronizedDate BACnetApplicationTagDate
 	SynchronizedTime BACnetApplicationTagTime
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -177,9 +177,11 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
-		SynchronizedDate:                 synchronizedDate,
-		SynchronizedTime:                 synchronizedTime,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		SynchronizedDate: synchronizedDate,
+		SynchronizedTime: synchronizedTime,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -223,6 +225,10 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) isBACnetUnconfirmedServiceRequestUTCTimeSynchronization() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) String() string {

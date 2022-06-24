@@ -33,13 +33,16 @@ const EipConnectionRequest_FLAGS uint16 = 0x00
 
 // EipConnectionRequest is the corresponding interface of EipConnectionRequest
 type EipConnectionRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	EipPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// EipConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills EipConnectionRequest.
+// This is useful for switch cases.
+type EipConnectionRequestExactly interface {
+	EipConnectionRequest
+	isEipConnectionRequest() bool
 }
 
 // _EipConnectionRequest is the data-structure of this message
@@ -199,6 +202,10 @@ func (m *_EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_EipConnectionRequest) isEipConnectionRequest() bool {
+	return true
 }
 
 func (m *_EipConnectionRequest) String() string {

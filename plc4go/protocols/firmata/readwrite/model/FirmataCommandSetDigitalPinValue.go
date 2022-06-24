@@ -29,17 +29,20 @@ import (
 
 // FirmataCommandSetDigitalPinValue is the corresponding interface of FirmataCommandSetDigitalPinValue
 type FirmataCommandSetDigitalPinValue interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// GetOn returns On (property field)
 	GetOn() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataCommandSetDigitalPinValueExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandSetDigitalPinValue.
+// This is useful for switch cases.
+type FirmataCommandSetDigitalPinValueExactly interface {
+	FirmataCommandSetDigitalPinValue
+	isFirmataCommandSetDigitalPinValue() bool
 }
 
 // _FirmataCommandSetDigitalPinValue is the data-structure of this message
@@ -47,9 +50,6 @@ type _FirmataCommandSetDigitalPinValue struct {
 	*_FirmataCommand
 	Pin uint8
 	On  bool
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -182,9 +182,11 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandSetDigitalPinValue{
-		Pin:             pin,
-		On:              on,
-		_FirmataCommand: &_FirmataCommand{},
+		Pin: pin,
+		On:  on,
+		_FirmataCommand: &_FirmataCommand{
+			Response: response,
+		},
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil
@@ -226,6 +228,10 @@ func (m *_FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandSetDigitalPinValue) isFirmataCommandSetDigitalPinValue() bool {
+	return true
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDeviceMaxMaster is the corresponding interface of BACnetConstructedDataDeviceMaxMaster
 type BACnetConstructedDataDeviceMaxMaster interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxMaster returns MaxMaster (property field)
 	GetMaxMaster() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDeviceMaxMasterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDeviceMaxMaster.
+// This is useful for switch cases.
+type BACnetConstructedDataDeviceMaxMasterExactly interface {
+	BACnetConstructedDataDeviceMaxMaster
+	isBACnetConstructedDataDeviceMaxMaster() bool
 }
 
 // _BACnetConstructedDataDeviceMaxMaster is the data-structure of this message
 type _BACnetConstructedDataDeviceMaxMaster struct {
 	*_BACnetConstructedData
 	MaxMaster BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDeviceMaxMasterParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDeviceMaxMaster{
-		MaxMaster:              maxMaster,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxMaster: maxMaster,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDeviceMaxMaster) isBACnetConstructedDataDeviceMaxMaster() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDeviceMaxMaster) String() string {

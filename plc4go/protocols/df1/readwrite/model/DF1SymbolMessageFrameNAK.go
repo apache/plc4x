@@ -28,13 +28,16 @@ import (
 
 // DF1SymbolMessageFrameNAK is the corresponding interface of DF1SymbolMessageFrameNAK
 type DF1SymbolMessageFrameNAK interface {
+	utils.LengthAware
+	utils.Serializable
 	DF1Symbol
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1SymbolMessageFrameNAKExactly can be used when we want exactly this type and not a type which fulfills DF1SymbolMessageFrameNAK.
+// This is useful for switch cases.
+type DF1SymbolMessageFrameNAKExactly interface {
+	DF1SymbolMessageFrameNAK
+	isDF1SymbolMessageFrameNAK() bool
 }
 
 // _DF1SymbolMessageFrameNAK is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_DF1SymbolMessageFrameNAK) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DF1SymbolMessageFrameNAK) isDF1SymbolMessageFrameNAK() bool {
+	return true
 }
 
 func (m *_DF1SymbolMessageFrameNAK) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimeOfStrikeCountReset is the corresponding interface of BACnetConstructedDataTimeOfStrikeCountReset
 type BACnetConstructedDataTimeOfStrikeCountReset interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimeOfStrikeCountReset returns TimeOfStrikeCountReset (property field)
 	GetTimeOfStrikeCountReset() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimeOfStrikeCountResetExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimeOfStrikeCountReset.
+// This is useful for switch cases.
+type BACnetConstructedDataTimeOfStrikeCountResetExactly interface {
+	BACnetConstructedDataTimeOfStrikeCountReset
+	isBACnetConstructedDataTimeOfStrikeCountReset() bool
 }
 
 // _BACnetConstructedDataTimeOfStrikeCountReset is the data-structure of this message
 type _BACnetConstructedDataTimeOfStrikeCountReset struct {
 	*_BACnetConstructedData
 	TimeOfStrikeCountReset BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataTimeOfStrikeCountResetParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimeOfStrikeCountReset{
 		TimeOfStrikeCountReset: timeOfStrikeCountReset,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) isBACnetConstructedDataTimeOfStrikeCountReset() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimeOfStrikeCountReset) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDoorAlarmState is the corresponding interface of BACnetConstructedDataDoorAlarmState
 type BACnetConstructedDataDoorAlarmState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDoorAlarmState returns DoorAlarmState (property field)
 	GetDoorAlarmState() BACnetDoorAlarmStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorAlarmStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDoorAlarmStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDoorAlarmState.
+// This is useful for switch cases.
+type BACnetConstructedDataDoorAlarmStateExactly interface {
+	BACnetConstructedDataDoorAlarmState
+	isBACnetConstructedDataDoorAlarmState() bool
 }
 
 // _BACnetConstructedDataDoorAlarmState is the data-structure of this message
 type _BACnetConstructedDataDoorAlarmState struct {
 	*_BACnetConstructedData
 	DoorAlarmState BACnetDoorAlarmStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDoorAlarmStateParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDoorAlarmState{
-		DoorAlarmState:         doorAlarmState,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DoorAlarmState: doorAlarmState,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDoorAlarmState) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDoorAlarmState) isBACnetConstructedDataDoorAlarmState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDoorAlarmState) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataShedDuration is the corresponding interface of BACnetConstructedDataShedDuration
 type BACnetConstructedDataShedDuration interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetShedDuration returns ShedDuration (property field)
 	GetShedDuration() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataShedDurationExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataShedDuration.
+// This is useful for switch cases.
+type BACnetConstructedDataShedDurationExactly interface {
+	BACnetConstructedDataShedDuration
+	isBACnetConstructedDataShedDuration() bool
 }
 
 // _BACnetConstructedDataShedDuration is the data-structure of this message
 type _BACnetConstructedDataShedDuration struct {
 	*_BACnetConstructedData
 	ShedDuration BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataShedDuration{
-		ShedDuration:           shedDuration,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ShedDuration: shedDuration,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataShedDuration) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataShedDuration) isBACnetConstructedDataShedDuration() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataShedDuration) String() string {

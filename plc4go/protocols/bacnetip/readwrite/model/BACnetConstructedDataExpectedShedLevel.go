@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataExpectedShedLevel is the corresponding interface of BACnetConstructedDataExpectedShedLevel
 type BACnetConstructedDataExpectedShedLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetExpectedShedLevel returns ExpectedShedLevel (property field)
 	GetExpectedShedLevel() BACnetShedLevel
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetShedLevel
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataExpectedShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataExpectedShedLevel.
+// This is useful for switch cases.
+type BACnetConstructedDataExpectedShedLevelExactly interface {
+	BACnetConstructedDataExpectedShedLevel
+	isBACnetConstructedDataExpectedShedLevel() bool
 }
 
 // _BACnetConstructedDataExpectedShedLevel is the data-structure of this message
 type _BACnetConstructedDataExpectedShedLevel struct {
 	*_BACnetConstructedData
 	ExpectedShedLevel BACnetShedLevel
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataExpectedShedLevelParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataExpectedShedLevel{
-		ExpectedShedLevel:      expectedShedLevel,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ExpectedShedLevel: expectedShedLevel,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataExpectedShedLevel) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataExpectedShedLevel) isBACnetConstructedDataExpectedShedLevel() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataExpectedShedLevel) String() string {

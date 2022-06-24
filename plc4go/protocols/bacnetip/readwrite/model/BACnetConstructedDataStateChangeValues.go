@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataStateChangeValues is the corresponding interface of BACnetConstructedDataStateChangeValues
 type BACnetConstructedDataStateChangeValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataStateChangeValues interface {
 	GetStateChangeValues() []BACnetTimerStateChangeValue
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataStateChangeValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataStateChangeValues.
+// This is useful for switch cases.
+type BACnetConstructedDataStateChangeValuesExactly interface {
+	BACnetConstructedDataStateChangeValues
+	isBACnetConstructedDataStateChangeValues() bool
 }
 
 // _BACnetConstructedDataStateChangeValues is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataStateChangeValues struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	StateChangeValues    []BACnetTimerStateChangeValue
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for stateChangeValues")
 	}
 	// Terminated array
-	stateChangeValues := make([]BACnetTimerStateChangeValue, 0)
+	var stateChangeValues []BACnetTimerStateChangeValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimerStateChangeValueParse(readBuffer, objectTypeArgument)
@@ -238,9 +237,12 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataStateChangeValues{
-		NumberOfDataElements:   numberOfDataElements,
-		StateChangeValues:      stateChangeValues,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		StateChangeValues:    stateChangeValues,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -275,19 +277,17 @@ func (m *_BACnetConstructedDataStateChangeValues) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (stateChangeValues)
-		if m.GetStateChangeValues() != nil {
-			if pushErr := writeBuffer.PushContext("stateChangeValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for stateChangeValues")
+		if pushErr := writeBuffer.PushContext("stateChangeValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for stateChangeValues")
+		}
+		for _, _element := range m.GetStateChangeValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'stateChangeValues' field")
 			}
-			for _, _element := range m.GetStateChangeValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'stateChangeValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("stateChangeValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for stateChangeValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("stateChangeValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for stateChangeValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStateChangeValues"); popErr != nil {
@@ -296,6 +296,10 @@ func (m *_BACnetConstructedDataStateChangeValues) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataStateChangeValues) isBACnetConstructedDataStateChangeValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataStateChangeValues) String() string {

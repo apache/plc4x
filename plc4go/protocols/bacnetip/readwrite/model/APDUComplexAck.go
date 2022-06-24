@@ -30,6 +30,8 @@ import (
 
 // APDUComplexAck is the corresponding interface of APDUComplexAck
 type APDUComplexAck interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -51,12 +53,13 @@ type APDUComplexAck interface {
 	GetApduHeaderReduction() uint16
 	// GetSegmentReduction returns SegmentReduction (virtual field)
 	GetSegmentReduction() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// APDUComplexAckExactly can be used when we want exactly this type and not a type which fulfills APDUComplexAck.
+// This is useful for switch cases.
+type APDUComplexAckExactly interface {
+	APDUComplexAck
+	isAPDUComplexAck() bool
 }
 
 // _APDUComplexAck is the data-structure of this message
@@ -70,9 +73,6 @@ type _APDUComplexAck struct {
 	ServiceAck           BACnetServiceAck
 	SegmentServiceChoice *uint8
 	Segment              []byte
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -390,7 +390,9 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUCo
 		ServiceAck:           serviceAck,
 		SegmentServiceChoice: segmentServiceChoice,
 		Segment:              segment,
-		_APDU:                &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -488,12 +490,9 @@ func (m *_APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (segment)
-		if m.GetSegment() != nil {
-			// Byte Array field (segment)
-			_writeArrayErr := writeBuffer.WriteByteArray("segment", m.GetSegment())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'segment' field")
-			}
+		// Byte Array field (segment)
+		if err := writeBuffer.WriteByteArray("segment", m.GetSegment()); err != nil {
+			return errors.Wrap(err, "Error serializing 'segment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUComplexAck"); popErr != nil {
@@ -502,6 +501,10 @@ func (m *_APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUComplexAck) isAPDUComplexAck() bool {
+	return true
 }
 
 func (m *_APDUComplexAck) String() string {

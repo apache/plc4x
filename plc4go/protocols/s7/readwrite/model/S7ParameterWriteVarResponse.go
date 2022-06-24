@@ -28,15 +28,18 @@ import (
 
 // S7ParameterWriteVarResponse is the corresponding interface of S7ParameterWriteVarResponse
 type S7ParameterWriteVarResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Parameter
 	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7ParameterWriteVarResponseExactly can be used when we want exactly this type and not a type which fulfills S7ParameterWriteVarResponse.
+// This is useful for switch cases.
+type S7ParameterWriteVarResponseExactly interface {
+	S7ParameterWriteVarResponse
+	isS7ParameterWriteVarResponse() bool
 }
 
 // _S7ParameterWriteVarResponse is the data-structure of this message
@@ -175,6 +178,10 @@ func (m *_S7ParameterWriteVarResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterWriteVarResponse) isS7ParameterWriteVarResponse() bool {
+	return true
 }
 
 func (m *_S7ParameterWriteVarResponse) String() string {

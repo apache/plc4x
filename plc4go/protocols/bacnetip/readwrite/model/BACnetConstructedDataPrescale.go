@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPrescale is the corresponding interface of BACnetConstructedDataPrescale
 type BACnetConstructedDataPrescale interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPrescale returns Prescale (property field)
 	GetPrescale() BACnetPrescale
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetPrescale
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPrescaleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPrescale.
+// This is useful for switch cases.
+type BACnetConstructedDataPrescaleExactly interface {
+	BACnetConstructedDataPrescale
+	isBACnetConstructedDataPrescale() bool
 }
 
 // _BACnetConstructedDataPrescale is the data-structure of this message
 type _BACnetConstructedDataPrescale struct {
 	*_BACnetConstructedData
 	Prescale BACnetPrescale
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPrescaleParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPrescale{
-		Prescale:               prescale,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Prescale: prescale,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPrescale) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPrescale) isBACnetConstructedDataPrescale() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPrescale) String() string {

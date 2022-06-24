@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataUpdateKeySetTimeout is the corresponding interface of BACnetConstructedDataUpdateKeySetTimeout
 type BACnetConstructedDataUpdateKeySetTimeout interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUpdateKeySetTimeout returns UpdateKeySetTimeout (property field)
 	GetUpdateKeySetTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataUpdateKeySetTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUpdateKeySetTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataUpdateKeySetTimeoutExactly interface {
+	BACnetConstructedDataUpdateKeySetTimeout
+	isBACnetConstructedDataUpdateKeySetTimeout() bool
 }
 
 // _BACnetConstructedDataUpdateKeySetTimeout is the data-structure of this message
 type _BACnetConstructedDataUpdateKeySetTimeout struct {
 	*_BACnetConstructedData
 	UpdateKeySetTimeout BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUpdateKeySetTimeout{
-		UpdateKeySetTimeout:    updateKeySetTimeout,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		UpdateKeySetTimeout: updateKeySetTimeout,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) isBACnetConstructedDataUpdateKeySetTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAckedTransitions is the corresponding interface of BACnetConstructedDataAckedTransitions
 type BACnetConstructedDataAckedTransitions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAckedTransitions returns AckedTransitions (property field)
 	GetAckedTransitions() BACnetEventTransitionBitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAckedTransitionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAckedTransitions.
+// This is useful for switch cases.
+type BACnetConstructedDataAckedTransitionsExactly interface {
+	BACnetConstructedDataAckedTransitions
+	isBACnetConstructedDataAckedTransitions() bool
 }
 
 // _BACnetConstructedDataAckedTransitions is the data-structure of this message
 type _BACnetConstructedDataAckedTransitions struct {
 	*_BACnetConstructedData
 	AckedTransitions BACnetEventTransitionBitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAckedTransitions{
-		AckedTransitions:       ackedTransitions,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AckedTransitions: ackedTransitions,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAckedTransitions) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAckedTransitions) isBACnetConstructedDataAckedTransitions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAckedTransitions) String() string {

@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataRoutingTable is the corresponding interface of BACnetConstructedDataRoutingTable
 type BACnetConstructedDataRoutingTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetRoutingTable returns RoutingTable (property field)
 	GetRoutingTable() []BACnetRouterEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataRoutingTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataRoutingTable.
+// This is useful for switch cases.
+type BACnetConstructedDataRoutingTableExactly interface {
+	BACnetConstructedDataRoutingTable
+	isBACnetConstructedDataRoutingTable() bool
 }
 
 // _BACnetConstructedDataRoutingTable is the data-structure of this message
 type _BACnetConstructedDataRoutingTable struct {
 	*_BACnetConstructedData
 	RoutingTable []BACnetRouterEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataRoutingTableParse(readBuffer utils.ReadBuffer, tagNumb
 		return nil, errors.Wrap(pullErr, "Error pulling for routingTable")
 	}
 	// Terminated array
-	routingTable := make([]BACnetRouterEntry, 0)
+	var routingTable []BACnetRouterEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetRouterEntryParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataRoutingTableParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataRoutingTable{
-		RoutingTable:           routingTable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		RoutingTable: routingTable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataRoutingTable) Serialize(writeBuffer utils.WriteBu
 		}
 
 		// Array Field (routingTable)
-		if m.GetRoutingTable() != nil {
-			if pushErr := writeBuffer.PushContext("routingTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for routingTable")
+		if pushErr := writeBuffer.PushContext("routingTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for routingTable")
+		}
+		for _, _element := range m.GetRoutingTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'routingTable' field")
 			}
-			for _, _element := range m.GetRoutingTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'routingTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("routingTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for routingTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("routingTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for routingTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataRoutingTable"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataRoutingTable) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataRoutingTable) isBACnetConstructedDataRoutingTable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataRoutingTable) String() string {

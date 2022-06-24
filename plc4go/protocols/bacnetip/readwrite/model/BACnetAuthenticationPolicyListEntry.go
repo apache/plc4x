@@ -28,16 +28,19 @@ import (
 
 // BACnetAuthenticationPolicyListEntry is the corresponding interface of BACnetAuthenticationPolicyListEntry
 type BACnetAuthenticationPolicyListEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCredentialDataInput returns CredentialDataInput (property field)
 	GetCredentialDataInput() BACnetDeviceObjectReferenceEnclosed
 	// GetIndex returns Index (property field)
 	GetIndex() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthenticationPolicyListEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicyListEntry.
+// This is useful for switch cases.
+type BACnetAuthenticationPolicyListEntryExactly interface {
+	BACnetAuthenticationPolicyListEntry
+	isBACnetAuthenticationPolicyListEntry() bool
 }
 
 // _BACnetAuthenticationPolicyListEntry is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.Write
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationPolicyListEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationPolicyListEntry) isBACnetAuthenticationPolicyListEntry() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationPolicyListEntry) String() string {

@@ -28,16 +28,19 @@ import (
 
 // ChannelInformation is the corresponding interface of ChannelInformation
 type ChannelInformation interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNumChannels returns NumChannels (property field)
 	GetNumChannels() uint8
 	// GetChannelCode returns ChannelCode (property field)
 	GetChannelCode() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ChannelInformationExactly can be used when we want exactly this type and not a type which fulfills ChannelInformation.
+// This is useful for switch cases.
+type ChannelInformationExactly interface {
+	ChannelInformation
+	isChannelInformation() bool
 }
 
 // _ChannelInformation is the data-structure of this message
@@ -160,6 +163,10 @@ func (m *_ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for ChannelInformation")
 	}
 	return nil
+}
+
+func (m *_ChannelInformation) isChannelInformation() bool {
+	return true
 }
 
 func (m *_ChannelInformation) String() string {

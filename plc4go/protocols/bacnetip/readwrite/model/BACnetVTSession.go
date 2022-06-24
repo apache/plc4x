@@ -28,18 +28,21 @@ import (
 
 // BACnetVTSession is the corresponding interface of BACnetVTSession
 type BACnetVTSession interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetLocalVtSessionId returns LocalVtSessionId (property field)
 	GetLocalVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoveVtSessionId returns RemoveVtSessionId (property field)
 	GetRemoveVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoteVtAddress returns RemoteVtAddress (property field)
 	GetRemoteVtAddress() BACnetAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetVTSessionExactly can be used when we want exactly this type and not a type which fulfills BACnetVTSession.
+// This is useful for switch cases.
+type BACnetVTSessionExactly interface {
+	BACnetVTSession
+	isBACnetVTSession() bool
 }
 
 // _BACnetVTSession is the data-structure of this message
@@ -217,6 +220,10 @@ func (m *_BACnetVTSession) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetVTSession")
 	}
 	return nil
+}
+
+func (m *_BACnetVTSession) isBACnetVTSession() bool {
+	return true
 }
 
 func (m *_BACnetVTSession) String() string {

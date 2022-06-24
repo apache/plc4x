@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueEnumerated is the corresponding interface of BACnetPriorityValueEnumerated
 type BACnetPriorityValueEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueEnumerated.
+// This is useful for switch cases.
+type BACnetPriorityValueEnumeratedExactly interface {
+	BACnetPriorityValueEnumerated
+	isBACnetPriorityValueEnumerated() bool
 }
 
 // _BACnetPriorityValueEnumerated is the data-structure of this message
 type _BACnetPriorityValueEnumerated struct {
 	*_BACnetPriorityValue
 	EnumeratedValue BACnetApplicationTagEnumerated
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeA
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueEnumerated{
-		EnumeratedValue:      enumeratedValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		EnumeratedValue: enumeratedValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueEnumerated) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueEnumerated) isBACnetPriorityValueEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueEnumerated) String() string {

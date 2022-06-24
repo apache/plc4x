@@ -30,6 +30,8 @@ import (
 
 // BACnetRouterEntry is the corresponding interface of BACnetRouterEntry
 type BACnetRouterEntry interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetContextTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
@@ -38,12 +40,13 @@ type BACnetRouterEntry interface {
 	GetStatus() BACnetRouterEntryStatusTagged
 	// GetPerformanceIndex returns PerformanceIndex (property field)
 	GetPerformanceIndex() BACnetContextTagOctetString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRouterEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetRouterEntry.
+// This is useful for switch cases.
+type BACnetRouterEntryExactly interface {
+	BACnetRouterEntry
+	isBACnetRouterEntry() bool
 }
 
 // _BACnetRouterEntry is the data-structure of this message
@@ -269,6 +272,10 @@ func (m *_BACnetRouterEntry) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetRouterEntry")
 	}
 	return nil
+}
+
+func (m *_BACnetRouterEntry) isBACnetRouterEntry() bool {
+	return true
 }
 
 func (m *_BACnetRouterEntry) String() string {

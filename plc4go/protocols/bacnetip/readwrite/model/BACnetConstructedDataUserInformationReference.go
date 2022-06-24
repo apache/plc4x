@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataUserInformationReference is the corresponding interface of BACnetConstructedDataUserInformationReference
 type BACnetConstructedDataUserInformationReference interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUserInformationReference returns UserInformationReference (property field)
 	GetUserInformationReference() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataUserInformationReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataUserInformationReference.
+// This is useful for switch cases.
+type BACnetConstructedDataUserInformationReferenceExactly interface {
+	BACnetConstructedDataUserInformationReference
+	isBACnetConstructedDataUserInformationReference() bool
 }
 
 // _BACnetConstructedDataUserInformationReference is the data-structure of this message
 type _BACnetConstructedDataUserInformationReference struct {
 	*_BACnetConstructedData
 	UserInformationReference BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataUserInformationReference{
 		UserInformationReference: userInformationReference,
-		_BACnetConstructedData:   &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataUserInformationReference) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataUserInformationReference) isBACnetConstructedDataUserInformationReference() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataUserInformationReference) String() string {

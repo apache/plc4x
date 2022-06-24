@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueNull is the corresponding interface of BACnetPriorityValueNull
 type BACnetPriorityValueNull interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueNullExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueNull.
+// This is useful for switch cases.
+type BACnetPriorityValueNullExactly interface {
+	BACnetPriorityValueNull
+	isBACnetPriorityValueNull() bool
 }
 
 // _BACnetPriorityValueNull is the data-structure of this message
 type _BACnetPriorityValueNull struct {
 	*_BACnetPriorityValue
 	NullValue BACnetApplicationTagNull
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueNullParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueNull{
-		NullValue:            nullValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		NullValue: nullValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueNull) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueNull) isBACnetPriorityValueNull() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueNull) String() string {

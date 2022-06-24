@@ -28,17 +28,20 @@ import (
 
 // FirmataCommandProtocolVersion is the corresponding interface of FirmataCommandProtocolVersion
 type FirmataCommandProtocolVersion interface {
+	utils.LengthAware
+	utils.Serializable
 	FirmataCommand
 	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
 	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// FirmataCommandProtocolVersionExactly can be used when we want exactly this type and not a type which fulfills FirmataCommandProtocolVersion.
+// This is useful for switch cases.
+type FirmataCommandProtocolVersionExactly interface {
+	FirmataCommandProtocolVersion
+	isFirmataCommandProtocolVersion() bool
 }
 
 // _FirmataCommandProtocolVersion is the data-structure of this message
@@ -46,9 +49,6 @@ type _FirmataCommandProtocolVersion struct {
 	*_FirmataCommand
 	MajorVersion uint8
 	MinorVersion uint8
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -164,9 +164,11 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 
 	// Create a partially initialized instance
 	_child := &_FirmataCommandProtocolVersion{
-		MajorVersion:    majorVersion,
-		MinorVersion:    minorVersion,
-		_FirmataCommand: &_FirmataCommand{},
+		MajorVersion: majorVersion,
+		MinorVersion: minorVersion,
+		_FirmataCommand: &_FirmataCommand{
+			Response: response,
+		},
 	}
 	_child._FirmataCommand._FirmataCommandChildRequirements = _child
 	return _child, nil
@@ -200,6 +202,10 @@ func (m *_FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_FirmataCommandProtocolVersion) isFirmataCommandProtocolVersion() bool {
+	return true
 }
 
 func (m *_FirmataCommandProtocolVersion) String() string {

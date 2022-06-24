@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterCommandFailure is the corresponding interface of BACnetEventParameterCommandFailure
 type BACnetEventParameterCommandFailure interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -37,12 +39,13 @@ type BACnetEventParameterCommandFailure interface {
 	GetFeedbackPropertyReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterCommandFailureExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterCommandFailure.
+// This is useful for switch cases.
+type BACnetEventParameterCommandFailureExactly interface {
+	BACnetEventParameterCommandFailure
+	isBACnetEventParameterCommandFailure() bool
 }
 
 // _BACnetEventParameterCommandFailure is the data-structure of this message
@@ -291,6 +294,10 @@ func (m *_BACnetEventParameterCommandFailure) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterCommandFailure) isBACnetEventParameterCommandFailure() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterCommandFailure) String() string {

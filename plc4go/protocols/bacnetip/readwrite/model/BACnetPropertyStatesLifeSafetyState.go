@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesLifeSafetyState is the corresponding interface of BACnetPropertyStatesLifeSafetyState
 type BACnetPropertyStatesLifeSafetyState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLifeSafetyState returns LifeSafetyState (property field)
 	GetLifeSafetyState() BACnetLifeSafetyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesLifeSafetyStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLifeSafetyState.
+// This is useful for switch cases.
+type BACnetPropertyStatesLifeSafetyStateExactly interface {
+	BACnetPropertyStatesLifeSafetyState
+	isBACnetPropertyStatesLifeSafetyState() bool
 }
 
 // _BACnetPropertyStatesLifeSafetyState is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesLifeSafetyState) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyState) isBACnetPropertyStatesLifeSafetyState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLifeSafetyState) String() string {

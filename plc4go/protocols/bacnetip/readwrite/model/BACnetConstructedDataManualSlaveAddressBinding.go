@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataManualSlaveAddressBinding is the corresponding interface of BACnetConstructedDataManualSlaveAddressBinding
 type BACnetConstructedDataManualSlaveAddressBinding interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetManualSlaveAddressBinding returns ManualSlaveAddressBinding (property field)
 	GetManualSlaveAddressBinding() []BACnetAddressBinding
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataManualSlaveAddressBindingExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataManualSlaveAddressBinding.
+// This is useful for switch cases.
+type BACnetConstructedDataManualSlaveAddressBindingExactly interface {
+	BACnetConstructedDataManualSlaveAddressBinding
+	isBACnetConstructedDataManualSlaveAddressBinding() bool
 }
 
 // _BACnetConstructedDataManualSlaveAddressBinding is the data-structure of this message
 type _BACnetConstructedDataManualSlaveAddressBinding struct {
 	*_BACnetConstructedData
 	ManualSlaveAddressBinding []BACnetAddressBinding
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for manualSlaveAddressBinding")
 	}
 	// Terminated array
-	manualSlaveAddressBinding := make([]BACnetAddressBinding, 0)
+	var manualSlaveAddressBinding []BACnetAddressBinding
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAddressBindingParse(readBuffer)
@@ -173,7 +172,10 @@ func BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer utils.ReadBu
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataManualSlaveAddressBinding{
 		ManualSlaveAddressBinding: manualSlaveAddressBinding,
-		_BACnetConstructedData:    &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) Serialize(writeBuffer 
 		}
 
 		// Array Field (manualSlaveAddressBinding)
-		if m.GetManualSlaveAddressBinding() != nil {
-			if pushErr := writeBuffer.PushContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for manualSlaveAddressBinding")
+		if pushErr := writeBuffer.PushContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for manualSlaveAddressBinding")
+		}
+		for _, _element := range m.GetManualSlaveAddressBinding() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'manualSlaveAddressBinding' field")
 			}
-			for _, _element := range m.GetManualSlaveAddressBinding() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'manualSlaveAddressBinding' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for manualSlaveAddressBinding")
-			}
+		}
+		if popErr := writeBuffer.PopContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for manualSlaveAddressBinding")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataManualSlaveAddressBinding"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) isBACnetConstructedDataManualSlaveAddressBinding() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataManualSlaveAddressBinding) String() string {

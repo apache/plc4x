@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueConstructedValue is the corresponding interface of BACnetPriorityValueConstructedValue
 type BACnetPriorityValueConstructedValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetConstructedValue returns ConstructedValue (property field)
 	GetConstructedValue() BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueConstructedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueConstructedValue.
+// This is useful for switch cases.
+type BACnetPriorityValueConstructedValueExactly interface {
+	BACnetPriorityValueConstructedValue
+	isBACnetPriorityValueConstructedValue() bool
 }
 
 // _BACnetPriorityValueConstructedValue is the data-structure of this message
 type _BACnetPriorityValueConstructedValue struct {
 	*_BACnetPriorityValue
 	ConstructedValue BACnetConstructedData
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueConstructedValue{
-		ConstructedValue:     constructedValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		ConstructedValue: constructedValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueConstructedValue) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueConstructedValue) isBACnetPriorityValueConstructedValue() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueConstructedValue) String() string {

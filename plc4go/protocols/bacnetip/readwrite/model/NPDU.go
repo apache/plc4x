@@ -30,6 +30,8 @@ import (
 
 // NPDU is the corresponding interface of NPDU
 type NPDU interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetProtocolVersionNumber returns ProtocolVersionNumber (property field)
 	GetProtocolVersionNumber() uint8
 	// GetControl returns Control (property field)
@@ -58,12 +60,13 @@ type NPDU interface {
 	GetSourceLengthAddon() uint16
 	// GetPayloadSubtraction returns PayloadSubtraction (virtual field)
 	GetPayloadSubtraction() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NPDUExactly can be used when we want exactly this type and not a type which fulfills NPDU.
+// This is useful for switch cases.
+type NPDUExactly interface {
+	NPDU
+	isNPDU() bool
 }
 
 // _NPDU is the data-structure of this message
@@ -347,6 +350,10 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	}
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	// This happens when the size is set conditional to 0
+	if len(destinationAddress) == 0 {
+		destinationAddress = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -391,6 +398,10 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	}
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	// This happens when the size is set conditional to 0
+	if len(sourceAddress) == 0 {
+		sourceAddress = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
@@ -528,19 +539,17 @@ func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (destinationAddress)
-	if m.GetDestinationAddress() != nil {
-		if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for destinationAddress")
+	if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for destinationAddress")
+	}
+	for _, _element := range m.GetDestinationAddress() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 		}
-		for _, _element := range m.GetDestinationAddress() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for destinationAddress")
-		}
+	}
+	if popErr := writeBuffer.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for destinationAddress")
 	}
 	// Virtual field
 	if _destinationLengthAddonErr := writeBuffer.WriteVirtual("destinationLengthAddon", m.GetDestinationLengthAddon()); _destinationLengthAddonErr != nil {
@@ -568,19 +577,17 @@ func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (sourceAddress)
-	if m.GetSourceAddress() != nil {
-		if pushErr := writeBuffer.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
+	if pushErr := writeBuffer.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for sourceAddress")
+	}
+	for _, _element := range m.GetSourceAddress() {
+		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 		}
-		for _, _element := range m.GetSourceAddress() {
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("sourceAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceAddress")
-		}
+	}
+	if popErr := writeBuffer.PopContext("sourceAddress", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for sourceAddress")
 	}
 	// Virtual field
 	if _sourceLengthAddonErr := writeBuffer.WriteVirtual("sourceLengthAddon", m.GetSourceLengthAddon()); _sourceLengthAddonErr != nil {
@@ -637,6 +644,10 @@ func (m *_NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for NPDU")
 	}
 	return nil
+}
+
+func (m *_NPDU) isNPDU() bool {
+	return true
 }
 
 func (m *_NPDU) String() string {

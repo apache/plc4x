@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastCredentialRemoved is the corresponding interface of BACnetConstructedDataLastCredentialRemoved
 type BACnetConstructedDataLastCredentialRemoved interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastCredentialRemoved returns LastCredentialRemoved (property field)
 	GetLastCredentialRemoved() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastCredentialRemovedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastCredentialRemoved.
+// This is useful for switch cases.
+type BACnetConstructedDataLastCredentialRemovedExactly interface {
+	BACnetConstructedDataLastCredentialRemoved
+	isBACnetConstructedDataLastCredentialRemoved() bool
 }
 
 // _BACnetConstructedDataLastCredentialRemoved is the data-structure of this message
 type _BACnetConstructedDataLastCredentialRemoved struct {
 	*_BACnetConstructedData
 	LastCredentialRemoved BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLastCredentialRemovedParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastCredentialRemoved{
-		LastCredentialRemoved:  lastCredentialRemoved,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LastCredentialRemoved: lastCredentialRemoved,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemoved) isBACnetConstructedDataLastCredentialRemoved() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemoved) String() string {

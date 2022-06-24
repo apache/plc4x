@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataShedLevelDescriptions is the corresponding interface of BACnetConstructedDataShedLevelDescriptions
 type BACnetConstructedDataShedLevelDescriptions interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataShedLevelDescriptions interface {
 	GetShedLevelDescriptions() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataShedLevelDescriptionsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataShedLevelDescriptions.
+// This is useful for switch cases.
+type BACnetConstructedDataShedLevelDescriptionsExactly interface {
+	BACnetConstructedDataShedLevelDescriptions
+	isBACnetConstructedDataShedLevelDescriptions() bool
 }
 
 // _BACnetConstructedDataShedLevelDescriptions is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataShedLevelDescriptions struct {
 	*_BACnetConstructedData
 	NumberOfDataElements  BACnetApplicationTagUnsignedInteger
 	ShedLevelDescriptions []BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataShedLevelDescriptionsParse(readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for shedLevelDescriptions")
 	}
 	// Terminated array
-	shedLevelDescriptions := make([]BACnetApplicationTagCharacterString, 0)
+	var shedLevelDescriptions []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataShedLevelDescriptionsParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataShedLevelDescriptions{
-		NumberOfDataElements:   numberOfDataElements,
-		ShedLevelDescriptions:  shedLevelDescriptions,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements:  numberOfDataElements,
+		ShedLevelDescriptions: shedLevelDescriptions,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataShedLevelDescriptions) Serialize(writeBuffer util
 		}
 
 		// Array Field (shedLevelDescriptions)
-		if m.GetShedLevelDescriptions() != nil {
-			if pushErr := writeBuffer.PushContext("shedLevelDescriptions", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for shedLevelDescriptions")
+		if pushErr := writeBuffer.PushContext("shedLevelDescriptions", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for shedLevelDescriptions")
+		}
+		for _, _element := range m.GetShedLevelDescriptions() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'shedLevelDescriptions' field")
 			}
-			for _, _element := range m.GetShedLevelDescriptions() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'shedLevelDescriptions' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("shedLevelDescriptions", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for shedLevelDescriptions")
-			}
+		}
+		if popErr := writeBuffer.PopContext("shedLevelDescriptions", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for shedLevelDescriptions")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataShedLevelDescriptions"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataShedLevelDescriptions) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataShedLevelDescriptions) isBACnetConstructedDataShedLevelDescriptions() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataShedLevelDescriptions) String() string {

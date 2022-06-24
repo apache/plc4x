@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataMultiStateValueAlarmValues is the corresponding interface of BACnetConstructedDataMultiStateValueAlarmValues
 type BACnetConstructedDataMultiStateValueAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMultiStateValueAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMultiStateValueAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataMultiStateValueAlarmValuesExactly interface {
+	BACnetConstructedDataMultiStateValueAlarmValues
+	isBACnetConstructedDataMultiStateValueAlarmValues() bool
 }
 
 // _BACnetConstructedDataMultiStateValueAlarmValues is the data-structure of this message
 type _BACnetConstructedDataMultiStateValueAlarmValues struct {
 	*_BACnetConstructedData
 	AlarmValues []BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataMultiStateValueAlarmValuesParse(readBuffer utils.ReadB
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
 	// Terminated array
-	alarmValues := make([]BACnetApplicationTagUnsignedInteger, 0)
+	var alarmValues []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataMultiStateValueAlarmValuesParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMultiStateValueAlarmValues{
-		AlarmValues:            alarmValues,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AlarmValues: alarmValues,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataMultiStateValueAlarmValues) Serialize(writeBuffer
 		}
 
 		// Array Field (alarmValues)
-		if m.GetAlarmValues() != nil {
-			if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alarmValues")
+		if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for alarmValues")
+		}
+		for _, _element := range m.GetAlarmValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
 			}
-			for _, _element := range m.GetAlarmValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alarmValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for alarmValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMultiStateValueAlarmValues"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataMultiStateValueAlarmValues) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValues) isBACnetConstructedDataMultiStateValueAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMultiStateValueAlarmValues) String() string {

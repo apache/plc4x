@@ -28,24 +28,24 @@ import (
 
 // BACnetEventLogRecordLogDatumLogStatus is the corresponding interface of BACnetEventLogRecordLogDatumLogStatus
 type BACnetEventLogRecordLogDatumLogStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventLogRecordLogDatum
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventLogRecordLogDatumLogStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecordLogDatumLogStatus.
+// This is useful for switch cases.
+type BACnetEventLogRecordLogDatumLogStatusExactly interface {
+	BACnetEventLogRecordLogDatumLogStatus
+	isBACnetEventLogRecordLogDatumLogStatus() bool
 }
 
 // _BACnetEventLogRecordLogDatumLogStatus is the data-structure of this message
 type _BACnetEventLogRecordLogDatumLogStatus struct {
 	*_BACnetEventLogRecordLogDatum
 	LogStatus BACnetLogStatusTagged
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetEventLogRecordLogDatumLogStatusParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventLogRecordLogDatumLogStatus{
-		LogStatus:                     logStatus,
-		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{},
+		LogStatus: logStatus,
+		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventLogRecordLogDatumLogStatus) isBACnetEventLogRecordLogDatumLogStatus() bool {
+	return true
 }
 
 func (m *_BACnetEventLogRecordLogDatumLogStatus) String() string {

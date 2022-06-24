@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataVTClassesSupported is the corresponding interface of BACnetConstructedDataVTClassesSupported
 type BACnetConstructedDataVTClassesSupported interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetVtClassesSupported returns VtClassesSupported (property field)
 	GetVtClassesSupported() []BACnetVTClassTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataVTClassesSupportedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVTClassesSupported.
+// This is useful for switch cases.
+type BACnetConstructedDataVTClassesSupportedExactly interface {
+	BACnetConstructedDataVTClassesSupported
+	isBACnetConstructedDataVTClassesSupported() bool
 }
 
 // _BACnetConstructedDataVTClassesSupported is the data-structure of this message
 type _BACnetConstructedDataVTClassesSupported struct {
 	*_BACnetConstructedData
 	VtClassesSupported []BACnetVTClassTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, t
 		return nil, errors.Wrap(pullErr, "Error pulling for vtClassesSupported")
 	}
 	// Terminated array
-	vtClassesSupported := make([]BACnetVTClassTagged, 0)
+	var vtClassesSupported []BACnetVTClassTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVTClassTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -172,8 +171,11 @@ func BACnetConstructedDataVTClassesSupportedParse(readBuffer utils.ReadBuffer, t
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataVTClassesSupported{
-		VtClassesSupported:     vtClassesSupported,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		VtClassesSupported: vtClassesSupported,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataVTClassesSupported) Serialize(writeBuffer utils.W
 		}
 
 		// Array Field (vtClassesSupported)
-		if m.GetVtClassesSupported() != nil {
-			if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
+		if pushErr := writeBuffer.PushContext("vtClassesSupported", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for vtClassesSupported")
+		}
+		for _, _element := range m.GetVtClassesSupported() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'vtClassesSupported' field")
 			}
-			for _, _element := range m.GetVtClassesSupported() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'vtClassesSupported' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for vtClassesSupported")
-			}
+		}
+		if popErr := writeBuffer.PopContext("vtClassesSupported", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for vtClassesSupported")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVTClassesSupported"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataVTClassesSupported) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataVTClassesSupported) isBACnetConstructedDataVTClassesSupported() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataVTClassesSupported) String() string {

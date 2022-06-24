@@ -21,8 +21,10 @@ package bacnetip
 
 import (
 	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
+	"github.com/apache/plc4x/plc4go/internal/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
@@ -56,6 +58,10 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
 	options["defaultUdpPort"] = []string{"47808"}
+	// Set so_reuse by default
+	if _, ok := options["so-reuse"]; !ok {
+		options["so-reuse"] = []string{"true"}
+	}
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
@@ -74,4 +80,12 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	connection := NewConnection(codec, m.GetPlcFieldHandler(), options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
+}
+
+func (m *Driver) SupportsDiscovery() bool {
+	return true
+}
+
+func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+	return NewDiscoverer().Discover(callback, discoveryOptions...)
 }

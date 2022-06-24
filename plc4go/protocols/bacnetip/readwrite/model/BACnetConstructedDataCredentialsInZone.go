@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataCredentialsInZone is the corresponding interface of BACnetConstructedDataCredentialsInZone
 type BACnetConstructedDataCredentialsInZone interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCredentialsInZone returns CredentialsInZone (property field)
 	GetCredentialsInZone() []BACnetDeviceObjectReference
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCredentialsInZoneExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCredentialsInZone.
+// This is useful for switch cases.
+type BACnetConstructedDataCredentialsInZoneExactly interface {
+	BACnetConstructedDataCredentialsInZone
+	isBACnetConstructedDataCredentialsInZone() bool
 }
 
 // _BACnetConstructedDataCredentialsInZone is the data-structure of this message
 type _BACnetConstructedDataCredentialsInZone struct {
 	*_BACnetConstructedData
 	CredentialsInZone []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for credentialsInZone")
 	}
 	// Terminated array
-	credentialsInZone := make([]BACnetDeviceObjectReference, 0)
+	var credentialsInZone []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -172,8 +171,11 @@ func BACnetConstructedDataCredentialsInZoneParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCredentialsInZone{
-		CredentialsInZone:      credentialsInZone,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CredentialsInZone: credentialsInZone,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataCredentialsInZone) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (credentialsInZone)
-		if m.GetCredentialsInZone() != nil {
-			if pushErr := writeBuffer.PushContext("credentialsInZone", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for credentialsInZone")
+		if pushErr := writeBuffer.PushContext("credentialsInZone", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for credentialsInZone")
+		}
+		for _, _element := range m.GetCredentialsInZone() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'credentialsInZone' field")
 			}
-			for _, _element := range m.GetCredentialsInZone() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'credentialsInZone' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("credentialsInZone", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for credentialsInZone")
-			}
+		}
+		if popErr := writeBuffer.PopContext("credentialsInZone", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for credentialsInZone")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentialsInZone"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataCredentialsInZone) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCredentialsInZone) isBACnetConstructedDataCredentialsInZone() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCredentialsInZone) String() string {

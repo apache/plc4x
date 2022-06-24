@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesBinaryLightningValue is the corresponding interface of BACnetPropertyStatesBinaryLightningValue
 type BACnetPropertyStatesBinaryLightningValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetBinaryLightningValue returns BinaryLightningValue (property field)
 	GetBinaryLightningValue() BACnetBinaryLightingPVTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesBinaryLightningValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBinaryLightningValue.
+// This is useful for switch cases.
+type BACnetPropertyStatesBinaryLightningValueExactly interface {
+	BACnetPropertyStatesBinaryLightningValue
+	isBACnetPropertyStatesBinaryLightningValue() bool
 }
 
 // _BACnetPropertyStatesBinaryLightningValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesBinaryLightningValue) isBACnetPropertyStatesBinaryLightningValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) String() string {

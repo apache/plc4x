@@ -28,6 +28,8 @@ import (
 
 // ApduDataExtPropertyValueRead is the corresponding interface of ApduDataExtPropertyValueRead
 type ApduDataExtPropertyValueRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -37,12 +39,13 @@ type ApduDataExtPropertyValueRead interface {
 	GetCount() uint8
 	// GetIndex returns Index (property field)
 	GetIndex() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtPropertyValueReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtPropertyValueRead.
+// This is useful for switch cases.
+type ApduDataExtPropertyValueReadExactly interface {
+	ApduDataExtPropertyValueRead
+	isApduDataExtPropertyValueRead() bool
 }
 
 // _ApduDataExtPropertyValueRead is the data-structure of this message
@@ -52,9 +55,6 @@ type _ApduDataExtPropertyValueRead struct {
 	PropertyId  uint8
 	Count       uint8
 	Index       uint16
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -200,11 +200,13 @@ func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtPropertyValueRead{
-		ObjectIndex:  objectIndex,
-		PropertyId:   propertyId,
-		Count:        count,
-		Index:        index,
-		_ApduDataExt: &_ApduDataExt{},
+		ObjectIndex: objectIndex,
+		PropertyId:  propertyId,
+		Count:       count,
+		Index:       index,
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -252,6 +254,10 @@ func (m *_ApduDataExtPropertyValueRead) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtPropertyValueRead) isApduDataExtPropertyValueRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtPropertyValueRead) String() string {

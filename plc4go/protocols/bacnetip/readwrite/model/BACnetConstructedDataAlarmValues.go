@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataAlarmValues is the corresponding interface of BACnetConstructedDataAlarmValues
 type BACnetConstructedDataAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataAlarmValues interface {
 	GetAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataAlarmValuesExactly interface {
+	BACnetConstructedDataAlarmValues
+	isBACnetConstructedDataAlarmValues() bool
 }
 
 // _BACnetConstructedDataAlarmValues is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataAlarmValues struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	AlarmValues          []BACnetLifeSafetyStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
 	}
 	// Terminated array
-	alarmValues := make([]BACnetLifeSafetyStateTagged, 0)
+	var alarmValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -233,9 +232,12 @@ func BACnetConstructedDataAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAlarmValues{
-		NumberOfDataElements:   numberOfDataElements,
-		AlarmValues:            alarmValues,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		AlarmValues:          alarmValues,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataAlarmValues) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (alarmValues)
-		if m.GetAlarmValues() != nil {
-			if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alarmValues")
+		if pushErr := writeBuffer.PushContext("alarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for alarmValues")
+		}
+		for _, _element := range m.GetAlarmValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
 			}
-			for _, _element := range m.GetAlarmValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'alarmValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alarmValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("alarmValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for alarmValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAlarmValues"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataAlarmValues) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAlarmValues) isBACnetConstructedDataAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAlarmValues) String() string {

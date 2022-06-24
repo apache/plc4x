@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterChangeOfBitstring is the corresponding interface of BACnetEventParameterChangeOfBitstring
 type BACnetEventParameterChangeOfBitstring interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetEventParameterChangeOfBitstring interface {
 	GetListOfBitstringValues() BACnetEventParameterChangeOfBitstringListOfBitstringValues
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfBitstringExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfBitstring.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfBitstringExactly interface {
+	BACnetEventParameterChangeOfBitstring
+	isBACnetEventParameterChangeOfBitstring() bool
 }
 
 // _BACnetEventParameterChangeOfBitstring is the data-structure of this message
@@ -328,6 +331,10 @@ func (m *_BACnetEventParameterChangeOfBitstring) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfBitstring) isBACnetEventParameterChangeOfBitstring() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfBitstring) String() string {

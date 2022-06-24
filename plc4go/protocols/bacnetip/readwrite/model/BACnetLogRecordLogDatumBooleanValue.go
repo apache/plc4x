@@ -28,24 +28,24 @@ import (
 
 // BACnetLogRecordLogDatumBooleanValue is the corresponding interface of BACnetLogRecordLogDatumBooleanValue
 type BACnetLogRecordLogDatumBooleanValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogRecordLogDatum
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogRecordLogDatumBooleanValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatumBooleanValue.
+// This is useful for switch cases.
+type BACnetLogRecordLogDatumBooleanValueExactly interface {
+	BACnetLogRecordLogDatumBooleanValue
+	isBACnetLogRecordLogDatumBooleanValue() bool
 }
 
 // _BACnetLogRecordLogDatumBooleanValue is the data-structure of this message
 type _BACnetLogRecordLogDatumBooleanValue struct {
 	*_BACnetLogRecordLogDatum
 	BooleanValue BACnetContextTagBoolean
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetLogRecordLogDatumBooleanValueParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetLogRecordLogDatumBooleanValue{
-		BooleanValue:             booleanValue,
-		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{},
+		BooleanValue: booleanValue,
+		_BACnetLogRecordLogDatum: &_BACnetLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetLogRecordLogDatum._BACnetLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogRecordLogDatumBooleanValue) isBACnetLogRecordLogDatumBooleanValue() bool {
+	return true
 }
 
 func (m *_BACnetLogRecordLogDatumBooleanValue) String() string {

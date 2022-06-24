@@ -28,6 +28,8 @@ import (
 
 // BACnetDestination is the corresponding interface of BACnetDestination
 type BACnetDestination interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetValidDays returns ValidDays (property field)
 	GetValidDays() BACnetDaysOfWeekTagged
 	// GetFromTime returns FromTime (property field)
@@ -42,12 +44,13 @@ type BACnetDestination interface {
 	GetIssueConfirmedNotifications() BACnetApplicationTagBoolean
 	// GetTransitions returns Transitions (property field)
 	GetTransitions() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetDestinationExactly can be used when we want exactly this type and not a type which fulfills BACnetDestination.
+// This is useful for switch cases.
+type BACnetDestinationExactly interface {
+	BACnetDestination
+	isBACnetDestination() bool
 }
 
 // _BACnetDestination is the data-structure of this message
@@ -357,6 +360,10 @@ func (m *_BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetDestination")
 	}
 	return nil
+}
+
+func (m *_BACnetDestination) isBACnetDestination() bool {
+	return true
 }
 
 func (m *_BACnetDestination) String() string {

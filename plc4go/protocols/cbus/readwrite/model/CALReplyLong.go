@@ -30,6 +30,8 @@ import (
 
 // CALReplyLong is the corresponding interface of CALReplyLong
 type CALReplyLong interface {
+	utils.LengthAware
+	utils.Serializable
 	CALReply
 	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
@@ -45,12 +47,13 @@ type CALReplyLong interface {
 	GetReplyNetwork() ReplyNetwork
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CALReplyLongExactly can be used when we want exactly this type and not a type which fulfills CALReplyLong.
+// This is useful for switch cases.
+type CALReplyLongExactly interface {
+	CALReplyLong
+	isCALReplyLong() bool
 }
 
 // _CALReplyLong is the data-structure of this message
@@ -455,6 +458,10 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CALReplyLong) isCALReplyLong() bool {
+	return true
 }
 
 func (m *_CALReplyLong) String() string {

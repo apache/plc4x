@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataEventMessageTextsConfig is the corresponding interface of BACnetConstructedDataEventMessageTextsConfig
 type BACnetConstructedDataEventMessageTextsConfig interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -43,12 +45,13 @@ type BACnetConstructedDataEventMessageTextsConfig interface {
 	GetToFaultTextConfig() BACnetOptionalCharacterString
 	// GetToNormalTextConfig returns ToNormalTextConfig (virtual field)
 	GetToNormalTextConfig() BACnetOptionalCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEventMessageTextsConfigExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventMessageTextsConfig.
+// This is useful for switch cases.
+type BACnetConstructedDataEventMessageTextsConfigExactly interface {
+	BACnetConstructedDataEventMessageTextsConfig
+	isBACnetConstructedDataEventMessageTextsConfig() bool
 }
 
 // _BACnetConstructedDataEventMessageTextsConfig is the data-structure of this message
@@ -56,10 +59,6 @@ type _BACnetConstructedDataEventMessageTextsConfig struct {
 	*_BACnetConstructedData
 	NumberOfDataElements    BACnetApplicationTagUnsignedInteger
 	EventMessageTextsConfig []BACnetOptionalCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -242,7 +241,7 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for eventMessageTextsConfig")
 	}
 	// Terminated array
-	eventMessageTextsConfig := make([]BACnetOptionalCharacterString, 0)
+	var eventMessageTextsConfig []BACnetOptionalCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetOptionalCharacterStringParse(readBuffer)
@@ -285,7 +284,10 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 	_child := &_BACnetConstructedDataEventMessageTextsConfig{
 		NumberOfDataElements:    numberOfDataElements,
 		EventMessageTextsConfig: eventMessageTextsConfig,
-		_BACnetConstructedData:  &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -320,19 +322,17 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) Serialize(writeBuffer ut
 		}
 
 		// Array Field (eventMessageTextsConfig)
-		if m.GetEventMessageTextsConfig() != nil {
-			if pushErr := writeBuffer.PushContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventMessageTextsConfig")
+		if pushErr := writeBuffer.PushContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for eventMessageTextsConfig")
+		}
+		for _, _element := range m.GetEventMessageTextsConfig() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'eventMessageTextsConfig' field")
 			}
-			for _, _element := range m.GetEventMessageTextsConfig() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'eventMessageTextsConfig' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventMessageTextsConfig")
-			}
+		}
+		if popErr := writeBuffer.PopContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for eventMessageTextsConfig")
 		}
 		// Virtual field
 		if _toOffnormalTextConfigErr := writeBuffer.WriteVirtual("toOffnormalTextConfig", m.GetToOffnormalTextConfig()); _toOffnormalTextConfigErr != nil {
@@ -353,6 +353,10 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventMessageTextsConfig) isBACnetConstructedDataEventMessageTextsConfig() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventMessageTextsConfig) String() string {

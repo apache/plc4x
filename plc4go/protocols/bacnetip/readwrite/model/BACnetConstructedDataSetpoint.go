@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataSetpoint is the corresponding interface of BACnetConstructedDataSetpoint
 type BACnetConstructedDataSetpoint interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetSetpoint returns Setpoint (property field)
 	GetSetpoint() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataSetpointExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataSetpoint.
+// This is useful for switch cases.
+type BACnetConstructedDataSetpointExactly interface {
+	BACnetConstructedDataSetpoint
+	isBACnetConstructedDataSetpoint() bool
 }
 
 // _BACnetConstructedDataSetpoint is the data-structure of this message
 type _BACnetConstructedDataSetpoint struct {
 	*_BACnetConstructedData
 	Setpoint BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataSetpoint{
-		Setpoint:               setpoint,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Setpoint: setpoint,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataSetpoint) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataSetpoint) isBACnetConstructedDataSetpoint() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataSetpoint) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLocalForwardingOnly is the corresponding interface of BACnetConstructedDataLocalForwardingOnly
 type BACnetConstructedDataLocalForwardingOnly interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLocalForwardingOnly returns LocalForwardingOnly (property field)
 	GetLocalForwardingOnly() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLocalForwardingOnlyExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLocalForwardingOnly.
+// This is useful for switch cases.
+type BACnetConstructedDataLocalForwardingOnlyExactly interface {
+	BACnetConstructedDataLocalForwardingOnly
+	isBACnetConstructedDataLocalForwardingOnly() bool
 }
 
 // _BACnetConstructedDataLocalForwardingOnly is the data-structure of this message
 type _BACnetConstructedDataLocalForwardingOnly struct {
 	*_BACnetConstructedData
 	LocalForwardingOnly BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLocalForwardingOnlyParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLocalForwardingOnly{
-		LocalForwardingOnly:    localForwardingOnly,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LocalForwardingOnly: localForwardingOnly,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLocalForwardingOnly) isBACnetConstructedDataLocalForwardingOnly() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLocalForwardingOnly) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataGroupMode is the corresponding interface of BACnetConstructedDataGroupMode
 type BACnetConstructedDataGroupMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetGroupMode returns GroupMode (property field)
 	GetGroupMode() BACnetLiftGroupModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftGroupModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataGroupModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGroupMode.
+// This is useful for switch cases.
+type BACnetConstructedDataGroupModeExactly interface {
+	BACnetConstructedDataGroupMode
+	isBACnetConstructedDataGroupMode() bool
 }
 
 // _BACnetConstructedDataGroupMode is the data-structure of this message
 type _BACnetConstructedDataGroupMode struct {
 	*_BACnetConstructedData
 	GroupMode BACnetLiftGroupModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataGroupMode{
-		GroupMode:              groupMode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		GroupMode: groupMode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataGroupMode) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGroupMode) isBACnetConstructedDataGroupMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGroupMode) String() string {

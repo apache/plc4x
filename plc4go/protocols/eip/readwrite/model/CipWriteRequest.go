@@ -28,6 +28,8 @@ import (
 
 // CipWriteRequest is the corresponding interface of CipWriteRequest
 type CipWriteRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	CipService
 	// GetRequestPathSize returns RequestPathSize (property field)
 	GetRequestPathSize() int8
@@ -39,12 +41,13 @@ type CipWriteRequest interface {
 	GetElementNb() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CipWriteRequestExactly can be used when we want exactly this type and not a type which fulfills CipWriteRequest.
+// This is useful for switch cases.
+type CipWriteRequestExactly interface {
+	CipWriteRequest
+	isCipWriteRequest() bool
 }
 
 // _CipWriteRequest is the data-structure of this message
@@ -55,9 +58,6 @@ type _CipWriteRequest struct {
 	DataType        CIPDataTypeCode
 	ElementNb       uint16
 	Data            []byte
-
-	// Arguments.
-	ServiceLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -231,7 +231,9 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWr
 		DataType:        dataType,
 		ElementNb:       elementNb,
 		Data:            data,
-		_CipService:     &_CipService{},
+		_CipService: &_CipService{
+			ServiceLen: serviceLen,
+		},
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -253,12 +255,9 @@ func (m *_CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (tag)
-		if m.GetTag() != nil {
-			// Byte Array field (tag)
-			_writeArrayErr := writeBuffer.WriteByteArray("tag", m.GetTag())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'tag' field")
-			}
+		// Byte Array field (tag)
+		if err := writeBuffer.WriteByteArray("tag", m.GetTag()); err != nil {
+			return errors.Wrap(err, "Error serializing 'tag' field")
 		}
 
 		// Simple Field (dataType)
@@ -281,12 +280,9 @@ func (m *_CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipWriteRequest"); popErr != nil {
@@ -295,6 +291,10 @@ func (m *_CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CipWriteRequest) isCipWriteRequest() bool {
+	return true
 }
 
 func (m *_CipWriteRequest) String() string {

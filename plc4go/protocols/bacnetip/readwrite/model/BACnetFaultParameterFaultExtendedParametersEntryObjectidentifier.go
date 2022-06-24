@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
+	isBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Seri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) isBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) String() string {

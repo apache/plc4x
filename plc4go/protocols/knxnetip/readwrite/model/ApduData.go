@@ -28,14 +28,17 @@ import (
 
 // ApduData is the corresponding interface of ApduData
 type ApduData interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetApciType returns ApciType (discriminator field)
 	GetApciType() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExactly can be used when we want exactly this type and not a type which fulfills ApduData.
+// This is useful for switch cases.
+type ApduDataExactly interface {
+	ApduData
+	isApduData() bool
 }
 
 // _ApduData is the data-structure of this message
@@ -47,10 +50,10 @@ type _ApduData struct {
 }
 
 type _ApduDataChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetApciType() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type ApduDataParent interface {
@@ -59,7 +62,7 @@ type ApduDataParent interface {
 }
 
 type ApduDataChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent ApduData)
 	GetParent() *ApduData
 
@@ -201,6 +204,10 @@ func (pm *_ApduData) SerializeParent(writeBuffer utils.WriteBuffer, child ApduDa
 		return errors.Wrap(popErr, "Error popping for ApduData")
 	}
 	return nil
+}
+
+func (m *_ApduData) isApduData() bool {
+	return true
 }
 
 func (m *_ApduData) String() string {

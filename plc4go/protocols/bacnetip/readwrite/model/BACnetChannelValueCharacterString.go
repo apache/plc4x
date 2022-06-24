@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueCharacterString is the corresponding interface of BACnetChannelValueCharacterString
 type BACnetChannelValueCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueCharacterString.
+// This is useful for switch cases.
+type BACnetChannelValueCharacterStringExactly interface {
+	BACnetChannelValueCharacterString
+	isBACnetChannelValueCharacterString() bool
 }
 
 // _BACnetChannelValueCharacterString is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueCharacterString) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueCharacterString) isBACnetChannelValueCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueCharacterString) String() string {

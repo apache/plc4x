@@ -28,18 +28,21 @@ import (
 
 // BACnetAuthenticationPolicy is the corresponding interface of BACnetAuthenticationPolicy
 type BACnetAuthenticationPolicy interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPolicy returns Policy (property field)
 	GetPolicy() BACnetAuthenticationPolicyList
 	// GetOrderEnforced returns OrderEnforced (property field)
 	GetOrderEnforced() BACnetContextTagBoolean
 	// GetTimeout returns Timeout (property field)
 	GetTimeout() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthenticationPolicyExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthenticationPolicy.
+// This is useful for switch cases.
+type BACnetAuthenticationPolicyExactly interface {
+	BACnetAuthenticationPolicy
+	isBACnetAuthenticationPolicy() bool
 }
 
 // _BACnetAuthenticationPolicy is the data-structure of this message
@@ -217,6 +220,10 @@ func (m *_BACnetAuthenticationPolicy) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetAuthenticationPolicy")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthenticationPolicy) isBACnetAuthenticationPolicy() bool {
+	return true
 }
 
 func (m *_BACnetAuthenticationPolicy) String() string {

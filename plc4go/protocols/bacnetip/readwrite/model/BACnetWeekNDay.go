@@ -28,12 +28,15 @@ import (
 
 // BACnetWeekNDay is the corresponding interface of BACnetWeekNDay
 type BACnetWeekNDay interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.LengthAware
+	utils.Serializable
+}
+
+// BACnetWeekNDayExactly can be used when we want exactly this type and not a type which fulfills BACnetWeekNDay.
+// This is useful for switch cases.
+type BACnetWeekNDayExactly interface {
+	BACnetWeekNDay
+	isBACnetWeekNDay() bool
 }
 
 // _BACnetWeekNDay is the data-structure of this message
@@ -107,6 +110,10 @@ func (m *_BACnetWeekNDay) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetWeekNDay")
 	}
 	return nil
+}
+
+func (m *_BACnetWeekNDay) isBACnetWeekNDay() bool {
+	return true
 }
 
 func (m *_BACnetWeekNDay) String() string {

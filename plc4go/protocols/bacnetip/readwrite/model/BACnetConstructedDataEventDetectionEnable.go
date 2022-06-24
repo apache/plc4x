@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEventDetectionEnable is the corresponding interface of BACnetConstructedDataEventDetectionEnable
 type BACnetConstructedDataEventDetectionEnable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEventDetectionEnable returns EventDetectionEnable (property field)
 	GetEventDetectionEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEventDetectionEnableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEventDetectionEnable.
+// This is useful for switch cases.
+type BACnetConstructedDataEventDetectionEnableExactly interface {
+	BACnetConstructedDataEventDetectionEnable
+	isBACnetConstructedDataEventDetectionEnable() bool
 }
 
 // _BACnetConstructedDataEventDetectionEnable is the data-structure of this message
 type _BACnetConstructedDataEventDetectionEnable struct {
 	*_BACnetConstructedData
 	EventDetectionEnable BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEventDetectionEnable{
-		EventDetectionEnable:   eventDetectionEnable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EventDetectionEnable: eventDetectionEnable,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEventDetectionEnable) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEventDetectionEnable) isBACnetConstructedDataEventDetectionEnable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEventDetectionEnable) String() string {

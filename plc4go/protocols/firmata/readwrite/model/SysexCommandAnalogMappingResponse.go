@@ -28,13 +28,16 @@ import (
 
 // SysexCommandAnalogMappingResponse is the corresponding interface of SysexCommandAnalogMappingResponse
 type SysexCommandAnalogMappingResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandAnalogMappingResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandAnalogMappingResponse.
+// This is useful for switch cases.
+type SysexCommandAnalogMappingResponseExactly interface {
+	SysexCommandAnalogMappingResponse
+	isSysexCommandAnalogMappingResponse() bool
 }
 
 // _SysexCommandAnalogMappingResponse is the data-structure of this message
@@ -139,6 +142,10 @@ func (m *_SysexCommandAnalogMappingResponse) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandAnalogMappingResponse) isSysexCommandAnalogMappingResponse() bool {
+	return true
 }
 
 func (m *_SysexCommandAnalogMappingResponse) String() string {

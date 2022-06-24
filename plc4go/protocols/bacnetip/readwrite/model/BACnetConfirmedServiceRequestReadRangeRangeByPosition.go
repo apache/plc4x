@@ -28,17 +28,20 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRangeByPosition is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRangeByPosition
 type BACnetConfirmedServiceRequestReadRangeRangeByPosition interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceIndex returns ReferenceIndex (property field)
 	GetReferenceIndex() BACnetApplicationTagUnsignedInteger
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestReadRangeRangeByPositionExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeByPosition.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeByPositionExactly interface {
+	BACnetConfirmedServiceRequestReadRangeRangeByPosition
+	isBACnetConfirmedServiceRequestReadRangeRangeByPosition() bool
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeByPosition is the data-structure of this message
@@ -219,6 +222,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) isBACnetConfirmedServiceRequestReadRangeRangeByPosition() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) String() string {

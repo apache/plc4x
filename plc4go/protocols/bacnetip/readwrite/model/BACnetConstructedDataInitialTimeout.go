@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataInitialTimeout is the corresponding interface of BACnetConstructedDataInitialTimeout
 type BACnetConstructedDataInitialTimeout interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetInitialTimeout returns InitialTimeout (property field)
 	GetInitialTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataInitialTimeoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataInitialTimeout.
+// This is useful for switch cases.
+type BACnetConstructedDataInitialTimeoutExactly interface {
+	BACnetConstructedDataInitialTimeout
+	isBACnetConstructedDataInitialTimeout() bool
 }
 
 // _BACnetConstructedDataInitialTimeout is the data-structure of this message
 type _BACnetConstructedDataInitialTimeout struct {
 	*_BACnetConstructedData
 	InitialTimeout BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataInitialTimeoutParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataInitialTimeout{
-		InitialTimeout:         initialTimeout,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		InitialTimeout: initialTimeout,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataInitialTimeout) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataInitialTimeout) isBACnetConstructedDataInitialTimeout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataInitialTimeout) String() string {

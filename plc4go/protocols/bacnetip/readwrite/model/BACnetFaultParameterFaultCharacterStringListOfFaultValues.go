@@ -28,18 +28,21 @@ import (
 
 // BACnetFaultParameterFaultCharacterStringListOfFaultValues is the corresponding interface of BACnetFaultParameterFaultCharacterStringListOfFaultValues
 type BACnetFaultParameterFaultCharacterStringListOfFaultValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfFaultValues returns ListOfFaultValues (property field)
 	GetListOfFaultValues() []BACnetApplicationTagCharacterString
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultCharacterStringListOfFaultValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultCharacterStringListOfFaultValues.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultCharacterStringListOfFaultValuesExactly interface {
+	BACnetFaultParameterFaultCharacterStringListOfFaultValues
+	isBACnetFaultParameterFaultCharacterStringListOfFaultValues() bool
 }
 
 // _BACnetFaultParameterFaultCharacterStringListOfFaultValues is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetFaultParameterFaultCharacterStringListOfFaultValuesParse(readBuffer u
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfFaultValues")
 	}
 	// Terminated array
-	listOfFaultValues := make([]BACnetApplicationTagCharacterString, 0)
+	var listOfFaultValues []BACnetApplicationTagCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) Serialize(w
 	}
 
 	// Array Field (listOfFaultValues)
-	if m.GetListOfFaultValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfFaultValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfFaultValues")
+	if pushErr := writeBuffer.PushContext("listOfFaultValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfFaultValues")
+	}
+	for _, _element := range m.GetListOfFaultValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfFaultValues' field")
 		}
-		for _, _element := range m.GetListOfFaultValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfFaultValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfFaultValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfFaultValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfFaultValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfFaultValues")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) Serialize(w
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameterFaultCharacterStringListOfFaultValues")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) isBACnetFaultParameterFaultCharacterStringListOfFaultValues() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) String() string {

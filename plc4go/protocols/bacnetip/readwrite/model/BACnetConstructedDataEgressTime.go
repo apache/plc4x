@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataEgressTime is the corresponding interface of BACnetConstructedDataEgressTime
 type BACnetConstructedDataEgressTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetEgressTime returns EgressTime (property field)
 	GetEgressTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataEgressTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataEgressTime.
+// This is useful for switch cases.
+type BACnetConstructedDataEgressTimeExactly interface {
+	BACnetConstructedDataEgressTime
+	isBACnetConstructedDataEgressTime() bool
 }
 
 // _BACnetConstructedDataEgressTime is the data-structure of this message
 type _BACnetConstructedDataEgressTime struct {
 	*_BACnetConstructedData
 	EgressTime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataEgressTimeParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataEgressTime{
-		EgressTime:             egressTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		EgressTime: egressTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataEgressTime) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataEgressTime) isBACnetConstructedDataEgressTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataEgressTime) String() string {

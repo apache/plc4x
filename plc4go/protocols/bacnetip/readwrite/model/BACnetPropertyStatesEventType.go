@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesEventType is the corresponding interface of BACnetPropertyStatesEventType
 type BACnetPropertyStatesEventType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetEventType returns EventType (property field)
 	GetEventType() BACnetEventTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesEventTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEventType.
+// This is useful for switch cases.
+type BACnetPropertyStatesEventTypeExactly interface {
+	BACnetPropertyStatesEventType
+	isBACnetPropertyStatesEventType() bool
 }
 
 // _BACnetPropertyStatesEventType is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesEventType) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesEventType) isBACnetPropertyStatesEventType() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEventType) String() string {

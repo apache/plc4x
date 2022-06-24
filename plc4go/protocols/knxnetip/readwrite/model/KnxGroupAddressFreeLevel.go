@@ -28,15 +28,18 @@ import (
 
 // KnxGroupAddressFreeLevel is the corresponding interface of KnxGroupAddressFreeLevel
 type KnxGroupAddressFreeLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxGroupAddress
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// KnxGroupAddressFreeLevelExactly can be used when we want exactly this type and not a type which fulfills KnxGroupAddressFreeLevel.
+// This is useful for switch cases.
+type KnxGroupAddressFreeLevelExactly interface {
+	KnxGroupAddressFreeLevel
+	isKnxGroupAddressFreeLevel() bool
 }
 
 // _KnxGroupAddressFreeLevel is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) err
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_KnxGroupAddressFreeLevel) isKnxGroupAddressFreeLevel() bool {
+	return true
 }
 
 func (m *_KnxGroupAddressFreeLevel) String() string {

@@ -28,15 +28,18 @@ import (
 
 // S7ParameterWriteVarRequest is the corresponding interface of S7ParameterWriteVarRequest
 type S7ParameterWriteVarRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7ParameterWriteVarRequestExactly can be used when we want exactly this type and not a type which fulfills S7ParameterWriteVarRequest.
+// This is useful for switch cases.
+type S7ParameterWriteVarRequestExactly interface {
+	S7ParameterWriteVarRequest
+	isS7ParameterWriteVarRequest() bool
 }
 
 // _S7ParameterWriteVarRequest is the data-structure of this message
@@ -155,6 +158,10 @@ func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType ui
 	}
 	// Count array
 	items := make([]S7VarRequestParameterItem, numItems)
+	// This happens when the size is set conditional to 0
+	if len(items) == 0 {
+		items = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 			_item, _err := S7VarRequestParameterItemParse(readBuffer)
@@ -197,19 +204,17 @@ func (m *_S7ParameterWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Array Field (items)
-		if m.GetItems() != nil {
-			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for items")
+		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for items")
+		}
+		for _, _element := range m.GetItems() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
-			for _, _element := range m.GetItems() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'items' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for items")
-			}
+		}
+		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for items")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterWriteVarRequest"); popErr != nil {
@@ -218,6 +223,10 @@ func (m *_S7ParameterWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7ParameterWriteVarRequest) isS7ParameterWriteVarRequest() bool {
+	return true
 }
 
 func (m *_S7ParameterWriteVarRequest) String() string {

@@ -28,13 +28,16 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
 type S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	S7PayloadUserDataItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse.
+// This is useful for switch cases.
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseExactly interface {
+	S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+	isS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse() bool
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is the data-structure of this message
@@ -146,6 +149,10 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) isS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse() bool {
+	return true
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) String() string {

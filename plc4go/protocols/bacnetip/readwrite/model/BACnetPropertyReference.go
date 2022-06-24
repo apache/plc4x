@@ -30,16 +30,19 @@ import (
 
 // BACnetPropertyReference is the corresponding interface of BACnetPropertyReference
 type BACnetPropertyReference interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyReferenceExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyReference.
+// This is useful for switch cases.
+type BACnetPropertyReferenceExactly interface {
+	BACnetPropertyReference
+	isBACnetPropertyReference() bool
 }
 
 // _BACnetPropertyReference is the data-structure of this message
@@ -199,6 +202,10 @@ func (m *_BACnetPropertyReference) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyReference")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyReference) isBACnetPropertyReference() bool {
+	return true
 }
 
 func (m *_BACnetPropertyReference) String() string {

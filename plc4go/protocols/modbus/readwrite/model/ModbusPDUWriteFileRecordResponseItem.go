@@ -28,6 +28,8 @@ import (
 
 // ModbusPDUWriteFileRecordResponseItem is the corresponding interface of ModbusPDUWriteFileRecordResponseItem
 type ModbusPDUWriteFileRecordResponseItem interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetFileNumber returns FileNumber (property field)
@@ -36,12 +38,13 @@ type ModbusPDUWriteFileRecordResponseItem interface {
 	GetRecordNumber() uint16
 	// GetRecordData returns RecordData (property field)
 	GetRecordData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUWriteFileRecordResponseItemExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteFileRecordResponseItem.
+// This is useful for switch cases.
+type ModbusPDUWriteFileRecordResponseItemExactly interface {
+	ModbusPDUWriteFileRecordResponseItem
+	isModbusPDUWriteFileRecordResponseItem() bool
 }
 
 // _ModbusPDUWriteFileRecordResponseItem is the data-structure of this message
@@ -216,18 +219,19 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) Serialize(writeBuffer utils.Writ
 	}
 
 	// Array Field (recordData)
-	if m.GetRecordData() != nil {
-		// Byte Array field (recordData)
-		_writeArrayErr := writeBuffer.WriteByteArray("recordData", m.GetRecordData())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'recordData' field")
-		}
+	// Byte Array field (recordData)
+	if err := writeBuffer.WriteByteArray("recordData", m.GetRecordData()); err != nil {
+		return errors.Wrap(err, "Error serializing 'recordData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusPDUWriteFileRecordResponseItem"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ModbusPDUWriteFileRecordResponseItem")
 	}
 	return nil
+}
+
+func (m *_ModbusPDUWriteFileRecordResponseItem) isModbusPDUWriteFileRecordResponseItem() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteFileRecordResponseItem) String() string {

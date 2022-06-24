@@ -28,24 +28,24 @@ import (
 
 // BACnetPriorityValueInteger is the corresponding interface of BACnetPriorityValueInteger
 type BACnetPriorityValueInteger interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPriorityValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPriorityValueIntegerExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValueInteger.
+// This is useful for switch cases.
+type BACnetPriorityValueIntegerExactly interface {
+	BACnetPriorityValueInteger
+	isBACnetPriorityValueInteger() bool
 }
 
 // _BACnetPriorityValueInteger is the data-structure of this message
 type _BACnetPriorityValueInteger struct {
 	*_BACnetPriorityValue
 	IntegerValue BACnetApplicationTagSignedInteger
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetPriorityValueIntegerParse(readBuffer utils.ReadBuffer, objectTypeArgu
 
 	// Create a partially initialized instance
 	_child := &_BACnetPriorityValueInteger{
-		IntegerValue:         integerValue,
-		_BACnetPriorityValue: &_BACnetPriorityValue{},
+		IntegerValue: integerValue,
+		_BACnetPriorityValue: &_BACnetPriorityValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetPriorityValue._BACnetPriorityValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetPriorityValueInteger) Serialize(writeBuffer utils.WriteBuffer) e
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPriorityValueInteger) isBACnetPriorityValueInteger() bool {
+	return true
 }
 
 func (m *_BACnetPriorityValueInteger) String() string {

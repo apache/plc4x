@@ -28,21 +28,21 @@ import (
 
 // ApduDataExtDomainAddressSerialNumberRead is the corresponding interface of ApduDataExtDomainAddressSerialNumberRead
 type ApduDataExtDomainAddressSerialNumberRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtDomainAddressSerialNumberReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtDomainAddressSerialNumberRead.
+// This is useful for switch cases.
+type ApduDataExtDomainAddressSerialNumberReadExactly interface {
+	ApduDataExtDomainAddressSerialNumberRead
+	isApduDataExtDomainAddressSerialNumberRead() bool
 }
 
 // _ApduDataExtDomainAddressSerialNumberRead is the data-structure of this message
 type _ApduDataExtDomainAddressSerialNumberRead struct {
 	*_ApduDataExt
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataExtDomainAddressSerialNumberReadParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtDomainAddressSerialNumberRead{
-		_ApduDataExt: &_ApduDataExt{},
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberRead) isApduDataExtDomainAddressSerialNumberRead() bool {
+	return true
 }
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) String() string {

@@ -28,17 +28,20 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
 type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceSequenceNumber returns ReferenceSequenceNumber (property field)
 	GetReferenceSequenceNumber() BACnetApplicationTagUnsignedInteger
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberExactly interface {
+	BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+	isBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() bool
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the data-structure of this message
@@ -219,6 +222,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) isBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) String() string {

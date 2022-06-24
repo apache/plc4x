@@ -28,17 +28,20 @@ import (
 
 // ModbusPDUWriteMultipleHoldingRegistersResponse is the corresponding interface of ModbusPDUWriteMultipleHoldingRegistersResponse
 type ModbusPDUWriteMultipleHoldingRegistersResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUWriteMultipleHoldingRegistersResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleHoldingRegistersResponse.
+// This is useful for switch cases.
+type ModbusPDUWriteMultipleHoldingRegistersResponseExactly interface {
+	ModbusPDUWriteMultipleHoldingRegistersResponse
+	isModbusPDUWriteMultipleHoldingRegistersResponse() bool
 }
 
 // _ModbusPDUWriteMultipleHoldingRegistersResponse is the data-structure of this message
@@ -205,6 +208,10 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize(writeBuffer 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) isModbusPDUWriteMultipleHoldingRegistersResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) String() string {

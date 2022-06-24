@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterOutOfRange is the corresponding interface of BACnetEventParameterOutOfRange
 type BACnetEventParameterOutOfRange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -41,12 +43,13 @@ type BACnetEventParameterOutOfRange interface {
 	GetDeadband() BACnetContextTagReal
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterOutOfRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterOutOfRange.
+// This is useful for switch cases.
+type BACnetEventParameterOutOfRangeExactly interface {
+	BACnetEventParameterOutOfRange
+	isBACnetEventParameterOutOfRange() bool
 }
 
 // _BACnetEventParameterOutOfRange is the data-structure of this message
@@ -365,6 +368,10 @@ func (m *_BACnetEventParameterOutOfRange) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterOutOfRange) isBACnetEventParameterOutOfRange() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterOutOfRange) String() string {

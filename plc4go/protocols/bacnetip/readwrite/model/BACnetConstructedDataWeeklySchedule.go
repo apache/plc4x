@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataWeeklySchedule is the corresponding interface of BACnetConstructedDataWeeklySchedule
 type BACnetConstructedDataWeeklySchedule interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataWeeklySchedule interface {
 	GetWeeklySchedule() []BACnetDailySchedule
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataWeeklyScheduleExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataWeeklySchedule.
+// This is useful for switch cases.
+type BACnetConstructedDataWeeklyScheduleExactly interface {
+	BACnetConstructedDataWeeklySchedule
+	isBACnetConstructedDataWeeklySchedule() bool
 }
 
 // _BACnetConstructedDataWeeklySchedule is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataWeeklySchedule struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	WeeklySchedule       []BACnetDailySchedule
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataWeeklyScheduleParse(readBuffer utils.ReadBuffer, tagNu
 		return nil, errors.Wrap(pullErr, "Error pulling for weeklySchedule")
 	}
 	// Terminated array
-	weeklySchedule := make([]BACnetDailySchedule, 0)
+	var weeklySchedule []BACnetDailySchedule
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDailyScheduleParse(readBuffer)
@@ -238,9 +237,12 @@ func BACnetConstructedDataWeeklyScheduleParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataWeeklySchedule{
-		NumberOfDataElements:   numberOfDataElements,
-		WeeklySchedule:         weeklySchedule,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		WeeklySchedule:       weeklySchedule,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -275,19 +277,17 @@ func (m *_BACnetConstructedDataWeeklySchedule) Serialize(writeBuffer utils.Write
 		}
 
 		// Array Field (weeklySchedule)
-		if m.GetWeeklySchedule() != nil {
-			if pushErr := writeBuffer.PushContext("weeklySchedule", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for weeklySchedule")
+		if pushErr := writeBuffer.PushContext("weeklySchedule", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for weeklySchedule")
+		}
+		for _, _element := range m.GetWeeklySchedule() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'weeklySchedule' field")
 			}
-			for _, _element := range m.GetWeeklySchedule() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'weeklySchedule' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("weeklySchedule", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for weeklySchedule")
-			}
+		}
+		if popErr := writeBuffer.PopContext("weeklySchedule", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for weeklySchedule")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataWeeklySchedule"); popErr != nil {
@@ -296,6 +296,10 @@ func (m *_BACnetConstructedDataWeeklySchedule) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataWeeklySchedule) isBACnetConstructedDataWeeklySchedule() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataWeeklySchedule) String() string {

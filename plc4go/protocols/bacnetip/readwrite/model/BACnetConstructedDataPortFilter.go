@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataPortFilter is the corresponding interface of BACnetConstructedDataPortFilter
 type BACnetConstructedDataPortFilter interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataPortFilter interface {
 	GetPortFilter() []BACnetPortPermission
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPortFilterExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPortFilter.
+// This is useful for switch cases.
+type BACnetConstructedDataPortFilterExactly interface {
+	BACnetConstructedDataPortFilter
+	isBACnetConstructedDataPortFilter() bool
 }
 
 // _BACnetConstructedDataPortFilter is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataPortFilter struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	PortFilter           []BACnetPortPermission
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataPortFilterParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, errors.Wrap(pullErr, "Error pulling for portFilter")
 	}
 	// Terminated array
-	portFilter := make([]BACnetPortPermission, 0)
+	var portFilter []BACnetPortPermission
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPortPermissionParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataPortFilterParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPortFilter{
-		NumberOfDataElements:   numberOfDataElements,
-		PortFilter:             portFilter,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		PortFilter:           portFilter,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (portFilter)
-		if m.GetPortFilter() != nil {
-			if pushErr := writeBuffer.PushContext("portFilter", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for portFilter")
+		if pushErr := writeBuffer.PushContext("portFilter", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for portFilter")
+		}
+		for _, _element := range m.GetPortFilter() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'portFilter' field")
 			}
-			for _, _element := range m.GetPortFilter() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'portFilter' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("portFilter", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for portFilter")
-			}
+		}
+		if popErr := writeBuffer.PopContext("portFilter", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for portFilter")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPortFilter"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataPortFilter) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPortFilter) isBACnetConstructedDataPortFilter() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPortFilter) String() string {

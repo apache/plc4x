@@ -28,22 +28,21 @@ import (
 
 // BACnetConstructedDataOctetstringValueAll is the corresponding interface of BACnetConstructedDataOctetstringValueAll
 type BACnetConstructedDataOctetstringValueAll interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOctetstringValueAllExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOctetstringValueAll.
+// This is useful for switch cases.
+type BACnetConstructedDataOctetstringValueAllExactly interface {
+	BACnetConstructedDataOctetstringValueAll
+	isBACnetConstructedDataOctetstringValueAll() bool
 }
 
 // _BACnetConstructedDataOctetstringValueAll is the data-structure of this message
 type _BACnetConstructedDataOctetstringValueAll struct {
 	*_BACnetConstructedData
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,7 +131,10 @@ func BACnetConstructedDataOctetstringValueAllParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOctetstringValueAll{
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -152,6 +154,10 @@ func (m *_BACnetConstructedDataOctetstringValueAll) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOctetstringValueAll) isBACnetConstructedDataOctetstringValueAll() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOctetstringValueAll) String() string {

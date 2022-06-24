@@ -30,6 +30,8 @@ import (
 
 // MonitoredSALShortFormBasicMode is the corresponding interface of MonitoredSALShortFormBasicMode
 type MonitoredSALShortFormBasicMode interface {
+	utils.LengthAware
+	utils.Serializable
 	MonitoredSAL
 	// GetCounts returns Counts (property field)
 	GetCounts() byte
@@ -41,12 +43,13 @@ type MonitoredSALShortFormBasicMode interface {
 	GetNoCounts() *byte
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MonitoredSALShortFormBasicModeExactly can be used when we want exactly this type and not a type which fulfills MonitoredSALShortFormBasicMode.
+// This is useful for switch cases.
+type MonitoredSALShortFormBasicModeExactly interface {
+	MonitoredSALShortFormBasicMode
+	isMonitoredSALShortFormBasicMode() bool
 }
 
 // _MonitoredSALShortFormBasicMode is the data-structure of this message
@@ -339,6 +342,10 @@ func (m *_MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MonitoredSALShortFormBasicMode) isMonitoredSALShortFormBasicMode() bool {
+	return true
 }
 
 func (m *_MonitoredSALShortFormBasicMode) String() string {

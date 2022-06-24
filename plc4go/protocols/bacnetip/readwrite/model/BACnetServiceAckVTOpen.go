@@ -28,24 +28,24 @@ import (
 
 // BACnetServiceAckVTOpen is the corresponding interface of BACnetServiceAckVTOpen
 type BACnetServiceAckVTOpen interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetRemoteVtSessionIdentifier returns RemoteVtSessionIdentifier (property field)
 	GetRemoteVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckVTOpenExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckVTOpen.
+// This is useful for switch cases.
+type BACnetServiceAckVTOpenExactly interface {
+	BACnetServiceAckVTOpen
+	isBACnetServiceAckVTOpen() bool
 }
 
 // _BACnetServiceAckVTOpen is the data-structure of this message
 type _BACnetServiceAckVTOpen struct {
 	*_BACnetServiceAck
 	RemoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	// Create a partially initialized instance
 	_child := &_BACnetServiceAckVTOpen{
 		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
-		_BACnetServiceAck:         &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetServiceAckVTOpen) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckVTOpen) isBACnetServiceAckVTOpen() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckVTOpen) String() string {

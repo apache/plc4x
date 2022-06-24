@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCountChangeTime is the corresponding interface of BACnetConstructedDataCountChangeTime
 type BACnetConstructedDataCountChangeTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCountChangeTime returns CountChangeTime (property field)
 	GetCountChangeTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCountChangeTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCountChangeTime.
+// This is useful for switch cases.
+type BACnetConstructedDataCountChangeTimeExactly interface {
+	BACnetConstructedDataCountChangeTime
+	isBACnetConstructedDataCountChangeTime() bool
 }
 
 // _BACnetConstructedDataCountChangeTime is the data-structure of this message
 type _BACnetConstructedDataCountChangeTime struct {
 	*_BACnetConstructedData
 	CountChangeTime BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCountChangeTimeParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCountChangeTime{
-		CountChangeTime:        countChangeTime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CountChangeTime: countChangeTime,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCountChangeTime) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCountChangeTime) isBACnetConstructedDataCountChangeTime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCountChangeTime) String() string {

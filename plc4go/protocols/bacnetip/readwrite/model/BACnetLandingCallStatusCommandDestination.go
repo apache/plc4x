@@ -28,15 +28,18 @@ import (
 
 // BACnetLandingCallStatusCommandDestination is the corresponding interface of BACnetLandingCallStatusCommandDestination
 type BACnetLandingCallStatusCommandDestination interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLandingCallStatusCommand
 	// GetDestination returns Destination (property field)
 	GetDestination() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLandingCallStatusCommandDestinationExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommandDestination.
+// This is useful for switch cases.
+type BACnetLandingCallStatusCommandDestinationExactly interface {
+	BACnetLandingCallStatusCommandDestination
+	isBACnetLandingCallStatusCommandDestination() bool
 }
 
 // _BACnetLandingCallStatusCommandDestination is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetLandingCallStatusCommandDestination) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLandingCallStatusCommandDestination) isBACnetLandingCallStatusCommandDestination() bool {
+	return true
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) String() string {

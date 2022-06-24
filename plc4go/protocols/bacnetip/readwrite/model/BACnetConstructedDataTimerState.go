@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataTimerState is the corresponding interface of BACnetConstructedDataTimerState
 type BACnetConstructedDataTimerState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetTimerState returns TimerState (property field)
 	GetTimerState() BACnetTimerStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimerStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataTimerStateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataTimerState.
+// This is useful for switch cases.
+type BACnetConstructedDataTimerStateExactly interface {
+	BACnetConstructedDataTimerState
+	isBACnetConstructedDataTimerState() bool
 }
 
 // _BACnetConstructedDataTimerState is the data-structure of this message
 type _BACnetConstructedDataTimerState struct {
 	*_BACnetConstructedData
 	TimerState BACnetTimerStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataTimerStateParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataTimerState{
-		TimerState:             timerState,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		TimerState: timerState,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataTimerState) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataTimerState) isBACnetConstructedDataTimerState() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataTimerState) String() string {

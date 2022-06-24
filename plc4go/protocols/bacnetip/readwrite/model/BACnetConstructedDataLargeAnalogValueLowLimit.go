@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueLowLimit is the corresponding interface of BACnetConstructedDataLargeAnalogValueLowLimit
 type BACnetConstructedDataLargeAnalogValueLowLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLowLimit returns LowLimit (property field)
 	GetLowLimit() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLargeAnalogValueLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueLowLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueLowLimitExactly interface {
+	BACnetConstructedDataLargeAnalogValueLowLimit
+	isBACnetConstructedDataLargeAnalogValueLowLimit() bool
 }
 
 // _BACnetConstructedDataLargeAnalogValueLowLimit is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueLowLimit struct {
 	*_BACnetConstructedData
 	LowLimit BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLargeAnalogValueLowLimitParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLargeAnalogValueLowLimit{
-		LowLimit:               lowLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LowLimit: lowLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) isBACnetConstructedDataLargeAnalogValueLowLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) String() string {

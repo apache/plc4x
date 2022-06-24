@@ -28,18 +28,21 @@ import (
 
 // BACnetPropertyValues is the corresponding interface of BACnetPropertyValues
 type BACnetPropertyValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetData returns Data (property field)
 	GetData() []BACnetPropertyValue
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyValues.
+// This is useful for switch cases.
+type BACnetPropertyValuesExactly interface {
+	BACnetPropertyValues
+	isBACnetPropertyValues() bool
 }
 
 // _BACnetPropertyValues is the data-structure of this message
@@ -149,7 +152,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Terminated array
-	data := make([]BACnetPropertyValue, 0)
+	var data []BACnetPropertyValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyValueParse(readBuffer, objectTypeArgument)
@@ -205,19 +208,17 @@ func (m *_BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
+	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for data")
+	}
+	for _, _element := range m.GetData() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}
-		for _, _element := range m.GetData() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
-		}
+	}
+	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for data")
 	}
 
 	// Simple Field (innerClosingTag)
@@ -236,6 +237,10 @@ func (m *_BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyValues")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyValues) isBACnetPropertyValues() bool {
+	return true
 }
 
 func (m *_BACnetPropertyValues) String() string {

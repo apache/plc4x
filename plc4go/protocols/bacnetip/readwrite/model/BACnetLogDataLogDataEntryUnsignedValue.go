@@ -28,15 +28,18 @@ import (
 
 // BACnetLogDataLogDataEntryUnsignedValue is the corresponding interface of BACnetLogDataLogDataEntryUnsignedValue
 type BACnetLogDataLogDataEntryUnsignedValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLogDataLogDataEntry
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLogDataLogDataEntryUnsignedValueExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntryUnsignedValue.
+// This is useful for switch cases.
+type BACnetLogDataLogDataEntryUnsignedValueExactly interface {
+	BACnetLogDataLogDataEntryUnsignedValue
+	isBACnetLogDataLogDataEntryUnsignedValue() bool
 }
 
 // _BACnetLogDataLogDataEntryUnsignedValue is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) isBACnetLogDataLogDataEntryUnsignedValue() bool {
+	return true
 }
 
 func (m *_BACnetLogDataLogDataEntryUnsignedValue) String() string {

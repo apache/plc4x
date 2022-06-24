@@ -29,6 +29,8 @@ import (
 
 // IdentifyReplyCommandExtendedDiagnosticSummary is the corresponding interface of IdentifyReplyCommandExtendedDiagnosticSummary
 type IdentifyReplyCommandExtendedDiagnosticSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetLowApplication returns LowApplication (property field)
 	GetLowApplication() ApplicationIdContainer
@@ -68,12 +70,13 @@ type IdentifyReplyCommandExtendedDiagnosticSummary interface {
 	GetEEWriteError() bool
 	// GetInstallationMMIError returns InstallationMMIError (property field)
 	GetInstallationMMIError() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandExtendedDiagnosticSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandExtendedDiagnosticSummary.
+// This is useful for switch cases.
+type IdentifyReplyCommandExtendedDiagnosticSummaryExactly interface {
+	IdentifyReplyCommandExtendedDiagnosticSummary
+	isIdentifyReplyCommandExtendedDiagnosticSummary() bool
 }
 
 // _IdentifyReplyCommandExtendedDiagnosticSummary is the data-structure of this message
@@ -738,6 +741,10 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) isIdentifyReplyCommandExtendedDiagnosticSummary() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) String() string {

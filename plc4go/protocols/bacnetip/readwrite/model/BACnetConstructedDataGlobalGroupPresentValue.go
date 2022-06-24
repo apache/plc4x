@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataGlobalGroupPresentValue is the corresponding interface of BACnetConstructedDataGlobalGroupPresentValue
 type BACnetConstructedDataGlobalGroupPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataGlobalGroupPresentValue interface {
 	GetPresentValue() []BACnetPropertyAccessResult
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataGlobalGroupPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataGlobalGroupPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataGlobalGroupPresentValueExactly interface {
+	BACnetConstructedDataGlobalGroupPresentValue
+	isBACnetConstructedDataGlobalGroupPresentValue() bool
 }
 
 // _BACnetConstructedDataGlobalGroupPresentValue is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataGlobalGroupPresentValue struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	PresentValue         []BACnetPropertyAccessResult
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
 	// Terminated array
-	presentValue := make([]BACnetPropertyAccessResult, 0)
+	var presentValue []BACnetPropertyAccessResult
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetPropertyAccessResultParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataGlobalGroupPresentValue{
-		NumberOfDataElements:   numberOfDataElements,
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		PresentValue:         presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) Serialize(writeBuffer ut
 		}
 
 		// Array Field (presentValue)
-		if m.GetPresentValue() != nil {
-			if pushErr := writeBuffer.PushContext("presentValue", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for presentValue")
+		if pushErr := writeBuffer.PushContext("presentValue", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for presentValue")
+		}
+		for _, _element := range m.GetPresentValue() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'presentValue' field")
 			}
-			for _, _element := range m.GetPresentValue() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'presentValue' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("presentValue", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for presentValue")
-			}
+		}
+		if popErr := writeBuffer.PopContext("presentValue", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for presentValue")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGlobalGroupPresentValue"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) isBACnetConstructedDataGlobalGroupPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataGlobalGroupPresentValue) String() string {

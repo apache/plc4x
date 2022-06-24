@@ -28,18 +28,21 @@ import (
 
 // BACnetNameValueCollection is the corresponding interface of BACnetNameValueCollection
 type BACnetNameValueCollection interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMembers returns Members (property field)
 	GetMembers() []BACnetNameValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNameValueCollectionExactly can be used when we want exactly this type and not a type which fulfills BACnetNameValueCollection.
+// This is useful for switch cases.
+type BACnetNameValueCollectionExactly interface {
+	BACnetNameValueCollection
+	isBACnetNameValueCollection() bool
 }
 
 // _BACnetNameValueCollection is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 		return nil, errors.Wrap(pullErr, "Error pulling for members")
 	}
 	// Terminated array
-	members := make([]BACnetNameValue, 0)
+	var members []BACnetNameValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNameValueParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Array Field (members)
-	if m.GetMembers() != nil {
-		if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for members")
+	if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for members")
+	}
+	for _, _element := range m.GetMembers() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'members' field")
 		}
-		for _, _element := range m.GetMembers() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'members' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for members")
-		}
+	}
+	if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for members")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetNameValueCollection")
 	}
 	return nil
+}
+
+func (m *_BACnetNameValueCollection) isBACnetNameValueCollection() bool {
+	return true
 }
 
 func (m *_BACnetNameValueCollection) String() string {

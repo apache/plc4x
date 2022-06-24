@@ -29,6 +29,8 @@ import (
 
 // S7AddressAny is the corresponding interface of S7AddressAny
 type S7AddressAny interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Address
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
@@ -42,12 +44,13 @@ type S7AddressAny interface {
 	GetByteAddress() uint16
 	// GetBitAddress returns BitAddress (property field)
 	GetBitAddress() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7AddressAnyExactly can be used when we want exactly this type and not a type which fulfills S7AddressAny.
+// This is useful for switch cases.
+type S7AddressAnyExactly interface {
+	S7AddressAny
+	isS7AddressAny() bool
 }
 
 // _S7AddressAny is the data-structure of this message
@@ -352,6 +355,10 @@ func (m *_S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7AddressAny) isS7AddressAny() bool {
+	return true
 }
 
 func (m *_S7AddressAny) String() string {

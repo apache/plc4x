@@ -28,18 +28,21 @@ import (
 
 // BACnetEventParameterAccessEventListOfAccessEvents is the corresponding interface of BACnetEventParameterAccessEventListOfAccessEvents
 type BACnetEventParameterAccessEventListOfAccessEvents interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfAccessEvents returns ListOfAccessEvents (property field)
 	GetListOfAccessEvents() []BACnetDeviceObjectPropertyReference
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterAccessEventListOfAccessEventsExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterAccessEventListOfAccessEvents.
+// This is useful for switch cases.
+type BACnetEventParameterAccessEventListOfAccessEventsExactly interface {
+	BACnetEventParameterAccessEventListOfAccessEvents
+	isBACnetEventParameterAccessEventListOfAccessEvents() bool
 }
 
 // _BACnetEventParameterAccessEventListOfAccessEvents is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetEventParameterAccessEventListOfAccessEventsParse(readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfAccessEvents")
 	}
 	// Terminated array
-	listOfAccessEvents := make([]BACnetDeviceObjectPropertyReference, 0)
+	var listOfAccessEvents []BACnetDeviceObjectPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) Serialize(writeBuff
 	}
 
 	// Array Field (listOfAccessEvents)
-	if m.GetListOfAccessEvents() != nil {
-		if pushErr := writeBuffer.PushContext("listOfAccessEvents", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfAccessEvents")
+	if pushErr := writeBuffer.PushContext("listOfAccessEvents", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfAccessEvents")
+	}
+	for _, _element := range m.GetListOfAccessEvents() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfAccessEvents' field")
 		}
-		for _, _element := range m.GetListOfAccessEvents() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfAccessEvents' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfAccessEvents", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfAccessEvents")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfAccessEvents", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfAccessEvents")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) Serialize(writeBuff
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterAccessEventListOfAccessEvents")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) isBACnetEventParameterAccessEventListOfAccessEvents() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) String() string {

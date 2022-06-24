@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataAcceptedModes is the corresponding interface of BACnetConstructedDataAcceptedModes
 type BACnetConstructedDataAcceptedModes interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetAcceptedModes returns AcceptedModes (property field)
 	GetAcceptedModes() []BACnetLifeSafetyModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAcceptedModesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAcceptedModes.
+// This is useful for switch cases.
+type BACnetConstructedDataAcceptedModesExactly interface {
+	BACnetConstructedDataAcceptedModes
+	isBACnetConstructedDataAcceptedModes() bool
 }
 
 // _BACnetConstructedDataAcceptedModes is the data-structure of this message
 type _BACnetConstructedDataAcceptedModes struct {
 	*_BACnetConstructedData
 	AcceptedModes []BACnetLifeSafetyModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for acceptedModes")
 	}
 	// Terminated array
-	acceptedModes := make([]BACnetLifeSafetyModeTagged, 0)
+	var acceptedModes []BACnetLifeSafetyModeTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -172,8 +171,11 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAcceptedModes{
-		AcceptedModes:          acceptedModes,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		AcceptedModes: acceptedModes,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataAcceptedModes) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Array Field (acceptedModes)
-		if m.GetAcceptedModes() != nil {
-			if pushErr := writeBuffer.PushContext("acceptedModes", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for acceptedModes")
+		if pushErr := writeBuffer.PushContext("acceptedModes", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for acceptedModes")
+		}
+		for _, _element := range m.GetAcceptedModes() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'acceptedModes' field")
 			}
-			for _, _element := range m.GetAcceptedModes() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'acceptedModes' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("acceptedModes", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for acceptedModes")
-			}
+		}
+		if popErr := writeBuffer.PopContext("acceptedModes", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for acceptedModes")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAcceptedModes"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataAcceptedModes) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAcceptedModes) isBACnetConstructedDataAcceptedModes() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAcceptedModes) String() string {

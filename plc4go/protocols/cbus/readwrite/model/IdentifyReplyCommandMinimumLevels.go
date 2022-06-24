@@ -28,13 +28,16 @@ import (
 
 // IdentifyReplyCommandMinimumLevels is the corresponding interface of IdentifyReplyCommandMinimumLevels
 type IdentifyReplyCommandMinimumLevels interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandMinimumLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandMinimumLevels.
+// This is useful for switch cases.
+type IdentifyReplyCommandMinimumLevelsExactly interface {
+	IdentifyReplyCommandMinimumLevels
+	isIdentifyReplyCommandMinimumLevels() bool
 }
 
 // _IdentifyReplyCommandMinimumLevels is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_IdentifyReplyCommandMinimumLevels) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandMinimumLevels) isIdentifyReplyCommandMinimumLevels() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandMinimumLevels) String() string {

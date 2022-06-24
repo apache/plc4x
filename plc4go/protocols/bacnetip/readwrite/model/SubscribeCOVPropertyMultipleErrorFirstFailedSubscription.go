@@ -28,6 +28,8 @@ import (
 
 // SubscribeCOVPropertyMultipleErrorFirstFailedSubscription is the corresponding interface of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
 type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
@@ -38,12 +40,13 @@ type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription interface {
 	GetErrorType() ErrorEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionExactly can be used when we want exactly this type and not a type which fulfills SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.
+// This is useful for switch cases.
+type SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionExactly interface {
+	SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
+	isSubscribeCOVPropertyMultipleErrorFirstFailedSubscription() bool
 }
 
 // _SubscribeCOVPropertyMultipleErrorFirstFailedSubscription is the data-structure of this message
@@ -290,6 +293,10 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(wr
 		return errors.Wrap(popErr, "Error popping for SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 	return nil
+}
+
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) isSubscribeCOVPropertyMultipleErrorFirstFailedSubscription() bool {
+	return true
 }
 
 func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) String() string {

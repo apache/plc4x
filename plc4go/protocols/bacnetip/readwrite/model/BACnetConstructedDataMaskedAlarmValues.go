@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataMaskedAlarmValues is the corresponding interface of BACnetConstructedDataMaskedAlarmValues
 type BACnetConstructedDataMaskedAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaskedAlarmValues returns MaskedAlarmValues (property field)
 	GetMaskedAlarmValues() []BACnetDoorAlarmStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaskedAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaskedAlarmValues.
+// This is useful for switch cases.
+type BACnetConstructedDataMaskedAlarmValuesExactly interface {
+	BACnetConstructedDataMaskedAlarmValues
+	isBACnetConstructedDataMaskedAlarmValues() bool
 }
 
 // _BACnetConstructedDataMaskedAlarmValues is the data-structure of this message
 type _BACnetConstructedDataMaskedAlarmValues struct {
 	*_BACnetConstructedData
 	MaskedAlarmValues []BACnetDoorAlarmStateTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataMaskedAlarmValuesParse(readBuffer utils.ReadBuffer, ta
 		return nil, errors.Wrap(pullErr, "Error pulling for maskedAlarmValues")
 	}
 	// Terminated array
-	maskedAlarmValues := make([]BACnetDoorAlarmStateTagged, 0)
+	var maskedAlarmValues []BACnetDoorAlarmStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDoorAlarmStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -172,8 +171,11 @@ func BACnetConstructedDataMaskedAlarmValuesParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaskedAlarmValues{
-		MaskedAlarmValues:      maskedAlarmValues,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaskedAlarmValues: maskedAlarmValues,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataMaskedAlarmValues) Serialize(writeBuffer utils.Wr
 		}
 
 		// Array Field (maskedAlarmValues)
-		if m.GetMaskedAlarmValues() != nil {
-			if pushErr := writeBuffer.PushContext("maskedAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for maskedAlarmValues")
+		if pushErr := writeBuffer.PushContext("maskedAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for maskedAlarmValues")
+		}
+		for _, _element := range m.GetMaskedAlarmValues() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'maskedAlarmValues' field")
 			}
-			for _, _element := range m.GetMaskedAlarmValues() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'maskedAlarmValues' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("maskedAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for maskedAlarmValues")
-			}
+		}
+		if popErr := writeBuffer.PopContext("maskedAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for maskedAlarmValues")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaskedAlarmValues"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataMaskedAlarmValues) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaskedAlarmValues) isBACnetConstructedDataMaskedAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaskedAlarmValues) String() string {

@@ -28,6 +28,8 @@ import (
 
 // SysexCommandReportFirmwareResponse is the corresponding interface of SysexCommandReportFirmwareResponse
 type SysexCommandReportFirmwareResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	SysexCommand
 	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
@@ -35,12 +37,13 @@ type SysexCommandReportFirmwareResponse interface {
 	GetMinorVersion() uint8
 	// GetFileName returns FileName (property field)
 	GetFileName() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SysexCommandReportFirmwareResponseExactly can be used when we want exactly this type and not a type which fulfills SysexCommandReportFirmwareResponse.
+// This is useful for switch cases.
+type SysexCommandReportFirmwareResponseExactly interface {
+	SysexCommandReportFirmwareResponse
+	isSysexCommandReportFirmwareResponse() bool
 }
 
 // _SysexCommandReportFirmwareResponse is the data-structure of this message
@@ -174,7 +177,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	}
 	// Manual Array Field (fileName)
 	// Terminated array
-	_fileNameList := make([]byte, 0)
+	var _fileNameList []byte
 	{
 		_values := &_fileNameList
 		_ = _values
@@ -226,16 +229,14 @@ func (m *_SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Manual Array Field (fileName)
-		if m.GetFileName() != nil {
-			if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for fileName")
-			}
-			for _, m := range m.GetFileName() {
-				SerializeSysexString(writeBuffer, m)
-			}
-			if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for fileName")
-			}
+		if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for fileName")
+		}
+		for _, m := range m.GetFileName() {
+			SerializeSysexString(writeBuffer, m)
+		}
+		if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for fileName")
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandReportFirmwareResponse"); popErr != nil {
@@ -244,6 +245,10 @@ func (m *_SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_SysexCommandReportFirmwareResponse) isSysexCommandReportFirmwareResponse() bool {
+	return true
 }
 
 func (m *_SysexCommandReportFirmwareResponse) String() string {

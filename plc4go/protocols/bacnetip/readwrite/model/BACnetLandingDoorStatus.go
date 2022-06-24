@@ -28,14 +28,17 @@ import (
 
 // BACnetLandingDoorStatus is the corresponding interface of BACnetLandingDoorStatus
 type BACnetLandingDoorStatus interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetLandingDoors returns LandingDoors (property field)
 	GetLandingDoors() BACnetLandingDoorStatusLandingDoorsList
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLandingDoorStatusExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingDoorStatus.
+// This is useful for switch cases.
+type BACnetLandingDoorStatusExactly interface {
+	BACnetLandingDoorStatus
+	isBACnetLandingDoorStatus() bool
 }
 
 // _BACnetLandingDoorStatus is the data-structure of this message
@@ -147,6 +150,10 @@ func (m *_BACnetLandingDoorStatus) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetLandingDoorStatus")
 	}
 	return nil
+}
+
+func (m *_BACnetLandingDoorStatus) isBACnetLandingDoorStatus() bool {
+	return true
 }
 
 func (m *_BACnetLandingDoorStatus) String() string {

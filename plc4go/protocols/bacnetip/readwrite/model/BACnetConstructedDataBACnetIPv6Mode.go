@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBACnetIPv6Mode is the corresponding interface of BACnetConstructedDataBACnetIPv6Mode
 type BACnetConstructedDataBACnetIPv6Mode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetBacnetIpv6Mode returns BacnetIpv6Mode (property field)
 	GetBacnetIpv6Mode() BACnetIPModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetIPModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBACnetIPv6ModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPv6Mode.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPv6ModeExactly interface {
+	BACnetConstructedDataBACnetIPv6Mode
+	isBACnetConstructedDataBACnetIPv6Mode() bool
 }
 
 // _BACnetConstructedDataBACnetIPv6Mode is the data-structure of this message
 type _BACnetConstructedDataBACnetIPv6Mode struct {
 	*_BACnetConstructedData
 	BacnetIpv6Mode BACnetIPModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBACnetIPv6ModeParse(readBuffer utils.ReadBuffer, tagNu
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPv6Mode{
-		BacnetIpv6Mode:         bacnetIpv6Mode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		BacnetIpv6Mode: bacnetIpv6Mode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6Mode) isBACnetConstructedDataBACnetIPv6Mode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6Mode) String() string {

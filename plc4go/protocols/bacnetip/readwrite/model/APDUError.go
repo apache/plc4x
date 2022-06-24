@@ -29,6 +29,8 @@ import (
 
 // APDUError is the corresponding interface of APDUError
 type APDUError interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -36,12 +38,13 @@ type APDUError interface {
 	GetErrorChoice() BACnetConfirmedServiceChoice
 	// GetError returns Error (property field)
 	GetError() BACnetError
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// APDUErrorExactly can be used when we want exactly this type and not a type which fulfills APDUError.
+// This is useful for switch cases.
+type APDUErrorExactly interface {
+	APDUError
+	isAPDUError() bool
 }
 
 // _APDUError is the data-structure of this message
@@ -50,9 +53,6 @@ type _APDUError struct {
 	OriginalInvokeId uint8
 	ErrorChoice      BACnetConfirmedServiceChoice
 	Error            BACnetError
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -215,7 +215,9 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 		OriginalInvokeId: originalInvokeId,
 		ErrorChoice:      errorChoice,
 		Error:            error,
-		_APDU:            &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -274,6 +276,10 @@ func (m *_APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUError) isAPDUError() bool {
+	return true
 }
 
 func (m *_APDUError) String() string {

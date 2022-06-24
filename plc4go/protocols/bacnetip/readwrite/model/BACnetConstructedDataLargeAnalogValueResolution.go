@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLargeAnalogValueResolution is the corresponding interface of BACnetConstructedDataLargeAnalogValueResolution
 type BACnetConstructedDataLargeAnalogValueResolution interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLargeAnalogValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLargeAnalogValueResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataLargeAnalogValueResolutionExactly interface {
+	BACnetConstructedDataLargeAnalogValueResolution
+	isBACnetConstructedDataLargeAnalogValueResolution() bool
 }
 
 // _BACnetConstructedDataLargeAnalogValueResolution is the data-structure of this message
 type _BACnetConstructedDataLargeAnalogValueResolution struct {
 	*_BACnetConstructedData
 	Resolution BACnetApplicationTagDouble
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLargeAnalogValueResolutionParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLargeAnalogValueResolution{
-		Resolution:             resolution,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Resolution: resolution,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) Serialize(writeBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) isBACnetConstructedDataLargeAnalogValueResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) String() string {

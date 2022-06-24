@@ -28,16 +28,19 @@ import (
 
 // BACnetConfirmedServiceRequest is the corresponding interface of BACnetConfirmedServiceRequest
 type BACnetConfirmedServiceRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
 	GetServiceRequestPayloadLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequest.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestExactly interface {
+	BACnetConfirmedServiceRequest
+	isBACnetConfirmedServiceRequest() bool
 }
 
 // _BACnetConfirmedServiceRequest is the data-structure of this message
@@ -49,10 +52,10 @@ type _BACnetConfirmedServiceRequest struct {
 }
 
 type _BACnetConfirmedServiceRequestChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetServiceChoice() BACnetConfirmedServiceChoice
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestParent interface {
@@ -61,7 +64,7 @@ type BACnetConfirmedServiceRequestParent interface {
 }
 
 type BACnetConfirmedServiceRequestChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConfirmedServiceRequest)
 	GetParent() *BACnetConfirmedServiceRequest
 
@@ -216,8 +219,8 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRequ
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestRequestKeyParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetConfirmedServiceRequestReadPropertyConditional
 		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
-	case true: // BACnetConfirmedServiceRequestConfirmedUnknown
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
+	case true: // BACnetConfirmedServiceRequestUnknown
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestUnknownParse(readBuffer, serviceRequestLength, serviceRequestPayloadLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -273,6 +276,10 @@ func (pm *_BACnetConfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequest")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequest) isBACnetConfirmedServiceRequest() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequest) String() string {

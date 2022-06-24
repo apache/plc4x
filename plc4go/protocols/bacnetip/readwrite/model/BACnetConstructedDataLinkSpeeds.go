@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataLinkSpeeds is the corresponding interface of BACnetConstructedDataLinkSpeeds
 type BACnetConstructedDataLinkSpeeds interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataLinkSpeeds interface {
 	GetLinkSpeeds() []BACnetApplicationTagReal
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLinkSpeedsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLinkSpeeds.
+// This is useful for switch cases.
+type BACnetConstructedDataLinkSpeedsExactly interface {
+	BACnetConstructedDataLinkSpeeds
+	isBACnetConstructedDataLinkSpeeds() bool
 }
 
 // _BACnetConstructedDataLinkSpeeds is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataLinkSpeeds struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	LinkSpeeds           []BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataLinkSpeedsParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeeds")
 	}
 	// Terminated array
-	linkSpeeds := make([]BACnetApplicationTagReal, 0)
+	var linkSpeeds []BACnetApplicationTagReal
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataLinkSpeedsParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLinkSpeeds{
-		NumberOfDataElements:   numberOfDataElements,
-		LinkSpeeds:             linkSpeeds,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		LinkSpeeds:           linkSpeeds,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataLinkSpeeds) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Array Field (linkSpeeds)
-		if m.GetLinkSpeeds() != nil {
-			if pushErr := writeBuffer.PushContext("linkSpeeds", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for linkSpeeds")
+		if pushErr := writeBuffer.PushContext("linkSpeeds", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for linkSpeeds")
+		}
+		for _, _element := range m.GetLinkSpeeds() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'linkSpeeds' field")
 			}
-			for _, _element := range m.GetLinkSpeeds() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'linkSpeeds' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("linkSpeeds", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for linkSpeeds")
-			}
+		}
+		if popErr := writeBuffer.PopContext("linkSpeeds", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for linkSpeeds")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLinkSpeeds"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataLinkSpeeds) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLinkSpeeds) isBACnetConstructedDataLinkSpeeds() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLinkSpeeds) String() string {

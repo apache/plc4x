@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataChannelPresentValue is the corresponding interface of BACnetConstructedDataChannelPresentValue
 type BACnetConstructedDataChannelPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetChannelValue
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetChannelValue
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataChannelPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataChannelPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataChannelPresentValueExactly interface {
+	BACnetConstructedDataChannelPresentValue
+	isBACnetConstructedDataChannelPresentValue() bool
 }
 
 // _BACnetConstructedDataChannelPresentValue is the data-structure of this message
 type _BACnetConstructedDataChannelPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetChannelValue
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataChannelPresentValueParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataChannelPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataChannelPresentValue) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataChannelPresentValue) isBACnetConstructedDataChannelPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataChannelPresentValue) String() string {

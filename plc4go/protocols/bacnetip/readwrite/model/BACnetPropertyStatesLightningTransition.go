@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesLightningTransition is the corresponding interface of BACnetPropertyStatesLightningTransition
 type BACnetPropertyStatesLightningTransition interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLightningTransition returns LightningTransition (property field)
 	GetLightningTransition() BACnetLightingTransitionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesLightningTransitionExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLightningTransition.
+// This is useful for switch cases.
+type BACnetPropertyStatesLightningTransitionExactly interface {
+	BACnetPropertyStatesLightningTransition
+	isBACnetPropertyStatesLightningTransition() bool
 }
 
 // _BACnetPropertyStatesLightningTransition is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesLightningTransition) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLightningTransition) isBACnetPropertyStatesLightningTransition() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLightningTransition) String() string {

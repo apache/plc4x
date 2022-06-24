@@ -28,6 +28,8 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -36,12 +38,13 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordExactly interface {
+	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+	isBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord() bool
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is the data-structure of this message
@@ -53,9 +56,9 @@ type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
 }
 
 type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParent interface {
@@ -64,7 +67,7 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParent interface {
 }
 
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag)
 	GetParent() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 
@@ -272,6 +275,10 @@ func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) SerializeP
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) isBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) String() string {

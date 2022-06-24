@@ -28,15 +28,18 @@ import (
 
 // BACnetClientCOVNone is the corresponding interface of BACnetClientCOVNone
 type BACnetClientCOVNone interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetClientCOV
 	// GetDefaultIncrement returns DefaultIncrement (property field)
 	GetDefaultIncrement() BACnetApplicationTagNull
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetClientCOVNoneExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOVNone.
+// This is useful for switch cases.
+type BACnetClientCOVNoneExactly interface {
+	BACnetClientCOVNone
+	isBACnetClientCOVNone() bool
 }
 
 // _BACnetClientCOVNone is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetClientCOVNone) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetClientCOVNone) isBACnetClientCOVNone() bool {
+	return true
 }
 
 func (m *_BACnetClientCOVNone) String() string {

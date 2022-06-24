@@ -29,17 +29,20 @@ import (
 
 // APDUSimpleAck is the corresponding interface of APDUSimpleAck
 type APDUSimpleAck interface {
+	utils.LengthAware
+	utils.Serializable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
 	// GetServiceChoice returns ServiceChoice (property field)
 	GetServiceChoice() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// APDUSimpleAckExactly can be used when we want exactly this type and not a type which fulfills APDUSimpleAck.
+// This is useful for switch cases.
+type APDUSimpleAckExactly interface {
+	APDUSimpleAck
+	isAPDUSimpleAck() bool
 }
 
 // _APDUSimpleAck is the data-structure of this message
@@ -47,9 +50,6 @@ type _APDUSimpleAck struct {
 	*_APDU
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +184,9 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 	_child := &_APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		_APDU:            &_APDU{},
+		_APDU: &_APDU{
+			ApduLength: apduLength,
+		},
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -226,6 +228,10 @@ func (m *_APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_APDUSimpleAck) isAPDUSimpleAck() bool {
+	return true
 }
 
 func (m *_APDUSimpleAck) String() string {

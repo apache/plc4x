@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAPDULength is the corresponding interface of BACnetConstructedDataAPDULength
 type BACnetConstructedDataAPDULength interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetApduLength returns ApduLength (property field)
 	GetApduLength() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAPDULengthExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAPDULength.
+// This is useful for switch cases.
+type BACnetConstructedDataAPDULengthExactly interface {
+	BACnetConstructedDataAPDULength
+	isBACnetConstructedDataAPDULength() bool
 }
 
 // _BACnetConstructedDataAPDULength is the data-structure of this message
 type _BACnetConstructedDataAPDULength struct {
 	*_BACnetConstructedData
 	ApduLength BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAPDULengthParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAPDULength{
-		ApduLength:             apduLength,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ApduLength: apduLength,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAPDULength) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAPDULength) isBACnetConstructedDataAPDULength() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAPDULength) String() string {

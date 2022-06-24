@@ -28,24 +28,24 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetCharacterValue returns CharacterValue (property field)
 	GetCharacterValue() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterExactly interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
+	isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() bool
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter struct {
 	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	CharacterValue BACnetContextTagCharacterString
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
 		CharacterValue: characterValue,
-		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{},
+		_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) isBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) String() string {

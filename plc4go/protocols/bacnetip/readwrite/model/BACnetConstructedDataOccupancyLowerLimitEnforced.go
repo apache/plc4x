@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataOccupancyLowerLimitEnforced is the corresponding interface of BACnetConstructedDataOccupancyLowerLimitEnforced
 type BACnetConstructedDataOccupancyLowerLimitEnforced interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetOccupancyLowerLimitEnforced returns OccupancyLowerLimitEnforced (property field)
 	GetOccupancyLowerLimitEnforced() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOccupancyLowerLimitEnforcedExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOccupancyLowerLimitEnforced.
+// This is useful for switch cases.
+type BACnetConstructedDataOccupancyLowerLimitEnforcedExactly interface {
+	BACnetConstructedDataOccupancyLowerLimitEnforced
+	isBACnetConstructedDataOccupancyLowerLimitEnforced() bool
 }
 
 // _BACnetConstructedDataOccupancyLowerLimitEnforced is the data-structure of this message
 type _BACnetConstructedDataOccupancyLowerLimitEnforced struct {
 	*_BACnetConstructedData
 	OccupancyLowerLimitEnforced BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.Read
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOccupancyLowerLimitEnforced{
 		OccupancyLowerLimitEnforced: occupancyLowerLimitEnforced,
-		_BACnetConstructedData:      &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) isBACnetConstructedDataOccupancyLowerLimitEnforced() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) String() string {

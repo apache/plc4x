@@ -32,16 +32,19 @@ const BVLC_BACNETTYPE uint8 = 0x81
 
 // BVLC is the corresponding interface of BVLC
 type BVLC interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetBvlcFunction returns BvlcFunction (discriminator field)
 	GetBvlcFunction() uint8
 	// GetBvlcPayloadLength returns BvlcPayloadLength (virtual field)
 	GetBvlcPayloadLength() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCExactly can be used when we want exactly this type and not a type which fulfills BVLC.
+// This is useful for switch cases.
+type BVLCExactly interface {
+	BVLC
+	isBVLC() bool
 }
 
 // _BVLC is the data-structure of this message
@@ -50,10 +53,10 @@ type _BVLC struct {
 }
 
 type _BVLCChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetBvlcFunction() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BVLCParent interface {
@@ -62,7 +65,7 @@ type BVLCParent interface {
 }
 
 type BVLCChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BVLC)
 	GetParent() *BVLC
 
@@ -271,6 +274,10 @@ func (pm *_BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child BVLC, seri
 		return errors.Wrap(popErr, "Error popping for BVLC")
 	}
 	return nil
+}
+
+func (m *_BVLC) isBVLC() bool {
+	return true
 }
 
 func (m *_BVLC) String() string {

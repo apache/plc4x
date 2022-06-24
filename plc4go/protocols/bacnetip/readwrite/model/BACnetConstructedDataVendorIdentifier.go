@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataVendorIdentifier is the corresponding interface of BACnetConstructedDataVendorIdentifier
 type BACnetConstructedDataVendorIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetVendorIdentifier returns VendorIdentifier (property field)
 	GetVendorIdentifier() BACnetVendorIdTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetVendorIdTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataVendorIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVendorIdentifier.
+// This is useful for switch cases.
+type BACnetConstructedDataVendorIdentifierExactly interface {
+	BACnetConstructedDataVendorIdentifier
+	isBACnetConstructedDataVendorIdentifier() bool
 }
 
 // _BACnetConstructedDataVendorIdentifier is the data-structure of this message
 type _BACnetConstructedDataVendorIdentifier struct {
 	*_BACnetConstructedData
 	VendorIdentifier BACnetVendorIdTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataVendorIdentifierParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataVendorIdentifier{
-		VendorIdentifier:       vendorIdentifier,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		VendorIdentifier: vendorIdentifier,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataVendorIdentifier) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataVendorIdentifier) isBACnetConstructedDataVendorIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataVendorIdentifier) String() string {

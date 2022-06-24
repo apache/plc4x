@@ -32,15 +32,18 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = uint8(2)
 
 // CEMIAdditionalInformationRelativeTimestamp is the corresponding interface of CEMIAdditionalInformationRelativeTimestamp
 type CEMIAdditionalInformationRelativeTimestamp interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
 	GetRelativeTimestamp() RelativeTimestamp
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// CEMIAdditionalInformationRelativeTimestampExactly can be used when we want exactly this type and not a type which fulfills CEMIAdditionalInformationRelativeTimestamp.
+// This is useful for switch cases.
+type CEMIAdditionalInformationRelativeTimestampExactly interface {
+	CEMIAdditionalInformationRelativeTimestamp
+	isCEMIAdditionalInformationRelativeTimestamp() bool
 }
 
 // _CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message
@@ -218,6 +221,10 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer util
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestamp) isCEMIAdditionalInformationRelativeTimestamp() bool {
+	return true
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) String() string {

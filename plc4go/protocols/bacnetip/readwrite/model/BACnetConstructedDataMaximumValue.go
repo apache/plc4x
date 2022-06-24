@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMaximumValue is the corresponding interface of BACnetConstructedDataMaximumValue
 type BACnetConstructedDataMaximumValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaximumValue returns MaximumValue (property field)
 	GetMaximumValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMaximumValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMaximumValue.
+// This is useful for switch cases.
+type BACnetConstructedDataMaximumValueExactly interface {
+	BACnetConstructedDataMaximumValue
+	isBACnetConstructedDataMaximumValue() bool
 }
 
 // _BACnetConstructedDataMaximumValue is the data-structure of this message
 type _BACnetConstructedDataMaximumValue struct {
 	*_BACnetConstructedData
 	MaximumValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMaximumValueParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMaximumValue{
-		MaximumValue:           maximumValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaximumValue: maximumValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMaximumValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMaximumValue) isBACnetConstructedDataMaximumValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMaximumValue) String() string {

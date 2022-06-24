@@ -28,26 +28,26 @@ import (
 
 // BACnetContextTagCharacterString is the corresponding interface of BACnetContextTagCharacterString
 type BACnetContextTagCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadCharacterString
 	// GetValue returns Value (virtual field)
 	GetValue() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetContextTagCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTagCharacterString.
+// This is useful for switch cases.
+type BACnetContextTagCharacterStringExactly interface {
+	BACnetContextTagCharacterString
+	isBACnetContextTagCharacterString() bool
 }
 
 // _BACnetContextTagCharacterString is the data-structure of this message
 type _BACnetContextTagCharacterString struct {
 	*_BACnetContextTag
 	Payload BACnetTagPayloadCharacterString
-
-	// Arguments.
-	TagNumberArgument uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -176,8 +176,10 @@ func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetContextTagCharacterString{
-		Payload:           payload,
-		_BACnetContextTag: &_BACnetContextTag{},
+		Payload: payload,
+		_BACnetContextTag: &_BACnetContextTag{
+			TagNumberArgument: tagNumberArgument,
+		},
 	}
 	_child._BACnetContextTag._BACnetContextTagChildRequirements = _child
 	return _child, nil
@@ -213,6 +215,10 @@ func (m *_BACnetContextTagCharacterString) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetContextTagCharacterString) isBACnetContextTagCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetContextTagCharacterString) String() string {

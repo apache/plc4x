@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataDescriptionOfHalt is the corresponding interface of BACnetConstructedDataDescriptionOfHalt
 type BACnetConstructedDataDescriptionOfHalt interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetDescriptionForHalt returns DescriptionForHalt (property field)
 	GetDescriptionForHalt() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataDescriptionOfHaltExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataDescriptionOfHalt.
+// This is useful for switch cases.
+type BACnetConstructedDataDescriptionOfHaltExactly interface {
+	BACnetConstructedDataDescriptionOfHalt
+	isBACnetConstructedDataDescriptionOfHalt() bool
 }
 
 // _BACnetConstructedDataDescriptionOfHalt is the data-structure of this message
 type _BACnetConstructedDataDescriptionOfHalt struct {
 	*_BACnetConstructedData
 	DescriptionForHalt BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataDescriptionOfHaltParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataDescriptionOfHalt{
-		DescriptionForHalt:     descriptionForHalt,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		DescriptionForHalt: descriptionForHalt,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataDescriptionOfHalt) isBACnetConstructedDataDescriptionOfHalt() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataDescriptionOfHalt) String() string {

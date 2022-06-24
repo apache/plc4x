@@ -28,14 +28,17 @@ import (
 
 // MACAddress is the corresponding interface of MACAddress
 type MACAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MACAddressExactly can be used when we want exactly this type and not a type which fulfills MACAddress.
+// This is useful for switch cases.
+type MACAddressExactly interface {
+	MACAddress
+	isMACAddress() bool
 }
 
 // _MACAddress is the data-structure of this message
@@ -127,18 +130,19 @@ func (m *_MACAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (addr)
-	if m.GetAddr() != nil {
-		// Byte Array field (addr)
-		_writeArrayErr := writeBuffer.WriteByteArray("addr", m.GetAddr())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'addr' field")
-		}
+	// Byte Array field (addr)
+	if err := writeBuffer.WriteByteArray("addr", m.GetAddr()); err != nil {
+		return errors.Wrap(err, "Error serializing 'addr' field")
 	}
 
 	if popErr := writeBuffer.PopContext("MACAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for MACAddress")
 	}
 	return nil
+}
+
+func (m *_MACAddress) isMACAddress() bool {
+	return true
 }
 
 func (m *_MACAddress) String() string {

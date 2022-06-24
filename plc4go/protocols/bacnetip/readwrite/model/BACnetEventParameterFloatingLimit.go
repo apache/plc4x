@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterFloatingLimit is the corresponding interface of BACnetEventParameterFloatingLimit
 type BACnetEventParameterFloatingLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -43,12 +45,13 @@ type BACnetEventParameterFloatingLimit interface {
 	GetDeadband() BACnetContextTagReal
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterFloatingLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterFloatingLimit.
+// This is useful for switch cases.
+type BACnetEventParameterFloatingLimitExactly interface {
+	BACnetEventParameterFloatingLimit
+	isBACnetEventParameterFloatingLimit() bool
 }
 
 // _BACnetEventParameterFloatingLimit is the data-structure of this message
@@ -402,6 +405,10 @@ func (m *_BACnetEventParameterFloatingLimit) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterFloatingLimit) isBACnetEventParameterFloatingLimit() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterFloatingLimit) String() string {

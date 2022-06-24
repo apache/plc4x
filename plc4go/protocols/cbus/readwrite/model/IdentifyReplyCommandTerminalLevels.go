@@ -28,13 +28,16 @@ import (
 
 // IdentifyReplyCommandTerminalLevels is the corresponding interface of IdentifyReplyCommandTerminalLevels
 type IdentifyReplyCommandTerminalLevels interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandTerminalLevelsExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandTerminalLevels.
+// This is useful for switch cases.
+type IdentifyReplyCommandTerminalLevelsExactly interface {
+	IdentifyReplyCommandTerminalLevels
+	isIdentifyReplyCommandTerminalLevels() bool
 }
 
 // _IdentifyReplyCommandTerminalLevels is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_IdentifyReplyCommandTerminalLevels) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandTerminalLevels) isIdentifyReplyCommandTerminalLevels() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandTerminalLevels) String() string {

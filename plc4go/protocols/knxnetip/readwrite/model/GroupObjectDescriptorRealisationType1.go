@@ -29,6 +29,8 @@ import (
 
 // GroupObjectDescriptorRealisationType1 is the corresponding interface of GroupObjectDescriptorRealisationType1
 type GroupObjectDescriptorRealisationType1 interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetDataPointer returns DataPointer (property field)
 	GetDataPointer() uint8
 	// GetTransmitEnable returns TransmitEnable (property field)
@@ -45,12 +47,13 @@ type GroupObjectDescriptorRealisationType1 interface {
 	GetPriority() CEMIPriority
 	// GetValueType returns ValueType (property field)
 	GetValueType() ComObjectValueType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// GroupObjectDescriptorRealisationType1Exactly can be used when we want exactly this type and not a type which fulfills GroupObjectDescriptorRealisationType1.
+// This is useful for switch cases.
+type GroupObjectDescriptorRealisationType1Exactly interface {
+	GroupObjectDescriptorRealisationType1
+	isGroupObjectDescriptorRealisationType1() bool
 }
 
 // _GroupObjectDescriptorRealisationType1 is the data-structure of this message
@@ -352,6 +355,10 @@ func (m *_GroupObjectDescriptorRealisationType1) Serialize(writeBuffer utils.Wri
 		return errors.Wrap(popErr, "Error popping for GroupObjectDescriptorRealisationType1")
 	}
 	return nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType1) isGroupObjectDescriptorRealisationType1() bool {
+	return true
 }
 
 func (m *_GroupObjectDescriptorRealisationType1) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataPositiveIntegerValueResolution is the corresponding interface of BACnetConstructedDataPositiveIntegerValueResolution
 type BACnetConstructedDataPositiveIntegerValueResolution interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataPositiveIntegerValueResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataPositiveIntegerValueResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataPositiveIntegerValueResolutionExactly interface {
+	BACnetConstructedDataPositiveIntegerValueResolution
+	isBACnetConstructedDataPositiveIntegerValueResolution() bool
 }
 
 // _BACnetConstructedDataPositiveIntegerValueResolution is the data-structure of this message
 type _BACnetConstructedDataPositiveIntegerValueResolution struct {
 	*_BACnetConstructedData
 	Resolution BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataPositiveIntegerValueResolutionParse(readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataPositiveIntegerValueResolution{
-		Resolution:             resolution,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Resolution: resolution,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) Serialize(writeBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) isBACnetConstructedDataPositiveIntegerValueResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueResolution) String() string {

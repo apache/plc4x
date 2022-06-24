@@ -28,6 +28,8 @@ import (
 
 // BACnetNetworkTypeTagged is the corresponding interface of BACnetNetworkTypeTagged
 type BACnetNetworkTypeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetNetworkTypeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNetworkTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetNetworkTypeTagged.
+// This is useful for switch cases.
+type BACnetNetworkTypeTaggedExactly interface {
+	BACnetNetworkTypeTagged
+	isBACnetNetworkTypeTagged() bool
 }
 
 // _BACnetNetworkTypeTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetNetworkTypeTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetNetworkTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetNetworkTypeTagged) isBACnetNetworkTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetNetworkTypeTagged) String() string {

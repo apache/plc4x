@@ -28,21 +28,21 @@ import (
 
 // MResetReq is the corresponding interface of MResetReq
 type MResetReq interface {
+	utils.LengthAware
+	utils.Serializable
 	CEMI
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// MResetReqExactly can be used when we want exactly this type and not a type which fulfills MResetReq.
+// This is useful for switch cases.
+type MResetReqExactly interface {
+	MResetReq
+	isMResetReq() bool
 }
 
 // _MResetReq is the data-structure of this message
 type _MResetReq struct {
 	*_CEMI
-
-	// Arguments.
-	Size uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (MResetReq, error)
 
 	// Create a partially initialized instance
 	_child := &_MResetReq{
-		_CEMI: &_CEMI{},
+		_CEMI: &_CEMI{
+			Size: size,
+		},
 	}
 	_child._CEMI._CEMIChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_MResetReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_MResetReq) isMResetReq() bool {
+	return true
 }
 
 func (m *_MResetReq) String() string {

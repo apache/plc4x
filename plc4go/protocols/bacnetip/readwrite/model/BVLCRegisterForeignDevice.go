@@ -28,15 +28,18 @@ import (
 
 // BVLCRegisterForeignDevice is the corresponding interface of BVLCRegisterForeignDevice
 type BVLCRegisterForeignDevice interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCRegisterForeignDeviceExactly can be used when we want exactly this type and not a type which fulfills BVLCRegisterForeignDevice.
+// This is useful for switch cases.
+type BVLCRegisterForeignDeviceExactly interface {
+	BVLCRegisterForeignDevice
+	isBVLCRegisterForeignDevice() bool
 }
 
 // _BVLCRegisterForeignDevice is the data-structure of this message
@@ -171,6 +174,10 @@ func (m *_BVLCRegisterForeignDevice) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCRegisterForeignDevice) isBVLCRegisterForeignDevice() bool {
+	return true
 }
 
 func (m *_BVLCRegisterForeignDevice) String() string {

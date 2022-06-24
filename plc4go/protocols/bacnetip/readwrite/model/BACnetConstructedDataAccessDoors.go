@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataAccessDoors is the corresponding interface of BACnetConstructedDataAccessDoors
 type BACnetConstructedDataAccessDoors interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataAccessDoors interface {
 	GetAccessDoors() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccessDoorsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccessDoors.
+// This is useful for switch cases.
+type BACnetConstructedDataAccessDoorsExactly interface {
+	BACnetConstructedDataAccessDoors
+	isBACnetConstructedDataAccessDoors() bool
 }
 
 // _BACnetConstructedDataAccessDoors is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataAccessDoors struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	AccessDoors          []BACnetDeviceObjectReference
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataAccessDoorsParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, errors.Wrap(pullErr, "Error pulling for accessDoors")
 	}
 	// Terminated array
-	accessDoors := make([]BACnetDeviceObjectReference, 0)
+	var accessDoors []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataAccessDoorsParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccessDoors{
-		NumberOfDataElements:   numberOfDataElements,
-		AccessDoors:            accessDoors,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		AccessDoors:          accessDoors,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataAccessDoors) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (accessDoors)
-		if m.GetAccessDoors() != nil {
-			if pushErr := writeBuffer.PushContext("accessDoors", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for accessDoors")
+		if pushErr := writeBuffer.PushContext("accessDoors", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for accessDoors")
+		}
+		for _, _element := range m.GetAccessDoors() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'accessDoors' field")
 			}
-			for _, _element := range m.GetAccessDoors() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'accessDoors' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("accessDoors", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for accessDoors")
-			}
+		}
+		if popErr := writeBuffer.PopContext("accessDoors", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for accessDoors")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessDoors"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataAccessDoors) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccessDoors) isBACnetConstructedDataAccessDoors() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccessDoors) String() string {

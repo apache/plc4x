@@ -53,7 +53,7 @@ func TestS7MessageBytes(t *testing.T) {
 					model.NewCOTPPacketData(
 						false,
 						13,
-						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0)},
+						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 3)},
 						model.NewS7MessageResponseData(
 							0,
 							0,
@@ -67,10 +67,10 @@ func TestS7MessageBytes(t *testing.T) {
 										[]byte{1},
 									),
 								},
-								nil,
+								model.NewS7ParameterReadVarResponse(1),
 							),
 						),
-						0,
+						26,
 					),
 				),
 			},
@@ -385,7 +385,7 @@ func TestS7MessageBytes(t *testing.T) {
 					model.NewCOTPPacketData(
 						false,
 						13,
-						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0)},
+						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 3)},
 						model.NewS7MessageRequest(
 							13,
 							model.NewS7ParameterWriteVarRequest([]model.S7VarRequestParameterItem{
@@ -415,9 +415,18 @@ func TestS7MessageBytes(t *testing.T) {
 										},
 									),
 								},
-								nil),
+								model.NewS7ParameterWriteVarRequest([]model.S7VarRequestParameterItem{
+									model.NewS7VarRequestParameterItemAddress(model.NewS7AddressAny(
+										model.TransportSize_BYTE,
+										64,
+										13,
+										model.MemoryArea_INPUTS,
+										0,
+										0,
+									)),
+								})),
 						),
-						0,
+						98,
 					),
 				),
 			},

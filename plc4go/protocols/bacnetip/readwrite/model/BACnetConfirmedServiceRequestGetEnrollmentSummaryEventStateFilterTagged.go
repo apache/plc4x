@@ -28,16 +28,19 @@ import (
 
 // BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged is the corresponding interface of BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedExactly interface {
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
+	isBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged() bool
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagge
 		return errors.Wrap(popErr, "Error popping for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) isBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) String() string {

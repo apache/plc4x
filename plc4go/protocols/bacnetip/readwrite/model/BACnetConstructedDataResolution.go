@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataResolution is the corresponding interface of BACnetConstructedDataResolution
 type BACnetConstructedDataResolution interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataResolutionExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataResolution.
+// This is useful for switch cases.
+type BACnetConstructedDataResolutionExactly interface {
+	BACnetConstructedDataResolution
+	isBACnetConstructedDataResolution() bool
 }
 
 // _BACnetConstructedDataResolution is the data-structure of this message
 type _BACnetConstructedDataResolution struct {
 	*_BACnetConstructedData
 	Resolution BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataResolutionParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataResolution{
-		Resolution:             resolution,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Resolution: resolution,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataResolution) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataResolution) isBACnetConstructedDataResolution() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataResolution) String() string {

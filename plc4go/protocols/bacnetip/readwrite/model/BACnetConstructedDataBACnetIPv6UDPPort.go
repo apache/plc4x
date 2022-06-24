@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataBACnetIPv6UDPPort is the corresponding interface of BACnetConstructedDataBACnetIPv6UDPPort
 type BACnetConstructedDataBACnetIPv6UDPPort interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetIpv6UdpPort returns Ipv6UdpPort (property field)
 	GetIpv6UdpPort() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataBACnetIPv6UDPPortExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataBACnetIPv6UDPPort.
+// This is useful for switch cases.
+type BACnetConstructedDataBACnetIPv6UDPPortExactly interface {
+	BACnetConstructedDataBACnetIPv6UDPPort
+	isBACnetConstructedDataBACnetIPv6UDPPort() bool
 }
 
 // _BACnetConstructedDataBACnetIPv6UDPPort is the data-structure of this message
 type _BACnetConstructedDataBACnetIPv6UDPPort struct {
 	*_BACnetConstructedData
 	Ipv6UdpPort BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataBACnetIPv6UDPPort{
-		Ipv6UdpPort:            ipv6UdpPort,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Ipv6UdpPort: ipv6UdpPort,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) isBACnetConstructedDataBACnetIPv6UDPPort() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) String() string {

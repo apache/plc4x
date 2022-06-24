@@ -28,16 +28,19 @@ import (
 
 // NetworkRoute is the corresponding interface of NetworkRoute
 type NetworkRoute interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetRouteType returns RouteType (property field)
 	GetRouteType() RouteType
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []BridgeAddress
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NetworkRouteExactly can be used when we want exactly this type and not a type which fulfills NetworkRoute.
+// This is useful for switch cases.
+type NetworkRouteExactly interface {
+	NetworkRoute
+	isNetworkRoute() bool
 }
 
 // _NetworkRoute is the data-structure of this message
@@ -137,6 +140,10 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	}
 	// Count array
 	additionalBridgeAddresses := make([]BridgeAddress, routeType.AdditionalBridges())
+	// This happens when the size is set conditional to 0
+	if len(additionalBridgeAddresses) == 0 {
+		additionalBridgeAddresses = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(routeType.AdditionalBridges()); curItem++ {
 			_item, _err := BridgeAddressParse(readBuffer)
@@ -178,25 +185,27 @@ func (m *_NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (additionalBridgeAddresses)
-	if m.GetAdditionalBridgeAddresses() != nil {
-		if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
+	if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
+	}
+	for _, _element := range m.GetAdditionalBridgeAddresses() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
 		}
-		for _, _element := range m.GetAdditionalBridgeAddresses() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
-		}
+	}
+	if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
 	}
 
 	if popErr := writeBuffer.PopContext("NetworkRoute"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for NetworkRoute")
 	}
 	return nil
+}
+
+func (m *_NetworkRoute) isNetworkRoute() bool {
+	return true
 }
 
 func (m *_NetworkRoute) String() string {

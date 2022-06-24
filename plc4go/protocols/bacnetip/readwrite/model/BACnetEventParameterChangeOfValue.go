@@ -28,6 +28,8 @@ import (
 
 // BACnetEventParameterChangeOfValue is the corresponding interface of BACnetEventParameterChangeOfValue
 type BACnetEventParameterChangeOfValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -37,12 +39,13 @@ type BACnetEventParameterChangeOfValue interface {
 	GetCovCriteria() BACnetEventParameterChangeOfValueCivCriteria
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfValueExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValue.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfValueExactly interface {
+	BACnetEventParameterChangeOfValue
+	isBACnetEventParameterChangeOfValue() bool
 }
 
 // _BACnetEventParameterChangeOfValue is the data-structure of this message
@@ -291,6 +294,10 @@ func (m *_BACnetEventParameterChangeOfValue) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventParameterChangeOfValue) isBACnetEventParameterChangeOfValue() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfValue) String() string {

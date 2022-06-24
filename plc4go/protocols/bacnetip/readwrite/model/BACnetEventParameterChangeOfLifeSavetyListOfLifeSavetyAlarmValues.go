@@ -28,18 +28,21 @@ import (
 
 // BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is the corresponding interface of BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
 type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfLifeSavetyAlarmValues returns ListOfLifeSavetyAlarmValues (property field)
 	GetListOfLifeSavetyAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues.
+// This is useful for switch cases.
+type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesExactly interface {
+	BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
+	isBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues() bool
 }
 
 // _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesParse(read
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfLifeSavetyAlarmValues")
 	}
 	// Terminated array
-	listOfLifeSavetyAlarmValues := make([]BACnetLifeSafetyStateTagged, 0)
+	var listOfLifeSavetyAlarmValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
@@ -204,19 +207,17 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Ser
 	}
 
 	// Array Field (listOfLifeSavetyAlarmValues)
-	if m.GetListOfLifeSavetyAlarmValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
+	if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
+	}
+	for _, _element := range m.GetListOfLifeSavetyAlarmValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfLifeSavetyAlarmValues' field")
 		}
-		for _, _element := range m.GetListOfLifeSavetyAlarmValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfLifeSavetyAlarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Ser
 		return errors.Wrap(popErr, "Error popping for BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues")
 	}
 	return nil
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) isBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues() bool {
+	return true
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) String() string {

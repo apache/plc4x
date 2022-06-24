@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueEnumerated is the corresponding interface of BACnetChannelValueEnumerated
 type BACnetChannelValueEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueEnumerated.
+// This is useful for switch cases.
+type BACnetChannelValueEnumeratedExactly interface {
+	BACnetChannelValueEnumerated
+	isBACnetChannelValueEnumerated() bool
 }
 
 // _BACnetChannelValueEnumerated is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueEnumerated) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueEnumerated) isBACnetChannelValueEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueEnumerated) String() string {

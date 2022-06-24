@@ -28,6 +28,8 @@ import (
 
 // AdsReadStateResponse is the corresponding interface of AdsReadStateResponse
 type AdsReadStateResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -35,12 +37,13 @@ type AdsReadStateResponse interface {
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
 	GetDeviceState() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsReadStateResponseExactly can be used when we want exactly this type and not a type which fulfills AdsReadStateResponse.
+// This is useful for switch cases.
+type AdsReadStateResponseExactly interface {
+	AdsReadStateResponse
+	isAdsReadStateResponse() bool
 }
 
 // _AdsReadStateResponse is the data-structure of this message
@@ -238,6 +241,10 @@ func (m *_AdsReadStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsReadStateResponse) isAdsReadStateResponse() bool {
+	return true
 }
 
 func (m *_AdsReadStateResponse) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataFDSubscriptionLifetime is the corresponding interface of BACnetConstructedDataFDSubscriptionLifetime
 type BACnetConstructedDataFDSubscriptionLifetime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFdSubscriptionLifetime returns FdSubscriptionLifetime (property field)
 	GetFdSubscriptionLifetime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataFDSubscriptionLifetimeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataFDSubscriptionLifetime.
+// This is useful for switch cases.
+type BACnetConstructedDataFDSubscriptionLifetimeExactly interface {
+	BACnetConstructedDataFDSubscriptionLifetime
+	isBACnetConstructedDataFDSubscriptionLifetime() bool
 }
 
 // _BACnetConstructedDataFDSubscriptionLifetime is the data-structure of this message
 type _BACnetConstructedDataFDSubscriptionLifetime struct {
 	*_BACnetConstructedData
 	FdSubscriptionLifetime BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -184,7 +183,10 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataFDSubscriptionLifetime{
 		FdSubscriptionLifetime: fdSubscriptionLifetime,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) isBACnetConstructedDataFDSubscriptionLifetime() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) String() string {

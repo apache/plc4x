@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -41,12 +43,13 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
 	GetMaxNotificationDelay() BACnetContextTagUnsignedInteger
 	// GetListOfCovSubscriptionSpecifications returns ListOfCovSubscriptionSpecifications (property field)
 	GetListOfCovSubscriptionSpecifications() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleExactly interface {
+	BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+	isBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() bool
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is the data-structure of this message
@@ -57,9 +60,6 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 	Lifetime                            BACnetContextTagUnsignedInteger
 	MaxNotificationDelay                BACnetContextTagUnsignedInteger
 	ListOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -289,7 +289,9 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer u
 		Lifetime:                            lifetime,
 		MaxNotificationDelay:                maxNotificationDelay,
 		ListOfCovSubscriptionSpecifications: listOfCovSubscriptionSpecifications,
-		_BACnetConfirmedServiceRequest:      &_BACnetConfirmedServiceRequest{},
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -381,6 +383,10 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(w
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) isBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) String() string {

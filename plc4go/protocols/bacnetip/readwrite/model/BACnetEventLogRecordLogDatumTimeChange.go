@@ -28,24 +28,24 @@ import (
 
 // BACnetEventLogRecordLogDatumTimeChange is the corresponding interface of BACnetEventLogRecordLogDatumTimeChange
 type BACnetEventLogRecordLogDatumTimeChange interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetEventLogRecordLogDatum
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetEventLogRecordLogDatumTimeChangeExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecordLogDatumTimeChange.
+// This is useful for switch cases.
+type BACnetEventLogRecordLogDatumTimeChangeExactly interface {
+	BACnetEventLogRecordLogDatumTimeChange
+	isBACnetEventLogRecordLogDatumTimeChange() bool
 }
 
 // _BACnetEventLogRecordLogDatumTimeChange is the data-structure of this message
 type _BACnetEventLogRecordLogDatumTimeChange struct {
 	*_BACnetEventLogRecordLogDatum
 	TimeChange BACnetContextTagReal
-
-	// Arguments.
-	TagNumber uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -152,8 +152,10 @@ func BACnetEventLogRecordLogDatumTimeChangeParse(readBuffer utils.ReadBuffer, ta
 
 	// Create a partially initialized instance
 	_child := &_BACnetEventLogRecordLogDatumTimeChange{
-		TimeChange:                    timeChange,
-		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{},
+		TimeChange: timeChange,
+		_BACnetEventLogRecordLogDatum: &_BACnetEventLogRecordLogDatum{
+			TagNumber: tagNumber,
+		},
 	}
 	_child._BACnetEventLogRecordLogDatum._BACnetEventLogRecordLogDatumChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) Serialize(writeBuffer utils.Wr
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChange) isBACnetEventLogRecordLogDatumTimeChange() bool {
+	return true
 }
 
 func (m *_BACnetEventLogRecordLogDatumTimeChange) String() string {

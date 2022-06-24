@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersFloatingLimit is the corresponding interface of BACnetNotificationParametersFloatingLimit
 type BACnetNotificationParametersFloatingLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -41,12 +43,13 @@ type BACnetNotificationParametersFloatingLimit interface {
 	GetErrorLimit() BACnetContextTagReal
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersFloatingLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersFloatingLimit.
+// This is useful for switch cases.
+type BACnetNotificationParametersFloatingLimitExactly interface {
+	BACnetNotificationParametersFloatingLimit
+	isBACnetNotificationParametersFloatingLimit() bool
 }
 
 // _BACnetNotificationParametersFloatingLimit is the data-structure of this message
@@ -58,10 +61,6 @@ type _BACnetNotificationParametersFloatingLimit struct {
 	SetPointValue   BACnetContextTagReal
 	ErrorLimit      BACnetContextTagReal
 	InnerClosingTag BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -273,13 +272,16 @@ func BACnetNotificationParametersFloatingLimitParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersFloatingLimit{
-		InnerOpeningTag:               innerOpeningTag,
-		ReferenceValue:                referenceValue,
-		StatusFlags:                   statusFlags,
-		SetPointValue:                 setPointValue,
-		ErrorLimit:                    errorLimit,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag: innerOpeningTag,
+		ReferenceValue:  referenceValue,
+		StatusFlags:     statusFlags,
+		SetPointValue:   setPointValue,
+		ErrorLimit:      errorLimit,
+		InnerClosingTag: innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -371,6 +373,10 @@ func (m *_BACnetNotificationParametersFloatingLimit) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersFloatingLimit) isBACnetNotificationParametersFloatingLimit() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersFloatingLimit) String() string {

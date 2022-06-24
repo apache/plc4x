@@ -28,6 +28,8 @@ import (
 
 // BACnetTagHeader is the corresponding interface of BACnetTagHeader
 type BACnetTagHeader interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTagNumber returns TagNumber (property field)
 	GetTagNumber() uint8
 	// GetTagClass returns TagClass (property field)
@@ -52,12 +54,13 @@ type BACnetTagHeader interface {
 	GetIsPrimitiveAndNotBoolean() bool
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagHeaderExactly can be used when we want exactly this type and not a type which fulfills BACnetTagHeader.
+// This is useful for switch cases.
+type BACnetTagHeaderExactly interface {
+	BACnetTagHeader
+	isBACnetTagHeader() bool
 }
 
 // _BACnetTagHeader is the data-structure of this message
@@ -465,6 +468,10 @@ func (m *_BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetTagHeader")
 	}
 	return nil
+}
+
+func (m *_BACnetTagHeader) isBACnetTagHeader() bool {
+	return true
 }
 
 func (m *_BACnetTagHeader) String() string {

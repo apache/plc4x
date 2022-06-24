@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataModificationDate is the corresponding interface of BACnetConstructedDataModificationDate
 type BACnetConstructedDataModificationDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetModificationDate returns ModificationDate (property field)
 	GetModificationDate() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataModificationDateExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataModificationDate.
+// This is useful for switch cases.
+type BACnetConstructedDataModificationDateExactly interface {
+	BACnetConstructedDataModificationDate
+	isBACnetConstructedDataModificationDate() bool
 }
 
 // _BACnetConstructedDataModificationDate is the data-structure of this message
 type _BACnetConstructedDataModificationDate struct {
 	*_BACnetConstructedData
 	ModificationDate BACnetDateTime
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataModificationDateParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataModificationDate{
-		ModificationDate:       modificationDate,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ModificationDate: modificationDate,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataModificationDate) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataModificationDate) isBACnetConstructedDataModificationDate() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataModificationDate) String() string {

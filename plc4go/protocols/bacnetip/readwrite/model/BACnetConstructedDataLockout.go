@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLockout is the corresponding interface of BACnetConstructedDataLockout
 type BACnetConstructedDataLockout interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLockout returns Lockout (property field)
 	GetLockout() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLockoutExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLockout.
+// This is useful for switch cases.
+type BACnetConstructedDataLockoutExactly interface {
+	BACnetConstructedDataLockout
+	isBACnetConstructedDataLockout() bool
 }
 
 // _BACnetConstructedDataLockout is the data-structure of this message
 type _BACnetConstructedDataLockout struct {
 	*_BACnetConstructedData
 	Lockout BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLockoutParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLockout{
-		Lockout:                lockout,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Lockout: lockout,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLockout) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLockout) isBACnetConstructedDataLockout() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLockout) String() string {

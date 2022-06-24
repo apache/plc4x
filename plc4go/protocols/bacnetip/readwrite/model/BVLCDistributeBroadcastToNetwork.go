@@ -28,15 +28,18 @@ import (
 
 // BVLCDistributeBroadcastToNetwork is the corresponding interface of BVLCDistributeBroadcastToNetwork
 type BVLCDistributeBroadcastToNetwork interface {
+	utils.LengthAware
+	utils.Serializable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BVLCDistributeBroadcastToNetworkExactly can be used when we want exactly this type and not a type which fulfills BVLCDistributeBroadcastToNetwork.
+// This is useful for switch cases.
+type BVLCDistributeBroadcastToNetworkExactly interface {
+	BVLCDistributeBroadcastToNetwork
+	isBVLCDistributeBroadcastToNetwork() bool
 }
 
 // _BVLCDistributeBroadcastToNetwork is the data-structure of this message
@@ -185,6 +188,10 @@ func (m *_BVLCDistributeBroadcastToNetwork) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BVLCDistributeBroadcastToNetwork) isBVLCDistributeBroadcastToNetwork() bool {
+	return true
 }
 
 func (m *_BVLCDistributeBroadcastToNetwork) String() string {

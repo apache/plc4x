@@ -28,16 +28,19 @@ import (
 
 // BACnetFaultTypeTagged is the corresponding interface of BACnetFaultTypeTagged
 type BACnetFaultTypeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetFaultType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultTypeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultTypeTagged.
+// This is useful for switch cases.
+type BACnetFaultTypeTaggedExactly interface {
+	BACnetFaultTypeTagged
+	isBACnetFaultTypeTagged() bool
 }
 
 // _BACnetFaultTypeTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetFaultTypeTagged) Serialize(writeBuffer utils.WriteBuffer) error 
 		return errors.Wrap(popErr, "Error popping for BACnetFaultTypeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultTypeTagged) isBACnetFaultTypeTagged() bool {
+	return true
 }
 
 func (m *_BACnetFaultTypeTagged) String() string {

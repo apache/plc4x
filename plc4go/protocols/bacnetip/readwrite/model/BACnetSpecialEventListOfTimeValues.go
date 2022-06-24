@@ -28,18 +28,21 @@ import (
 
 // BACnetSpecialEventListOfTimeValues is the corresponding interface of BACnetSpecialEventListOfTimeValues
 type BACnetSpecialEventListOfTimeValues interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfTimeValues returns ListOfTimeValues (property field)
 	GetListOfTimeValues() []BACnetTimeValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetSpecialEventListOfTimeValuesExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventListOfTimeValues.
+// This is useful for switch cases.
+type BACnetSpecialEventListOfTimeValuesExactly interface {
+	BACnetSpecialEventListOfTimeValues
+	isBACnetSpecialEventListOfTimeValues() bool
 }
 
 // _BACnetSpecialEventListOfTimeValues is the data-structure of this message
@@ -148,7 +151,7 @@ func BACnetSpecialEventListOfTimeValuesParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfTimeValues")
 	}
 	// Terminated array
-	listOfTimeValues := make([]BACnetTimeValue, 0)
+	var listOfTimeValues []BACnetTimeValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeValueParse(readBuffer)
@@ -204,19 +207,17 @@ func (m *_BACnetSpecialEventListOfTimeValues) Serialize(writeBuffer utils.WriteB
 	}
 
 	// Array Field (listOfTimeValues)
-	if m.GetListOfTimeValues() != nil {
-		if pushErr := writeBuffer.PushContext("listOfTimeValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfTimeValues")
+	if pushErr := writeBuffer.PushContext("listOfTimeValues", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfTimeValues")
+	}
+	for _, _element := range m.GetListOfTimeValues() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfTimeValues' field")
 		}
-		for _, _element := range m.GetListOfTimeValues() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfTimeValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfTimeValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfTimeValues")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfTimeValues", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfTimeValues")
 	}
 
 	// Simple Field (closingTag)
@@ -235,6 +236,10 @@ func (m *_BACnetSpecialEventListOfTimeValues) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetSpecialEventListOfTimeValues")
 	}
 	return nil
+}
+
+func (m *_BACnetSpecialEventListOfTimeValues) isBACnetSpecialEventListOfTimeValues() bool {
+	return true
 }
 
 func (m *_BACnetSpecialEventListOfTimeValues) String() string {

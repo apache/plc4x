@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataNetworkAccessSecurityPolicies is the corresponding interface of BACnetConstructedDataNetworkAccessSecurityPolicies
 type BACnetConstructedDataNetworkAccessSecurityPolicies interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataNetworkAccessSecurityPolicies interface {
 	GetNetworkAccessSecurityPolicies() []BACnetNetworkSecurityPolicy
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNetworkAccessSecurityPoliciesExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNetworkAccessSecurityPolicies.
+// This is useful for switch cases.
+type BACnetConstructedDataNetworkAccessSecurityPoliciesExactly interface {
+	BACnetConstructedDataNetworkAccessSecurityPolicies
+	isBACnetConstructedDataNetworkAccessSecurityPolicies() bool
 }
 
 // _BACnetConstructedDataNetworkAccessSecurityPolicies is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataNetworkAccessSecurityPolicies struct {
 	*_BACnetConstructedData
 	NumberOfDataElements          BACnetApplicationTagUnsignedInteger
 	NetworkAccessSecurityPolicies []BACnetNetworkSecurityPolicy
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for networkAccessSecurityPolicies")
 	}
 	// Terminated array
-	networkAccessSecurityPolicies := make([]BACnetNetworkSecurityPolicy, 0)
+	var networkAccessSecurityPolicies []BACnetNetworkSecurityPolicy
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNetworkSecurityPolicyParse(readBuffer)
@@ -235,7 +234,10 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.Re
 	_child := &_BACnetConstructedDataNetworkAccessSecurityPolicies{
 		NumberOfDataElements:          numberOfDataElements,
 		NetworkAccessSecurityPolicies: networkAccessSecurityPolicies,
-		_BACnetConstructedData:        &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) Serialize(writeBuf
 		}
 
 		// Array Field (networkAccessSecurityPolicies)
-		if m.GetNetworkAccessSecurityPolicies() != nil {
-			if pushErr := writeBuffer.PushContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for networkAccessSecurityPolicies")
+		if pushErr := writeBuffer.PushContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for networkAccessSecurityPolicies")
+		}
+		for _, _element := range m.GetNetworkAccessSecurityPolicies() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'networkAccessSecurityPolicies' field")
 			}
-			for _, _element := range m.GetNetworkAccessSecurityPolicies() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'networkAccessSecurityPolicies' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for networkAccessSecurityPolicies")
-			}
+		}
+		if popErr := writeBuffer.PopContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for networkAccessSecurityPolicies")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkAccessSecurityPolicies"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) isBACnetConstructedDataNetworkAccessSecurityPolicies() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) String() string {

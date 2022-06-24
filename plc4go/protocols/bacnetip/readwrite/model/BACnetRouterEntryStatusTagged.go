@@ -28,16 +28,19 @@ import (
 
 // BACnetRouterEntryStatusTagged is the corresponding interface of BACnetRouterEntryStatusTagged
 type BACnetRouterEntryStatusTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetRouterEntryStatus
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetRouterEntryStatusTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetRouterEntryStatusTagged.
+// This is useful for switch cases.
+type BACnetRouterEntryStatusTaggedExactly interface {
+	BACnetRouterEntryStatusTagged
+	isBACnetRouterEntryStatusTagged() bool
 }
 
 // _BACnetRouterEntryStatusTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetRouterEntryStatusTagged) Serialize(writeBuffer utils.WriteBuffer
 		return errors.Wrap(popErr, "Error popping for BACnetRouterEntryStatusTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetRouterEntryStatusTagged) isBACnetRouterEntryStatusTagged() bool {
+	return true
 }
 
 func (m *_BACnetRouterEntryStatusTagged) String() string {

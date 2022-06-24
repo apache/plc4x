@@ -28,16 +28,19 @@ import (
 
 // BACnetKeyIdentifier is the corresponding interface of BACnetKeyIdentifier
 type BACnetKeyIdentifier interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetAlgorithm returns Algorithm (property field)
 	GetAlgorithm() BACnetContextTagUnsignedInteger
 	// GetKeyId returns KeyId (property field)
 	GetKeyId() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetKeyIdentifierExactly can be used when we want exactly this type and not a type which fulfills BACnetKeyIdentifier.
+// This is useful for switch cases.
+type BACnetKeyIdentifierExactly interface {
+	BACnetKeyIdentifier
+	isBACnetKeyIdentifier() bool
 }
 
 // _BACnetKeyIdentifier is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetKeyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetKeyIdentifier")
 	}
 	return nil
+}
+
+func (m *_BACnetKeyIdentifier) isBACnetKeyIdentifier() bool {
+	return true
 }
 
 func (m *_BACnetKeyIdentifier) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetLandingCallStatusCommandDirection is the corresponding interface of BACnetLandingCallStatusCommandDirection
 type BACnetLandingCallStatusCommandDirection interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetLandingCallStatusCommand
 	// GetDirection returns Direction (property field)
 	GetDirection() BACnetLiftCarDirectionTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLandingCallStatusCommandDirectionExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommandDirection.
+// This is useful for switch cases.
+type BACnetLandingCallStatusCommandDirectionExactly interface {
+	BACnetLandingCallStatusCommandDirection
+	isBACnetLandingCallStatusCommandDirection() bool
 }
 
 // _BACnetLandingCallStatusCommandDirection is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetLandingCallStatusCommandDirection) Serialize(writeBuffer utils.W
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetLandingCallStatusCommandDirection) isBACnetLandingCallStatusCommandDirection() bool {
+	return true
 }
 
 func (m *_BACnetLandingCallStatusCommandDirection) String() string {

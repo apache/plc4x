@@ -28,6 +28,8 @@ import (
 
 // BACnetMaintenanceTagged is the corresponding interface of BACnetMaintenanceTagged
 type BACnetMaintenanceTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetMaintenanceTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetMaintenanceTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetMaintenanceTagged.
+// This is useful for switch cases.
+type BACnetMaintenanceTaggedExactly interface {
+	BACnetMaintenanceTagged
+	isBACnetMaintenanceTagged() bool
 }
 
 // _BACnetMaintenanceTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetMaintenanceTagged) Serialize(writeBuffer utils.WriteBuffer) erro
 		return errors.Wrap(popErr, "Error popping for BACnetMaintenanceTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetMaintenanceTagged) isBACnetMaintenanceTagged() bool {
+	return true
 }
 
 func (m *_BACnetMaintenanceTagged) String() string {

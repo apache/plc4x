@@ -28,21 +28,21 @@ import (
 
 // ApduDataAdcRead is the corresponding interface of ApduDataAdcRead
 type ApduDataAdcRead interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataAdcReadExactly can be used when we want exactly this type and not a type which fulfills ApduDataAdcRead.
+// This is useful for switch cases.
+type ApduDataAdcReadExactly interface {
+	ApduDataAdcRead
+	isApduDataAdcRead() bool
 }
 
 // _ApduDataAdcRead is the data-structure of this message
 type _ApduDataAdcRead struct {
 	*_ApduData
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -118,7 +118,9 @@ func ApduDataAdcReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDa
 
 	// Create a partially initialized instance
 	_child := &_ApduDataAdcRead{
-		_ApduData: &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -138,6 +140,10 @@ func (m *_ApduDataAdcRead) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataAdcRead) isApduDataAdcRead() bool {
+	return true
 }
 
 func (m *_ApduDataAdcRead) String() string {

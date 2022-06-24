@@ -28,6 +28,8 @@ import (
 
 // ComObjectTableRealisationType1 is the corresponding interface of ComObjectTableRealisationType1
 type ComObjectTableRealisationType1 interface {
+	utils.LengthAware
+	utils.Serializable
 	ComObjectTable
 	// GetNumEntries returns NumEntries (property field)
 	GetNumEntries() uint8
@@ -35,12 +37,13 @@ type ComObjectTableRealisationType1 interface {
 	GetRamFlagsTablePointer() uint8
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() []GroupObjectDescriptorRealisationType1
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ComObjectTableRealisationType1Exactly can be used when we want exactly this type and not a type which fulfills ComObjectTableRealisationType1.
+// This is useful for switch cases.
+type ComObjectTableRealisationType1Exactly interface {
+	ComObjectTableRealisationType1
+	isComObjectTableRealisationType1() bool
 }
 
 // _ComObjectTableRealisationType1 is the data-structure of this message
@@ -177,6 +180,10 @@ func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareTy
 	}
 	// Count array
 	comObjectDescriptors := make([]GroupObjectDescriptorRealisationType1, numEntries)
+	// This happens when the size is set conditional to 0
+	if len(comObjectDescriptors) == 0 {
+		comObjectDescriptors = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
 			_item, _err := GroupObjectDescriptorRealisationType1Parse(readBuffer)
@@ -228,19 +235,17 @@ func (m *_ComObjectTableRealisationType1) Serialize(writeBuffer utils.WriteBuffe
 		}
 
 		// Array Field (comObjectDescriptors)
-		if m.GetComObjectDescriptors() != nil {
-			if pushErr := writeBuffer.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
+		if pushErr := writeBuffer.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
+		}
+		for _, _element := range m.GetComObjectDescriptors() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 			}
-			for _, _element := range m.GetComObjectDescriptors() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
-			}
+		}
+		if popErr := writeBuffer.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
 		}
 
 		if popErr := writeBuffer.PopContext("ComObjectTableRealisationType1"); popErr != nil {
@@ -249,6 +254,10 @@ func (m *_ComObjectTableRealisationType1) Serialize(writeBuffer utils.WriteBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ComObjectTableRealisationType1) isComObjectTableRealisationType1() bool {
+	return true
 }
 
 func (m *_ComObjectTableRealisationType1) String() string {

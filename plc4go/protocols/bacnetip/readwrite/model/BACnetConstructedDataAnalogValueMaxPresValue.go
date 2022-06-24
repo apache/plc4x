@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAnalogValueMaxPresValue is the corresponding interface of BACnetConstructedDataAnalogValueMaxPresValue
 type BACnetConstructedDataAnalogValueMaxPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAnalogValueMaxPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogValueMaxPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAnalogValueMaxPresValueExactly interface {
+	BACnetConstructedDataAnalogValueMaxPresValue
+	isBACnetConstructedDataAnalogValueMaxPresValue() bool
 }
 
 // _BACnetConstructedDataAnalogValueMaxPresValue is the data-structure of this message
 type _BACnetConstructedDataAnalogValueMaxPresValue struct {
 	*_BACnetConstructedData
 	MaxPresValue BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAnalogValueMaxPresValueParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAnalogValueMaxPresValue{
-		MaxPresValue:           maxPresValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MaxPresValue: maxPresValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAnalogValueMaxPresValue) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAnalogValueMaxPresValue) isBACnetConstructedDataAnalogValueMaxPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAnalogValueMaxPresValue) String() string {

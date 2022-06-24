@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataLastNotifyRecord is the corresponding interface of BACnetConstructedDataLastNotifyRecord
 type BACnetConstructedDataLastNotifyRecord interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetLastNotifyRecord returns LastNotifyRecord (property field)
 	GetLastNotifyRecord() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataLastNotifyRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataLastNotifyRecord.
+// This is useful for switch cases.
+type BACnetConstructedDataLastNotifyRecordExactly interface {
+	BACnetConstructedDataLastNotifyRecord
+	isBACnetConstructedDataLastNotifyRecord() bool
 }
 
 // _BACnetConstructedDataLastNotifyRecord is the data-structure of this message
 type _BACnetConstructedDataLastNotifyRecord struct {
 	*_BACnetConstructedData
 	LastNotifyRecord BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataLastNotifyRecordParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataLastNotifyRecord{
-		LastNotifyRecord:       lastNotifyRecord,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		LastNotifyRecord: lastNotifyRecord,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataLastNotifyRecord) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecord) isBACnetConstructedDataLastNotifyRecord() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataLastNotifyRecord) String() string {

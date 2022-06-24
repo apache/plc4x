@@ -28,24 +28,24 @@ import (
 
 // S7PayloadUserData is the corresponding interface of S7PayloadUserData
 type S7PayloadUserData interface {
+	utils.LengthAware
+	utils.Serializable
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7PayloadUserDataItem
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// S7PayloadUserDataExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserData.
+// This is useful for switch cases.
+type S7PayloadUserDataExactly interface {
+	S7PayloadUserData
+	isS7PayloadUserData() bool
 }
 
 // _S7PayloadUserData is the data-structure of this message
 type _S7PayloadUserData struct {
 	*_S7Payload
 	Items []S7PayloadUserDataItem
-
-	// Arguments.
-	Parameter S7Parameter
 }
 
 ///////////////////////////////////////////////////////////
@@ -148,6 +148,10 @@ func S7PayloadUserDataParse(readBuffer utils.ReadBuffer, messageType uint8, para
 	}
 	// Count array
 	items := make([]S7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).GetItems())))
+	// This happens when the size is set conditional to 0
+	if len(items) == 0 {
+		items = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).GetItems()))); curItem++ {
 			_item, _err := S7PayloadUserDataItemParse(readBuffer, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionType(), CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuSubfunction())
@@ -167,8 +171,10 @@ func S7PayloadUserDataParse(readBuffer utils.ReadBuffer, messageType uint8, para
 
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserData{
-		Items:      items,
-		_S7Payload: &_S7Payload{},
+		Items: items,
+		_S7Payload: &_S7Payload{
+			Parameter: parameter,
+		},
 	}
 	_child._S7Payload._S7PayloadChildRequirements = _child
 	return _child, nil
@@ -183,19 +189,17 @@ func (m *_S7PayloadUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (items)
-		if m.GetItems() != nil {
-			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for items")
+		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for items")
+		}
+		for _, _element := range m.GetItems() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
-			for _, _element := range m.GetItems() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'items' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for items")
-			}
+		}
+		if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for items")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserData"); popErr != nil {
@@ -204,6 +208,10 @@ func (m *_S7PayloadUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_S7PayloadUserData) isS7PayloadUserData() bool {
+	return true
 }
 
 func (m *_S7PayloadUserData) String() string {

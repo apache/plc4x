@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"net"
 	"net/url"
@@ -80,11 +81,19 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 	}
 	var connectTimeout uint32 = 1000
 	if val, ok := options["connect-timeout"]; ok {
-		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
-		if err != nil {
+		if parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32); err != nil {
 			return nil, errors.Wrap(err, "error setting connect-timeout")
 		} else {
 			connectTimeout = uint32(parsedConnectTimeout)
+		}
+	}
+
+	var soReUse bool
+	if val, ok := options["so-reuse"]; ok {
+		if parseBool, err := strconv.ParseBool(val[0]); err != nil {
+			return nil, errors.Wrap(err, "error setting so-reuse")
+		} else {
+			soReUse = parseBool
 		}
 	}
 
@@ -94,31 +103,25 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	transportInstance := NewTransportInstance(localAddress, remoteAddress, connectTimeout, &m)
-
-	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-		if transportInstance, ok := typ.(transports.TransportInstance); ok {
-			return transportInstance, nil
-		}
-		return nil, errors.New("couldn't cast to TransportInstance")
-	}
-	return castFunc(transportInstance)
+	return NewTransportInstance(localAddress, remoteAddress, connectTimeout, soReUse, &m), nil
 }
 
 type TransportInstance struct {
 	LocalAddress   *net.UDPAddr
 	RemoteAddress  *net.UDPAddr
 	ConnectTimeout uint32
+	SoReUse        bool
 	transport      *Transport
 	udpConn        *net.UDPConn
 	reader         *bufio.Reader
 }
 
-func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
+func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, soReUse bool, transport *Transport) *TransportInstance {
 	return &TransportInstance{
 		LocalAddress:   localAddress,
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
+		SoReUse:        soReUse,
 		transport:      transport,
 	}
 }
@@ -140,9 +143,20 @@ func (m *TransportInstance) Connect() error {
 
 	// "connect" to the remote
 	var err error
-	m.udpConn, err = net.ListenUDP("udp", m.LocalAddress)
-	if err != nil {
-		return errors.Wrap(err, "error connecting to remote address")
+	if m.RemoteAddress != nil {
+		if m.udpConn, err = net.DialUDP("upd", m.LocalAddress, m.RemoteAddress); err != nil {
+			return errors.Wrap(err, "error connecting to remote address")
+		}
+	} else if m.SoReUse {
+		if packetConn, err := reuseport.ListenPacket("udp", m.LocalAddress.String()); err != nil {
+			return errors.Wrap(err, "error connecting to local address")
+		} else {
+			m.udpConn = packetConn.(*net.UDPConn)
+		}
+	} else {
+		if m.udpConn, err = net.ListenUDP("udp", m.LocalAddress); err != nil {
+			return errors.Wrap(err, "error connecting to local address")
+		}
 	}
 
 	// TODO: Start a worker that uses m.udpConn.ReadFromUDP() to fill a buffer

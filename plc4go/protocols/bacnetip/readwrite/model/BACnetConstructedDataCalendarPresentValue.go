@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCalendarPresentValue is the corresponding interface of BACnetConstructedDataCalendarPresentValue
 type BACnetConstructedDataCalendarPresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCalendarPresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCalendarPresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataCalendarPresentValueExactly interface {
+	BACnetConstructedDataCalendarPresentValue
+	isBACnetConstructedDataCalendarPresentValue() bool
 }
 
 // _BACnetConstructedDataCalendarPresentValue is the data-structure of this message
 type _BACnetConstructedDataCalendarPresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagBoolean
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCalendarPresentValueParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCalendarPresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCalendarPresentValue) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCalendarPresentValue) isBACnetConstructedDataCalendarPresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCalendarPresentValue) String() string {

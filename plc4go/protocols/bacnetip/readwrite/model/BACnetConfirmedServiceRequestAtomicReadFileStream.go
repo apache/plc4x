@@ -28,17 +28,20 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicReadFileStream is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFileStream
 type BACnetConfirmedServiceRequestAtomicReadFileStream interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
 	// GetRequestOctetCount returns RequestOctetCount (property field)
 	GetRequestOctetCount() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestAtomicReadFileStreamExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFileStream.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestAtomicReadFileStreamExactly interface {
+	BACnetConfirmedServiceRequestAtomicReadFileStream
+	isBACnetConfirmedServiceRequestAtomicReadFileStream() bool
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFileStream is the data-structure of this message
@@ -219,6 +222,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize(writeBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) isBACnetConfirmedServiceRequestAtomicReadFileStream() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) String() string {

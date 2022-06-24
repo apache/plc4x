@@ -28,17 +28,20 @@ import (
 
 // NLMInitalizeRoutingTableAck is the corresponding interface of NLMInitalizeRoutingTableAck
 type NLMInitalizeRoutingTableAck interface {
+	utils.LengthAware
+	utils.Serializable
 	NLM
 	// GetNumberOfPorts returns NumberOfPorts (property field)
 	GetNumberOfPorts() uint8
 	// GetPortMappings returns PortMappings (property field)
 	GetPortMappings() []NLMInitalizeRoutingTablePortMapping
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NLMInitalizeRoutingTableAckExactly can be used when we want exactly this type and not a type which fulfills NLMInitalizeRoutingTableAck.
+// This is useful for switch cases.
+type NLMInitalizeRoutingTableAckExactly interface {
+	NLMInitalizeRoutingTableAck
+	isNLMInitalizeRoutingTableAck() bool
 }
 
 // _NLMInitalizeRoutingTableAck is the data-structure of this message
@@ -46,9 +49,6 @@ type _NLMInitalizeRoutingTableAck struct {
 	*_NLM
 	NumberOfPorts uint8
 	PortMappings  []NLMInitalizeRoutingTablePortMapping
-
-	// Arguments.
-	ApduLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -164,6 +164,10 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 	}
 	// Count array
 	portMappings := make([]NLMInitalizeRoutingTablePortMapping, numberOfPorts)
+	// This happens when the size is set conditional to 0
+	if len(portMappings) == 0 {
+		portMappings = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfPorts); curItem++ {
 			_item, _err := NLMInitalizeRoutingTablePortMappingParse(readBuffer)
@@ -185,7 +189,9 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 	_child := &_NLMInitalizeRoutingTableAck{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		_NLM:          &_NLM{},
+		_NLM: &_NLM{
+			ApduLength: apduLength,
+		},
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil
@@ -207,19 +213,17 @@ func (m *_NLMInitalizeRoutingTableAck) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 
 		// Array Field (portMappings)
-		if m.GetPortMappings() != nil {
-			if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for portMappings")
+		if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for portMappings")
+		}
+		for _, _element := range m.GetPortMappings() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'portMappings' field")
 			}
-			for _, _element := range m.GetPortMappings() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'portMappings' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("portMappings", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for portMappings")
-			}
+		}
+		if popErr := writeBuffer.PopContext("portMappings", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for portMappings")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMInitalizeRoutingTableAck"); popErr != nil {
@@ -228,6 +232,10 @@ func (m *_NLMInitalizeRoutingTableAck) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NLMInitalizeRoutingTableAck) isNLMInitalizeRoutingTableAck() bool {
+	return true
 }
 
 func (m *_NLMInitalizeRoutingTableAck) String() string {

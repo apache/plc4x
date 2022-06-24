@@ -28,15 +28,18 @@ import (
 
 // BACnetConfirmedServiceRequestWritePropertyMultiple is the corresponding interface of BACnetConfirmedServiceRequestWritePropertyMultiple
 type BACnetConfirmedServiceRequestWritePropertyMultiple interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetData returns Data (property field)
 	GetData() []BACnetWriteAccessSpecification
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestWritePropertyMultipleExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestWritePropertyMultiple.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestWritePropertyMultipleExactly interface {
+	BACnetConfirmedServiceRequestWritePropertyMultiple
+	isBACnetConfirmedServiceRequestWritePropertyMultiple() bool
 }
 
 // _BACnetConfirmedServiceRequestWritePropertyMultiple is the data-structure of this message
@@ -45,7 +48,6 @@ type _BACnetConfirmedServiceRequestWritePropertyMultiple struct {
 	Data []BACnetWriteAccessSpecification
 
 	// Arguments.
-	ServiceRequestLength        uint16
 	ServiceRequestPayloadLength uint16
 }
 
@@ -144,7 +146,7 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Length array
-	data := make([]BACnetWriteAccessSpecification, 0)
+	var data []BACnetWriteAccessSpecification
 	{
 		_dataLength := serviceRequestPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
@@ -166,8 +168,10 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestWritePropertyMultiple{
-		Data:                           data,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		Data: data,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -182,19 +186,17 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(writeBuf
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
+		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for data")
+		}
+		for _, _element := range m.GetData() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.GetData() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
+		}
+		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for data")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); popErr != nil {
@@ -203,6 +205,10 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(writeBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) isBACnetConfirmedServiceRequestWritePropertyMultiple() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) String() string {

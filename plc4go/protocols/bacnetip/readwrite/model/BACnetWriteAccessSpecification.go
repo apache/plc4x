@@ -28,6 +28,8 @@ import (
 
 // BACnetWriteAccessSpecification is the corresponding interface of BACnetWriteAccessSpecification
 type BACnetWriteAccessSpecification interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
@@ -36,12 +38,13 @@ type BACnetWriteAccessSpecification interface {
 	GetListOfPropertyWriteDefinition() []BACnetPropertyWriteDefinition
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetWriteAccessSpecificationExactly can be used when we want exactly this type and not a type which fulfills BACnetWriteAccessSpecification.
+// This is useful for switch cases.
+type BACnetWriteAccessSpecificationExactly interface {
+	BACnetWriteAccessSpecification
+	isBACnetWriteAccessSpecification() bool
 }
 
 // _BACnetWriteAccessSpecification is the data-structure of this message
@@ -168,7 +171,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfPropertyWriteDefinition")
 	}
 	// Terminated array
-	listOfPropertyWriteDefinition := make([]BACnetPropertyWriteDefinition, 0)
+	var listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
 			_item, _err := BACnetPropertyWriteDefinitionParse(readBuffer, objectIdentifier.GetObjectType())
@@ -236,19 +239,17 @@ func (m *_BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffe
 	}
 
 	// Array Field (listOfPropertyWriteDefinition)
-	if m.GetListOfPropertyWriteDefinition() != nil {
-		if pushErr := writeBuffer.PushContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfPropertyWriteDefinition")
+	if pushErr := writeBuffer.PushContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for listOfPropertyWriteDefinition")
+	}
+	for _, _element := range m.GetListOfPropertyWriteDefinition() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyWriteDefinition' field")
 		}
-		for _, _element := range m.GetListOfPropertyWriteDefinition() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyWriteDefinition' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfPropertyWriteDefinition")
-		}
+	}
+	if popErr := writeBuffer.PopContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for listOfPropertyWriteDefinition")
 	}
 
 	// Simple Field (closingTag)
@@ -267,6 +268,10 @@ func (m *_BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffe
 		return errors.Wrap(popErr, "Error popping for BACnetWriteAccessSpecification")
 	}
 	return nil
+}
+
+func (m *_BACnetWriteAccessSpecification) isBACnetWriteAccessSpecification() bool {
+	return true
 }
 
 func (m *_BACnetWriteAccessSpecification) String() string {

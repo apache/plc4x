@@ -28,17 +28,20 @@ import (
 
 // AdsReadResponse is the corresponding interface of AdsReadResponse
 type AdsReadResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetData returns Data (property field)
 	GetData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsReadResponseExactly can be used when we want exactly this type and not a type which fulfills AdsReadResponse.
+// This is useful for switch cases.
+type AdsReadResponseExactly interface {
+	AdsReadResponse
+	isAdsReadResponse() bool
 }
 
 // _AdsReadResponse is the data-structure of this message
@@ -218,12 +221,9 @@ func (m *_AdsReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (data)
-		if m.GetData() != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Byte Array field (data)
+		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsReadResponse"); popErr != nil {
@@ -232,6 +232,10 @@ func (m *_AdsReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsReadResponse) isAdsReadResponse() bool {
+	return true
 }
 
 func (m *_AdsReadResponse) String() string {

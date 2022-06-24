@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataMachineRoomID is the corresponding interface of BACnetConstructedDataMachineRoomID
 type BACnetConstructedDataMachineRoomID interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMachineRoomId returns MachineRoomId (property field)
 	GetMachineRoomId() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataMachineRoomIDExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataMachineRoomID.
+// This is useful for switch cases.
+type BACnetConstructedDataMachineRoomIDExactly interface {
+	BACnetConstructedDataMachineRoomID
+	isBACnetConstructedDataMachineRoomID() bool
 }
 
 // _BACnetConstructedDataMachineRoomID is the data-structure of this message
 type _BACnetConstructedDataMachineRoomID struct {
 	*_BACnetConstructedData
 	MachineRoomId BACnetApplicationTagObjectIdentifier
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataMachineRoomID{
-		MachineRoomId:          machineRoomId,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MachineRoomId: machineRoomId,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataMachineRoomID) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataMachineRoomID) isBACnetConstructedDataMachineRoomID() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataMachineRoomID) String() string {

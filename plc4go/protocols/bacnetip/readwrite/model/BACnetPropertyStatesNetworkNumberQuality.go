@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesNetworkNumberQuality is the corresponding interface of BACnetPropertyStatesNetworkNumberQuality
 type BACnetPropertyStatesNetworkNumberQuality interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetNetworkNumberQuality returns NetworkNumberQuality (property field)
 	GetNetworkNumberQuality() BACnetNetworkNumberQualityTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesNetworkNumberQualityExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesNetworkNumberQuality.
+// This is useful for switch cases.
+type BACnetPropertyStatesNetworkNumberQualityExactly interface {
+	BACnetPropertyStatesNetworkNumberQuality
+	isBACnetPropertyStatesNetworkNumberQuality() bool
 }
 
 // _BACnetPropertyStatesNetworkNumberQuality is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) Serialize(writeBuffer utils.
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesNetworkNumberQuality) isBACnetPropertyStatesNetworkNumberQuality() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesNetworkNumberQuality) String() string {

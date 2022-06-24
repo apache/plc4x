@@ -28,6 +28,8 @@ import (
 
 // AdsDeviceNotificationRequest is the corresponding interface of AdsDeviceNotificationRequest
 type AdsDeviceNotificationRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	AdsData
 	// GetLength returns Length (property field)
 	GetLength() uint32
@@ -35,12 +37,13 @@ type AdsDeviceNotificationRequest interface {
 	GetStamps() uint32
 	// GetAdsStampHeaders returns AdsStampHeaders (property field)
 	GetAdsStampHeaders() []AdsStampHeader
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// AdsDeviceNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills AdsDeviceNotificationRequest.
+// This is useful for switch cases.
+type AdsDeviceNotificationRequestExactly interface {
+	AdsDeviceNotificationRequest
+	isAdsDeviceNotificationRequest() bool
 }
 
 // _AdsDeviceNotificationRequest is the data-structure of this message
@@ -181,6 +184,10 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 	}
 	// Count array
 	adsStampHeaders := make([]AdsStampHeader, stamps)
+	// This happens when the size is set conditional to 0
+	if len(adsStampHeaders) == 0 {
+		adsStampHeaders = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
 			_item, _err := AdsStampHeaderParse(readBuffer)
@@ -232,19 +239,17 @@ func (m *_AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer)
 		}
 
 		// Array Field (adsStampHeaders)
-		if m.GetAdsStampHeaders() != nil {
-			if pushErr := writeBuffer.PushContext("adsStampHeaders", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for adsStampHeaders")
+		if pushErr := writeBuffer.PushContext("adsStampHeaders", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for adsStampHeaders")
+		}
+		for _, _element := range m.GetAdsStampHeaders() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'adsStampHeaders' field")
 			}
-			for _, _element := range m.GetAdsStampHeaders() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'adsStampHeaders' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("adsStampHeaders", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for adsStampHeaders")
-			}
+		}
+		if popErr := writeBuffer.PopContext("adsStampHeaders", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for adsStampHeaders")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDeviceNotificationRequest"); popErr != nil {
@@ -253,6 +258,10 @@ func (m *_AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_AdsDeviceNotificationRequest) isAdsDeviceNotificationRequest() bool {
+	return true
 }
 
 func (m *_AdsDeviceNotificationRequest) String() string {

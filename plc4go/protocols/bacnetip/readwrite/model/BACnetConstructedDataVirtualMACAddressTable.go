@@ -28,25 +28,24 @@ import (
 
 // BACnetConstructedDataVirtualMACAddressTable is the corresponding interface of BACnetConstructedDataVirtualMACAddressTable
 type BACnetConstructedDataVirtualMACAddressTable interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetVirtualMacAddressTable returns VirtualMacAddressTable (property field)
 	GetVirtualMacAddressTable() []BACnetVMACEntry
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataVirtualMACAddressTableExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataVirtualMACAddressTable.
+// This is useful for switch cases.
+type BACnetConstructedDataVirtualMACAddressTableExactly interface {
+	BACnetConstructedDataVirtualMACAddressTable
+	isBACnetConstructedDataVirtualMACAddressTable() bool
 }
 
 // _BACnetConstructedDataVirtualMACAddressTable is the data-structure of this message
 type _BACnetConstructedDataVirtualMACAddressTable struct {
 	*_BACnetConstructedData
 	VirtualMacAddressTable []BACnetVMACEntry
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,7 +150,7 @@ func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for virtualMacAddressTable")
 	}
 	// Terminated array
-	virtualMacAddressTable := make([]BACnetVMACEntry, 0)
+	var virtualMacAddressTable []BACnetVMACEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetVMACEntryParse(readBuffer)
@@ -173,7 +172,10 @@ func BACnetConstructedDataVirtualMACAddressTableParse(readBuffer utils.ReadBuffe
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataVirtualMACAddressTable{
 		VirtualMacAddressTable: virtualMacAddressTable,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -188,19 +190,17 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) Serialize(writeBuffer uti
 		}
 
 		// Array Field (virtualMacAddressTable)
-		if m.GetVirtualMacAddressTable() != nil {
-			if pushErr := writeBuffer.PushContext("virtualMacAddressTable", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for virtualMacAddressTable")
+		if pushErr := writeBuffer.PushContext("virtualMacAddressTable", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for virtualMacAddressTable")
+		}
+		for _, _element := range m.GetVirtualMacAddressTable() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'virtualMacAddressTable' field")
 			}
-			for _, _element := range m.GetVirtualMacAddressTable() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'virtualMacAddressTable' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("virtualMacAddressTable", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for virtualMacAddressTable")
-			}
+		}
+		if popErr := writeBuffer.PopContext("virtualMacAddressTable", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for virtualMacAddressTable")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVirtualMACAddressTable"); popErr != nil {
@@ -209,6 +209,10 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) Serialize(writeBuffer uti
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataVirtualMACAddressTable) isBACnetConstructedDataVirtualMACAddressTable() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataVirtualMACAddressTable) String() string {

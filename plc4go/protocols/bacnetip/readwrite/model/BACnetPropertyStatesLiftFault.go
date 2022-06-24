@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesLiftFault is the corresponding interface of BACnetPropertyStatesLiftFault
 type BACnetPropertyStatesLiftFault interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetLiftFault returns LiftFault (property field)
 	GetLiftFault() BACnetLiftFaultTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesLiftFaultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesLiftFault.
+// This is useful for switch cases.
+type BACnetPropertyStatesLiftFaultExactly interface {
+	BACnetPropertyStatesLiftFault
+	isBACnetPropertyStatesLiftFault() bool
 }
 
 // _BACnetPropertyStatesLiftFault is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesLiftFault) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesLiftFault) isBACnetPropertyStatesLiftFault() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesLiftFault) String() string {

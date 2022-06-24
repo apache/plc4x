@@ -28,24 +28,24 @@ import (
 
 // ApduDataExtAuthorizeResponse is the corresponding interface of ApduDataExtAuthorizeResponse
 type ApduDataExtAuthorizeResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataExtAuthorizeResponseExactly can be used when we want exactly this type and not a type which fulfills ApduDataExtAuthorizeResponse.
+// This is useful for switch cases.
+type ApduDataExtAuthorizeResponseExactly interface {
+	ApduDataExtAuthorizeResponse
+	isApduDataExtAuthorizeResponse() bool
 }
 
 // _ApduDataExtAuthorizeResponse is the data-structure of this message
 type _ApduDataExtAuthorizeResponse struct {
 	*_ApduDataExt
 	Level uint8
-
-	// Arguments.
-	Length uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -146,8 +146,10 @@ func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8
 
 	// Create a partially initialized instance
 	_child := &_ApduDataExtAuthorizeResponse{
-		Level:        level,
-		_ApduDataExt: &_ApduDataExt{},
+		Level: level,
+		_ApduDataExt: &_ApduDataExt{
+			Length: length,
+		},
 	}
 	_child._ApduDataExt._ApduDataExtChildRequirements = _child
 	return _child, nil
@@ -174,6 +176,10 @@ func (m *_ApduDataExtAuthorizeResponse) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataExtAuthorizeResponse) isApduDataExtAuthorizeResponse() bool {
+	return true
 }
 
 func (m *_ApduDataExtAuthorizeResponse) String() string {

@@ -28,16 +28,19 @@ import (
 
 // BACnetTagPayloadEnumerated is the corresponding interface of BACnetTagPayloadEnumerated
 type BACnetTagPayloadEnumerated interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetData returns Data (property field)
 	GetData() []byte
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadEnumeratedExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadEnumerated.
+// This is useful for switch cases.
+type BACnetTagPayloadEnumeratedExactly interface {
+	BACnetTagPayloadEnumerated
+	isBACnetTagPayloadEnumerated() bool
 }
 
 // _BACnetTagPayloadEnumerated is the data-structure of this message
@@ -152,12 +155,9 @@ func (m *_BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	// Array Field (data)
-	if m.GetData() != nil {
-		// Byte Array field (data)
-		_writeArrayErr := writeBuffer.WriteByteArray("data", m.GetData())
-		if _writeArrayErr != nil {
-			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-		}
+	// Byte Array field (data)
+	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 	// Virtual field
 	if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
@@ -168,6 +168,10 @@ func (m *_BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) e
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadEnumerated")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadEnumerated) isBACnetTagPayloadEnumerated() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadEnumerated) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetCalendarEntryDate is the corresponding interface of BACnetCalendarEntryDate
 type BACnetCalendarEntryDate interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetCalendarEntry
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetContextTagDate
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetCalendarEntryDateExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntryDate.
+// This is useful for switch cases.
+type BACnetCalendarEntryDateExactly interface {
+	BACnetCalendarEntryDate
+	isBACnetCalendarEntryDate() bool
 }
 
 // _BACnetCalendarEntryDate is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetCalendarEntryDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetCalendarEntryDate) isBACnetCalendarEntryDate() bool {
+	return true
 }
 
 func (m *_BACnetCalendarEntryDate) String() string {

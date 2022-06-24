@@ -28,17 +28,20 @@ import (
 
 // ModbusAsciiADU is the corresponding interface of ModbusAsciiADU
 type ModbusAsciiADU interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusADU
 	// GetAddress returns Address (property field)
 	GetAddress() uint8
 	// GetPdu returns Pdu (property field)
 	GetPdu() ModbusPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusAsciiADUExactly can be used when we want exactly this type and not a type which fulfills ModbusAsciiADU.
+// This is useful for switch cases.
+type ModbusAsciiADUExactly interface {
+	ModbusAsciiADU
+	isModbusAsciiADU() bool
 }
 
 // _ModbusAsciiADU is the data-structure of this message
@@ -46,9 +49,6 @@ type _ModbusAsciiADU struct {
 	*_ModbusADU
 	Address uint8
 	Pdu     ModbusPDU
-
-	// Arguments.
-	Response bool
 }
 
 ///////////////////////////////////////////////////////////
@@ -188,9 +188,11 @@ func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, res
 
 	// Create a partially initialized instance
 	_child := &_ModbusAsciiADU{
-		Address:    address,
-		Pdu:        pdu,
-		_ModbusADU: &_ModbusADU{},
+		Address: address,
+		Pdu:     pdu,
+		_ModbusADU: &_ModbusADU{
+			Response: response,
+		},
 	}
 	_child._ModbusADU._ModbusADUChildRequirements = _child
 	return _child, nil
@@ -241,6 +243,10 @@ func (m *_ModbusAsciiADU) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusAsciiADU) isModbusAsciiADU() bool {
+	return true
 }
 
 func (m *_ModbusAsciiADU) String() string {

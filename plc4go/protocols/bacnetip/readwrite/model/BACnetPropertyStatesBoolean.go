@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesBoolean is the corresponding interface of BACnetPropertyStatesBoolean
 type BACnetPropertyStatesBoolean interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesBooleanExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesBoolean.
+// This is useful for switch cases.
+type BACnetPropertyStatesBooleanExactly interface {
+	BACnetPropertyStatesBoolean
+	isBACnetPropertyStatesBoolean() bool
 }
 
 // _BACnetPropertyStatesBoolean is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesBoolean) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesBoolean) isBACnetPropertyStatesBoolean() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesBoolean) String() string {

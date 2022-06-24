@@ -28,15 +28,18 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntryTime is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntryTime
 type BACnetFaultParameterFaultExtendedParametersEntryTime interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryTimeExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntryTime.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultExtendedParametersEntryTimeExactly interface {
+	BACnetFaultParameterFaultExtendedParametersEntryTime
+	isBACnetFaultParameterFaultExtendedParametersEntryTime() bool
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryTime is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) Serialize(writeB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) isBACnetFaultParameterFaultExtendedParametersEntryTime() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) String() string {

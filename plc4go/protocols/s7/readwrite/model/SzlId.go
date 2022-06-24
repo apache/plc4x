@@ -28,18 +28,21 @@ import (
 
 // SzlId is the corresponding interface of SzlId
 type SzlId interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetTypeClass returns TypeClass (property field)
 	GetTypeClass() SzlModuleTypeClass
 	// GetSublistExtract returns SublistExtract (property field)
 	GetSublistExtract() uint8
 	// GetSublistList returns SublistList (property field)
 	GetSublistList() SzlSublist
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// SzlIdExactly can be used when we want exactly this type and not a type which fulfills SzlId.
+// This is useful for switch cases.
+type SzlIdExactly interface {
+	SzlId
+	isSzlId() bool
 }
 
 // _SzlId is the data-structure of this message
@@ -206,6 +209,10 @@ func (m *_SzlId) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for SzlId")
 	}
 	return nil
+}
+
+func (m *_SzlId) isSzlId() bool {
+	return true
 }
 
 func (m *_SzlId) String() string {

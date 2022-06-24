@@ -23,7 +23,8 @@
 
 [discriminatedType EipPacket byteOrder='BIG_ENDIAN'
     [discriminator uint 16 command]
-    [implicit      uint 16 len 'lengthInBytes - 24']
+    // TODO: was len before but that is a reserved keyword in golang and as long as we don't have a language agnostic neutralizer this clashes
+    [implicit      uint 16 packetLength 'lengthInBytes - 24']
     [simple        uint 32 sessionHandle]
     [simple        uint 32 status]
     [array         uint 8  senderContext count '8']
@@ -35,10 +36,10 @@
             ]
             ['0x0066' EipDisconnectRequest
             ]
-            ['0x006F' CipRRData(uint 16 len)
+            ['0x006F' CipRRData(uint 16 packetLength)
                 [reserved  uint    32    '0x00000000']
                 [reserved  uint    16    '0x0000']
-                [simple    CipExchange('len - 6')   exchange]
+                [simple    CipExchange('packetLength - 6')   exchange]
             ]
         ]
 ]

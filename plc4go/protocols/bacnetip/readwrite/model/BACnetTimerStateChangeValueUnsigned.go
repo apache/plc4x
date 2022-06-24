@@ -28,24 +28,24 @@ import (
 
 // BACnetTimerStateChangeValueUnsigned is the corresponding interface of BACnetTimerStateChangeValueUnsigned
 type BACnetTimerStateChangeValueUnsigned interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetTimerStateChangeValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTimerStateChangeValueUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValueUnsigned.
+// This is useful for switch cases.
+type BACnetTimerStateChangeValueUnsignedExactly interface {
+	BACnetTimerStateChangeValueUnsigned
+	isBACnetTimerStateChangeValueUnsigned() bool
 }
 
 // _BACnetTimerStateChangeValueUnsigned is the data-structure of this message
 type _BACnetTimerStateChangeValueUnsigned struct {
 	*_BACnetTimerStateChangeValue
 	UnsignedValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,8 +150,10 @@ func BACnetTimerStateChangeValueUnsignedParse(readBuffer utils.ReadBuffer, objec
 
 	// Create a partially initialized instance
 	_child := &_BACnetTimerStateChangeValueUnsigned{
-		UnsignedValue:                unsignedValue,
-		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{},
+		UnsignedValue: unsignedValue,
+		_BACnetTimerStateChangeValue: &_BACnetTimerStateChangeValue{
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetTimerStateChangeValue._BACnetTimerStateChangeValueChildRequirements = _child
 	return _child, nil
@@ -183,6 +185,10 @@ func (m *_BACnetTimerStateChangeValueUnsigned) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetTimerStateChangeValueUnsigned) isBACnetTimerStateChangeValueUnsigned() bool {
+	return true
 }
 
 func (m *_BACnetTimerStateChangeValueUnsigned) String() string {

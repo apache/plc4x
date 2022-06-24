@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataOutputUnits is the corresponding interface of BACnetConstructedDataOutputUnits
 type BACnetConstructedDataOutputUnits interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataOutputUnitsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataOutputUnits.
+// This is useful for switch cases.
+type BACnetConstructedDataOutputUnitsExactly interface {
+	BACnetConstructedDataOutputUnits
+	isBACnetConstructedDataOutputUnits() bool
 }
 
 // _BACnetConstructedDataOutputUnits is the data-structure of this message
 type _BACnetConstructedDataOutputUnits struct {
 	*_BACnetConstructedData
 	Units BACnetEngineeringUnitsTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataOutputUnitsParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataOutputUnits{
-		Units:                  units,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		Units: units,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataOutputUnits) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataOutputUnits) isBACnetConstructedDataOutputUnits() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataOutputUnits) String() string {

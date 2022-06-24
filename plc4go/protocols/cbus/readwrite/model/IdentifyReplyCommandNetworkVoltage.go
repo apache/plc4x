@@ -33,17 +33,20 @@ const IdentifyReplyCommandNetworkVoltage_V byte = 0x56
 
 // IdentifyReplyCommandNetworkVoltage is the corresponding interface of IdentifyReplyCommandNetworkVoltage
 type IdentifyReplyCommandNetworkVoltage interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
 	// GetVolts returns Volts (property field)
 	GetVolts() string
 	// GetVoltsDecimalPlace returns VoltsDecimalPlace (property field)
 	GetVoltsDecimalPlace() string
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandNetworkVoltageExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandNetworkVoltage.
+// This is useful for switch cases.
+type IdentifyReplyCommandNetworkVoltageExactly interface {
+	IdentifyReplyCommandNetworkVoltage
+	isIdentifyReplyCommandNetworkVoltage() bool
 }
 
 // _IdentifyReplyCommandNetworkVoltage is the data-structure of this message
@@ -255,6 +258,10 @@ func (m *_IdentifyReplyCommandNetworkVoltage) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltage) isIdentifyReplyCommandNetworkVoltage() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) String() string {

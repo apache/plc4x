@@ -28,17 +28,20 @@ import (
 
 // DescriptionResponse is the corresponding interface of DescriptionResponse
 type DescriptionResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetDibDeviceInfo returns DibDeviceInfo (property field)
 	GetDibDeviceInfo() DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DescriptionResponseExactly can be used when we want exactly this type and not a type which fulfills DescriptionResponse.
+// This is useful for switch cases.
+type DescriptionResponseExactly interface {
+	DescriptionResponse
+	isDescriptionResponse() bool
 }
 
 // _DescriptionResponse is the data-structure of this message
@@ -219,6 +222,10 @@ func (m *_DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DescriptionResponse) isDescriptionResponse() bool {
+	return true
 }
 
 func (m *_DescriptionResponse) String() string {

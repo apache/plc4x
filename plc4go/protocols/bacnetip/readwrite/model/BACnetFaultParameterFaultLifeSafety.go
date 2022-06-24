@@ -28,6 +28,8 @@ import (
 
 // BACnetFaultParameterFaultLifeSafety is the corresponding interface of BACnetFaultParameterFaultLifeSafety
 type BACnetFaultParameterFaultLifeSafety interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -37,12 +39,13 @@ type BACnetFaultParameterFaultLifeSafety interface {
 	GetModePropertyReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterFaultLifeSafetyExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultLifeSafety.
+// This is useful for switch cases.
+type BACnetFaultParameterFaultLifeSafetyExactly interface {
+	BACnetFaultParameterFaultLifeSafety
+	isBACnetFaultParameterFaultLifeSafety() bool
 }
 
 // _BACnetFaultParameterFaultLifeSafety is the data-structure of this message
@@ -291,6 +294,10 @@ func (m *_BACnetFaultParameterFaultLifeSafety) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetFaultParameterFaultLifeSafety) isBACnetFaultParameterFaultLifeSafety() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameterFaultLifeSafety) String() string {

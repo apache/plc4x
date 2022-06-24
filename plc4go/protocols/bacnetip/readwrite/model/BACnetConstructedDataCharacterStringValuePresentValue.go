@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCharacterStringValuePresentValue is the corresponding interface of BACnetConstructedDataCharacterStringValuePresentValue
 type BACnetConstructedDataCharacterStringValuePresentValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCharacterStringValuePresentValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCharacterStringValuePresentValue.
+// This is useful for switch cases.
+type BACnetConstructedDataCharacterStringValuePresentValueExactly interface {
+	BACnetConstructedDataCharacterStringValuePresentValue
+	isBACnetConstructedDataCharacterStringValuePresentValue() bool
 }
 
 // _BACnetConstructedDataCharacterStringValuePresentValue is the data-structure of this message
 type _BACnetConstructedDataCharacterStringValuePresentValue struct {
 	*_BACnetConstructedData
 	PresentValue BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCharacterStringValuePresentValueParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCharacterStringValuePresentValue{
-		PresentValue:           presentValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		PresentValue: presentValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCharacterStringValuePresentValue) Serialize(write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValue) isBACnetConstructedDataCharacterStringValuePresentValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCharacterStringValuePresentValue) String() string {

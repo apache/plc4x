@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestLifeSafetyOperation is the corresponding interface of BACnetConfirmedServiceRequestLifeSafetyOperation
 type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetRequestingProcessIdentifier returns RequestingProcessIdentifier (property field)
 	GetRequestingProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -39,12 +41,13 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	GetRequest() BACnetLifeSafetyOperationTagged
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestLifeSafetyOperationExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestLifeSafetyOperation.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestLifeSafetyOperationExactly interface {
+	BACnetConfirmedServiceRequestLifeSafetyOperation
+	isBACnetConfirmedServiceRequestLifeSafetyOperation() bool
 }
 
 // _BACnetConfirmedServiceRequestLifeSafetyOperation is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetConfirmedServiceRequestLifeSafetyOperation struct {
 	RequestingSource            BACnetContextTagCharacterString
 	Request                     BACnetLifeSafetyOperationTagged
 	ObjectIdentifier            BACnetContextTagObjectIdentifier
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -238,11 +238,13 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
-		RequestingProcessIdentifier:    requestingProcessIdentifier,
-		RequestingSource:               requestingSource,
-		Request:                        request,
-		ObjectIdentifier:               objectIdentifier,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		RequestingProcessIdentifier: requestingProcessIdentifier,
+		RequestingSource:            requestingSource,
+		Request:                     request,
+		ObjectIdentifier:            objectIdentifier,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -314,6 +316,10 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(writeBuffe
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) isBACnetConfirmedServiceRequestLifeSafetyOperation() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) String() string {

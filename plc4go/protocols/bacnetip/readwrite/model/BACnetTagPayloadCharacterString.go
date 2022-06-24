@@ -28,18 +28,21 @@ import (
 
 // BACnetTagPayloadCharacterString is the corresponding interface of BACnetTagPayloadCharacterString
 type BACnetTagPayloadCharacterString interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
 	// GetValue returns Value (property field)
 	GetValue() string
 	// GetActualLengthInBit returns ActualLengthInBit (virtual field)
 	GetActualLengthInBit() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetTagPayloadCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetTagPayloadCharacterString.
+// This is useful for switch cases.
+type BACnetTagPayloadCharacterStringExactly interface {
+	BACnetTagPayloadCharacterString
+	isBACnetTagPayloadCharacterString() bool
 }
 
 // _BACnetTagPayloadCharacterString is the data-structure of this message
@@ -200,6 +203,10 @@ func (m *_BACnetTagPayloadCharacterString) Serialize(writeBuffer utils.WriteBuff
 		return errors.Wrap(popErr, "Error popping for BACnetTagPayloadCharacterString")
 	}
 	return nil
+}
+
+func (m *_BACnetTagPayloadCharacterString) isBACnetTagPayloadCharacterString() bool {
+	return true
 }
 
 func (m *_BACnetTagPayloadCharacterString) String() string {

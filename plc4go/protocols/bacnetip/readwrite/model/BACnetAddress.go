@@ -28,6 +28,8 @@ import (
 
 // BACnetAddress is the corresponding interface of BACnetAddress
 type BACnetAddress interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetApplicationTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
@@ -38,12 +40,13 @@ type BACnetAddress interface {
 	GetIsLocalNetwork() bool
 	// GetIsBroadcast returns IsBroadcast (virtual field)
 	GetIsBroadcast() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAddressExactly can be used when we want exactly this type and not a type which fulfills BACnetAddress.
+// This is useful for switch cases.
+type BACnetAddressExactly interface {
+	BACnetAddress
+	isBACnetAddress() bool
 }
 
 // _BACnetAddress is the data-structure of this message
@@ -242,6 +245,10 @@ func (m *_BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetAddress")
 	}
 	return nil
+}
+
+func (m *_BACnetAddress) isBACnetAddress() bool {
+	return true
 }
 
 func (m *_BACnetAddress) String() string {

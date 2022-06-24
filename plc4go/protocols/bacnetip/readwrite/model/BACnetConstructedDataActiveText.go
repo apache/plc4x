@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataActiveText is the corresponding interface of BACnetConstructedDataActiveText
 type BACnetConstructedDataActiveText interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetActiveText returns ActiveText (property field)
 	GetActiveText() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataActiveTextExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataActiveText.
+// This is useful for switch cases.
+type BACnetConstructedDataActiveTextExactly interface {
+	BACnetConstructedDataActiveText
+	isBACnetConstructedDataActiveText() bool
 }
 
 // _BACnetConstructedDataActiveText is the data-structure of this message
 type _BACnetConstructedDataActiveText struct {
 	*_BACnetConstructedData
 	ActiveText BACnetApplicationTagCharacterString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataActiveTextParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataActiveText{
-		ActiveText:             activeText,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ActiveText: activeText,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataActiveText) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataActiveText) isBACnetConstructedDataActiveText() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataActiveText) String() string {

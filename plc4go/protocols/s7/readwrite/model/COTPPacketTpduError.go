@@ -28,17 +28,20 @@ import (
 
 // COTPPacketTpduError is the corresponding interface of COTPPacketTpduError
 type COTPPacketTpduError interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
 	// GetRejectCause returns RejectCause (property field)
 	GetRejectCause() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPPacketTpduErrorExactly can be used when we want exactly this type and not a type which fulfills COTPPacketTpduError.
+// This is useful for switch cases.
+type COTPPacketTpduErrorExactly interface {
+	COTPPacketTpduError
+	isCOTPPacketTpduError() bool
 }
 
 // _COTPPacketTpduError is the data-structure of this message
@@ -46,9 +49,6 @@ type _COTPPacketTpduError struct {
 	*_COTPPacket
 	DestinationReference uint16
 	RejectCause          uint8
-
-	// Arguments.
-	CotpLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -169,7 +169,9 @@ func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTP
 	_child := &_COTPPacketTpduError{
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
-		_COTPPacket:          &_COTPPacket{},
+		_COTPPacket: &_COTPPacket{
+			CotpLen: cotpLen,
+		},
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil
@@ -203,6 +205,10 @@ func (m *_COTPPacketTpduError) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketTpduError) isCOTPPacketTpduError() bool {
+	return true
 }
 
 func (m *_COTPPacketTpduError) String() string {

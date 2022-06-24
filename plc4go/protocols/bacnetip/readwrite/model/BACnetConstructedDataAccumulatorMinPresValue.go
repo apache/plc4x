@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAccumulatorMinPresValue is the corresponding interface of BACnetConstructedDataAccumulatorMinPresValue
 type BACnetConstructedDataAccumulatorMinPresValue interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAccumulatorMinPresValueExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAccumulatorMinPresValue.
+// This is useful for switch cases.
+type BACnetConstructedDataAccumulatorMinPresValueExactly interface {
+	BACnetConstructedDataAccumulatorMinPresValue
+	isBACnetConstructedDataAccumulatorMinPresValue() bool
 }
 
 // _BACnetConstructedDataAccumulatorMinPresValue is the data-structure of this message
 type _BACnetConstructedDataAccumulatorMinPresValue struct {
 	*_BACnetConstructedData
 	MinPresValue BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAccumulatorMinPresValueParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAccumulatorMinPresValue{
-		MinPresValue:           minPresValue,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		MinPresValue: minPresValue,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAccumulatorMinPresValue) Serialize(writeBuffer ut
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAccumulatorMinPresValue) isBACnetConstructedDataAccumulatorMinPresValue() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAccumulatorMinPresValue) String() string {

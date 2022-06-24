@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCOVIncrement is the corresponding interface of BACnetConstructedDataCOVIncrement
 type BACnetConstructedDataCOVIncrement interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCOVIncrementExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCOVIncrement.
+// This is useful for switch cases.
+type BACnetConstructedDataCOVIncrementExactly interface {
+	BACnetConstructedDataCOVIncrement
+	isBACnetConstructedDataCOVIncrement() bool
 }
 
 // _BACnetConstructedDataCOVIncrement is the data-structure of this message
 type _BACnetConstructedDataCOVIncrement struct {
 	*_BACnetConstructedData
 	CovIncrement BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumb
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCOVIncrement{
-		CovIncrement:           covIncrement,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CovIncrement: covIncrement,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCOVIncrement) Serialize(writeBuffer utils.WriteBu
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCOVIncrement) isBACnetConstructedDataCOVIncrement() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) String() string {

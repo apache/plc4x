@@ -28,13 +28,16 @@ import (
 
 // NotTransmittedToManyReTransmissions is the corresponding interface of NotTransmittedToManyReTransmissions
 type NotTransmittedToManyReTransmissions interface {
+	utils.LengthAware
+	utils.Serializable
 	Confirmation
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NotTransmittedToManyReTransmissionsExactly can be used when we want exactly this type and not a type which fulfills NotTransmittedToManyReTransmissions.
+// This is useful for switch cases.
+type NotTransmittedToManyReTransmissionsExactly interface {
+	NotTransmittedToManyReTransmissions
+	isNotTransmittedToManyReTransmissions() bool
 }
 
 // _NotTransmittedToManyReTransmissions is the data-structure of this message
@@ -137,6 +140,10 @@ func (m *_NotTransmittedToManyReTransmissions) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_NotTransmittedToManyReTransmissions) isNotTransmittedToManyReTransmissions() bool {
+	return true
 }
 
 func (m *_NotTransmittedToManyReTransmissions) String() string {

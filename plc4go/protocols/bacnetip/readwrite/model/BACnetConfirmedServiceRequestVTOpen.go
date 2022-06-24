@@ -28,17 +28,20 @@ import (
 
 // BACnetConfirmedServiceRequestVTOpen is the corresponding interface of BACnetConfirmedServiceRequestVTOpen
 type BACnetConfirmedServiceRequestVTOpen interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetVtClass returns VtClass (property field)
 	GetVtClass() BACnetVTClassTagged
 	// GetLocalVtSessionIdentifier returns LocalVtSessionIdentifier (property field)
 	GetLocalVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestVTOpenExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestVTOpen.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestVTOpenExactly interface {
+	BACnetConfirmedServiceRequestVTOpen
+	isBACnetConfirmedServiceRequestVTOpen() bool
 }
 
 // _BACnetConfirmedServiceRequestVTOpen is the data-structure of this message
@@ -46,9 +49,6 @@ type _BACnetConfirmedServiceRequestVTOpen struct {
 	*_BACnetConfirmedServiceRequest
 	VtClass                  BACnetVTClassTagged
 	LocalVtSessionIdentifier BACnetApplicationTagUnsignedInteger
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -177,9 +177,11 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestVTOpen{
-		VtClass:                        vtClass,
-		LocalVtSessionIdentifier:       localVtSessionIdentifier,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		VtClass:                  vtClass,
+		LocalVtSessionIdentifier: localVtSessionIdentifier,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -223,6 +225,10 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpen) isBACnetConfirmedServiceRequestVTOpen() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) String() string {

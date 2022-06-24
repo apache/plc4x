@@ -28,16 +28,19 @@ import (
 
 // BACnetFaultParameter is the corresponding interface of BACnetFaultParameter
 type BACnetFaultParameter interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetFaultParameterExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameter.
+// This is useful for switch cases.
+type BACnetFaultParameterExactly interface {
+	BACnetFaultParameter
+	isBACnetFaultParameter() bool
 }
 
 // _BACnetFaultParameter is the data-structure of this message
@@ -47,9 +50,9 @@ type _BACnetFaultParameter struct {
 }
 
 type _BACnetFaultParameterChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type BACnetFaultParameterParent interface {
@@ -58,7 +61,7 @@ type BACnetFaultParameterParent interface {
 }
 
 type BACnetFaultParameterChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent BACnetFaultParameter, peekedTagHeader BACnetTagHeader)
 	GetParent() *BACnetFaultParameter
 
@@ -214,6 +217,10 @@ func (pm *_BACnetFaultParameter) SerializeParent(writeBuffer utils.WriteBuffer, 
 		return errors.Wrap(popErr, "Error popping for BACnetFaultParameter")
 	}
 	return nil
+}
+
+func (m *_BACnetFaultParameter) isBACnetFaultParameter() bool {
+	return true
 }
 
 func (m *_BACnetFaultParameter) String() string {

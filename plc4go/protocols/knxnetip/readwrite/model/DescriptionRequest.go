@@ -28,15 +28,18 @@ import (
 
 // DescriptionRequest is the corresponding interface of DescriptionRequest
 type DescriptionRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DescriptionRequestExactly can be used when we want exactly this type and not a type which fulfills DescriptionRequest.
+// This is useful for switch cases.
+type DescriptionRequestExactly interface {
+	DescriptionRequest
+	isDescriptionRequest() bool
 }
 
 // _DescriptionRequest is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_DescriptionRequest) isDescriptionRequest() bool {
+	return true
 }
 
 func (m *_DescriptionRequest) String() string {

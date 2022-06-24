@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataAssignedAccessRights is the corresponding interface of BACnetConstructedDataAssignedAccessRights
 type BACnetConstructedDataAssignedAccessRights interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataAssignedAccessRights interface {
 	GetAssignedAccessRights() []BACnetAssignedAccessRights
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAssignedAccessRightsExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAssignedAccessRights.
+// This is useful for switch cases.
+type BACnetConstructedDataAssignedAccessRightsExactly interface {
+	BACnetConstructedDataAssignedAccessRights
+	isBACnetConstructedDataAssignedAccessRights() bool
 }
 
 // _BACnetConstructedDataAssignedAccessRights is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataAssignedAccessRights struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	AssignedAccessRights []BACnetAssignedAccessRights
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataAssignedAccessRightsParse(readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(pullErr, "Error pulling for assignedAccessRights")
 	}
 	// Terminated array
-	assignedAccessRights := make([]BACnetAssignedAccessRights, 0)
+	var assignedAccessRights []BACnetAssignedAccessRights
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetAssignedAccessRightsParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataAssignedAccessRightsParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAssignedAccessRights{
-		NumberOfDataElements:   numberOfDataElements,
-		AssignedAccessRights:   assignedAccessRights,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		AssignedAccessRights: assignedAccessRights,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataAssignedAccessRights) Serialize(writeBuffer utils
 		}
 
 		// Array Field (assignedAccessRights)
-		if m.GetAssignedAccessRights() != nil {
-			if pushErr := writeBuffer.PushContext("assignedAccessRights", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for assignedAccessRights")
+		if pushErr := writeBuffer.PushContext("assignedAccessRights", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for assignedAccessRights")
+		}
+		for _, _element := range m.GetAssignedAccessRights() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'assignedAccessRights' field")
 			}
-			for _, _element := range m.GetAssignedAccessRights() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'assignedAccessRights' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("assignedAccessRights", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for assignedAccessRights")
-			}
+		}
+		if popErr := writeBuffer.PopContext("assignedAccessRights", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for assignedAccessRights")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAssignedAccessRights"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataAssignedAccessRights) Serialize(writeBuffer utils
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAssignedAccessRights) isBACnetConstructedDataAssignedAccessRights() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAssignedAccessRights) String() string {

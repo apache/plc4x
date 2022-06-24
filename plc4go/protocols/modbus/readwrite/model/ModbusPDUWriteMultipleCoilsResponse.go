@@ -28,17 +28,20 @@ import (
 
 // ModbusPDUWriteMultipleCoilsResponse is the corresponding interface of ModbusPDUWriteMultipleCoilsResponse
 type ModbusPDUWriteMultipleCoilsResponse interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUWriteMultipleCoilsResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUWriteMultipleCoilsResponse.
+// This is useful for switch cases.
+type ModbusPDUWriteMultipleCoilsResponseExactly interface {
+	ModbusPDUWriteMultipleCoilsResponse
+	isModbusPDUWriteMultipleCoilsResponse() bool
 }
 
 // _ModbusPDUWriteMultipleCoilsResponse is the data-structure of this message
@@ -205,6 +208,10 @@ func (m *_ModbusPDUWriteMultipleCoilsResponse) Serialize(writeBuffer utils.Write
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsResponse) isModbusPDUWriteMultipleCoilsResponse() bool {
+	return true
 }
 
 func (m *_ModbusPDUWriteMultipleCoilsResponse) String() string {

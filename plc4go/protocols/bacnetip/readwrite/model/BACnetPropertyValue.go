@@ -30,6 +30,8 @@ import (
 
 // BACnetPropertyValue is the corresponding interface of BACnetPropertyValue
 type BACnetPropertyValue interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetPropertyArrayIndex returns PropertyArrayIndex (property field)
@@ -38,12 +40,13 @@ type BACnetPropertyValue interface {
 	GetPropertyValue() BACnetConstructedDataElement
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyValue.
+// This is useful for switch cases.
+type BACnetPropertyValueExactly interface {
+	BACnetPropertyValue
+	isBACnetPropertyValue() bool
 }
 
 // _BACnetPropertyValue is the data-structure of this message
@@ -302,6 +305,10 @@ func (m *_BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyValue")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyValue) isBACnetPropertyValue() bool {
+	return true
 }
 
 func (m *_BACnetPropertyValue) String() string {

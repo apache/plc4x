@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataNodeType is the corresponding interface of BACnetConstructedDataNodeType
 type BACnetConstructedDataNodeType interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() BACnetNodeTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNodeTypeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataNodeTypeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataNodeType.
+// This is useful for switch cases.
+type BACnetConstructedDataNodeTypeExactly interface {
+	BACnetConstructedDataNodeType
+	isBACnetConstructedDataNodeType() bool
 }
 
 // _BACnetConstructedDataNodeType is the data-structure of this message
 type _BACnetConstructedDataNodeType struct {
 	*_BACnetConstructedData
 	NodeType BACnetNodeTypeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataNodeTypeParse(readBuffer utils.ReadBuffer, tagNumber u
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataNodeType{
-		NodeType:               nodeType,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NodeType: nodeType,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataNodeType) Serialize(writeBuffer utils.WriteBuffer
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataNodeType) isBACnetConstructedDataNodeType() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataNodeType) String() string {

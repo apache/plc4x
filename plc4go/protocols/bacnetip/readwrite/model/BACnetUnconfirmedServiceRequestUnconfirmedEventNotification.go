@@ -30,6 +30,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -57,12 +59,13 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
 	GetToState() BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() BACnetNotificationParameters
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestUnconfirmedEventNotification.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationExactly interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+	isBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() bool
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedEventNotification is the data-structure of this message
@@ -81,9 +84,6 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 	FromState                  BACnetEventStateTagged
 	ToState                    BACnetEventStateTagged
 	EventValues                BACnetNotificationParameters
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -487,20 +487,22 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
-		ProcessIdentifier:                processIdentifier,
-		InitiatingDeviceIdentifier:       initiatingDeviceIdentifier,
-		EventObjectIdentifier:            eventObjectIdentifier,
-		Timestamp:                        timestamp,
-		NotificationClass:                notificationClass,
-		Priority:                         priority,
-		EventType:                        eventType,
-		MessageText:                      messageText,
-		NotifyType:                       notifyType,
-		AckRequired:                      ackRequired,
-		FromState:                        fromState,
-		ToState:                          toState,
-		EventValues:                      eventValues,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		ProcessIdentifier:          processIdentifier,
+		InitiatingDeviceIdentifier: initiatingDeviceIdentifier,
+		EventObjectIdentifier:      eventObjectIdentifier,
+		Timestamp:                  timestamp,
+		NotificationClass:          notificationClass,
+		Priority:                   priority,
+		EventType:                  eventType,
+		MessageText:                messageText,
+		NotifyType:                 notifyType,
+		AckRequired:                ackRequired,
+		FromState:                  fromState,
+		ToState:                    toState,
+		EventValues:                eventValues,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -692,6 +694,10 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) isBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) String() string {

@@ -28,15 +28,18 @@ import (
 
 // BACnetChannelValueReal is the corresponding interface of BACnetChannelValueReal
 type BACnetChannelValueReal interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetChannelValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetChannelValueRealExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValueReal.
+// This is useful for switch cases.
+type BACnetChannelValueRealExactly interface {
+	BACnetChannelValueReal
+	isBACnetChannelValueReal() bool
 }
 
 // _BACnetChannelValueReal is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetChannelValueReal) Serialize(writeBuffer utils.WriteBuffer) error
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetChannelValueReal) isBACnetChannelValueReal() bool {
+	return true
 }
 
 func (m *_BACnetChannelValueReal) String() string {

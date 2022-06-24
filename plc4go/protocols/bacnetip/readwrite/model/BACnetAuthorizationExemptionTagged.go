@@ -28,6 +28,8 @@ import (
 
 // BACnetAuthorizationExemptionTagged is the corresponding interface of BACnetAuthorizationExemptionTagged
 type BACnetAuthorizationExemptionTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -36,12 +38,13 @@ type BACnetAuthorizationExemptionTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetAuthorizationExemptionTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetAuthorizationExemptionTagged.
+// This is useful for switch cases.
+type BACnetAuthorizationExemptionTaggedExactly interface {
+	BACnetAuthorizationExemptionTagged
+	isBACnetAuthorizationExemptionTagged() bool
 }
 
 // _BACnetAuthorizationExemptionTagged is the data-structure of this message
@@ -233,6 +236,10 @@ func (m *_BACnetAuthorizationExemptionTagged) Serialize(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for BACnetAuthorizationExemptionTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetAuthorizationExemptionTagged) isBACnetAuthorizationExemptionTagged() bool {
+	return true
 }
 
 func (m *_BACnetAuthorizationExemptionTagged) String() string {

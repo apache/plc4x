@@ -28,18 +28,21 @@ import (
 
 // BACnetPropertyStatesEnclosed is the corresponding interface of BACnetPropertyStatesEnclosed
 type BACnetPropertyStatesEnclosed interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPropertyState returns PropertyState (property field)
 	GetPropertyState() BACnetPropertyStates
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesEnclosedExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesEnclosed.
+// This is useful for switch cases.
+type BACnetPropertyStatesEnclosedExactly interface {
+	BACnetPropertyStatesEnclosed
+	isBACnetPropertyStatesEnclosed() bool
 }
 
 // _BACnetPropertyStatesEnclosed is the data-structure of this message
@@ -220,6 +223,10 @@ func (m *_BACnetPropertyStatesEnclosed) Serialize(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(popErr, "Error popping for BACnetPropertyStatesEnclosed")
 	}
 	return nil
+}
+
+func (m *_BACnetPropertyStatesEnclosed) isBACnetPropertyStatesEnclosed() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesEnclosed) String() string {

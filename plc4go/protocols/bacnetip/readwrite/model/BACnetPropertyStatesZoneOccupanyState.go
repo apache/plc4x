@@ -28,15 +28,18 @@ import (
 
 // BACnetPropertyStatesZoneOccupanyState is the corresponding interface of BACnetPropertyStatesZoneOccupanyState
 type BACnetPropertyStatesZoneOccupanyState interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetPropertyStates
 	// GetZoneOccupanyState returns ZoneOccupanyState (property field)
 	GetZoneOccupanyState() BACnetAccessZoneOccupancyStateTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetPropertyStatesZoneOccupanyStateExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStatesZoneOccupanyState.
+// This is useful for switch cases.
+type BACnetPropertyStatesZoneOccupanyStateExactly interface {
+	BACnetPropertyStatesZoneOccupanyState
+	isBACnetPropertyStatesZoneOccupanyState() bool
 }
 
 // _BACnetPropertyStatesZoneOccupanyState is the data-structure of this message
@@ -180,6 +183,10 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetPropertyStatesZoneOccupanyState) isBACnetPropertyStatesZoneOccupanyState() bool {
+	return true
 }
 
 func (m *_BACnetPropertyStatesZoneOccupanyState) String() string {

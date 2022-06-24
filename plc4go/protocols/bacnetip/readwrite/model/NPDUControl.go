@@ -29,6 +29,8 @@ import (
 
 // NPDUControl is the corresponding interface of NPDUControl
 type NPDUControl interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent (property field)
 	GetMessageTypeFieldPresent() bool
 	// GetDestinationSpecified returns DestinationSpecified (property field)
@@ -39,12 +41,13 @@ type NPDUControl interface {
 	GetExpectingReply() bool
 	// GetNetworkPriority returns NetworkPriority (property field)
 	GetNetworkPriority() NPDUNetworkPriority
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// NPDUControlExactly can be used when we want exactly this type and not a type which fulfills NPDUControl.
+// This is useful for switch cases.
+type NPDUControlExactly interface {
+	NPDUControl
+	isNPDUControl() bool
 }
 
 // _NPDUControl is the data-structure of this message
@@ -294,6 +297,10 @@ func (m *_NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for NPDUControl")
 	}
 	return nil
+}
+
+func (m *_NPDUControl) isNPDUControl() bool {
+	return true
 }
 
 func (m *_NPDUControl) String() string {

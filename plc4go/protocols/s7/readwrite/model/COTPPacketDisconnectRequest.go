@@ -28,6 +28,8 @@ import (
 
 // COTPPacketDisconnectRequest is the corresponding interface of COTPPacketDisconnectRequest
 type COTPPacketDisconnectRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -35,12 +37,13 @@ type COTPPacketDisconnectRequest interface {
 	GetSourceReference() uint16
 	// GetProtocolClass returns ProtocolClass (property field)
 	GetProtocolClass() COTPProtocolClass
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// COTPPacketDisconnectRequestExactly can be used when we want exactly this type and not a type which fulfills COTPPacketDisconnectRequest.
+// This is useful for switch cases.
+type COTPPacketDisconnectRequestExactly interface {
+	COTPPacketDisconnectRequest
+	isCOTPPacketDisconnectRequest() bool
 }
 
 // _COTPPacketDisconnectRequest is the data-structure of this message
@@ -49,9 +52,6 @@ type _COTPPacketDisconnectRequest struct {
 	DestinationReference uint16
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
-
-	// Arguments.
-	CotpLen uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -194,7 +194,9 @@ func COTPPacketDisconnectRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
-		_COTPPacket:          &_COTPPacket{},
+		_COTPPacket: &_COTPPacket{
+			CotpLen: cotpLen,
+		},
 	}
 	_child._COTPPacket._COTPPacketChildRequirements = _child
 	return _child, nil
@@ -240,6 +242,10 @@ func (m *_COTPPacketDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_COTPPacketDisconnectRequest) isCOTPPacketDisconnectRequest() bool {
+	return true
 }
 
 func (m *_COTPPacketDisconnectRequest) String() string {

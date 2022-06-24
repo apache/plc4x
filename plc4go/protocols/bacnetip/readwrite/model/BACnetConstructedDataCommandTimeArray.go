@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataCommandTimeArray is the corresponding interface of BACnetConstructedDataCommandTimeArray
 type BACnetConstructedDataCommandTimeArray interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataCommandTimeArray interface {
 	GetCommandTimeArray() []BACnetTimeStamp
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCommandTimeArrayExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCommandTimeArray.
+// This is useful for switch cases.
+type BACnetConstructedDataCommandTimeArrayExactly interface {
+	BACnetConstructedDataCommandTimeArray
+	isBACnetConstructedDataCommandTimeArray() bool
 }
 
 // _BACnetConstructedDataCommandTimeArray is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataCommandTimeArray struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	CommandTimeArray     []BACnetTimeStamp
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataCommandTimeArrayParse(readBuffer utils.ReadBuffer, tag
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTimeArray")
 	}
 	// Terminated array
-	commandTimeArray := make([]BACnetTimeStamp, 0)
+	var commandTimeArray []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetTimeStampParse(readBuffer)
@@ -238,9 +237,12 @@ func BACnetConstructedDataCommandTimeArrayParse(readBuffer utils.ReadBuffer, tag
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCommandTimeArray{
-		NumberOfDataElements:   numberOfDataElements,
-		CommandTimeArray:       commandTimeArray,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		CommandTimeArray:     commandTimeArray,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -275,19 +277,17 @@ func (m *_BACnetConstructedDataCommandTimeArray) Serialize(writeBuffer utils.Wri
 		}
 
 		// Array Field (commandTimeArray)
-		if m.GetCommandTimeArray() != nil {
-			if pushErr := writeBuffer.PushContext("commandTimeArray", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for commandTimeArray")
+		if pushErr := writeBuffer.PushContext("commandTimeArray", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for commandTimeArray")
+		}
+		for _, _element := range m.GetCommandTimeArray() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'commandTimeArray' field")
 			}
-			for _, _element := range m.GetCommandTimeArray() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'commandTimeArray' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("commandTimeArray", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for commandTimeArray")
-			}
+		}
+		if popErr := writeBuffer.PopContext("commandTimeArray", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for commandTimeArray")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCommandTimeArray"); popErr != nil {
@@ -296,6 +296,10 @@ func (m *_BACnetConstructedDataCommandTimeArray) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCommandTimeArray) isBACnetConstructedDataCommandTimeArray() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCommandTimeArray) String() string {

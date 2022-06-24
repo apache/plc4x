@@ -30,6 +30,8 @@ import (
 
 // BACnetConstructedDataIPDNSServer is the corresponding interface of BACnetConstructedDataIPDNSServer
 type BACnetConstructedDataIPDNSServer interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -37,12 +39,13 @@ type BACnetConstructedDataIPDNSServer interface {
 	GetIpDnsServer() []BACnetApplicationTagOctetString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataIPDNSServerExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataIPDNSServer.
+// This is useful for switch cases.
+type BACnetConstructedDataIPDNSServerExactly interface {
+	BACnetConstructedDataIPDNSServer
+	isBACnetConstructedDataIPDNSServer() bool
 }
 
 // _BACnetConstructedDataIPDNSServer is the data-structure of this message
@@ -50,10 +53,6 @@ type _BACnetConstructedDataIPDNSServer struct {
 	*_BACnetConstructedData
 	NumberOfDataElements BACnetApplicationTagUnsignedInteger
 	IpDnsServer          []BACnetApplicationTagOctetString
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -212,7 +211,7 @@ func BACnetConstructedDataIPDNSServerParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, errors.Wrap(pullErr, "Error pulling for ipDnsServer")
 	}
 	// Terminated array
-	ipDnsServer := make([]BACnetApplicationTagOctetString, 0)
+	var ipDnsServer []BACnetApplicationTagOctetString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
@@ -233,9 +232,12 @@ func BACnetConstructedDataIPDNSServerParse(readBuffer utils.ReadBuffer, tagNumbe
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataIPDNSServer{
-		NumberOfDataElements:   numberOfDataElements,
-		IpDnsServer:            ipDnsServer,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		NumberOfDataElements: numberOfDataElements,
+		IpDnsServer:          ipDnsServer,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -270,19 +272,17 @@ func (m *_BACnetConstructedDataIPDNSServer) Serialize(writeBuffer utils.WriteBuf
 		}
 
 		// Array Field (ipDnsServer)
-		if m.GetIpDnsServer() != nil {
-			if pushErr := writeBuffer.PushContext("ipDnsServer", utils.WithRenderAsList(true)); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for ipDnsServer")
+		if pushErr := writeBuffer.PushContext("ipDnsServer", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for ipDnsServer")
+		}
+		for _, _element := range m.GetIpDnsServer() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'ipDnsServer' field")
 			}
-			for _, _element := range m.GetIpDnsServer() {
-				_elementErr := writeBuffer.WriteSerializable(_element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'ipDnsServer' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("ipDnsServer", utils.WithRenderAsList(true)); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for ipDnsServer")
-			}
+		}
+		if popErr := writeBuffer.PopContext("ipDnsServer", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for ipDnsServer")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPDNSServer"); popErr != nil {
@@ -291,6 +291,10 @@ func (m *_BACnetConstructedDataIPDNSServer) Serialize(writeBuffer utils.WriteBuf
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataIPDNSServer) isBACnetConstructedDataIPDNSServer() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataIPDNSServer) String() string {

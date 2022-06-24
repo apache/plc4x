@@ -28,16 +28,19 @@ import (
 
 // BACnetLiftGroupModeTagged is the corresponding interface of BACnetLiftGroupModeTagged
 type BACnetLiftGroupModeTagged interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLiftGroupMode
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetLiftGroupModeTaggedExactly can be used when we want exactly this type and not a type which fulfills BACnetLiftGroupModeTagged.
+// This is useful for switch cases.
+type BACnetLiftGroupModeTaggedExactly interface {
+	BACnetLiftGroupModeTagged
+	isBACnetLiftGroupModeTagged() bool
 }
 
 // _BACnetLiftGroupModeTagged is the data-structure of this message
@@ -184,6 +187,10 @@ func (m *_BACnetLiftGroupModeTagged) Serialize(writeBuffer utils.WriteBuffer) er
 		return errors.Wrap(popErr, "Error popping for BACnetLiftGroupModeTagged")
 	}
 	return nil
+}
+
+func (m *_BACnetLiftGroupModeTagged) isBACnetLiftGroupModeTagged() bool {
+	return true
 }
 
 func (m *_BACnetLiftGroupModeTagged) String() string {

@@ -30,6 +30,8 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedEventNotification is the corresponding interface of BACnetConfirmedServiceRequestConfirmedEventNotification
 type BACnetConfirmedServiceRequestConfirmedEventNotification interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -57,12 +59,13 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	GetToState() BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() BACnetNotificationParameters
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestConfirmedEventNotificationExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedEventNotification.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedEventNotificationExactly interface {
+	BACnetConfirmedServiceRequestConfirmedEventNotification
+	isBACnetConfirmedServiceRequestConfirmedEventNotification() bool
 }
 
 // _BACnetConfirmedServiceRequestConfirmedEventNotification is the data-structure of this message
@@ -81,9 +84,6 @@ type _BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 	FromState                  BACnetEventStateTagged
 	ToState                    BACnetEventStateTagged
 	EventValues                BACnetNotificationParameters
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -487,20 +487,22 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
-		ProcessIdentifier:              processIdentifier,
-		InitiatingDeviceIdentifier:     initiatingDeviceIdentifier,
-		EventObjectIdentifier:          eventObjectIdentifier,
-		Timestamp:                      timestamp,
-		NotificationClass:              notificationClass,
-		Priority:                       priority,
-		EventType:                      eventType,
-		MessageText:                    messageText,
-		NotifyType:                     notifyType,
-		AckRequired:                    ackRequired,
-		FromState:                      fromState,
-		ToState:                        toState,
-		EventValues:                    eventValues,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		ProcessIdentifier:          processIdentifier,
+		InitiatingDeviceIdentifier: initiatingDeviceIdentifier,
+		EventObjectIdentifier:      eventObjectIdentifier,
+		Timestamp:                  timestamp,
+		NotificationClass:          notificationClass,
+		Priority:                   priority,
+		EventType:                  eventType,
+		MessageText:                messageText,
+		NotifyType:                 notifyType,
+		AckRequired:                ackRequired,
+		FromState:                  fromState,
+		ToState:                    toState,
+		EventValues:                eventValues,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -692,6 +694,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) Serialize(wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) isBACnetConfirmedServiceRequestConfirmedEventNotification() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) String() string {

@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataProtocolLevel is the corresponding interface of BACnetConstructedDataProtocolLevel
 type BACnetConstructedDataProtocolLevel interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProtocolLevelTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataProtocolLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataProtocolLevel.
+// This is useful for switch cases.
+type BACnetConstructedDataProtocolLevelExactly interface {
+	BACnetConstructedDataProtocolLevel
+	isBACnetConstructedDataProtocolLevel() bool
 }
 
 // _BACnetConstructedDataProtocolLevel is the data-structure of this message
 type _BACnetConstructedDataProtocolLevel struct {
 	*_BACnetConstructedData
 	ProtocolLevel BACnetProtocolLevelTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataProtocolLevelParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataProtocolLevel{
-		ProtocolLevel:          protocolLevel,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		ProtocolLevel: protocolLevel,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataProtocolLevel) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataProtocolLevel) isBACnetConstructedDataProtocolLevel() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataProtocolLevel) String() string {

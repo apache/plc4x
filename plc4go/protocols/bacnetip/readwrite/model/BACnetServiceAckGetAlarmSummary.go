@@ -28,6 +28,8 @@ import (
 
 // BACnetServiceAckGetAlarmSummary is the corresponding interface of BACnetServiceAckGetAlarmSummary
 type BACnetServiceAckGetAlarmSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -35,12 +37,13 @@ type BACnetServiceAckGetAlarmSummary interface {
 	GetEventState() BACnetEventStateTagged
 	// GetAcknowledgedTransitions returns AcknowledgedTransitions (property field)
 	GetAcknowledgedTransitions() BACnetEventTransitionBitsTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetServiceAckGetAlarmSummaryExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckGetAlarmSummary.
+// This is useful for switch cases.
+type BACnetServiceAckGetAlarmSummaryExactly interface {
+	BACnetServiceAckGetAlarmSummary
+	isBACnetServiceAckGetAlarmSummary() bool
 }
 
 // _BACnetServiceAckGetAlarmSummary is the data-structure of this message
@@ -49,9 +52,6 @@ type _BACnetServiceAckGetAlarmSummary struct {
 	ObjectIdentifier        BACnetApplicationTagObjectIdentifier
 	EventState              BACnetEventStateTagged
 	AcknowledgedTransitions BACnetEventTransitionBitsTagged
-
-	// Arguments.
-	ServiceAckLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -203,7 +203,9 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer, serviceAc
 		ObjectIdentifier:        objectIdentifier,
 		EventState:              eventState,
 		AcknowledgedTransitions: acknowledgedTransitions,
-		_BACnetServiceAck:       &_BACnetServiceAck{},
+		_BACnetServiceAck: &_BACnetServiceAck{
+			ServiceAckLength: serviceAckLength,
+		},
 	}
 	_child._BACnetServiceAck._BACnetServiceAckChildRequirements = _child
 	return _child, nil
@@ -259,6 +261,10 @@ func (m *_BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuff
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetServiceAckGetAlarmSummary) isBACnetServiceAckGetAlarmSummary() bool {
+	return true
 }
 
 func (m *_BACnetServiceAckGetAlarmSummary) String() string {

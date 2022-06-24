@@ -28,13 +28,16 @@ import (
 
 // IdentifyReplyCommandOutputUnitSummary is the corresponding interface of IdentifyReplyCommandOutputUnitSummary
 type IdentifyReplyCommandOutputUnitSummary interface {
+	utils.LengthAware
+	utils.Serializable
 	IdentifyReplyCommand
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// IdentifyReplyCommandOutputUnitSummaryExactly can be used when we want exactly this type and not a type which fulfills IdentifyReplyCommandOutputUnitSummary.
+// This is useful for switch cases.
+type IdentifyReplyCommandOutputUnitSummaryExactly interface {
+	IdentifyReplyCommandOutputUnitSummary
+	isIdentifyReplyCommandOutputUnitSummary() bool
 }
 
 // _IdentifyReplyCommandOutputUnitSummary is the data-structure of this message
@@ -135,6 +138,10 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) isIdentifyReplyCommandOutputUnitSummary() bool {
+	return true
 }
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) String() string {

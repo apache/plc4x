@@ -28,24 +28,24 @@ import (
 
 // ApduDataOther is the corresponding interface of ApduDataOther
 type ApduDataOther interface {
+	utils.LengthAware
+	utils.Serializable
 	ApduData
 	// GetExtendedApdu returns ExtendedApdu (property field)
 	GetExtendedApdu() ApduDataExt
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ApduDataOtherExactly can be used when we want exactly this type and not a type which fulfills ApduDataOther.
+// This is useful for switch cases.
+type ApduDataOtherExactly interface {
+	ApduDataOther
+	isApduDataOther() bool
 }
 
 // _ApduDataOther is the data-structure of this message
 type _ApduDataOther struct {
 	*_ApduData
 	ExtendedApdu ApduDataExt
-
-	// Arguments.
-	DataLength uint8
 }
 
 ///////////////////////////////////////////////////////////
@@ -153,7 +153,9 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData
 	// Create a partially initialized instance
 	_child := &_ApduDataOther{
 		ExtendedApdu: extendedApdu,
-		_ApduData:    &_ApduData{},
+		_ApduData: &_ApduData{
+			DataLength: dataLength,
+		},
 	}
 	_child._ApduData._ApduDataChildRequirements = _child
 	return _child, nil
@@ -185,6 +187,10 @@ func (m *_ApduDataOther) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ApduDataOther) isApduDataOther() bool {
+	return true
 }
 
 func (m *_ApduDataOther) String() string {

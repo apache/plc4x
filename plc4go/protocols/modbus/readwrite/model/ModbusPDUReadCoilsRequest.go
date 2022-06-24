@@ -28,17 +28,20 @@ import (
 
 // ModbusPDUReadCoilsRequest is the corresponding interface of ModbusPDUReadCoilsRequest
 type ModbusPDUReadCoilsRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUReadCoilsRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadCoilsRequest.
+// This is useful for switch cases.
+type ModbusPDUReadCoilsRequestExactly interface {
+	ModbusPDUReadCoilsRequest
+	isModbusPDUReadCoilsRequest() bool
 }
 
 // _ModbusPDUReadCoilsRequest is the data-structure of this message
@@ -205,6 +208,10 @@ func (m *_ModbusPDUReadCoilsRequest) Serialize(writeBuffer utils.WriteBuffer) er
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUReadCoilsRequest) isModbusPDUReadCoilsRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUReadCoilsRequest) String() string {

@@ -29,6 +29,8 @@ import (
 
 // DF1RequestMessage is the corresponding interface of DF1RequestMessage
 type DF1RequestMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 	// GetDestinationAddress returns DestinationAddress (property field)
@@ -39,12 +41,13 @@ type DF1RequestMessage interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// DF1RequestMessageExactly can be used when we want exactly this type and not a type which fulfills DF1RequestMessage.
+// This is useful for switch cases.
+type DF1RequestMessageExactly interface {
+	DF1RequestMessage
+	isDF1RequestMessage() bool
 }
 
 // _DF1RequestMessage is the data-structure of this message
@@ -57,10 +60,10 @@ type _DF1RequestMessage struct {
 }
 
 type _DF1RequestMessageChildRequirements interface {
+	utils.Serializable
 	GetLengthInBits() uint16
 	GetLengthInBitsConditional(lastItem bool) uint16
 	GetCommandCode() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 type DF1RequestMessageParent interface {
@@ -69,7 +72,7 @@ type DF1RequestMessageParent interface {
 }
 
 type DF1RequestMessageChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 	InitializeParent(parent DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16)
 	GetParent() *DF1RequestMessage
 
@@ -300,6 +303,10 @@ func (pm *_DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, chi
 		return errors.Wrap(popErr, "Error popping for DF1RequestMessage")
 	}
 	return nil
+}
+
+func (m *_DF1RequestMessage) isDF1RequestMessage() bool {
+	return true
 }
 
 func (m *_DF1RequestMessage) String() string {

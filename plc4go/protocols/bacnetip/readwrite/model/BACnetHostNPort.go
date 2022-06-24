@@ -28,16 +28,19 @@ import (
 
 // BACnetHostNPort is the corresponding interface of BACnetHostNPort
 type BACnetHostNPort interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetHost returns Host (property field)
 	GetHost() BACnetHostAddressEnclosed
 	// GetPort returns Port (property field)
 	GetPort() BACnetContextTagUnsignedInteger
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetHostNPortExactly can be used when we want exactly this type and not a type which fulfills BACnetHostNPort.
+// This is useful for switch cases.
+type BACnetHostNPortExactly interface {
+	BACnetHostNPort
+	isBACnetHostNPort() bool
 }
 
 // _BACnetHostNPort is the data-structure of this message
@@ -182,6 +185,10 @@ func (m *_BACnetHostNPort) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for BACnetHostNPort")
 	}
 	return nil
+}
+
+func (m *_BACnetHostNPort) isBACnetHostNPort() bool {
+	return true
 }
 
 func (m *_BACnetHostNPort) String() string {

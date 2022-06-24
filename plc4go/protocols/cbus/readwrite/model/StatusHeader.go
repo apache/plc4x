@@ -29,14 +29,17 @@ import (
 
 // StatusHeader is the corresponding interface of StatusHeader
 type StatusHeader interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetNumberOfCharacterPairs returns NumberOfCharacterPairs (property field)
 	GetNumberOfCharacterPairs() uint8
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// StatusHeaderExactly can be used when we want exactly this type and not a type which fulfills StatusHeader.
+// This is useful for switch cases.
+type StatusHeaderExactly interface {
+	StatusHeader
+	isStatusHeader() bool
 }
 
 // _StatusHeader is the data-structure of this message
@@ -162,6 +165,10 @@ func (m *_StatusHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(popErr, "Error popping for StatusHeader")
 	}
 	return nil
+}
+
+func (m *_StatusHeader) isStatusHeader() bool {
+	return true
 }
 
 func (m *_StatusHeader) String() string {

@@ -28,6 +28,8 @@ import (
 
 // BACnetNotificationParametersExtended is the corresponding interface of BACnetNotificationParametersExtended
 type BACnetNotificationParametersExtended interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -39,12 +41,13 @@ type BACnetNotificationParametersExtended interface {
 	GetParameters() BACnetNotificationParametersExtendedParameters
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetNotificationParametersExtendedExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersExtended.
+// This is useful for switch cases.
+type BACnetNotificationParametersExtendedExactly interface {
+	BACnetNotificationParametersExtended
+	isBACnetNotificationParametersExtended() bool
 }
 
 // _BACnetNotificationParametersExtended is the data-structure of this message
@@ -55,10 +58,6 @@ type _BACnetNotificationParametersExtended struct {
 	ExtendedEventType BACnetContextTagUnsignedInteger
 	Parameters        BACnetNotificationParametersExtendedParameters
 	InnerClosingTag   BACnetClosingTag
-
-	// Arguments.
-	TagNumber          uint8
-	ObjectTypeArgument BACnetObjectType
 }
 
 ///////////////////////////////////////////////////////////
@@ -249,12 +248,15 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 
 	// Create a partially initialized instance
 	_child := &_BACnetNotificationParametersExtended{
-		InnerOpeningTag:               innerOpeningTag,
-		VendorId:                      vendorId,
-		ExtendedEventType:             extendedEventType,
-		Parameters:                    parameters,
-		InnerClosingTag:               innerClosingTag,
-		_BACnetNotificationParameters: &_BACnetNotificationParameters{},
+		InnerOpeningTag:   innerOpeningTag,
+		VendorId:          vendorId,
+		ExtendedEventType: extendedEventType,
+		Parameters:        parameters,
+		InnerClosingTag:   innerClosingTag,
+		_BACnetNotificationParameters: &_BACnetNotificationParameters{
+			TagNumber:          tagNumber,
+			ObjectTypeArgument: objectTypeArgument,
+		},
 	}
 	_child._BACnetNotificationParameters._BACnetNotificationParametersChildRequirements = _child
 	return _child, nil
@@ -334,6 +336,10 @@ func (m *_BACnetNotificationParametersExtended) Serialize(writeBuffer utils.Writ
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetNotificationParametersExtended) isBACnetNotificationParametersExtended() bool {
+	return true
 }
 
 func (m *_BACnetNotificationParametersExtended) String() string {

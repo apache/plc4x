@@ -28,13 +28,16 @@ import (
 
 // ModbusPDUGetComEventCounterRequest is the corresponding interface of ModbusPDUGetComEventCounterRequest
 type ModbusPDUGetComEventCounterRequest interface {
+	utils.LengthAware
+	utils.Serializable
 	ModbusPDU
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// ModbusPDUGetComEventCounterRequestExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUGetComEventCounterRequest.
+// This is useful for switch cases.
+type ModbusPDUGetComEventCounterRequestExactly interface {
+	ModbusPDUGetComEventCounterRequest
+	isModbusPDUGetComEventCounterRequest() bool
 }
 
 // _ModbusPDUGetComEventCounterRequest is the data-structure of this message
@@ -143,6 +146,10 @@ func (m *_ModbusPDUGetComEventCounterRequest) Serialize(writeBuffer utils.WriteB
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_ModbusPDUGetComEventCounterRequest) isModbusPDUGetComEventCounterRequest() bool {
+	return true
 }
 
 func (m *_ModbusPDUGetComEventCounterRequest) String() string {

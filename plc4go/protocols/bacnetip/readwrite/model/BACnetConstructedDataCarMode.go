@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataCarMode is the corresponding interface of BACnetConstructedDataCarMode
 type BACnetConstructedDataCarMode interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetCarMode returns CarMode (property field)
 	GetCarMode() BACnetLiftCarModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarModeTagged
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataCarModeExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataCarMode.
+// This is useful for switch cases.
+type BACnetConstructedDataCarModeExactly interface {
+	BACnetConstructedDataCarMode
+	isBACnetConstructedDataCarMode() bool
 }
 
 // _BACnetConstructedDataCarMode is the data-structure of this message
 type _BACnetConstructedDataCarMode struct {
 	*_BACnetConstructedData
 	CarMode BACnetLiftCarModeTagged
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber ui
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataCarMode{
-		CarMode:                carMode,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		CarMode: carMode,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataCarMode) Serialize(writeBuffer utils.WriteBuffer)
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataCarMode) isBACnetConstructedDataCarMode() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataCarMode) String() string {

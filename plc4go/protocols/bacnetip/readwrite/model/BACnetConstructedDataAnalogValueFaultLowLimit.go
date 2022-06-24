@@ -28,27 +28,26 @@ import (
 
 // BACnetConstructedDataAnalogValueFaultLowLimit is the corresponding interface of BACnetConstructedDataAnalogValueFaultLowLimit
 type BACnetConstructedDataAnalogValueFaultLowLimit interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConstructedDataAnalogValueFaultLowLimitExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedDataAnalogValueFaultLowLimit.
+// This is useful for switch cases.
+type BACnetConstructedDataAnalogValueFaultLowLimitExactly interface {
+	BACnetConstructedDataAnalogValueFaultLowLimit
+	isBACnetConstructedDataAnalogValueFaultLowLimit() bool
 }
 
 // _BACnetConstructedDataAnalogValueFaultLowLimit is the data-structure of this message
 type _BACnetConstructedDataAnalogValueFaultLowLimit struct {
 	*_BACnetConstructedData
 	FaultLowLimit BACnetApplicationTagReal
-
-	// Arguments.
-	TagNumber          uint8
-	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
 ///////////////////////////////////////////////////////////
@@ -183,8 +182,11 @@ func BACnetConstructedDataAnalogValueFaultLowLimitParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConstructedDataAnalogValueFaultLowLimit{
-		FaultLowLimit:          faultLowLimit,
-		_BACnetConstructedData: &_BACnetConstructedData{},
+		FaultLowLimit: faultLowLimit,
+		_BACnetConstructedData: &_BACnetConstructedData{
+			TagNumber:          tagNumber,
+			ArrayIndexArgument: arrayIndexArgument,
+		},
 	}
 	_child._BACnetConstructedData._BACnetConstructedDataChildRequirements = _child
 	return _child, nil
@@ -220,6 +222,10 @@ func (m *_BACnetConstructedDataAnalogValueFaultLowLimit) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConstructedDataAnalogValueFaultLowLimit) isBACnetConstructedDataAnalogValueFaultLowLimit() bool {
+	return true
 }
 
 func (m *_BACnetConstructedDataAnalogValueFaultLowLimit) String() string {

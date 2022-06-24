@@ -28,15 +28,18 @@ import (
 
 // UnknownMessage is the corresponding interface of UnknownMessage
 type UnknownMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	KnxNetIpMessage
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// UnknownMessageExactly can be used when we want exactly this type and not a type which fulfills UnknownMessage.
+// This is useful for switch cases.
+type UnknownMessageExactly interface {
+	UnknownMessage
+	isUnknownMessage() bool
 }
 
 // _UnknownMessage is the data-structure of this message
@@ -163,12 +166,9 @@ func (m *_UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Array Field (unknownData)
-		if m.GetUnknownData() != nil {
-			// Byte Array field (unknownData)
-			_writeArrayErr := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'unknownData' field")
-			}
+		// Byte Array field (unknownData)
+		if err := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData()); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnknownMessage"); popErr != nil {
@@ -177,6 +177,10 @@ func (m *_UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_UnknownMessage) isUnknownMessage() bool {
+	return true
 }
 
 func (m *_UnknownMessage) String() string {
