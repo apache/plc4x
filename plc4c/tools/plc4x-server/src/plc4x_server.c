@@ -30,7 +30,7 @@
 #define MSG_DONTWAIT 0
 #endif
 
-#include "../../generated-sources/plc4x/include/plc4x_constants.h"
+#include "plc4x_constants.h"
 
 #define MAX 80
 #define SA struct sockaddr

@@ -30,7 +30,7 @@ add_library(plc4c-spi
         src/types.c
         src/write.c
         src/write_buffer.c
-        ../tools/plc4x-server/src/plc4x_server.c)
+        )
 
 target_include_directories(
         plc4c-spi
