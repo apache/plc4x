@@ -17,28 +17,37 @@
   under the License.
 ]]
 
+SET(generatedSources ${PLC4C_ROOT_DIR}/generated-sources/plc4x/src/plc4x_constants.c)
+SET(generatedHeaders ${PLC4C_ROOT_DIR}/generated-sources/plc4x/include/plc4x_constants.h)
+
 # Add the sources
 add_executable(plc4c-tools-plc4x-server
         src/plc4x_server.c
+        ${generatedHeaders}
+        ${generatedSources}
         )
 
 target_include_directories(plc4c-tools-plc4x-server
         PRIVATE
-        ../../api/include
-        ../../spi/include
-        ../../drivers/plc4x/include
-        ../../generated-sources/plc4x/include)
+        ${PLC4C_ROOT_DIR}/api/include
+        ${PLC4C_ROOT_DIR}/spi/include
+        ${PLC4C_ROOT_DIR}/drivers/plc4x/include
+        ${PLC4C_ROOT_DIR}/generated-sources/plc4x/include)
 
 if(WIN32)
     target_link_libraries(plc4c-tools-plc4x-server
             plc4c-driver-plc4x
             plc4c-transport-tcp
+            plc4c-spi
             wsock32
             ws2_32
             ${CMAKE_DL_LIBS}
     )
 else()
     target_link_libraries(plc4c-tools-plc4x-server
+            plc4c-driver-plc4x
+            plc4c-transport-tcp
+            plc4c-spi
             ${CMAKE_DL_LIBS}
     )
 endif()
