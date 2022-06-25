@@ -17,18 +17,29 @@
   under the License.
 ]]
 
-include_directories("../../api/include"
-        "../../spi/include"
-        "../../drivers/s7/include"
-        "../../transports/tcp/include" )
-
 add_executable(plc4c-examples-hello-world-s7
         src/hello_world_s7.c
         )
 
+target_include_directories(
+        plc4c-examples-hello-world-s7
+        PUBLIC
+        "../../api/include"
+        "../../spi/include"
+        "../../drivers/s7/include"
+        "../../transports/tcp/include" )
+
 add_executable(plc4c-examples-loopback-s7
 		src/hello_world_s7_loopback.c
 		)
+
+target_include_directories(
+        plc4c-examples-loopback-s7
+        PUBLIC
+        "../../api/include"
+        "../../spi/include"
+        "../../drivers/s7/include"
+        "../../transports/tcp/include" )
 
 IF (NOT WIN32)
     target_link_libraries(plc4c-examples-hello-world-s7

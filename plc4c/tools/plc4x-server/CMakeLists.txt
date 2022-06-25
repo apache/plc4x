@@ -18,18 +18,27 @@
 ]]
 
 # Add the sources
-file(GLOB sources "src/*.c")
+add_executable(plc4c-tools-plc4x-server
+        src/plc4x_server.c
+        )
 
-add_library(plc4c-transport-tcp ${sources})
-
-target_include_directories(plc4c-transport-tcp
-        PUBLIC
-        "include"
-        "../../api/include"
-        "../../spi/include")
+target_include_directories(plc4c-tools-plc4x-server
+        PRIVATE
+        ../../api/include
+        ../../spi/include
+        ../../drivers/plc4x/include
+        ../../generated-sources/plc4x/include)
 
 if(WIN32)
-  target_link_libraries(plc4c-transport-tcp wsock32 ws2_32 ${CMAKE_DL_LIBS})
+    target_link_libraries(plc4c-tools-plc4x-server
+            plc4c-driver-plc4x
+            plc4c-transport-tcp
+            wsock32
+            ws2_32
+            ${CMAKE_DL_LIBS}
+    )
 else()
-  target_link_libraries(plc4c-transport-tcp ${CMAKE_DL_LIBS})
+    target_link_libraries(plc4c-tools-plc4x-server
+            ${CMAKE_DL_LIBS}
+    )
 endif()

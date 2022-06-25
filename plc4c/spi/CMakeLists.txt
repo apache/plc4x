@@ -17,8 +17,6 @@
   under the License.
 ]]
 
-include_directories("include" "../api/include")
-
 add_library(plc4c-spi
         src/utils/list.c
         src/utils/queue.c
@@ -32,7 +30,13 @@ add_library(plc4c-spi
         src/types.c
         src/write.c
         src/write_buffer.c
-        )
+        ../tools/plc4x-server/src/plc4x_server.c)
+
+target_include_directories(
+        plc4c-spi
+        PUBLIC
+        "include"
+        "../api/include")
 
 IF (NOT WIN32)
     target_link_libraries(plc4c-spi

@@ -17,19 +17,4 @@
   under the License.
 ]]
 
-# Add the sources
-file(GLOB sources "src/*.c")
-
-add_library(plc4c-transport-tcp ${sources})
-
-target_include_directories(plc4c-transport-tcp
-        PUBLIC
-        "include"
-        "../../api/include"
-        "../../spi/include")
-
-if(WIN32)
-  target_link_libraries(plc4c-transport-tcp wsock32 ws2_32 ${CMAKE_DL_LIBS})
-else()
-  target_link_libraries(plc4c-transport-tcp ${CMAKE_DL_LIBS})
-endif()
+add_subdirectory(plc4x-server)

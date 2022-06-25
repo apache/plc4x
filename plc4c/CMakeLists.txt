@@ -17,7 +17,7 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
 # Set the name of this project
 project(PLC4C)
@@ -91,5 +91,6 @@ add_subdirectory(api)
 add_subdirectory(spi)
 add_subdirectory(transports)
 add_subdirectory(drivers)
+add_subdirectory(tools)
 #add_subdirectory(integrations)
 add_subdirectory(examples)

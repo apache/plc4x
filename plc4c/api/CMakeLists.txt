@@ -17,12 +17,12 @@
   under the License.
 ]]
 
-include_directories("include")
-
 #[[
 file(GLOB sources "src/*.c")
 
 add_library(plc4c-api SHARED ${sources})
+
+target_include_directories(plc4c-api PUBLIC "include")
 
 if(BUILD_PHASE STREQUAL test-compile)
     file(GLOB testSources "test/*.c")

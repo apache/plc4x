@@ -17,14 +17,16 @@
   under the License.
 ]]
 
-include_directories("../../api/include"
-        "../../spi/include"
-        "../../drivers/modbus/include"
-        "../../transports/tcp/include")
-
 add_executable(plc4c-examples-hello-world-modbus
         src/hello_world_modbus.c
         )
+
+target_include_directories(plc4c-examples-hello-world-modbus
+        PUBLIC
+        "../../api/include"
+        "../../spi/include"
+        "../../drivers/modbus/include"
+        "../../transports/tcp/include")
 
 IF (NOT WIN32)
     target_link_libraries(plc4c-examples-hello-world-modbus
@@ -38,6 +40,5 @@ ELSE()
             plc4c-spi
             plc4c-driver-modbus
             plc4c-transport-tcp
-            unity
     )
 ENDIF()

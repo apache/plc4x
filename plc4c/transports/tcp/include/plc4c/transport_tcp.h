@@ -29,7 +29,7 @@ struct plc4c_transport_tcp_config {
   char* address;
   uint16_t port;
 
-  int sockfd;
+  unsigned int sockfd;
 };
 typedef struct plc4c_transport_tcp_config plc4c_transport_tcp_config;
 

@@ -17,11 +17,16 @@
   under the License.
 ]]
 
-include_directories("include" "../../api/include" "../../spi/include")
-
 # Add the sources
 file(GLOB sources "src/*.c")
 
 add_library(plc4c-transport-serial ${sources})
+
+target_include_directories(
+        plc4c-transport-serial
+        PUBLIC
+        "include"
+        "../../api/include"
+        "../../spi/include")
 
 target_link_libraries(plc4c-transport-serial ${CMAKE_DL_LIBS})

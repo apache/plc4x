@@ -17,9 +17,6 @@
   under the License.
 ]]
 
-include_directories("include" "../../api/include" "../../spi/include"
-    "../../generated-sources/modbus/include")
-
 # Add the generated sources
 file(GLOB generatedSources "../../generated-sources/modbus/src/*.c")
 
@@ -33,5 +30,12 @@ add_library(plc4c-driver-modbus
         src/driver_modbus_sm_write.c
         src/driver_modbus_static.c
         ${generatedSources})
+
+target_include_directories(plc4c-driver-modbus
+        PUBLIC
+        "include"
+        "../../api/include"
+        "../../spi/include"
+        "../../generated-sources/modbus/include")
 
 target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})
