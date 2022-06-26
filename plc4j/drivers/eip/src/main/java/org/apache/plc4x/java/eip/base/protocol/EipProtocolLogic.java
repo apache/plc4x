@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
@@ -276,7 +277,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 ),
                 new TransportType(true, (byte) 2, (byte) 3, this.configuration.getByteOrder()),
                 (short) 3,
-                new PortSegment(false, (byte) 1, (short) 0, this.configuration.getByteOrder()),
+                new PortSegment(false, (byte) 1, (short) this.configuration.getSlot(), this.configuration.getByteOrder()),
                 new LogicalSegment(new ClassID((byte) 0, (short) 2, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
                 new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
                 (int) 0,
@@ -347,7 +348,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     4919,
                     42L,
                     (short) 3,
-                    new PortSegment(false, (byte) 1, (short) 0, this.configuration.getByteOrder()),
+                    new PortSegment(false, (byte) 1, (short)  this.configuration.getSlot(), this.configuration.getByteOrder()),
                     new LogicalSegment(new ClassID((byte) 0, (short) 2, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
                     new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
                     0,
