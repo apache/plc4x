@@ -156,7 +156,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             this.configuration.getByteOrder()
         );
 
-        List<TypeId> typeIds = new ArrayList<>() {
+        List<TypeId> typeIds = new ArrayList<TypeId>() {
             {
                 add(nullAddressItem);
                 add(exchange);
@@ -191,6 +191,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                             this.useConnectionManager = true;
                         }
                     }
+
                     if (this.useConnectionManager) {
                         logger.debug("Device is using a Connection Manager");
                         onConnectOpenConnectionManager(context);
@@ -284,7 +285,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             this.configuration.getByteOrder()
         );
 
-        List<TypeId> typeIds = new ArrayList<>() {
+        List<TypeId> typeIds = new ArrayList<TypeId>() {
             {
                 add(nullAddressItem);
                 add(exchange);
@@ -355,7 +356,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 this.configuration.getByteOrder()
             );
 
-            List<TypeId> typeIds = new ArrayList<>() {
+            List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
                     add(nullAddressItem);
                     add(exchange);
@@ -593,7 +594,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         List<TypeId> typeIds =new ArrayList<>(2);
         typeIds.add(nullAddressItem);
-        typeIds.add(new ConnectedAddressItem(this.connectionId, this.configuration.getByteOrder()));
+
         if (requests.size() == 1) {
             typeIds.add(new ConnectedDataItem(this.sequenceCount, requests.get(0), this.configuration.getByteOrder()));
         } else {
@@ -605,7 +606,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
 
             }
-            MultipleServiceRequest serviceRequest = new MultipleServiceRequest(new Services(offsets, requests, 0, this.configuration.getByteOrder()), 0, this.configuration.getByteOrder());
+            Services services = new Services(offsets, requests, -1, this.configuration.getByteOrder());
+            MultipleServiceRequest serviceRequest = new MultipleServiceRequest(services, services.getLengthInBytes(), this.configuration.getByteOrder());
+            int ss = serviceRequest.getLengthInBytes();
             typeIds.add(new ConnectedDataItem(this.sequenceCount, serviceRequest, this.configuration.getByteOrder()));
         }
 
@@ -915,7 +918,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 this.configuration.getByteOrder()
             );
 
-            List<TypeId> typeIds = new ArrayList<>() {
+            List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
                     add(nullAddressItem);
                     add(exchange);
@@ -1006,7 +1009,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 this.configuration.getByteOrder()
             );
 
-            List<TypeId> typeIds = new ArrayList<>() {
+            List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
                     add(nullAddressItem);
                     add(exchange);
@@ -1072,7 +1075,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 this.configuration.getByteOrder()
             );
 
-            List<TypeId> typeIds = new ArrayList<>() {
+            List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
                     add(nullAddressItem);
                     add(exchange);
@@ -1144,7 +1147,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 this.configuration.getByteOrder()
             );
 
-            List<TypeId> typeIds = new ArrayList<>() {
+            List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
                     add(nullAddressItem);
                     add(exchange);
@@ -1201,7 +1204,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 this.configuration.getByteOrder()
             );
 
-            List<TypeId> typeIds = new ArrayList<>() {
+            List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
                     add(nullAddressItem);
                     add(exchange);
