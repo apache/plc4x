@@ -25,6 +25,7 @@ import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.base.field.EipField;
 import org.apache.plc4x.java.eip.base.field.EipFieldHandler;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
+import org.apache.plc4x.java.eip.logix.LogixDriver;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
 import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -105,6 +106,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
                 .withProtocol(EipProtocolLogic.class)
                 .withPacketSizeEstimator(ByteLengthEstimator.class)
                 .withParserArgs(IntegerEncoding.BIG_ENDIAN, true)
+                .withCorruptPacketRemover(LogixDriver.CorruptPackageCleaner.class)
                 .bigEndian()
                 .build();
         } else {
@@ -112,6 +114,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
                 .withProtocol(EipProtocolLogic.class)
                 .withPacketSizeEstimator(ByteLengthEstimator.class)
                 .withParserArgs(IntegerEncoding.LITTLE_ENDIAN, true)
+                .withCorruptPacketRemover(LogixDriver.CorruptPackageCleaner.class)
                 .littleEndian()
                 .build();
         }

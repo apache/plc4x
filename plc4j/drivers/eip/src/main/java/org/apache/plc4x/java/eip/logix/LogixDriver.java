@@ -96,6 +96,7 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withParserArgs(IntegerEncoding.LITTLE_ENDIAN, true)
+            .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .littleEndian()
             .build();
     }
@@ -105,8 +106,8 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
-                //Second byte for the size and then add the header size 24
-                int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
+                //Second word for the size and then add the header size 24
+                int size = byteBuf.getUnsignedShortLE(byteBuf.readerIndex()+2)+24;
                 return size;
             }
             return -1;

@@ -28,8 +28,10 @@
     [simple        uint 32 status]
     [array         byte    senderContext count '8']
     [simple        uint 32 options]
-    [typeSwitch command,response
-            ['0x0001'   NullLittleCommand
+    [typeSwitch command,response,packetLength
+            ['0x0001','false'   NullCommandRequest
+            ]
+            ['0x0001','true'    NullCommandResponse
             ]
             ['0x0004','false' ListServicesRequest
             ]
@@ -54,8 +56,6 @@
                 [simple     uint    16     timeout]
                 [simple     uint    16     itemCount]
                 [array      TypeId('order')         typeId   count   'itemCount']
-            ]
-            ['0x0100'   NullBigCommand
             ]
         ]
 ]
@@ -101,11 +101,10 @@
             [simple      PathSegment('order')   instanceSegment]
         ]
         ['0x01','true' GetAttributeAllResponse
-            [implicit      int     8         requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
-            [simple      PathSegment('order')         classSegment]
-            [simple      PathSegment('order')         instanceSegment]
-            [implicit    uint 16                numberOfClasses 'COUNT(classId)']
-            [array       uint 16                classId count 'numberOfClasses']
+            [reserved    uint   8               '0x00']
+            [simple      uint   8               status]
+            [simple      uint   8               extStatus]
+            [simple      CIPAttributes('serviceLen - 4')          attributes]
         ]
         ['0x4C','false' CipReadRequest
             [implicit   int     8   requestPathSize 'COUNT(tag) / 2']
@@ -269,6 +268,14 @@
     ]
 ]
 
+[type   CIPAttributes(uint 16 packetLength)
+    [implicit    uint   16              numberOfClasses 'COUNT(classId)']
+    [array       uint   16              classId count   'numberOfClasses']
+    [simple      uint 16                numberAvailable]
+    [simple      uint 16                numberActive]
+    [array       byte                   data count 'packetLength - 2 - (COUNT(classId) * 2) - 4'
+]
+
 [discriminatedType DataSegmentType(IntegerEncoding order) byteOrder='order == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
     [discriminator  uint    5   dataSegmentType]
     [typeSwitch dataSegmentType
@@ -381,4 +388,10 @@
     ['0x0000001D'   InvalidAttributeValueList]
     ['0x0000001E'   EmbeddedServiceError]
     ['0x0000001F'   VendorSpecificError]
+]
+
+[enum   uint    16  CIPClassID
+    ['0x0001'   Identity]
+    ['0x0002'   MessageRouter]
+    ['0x0006'   ConnectionManager]
 ]
