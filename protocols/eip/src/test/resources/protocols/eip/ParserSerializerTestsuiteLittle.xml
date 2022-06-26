@@ -1220,89 +1220,94 @@
                       <reserved dataType="uint" bitLength="8">0</reserved>
                       <status dataType="uint" bitLength="8">0</status>
                       <extStatus dataType="uint" bitLength="8">0</extStatus>
-                      <numberOfClasses dataType="uint" bitLength="16">78</numberOfClasses>
-                      <classId isList="true">
-                        <value dataType="uint" bitLength="16">826</value>
-                        <value dataType="uint" bitLength="16">119</value>
-                        <value dataType="uint" bitLength="16">102</value>
-                        <value dataType="uint" bitLength="16">67</value>
-                        <value dataType="uint" bitLength="16">246</value>
-                        <value dataType="uint" bitLength="16">55</value>
-                        <value dataType="uint" bitLength="16">245</value>
-                        <value dataType="uint" bitLength="16">940</value>
-                        <value dataType="uint" bitLength="16">95</value>
-                        <value dataType="uint" bitLength="16">93</value>
-                        <value dataType="uint" bitLength="16">94</value>
-                        <value dataType="uint" bitLength="16">768</value>
-                        <value dataType="uint" bitLength="16">939</value>
-                        <value dataType="uint" bitLength="16">823</value>
-                        <value dataType="uint" bitLength="16">933</value>
-                        <value dataType="uint" bitLength="16">772</value>
-                        <value dataType="uint" bitLength="16">72</value>
-                        <value dataType="uint" bitLength="16">834</value>
-                        <value dataType="uint" bitLength="16">932</value>
-                        <value dataType="uint" bitLength="16">139</value>
-                        <value dataType="uint" bitLength="16">815</value>
-                        <value dataType="uint" bitLength="16">1042</value>
-                        <value dataType="uint" bitLength="16">950</value>
-                        <value dataType="uint" bitLength="16">946</value>
-                        <value dataType="uint" bitLength="16">947</value>
-                        <value dataType="uint" bitLength="16">944</value>
-                        <value dataType="uint" bitLength="16">945</value>
-                        <value dataType="uint" bitLength="16">816</value>
-                        <value dataType="uint" bitLength="16">79</value>
-                        <value dataType="uint" bitLength="16">78</value>
-                        <value dataType="uint" bitLength="16">938</value>
-                        <value dataType="uint" bitLength="16">936</value>
-                        <value dataType="uint" bitLength="16">935</value>
-                        <value dataType="uint" bitLength="16">934</value>
-                        <value dataType="uint" bitLength="16">878</value>
-                        <value dataType="uint" bitLength="16">880</value>
-                        <value dataType="uint" bitLength="16">818</value>
-                        <value dataType="uint" bitLength="16">817</value>
-                        <value dataType="uint" bitLength="16">813</value>
-                        <value dataType="uint" bitLength="16">791</value>
-                        <value dataType="uint" bitLength="16">178</value>
-                        <value dataType="uint" bitLength="16">841</value>
-                        <value dataType="uint" bitLength="16">821</value>
-                        <value dataType="uint" bitLength="16">113</value>
-                        <value dataType="uint" bitLength="16">114</value>
-                        <value dataType="uint" bitLength="16">888</value>
-                        <value dataType="uint" bitLength="16">172</value>
-                        <value dataType="uint" bitLength="16">176</value>
-                        <value dataType="uint" bitLength="16">811</value>
-                        <value dataType="uint" bitLength="16">177</value>
-                        <value dataType="uint" bitLength="16">115</value>
-                        <value dataType="uint" bitLength="16">103</value>
-                        <value dataType="uint" bitLength="16">107</value>
-                        <value dataType="uint" bitLength="16">104</value>
-                        <value dataType="uint" bitLength="16">893</value>
-                        <value dataType="uint" bitLength="16">141</value>
-                        <value dataType="uint" bitLength="16">140</value>
-                        <value dataType="uint" bitLength="16">109</value>
-                        <value dataType="uint" bitLength="16">106</value>
-                        <value dataType="uint" bitLength="16">824</value>
-                        <value dataType="uint" bitLength="16">794</value>
-                        <value dataType="uint" bitLength="16">105</value>
-                        <value dataType="uint" bitLength="16">69</value>
-                        <value dataType="uint" bitLength="16">242</value>
-                        <value dataType="uint" bitLength="16">116</value>
-                        <value dataType="uint" bitLength="16">110</value>
-                        <value dataType="uint" bitLength="16">142</value>
-                        <value dataType="uint" bitLength="16">112</value>
-                        <value dataType="uint" bitLength="16">108</value>
-                        <value dataType="uint" bitLength="16">2</value>
-                        <value dataType="uint" bitLength="16">874</value>
-                        <value dataType="uint" bitLength="16">100</value>
-                        <value dataType="uint" bitLength="16">161</value>
-                        <value dataType="uint" bitLength="16">244</value>
-                        <value dataType="uint" bitLength="16">1</value>
-                        <value dataType="uint" bitLength="16">193</value>
-                        <value dataType="uint" bitLength="16">192</value>
-                        <value dataType="uint" bitLength="16">6</value>
-                      </classId>
-                      <numberAvailable dataType="uint" bitLength="16">256</numberAvailable>
-                      <numberActive dataType="uint" bitLength="16">5</numberActive>
+                      <attributes>
+                        <CIPAttributes>
+                          <numberOfClasses dataType="uint" bitLength="16">78</numberOfClasses>
+                          <classId isList="true">
+                            <value dataType="uint" bitLength="16">826</value>
+                            <value dataType="uint" bitLength="16">119</value>
+                            <value dataType="uint" bitLength="16">102</value>
+                            <value dataType="uint" bitLength="16">67</value>
+                            <value dataType="uint" bitLength="16">246</value>
+                            <value dataType="uint" bitLength="16">55</value>
+                            <value dataType="uint" bitLength="16">245</value>
+                            <value dataType="uint" bitLength="16">940</value>
+                            <value dataType="uint" bitLength="16">95</value>
+                            <value dataType="uint" bitLength="16">93</value>
+                            <value dataType="uint" bitLength="16">94</value>
+                            <value dataType="uint" bitLength="16">768</value>
+                            <value dataType="uint" bitLength="16">939</value>
+                            <value dataType="uint" bitLength="16">823</value>
+                            <value dataType="uint" bitLength="16">933</value>
+                            <value dataType="uint" bitLength="16">772</value>
+                            <value dataType="uint" bitLength="16">72</value>
+                            <value dataType="uint" bitLength="16">834</value>
+                            <value dataType="uint" bitLength="16">932</value>
+                            <value dataType="uint" bitLength="16">139</value>
+                            <value dataType="uint" bitLength="16">815</value>
+                            <value dataType="uint" bitLength="16">1042</value>
+                            <value dataType="uint" bitLength="16">950</value>
+                            <value dataType="uint" bitLength="16">946</value>
+                            <value dataType="uint" bitLength="16">947</value>
+                            <value dataType="uint" bitLength="16">944</value>
+                            <value dataType="uint" bitLength="16">945</value>
+                            <value dataType="uint" bitLength="16">816</value>
+                            <value dataType="uint" bitLength="16">79</value>
+                            <value dataType="uint" bitLength="16">78</value>
+                            <value dataType="uint" bitLength="16">938</value>
+                            <value dataType="uint" bitLength="16">936</value>
+                            <value dataType="uint" bitLength="16">935</value>
+                            <value dataType="uint" bitLength="16">934</value>
+                            <value dataType="uint" bitLength="16">878</value>
+                            <value dataType="uint" bitLength="16">880</value>
+                            <value dataType="uint" bitLength="16">818</value>
+                            <value dataType="uint" bitLength="16">817</value>
+                            <value dataType="uint" bitLength="16">813</value>
+                            <value dataType="uint" bitLength="16">791</value>
+                            <value dataType="uint" bitLength="16">178</value>
+                            <value dataType="uint" bitLength="16">841</value>
+                            <value dataType="uint" bitLength="16">821</value>
+                            <value dataType="uint" bitLength="16">113</value>
+                            <value dataType="uint" bitLength="16">114</value>
+                            <value dataType="uint" bitLength="16">888</value>
+                            <value dataType="uint" bitLength="16">172</value>
+                            <value dataType="uint" bitLength="16">176</value>
+                            <value dataType="uint" bitLength="16">811</value>
+                            <value dataType="uint" bitLength="16">177</value>
+                            <value dataType="uint" bitLength="16">115</value>
+                            <value dataType="uint" bitLength="16">103</value>
+                            <value dataType="uint" bitLength="16">107</value>
+                            <value dataType="uint" bitLength="16">104</value>
+                            <value dataType="uint" bitLength="16">893</value>
+                            <value dataType="uint" bitLength="16">141</value>
+                            <value dataType="uint" bitLength="16">140</value>
+                            <value dataType="uint" bitLength="16">109</value>
+                            <value dataType="uint" bitLength="16">106</value>
+                            <value dataType="uint" bitLength="16">824</value>
+                            <value dataType="uint" bitLength="16">794</value>
+                            <value dataType="uint" bitLength="16">105</value>
+                            <value dataType="uint" bitLength="16">69</value>
+                            <value dataType="uint" bitLength="16">242</value>
+                            <value dataType="uint" bitLength="16">116</value>
+                            <value dataType="uint" bitLength="16">110</value>
+                            <value dataType="uint" bitLength="16">142</value>
+                            <value dataType="uint" bitLength="16">112</value>
+                            <value dataType="uint" bitLength="16">108</value>
+                            <value dataType="uint" bitLength="16">2</value>
+                            <value dataType="uint" bitLength="16">874</value>
+                            <value dataType="uint" bitLength="16">100</value>
+                            <value dataType="uint" bitLength="16">161</value>
+                            <value dataType="uint" bitLength="16">244</value>
+                            <value dataType="uint" bitLength="16">1</value>
+                            <value dataType="uint" bitLength="16">193</value>
+                            <value dataType="uint" bitLength="16">192</value>
+                            <value dataType="uint" bitLength="16">6</value>
+                          </classId>
+                          <numberAvailable dataType="uint" bitLength="16">256</numberAvailable>
+                          <numberActive dataType="uint" bitLength="16">5</numberActive>
+                          <data dataType="byte" bitLength="0">0x</data>
+                        </CIPAttributes>
+                      </attributes>
                     </GetAttributeAllResponse>
                   </CipService>
                 </service>
@@ -1315,7 +1320,7 @@
   </testcase>
 
   <testcase>
-    <name>EIP Get Attribute List Response - Message Router - Multiple Attributes</name>
+    <name>EIP Get Attribute List Response - Message Router - Multiple Attributes - Bad Response Handling</name>
     <raw>6f004c08b181852100000000504c43345820202000000000000000000000020000000000b2003c088100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
@@ -1324,7 +1329,52 @@
     </parser-arguments>
     <xml>
       <EipPacket>
-
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">2124</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">562397617</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">2108</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      <attributes>
+                        <CIPAttributes>
+                          <numberOfClasses dataType="uint" bitLength="16">0</numberOfClasses>
+                          <classId isList="true">
+                          </classId>
+                          <numberAvailable dataType="uint" bitLength="16">0</numberAvailable>
+                          <numberActive dataType="uint" bitLength="16">0</numberActive>
+                          <data dataType="byte" bitLength="16784">0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</data>
+                        </CIPAttributes>
+                      </attributes>
+                    </GetAttributeAllResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
       </EipPacket>
     </xml>
   </testcase>

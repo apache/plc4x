@@ -320,9 +320,9 @@
 ]
 
 [type   Services  (uint   16   servicesLen, IntegerEncoding order) byteOrder='order == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
-    [simple uint        16  serviceNb]
-    [array  uint        16  offsets       count  'serviceNb']
-    [array  CipService('false', 'servicesLen / serviceNb', 'order')   services    count  'serviceNb' ]
+    [implicit   uint        16  serviceNb 'COUNT(offsets)']
+    [array      uint        16  offsets       count  'serviceNb']
+    [array      CipService('false', 'servicesLen / serviceNb', 'order')   services    count  'serviceNb' ]
 ]
 
 [enum uint   16   CIPDataTypeCode(uint 8  size)
