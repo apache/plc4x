@@ -88,7 +88,7 @@
     <!--
       At least 3.3.3 required for camel-package-maven-plugin
     -->
-    <maven.version>3.8.5</maven.version>
+    <maven.version>3.8.6</maven.version>
 
     <java.version>11</java.version>
 
