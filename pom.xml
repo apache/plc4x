@@ -143,7 +143,7 @@
     <woodstox-core.version>6.2.8</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.0</jaxb.version>
-    <jetty-util.version>11.0.9</jetty-util.version>
+    <jetty-util.version>11.0.11</jetty-util.version>
     <jna.version>5.10.0</jna.version>
     <joda-time.version>2.10.14</joda-time.version>
     <jserialcom.version>2.9.1</jserialcom.version>
