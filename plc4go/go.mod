@@ -35,7 +35,7 @@ require (
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.12.0
-	github.com/stretchr/testify v1.7.2
+	github.com/stretchr/testify v1.7.5
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
