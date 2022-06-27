@@ -20,13 +20,31 @@ package org.apache.plc4x.java.transport.serial;
 
 import java.net.SocketAddress;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SerialSocketAddress extends SocketAddress {
 
     private final String identifier;
 
+    private final Optional<SerialChannelHandler> handler;
+
     public SerialSocketAddress(String identifier) {
         this.identifier = identifier;
+        this.handler = Optional.empty();
+    }
+
+    /**
+     * @param identifier of the port
+     * @param handler for custom behavior.  E.g. testing
+     */
+    public SerialSocketAddress(final String identifier, final SerialChannelHandler handler)
+    {
+        this.identifier = identifier;
+        this.handler = Optional.of(handler);
+    }
+
+    public Optional<SerialChannelHandler> getHandler() {
+        return handler;
     }
 
     public String getIdentifier() {
