@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -50,12 +51,6 @@
           </execution>
         </executions>
       </plugin>
-      <!--plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludedGroups>bacnet-regression</excludedGroups>
-        </configuration>
-      </plugin-->
     </plugins>
   </build>
 
@@ -172,5 +167,22 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <!-- On some machines this test is just too much so we skip it on them-->
+      <id>skip-bacnet-regression-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludedGroups>bacnet-regression</excludedGroups>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
