@@ -1392,6 +1392,8 @@ const (
 	BACnetVendorId_AIWAA_SYSTEMS_PRIVATE_LIMITED                                                BACnetVendorId = 1360
 	BACnetVendorId_ENLESS_WIRELESS                                                              BACnetVendorId = 1361
 	BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD                                                    BACnetVendorId = 1362
+	BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY                                          BACnetVendorId = 1363
+	BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC                                        BACnetVendorId = 1364
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2756,6 +2758,8 @@ func init() {
 		BACnetVendorId_AIWAA_SYSTEMS_PRIVATE_LIMITED,
 		BACnetVendorId_ENLESS_WIRELESS,
 		BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD,
+		BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY,
+		BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4385,6 +4389,14 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1362:
 		{ /* '1362' */
 			return 1362
+		}
+	case 1363:
+		{ /* '1363' */
+			return 1363
+		}
+	case 1364:
+		{ /* '1364' */
+			return 1364
 		}
 	case 137:
 		{ /* '137' */
@@ -9832,6 +9844,14 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1362' */
 			return "Ozuno Engineering Pty Ltd"
 		}
+	case 1363:
+		{ /* '1363' */
+			return "Hubbell, The Electric Heater Company"
+		}
+	case 1364:
+		{ /* '1364' */
+			return "Industrial Turnaround Corporation (ITAC)"
+		}
 	case 137:
 		{ /* '137' */
 			return "AFDtek Division of Fastek International Inc."
@@ -14465,6 +14485,10 @@ func BACnetVendorIdByValue(value uint16) BACnetVendorId {
 		return BACnetVendorId_ENLESS_WIRELESS
 	case 1362:
 		return BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD
+	case 1363:
+		return BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY
+	case 1364:
+		return BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC
 	case 137:
 		return BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC
 	case 138:
@@ -17185,6 +17209,10 @@ func BACnetVendorIdByName(value string) BACnetVendorId {
 		return BACnetVendorId_ENLESS_WIRELESS
 	case "OZUNO_ENGINEERING_PTY_LTD":
 		return BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD
+	case "HUBBELL_THE_ELECTRIC_HEATER_COMPANY":
+		return BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY
+	case "INDUSTRIAL_TURNAROUND_CORPORATIONITAC":
+		return BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC
 	case "AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC":
 		return BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC
 	case "POWER_COLD_COMFORT_AIR_SOLUTIONS_INC":
@@ -19944,6 +19972,10 @@ func (e BACnetVendorId) name() string {
 		return "ENLESS_WIRELESS"
 	case BACnetVendorId_OZUNO_ENGINEERING_PTY_LTD:
 		return "OZUNO_ENGINEERING_PTY_LTD"
+	case BACnetVendorId_HUBBELL_THE_ELECTRIC_HEATER_COMPANY:
+		return "HUBBELL_THE_ELECTRIC_HEATER_COMPANY"
+	case BACnetVendorId_INDUSTRIAL_TURNAROUND_CORPORATIONITAC:
+		return "INDUSTRIAL_TURNAROUND_CORPORATIONITAC"
 	case BACnetVendorId_AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC:
 		return "AF_DTEK_DIVISIONOF_FASTEK_INTERNATIONAL_INC"
 	case BACnetVendorId_POWER_COLD_COMFORT_AIR_SOLUTIONS_INC:

@@ -323,17 +323,7 @@
         <version>2.3.10</version>
         <extensions>true</extensions>
         <executions>
-
-          <!-- Downloads the dependencies of the project -->
-          <execution>
-            <id>default-get</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>get</goal>
-            </goals>
-          </execution>
-
-          <!-- Make sure the "stringer" extension as well als the "licenser" is downloaded -->
+          <!-- add tools required for generating code, test, etc-->
           <execution>
             <id>get-tools</id>
             <phase>initialize</phase>
@@ -344,6 +334,8 @@
               <packages>
                 <package>golang.org/x/tools/cmd/stringer</package>
                 <package>github.com/elastic/go-licenser</package>
+                <package>github.com/tebeka/go2xunit</package>
+                <package>gotest.tools/gotestsum</package>
               </packages>
             </configuration>
           </execution>
@@ -475,21 +467,6 @@
               </buildFlags>
               <packages>
                 <package>./...</package>
-              </packages>
-            </configuration>
-          </execution>
-
-          <!-- Make sure the xunit generator as well as gotestsum is installed -->
-          <execution>
-            <id>test-get</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>install</goal>
-            </goals>
-            <configuration>
-              <packages>
-                <package>github.com/tebeka/go2xunit</package>
-                <package>gotest.tools/gotestsum</package>
               </packages>
             </configuration>
           </execution>
