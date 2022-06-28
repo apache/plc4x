@@ -27,10 +27,10 @@ import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
 
     @ConfigurationParameter
-    private int backplane;
+    private int backplane = 1;
 
     @ConfigurationParameter
-    private int slot;
+    private int slot = 0;
 
     @ConfigurationParameter
     private boolean bigEndian = true;

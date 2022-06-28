@@ -186,10 +186,14 @@
                       <reserved dataType="uint" bitLength="8">0</reserved>
                       <status dataType="uint" bitLength="8">0</status>
                       <extStatus dataType="uint" bitLength="8">0</extStatus>
-                      <dataType>
-                        <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
-                      </dataType>
-                      <data dataType="byte" bitLength="32">0x00000216</data>
+                      <data>
+                        <CIPData>
+                          <dataType>
+                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
+                          </dataType>
+                          <data dataType="byte" bitLength="32">0x00000216</data>
+                        </CIPData>
+                      </data>
                     </CipReadResponse>
                   </CipService>
                 </service>

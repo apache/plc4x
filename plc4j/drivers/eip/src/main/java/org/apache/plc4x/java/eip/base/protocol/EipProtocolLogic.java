@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.base.field.EipField;
+import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -79,10 +80,59 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private boolean useMessageRouter = false;
 
+    private List<PathSegment> routingAddress = new ArrayList<>();
+    short connectionPathSize = 0;
+
     @Override
     public void setConfiguration(EIPConfiguration configuration) {
         this.configuration = configuration;
         this.nullAddressItem = new NullAddressItem(this.configuration.getByteOrder());
+
+        if (configuration instanceof LogixConfiguration) {
+            // Use a connection path instead of the backplane and slot if it is available
+            LogixConfiguration logixConfigutation = (LogixConfiguration) configuration;
+            if (logixConfigutation.getCommunicationPath() != null) {
+                String[] splitConnectionPath = logixConfigutation.getCommunicationPath().split(",");
+                if (splitConnectionPath.length % 2 == 0) {
+                    for (int i = 0; (i + 1) < splitConnectionPath.length; i += 2 ) {
+                        switch(splitConnectionPath[i]) {
+                            case "1":
+                                int backplanePortId = Integer.parseInt(splitConnectionPath[i]);
+                                int slot = Integer.parseInt(splitConnectionPath[i + 1]);
+                                routingAddress.add(new PortSegment(new PortSegmentNormal((byte) backplanePortId, (short)  slot, this.configuration.getByteOrder()),this.configuration.getByteOrder()));
+                                break;
+                            case "2":
+                                int ethernetPortId = Integer.parseInt(splitConnectionPath[i]);
+                                String ipAddress = splitConnectionPath[i+1];
+                                if ((ipAddress.length() % 2) != 0) {
+                                    ipAddress += " ";
+                                }
+                                routingAddress.add(new PortSegment(new PortSegmentExtended((byte) ethernetPortId, (short) ipAddress.length(), ipAddress, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+                                break;
+                            default:
+                                logger.error("Only backplane or Ethernet module routing is supported");
+                        }
+
+                    }
+                }
+            } else {
+                routingAddress.add(new PortSegment(new PortSegmentNormal((byte) 1, (short)  this.configuration.getSlot(), this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+            }
+        } else {
+            routingAddress.add(new PortSegment(new PortSegmentNormal((byte) 1, (short)  this.configuration.getSlot(), this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+        }
+
+        routingAddress.add(new LogicalSegment(new ClassID((byte) 0, (short) 2, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+        routingAddress.add(new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+
+        for (PathSegment segment : this.routingAddress) {
+            this.connectionPathSize += segment.getLengthInBytes();
+        }
+        if ((this.connectionPathSize % 2) != 0) {
+            this.connectionPathSize += 1;
+        }
+
+        this.connectionPathSize = (short) (this.connectionPathSize / 2);
 
         // Set the transaction manager to allow only one message at a time.
         this.tm = new RequestTransactionManager(1);
@@ -125,7 +175,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         context.sendRequest(listServicesRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
-            .onError((p,e) -> context.fireDisconnected())
+            .onError((p,e) -> {throw new PlcRuntimeException("List EIP Services failed");})
             .check(p -> p instanceof EipPacket)
             .handle(p -> {
                 if (p.getStatus() == CIPStatus.Success.getValue()) {
@@ -135,7 +185,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     }
                     this.cipEncapsulationAvailable = listServicesResponse.getSupportsCIPEncapsulation();
                 } else {
-                    logger.warn("Got status code while polling for supported EIP services [{}]", p.getStatus());
+                    throw new PlcRuntimeException("Got status code while polling for supported EIP services [" + p.getStatus() + "]");
                 }
                 onConnectRegisterSession(context);
             });
@@ -184,6 +234,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 if (p.getStatus() == CIPStatus.Success.getValue()) {
                     UnConnectedDataItem dataItem = (UnConnectedDataItem) ((CipRRData) p).getTypeId().get(1);
                     GetAttributeAllResponse response = (GetAttributeAllResponse) dataItem.getService();
+                    if ( (long) response.getStatus() != CIPStatus.Success.getValue()) {
+                        throw new PlcRuntimeException("Got status code while polling for supported CIP sttributes [" + response.getStatus() + "]");
+                    }
                     for (Integer classId : response.getAttributes().getClassId()) {
                         if (CIPClassID.enumForValue(classId) == CIPClassID.MessageRouter) {
                             this.useMessageRouter = true;
@@ -199,9 +252,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     } else {
                         context.fireConnected();
                     }
-
                 } else {
-                    logger.warn("Got status code while polling for supported CIP services [{}]", p.getStatus());
+                    throw new PlcRuntimeException("Got status code while polling for supported CIP services [" + p.getStatus() + "]");
                 }
 
             });
@@ -234,6 +286,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     getAllAttributes(context);
                 } else {
                     logger.warn("Got status code [{}]", p.getStatus());
+                    throw new PlcRuntimeException("Got status code while registering session [" + p.getStatus() + "]");
                 }
             });
     }
@@ -276,10 +329,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     this.configuration.getByteOrder()
                 ),
                 new TransportType(true, (byte) 2, (byte) 3, this.configuration.getByteOrder()),
-                (short) 3,
-                new PortSegment(false, (byte) 1, (short) this.configuration.getSlot(), this.configuration.getByteOrder()),
-                new LogicalSegment(new ClassID((byte) 0, (short) 2, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
-                new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
+                this.connectionPathSize,
+                this.routingAddress,
                 (int) 0,
                 this.configuration.getByteOrder()
             ),
@@ -319,10 +370,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     // Send an event that connection setup is complete.
                     context.fireConnected();
                 } else {
-                    logger.warn("Got status code while opening Connection Manager[{}]", p.getStatus());
-                    context.fireDisconnected();
+                    throw new PlcRuntimeException("Got status code while opening Connection Manager[" + p.getStatus() + "]");
                 }
-
             });
     }
 
@@ -333,8 +382,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             logger.debug("Sending Connection Manager Close Event");
             PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
             PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-
-
 
             UnConnectedDataItem exchange = new UnConnectedDataItem(
                 new CipConnectionManagerCloseRequest(
@@ -347,10 +394,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     8592,
                     4919,
                     42L,
-                    (short) 3,
-                    new PortSegment(false, (byte) 1, (short)  this.configuration.getSlot(), this.configuration.getByteOrder()),
-                    new LogicalSegment(new ClassID((byte) 0, (short) 2, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
-                    new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder()),
+                    this.connectionPathSize,
+                    this.routingAddress,
                     0,
                     this.configuration.getByteOrder()
                 ),
@@ -708,8 +753,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             EipField field = (EipField) readRequest.getField(fieldName);
             PlcResponseCode code = decodeResponseCode(resp.getStatus());
             PlcValue plcValue = null;
-            CIPDataTypeCode type = resp.getDataType();
-            ByteBuf data = Unpooled.wrappedBuffer(resp.getData());
+            CIPDataTypeCode type = resp.getData().getDataType();
+            ByteBuf data = Unpooled.wrappedBuffer(resp.getData().getData());
             if (code == PlcResponseCode.OK) {
                 plcValue = parsePlcValue(field, data, type);
             }
@@ -754,8 +799,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     } else {
                         code = PlcResponseCode.INTERNAL_ERROR;
                     }
-                    CIPDataTypeCode type = readResponse.getDataType();
-                    ByteBuf data = Unpooled.wrappedBuffer(readResponse.getData());
+                    CIPDataTypeCode type = readResponse.getData().getDataType();
+                    ByteBuf data = Unpooled.wrappedBuffer(readResponse.getData().getData());
                     if (code == PlcResponseCode.OK) {
                         plcValue = parsePlcValue(field, data, type);
                     }
@@ -772,8 +817,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         CipReadResponse resp = (CipReadResponse) p;
         PlcResponseCode code = decodeResponseCode(resp.getStatus());
         PlcValue plcValue = null;
-        CIPDataTypeCode type = resp.getDataType();
-        ByteBuf data = Unpooled.wrappedBuffer(resp.getData());
+        CIPDataTypeCode type = resp.getData().getDataType();
+        ByteBuf data = Unpooled.wrappedBuffer(resp.getData().getData());
         if (code == PlcResponseCode.OK) {
             plcValue = parsePlcValue((EipField) field.getValue(), data, type);
         }

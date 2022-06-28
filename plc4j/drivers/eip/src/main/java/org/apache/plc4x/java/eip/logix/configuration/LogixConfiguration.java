@@ -27,6 +27,9 @@ import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class LogixConfiguration extends EIPConfiguration {
 
+    @ConfigurationParameter
+    private String communicationPath;
+
     private IntegerEncoding byteOrder = IntegerEncoding.LITTLE_ENDIAN;
 
     @Override
@@ -37,5 +40,9 @@ public class LogixConfiguration extends EIPConfiguration {
 
     @Override
     public int getDefaultPort(){return EIPDriver.PORT;}
+
+    public String getCommunicationPath() { return this.communicationPath; }
+
+    public void setCommunicationPath(String routingAddress) { this.communicationPath = communicationPath; }
 
 }

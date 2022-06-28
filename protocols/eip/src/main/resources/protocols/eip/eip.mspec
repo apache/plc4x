@@ -104,7 +104,7 @@
             [reserved    uint   8               '0x00']
             [simple      uint   8               status]
             [simple      uint   8               extStatus]
-            [simple      CIPAttributes('serviceLen - 4')          attributes]
+            [optional    CIPAttributes('serviceLen - 4')          attributes '(serviceLen - 4) > 0']
         ]
         ['0x4C','false' CipReadRequest
             [implicit   int     8   requestPathSize 'COUNT(tag) / 2']
@@ -115,8 +115,7 @@
               [reserved   uint            8   '0x00']
               [simple     uint            8   status]
               [simple     uint            8   extStatus]
-              [simple     CIPDataTypeCode     dataType]
-              [array      byte   data  count  'serviceLen - 6']
+              [optional   CIPData('serviceLen - 4')   data    '(serviceLen -4) > 0']
         ]
         ['0x4D','false' CipWriteRequest
             [implicit   int     8       requestPathSize 'COUNT(tag) / 2']
@@ -140,11 +139,9 @@
               [simple      uint    16          connectionSerialNumber]
               [simple      uint    16          originatorVendorId]
               [simple      uint    32          originatorSerialNumber]
-              [simple      uint    8           connectionPathSize]
-              [reserved    byte                '0x00']
-              [simple      PathSegment('order')         connectionPathPortSegment]
-              [simple      PathSegment('order')         connectionPathClassSegment]
-              [simple      PathSegment('order')         connectionPathInstanceSegment]
+              [simple      uint    8              connectionPathSize]
+              [reserved    byte                 '0x00']
+              [array       PathSegment('order')   connectionPaths     terminated   'STATIC_CALL("isStillAPathSegment", readBuffer, order)']
         ]
         ['0x4E','true' CipConnectionManagerCloseResponse
               [reserved uint    8   '0x00']
@@ -186,12 +183,11 @@
                [reserved   uint    16   '0x0001']
                [reserved   uint    32   '0x00000000']
         ]
-        ['0x52','true','true'   CipConnectedResponse
+        ['0x52','true'   CipConnectedResponse
                [reserved   uint    8    '0x00']
                [simple     uint    8    status]
                [simple     uint    8    additionalStatusWords]
-               [simple     uint    32   value]
-               [simple     uint    16   tagStatus]
+               [optional   CIPDataConnected('serviceLen')   data    '(serviceLen - 4) > 0']
         ]
         ['0x5B','false'     CipConnectionManagerRequest
                [implicit      int     8         requestPathSize '(classSegment.lengthInBytes + instanceSegment.lengthInBytes)/2']
@@ -212,11 +208,8 @@
                [simple      uint    32          toRpi]
                [simple      NetworkConnectionParameters('order') toConnectionParameters]
                [simple      TransportType('order')       transportType]
-               [simple      uint    8           connectionPathSize]
-               [simple      PathSegment('order')         connectionPathPortSegment]
-               [simple      PathSegment('order')         connectionPathClassSegment]
-               [simple      PathSegment('order')         connectionPathInstanceSegment]
-
+               [simple      uint    8              connectionPathSize]
+               [array       PathSegment('order')   connectionPaths     terminated   'STATIC_CALL("isStillAPathSegment", readBuffer, order)']
         ]
         ['0x5B','true'     CipConnectionManagerResponse
                [reserved    uint    24          '0x000000']
@@ -237,15 +230,28 @@
     [discriminator  uint    3   pathSegment]
     [typeSwitch pathSegment
         ['0x00'      PortSegment
-            [simple bit extendedLinkAddress]
-            [simple uint 4  port]
-            [simple uint    8   linkAddress]
+            [simple PortSegmentType('order')     segmentType]
         ]
         ['0x01'      LogicalSegment
             [simple LogicalSegmentType('order')  segmentType]
         ]
         ['0x04'      DataSegment
-            [simple DataSegmentType('order') segmentType]
+            [simple DataSegmentType('order')     segmentType]
+        ]
+    ]
+]
+
+[discriminatedType  PortSegmentType(IntegerEncoding order)
+    [discriminator     bit         extendedLinkAddress]
+    [typeSwitch extendedLinkAddress
+        ['false'    PortSegmentNormal
+            [simple     uint    4   port]
+            [simple     uint    8   linkAddress]
+        ]
+        ['true'     PortSegmentExtended
+            [simple     uint    4   port]
+            [simple   uint    8   linkAddressSize]
+            [simple   vstring  'linkAddressSize * 8'    address]
         ]
     ]
 ]
@@ -274,6 +280,16 @@
     [simple      uint 16                numberAvailable]
     [simple      uint 16                numberActive]
     [array       byte                   data count 'packetLength - 2 - (COUNT(classId) * 2) - 4'
+]
+
+[type   CIPData(uint 16 packetLength)
+    [simple     CIPDataTypeCode     dataType]
+    [array      byte   data  count  'packetLength - 2']
+]
+
+[type   CIPDataConnected(uint 16 packetLength)
+    [simple     uint    32   value]
+    [simple     uint    16   tagStatus]
 ]
 
 [discriminatedType DataSegmentType(IntegerEncoding order) byteOrder='order == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
