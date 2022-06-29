@@ -816,6 +816,9 @@
             <exclude>**/go.sum</exclude>
 
             <exclude>.mvn/**</exclude>
+
+            <!-- Exlude core dumps-->
+            <exclude>**/hs_err_pid*</exclude>
           </excludes>
         </configuration>
       </plugin>
