@@ -62,16 +62,20 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue
 	return 0
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByName(value string) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByName(value string) (enum BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, ok bool) {
+	ok = true
 	switch value {
 	case "ENABLE":
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE
+		enum = BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE
 	case "DISABLE":
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE
+		enum = BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE
 	case "DISABLE_INITIATION":
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION
+		enum = BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(r
 }
 
 func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE:
 		return "ENABLE"
@@ -126,5 +131,5 @@ func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) na
 }
 
 func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

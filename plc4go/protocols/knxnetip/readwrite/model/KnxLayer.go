@@ -62,16 +62,20 @@ func KnxLayerByValue(value uint8) KnxLayer {
 	return 0
 }
 
-func KnxLayerByName(value string) KnxLayer {
+func KnxLayerByName(value string) (enum KnxLayer, ok bool) {
+	ok = true
 	switch value {
 	case "TUNNEL_LINK_LAYER":
-		return KnxLayer_TUNNEL_LINK_LAYER
+		enum = KnxLayer_TUNNEL_LINK_LAYER
 	case "TUNNEL_RAW":
-		return KnxLayer_TUNNEL_RAW
+		enum = KnxLayer_TUNNEL_RAW
 	case "TUNNEL_BUSMONITOR":
-		return KnxLayer_TUNNEL_BUSMONITOR
+		enum = KnxLayer_TUNNEL_BUSMONITOR
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func KnxLayerKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 }
 
 func (e KnxLayer) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e KnxLayer) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxLayer) PLC4XEnumName() string {
 	switch e {
 	case KnxLayer_TUNNEL_LINK_LAYER:
 		return "TUNNEL_LINK_LAYER"
@@ -126,5 +131,5 @@ func (e KnxLayer) name() string {
 }
 
 func (e KnxLayer) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

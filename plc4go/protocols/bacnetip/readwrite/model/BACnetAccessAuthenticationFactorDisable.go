@@ -78,24 +78,28 @@ func BACnetAccessAuthenticationFactorDisableByValue(value uint16) BACnetAccessAu
 	return 0
 }
 
-func BACnetAccessAuthenticationFactorDisableByName(value string) BACnetAccessAuthenticationFactorDisable {
+func BACnetAccessAuthenticationFactorDisableByName(value string) (enum BACnetAccessAuthenticationFactorDisable, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetAccessAuthenticationFactorDisable_NONE
+		enum = BACnetAccessAuthenticationFactorDisable_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
 	case "DISABLED":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED
+		enum = BACnetAccessAuthenticationFactorDisable_DISABLED
 	case "DISABLED_LOST":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
+		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
 	case "DISABLED_STOLEN":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
+		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
 	case "DISABLED_DAMAGED":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
+		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
 	case "DISABLED_DESTROYED":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
+		enum = BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccessAuthenticationFactorDisableKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BACnetAccessAuthenticationFactorDisableParse(readBuffer utils.ReadBuffer) (
 }
 
 func (e BACnetAccessAuthenticationFactorDisable) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessAuthenticationFactorDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetAccessAuthenticationFactorDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccessAuthenticationFactorDisable) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessAuthenticationFactorDisable) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessAuthenticationFactorDisable_NONE:
 		return "NONE"
@@ -158,5 +163,5 @@ func (e BACnetAccessAuthenticationFactorDisable) name() string {
 }
 
 func (e BACnetAccessAuthenticationFactorDisable) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

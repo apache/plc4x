@@ -140,28 +140,32 @@ func MemoryAreaByValue(value uint8) MemoryArea {
 	return 0
 }
 
-func MemoryAreaByName(value string) MemoryArea {
+func MemoryAreaByName(value string) (enum MemoryArea, ok bool) {
+	ok = true
 	switch value {
 	case "COUNTERS":
-		return MemoryArea_COUNTERS
+		enum = MemoryArea_COUNTERS
 	case "TIMERS":
-		return MemoryArea_TIMERS
+		enum = MemoryArea_TIMERS
 	case "DIRECT_PERIPHERAL_ACCESS":
-		return MemoryArea_DIRECT_PERIPHERAL_ACCESS
+		enum = MemoryArea_DIRECT_PERIPHERAL_ACCESS
 	case "INPUTS":
-		return MemoryArea_INPUTS
+		enum = MemoryArea_INPUTS
 	case "OUTPUTS":
-		return MemoryArea_OUTPUTS
+		enum = MemoryArea_OUTPUTS
 	case "FLAGS_MARKERS":
-		return MemoryArea_FLAGS_MARKERS
+		enum = MemoryArea_FLAGS_MARKERS
 	case "DATA_BLOCKS":
-		return MemoryArea_DATA_BLOCKS
+		enum = MemoryArea_DATA_BLOCKS
 	case "INSTANCE_DATA_BLOCKS":
-		return MemoryArea_INSTANCE_DATA_BLOCKS
+		enum = MemoryArea_INSTANCE_DATA_BLOCKS
 	case "LOCAL_DATA":
-		return MemoryArea_LOCAL_DATA
+		enum = MemoryArea_LOCAL_DATA
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func MemoryAreaKnows(value uint8) bool {
@@ -200,10 +204,11 @@ func MemoryAreaParse(readBuffer utils.ReadBuffer) (MemoryArea, error) {
 }
 
 func (e MemoryArea) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e MemoryArea) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e MemoryArea) PLC4XEnumName() string {
 	switch e {
 	case MemoryArea_COUNTERS:
 		return "COUNTERS"
@@ -228,5 +233,5 @@ func (e MemoryArea) name() string {
 }
 
 func (e MemoryArea) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

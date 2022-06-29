@@ -94,32 +94,36 @@ func BACnetLiftCarDriveStatusByValue(value uint16) BACnetLiftCarDriveStatus {
 	return 0
 }
 
-func BACnetLiftCarDriveStatusByName(value string) BACnetLiftCarDriveStatus {
+func BACnetLiftCarDriveStatusByName(value string) (enum BACnetLiftCarDriveStatus, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetLiftCarDriveStatus_UNKNOWN
+		enum = BACnetLiftCarDriveStatus_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE
 	case "STATIONARY":
-		return BACnetLiftCarDriveStatus_STATIONARY
+		enum = BACnetLiftCarDriveStatus_STATIONARY
 	case "BRAKING":
-		return BACnetLiftCarDriveStatus_BRAKING
+		enum = BACnetLiftCarDriveStatus_BRAKING
 	case "ACCELERATE":
-		return BACnetLiftCarDriveStatus_ACCELERATE
+		enum = BACnetLiftCarDriveStatus_ACCELERATE
 	case "DECELERATE":
-		return BACnetLiftCarDriveStatus_DECELERATE
+		enum = BACnetLiftCarDriveStatus_DECELERATE
 	case "RATED_SPEED":
-		return BACnetLiftCarDriveStatus_RATED_SPEED
+		enum = BACnetLiftCarDriveStatus_RATED_SPEED
 	case "SINGLE_FLOOR_JUMP":
-		return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP
+		enum = BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP
 	case "TWO_FLOOR_JUMP":
-		return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP
+		enum = BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP
 	case "THREE_FLOOR_JUMP":
-		return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP
+		enum = BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP
 	case "MULTI_FLOOR_JUMP":
-		return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP
+		enum = BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLiftCarDriveStatusKnows(value uint16) bool {
@@ -158,10 +162,11 @@ func BACnetLiftCarDriveStatusParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDr
 }
 
 func (e BACnetLiftCarDriveStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLiftCarDriveStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetLiftCarDriveStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLiftCarDriveStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLiftCarDriveStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetLiftCarDriveStatus_UNKNOWN:
 		return "UNKNOWN"
@@ -190,5 +195,5 @@ func (e BACnetLiftCarDriveStatus) name() string {
 }
 
 func (e BACnetLiftCarDriveStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

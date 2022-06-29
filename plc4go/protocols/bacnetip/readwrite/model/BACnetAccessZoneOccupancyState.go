@@ -82,26 +82,30 @@ func BACnetAccessZoneOccupancyStateByValue(value uint16) BACnetAccessZoneOccupan
 	return 0
 }
 
-func BACnetAccessZoneOccupancyStateByName(value string) BACnetAccessZoneOccupancyState {
+func BACnetAccessZoneOccupancyStateByName(value string) (enum BACnetAccessZoneOccupancyState, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetAccessZoneOccupancyState_NORMAL
+		enum = BACnetAccessZoneOccupancyState_NORMAL
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE
 	case "BELOW_LOWER_LIMIT":
-		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT
+		enum = BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT
 	case "AT_LOWER_LIMIT":
-		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT
+		enum = BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT
 	case "AT_UPPER_LIMIT":
-		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT
+		enum = BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT
 	case "ABOVE_UPPER_LIMIT":
-		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT
+		enum = BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT
 	case "DISABLED":
-		return BACnetAccessZoneOccupancyState_DISABLED
+		enum = BACnetAccessZoneOccupancyState_DISABLED
 	case "NOT_SUPPORTED":
-		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED
+		enum = BACnetAccessZoneOccupancyState_NOT_SUPPORTED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccessZoneOccupancyStateKnows(value uint16) bool {
@@ -140,10 +144,11 @@ func BACnetAccessZoneOccupancyStateParse(readBuffer utils.ReadBuffer) (BACnetAcc
 }
 
 func (e BACnetAccessZoneOccupancyState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccessZoneOccupancyState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessZoneOccupancyState) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessZoneOccupancyState_NORMAL:
 		return "NORMAL"
@@ -166,5 +171,5 @@ func (e BACnetAccessZoneOccupancyState) name() string {
 }
 
 func (e BACnetAccessZoneOccupancyState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

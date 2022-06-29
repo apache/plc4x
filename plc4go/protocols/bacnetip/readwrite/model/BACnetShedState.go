@@ -66,18 +66,22 @@ func BACnetShedStateByValue(value uint8) BACnetShedState {
 	return 0
 }
 
-func BACnetShedStateByName(value string) BACnetShedState {
+func BACnetShedStateByName(value string) (enum BACnetShedState, ok bool) {
+	ok = true
 	switch value {
 	case "SHED_INACTIVE":
-		return BACnetShedState_SHED_INACTIVE
+		enum = BACnetShedState_SHED_INACTIVE
 	case "SHED_REQUEST_PENDING":
-		return BACnetShedState_SHED_REQUEST_PENDING
+		enum = BACnetShedState_SHED_REQUEST_PENDING
 	case "SHED_COMPLIANT":
-		return BACnetShedState_SHED_COMPLIANT
+		enum = BACnetShedState_SHED_COMPLIANT
 	case "SHED_NON_COMPLIANT":
-		return BACnetShedState_SHED_NON_COMPLIANT
+		enum = BACnetShedState_SHED_NON_COMPLIANT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetShedStateKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetShedStateParse(readBuffer utils.ReadBuffer) (BACnetShedState, error) 
 }
 
 func (e BACnetShedState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetShedState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetShedState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetShedState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetShedState) PLC4XEnumName() string {
 	switch e {
 	case BACnetShedState_SHED_INACTIVE:
 		return "SHED_INACTIVE"
@@ -134,5 +139,5 @@ func (e BACnetShedState) name() string {
 }
 
 func (e BACnetShedState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

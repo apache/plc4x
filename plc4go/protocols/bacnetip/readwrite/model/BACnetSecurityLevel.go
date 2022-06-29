@@ -74,22 +74,26 @@ func BACnetSecurityLevelByValue(value uint8) BACnetSecurityLevel {
 	return 0
 }
 
-func BACnetSecurityLevelByName(value string) BACnetSecurityLevel {
+func BACnetSecurityLevelByName(value string) (enum BACnetSecurityLevel, ok bool) {
+	ok = true
 	switch value {
 	case "INCAPABLE":
-		return BACnetSecurityLevel_INCAPABLE
+		enum = BACnetSecurityLevel_INCAPABLE
 	case "PLAIN":
-		return BACnetSecurityLevel_PLAIN
+		enum = BACnetSecurityLevel_PLAIN
 	case "SIGNED":
-		return BACnetSecurityLevel_SIGNED
+		enum = BACnetSecurityLevel_SIGNED
 	case "ENCRYPTED":
-		return BACnetSecurityLevel_ENCRYPTED
+		enum = BACnetSecurityLevel_ENCRYPTED
 	case "SIGNED_END_TO_END":
-		return BACnetSecurityLevel_SIGNED_END_TO_END
+		enum = BACnetSecurityLevel_SIGNED_END_TO_END
 	case "ENCRYPTED_END_TO_END":
-		return BACnetSecurityLevel_ENCRYPTED_END_TO_END
+		enum = BACnetSecurityLevel_ENCRYPTED_END_TO_END
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetSecurityLevelKnows(value uint8) bool {
@@ -128,10 +132,11 @@ func BACnetSecurityLevelParse(readBuffer utils.ReadBuffer) (BACnetSecurityLevel,
 }
 
 func (e BACnetSecurityLevel) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetSecurityLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetSecurityLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetSecurityLevel) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetSecurityLevel) PLC4XEnumName() string {
 	switch e {
 	case BACnetSecurityLevel_INCAPABLE:
 		return "INCAPABLE"
@@ -150,5 +155,5 @@ func (e BACnetSecurityLevel) name() string {
 }
 
 func (e BACnetSecurityLevel) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

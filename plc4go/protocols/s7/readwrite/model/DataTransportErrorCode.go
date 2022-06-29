@@ -74,22 +74,26 @@ func DataTransportErrorCodeByValue(value uint8) DataTransportErrorCode {
 	return 0
 }
 
-func DataTransportErrorCodeByName(value string) DataTransportErrorCode {
+func DataTransportErrorCodeByName(value string) (enum DataTransportErrorCode, ok bool) {
+	ok = true
 	switch value {
 	case "RESERVED":
-		return DataTransportErrorCode_RESERVED
+		enum = DataTransportErrorCode_RESERVED
 	case "ACCESS_DENIED":
-		return DataTransportErrorCode_ACCESS_DENIED
+		enum = DataTransportErrorCode_ACCESS_DENIED
 	case "INVALID_ADDRESS":
-		return DataTransportErrorCode_INVALID_ADDRESS
+		enum = DataTransportErrorCode_INVALID_ADDRESS
 	case "DATA_TYPE_NOT_SUPPORTED":
-		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+		enum = DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
 	case "NOT_FOUND":
-		return DataTransportErrorCode_NOT_FOUND
+		enum = DataTransportErrorCode_NOT_FOUND
 	case "OK":
-		return DataTransportErrorCode_OK
+		enum = DataTransportErrorCode_OK
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func DataTransportErrorCodeKnows(value uint8) bool {
@@ -128,10 +132,11 @@ func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErro
 }
 
 func (e DataTransportErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e DataTransportErrorCode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DataTransportErrorCode) PLC4XEnumName() string {
 	switch e {
 	case DataTransportErrorCode_RESERVED:
 		return "RESERVED"
@@ -150,5 +155,5 @@ func (e DataTransportErrorCode) name() string {
 }
 
 func (e DataTransportErrorCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

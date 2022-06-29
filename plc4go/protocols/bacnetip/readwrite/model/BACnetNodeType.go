@@ -138,54 +138,58 @@ func BACnetNodeTypeByValue(value uint8) BACnetNodeType {
 	return 0
 }
 
-func BACnetNodeTypeByName(value string) BACnetNodeType {
+func BACnetNodeTypeByName(value string) (enum BACnetNodeType, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetNodeType_UNKNOWN
+		enum = BACnetNodeType_UNKNOWN
 	case "SYSTEM":
-		return BACnetNodeType_SYSTEM
+		enum = BACnetNodeType_SYSTEM
 	case "NETWORK":
-		return BACnetNodeType_NETWORK
+		enum = BACnetNodeType_NETWORK
 	case "DEVICE":
-		return BACnetNodeType_DEVICE
+		enum = BACnetNodeType_DEVICE
 	case "ORGANIZATIONAL":
-		return BACnetNodeType_ORGANIZATIONAL
+		enum = BACnetNodeType_ORGANIZATIONAL
 	case "AREA":
-		return BACnetNodeType_AREA
+		enum = BACnetNodeType_AREA
 	case "EQUIPMENT":
-		return BACnetNodeType_EQUIPMENT
+		enum = BACnetNodeType_EQUIPMENT
 	case "POINT":
-		return BACnetNodeType_POINT
+		enum = BACnetNodeType_POINT
 	case "COLLECTION":
-		return BACnetNodeType_COLLECTION
+		enum = BACnetNodeType_COLLECTION
 	case "PROPERTY":
-		return BACnetNodeType_PROPERTY
+		enum = BACnetNodeType_PROPERTY
 	case "FUNCTIONAL":
-		return BACnetNodeType_FUNCTIONAL
+		enum = BACnetNodeType_FUNCTIONAL
 	case "OTHER":
-		return BACnetNodeType_OTHER
+		enum = BACnetNodeType_OTHER
 	case "SUBSYSTEM":
-		return BACnetNodeType_SUBSYSTEM
+		enum = BACnetNodeType_SUBSYSTEM
 	case "BUILDING":
-		return BACnetNodeType_BUILDING
+		enum = BACnetNodeType_BUILDING
 	case "FLOOR":
-		return BACnetNodeType_FLOOR
+		enum = BACnetNodeType_FLOOR
 	case "SECTION":
-		return BACnetNodeType_SECTION
+		enum = BACnetNodeType_SECTION
 	case "MODULE":
-		return BACnetNodeType_MODULE
+		enum = BACnetNodeType_MODULE
 	case "TREE":
-		return BACnetNodeType_TREE
+		enum = BACnetNodeType_TREE
 	case "MEMBER":
-		return BACnetNodeType_MEMBER
+		enum = BACnetNodeType_MEMBER
 	case "PROTOCOL":
-		return BACnetNodeType_PROTOCOL
+		enum = BACnetNodeType_PROTOCOL
 	case "ROOM":
-		return BACnetNodeType_ROOM
+		enum = BACnetNodeType_ROOM
 	case "ZONE":
-		return BACnetNodeType_ZONE
+		enum = BACnetNodeType_ZONE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetNodeTypeKnows(value uint8) bool {
@@ -224,10 +228,11 @@ func BACnetNodeTypeParse(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
 }
 
 func (e BACnetNodeType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetNodeType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNodeType) PLC4XEnumName() string {
 	switch e {
 	case BACnetNodeType_UNKNOWN:
 		return "UNKNOWN"
@@ -278,5 +283,5 @@ func (e BACnetNodeType) name() string {
 }
 
 func (e BACnetNodeType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

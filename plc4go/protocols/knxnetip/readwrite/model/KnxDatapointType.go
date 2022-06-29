@@ -5690,708 +5690,712 @@ func KnxDatapointTypeByValue(value uint32) KnxDatapointType {
 	return 0
 }
 
-func KnxDatapointTypeByName(value string) KnxDatapointType {
+func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
+	ok = true
 	switch value {
 	case "DPT_UNKNOWN":
-		return KnxDatapointType_DPT_UNKNOWN
+		enum = KnxDatapointType_DPT_UNKNOWN
 	case "BOOL":
-		return KnxDatapointType_BOOL
+		enum = KnxDatapointType_BOOL
 	case "UDINT":
-		return KnxDatapointType_UDINT
+		enum = KnxDatapointType_UDINT
 	case "DPT_Value_Tempd":
-		return KnxDatapointType_DPT_Value_Tempd
+		enum = KnxDatapointType_DPT_Value_Tempd
 	case "DPT_Value_Tempa":
-		return KnxDatapointType_DPT_Value_Tempa
+		enum = KnxDatapointType_DPT_Value_Tempa
 	case "DPT_Value_Lux":
-		return KnxDatapointType_DPT_Value_Lux
+		enum = KnxDatapointType_DPT_Value_Lux
 	case "DPT_Value_Wsp":
-		return KnxDatapointType_DPT_Value_Wsp
+		enum = KnxDatapointType_DPT_Value_Wsp
 	case "DPT_Value_Pres":
-		return KnxDatapointType_DPT_Value_Pres
+		enum = KnxDatapointType_DPT_Value_Pres
 	case "DPT_Value_Humidity":
-		return KnxDatapointType_DPT_Value_Humidity
+		enum = KnxDatapointType_DPT_Value_Humidity
 	case "DPT_Value_AirQuality":
-		return KnxDatapointType_DPT_Value_AirQuality
+		enum = KnxDatapointType_DPT_Value_AirQuality
 	case "DPT_Value_AirFlow":
-		return KnxDatapointType_DPT_Value_AirFlow
+		enum = KnxDatapointType_DPT_Value_AirFlow
 	case "DPT_Value_Time1":
-		return KnxDatapointType_DPT_Value_Time1
+		enum = KnxDatapointType_DPT_Value_Time1
 	case "DPT_Value_Time2":
-		return KnxDatapointType_DPT_Value_Time2
+		enum = KnxDatapointType_DPT_Value_Time2
 	case "DINT":
-		return KnxDatapointType_DINT
+		enum = KnxDatapointType_DINT
 	case "DPT_Value_Volt":
-		return KnxDatapointType_DPT_Value_Volt
+		enum = KnxDatapointType_DPT_Value_Volt
 	case "DPT_Value_Curr":
-		return KnxDatapointType_DPT_Value_Curr
+		enum = KnxDatapointType_DPT_Value_Curr
 	case "DPT_PowerDensity":
-		return KnxDatapointType_DPT_PowerDensity
+		enum = KnxDatapointType_DPT_PowerDensity
 	case "DPT_KelvinPerPercent":
-		return KnxDatapointType_DPT_KelvinPerPercent
+		enum = KnxDatapointType_DPT_KelvinPerPercent
 	case "DPT_Power":
-		return KnxDatapointType_DPT_Power
+		enum = KnxDatapointType_DPT_Power
 	case "DPT_Value_Volume_Flow":
-		return KnxDatapointType_DPT_Value_Volume_Flow
+		enum = KnxDatapointType_DPT_Value_Volume_Flow
 	case "DPT_Rain_Amount":
-		return KnxDatapointType_DPT_Rain_Amount
+		enum = KnxDatapointType_DPT_Rain_Amount
 	case "DPT_Value_Temp_F":
-		return KnxDatapointType_DPT_Value_Temp_F
+		enum = KnxDatapointType_DPT_Value_Temp_F
 	case "DPT_Value_Wsp_kmh":
-		return KnxDatapointType_DPT_Value_Wsp_kmh
+		enum = KnxDatapointType_DPT_Value_Wsp_kmh
 	case "DPT_Value_Absolute_Humidity":
-		return KnxDatapointType_DPT_Value_Absolute_Humidity
+		enum = KnxDatapointType_DPT_Value_Absolute_Humidity
 	case "ULINT":
-		return KnxDatapointType_ULINT
+		enum = KnxDatapointType_ULINT
 	case "DPT_Concentration_ygm3":
-		return KnxDatapointType_DPT_Concentration_ygm3
+		enum = KnxDatapointType_DPT_Concentration_ygm3
 	case "DPT_TimeOfDay":
-		return KnxDatapointType_DPT_TimeOfDay
+		enum = KnxDatapointType_DPT_TimeOfDay
 	case "DPT_Date":
-		return KnxDatapointType_DPT_Date
+		enum = KnxDatapointType_DPT_Date
 	case "DPT_Value_4_Ucount":
-		return KnxDatapointType_DPT_Value_4_Ucount
+		enum = KnxDatapointType_DPT_Value_4_Ucount
 	case "DPT_LongTimePeriod_Sec":
-		return KnxDatapointType_DPT_LongTimePeriod_Sec
+		enum = KnxDatapointType_DPT_LongTimePeriod_Sec
 	case "DPT_LongTimePeriod_Min":
-		return KnxDatapointType_DPT_LongTimePeriod_Min
+		enum = KnxDatapointType_DPT_LongTimePeriod_Min
 	case "DPT_LongTimePeriod_Hrs":
-		return KnxDatapointType_DPT_LongTimePeriod_Hrs
+		enum = KnxDatapointType_DPT_LongTimePeriod_Hrs
 	case "DPT_VolumeLiquid_Litre":
-		return KnxDatapointType_DPT_VolumeLiquid_Litre
+		enum = KnxDatapointType_DPT_VolumeLiquid_Litre
 	case "DPT_Volume_m_3":
-		return KnxDatapointType_DPT_Volume_m_3
+		enum = KnxDatapointType_DPT_Volume_m_3
 	case "DPT_Value_4_Count":
-		return KnxDatapointType_DPT_Value_4_Count
+		enum = KnxDatapointType_DPT_Value_4_Count
 	case "LINT":
-		return KnxDatapointType_LINT
+		enum = KnxDatapointType_LINT
 	case "DPT_FlowRate_m3h":
-		return KnxDatapointType_DPT_FlowRate_m3h
+		enum = KnxDatapointType_DPT_FlowRate_m3h
 	case "DPT_ActiveEnergy":
-		return KnxDatapointType_DPT_ActiveEnergy
+		enum = KnxDatapointType_DPT_ActiveEnergy
 	case "DPT_ApparantEnergy":
-		return KnxDatapointType_DPT_ApparantEnergy
+		enum = KnxDatapointType_DPT_ApparantEnergy
 	case "DPT_ReactiveEnergy":
-		return KnxDatapointType_DPT_ReactiveEnergy
+		enum = KnxDatapointType_DPT_ReactiveEnergy
 	case "DPT_ActiveEnergy_kWh":
-		return KnxDatapointType_DPT_ActiveEnergy_kWh
+		enum = KnxDatapointType_DPT_ActiveEnergy_kWh
 	case "DPT_ApparantEnergy_kVAh":
-		return KnxDatapointType_DPT_ApparantEnergy_kVAh
+		enum = KnxDatapointType_DPT_ApparantEnergy_kVAh
 	case "DPT_ReactiveEnergy_kVARh":
-		return KnxDatapointType_DPT_ReactiveEnergy_kVARh
+		enum = KnxDatapointType_DPT_ReactiveEnergy_kVARh
 	case "DPT_ActiveEnergy_MWh":
-		return KnxDatapointType_DPT_ActiveEnergy_MWh
+		enum = KnxDatapointType_DPT_ActiveEnergy_MWh
 	case "DPT_LongDeltaTimeSec":
-		return KnxDatapointType_DPT_LongDeltaTimeSec
+		enum = KnxDatapointType_DPT_LongDeltaTimeSec
 	case "DPT_DeltaVolumeLiquid_Litre":
-		return KnxDatapointType_DPT_DeltaVolumeLiquid_Litre
+		enum = KnxDatapointType_DPT_DeltaVolumeLiquid_Litre
 	case "REAL":
-		return KnxDatapointType_REAL
+		enum = KnxDatapointType_REAL
 	case "DPT_DeltaVolume_m_3":
-		return KnxDatapointType_DPT_DeltaVolume_m_3
+		enum = KnxDatapointType_DPT_DeltaVolume_m_3
 	case "DPT_Value_Acceleration":
-		return KnxDatapointType_DPT_Value_Acceleration
+		enum = KnxDatapointType_DPT_Value_Acceleration
 	case "DPT_Value_Acceleration_Angular":
-		return KnxDatapointType_DPT_Value_Acceleration_Angular
+		enum = KnxDatapointType_DPT_Value_Acceleration_Angular
 	case "DPT_Value_Activation_Energy":
-		return KnxDatapointType_DPT_Value_Activation_Energy
+		enum = KnxDatapointType_DPT_Value_Activation_Energy
 	case "DPT_Value_Activity":
-		return KnxDatapointType_DPT_Value_Activity
+		enum = KnxDatapointType_DPT_Value_Activity
 	case "DPT_Value_Mol":
-		return KnxDatapointType_DPT_Value_Mol
+		enum = KnxDatapointType_DPT_Value_Mol
 	case "DPT_Value_Amplitude":
-		return KnxDatapointType_DPT_Value_Amplitude
+		enum = KnxDatapointType_DPT_Value_Amplitude
 	case "DPT_Value_AngleRad":
-		return KnxDatapointType_DPT_Value_AngleRad
+		enum = KnxDatapointType_DPT_Value_AngleRad
 	case "DPT_Value_AngleDeg":
-		return KnxDatapointType_DPT_Value_AngleDeg
+		enum = KnxDatapointType_DPT_Value_AngleDeg
 	case "DPT_Value_Angular_Momentum":
-		return KnxDatapointType_DPT_Value_Angular_Momentum
+		enum = KnxDatapointType_DPT_Value_Angular_Momentum
 	case "LREAL":
-		return KnxDatapointType_LREAL
+		enum = KnxDatapointType_LREAL
 	case "DPT_Value_Angular_Velocity":
-		return KnxDatapointType_DPT_Value_Angular_Velocity
+		enum = KnxDatapointType_DPT_Value_Angular_Velocity
 	case "DPT_Value_Area":
-		return KnxDatapointType_DPT_Value_Area
+		enum = KnxDatapointType_DPT_Value_Area
 	case "DPT_Value_Capacitance":
-		return KnxDatapointType_DPT_Value_Capacitance
+		enum = KnxDatapointType_DPT_Value_Capacitance
 	case "DPT_Value_Charge_DensitySurface":
-		return KnxDatapointType_DPT_Value_Charge_DensitySurface
+		enum = KnxDatapointType_DPT_Value_Charge_DensitySurface
 	case "DPT_Value_Charge_DensityVolume":
-		return KnxDatapointType_DPT_Value_Charge_DensityVolume
+		enum = KnxDatapointType_DPT_Value_Charge_DensityVolume
 	case "DPT_Value_Compressibility":
-		return KnxDatapointType_DPT_Value_Compressibility
+		enum = KnxDatapointType_DPT_Value_Compressibility
 	case "DPT_Value_Conductance":
-		return KnxDatapointType_DPT_Value_Conductance
+		enum = KnxDatapointType_DPT_Value_Conductance
 	case "DPT_Value_Electrical_Conductivity":
-		return KnxDatapointType_DPT_Value_Electrical_Conductivity
+		enum = KnxDatapointType_DPT_Value_Electrical_Conductivity
 	case "DPT_Value_Density":
-		return KnxDatapointType_DPT_Value_Density
+		enum = KnxDatapointType_DPT_Value_Density
 	case "DPT_Value_Electric_Charge":
-		return KnxDatapointType_DPT_Value_Electric_Charge
+		enum = KnxDatapointType_DPT_Value_Electric_Charge
 	case "CHAR":
-		return KnxDatapointType_CHAR
+		enum = KnxDatapointType_CHAR
 	case "DPT_Value_Electric_Current":
-		return KnxDatapointType_DPT_Value_Electric_Current
+		enum = KnxDatapointType_DPT_Value_Electric_Current
 	case "DPT_Value_Electric_CurrentDensity":
-		return KnxDatapointType_DPT_Value_Electric_CurrentDensity
+		enum = KnxDatapointType_DPT_Value_Electric_CurrentDensity
 	case "DPT_Value_Electric_DipoleMoment":
-		return KnxDatapointType_DPT_Value_Electric_DipoleMoment
+		enum = KnxDatapointType_DPT_Value_Electric_DipoleMoment
 	case "DPT_Value_Electric_Displacement":
-		return KnxDatapointType_DPT_Value_Electric_Displacement
+		enum = KnxDatapointType_DPT_Value_Electric_Displacement
 	case "DPT_Value_Electric_FieldStrength":
-		return KnxDatapointType_DPT_Value_Electric_FieldStrength
+		enum = KnxDatapointType_DPT_Value_Electric_FieldStrength
 	case "DPT_Value_Electric_Flux":
-		return KnxDatapointType_DPT_Value_Electric_Flux
+		enum = KnxDatapointType_DPT_Value_Electric_Flux
 	case "DPT_Value_Electric_FluxDensity":
-		return KnxDatapointType_DPT_Value_Electric_FluxDensity
+		enum = KnxDatapointType_DPT_Value_Electric_FluxDensity
 	case "DPT_Value_Electric_Polarization":
-		return KnxDatapointType_DPT_Value_Electric_Polarization
+		enum = KnxDatapointType_DPT_Value_Electric_Polarization
 	case "DPT_Value_Electric_Potential":
-		return KnxDatapointType_DPT_Value_Electric_Potential
+		enum = KnxDatapointType_DPT_Value_Electric_Potential
 	case "DPT_Value_Electric_PotentialDifference":
-		return KnxDatapointType_DPT_Value_Electric_PotentialDifference
+		enum = KnxDatapointType_DPT_Value_Electric_PotentialDifference
 	case "WCHAR":
-		return KnxDatapointType_WCHAR
+		enum = KnxDatapointType_WCHAR
 	case "DPT_Value_ElectromagneticMoment":
-		return KnxDatapointType_DPT_Value_ElectromagneticMoment
+		enum = KnxDatapointType_DPT_Value_ElectromagneticMoment
 	case "DPT_Value_Electromotive_Force":
-		return KnxDatapointType_DPT_Value_Electromotive_Force
+		enum = KnxDatapointType_DPT_Value_Electromotive_Force
 	case "DPT_Value_Energy":
-		return KnxDatapointType_DPT_Value_Energy
+		enum = KnxDatapointType_DPT_Value_Energy
 	case "DPT_Value_Force":
-		return KnxDatapointType_DPT_Value_Force
+		enum = KnxDatapointType_DPT_Value_Force
 	case "DPT_Value_Frequency":
-		return KnxDatapointType_DPT_Value_Frequency
+		enum = KnxDatapointType_DPT_Value_Frequency
 	case "DPT_Value_Angular_Frequency":
-		return KnxDatapointType_DPT_Value_Angular_Frequency
+		enum = KnxDatapointType_DPT_Value_Angular_Frequency
 	case "DPT_Value_Heat_Capacity":
-		return KnxDatapointType_DPT_Value_Heat_Capacity
+		enum = KnxDatapointType_DPT_Value_Heat_Capacity
 	case "DPT_Value_Heat_FlowRate":
-		return KnxDatapointType_DPT_Value_Heat_FlowRate
+		enum = KnxDatapointType_DPT_Value_Heat_FlowRate
 	case "DPT_Value_Heat_Quantity":
-		return KnxDatapointType_DPT_Value_Heat_Quantity
+		enum = KnxDatapointType_DPT_Value_Heat_Quantity
 	case "DPT_Value_Impedance":
-		return KnxDatapointType_DPT_Value_Impedance
+		enum = KnxDatapointType_DPT_Value_Impedance
 	case "STRING":
-		return KnxDatapointType_STRING
+		enum = KnxDatapointType_STRING
 	case "DPT_Value_Length":
-		return KnxDatapointType_DPT_Value_Length
+		enum = KnxDatapointType_DPT_Value_Length
 	case "DPT_Value_Light_Quantity":
-		return KnxDatapointType_DPT_Value_Light_Quantity
+		enum = KnxDatapointType_DPT_Value_Light_Quantity
 	case "DPT_Value_Luminance":
-		return KnxDatapointType_DPT_Value_Luminance
+		enum = KnxDatapointType_DPT_Value_Luminance
 	case "DPT_Value_Luminous_Flux":
-		return KnxDatapointType_DPT_Value_Luminous_Flux
+		enum = KnxDatapointType_DPT_Value_Luminous_Flux
 	case "DPT_Value_Luminous_Intensity":
-		return KnxDatapointType_DPT_Value_Luminous_Intensity
+		enum = KnxDatapointType_DPT_Value_Luminous_Intensity
 	case "DPT_Value_Magnetic_FieldStrength":
-		return KnxDatapointType_DPT_Value_Magnetic_FieldStrength
+		enum = KnxDatapointType_DPT_Value_Magnetic_FieldStrength
 	case "DPT_Value_Magnetic_Flux":
-		return KnxDatapointType_DPT_Value_Magnetic_Flux
+		enum = KnxDatapointType_DPT_Value_Magnetic_Flux
 	case "DPT_Value_Magnetic_FluxDensity":
-		return KnxDatapointType_DPT_Value_Magnetic_FluxDensity
+		enum = KnxDatapointType_DPT_Value_Magnetic_FluxDensity
 	case "DPT_Value_Magnetic_Moment":
-		return KnxDatapointType_DPT_Value_Magnetic_Moment
+		enum = KnxDatapointType_DPT_Value_Magnetic_Moment
 	case "DPT_Value_Magnetic_Polarization":
-		return KnxDatapointType_DPT_Value_Magnetic_Polarization
+		enum = KnxDatapointType_DPT_Value_Magnetic_Polarization
 	case "WSTRING":
-		return KnxDatapointType_WSTRING
+		enum = KnxDatapointType_WSTRING
 	case "DPT_Value_Magnetization":
-		return KnxDatapointType_DPT_Value_Magnetization
+		enum = KnxDatapointType_DPT_Value_Magnetization
 	case "DPT_Value_MagnetomotiveForce":
-		return KnxDatapointType_DPT_Value_MagnetomotiveForce
+		enum = KnxDatapointType_DPT_Value_MagnetomotiveForce
 	case "DPT_Value_Mass":
-		return KnxDatapointType_DPT_Value_Mass
+		enum = KnxDatapointType_DPT_Value_Mass
 	case "DPT_Value_MassFlux":
-		return KnxDatapointType_DPT_Value_MassFlux
+		enum = KnxDatapointType_DPT_Value_MassFlux
 	case "DPT_Value_Momentum":
-		return KnxDatapointType_DPT_Value_Momentum
+		enum = KnxDatapointType_DPT_Value_Momentum
 	case "DPT_Value_Phase_AngleRad":
-		return KnxDatapointType_DPT_Value_Phase_AngleRad
+		enum = KnxDatapointType_DPT_Value_Phase_AngleRad
 	case "DPT_Value_Phase_AngleDeg":
-		return KnxDatapointType_DPT_Value_Phase_AngleDeg
+		enum = KnxDatapointType_DPT_Value_Phase_AngleDeg
 	case "DPT_Value_Power":
-		return KnxDatapointType_DPT_Value_Power
+		enum = KnxDatapointType_DPT_Value_Power
 	case "DPT_Value_Power_Factor":
-		return KnxDatapointType_DPT_Value_Power_Factor
+		enum = KnxDatapointType_DPT_Value_Power_Factor
 	case "DPT_Value_Pressure":
-		return KnxDatapointType_DPT_Value_Pressure
+		enum = KnxDatapointType_DPT_Value_Pressure
 	case "BYTE":
-		return KnxDatapointType_BYTE
+		enum = KnxDatapointType_BYTE
 	case "TIME":
-		return KnxDatapointType_TIME
+		enum = KnxDatapointType_TIME
 	case "DPT_Value_Reactance":
-		return KnxDatapointType_DPT_Value_Reactance
+		enum = KnxDatapointType_DPT_Value_Reactance
 	case "DPT_Value_Resistance":
-		return KnxDatapointType_DPT_Value_Resistance
+		enum = KnxDatapointType_DPT_Value_Resistance
 	case "DPT_Value_Resistivity":
-		return KnxDatapointType_DPT_Value_Resistivity
+		enum = KnxDatapointType_DPT_Value_Resistivity
 	case "DPT_Value_SelfInductance":
-		return KnxDatapointType_DPT_Value_SelfInductance
+		enum = KnxDatapointType_DPT_Value_SelfInductance
 	case "DPT_Value_SolidAngle":
-		return KnxDatapointType_DPT_Value_SolidAngle
+		enum = KnxDatapointType_DPT_Value_SolidAngle
 	case "DPT_Value_Sound_Intensity":
-		return KnxDatapointType_DPT_Value_Sound_Intensity
+		enum = KnxDatapointType_DPT_Value_Sound_Intensity
 	case "DPT_Value_Speed":
-		return KnxDatapointType_DPT_Value_Speed
+		enum = KnxDatapointType_DPT_Value_Speed
 	case "DPT_Value_Stress":
-		return KnxDatapointType_DPT_Value_Stress
+		enum = KnxDatapointType_DPT_Value_Stress
 	case "DPT_Value_Surface_Tension":
-		return KnxDatapointType_DPT_Value_Surface_Tension
+		enum = KnxDatapointType_DPT_Value_Surface_Tension
 	case "DPT_Value_Common_Temperature":
-		return KnxDatapointType_DPT_Value_Common_Temperature
+		enum = KnxDatapointType_DPT_Value_Common_Temperature
 	case "LTIME":
-		return KnxDatapointType_LTIME
+		enum = KnxDatapointType_LTIME
 	case "DPT_Value_Absolute_Temperature":
-		return KnxDatapointType_DPT_Value_Absolute_Temperature
+		enum = KnxDatapointType_DPT_Value_Absolute_Temperature
 	case "DPT_Value_TemperatureDifference":
-		return KnxDatapointType_DPT_Value_TemperatureDifference
+		enum = KnxDatapointType_DPT_Value_TemperatureDifference
 	case "DPT_Value_Thermal_Capacity":
-		return KnxDatapointType_DPT_Value_Thermal_Capacity
+		enum = KnxDatapointType_DPT_Value_Thermal_Capacity
 	case "DPT_Value_Thermal_Conductivity":
-		return KnxDatapointType_DPT_Value_Thermal_Conductivity
+		enum = KnxDatapointType_DPT_Value_Thermal_Conductivity
 	case "DPT_Value_ThermoelectricPower":
-		return KnxDatapointType_DPT_Value_ThermoelectricPower
+		enum = KnxDatapointType_DPT_Value_ThermoelectricPower
 	case "DPT_Value_Time":
-		return KnxDatapointType_DPT_Value_Time
+		enum = KnxDatapointType_DPT_Value_Time
 	case "DPT_Value_Torque":
-		return KnxDatapointType_DPT_Value_Torque
+		enum = KnxDatapointType_DPT_Value_Torque
 	case "DPT_Value_Volume":
-		return KnxDatapointType_DPT_Value_Volume
+		enum = KnxDatapointType_DPT_Value_Volume
 	case "DPT_Value_Volume_Flux":
-		return KnxDatapointType_DPT_Value_Volume_Flux
+		enum = KnxDatapointType_DPT_Value_Volume_Flux
 	case "DPT_Value_Weight":
-		return KnxDatapointType_DPT_Value_Weight
+		enum = KnxDatapointType_DPT_Value_Weight
 	case "DATE":
-		return KnxDatapointType_DATE
+		enum = KnxDatapointType_DATE
 	case "DPT_Value_Work":
-		return KnxDatapointType_DPT_Value_Work
+		enum = KnxDatapointType_DPT_Value_Work
 	case "DPT_Volume_Flux_Meter":
-		return KnxDatapointType_DPT_Volume_Flux_Meter
+		enum = KnxDatapointType_DPT_Volume_Flux_Meter
 	case "DPT_Volume_Flux_ls":
-		return KnxDatapointType_DPT_Volume_Flux_ls
+		enum = KnxDatapointType_DPT_Volume_Flux_ls
 	case "DPT_Access_Data":
-		return KnxDatapointType_DPT_Access_Data
+		enum = KnxDatapointType_DPT_Access_Data
 	case "DPT_String_ASCII":
-		return KnxDatapointType_DPT_String_ASCII
+		enum = KnxDatapointType_DPT_String_ASCII
 	case "DPT_String_8859_1":
-		return KnxDatapointType_DPT_String_8859_1
+		enum = KnxDatapointType_DPT_String_8859_1
 	case "DPT_SceneNumber":
-		return KnxDatapointType_DPT_SceneNumber
+		enum = KnxDatapointType_DPT_SceneNumber
 	case "DPT_SceneControl":
-		return KnxDatapointType_DPT_SceneControl
+		enum = KnxDatapointType_DPT_SceneControl
 	case "DPT_DateTime":
-		return KnxDatapointType_DPT_DateTime
+		enum = KnxDatapointType_DPT_DateTime
 	case "DPT_SCLOMode":
-		return KnxDatapointType_DPT_SCLOMode
+		enum = KnxDatapointType_DPT_SCLOMode
 	case "TIME_OF_DAY":
-		return KnxDatapointType_TIME_OF_DAY
+		enum = KnxDatapointType_TIME_OF_DAY
 	case "DPT_BuildingMode":
-		return KnxDatapointType_DPT_BuildingMode
+		enum = KnxDatapointType_DPT_BuildingMode
 	case "DPT_OccMode":
-		return KnxDatapointType_DPT_OccMode
+		enum = KnxDatapointType_DPT_OccMode
 	case "DPT_Priority":
-		return KnxDatapointType_DPT_Priority
+		enum = KnxDatapointType_DPT_Priority
 	case "DPT_LightApplicationMode":
-		return KnxDatapointType_DPT_LightApplicationMode
+		enum = KnxDatapointType_DPT_LightApplicationMode
 	case "DPT_ApplicationArea":
-		return KnxDatapointType_DPT_ApplicationArea
+		enum = KnxDatapointType_DPT_ApplicationArea
 	case "DPT_AlarmClassType":
-		return KnxDatapointType_DPT_AlarmClassType
+		enum = KnxDatapointType_DPT_AlarmClassType
 	case "DPT_PSUMode":
-		return KnxDatapointType_DPT_PSUMode
+		enum = KnxDatapointType_DPT_PSUMode
 	case "DPT_ErrorClass_System":
-		return KnxDatapointType_DPT_ErrorClass_System
+		enum = KnxDatapointType_DPT_ErrorClass_System
 	case "DPT_ErrorClass_HVAC":
-		return KnxDatapointType_DPT_ErrorClass_HVAC
+		enum = KnxDatapointType_DPT_ErrorClass_HVAC
 	case "DPT_Time_Delay":
-		return KnxDatapointType_DPT_Time_Delay
+		enum = KnxDatapointType_DPT_Time_Delay
 	case "TOD":
-		return KnxDatapointType_TOD
+		enum = KnxDatapointType_TOD
 	case "DPT_Beaufort_Wind_Force_Scale":
-		return KnxDatapointType_DPT_Beaufort_Wind_Force_Scale
+		enum = KnxDatapointType_DPT_Beaufort_Wind_Force_Scale
 	case "DPT_SensorSelect":
-		return KnxDatapointType_DPT_SensorSelect
+		enum = KnxDatapointType_DPT_SensorSelect
 	case "DPT_ActuatorConnectType":
-		return KnxDatapointType_DPT_ActuatorConnectType
+		enum = KnxDatapointType_DPT_ActuatorConnectType
 	case "DPT_Cloud_Cover":
-		return KnxDatapointType_DPT_Cloud_Cover
+		enum = KnxDatapointType_DPT_Cloud_Cover
 	case "DPT_PowerReturnMode":
-		return KnxDatapointType_DPT_PowerReturnMode
+		enum = KnxDatapointType_DPT_PowerReturnMode
 	case "DPT_FuelType":
-		return KnxDatapointType_DPT_FuelType
+		enum = KnxDatapointType_DPT_FuelType
 	case "DPT_BurnerType":
-		return KnxDatapointType_DPT_BurnerType
+		enum = KnxDatapointType_DPT_BurnerType
 	case "DPT_HVACMode":
-		return KnxDatapointType_DPT_HVACMode
+		enum = KnxDatapointType_DPT_HVACMode
 	case "DPT_DHWMode":
-		return KnxDatapointType_DPT_DHWMode
+		enum = KnxDatapointType_DPT_DHWMode
 	case "DPT_LoadPriority":
-		return KnxDatapointType_DPT_LoadPriority
+		enum = KnxDatapointType_DPT_LoadPriority
 	case "DATE_AND_TIME":
-		return KnxDatapointType_DATE_AND_TIME
+		enum = KnxDatapointType_DATE_AND_TIME
 	case "DPT_HVACContrMode":
-		return KnxDatapointType_DPT_HVACContrMode
+		enum = KnxDatapointType_DPT_HVACContrMode
 	case "DPT_HVACEmergMode":
-		return KnxDatapointType_DPT_HVACEmergMode
+		enum = KnxDatapointType_DPT_HVACEmergMode
 	case "DPT_ChangeoverMode":
-		return KnxDatapointType_DPT_ChangeoverMode
+		enum = KnxDatapointType_DPT_ChangeoverMode
 	case "DPT_ValveMode":
-		return KnxDatapointType_DPT_ValveMode
+		enum = KnxDatapointType_DPT_ValveMode
 	case "DPT_DamperMode":
-		return KnxDatapointType_DPT_DamperMode
+		enum = KnxDatapointType_DPT_DamperMode
 	case "DPT_HeaterMode":
-		return KnxDatapointType_DPT_HeaterMode
+		enum = KnxDatapointType_DPT_HeaterMode
 	case "DPT_FanMode":
-		return KnxDatapointType_DPT_FanMode
+		enum = KnxDatapointType_DPT_FanMode
 	case "DPT_MasterSlaveMode":
-		return KnxDatapointType_DPT_MasterSlaveMode
+		enum = KnxDatapointType_DPT_MasterSlaveMode
 	case "DPT_StatusRoomSetp":
-		return KnxDatapointType_DPT_StatusRoomSetp
+		enum = KnxDatapointType_DPT_StatusRoomSetp
 	case "DPT_Metering_DeviceType":
-		return KnxDatapointType_DPT_Metering_DeviceType
+		enum = KnxDatapointType_DPT_Metering_DeviceType
 	case "DT":
-		return KnxDatapointType_DT
+		enum = KnxDatapointType_DT
 	case "DPT_HumDehumMode":
-		return KnxDatapointType_DPT_HumDehumMode
+		enum = KnxDatapointType_DPT_HumDehumMode
 	case "DPT_EnableHCStage":
-		return KnxDatapointType_DPT_EnableHCStage
+		enum = KnxDatapointType_DPT_EnableHCStage
 	case "DPT_ADAType":
-		return KnxDatapointType_DPT_ADAType
+		enum = KnxDatapointType_DPT_ADAType
 	case "DPT_BackupMode":
-		return KnxDatapointType_DPT_BackupMode
+		enum = KnxDatapointType_DPT_BackupMode
 	case "DPT_StartSynchronization":
-		return KnxDatapointType_DPT_StartSynchronization
+		enum = KnxDatapointType_DPT_StartSynchronization
 	case "DPT_Behaviour_Lock_Unlock":
-		return KnxDatapointType_DPT_Behaviour_Lock_Unlock
+		enum = KnxDatapointType_DPT_Behaviour_Lock_Unlock
 	case "DPT_Behaviour_Bus_Power_Up_Down":
-		return KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down
+		enum = KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down
 	case "DPT_DALI_Fade_Time":
-		return KnxDatapointType_DPT_DALI_Fade_Time
+		enum = KnxDatapointType_DPT_DALI_Fade_Time
 	case "DPT_BlinkingMode":
-		return KnxDatapointType_DPT_BlinkingMode
+		enum = KnxDatapointType_DPT_BlinkingMode
 	case "DPT_LightControlMode":
-		return KnxDatapointType_DPT_LightControlMode
+		enum = KnxDatapointType_DPT_LightControlMode
 	case "DPT_Switch":
-		return KnxDatapointType_DPT_Switch
+		enum = KnxDatapointType_DPT_Switch
 	case "DPT_SwitchPBModel":
-		return KnxDatapointType_DPT_SwitchPBModel
+		enum = KnxDatapointType_DPT_SwitchPBModel
 	case "DPT_PBAction":
-		return KnxDatapointType_DPT_PBAction
+		enum = KnxDatapointType_DPT_PBAction
 	case "DPT_DimmPBModel":
-		return KnxDatapointType_DPT_DimmPBModel
+		enum = KnxDatapointType_DPT_DimmPBModel
 	case "DPT_SwitchOnMode":
-		return KnxDatapointType_DPT_SwitchOnMode
+		enum = KnxDatapointType_DPT_SwitchOnMode
 	case "DPT_LoadTypeSet":
-		return KnxDatapointType_DPT_LoadTypeSet
+		enum = KnxDatapointType_DPT_LoadTypeSet
 	case "DPT_LoadTypeDetected":
-		return KnxDatapointType_DPT_LoadTypeDetected
+		enum = KnxDatapointType_DPT_LoadTypeDetected
 	case "DPT_Converter_Test_Control":
-		return KnxDatapointType_DPT_Converter_Test_Control
+		enum = KnxDatapointType_DPT_Converter_Test_Control
 	case "DPT_SABExcept_Behaviour":
-		return KnxDatapointType_DPT_SABExcept_Behaviour
+		enum = KnxDatapointType_DPT_SABExcept_Behaviour
 	case "DPT_SABBehaviour_Lock_Unlock":
-		return KnxDatapointType_DPT_SABBehaviour_Lock_Unlock
+		enum = KnxDatapointType_DPT_SABBehaviour_Lock_Unlock
 	case "DPT_SSSBMode":
-		return KnxDatapointType_DPT_SSSBMode
+		enum = KnxDatapointType_DPT_SSSBMode
 	case "DPT_Bool":
-		return KnxDatapointType_DPT_Bool
+		enum = KnxDatapointType_DPT_Bool
 	case "DPT_BlindsControlMode":
-		return KnxDatapointType_DPT_BlindsControlMode
+		enum = KnxDatapointType_DPT_BlindsControlMode
 	case "DPT_CommMode":
-		return KnxDatapointType_DPT_CommMode
+		enum = KnxDatapointType_DPT_CommMode
 	case "DPT_AddInfoTypes":
-		return KnxDatapointType_DPT_AddInfoTypes
+		enum = KnxDatapointType_DPT_AddInfoTypes
 	case "DPT_RF_ModeSelect":
-		return KnxDatapointType_DPT_RF_ModeSelect
+		enum = KnxDatapointType_DPT_RF_ModeSelect
 	case "DPT_RF_FilterSelect":
-		return KnxDatapointType_DPT_RF_FilterSelect
+		enum = KnxDatapointType_DPT_RF_FilterSelect
 	case "DPT_StatusGen":
-		return KnxDatapointType_DPT_StatusGen
+		enum = KnxDatapointType_DPT_StatusGen
 	case "DPT_Device_Control":
-		return KnxDatapointType_DPT_Device_Control
+		enum = KnxDatapointType_DPT_Device_Control
 	case "DPT_ForceSign":
-		return KnxDatapointType_DPT_ForceSign
+		enum = KnxDatapointType_DPT_ForceSign
 	case "DPT_ForceSignCool":
-		return KnxDatapointType_DPT_ForceSignCool
+		enum = KnxDatapointType_DPT_ForceSignCool
 	case "DPT_StatusRHC":
-		return KnxDatapointType_DPT_StatusRHC
+		enum = KnxDatapointType_DPT_StatusRHC
 	case "DPT_Enable":
-		return KnxDatapointType_DPT_Enable
+		enum = KnxDatapointType_DPT_Enable
 	case "DPT_StatusSDHWC":
-		return KnxDatapointType_DPT_StatusSDHWC
+		enum = KnxDatapointType_DPT_StatusSDHWC
 	case "DPT_FuelTypeSet":
-		return KnxDatapointType_DPT_FuelTypeSet
+		enum = KnxDatapointType_DPT_FuelTypeSet
 	case "DPT_StatusRCC":
-		return KnxDatapointType_DPT_StatusRCC
+		enum = KnxDatapointType_DPT_StatusRCC
 	case "DPT_StatusAHU":
-		return KnxDatapointType_DPT_StatusAHU
+		enum = KnxDatapointType_DPT_StatusAHU
 	case "DPT_CombinedStatus_RTSM":
-		return KnxDatapointType_DPT_CombinedStatus_RTSM
+		enum = KnxDatapointType_DPT_CombinedStatus_RTSM
 	case "DPT_LightActuatorErrorInfo":
-		return KnxDatapointType_DPT_LightActuatorErrorInfo
+		enum = KnxDatapointType_DPT_LightActuatorErrorInfo
 	case "DPT_RF_ModeInfo":
-		return KnxDatapointType_DPT_RF_ModeInfo
+		enum = KnxDatapointType_DPT_RF_ModeInfo
 	case "DPT_RF_FilterInfo":
-		return KnxDatapointType_DPT_RF_FilterInfo
+		enum = KnxDatapointType_DPT_RF_FilterInfo
 	case "DPT_Channel_Activation_8":
-		return KnxDatapointType_DPT_Channel_Activation_8
+		enum = KnxDatapointType_DPT_Channel_Activation_8
 	case "DPT_StatusDHWC":
-		return KnxDatapointType_DPT_StatusDHWC
+		enum = KnxDatapointType_DPT_StatusDHWC
 	case "WORD":
-		return KnxDatapointType_WORD
+		enum = KnxDatapointType_WORD
 	case "DPT_Ramp":
-		return KnxDatapointType_DPT_Ramp
+		enum = KnxDatapointType_DPT_Ramp
 	case "DPT_StatusRHCC":
-		return KnxDatapointType_DPT_StatusRHCC
+		enum = KnxDatapointType_DPT_StatusRHCC
 	case "DPT_CombinedStatus_HVA":
-		return KnxDatapointType_DPT_CombinedStatus_HVA
+		enum = KnxDatapointType_DPT_CombinedStatus_HVA
 	case "DPT_CombinedStatus_RTC":
-		return KnxDatapointType_DPT_CombinedStatus_RTC
+		enum = KnxDatapointType_DPT_CombinedStatus_RTC
 	case "DPT_Media":
-		return KnxDatapointType_DPT_Media
+		enum = KnxDatapointType_DPT_Media
 	case "DPT_Channel_Activation_16":
-		return KnxDatapointType_DPT_Channel_Activation_16
+		enum = KnxDatapointType_DPT_Channel_Activation_16
 	case "DPT_OnOffAction":
-		return KnxDatapointType_DPT_OnOffAction
+		enum = KnxDatapointType_DPT_OnOffAction
 	case "DPT_Alarm_Reaction":
-		return KnxDatapointType_DPT_Alarm_Reaction
+		enum = KnxDatapointType_DPT_Alarm_Reaction
 	case "DPT_UpDown_Action":
-		return KnxDatapointType_DPT_UpDown_Action
+		enum = KnxDatapointType_DPT_UpDown_Action
 	case "DPT_HVAC_PB_Action":
-		return KnxDatapointType_DPT_HVAC_PB_Action
+		enum = KnxDatapointType_DPT_HVAC_PB_Action
 	case "DPT_DoubleNibble":
-		return KnxDatapointType_DPT_DoubleNibble
+		enum = KnxDatapointType_DPT_DoubleNibble
 	case "DPT_Alarm":
-		return KnxDatapointType_DPT_Alarm
+		enum = KnxDatapointType_DPT_Alarm
 	case "DPT_SceneInfo":
-		return KnxDatapointType_DPT_SceneInfo
+		enum = KnxDatapointType_DPT_SceneInfo
 	case "DPT_CombinedInfoOnOff":
-		return KnxDatapointType_DPT_CombinedInfoOnOff
+		enum = KnxDatapointType_DPT_CombinedInfoOnOff
 	case "DPT_ActiveEnergy_V64":
-		return KnxDatapointType_DPT_ActiveEnergy_V64
+		enum = KnxDatapointType_DPT_ActiveEnergy_V64
 	case "DPT_ApparantEnergy_V64":
-		return KnxDatapointType_DPT_ApparantEnergy_V64
+		enum = KnxDatapointType_DPT_ApparantEnergy_V64
 	case "DPT_ReactiveEnergy_V64":
-		return KnxDatapointType_DPT_ReactiveEnergy_V64
+		enum = KnxDatapointType_DPT_ReactiveEnergy_V64
 	case "DPT_Channel_Activation_24":
-		return KnxDatapointType_DPT_Channel_Activation_24
+		enum = KnxDatapointType_DPT_Channel_Activation_24
 	case "DPT_HVACModeNext":
-		return KnxDatapointType_DPT_HVACModeNext
+		enum = KnxDatapointType_DPT_HVACModeNext
 	case "DPT_DHWModeNext":
-		return KnxDatapointType_DPT_DHWModeNext
+		enum = KnxDatapointType_DPT_DHWModeNext
 	case "DPT_OccModeNext":
-		return KnxDatapointType_DPT_OccModeNext
+		enum = KnxDatapointType_DPT_OccModeNext
 	case "DPT_BuildingModeNext":
-		return KnxDatapointType_DPT_BuildingModeNext
+		enum = KnxDatapointType_DPT_BuildingModeNext
 	case "DPT_BinaryValue":
-		return KnxDatapointType_DPT_BinaryValue
+		enum = KnxDatapointType_DPT_BinaryValue
 	case "DPT_StatusLightingActuator":
-		return KnxDatapointType_DPT_StatusLightingActuator
+		enum = KnxDatapointType_DPT_StatusLightingActuator
 	case "DPT_Version":
-		return KnxDatapointType_DPT_Version
+		enum = KnxDatapointType_DPT_Version
 	case "DPT_AlarmInfo":
-		return KnxDatapointType_DPT_AlarmInfo
+		enum = KnxDatapointType_DPT_AlarmInfo
 	case "DPT_TempRoomSetpSetF16_3":
-		return KnxDatapointType_DPT_TempRoomSetpSetF16_3
+		enum = KnxDatapointType_DPT_TempRoomSetpSetF16_3
 	case "DPT_TempRoomSetpSetShiftF16_3":
-		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3
+		enum = KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3
 	case "DPT_Scaling_Speed":
-		return KnxDatapointType_DPT_Scaling_Speed
+		enum = KnxDatapointType_DPT_Scaling_Speed
 	case "DPT_Scaling_Step_Time":
-		return KnxDatapointType_DPT_Scaling_Step_Time
+		enum = KnxDatapointType_DPT_Scaling_Step_Time
 	case "DPT_MeteringValue":
-		return KnxDatapointType_DPT_MeteringValue
+		enum = KnxDatapointType_DPT_MeteringValue
 	case "DPT_MBus_Address":
-		return KnxDatapointType_DPT_MBus_Address
+		enum = KnxDatapointType_DPT_MBus_Address
 	case "DPT_Colour_RGB":
-		return KnxDatapointType_DPT_Colour_RGB
+		enum = KnxDatapointType_DPT_Colour_RGB
 	case "DPT_Step":
-		return KnxDatapointType_DPT_Step
+		enum = KnxDatapointType_DPT_Step
 	case "DPT_LanguageCodeAlpha2_ASCII":
-		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII
+		enum = KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII
 	case "DPT_Tariff_ActiveEnergy":
-		return KnxDatapointType_DPT_Tariff_ActiveEnergy
+		enum = KnxDatapointType_DPT_Tariff_ActiveEnergy
 	case "DPT_Prioritised_Mode_Control":
-		return KnxDatapointType_DPT_Prioritised_Mode_Control
+		enum = KnxDatapointType_DPT_Prioritised_Mode_Control
 	case "DPT_DALI_Control_Gear_Diagnostic":
-		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic
+		enum = KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic
 	case "DPT_DALI_Diagnostics":
-		return KnxDatapointType_DPT_DALI_Diagnostics
+		enum = KnxDatapointType_DPT_DALI_Diagnostics
 	case "DPT_CombinedPosition":
-		return KnxDatapointType_DPT_CombinedPosition
+		enum = KnxDatapointType_DPT_CombinedPosition
 	case "DPT_StatusSAB":
-		return KnxDatapointType_DPT_StatusSAB
+		enum = KnxDatapointType_DPT_StatusSAB
 	case "DPT_Colour_xyY":
-		return KnxDatapointType_DPT_Colour_xyY
+		enum = KnxDatapointType_DPT_Colour_xyY
 	case "DPT_Converter_Status":
-		return KnxDatapointType_DPT_Converter_Status
+		enum = KnxDatapointType_DPT_Converter_Status
 	case "DPT_Converter_Test_Result":
-		return KnxDatapointType_DPT_Converter_Test_Result
+		enum = KnxDatapointType_DPT_Converter_Test_Result
 	case "DPT_UpDown":
-		return KnxDatapointType_DPT_UpDown
+		enum = KnxDatapointType_DPT_UpDown
 	case "DPT_Battery_Info":
-		return KnxDatapointType_DPT_Battery_Info
+		enum = KnxDatapointType_DPT_Battery_Info
 	case "DPT_Brightness_Colour_Temperature_Transition":
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition
+		enum = KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition
 	case "DPT_Brightness_Colour_Temperature_Control":
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control
+		enum = KnxDatapointType_DPT_Brightness_Colour_Temperature_Control
 	case "DPT_Colour_RGBW":
-		return KnxDatapointType_DPT_Colour_RGBW
+		enum = KnxDatapointType_DPT_Colour_RGBW
 	case "DPT_Relative_Control_RGBW":
-		return KnxDatapointType_DPT_Relative_Control_RGBW
+		enum = KnxDatapointType_DPT_Relative_Control_RGBW
 	case "DPT_Relative_Control_RGB":
-		return KnxDatapointType_DPT_Relative_Control_RGB
+		enum = KnxDatapointType_DPT_Relative_Control_RGB
 	case "DPT_GeographicalLocation":
-		return KnxDatapointType_DPT_GeographicalLocation
+		enum = KnxDatapointType_DPT_GeographicalLocation
 	case "DPT_TempRoomSetpSetF16_4":
-		return KnxDatapointType_DPT_TempRoomSetpSetF16_4
+		enum = KnxDatapointType_DPT_TempRoomSetpSetF16_4
 	case "DPT_TempRoomSetpSetShiftF16_4":
-		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4
+		enum = KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4
 	case "DPT_OpenClose":
-		return KnxDatapointType_DPT_OpenClose
+		enum = KnxDatapointType_DPT_OpenClose
 	case "DPT_Start":
-		return KnxDatapointType_DPT_Start
+		enum = KnxDatapointType_DPT_Start
 	case "DPT_State":
-		return KnxDatapointType_DPT_State
+		enum = KnxDatapointType_DPT_State
 	case "DPT_Invert":
-		return KnxDatapointType_DPT_Invert
+		enum = KnxDatapointType_DPT_Invert
 	case "DPT_DimSendStyle":
-		return KnxDatapointType_DPT_DimSendStyle
+		enum = KnxDatapointType_DPT_DimSendStyle
 	case "DWORD":
-		return KnxDatapointType_DWORD
+		enum = KnxDatapointType_DWORD
 	case "DPT_InputSource":
-		return KnxDatapointType_DPT_InputSource
+		enum = KnxDatapointType_DPT_InputSource
 	case "DPT_Reset":
-		return KnxDatapointType_DPT_Reset
+		enum = KnxDatapointType_DPT_Reset
 	case "DPT_Ack":
-		return KnxDatapointType_DPT_Ack
+		enum = KnxDatapointType_DPT_Ack
 	case "DPT_Trigger":
-		return KnxDatapointType_DPT_Trigger
+		enum = KnxDatapointType_DPT_Trigger
 	case "DPT_Occupancy":
-		return KnxDatapointType_DPT_Occupancy
+		enum = KnxDatapointType_DPT_Occupancy
 	case "DPT_Window_Door":
-		return KnxDatapointType_DPT_Window_Door
+		enum = KnxDatapointType_DPT_Window_Door
 	case "DPT_LogicalFunction":
-		return KnxDatapointType_DPT_LogicalFunction
+		enum = KnxDatapointType_DPT_LogicalFunction
 	case "DPT_Scene_AB":
-		return KnxDatapointType_DPT_Scene_AB
+		enum = KnxDatapointType_DPT_Scene_AB
 	case "DPT_ShutterBlinds_Mode":
-		return KnxDatapointType_DPT_ShutterBlinds_Mode
+		enum = KnxDatapointType_DPT_ShutterBlinds_Mode
 	case "DPT_DayNight":
-		return KnxDatapointType_DPT_DayNight
+		enum = KnxDatapointType_DPT_DayNight
 	case "LWORD":
-		return KnxDatapointType_LWORD
+		enum = KnxDatapointType_LWORD
 	case "DPT_Heat_Cool":
-		return KnxDatapointType_DPT_Heat_Cool
+		enum = KnxDatapointType_DPT_Heat_Cool
 	case "DPT_Switch_Control":
-		return KnxDatapointType_DPT_Switch_Control
+		enum = KnxDatapointType_DPT_Switch_Control
 	case "DPT_Bool_Control":
-		return KnxDatapointType_DPT_Bool_Control
+		enum = KnxDatapointType_DPT_Bool_Control
 	case "DPT_Enable_Control":
-		return KnxDatapointType_DPT_Enable_Control
+		enum = KnxDatapointType_DPT_Enable_Control
 	case "DPT_Ramp_Control":
-		return KnxDatapointType_DPT_Ramp_Control
+		enum = KnxDatapointType_DPT_Ramp_Control
 	case "DPT_Alarm_Control":
-		return KnxDatapointType_DPT_Alarm_Control
+		enum = KnxDatapointType_DPT_Alarm_Control
 	case "DPT_BinaryValue_Control":
-		return KnxDatapointType_DPT_BinaryValue_Control
+		enum = KnxDatapointType_DPT_BinaryValue_Control
 	case "DPT_Step_Control":
-		return KnxDatapointType_DPT_Step_Control
+		enum = KnxDatapointType_DPT_Step_Control
 	case "DPT_Direction1_Control":
-		return KnxDatapointType_DPT_Direction1_Control
+		enum = KnxDatapointType_DPT_Direction1_Control
 	case "DPT_Direction2_Control":
-		return KnxDatapointType_DPT_Direction2_Control
+		enum = KnxDatapointType_DPT_Direction2_Control
 	case "USINT":
-		return KnxDatapointType_USINT
+		enum = KnxDatapointType_USINT
 	case "DPT_Start_Control":
-		return KnxDatapointType_DPT_Start_Control
+		enum = KnxDatapointType_DPT_Start_Control
 	case "DPT_State_Control":
-		return KnxDatapointType_DPT_State_Control
+		enum = KnxDatapointType_DPT_State_Control
 	case "DPT_Invert_Control":
-		return KnxDatapointType_DPT_Invert_Control
+		enum = KnxDatapointType_DPT_Invert_Control
 	case "DPT_Control_Dimming":
-		return KnxDatapointType_DPT_Control_Dimming
+		enum = KnxDatapointType_DPT_Control_Dimming
 	case "DPT_Control_Blinds":
-		return KnxDatapointType_DPT_Control_Blinds
+		enum = KnxDatapointType_DPT_Control_Blinds
 	case "DPT_Char_ASCII":
-		return KnxDatapointType_DPT_Char_ASCII
+		enum = KnxDatapointType_DPT_Char_ASCII
 	case "DPT_Char_8859_1":
-		return KnxDatapointType_DPT_Char_8859_1
+		enum = KnxDatapointType_DPT_Char_8859_1
 	case "DPT_Scaling":
-		return KnxDatapointType_DPT_Scaling
+		enum = KnxDatapointType_DPT_Scaling
 	case "DPT_Angle":
-		return KnxDatapointType_DPT_Angle
+		enum = KnxDatapointType_DPT_Angle
 	case "DPT_Percent_U8":
-		return KnxDatapointType_DPT_Percent_U8
+		enum = KnxDatapointType_DPT_Percent_U8
 	case "SINT":
-		return KnxDatapointType_SINT
+		enum = KnxDatapointType_SINT
 	case "DPT_DecimalFactor":
-		return KnxDatapointType_DPT_DecimalFactor
+		enum = KnxDatapointType_DPT_DecimalFactor
 	case "DPT_Tariff":
-		return KnxDatapointType_DPT_Tariff
+		enum = KnxDatapointType_DPT_Tariff
 	case "DPT_Value_1_Ucount":
-		return KnxDatapointType_DPT_Value_1_Ucount
+		enum = KnxDatapointType_DPT_Value_1_Ucount
 	case "DPT_FanStage":
-		return KnxDatapointType_DPT_FanStage
+		enum = KnxDatapointType_DPT_FanStage
 	case "DPT_Percent_V8":
-		return KnxDatapointType_DPT_Percent_V8
+		enum = KnxDatapointType_DPT_Percent_V8
 	case "DPT_Value_1_Count":
-		return KnxDatapointType_DPT_Value_1_Count
+		enum = KnxDatapointType_DPT_Value_1_Count
 	case "DPT_Status_Mode3":
-		return KnxDatapointType_DPT_Status_Mode3
+		enum = KnxDatapointType_DPT_Status_Mode3
 	case "DPT_Value_2_Ucount":
-		return KnxDatapointType_DPT_Value_2_Ucount
+		enum = KnxDatapointType_DPT_Value_2_Ucount
 	case "DPT_TimePeriodMsec":
-		return KnxDatapointType_DPT_TimePeriodMsec
+		enum = KnxDatapointType_DPT_TimePeriodMsec
 	case "DPT_TimePeriod10Msec":
-		return KnxDatapointType_DPT_TimePeriod10Msec
+		enum = KnxDatapointType_DPT_TimePeriod10Msec
 	case "UINT":
-		return KnxDatapointType_UINT
+		enum = KnxDatapointType_UINT
 	case "DPT_TimePeriod100Msec":
-		return KnxDatapointType_DPT_TimePeriod100Msec
+		enum = KnxDatapointType_DPT_TimePeriod100Msec
 	case "DPT_TimePeriodSec":
-		return KnxDatapointType_DPT_TimePeriodSec
+		enum = KnxDatapointType_DPT_TimePeriodSec
 	case "DPT_TimePeriodMin":
-		return KnxDatapointType_DPT_TimePeriodMin
+		enum = KnxDatapointType_DPT_TimePeriodMin
 	case "DPT_TimePeriodHrs":
-		return KnxDatapointType_DPT_TimePeriodHrs
+		enum = KnxDatapointType_DPT_TimePeriodHrs
 	case "DPT_PropDataType":
-		return KnxDatapointType_DPT_PropDataType
+		enum = KnxDatapointType_DPT_PropDataType
 	case "DPT_Length_mm":
-		return KnxDatapointType_DPT_Length_mm
+		enum = KnxDatapointType_DPT_Length_mm
 	case "DPT_UElCurrentmA":
-		return KnxDatapointType_DPT_UElCurrentmA
+		enum = KnxDatapointType_DPT_UElCurrentmA
 	case "DPT_Brightness":
-		return KnxDatapointType_DPT_Brightness
+		enum = KnxDatapointType_DPT_Brightness
 	case "DPT_Absolute_Colour_Temperature":
-		return KnxDatapointType_DPT_Absolute_Colour_Temperature
+		enum = KnxDatapointType_DPT_Absolute_Colour_Temperature
 	case "DPT_Value_2_Count":
-		return KnxDatapointType_DPT_Value_2_Count
+		enum = KnxDatapointType_DPT_Value_2_Count
 	case "INT":
-		return KnxDatapointType_INT
+		enum = KnxDatapointType_INT
 	case "DPT_DeltaTimeMsec":
-		return KnxDatapointType_DPT_DeltaTimeMsec
+		enum = KnxDatapointType_DPT_DeltaTimeMsec
 	case "DPT_DeltaTime10Msec":
-		return KnxDatapointType_DPT_DeltaTime10Msec
+		enum = KnxDatapointType_DPT_DeltaTime10Msec
 	case "DPT_DeltaTime100Msec":
-		return KnxDatapointType_DPT_DeltaTime100Msec
+		enum = KnxDatapointType_DPT_DeltaTime100Msec
 	case "DPT_DeltaTimeSec":
-		return KnxDatapointType_DPT_DeltaTimeSec
+		enum = KnxDatapointType_DPT_DeltaTimeSec
 	case "DPT_DeltaTimeMin":
-		return KnxDatapointType_DPT_DeltaTimeMin
+		enum = KnxDatapointType_DPT_DeltaTimeMin
 	case "DPT_DeltaTimeHrs":
-		return KnxDatapointType_DPT_DeltaTimeHrs
+		enum = KnxDatapointType_DPT_DeltaTimeHrs
 	case "DPT_Percent_V16":
-		return KnxDatapointType_DPT_Percent_V16
+		enum = KnxDatapointType_DPT_Percent_V16
 	case "DPT_Rotation_Angle":
-		return KnxDatapointType_DPT_Rotation_Angle
+		enum = KnxDatapointType_DPT_Rotation_Angle
 	case "DPT_Length_m":
-		return KnxDatapointType_DPT_Length_m
+		enum = KnxDatapointType_DPT_Length_m
 	case "DPT_Value_Temp":
-		return KnxDatapointType_DPT_Value_Temp
+		enum = KnxDatapointType_DPT_Value_Temp
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func KnxDatapointTypeKnows(value uint32) bool {
@@ -6430,10 +6434,11 @@ func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error
 }
 
 func (e KnxDatapointType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e KnxDatapointType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxDatapointType) PLC4XEnumName() string {
 	switch e {
 	case KnxDatapointType_DPT_UNKNOWN:
 		return "DPT_UNKNOWN"
@@ -7138,5 +7143,5 @@ func (e KnxDatapointType) name() string {
 }
 
 func (e KnxDatapointType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

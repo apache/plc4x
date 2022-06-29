@@ -78,24 +78,28 @@ func BACnetLiftCarDirectionByValue(value uint16) BACnetLiftCarDirection {
 	return 0
 }
 
-func BACnetLiftCarDirectionByName(value string) BACnetLiftCarDirection {
+func BACnetLiftCarDirectionByName(value string) (enum BACnetLiftCarDirection, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetLiftCarDirection_UNKNOWN
+		enum = BACnetLiftCarDirection_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
 	case "NONE":
-		return BACnetLiftCarDirection_NONE
+		enum = BACnetLiftCarDirection_NONE
 	case "STOPPED":
-		return BACnetLiftCarDirection_STOPPED
+		enum = BACnetLiftCarDirection_STOPPED
 	case "UP":
-		return BACnetLiftCarDirection_UP
+		enum = BACnetLiftCarDirection_UP
 	case "DOWN":
-		return BACnetLiftCarDirection_DOWN
+		enum = BACnetLiftCarDirection_DOWN
 	case "UP_AND_DOWN":
-		return BACnetLiftCarDirection_UP_AND_DOWN
+		enum = BACnetLiftCarDirection_UP_AND_DOWN
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLiftCarDirectionKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BACnetLiftCarDirectionParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDire
 }
 
 func (e BACnetLiftCarDirection) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLiftCarDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetLiftCarDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLiftCarDirection) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLiftCarDirection) PLC4XEnumName() string {
 	switch e {
 	case BACnetLiftCarDirection_UNKNOWN:
 		return "UNKNOWN"
@@ -158,5 +163,5 @@ func (e BACnetLiftCarDirection) name() string {
 }
 
 func (e BACnetLiftCarDirection) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

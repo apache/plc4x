@@ -74,22 +74,26 @@ func DeviceDescriptorMediumTypeByValue(value uint8) DeviceDescriptorMediumType {
 	return 0
 }
 
-func DeviceDescriptorMediumTypeByName(value string) DeviceDescriptorMediumType {
+func DeviceDescriptorMediumTypeByName(value string) (enum DeviceDescriptorMediumType, ok bool) {
+	ok = true
 	switch value {
 	case "TP1":
-		return DeviceDescriptorMediumType_TP1
+		enum = DeviceDescriptorMediumType_TP1
 	case "PL110":
-		return DeviceDescriptorMediumType_PL110
+		enum = DeviceDescriptorMediumType_PL110
 	case "RF":
-		return DeviceDescriptorMediumType_RF
+		enum = DeviceDescriptorMediumType_RF
 	case "TP0":
-		return DeviceDescriptorMediumType_TP0
+		enum = DeviceDescriptorMediumType_TP0
 	case "PL132":
-		return DeviceDescriptorMediumType_PL132
+		enum = DeviceDescriptorMediumType_PL132
 	case "KNX_IP":
-		return DeviceDescriptorMediumType_KNX_IP
+		enum = DeviceDescriptorMediumType_KNX_IP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func DeviceDescriptorMediumTypeKnows(value uint8) bool {
@@ -128,10 +132,11 @@ func DeviceDescriptorMediumTypeParse(readBuffer utils.ReadBuffer) (DeviceDescrip
 }
 
 func (e DeviceDescriptorMediumType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DeviceDescriptorMediumType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("DeviceDescriptorMediumType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e DeviceDescriptorMediumType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DeviceDescriptorMediumType) PLC4XEnumName() string {
 	switch e {
 	case DeviceDescriptorMediumType_TP1:
 		return "TP1"
@@ -150,5 +155,5 @@ func (e DeviceDescriptorMediumType) name() string {
 }
 
 func (e DeviceDescriptorMediumType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

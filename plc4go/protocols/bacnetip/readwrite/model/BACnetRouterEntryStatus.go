@@ -62,16 +62,20 @@ func BACnetRouterEntryStatusByValue(value uint8) BACnetRouterEntryStatus {
 	return 0
 }
 
-func BACnetRouterEntryStatusByName(value string) BACnetRouterEntryStatus {
+func BACnetRouterEntryStatusByName(value string) (enum BACnetRouterEntryStatus, ok bool) {
+	ok = true
 	switch value {
 	case "AVAILABLE":
-		return BACnetRouterEntryStatus_AVAILABLE
+		enum = BACnetRouterEntryStatus_AVAILABLE
 	case "BUSY":
-		return BACnetRouterEntryStatus_BUSY
+		enum = BACnetRouterEntryStatus_BUSY
 	case "DISCONNECTED":
-		return BACnetRouterEntryStatus_DISCONNECTED
+		enum = BACnetRouterEntryStatus_DISCONNECTED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetRouterEntryStatusKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetRouterEntryStatusParse(readBuffer utils.ReadBuffer) (BACnetRouterEntr
 }
 
 func (e BACnetRouterEntryStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetRouterEntryStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetRouterEntryStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetRouterEntryStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetRouterEntryStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetRouterEntryStatus_AVAILABLE:
 		return "AVAILABLE"
@@ -126,5 +131,5 @@ func (e BACnetRouterEntryStatus) name() string {
 }
 
 func (e BACnetRouterEntryStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

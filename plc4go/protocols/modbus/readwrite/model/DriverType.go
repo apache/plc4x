@@ -62,16 +62,20 @@ func DriverTypeByValue(value uint32) DriverType {
 	return 0
 }
 
-func DriverTypeByName(value string) DriverType {
+func DriverTypeByName(value string) (enum DriverType, ok bool) {
+	ok = true
 	switch value {
 	case "MODBUS_TCP":
-		return DriverType_MODBUS_TCP
+		enum = DriverType_MODBUS_TCP
 	case "MODBUS_RTU":
-		return DriverType_MODBUS_RTU
+		enum = DriverType_MODBUS_RTU
 	case "MODBUS_ASCII":
-		return DriverType_MODBUS_ASCII
+		enum = DriverType_MODBUS_ASCII
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func DriverTypeKnows(value uint32) bool {
@@ -110,10 +114,11 @@ func DriverTypeParse(readBuffer utils.ReadBuffer) (DriverType, error) {
 }
 
 func (e DriverType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint32("DriverType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint32("DriverType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e DriverType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DriverType) PLC4XEnumName() string {
 	switch e {
 	case DriverType_MODBUS_TCP:
 		return "MODBUS_TCP"
@@ -126,5 +131,5 @@ func (e DriverType) name() string {
 }
 
 func (e DriverType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -66,18 +66,22 @@ func SALCommandTypeByValue(value uint8) SALCommandType {
 	return 0
 }
 
-func SALCommandTypeByName(value string) SALCommandType {
+func SALCommandTypeByName(value string) (enum SALCommandType, ok bool) {
+	ok = true
 	switch value {
 	case "OFF":
-		return SALCommandType_OFF
+		enum = SALCommandType_OFF
 	case "ON":
-		return SALCommandType_ON
+		enum = SALCommandType_ON
 	case "RAMP_TO_LEVEL":
-		return SALCommandType_RAMP_TO_LEVEL
+		enum = SALCommandType_RAMP_TO_LEVEL
 	case "TERMINATE_RAMP":
-		return SALCommandType_TERMINATE_RAMP
+		enum = SALCommandType_TERMINATE_RAMP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func SALCommandTypeKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func SALCommandTypeParse(readBuffer utils.ReadBuffer) (SALCommandType, error) {
 }
 
 func (e SALCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SALCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("SALCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e SALCommandType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SALCommandType) PLC4XEnumName() string {
 	switch e {
 	case SALCommandType_OFF:
 		return "OFF"
@@ -134,5 +139,5 @@ func (e SALCommandType) name() string {
 }
 
 func (e SALCommandType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

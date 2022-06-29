@@ -78,24 +78,28 @@ func BACnetEscalatorModeByValue(value uint16) BACnetEscalatorMode {
 	return 0
 }
 
-func BACnetEscalatorModeByName(value string) BACnetEscalatorMode {
+func BACnetEscalatorModeByName(value string) (enum BACnetEscalatorMode, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetEscalatorMode_UNKNOWN
+		enum = BACnetEscalatorMode_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
 	case "STOP":
-		return BACnetEscalatorMode_STOP
+		enum = BACnetEscalatorMode_STOP
 	case "UP":
-		return BACnetEscalatorMode_UP
+		enum = BACnetEscalatorMode_UP
 	case "DOWN":
-		return BACnetEscalatorMode_DOWN
+		enum = BACnetEscalatorMode_DOWN
 	case "INSPECTION":
-		return BACnetEscalatorMode_INSPECTION
+		enum = BACnetEscalatorMode_INSPECTION
 	case "OUT_OF_SERVICE":
-		return BACnetEscalatorMode_OUT_OF_SERVICE
+		enum = BACnetEscalatorMode_OUT_OF_SERVICE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetEscalatorModeKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BACnetEscalatorModeParse(readBuffer utils.ReadBuffer) (BACnetEscalatorMode,
 }
 
 func (e BACnetEscalatorMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetEscalatorMode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEscalatorMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetEscalatorMode_UNKNOWN:
 		return "UNKNOWN"
@@ -158,5 +163,5 @@ func (e BACnetEscalatorMode) name() string {
 }
 
 func (e BACnetEscalatorMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

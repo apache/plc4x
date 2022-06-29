@@ -78,24 +78,28 @@ func BACnetAuthorizationModeByValue(value uint16) BACnetAuthorizationMode {
 	return 0
 }
 
-func BACnetAuthorizationModeByName(value string) BACnetAuthorizationMode {
+func BACnetAuthorizationModeByName(value string) (enum BACnetAuthorizationMode, ok bool) {
+	ok = true
 	switch value {
 	case "AUTHORIZE":
-		return BACnetAuthorizationMode_AUTHORIZE
+		enum = BACnetAuthorizationMode_AUTHORIZE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
 	case "GRANT_ACTIVE":
-		return BACnetAuthorizationMode_GRANT_ACTIVE
+		enum = BACnetAuthorizationMode_GRANT_ACTIVE
 	case "DENY_ALL":
-		return BACnetAuthorizationMode_DENY_ALL
+		enum = BACnetAuthorizationMode_DENY_ALL
 	case "VERIFICATION_REQUIRED":
-		return BACnetAuthorizationMode_VERIFICATION_REQUIRED
+		enum = BACnetAuthorizationMode_VERIFICATION_REQUIRED
 	case "AUTHORIZATION_DELAYED":
-		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED
+		enum = BACnetAuthorizationMode_AUTHORIZATION_DELAYED
 	case "NONE":
-		return BACnetAuthorizationMode_NONE
+		enum = BACnetAuthorizationMode_NONE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAuthorizationModeKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizat
 }
 
 func (e BACnetAuthorizationMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAuthorizationMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetAuthorizationMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAuthorizationMode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAuthorizationMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetAuthorizationMode_AUTHORIZE:
 		return "AUTHORIZE"
@@ -158,5 +163,5 @@ func (e BACnetAuthorizationMode) name() string {
 }
 
 func (e BACnetAuthorizationMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

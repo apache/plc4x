@@ -66,18 +66,22 @@ func EventTypeByValue(value uint8) EventType {
 	return 0
 }
 
-func EventTypeByName(value string) EventType {
+func EventTypeByName(value string) (enum EventType, ok bool) {
+	ok = true
 	switch value {
 	case "MODE":
-		return EventType_MODE
+		enum = EventType_MODE
 	case "SYS":
-		return EventType_SYS
+		enum = EventType_SYS
 	case "USR":
-		return EventType_USR
+		enum = EventType_USR
 	case "ALM":
-		return EventType_ALM
+		enum = EventType_ALM
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func EventTypeKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func EventTypeParse(readBuffer utils.ReadBuffer) (EventType, error) {
 }
 
 func (e EventType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("EventType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("EventType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e EventType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e EventType) PLC4XEnumName() string {
 	switch e {
 	case EventType_MODE:
 		return "MODE"
@@ -134,5 +139,5 @@ func (e EventType) name() string {
 }
 
 func (e EventType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

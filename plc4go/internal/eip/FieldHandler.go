@@ -47,7 +47,10 @@ const (
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		tag := match[TAG]
-		_type := readWriteModel.CIPDataTypeCodeByName(match[DATA_TYPE])
+		_type, ok := readWriteModel.CIPDataTypeCodeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
 		parsedUint, _ := strconv.ParseUint(match[ELEMENT_NB], 10, 16)
 		elementNb := uint16(parsedUint)
 		return NewField(tag, _type, elementNb), nil

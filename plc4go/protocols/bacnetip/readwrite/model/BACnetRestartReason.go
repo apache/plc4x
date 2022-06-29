@@ -90,30 +90,34 @@ func BACnetRestartReasonByValue(value uint8) BACnetRestartReason {
 	return 0
 }
 
-func BACnetRestartReasonByName(value string) BACnetRestartReason {
+func BACnetRestartReasonByName(value string) (enum BACnetRestartReason, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetRestartReason_UNKNOWN
+		enum = BACnetRestartReason_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
 	case "COLDSTART":
-		return BACnetRestartReason_COLDSTART
+		enum = BACnetRestartReason_COLDSTART
 	case "WARMSTART":
-		return BACnetRestartReason_WARMSTART
+		enum = BACnetRestartReason_WARMSTART
 	case "DETECTED_POWER_LOST":
-		return BACnetRestartReason_DETECTED_POWER_LOST
+		enum = BACnetRestartReason_DETECTED_POWER_LOST
 	case "DETECTED_POWERED_OFF":
-		return BACnetRestartReason_DETECTED_POWERED_OFF
+		enum = BACnetRestartReason_DETECTED_POWERED_OFF
 	case "HARDWARE_WATCHDOG":
-		return BACnetRestartReason_HARDWARE_WATCHDOG
+		enum = BACnetRestartReason_HARDWARE_WATCHDOG
 	case "SOFTWARE_WATCHDOG":
-		return BACnetRestartReason_SOFTWARE_WATCHDOG
+		enum = BACnetRestartReason_SOFTWARE_WATCHDOG
 	case "SUSPENDED":
-		return BACnetRestartReason_SUSPENDED
+		enum = BACnetRestartReason_SUSPENDED
 	case "ACTIVATE_CHANGES":
-		return BACnetRestartReason_ACTIVATE_CHANGES
+		enum = BACnetRestartReason_ACTIVATE_CHANGES
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetRestartReasonKnows(value uint8) bool {
@@ -152,10 +156,11 @@ func BACnetRestartReasonParse(readBuffer utils.ReadBuffer) (BACnetRestartReason,
 }
 
 func (e BACnetRestartReason) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetRestartReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetRestartReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetRestartReason) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetRestartReason) PLC4XEnumName() string {
 	switch e {
 	case BACnetRestartReason_UNKNOWN:
 		return "UNKNOWN"
@@ -182,5 +187,5 @@ func (e BACnetRestartReason) name() string {
 }
 
 func (e BACnetRestartReason) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

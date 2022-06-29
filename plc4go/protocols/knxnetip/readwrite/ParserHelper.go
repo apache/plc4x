@@ -33,7 +33,7 @@ type KnxnetipParserHelper struct {
 func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "KnxProperty":
-		propertyType := model.KnxPropertyDataTypeByName(arguments[0])
+		propertyType, _ := model.KnxPropertyDataTypeByName(arguments[0])
 		dataLengthInBytes, err := utils.StrToUint8(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
@@ -48,7 +48,7 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "ChannelInformation":
 		return model.ChannelInformationParse(io)
 	case "KnxDatapoint":
-		datapointType := model.KnxDatapointTypeByName(arguments[0])
+		datapointType, _ := model.KnxDatapointTypeByName(arguments[0])
 		return model.KnxDatapointParse(io, datapointType)
 	case "DeviceConfigurationAckDataBlock":
 		return model.DeviceConfigurationAckDataBlockParse(io)
@@ -87,7 +87,7 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "CEMIAdditionalInformation":
 		return model.CEMIAdditionalInformationParse(io)
 	case "ComObjectTable":
-		firmwareType := model.FirmwareTypeByName(arguments[0])
+		firmwareType, _ := model.FirmwareTypeByName(arguments[0])
 		return model.ComObjectTableParse(io, firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(io)

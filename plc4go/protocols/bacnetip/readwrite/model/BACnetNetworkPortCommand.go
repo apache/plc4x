@@ -86,28 +86,32 @@ func BACnetNetworkPortCommandByValue(value uint8) BACnetNetworkPortCommand {
 	return 0
 }
 
-func BACnetNetworkPortCommandByName(value string) BACnetNetworkPortCommand {
+func BACnetNetworkPortCommandByName(value string) (enum BACnetNetworkPortCommand, ok bool) {
+	ok = true
 	switch value {
 	case "IDLE":
-		return BACnetNetworkPortCommand_IDLE
+		enum = BACnetNetworkPortCommand_IDLE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
 	case "DISCARD_CHANGES":
-		return BACnetNetworkPortCommand_DISCARD_CHANGES
+		enum = BACnetNetworkPortCommand_DISCARD_CHANGES
 	case "RENEW_FD_REGISTRATION":
-		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
+		enum = BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
 	case "RESTART_SLAVE_DISCOVERY":
-		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
+		enum = BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
 	case "RENEW_DHCP":
-		return BACnetNetworkPortCommand_RENEW_DHCP
+		enum = BACnetNetworkPortCommand_RENEW_DHCP
 	case "RESTART_AUTONEGOTIATION":
-		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
+		enum = BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
 	case "DISCONNECT":
-		return BACnetNetworkPortCommand_DISCONNECT
+		enum = BACnetNetworkPortCommand_DISCONNECT
 	case "RESTART_PORT":
-		return BACnetNetworkPortCommand_RESTART_PORT
+		enum = BACnetNetworkPortCommand_RESTART_PORT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetNetworkPortCommandKnows(value uint8) bool {
@@ -146,10 +150,11 @@ func BACnetNetworkPortCommandParse(readBuffer utils.ReadBuffer) (BACnetNetworkPo
 }
 
 func (e BACnetNetworkPortCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNetworkPortCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetNetworkPortCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetNetworkPortCommand) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNetworkPortCommand) PLC4XEnumName() string {
 	switch e {
 	case BACnetNetworkPortCommand_IDLE:
 		return "IDLE"
@@ -174,5 +179,5 @@ func (e BACnetNetworkPortCommand) name() string {
 }
 
 func (e BACnetNetworkPortCommand) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

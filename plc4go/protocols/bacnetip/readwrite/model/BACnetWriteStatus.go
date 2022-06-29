@@ -66,18 +66,22 @@ func BACnetWriteStatusByValue(value uint8) BACnetWriteStatus {
 	return 0
 }
 
-func BACnetWriteStatusByName(value string) BACnetWriteStatus {
+func BACnetWriteStatusByName(value string) (enum BACnetWriteStatus, ok bool) {
+	ok = true
 	switch value {
 	case "IDLE":
-		return BACnetWriteStatus_IDLE
+		enum = BACnetWriteStatus_IDLE
 	case "IN_PROGRESS":
-		return BACnetWriteStatus_IN_PROGRESS
+		enum = BACnetWriteStatus_IN_PROGRESS
 	case "SUCCESSFUL":
-		return BACnetWriteStatus_SUCCESSFUL
+		enum = BACnetWriteStatus_SUCCESSFUL
 	case "FAILED":
-		return BACnetWriteStatus_FAILED
+		enum = BACnetWriteStatus_FAILED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetWriteStatusKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetWriteStatusParse(readBuffer utils.ReadBuffer) (BACnetWriteStatus, err
 }
 
 func (e BACnetWriteStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetWriteStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetWriteStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetWriteStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetWriteStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetWriteStatus_IDLE:
 		return "IDLE"
@@ -134,5 +139,5 @@ func (e BACnetWriteStatus) name() string {
 }
 
 func (e BACnetWriteStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

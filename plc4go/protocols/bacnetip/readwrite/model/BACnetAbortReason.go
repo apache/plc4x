@@ -102,36 +102,40 @@ func BACnetAbortReasonByValue(value uint8) BACnetAbortReason {
 	return 0
 }
 
-func BACnetAbortReasonByName(value string) BACnetAbortReason {
+func BACnetAbortReasonByName(value string) (enum BACnetAbortReason, ok bool) {
+	ok = true
 	switch value {
 	case "OTHER":
-		return BACnetAbortReason_OTHER
+		enum = BACnetAbortReason_OTHER
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAbortReason_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetAbortReason_VENDOR_PROPRIETARY_VALUE
 	case "BUFFER_OVERFLOW":
-		return BACnetAbortReason_BUFFER_OVERFLOW
+		enum = BACnetAbortReason_BUFFER_OVERFLOW
 	case "TSM_TIMEOUT":
-		return BACnetAbortReason_TSM_TIMEOUT
+		enum = BACnetAbortReason_TSM_TIMEOUT
 	case "APDU_TOO_LONG":
-		return BACnetAbortReason_APDU_TOO_LONG
+		enum = BACnetAbortReason_APDU_TOO_LONG
 	case "INVALID_APDU_IN_THIS_STATE":
-		return BACnetAbortReason_INVALID_APDU_IN_THIS_STATE
+		enum = BACnetAbortReason_INVALID_APDU_IN_THIS_STATE
 	case "PREEMPTED_BY_HIGHER_PRIORITY_TASK":
-		return BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK
+		enum = BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK
 	case "SEGMENTATION_NOT_SUPPORTED":
-		return BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED
+		enum = BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED
 	case "SECURITY_ERROR":
-		return BACnetAbortReason_SECURITY_ERROR
+		enum = BACnetAbortReason_SECURITY_ERROR
 	case "INSUFFICIENT_SECURITY":
-		return BACnetAbortReason_INSUFFICIENT_SECURITY
+		enum = BACnetAbortReason_INSUFFICIENT_SECURITY
 	case "WINDOW_SIZE_OUT_OF_RANGE":
-		return BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE
+		enum = BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE
 	case "APPLICATION_EXCEEDED_REPLY_TIME":
-		return BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME
+		enum = BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME
 	case "OUT_OF_RESOURCES":
-		return BACnetAbortReason_OUT_OF_RESOURCES
+		enum = BACnetAbortReason_OUT_OF_RESOURCES
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAbortReasonKnows(value uint8) bool {
@@ -170,10 +174,11 @@ func BACnetAbortReasonParse(readBuffer utils.ReadBuffer) (BACnetAbortReason, err
 }
 
 func (e BACnetAbortReason) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAbortReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAbortReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAbortReason) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAbortReason) PLC4XEnumName() string {
 	switch e {
 	case BACnetAbortReason_OTHER:
 		return "OTHER"
@@ -206,5 +211,5 @@ func (e BACnetAbortReason) name() string {
 }
 
 func (e BACnetAbortReason) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

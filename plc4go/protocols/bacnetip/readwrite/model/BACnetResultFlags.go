@@ -62,16 +62,20 @@ func BACnetResultFlagsByValue(value uint8) BACnetResultFlags {
 	return 0
 }
 
-func BACnetResultFlagsByName(value string) BACnetResultFlags {
+func BACnetResultFlagsByName(value string) (enum BACnetResultFlags, ok bool) {
+	ok = true
 	switch value {
 	case "FIRST_ITEM":
-		return BACnetResultFlags_FIRST_ITEM
+		enum = BACnetResultFlags_FIRST_ITEM
 	case "LAST_ITEM":
-		return BACnetResultFlags_LAST_ITEM
+		enum = BACnetResultFlags_LAST_ITEM
 	case "MORE_ITEMS":
-		return BACnetResultFlags_MORE_ITEMS
+		enum = BACnetResultFlags_MORE_ITEMS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetResultFlagsKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetResultFlagsParse(readBuffer utils.ReadBuffer) (BACnetResultFlags, err
 }
 
 func (e BACnetResultFlags) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetResultFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetResultFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetResultFlags) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetResultFlags) PLC4XEnumName() string {
 	switch e {
 	case BACnetResultFlags_FIRST_ITEM:
 		return "FIRST_ITEM"
@@ -126,5 +131,5 @@ func (e BACnetResultFlags) name() string {
 }
 
 func (e BACnetResultFlags) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

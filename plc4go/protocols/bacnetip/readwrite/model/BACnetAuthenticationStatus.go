@@ -78,24 +78,28 @@ func BACnetAuthenticationStatusByValue(value uint8) BACnetAuthenticationStatus {
 	return 0
 }
 
-func BACnetAuthenticationStatusByName(value string) BACnetAuthenticationStatus {
+func BACnetAuthenticationStatusByName(value string) (enum BACnetAuthenticationStatus, ok bool) {
+	ok = true
 	switch value {
 	case "NOT_READY":
-		return BACnetAuthenticationStatus_NOT_READY
+		enum = BACnetAuthenticationStatus_NOT_READY
 	case "READY":
-		return BACnetAuthenticationStatus_READY
+		enum = BACnetAuthenticationStatus_READY
 	case "DISABLED":
-		return BACnetAuthenticationStatus_DISABLED
+		enum = BACnetAuthenticationStatus_DISABLED
 	case "WAITING_FOR_AUTHENTICATION_FACTOR":
-		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR
+		enum = BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR
 	case "WAITING_FOR_ACCOMPANIMENT":
-		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT
+		enum = BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT
 	case "WAITING_FOR_VERIFICATION":
-		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION
+		enum = BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION
 	case "IN_PROGRESS":
-		return BACnetAuthenticationStatus_IN_PROGRESS
+		enum = BACnetAuthenticationStatus_IN_PROGRESS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAuthenticationStatusKnows(value uint8) bool {
@@ -134,10 +138,11 @@ func BACnetAuthenticationStatusParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 }
 
 func (e BACnetAuthenticationStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAuthenticationStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAuthenticationStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAuthenticationStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAuthenticationStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetAuthenticationStatus_NOT_READY:
 		return "NOT_READY"
@@ -158,5 +163,5 @@ func (e BACnetAuthenticationStatus) name() string {
 }
 
 func (e BACnetAuthenticationStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

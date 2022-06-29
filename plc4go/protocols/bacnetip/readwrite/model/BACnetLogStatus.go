@@ -62,16 +62,20 @@ func BACnetLogStatusByValue(value uint8) BACnetLogStatus {
 	return 0
 }
 
-func BACnetLogStatusByName(value string) BACnetLogStatus {
+func BACnetLogStatusByName(value string) (enum BACnetLogStatus, ok bool) {
+	ok = true
 	switch value {
 	case "LOG_DISABLED":
-		return BACnetLogStatus_LOG_DISABLED
+		enum = BACnetLogStatus_LOG_DISABLED
 	case "BUFFER_PURGED":
-		return BACnetLogStatus_BUFFER_PURGED
+		enum = BACnetLogStatus_BUFFER_PURGED
 	case "LOG_INTERRUPTED":
-		return BACnetLogStatus_LOG_INTERRUPTED
+		enum = BACnetLogStatus_LOG_INTERRUPTED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLogStatusKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetLogStatusParse(readBuffer utils.ReadBuffer) (BACnetLogStatus, error) 
 }
 
 func (e BACnetLogStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLogStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLogStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLogStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLogStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetLogStatus_LOG_DISABLED:
 		return "LOG_DISABLED"
@@ -126,5 +131,5 @@ func (e BACnetLogStatus) name() string {
 }
 
 func (e BACnetLogStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

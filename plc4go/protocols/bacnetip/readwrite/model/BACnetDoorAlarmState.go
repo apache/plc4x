@@ -90,30 +90,34 @@ func BACnetDoorAlarmStateByValue(value uint8) BACnetDoorAlarmState {
 	return 0
 }
 
-func BACnetDoorAlarmStateByName(value string) BACnetDoorAlarmState {
+func BACnetDoorAlarmStateByName(value string) (enum BACnetDoorAlarmState, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetDoorAlarmState_NORMAL
+		enum = BACnetDoorAlarmState_NORMAL
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
 	case "ALARM":
-		return BACnetDoorAlarmState_ALARM
+		enum = BACnetDoorAlarmState_ALARM
 	case "DOOR_OPEN_TOO_LONG":
-		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
+		enum = BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
 	case "FORCED_OPEN":
-		return BACnetDoorAlarmState_FORCED_OPEN
+		enum = BACnetDoorAlarmState_FORCED_OPEN
 	case "TAMPER":
-		return BACnetDoorAlarmState_TAMPER
+		enum = BACnetDoorAlarmState_TAMPER
 	case "DOOR_FAULT":
-		return BACnetDoorAlarmState_DOOR_FAULT
+		enum = BACnetDoorAlarmState_DOOR_FAULT
 	case "LOCK_DOWN":
-		return BACnetDoorAlarmState_LOCK_DOWN
+		enum = BACnetDoorAlarmState_LOCK_DOWN
 	case "FREE_ACCESS":
-		return BACnetDoorAlarmState_FREE_ACCESS
+		enum = BACnetDoorAlarmState_FREE_ACCESS
 	case "EGRESS_OPEN":
-		return BACnetDoorAlarmState_EGRESS_OPEN
+		enum = BACnetDoorAlarmState_EGRESS_OPEN
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetDoorAlarmStateKnows(value uint8) bool {
@@ -152,10 +156,11 @@ func BACnetDoorAlarmStateParse(readBuffer utils.ReadBuffer) (BACnetDoorAlarmStat
 }
 
 func (e BACnetDoorAlarmState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDoorAlarmState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetDoorAlarmState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetDoorAlarmState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDoorAlarmState) PLC4XEnumName() string {
 	switch e {
 	case BACnetDoorAlarmState_NORMAL:
 		return "NORMAL"
@@ -182,5 +187,5 @@ func (e BACnetDoorAlarmState) name() string {
 }
 
 func (e BACnetDoorAlarmState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

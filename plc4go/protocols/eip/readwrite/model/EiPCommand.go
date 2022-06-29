@@ -62,16 +62,20 @@ func EiPCommandByValue(value uint16) EiPCommand {
 	return 0
 }
 
-func EiPCommandByName(value string) EiPCommand {
+func EiPCommandByName(value string) (enum EiPCommand, ok bool) {
+	ok = true
 	switch value {
 	case "RegisterSession":
-		return EiPCommand_RegisterSession
+		enum = EiPCommand_RegisterSession
 	case "UnregisterSession":
-		return EiPCommand_UnregisterSession
+		enum = EiPCommand_UnregisterSession
 	case "SendRRData":
-		return EiPCommand_SendRRData
+		enum = EiPCommand_SendRRData
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func EiPCommandKnows(value uint16) bool {
@@ -110,10 +114,11 @@ func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {
 }
 
 func (e EiPCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e EiPCommand) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e EiPCommand) PLC4XEnumName() string {
 	switch e {
 	case EiPCommand_RegisterSession:
 		return "RegisterSession"
@@ -126,5 +131,5 @@ func (e EiPCommand) name() string {
 }
 
 func (e EiPCommand) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

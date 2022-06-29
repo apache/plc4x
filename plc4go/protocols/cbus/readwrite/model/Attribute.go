@@ -212,46 +212,50 @@ func AttributeByValue(value uint8) Attribute {
 	return 0
 }
 
-func AttributeByName(value string) Attribute {
+func AttributeByName(value string) (enum Attribute, ok bool) {
+	ok = true
 	switch value {
 	case "Manufacturer":
-		return Attribute_Manufacturer
+		enum = Attribute_Manufacturer
 	case "Type":
-		return Attribute_Type
+		enum = Attribute_Type
 	case "FirmwareVersion":
-		return Attribute_FirmwareVersion
+		enum = Attribute_FirmwareVersion
 	case "Summary":
-		return Attribute_Summary
+		enum = Attribute_Summary
 	case "ExtendedDiagnosticSummary":
-		return Attribute_ExtendedDiagnosticSummary
+		enum = Attribute_ExtendedDiagnosticSummary
 	case "NetworkTerminalLevels":
-		return Attribute_NetworkTerminalLevels
+		enum = Attribute_NetworkTerminalLevels
 	case "TerminalLevel":
-		return Attribute_TerminalLevel
+		enum = Attribute_TerminalLevel
 	case "NetworkVoltage":
-		return Attribute_NetworkVoltage
+		enum = Attribute_NetworkVoltage
 	case "GAVValuesCurrent":
-		return Attribute_GAVValuesCurrent
+		enum = Attribute_GAVValuesCurrent
 	case "GAVValuesStored":
-		return Attribute_GAVValuesStored
+		enum = Attribute_GAVValuesStored
 	case "GAVPhysicalAddresses":
-		return Attribute_GAVPhysicalAddresses
+		enum = Attribute_GAVPhysicalAddresses
 	case "LogicalAssignment":
-		return Attribute_LogicalAssignment
+		enum = Attribute_LogicalAssignment
 	case "Delays":
-		return Attribute_Delays
+		enum = Attribute_Delays
 	case "MinimumLevels":
-		return Attribute_MinimumLevels
+		enum = Attribute_MinimumLevels
 	case "MaximumLevels":
-		return Attribute_MaximumLevels
+		enum = Attribute_MaximumLevels
 	case "CurrentSenseLevels":
-		return Attribute_CurrentSenseLevels
+		enum = Attribute_CurrentSenseLevels
 	case "OutputUnitSummary":
-		return Attribute_OutputUnitSummary
+		enum = Attribute_OutputUnitSummary
 	case "DSIStatus":
-		return Attribute_DSIStatus
+		enum = Attribute_DSIStatus
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func AttributeKnows(value uint8) bool {
@@ -290,10 +294,11 @@ func AttributeParse(readBuffer utils.ReadBuffer) (Attribute, error) {
 }
 
 func (e Attribute) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("Attribute", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("Attribute", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e Attribute) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e Attribute) PLC4XEnumName() string {
 	switch e {
 	case Attribute_Manufacturer:
 		return "Manufacturer"
@@ -336,5 +341,5 @@ func (e Attribute) name() string {
 }
 
 func (e Attribute) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -74,22 +74,26 @@ func AlarmStateTypeByValue(value uint8) AlarmStateType {
 	return 0
 }
 
-func AlarmStateTypeByName(value string) AlarmStateType {
+func AlarmStateTypeByName(value string) (enum AlarmStateType, ok bool) {
+	ok = true
 	switch value {
 	case "SCAN_ABORT":
-		return AlarmStateType_SCAN_ABORT
+		enum = AlarmStateType_SCAN_ABORT
 	case "SCAN_INITIATE":
-		return AlarmStateType_SCAN_INITIATE
+		enum = AlarmStateType_SCAN_INITIATE
 	case "ALARM_ABORT":
-		return AlarmStateType_ALARM_ABORT
+		enum = AlarmStateType_ALARM_ABORT
 	case "ALARM_INITIATE":
-		return AlarmStateType_ALARM_INITIATE
+		enum = AlarmStateType_ALARM_INITIATE
 	case "ALARM_S_ABORT":
-		return AlarmStateType_ALARM_S_ABORT
+		enum = AlarmStateType_ALARM_S_ABORT
 	case "ALARM_S_INITIATE":
-		return AlarmStateType_ALARM_S_INITIATE
+		enum = AlarmStateType_ALARM_S_INITIATE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func AlarmStateTypeKnows(value uint8) bool {
@@ -128,10 +132,11 @@ func AlarmStateTypeParse(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 }
 
 func (e AlarmStateType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("AlarmStateType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("AlarmStateType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e AlarmStateType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e AlarmStateType) PLC4XEnumName() string {
 	switch e {
 	case AlarmStateType_SCAN_ABORT:
 		return "SCAN_ABORT"
@@ -150,5 +155,5 @@ func (e AlarmStateType) name() string {
 }
 
 func (e AlarmStateType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -114,42 +114,46 @@ func FirmwareTypeByValue(value uint16) FirmwareType {
 	return 0
 }
 
-func FirmwareTypeByName(value string) FirmwareType {
+func FirmwareTypeByName(value string) (enum FirmwareType, ok bool) {
+	ok = true
 	switch value {
 	case "SYSTEM_1":
-		return FirmwareType_SYSTEM_1
+		enum = FirmwareType_SYSTEM_1
 	case "SYSTEM_2":
-		return FirmwareType_SYSTEM_2
+		enum = FirmwareType_SYSTEM_2
 	case "SYSTEM_300":
-		return FirmwareType_SYSTEM_300
+		enum = FirmwareType_SYSTEM_300
 	case "SYSTEM_7":
-		return FirmwareType_SYSTEM_7
+		enum = FirmwareType_SYSTEM_7
 	case "SYSTEM_B":
-		return FirmwareType_SYSTEM_B
+		enum = FirmwareType_SYSTEM_B
 	case "IR_DECODER":
-		return FirmwareType_IR_DECODER
+		enum = FirmwareType_IR_DECODER
 	case "COUPLER":
-		return FirmwareType_COUPLER
+		enum = FirmwareType_COUPLER
 	case "NONE":
-		return FirmwareType_NONE
+		enum = FirmwareType_NONE
 	case "SYSTEM_1_PL110":
-		return FirmwareType_SYSTEM_1_PL110
+		enum = FirmwareType_SYSTEM_1_PL110
 	case "SYSTEM_B_PL110":
-		return FirmwareType_SYSTEM_B_PL110
+		enum = FirmwareType_SYSTEM_B_PL110
 	case "MEDIA_COUPLER_PL_TP":
-		return FirmwareType_MEDIA_COUPLER_PL_TP
+		enum = FirmwareType_MEDIA_COUPLER_PL_TP
 	case "RF_BI_DIRECTIONAL_DEVICES":
-		return FirmwareType_RF_BI_DIRECTIONAL_DEVICES
+		enum = FirmwareType_RF_BI_DIRECTIONAL_DEVICES
 	case "RF_UNI_DIRECTIONAL_DEVICES":
-		return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES
+		enum = FirmwareType_RF_UNI_DIRECTIONAL_DEVICES
 	case "SYSTEM_1_TP0":
-		return FirmwareType_SYSTEM_1_TP0
+		enum = FirmwareType_SYSTEM_1_TP0
 	case "SYSTEM_1_PL132":
-		return FirmwareType_SYSTEM_1_PL132
+		enum = FirmwareType_SYSTEM_1_PL132
 	case "SYSTEM_7_KNX_NET_IP":
-		return FirmwareType_SYSTEM_7_KNX_NET_IP
+		enum = FirmwareType_SYSTEM_7_KNX_NET_IP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func FirmwareTypeKnows(value uint16) bool {
@@ -188,10 +192,11 @@ func FirmwareTypeParse(readBuffer utils.ReadBuffer) (FirmwareType, error) {
 }
 
 func (e FirmwareType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e FirmwareType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e FirmwareType) PLC4XEnumName() string {
 	switch e {
 	case FirmwareType_SYSTEM_1:
 		return "SYSTEM_1"
@@ -230,5 +235,5 @@ func (e FirmwareType) name() string {
 }
 
 func (e FirmwareType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -66,18 +66,22 @@ func CpuSubscribeEventsByValue(value uint8) CpuSubscribeEvents {
 	return 0
 }
 
-func CpuSubscribeEventsByName(value string) CpuSubscribeEvents {
+func CpuSubscribeEventsByName(value string) (enum CpuSubscribeEvents, ok bool) {
+	ok = true
 	switch value {
 	case "CPU":
-		return CpuSubscribeEvents_CPU
+		enum = CpuSubscribeEvents_CPU
 	case "IM":
-		return CpuSubscribeEvents_IM
+		enum = CpuSubscribeEvents_IM
 	case "FM":
-		return CpuSubscribeEvents_FM
+		enum = CpuSubscribeEvents_FM
 	case "CP":
-		return CpuSubscribeEvents_CP
+		enum = CpuSubscribeEvents_CP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func CpuSubscribeEventsKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func CpuSubscribeEventsParse(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, e
 }
 
 func (e CpuSubscribeEvents) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("CpuSubscribeEvents", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("CpuSubscribeEvents", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e CpuSubscribeEvents) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CpuSubscribeEvents) PLC4XEnumName() string {
 	switch e {
 	case CpuSubscribeEvents_CPU:
 		return "CPU"
@@ -134,5 +139,5 @@ func (e CpuSubscribeEvents) name() string {
 }
 
 func (e CpuSubscribeEvents) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

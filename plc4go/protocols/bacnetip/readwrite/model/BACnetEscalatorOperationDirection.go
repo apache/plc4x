@@ -78,24 +78,28 @@ func BACnetEscalatorOperationDirectionByValue(value uint16) BACnetEscalatorOpera
 	return 0
 }
 
-func BACnetEscalatorOperationDirectionByName(value string) BACnetEscalatorOperationDirection {
+func BACnetEscalatorOperationDirectionByName(value string) (enum BACnetEscalatorOperationDirection, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetEscalatorOperationDirection_UNKNOWN
+		enum = BACnetEscalatorOperationDirection_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE
 	case "STOPPED":
-		return BACnetEscalatorOperationDirection_STOPPED
+		enum = BACnetEscalatorOperationDirection_STOPPED
 	case "UP_RATED_SPEED":
-		return BACnetEscalatorOperationDirection_UP_RATED_SPEED
+		enum = BACnetEscalatorOperationDirection_UP_RATED_SPEED
 	case "UP_REDUCED_SPEED":
-		return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED
+		enum = BACnetEscalatorOperationDirection_UP_REDUCED_SPEED
 	case "DOWN_RATED_SPEED":
-		return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED
+		enum = BACnetEscalatorOperationDirection_DOWN_RATED_SPEED
 	case "DOWN_REDUCED_SPEED":
-		return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED
+		enum = BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetEscalatorOperationDirectionKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BACnetEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (e BACnetEscalatorOperationDirection) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEscalatorOperationDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetEscalatorOperationDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetEscalatorOperationDirection) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEscalatorOperationDirection) PLC4XEnumName() string {
 	switch e {
 	case BACnetEscalatorOperationDirection_UNKNOWN:
 		return "UNKNOWN"
@@ -158,5 +163,5 @@ func (e BACnetEscalatorOperationDirection) name() string {
 }
 
 func (e BACnetEscalatorOperationDirection) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

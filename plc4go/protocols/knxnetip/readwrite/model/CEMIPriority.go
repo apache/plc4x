@@ -66,18 +66,22 @@ func CEMIPriorityByValue(value uint8) CEMIPriority {
 	return 0
 }
 
-func CEMIPriorityByName(value string) CEMIPriority {
+func CEMIPriorityByName(value string) (enum CEMIPriority, ok bool) {
+	ok = true
 	switch value {
 	case "SYSTEM":
-		return CEMIPriority_SYSTEM
+		enum = CEMIPriority_SYSTEM
 	case "NORMAL":
-		return CEMIPriority_NORMAL
+		enum = CEMIPriority_NORMAL
 	case "URGENT":
-		return CEMIPriority_URGENT
+		enum = CEMIPriority_URGENT
 	case "LOW":
-		return CEMIPriority_LOW
+		enum = CEMIPriority_LOW
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func CEMIPriorityKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 }
 
 func (e CEMIPriority) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e CEMIPriority) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CEMIPriority) PLC4XEnumName() string {
 	switch e {
 	case CEMIPriority_SYSTEM:
 		return "SYSTEM"
@@ -134,5 +139,5 @@ func (e CEMIPriority) name() string {
 }
 
 func (e CEMIPriority) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

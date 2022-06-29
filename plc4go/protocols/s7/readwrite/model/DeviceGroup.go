@@ -62,16 +62,20 @@ func DeviceGroupByValue(value uint8) DeviceGroup {
 	return 0
 }
 
-func DeviceGroupByName(value string) DeviceGroup {
+func DeviceGroupByName(value string) (enum DeviceGroup, ok bool) {
+	ok = true
 	switch value {
 	case "PG_OR_PC":
-		return DeviceGroup_PG_OR_PC
+		enum = DeviceGroup_PG_OR_PC
 	case "OS":
-		return DeviceGroup_OS
+		enum = DeviceGroup_OS
 	case "OTHERS":
-		return DeviceGroup_OTHERS
+		enum = DeviceGroup_OTHERS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func DeviceGroupKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 }
 
 func (e DeviceGroup) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DeviceGroup", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("DeviceGroup", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e DeviceGroup) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DeviceGroup) PLC4XEnumName() string {
 	switch e {
 	case DeviceGroup_PG_OR_PC:
 		return "PG_OR_PC"
@@ -126,5 +131,5 @@ func (e DeviceGroup) name() string {
 }
 
 func (e DeviceGroup) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -62,16 +62,20 @@ func UnitStatusByValue(value uint8) UnitStatus {
 	return 0
 }
 
-func UnitStatusByName(value string) UnitStatus {
+func UnitStatusByName(value string) (enum UnitStatus, ok bool) {
+	ok = true
 	switch value {
 	case "OK":
-		return UnitStatus_OK
+		enum = UnitStatus_OK
 	case "NACK":
-		return UnitStatus_NACK
+		enum = UnitStatus_NACK
 	case "NO_RESPONSE":
-		return UnitStatus_NO_RESPONSE
+		enum = UnitStatus_NO_RESPONSE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func UnitStatusKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func UnitStatusParse(readBuffer utils.ReadBuffer) (UnitStatus, error) {
 }
 
 func (e UnitStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("UnitStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("UnitStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e UnitStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e UnitStatus) PLC4XEnumName() string {
 	switch e {
 	case UnitStatus_OK:
 		return "OK"
@@ -126,5 +131,5 @@ func (e UnitStatus) name() string {
 }
 
 func (e UnitStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

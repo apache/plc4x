@@ -70,20 +70,24 @@ func COTPProtocolClassByValue(value uint8) COTPProtocolClass {
 	return 0
 }
 
-func COTPProtocolClassByName(value string) COTPProtocolClass {
+func COTPProtocolClassByName(value string) (enum COTPProtocolClass, ok bool) {
+	ok = true
 	switch value {
 	case "CLASS_0":
-		return COTPProtocolClass_CLASS_0
+		enum = COTPProtocolClass_CLASS_0
 	case "CLASS_1":
-		return COTPProtocolClass_CLASS_1
+		enum = COTPProtocolClass_CLASS_1
 	case "CLASS_2":
-		return COTPProtocolClass_CLASS_2
+		enum = COTPProtocolClass_CLASS_2
 	case "CLASS_3":
-		return COTPProtocolClass_CLASS_3
+		enum = COTPProtocolClass_CLASS_3
 	case "CLASS_4":
-		return COTPProtocolClass_CLASS_4
+		enum = COTPProtocolClass_CLASS_4
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func COTPProtocolClassKnows(value uint8) bool {
@@ -122,10 +126,11 @@ func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, err
 }
 
 func (e COTPProtocolClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("COTPProtocolClass", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("COTPProtocolClass", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e COTPProtocolClass) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e COTPProtocolClass) PLC4XEnumName() string {
 	switch e {
 	case COTPProtocolClass_CLASS_0:
 		return "CLASS_0"
@@ -142,5 +147,5 @@ func (e COTPProtocolClass) name() string {
 }
 
 func (e COTPProtocolClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

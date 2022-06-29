@@ -58,14 +58,18 @@ func TagClassByValue(value uint8) TagClass {
 	return 0
 }
 
-func TagClassByName(value string) TagClass {
+func TagClassByName(value string) (enum TagClass, ok bool) {
+	ok = true
 	switch value {
 	case "APPLICATION_TAGS":
-		return TagClass_APPLICATION_TAGS
+		enum = TagClass_APPLICATION_TAGS
 	case "CONTEXT_SPECIFIC_TAGS":
-		return TagClass_CONTEXT_SPECIFIC_TAGS
+		enum = TagClass_CONTEXT_SPECIFIC_TAGS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func TagClassKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {
 }
 
 func (e TagClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("TagClass", 1, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("TagClass", 1, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e TagClass) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e TagClass) PLC4XEnumName() string {
 	switch e {
 	case TagClass_APPLICATION_TAGS:
 		return "APPLICATION_TAGS"
@@ -118,5 +123,5 @@ func (e TagClass) name() string {
 }
 
 func (e TagClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

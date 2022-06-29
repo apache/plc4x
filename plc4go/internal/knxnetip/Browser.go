@@ -464,7 +464,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		applicationId := hex.EncodeToString(programVersionData)
 
 		// Lookup the com object table address
-		comObjectTableAddresses := driverModel.ComObjectTableAddressesByName("DEV" + strings.ToUpper(applicationId))
+		comObjectTableAddresses, _ := driverModel.ComObjectTableAddressesByName("DEV" + strings.ToUpper(applicationId))
 		if comObjectTableAddresses == 0 {
 			return nil, errors.Errorf("error getting com address table address. No table entry for application id: %s", applicationId)
 		}

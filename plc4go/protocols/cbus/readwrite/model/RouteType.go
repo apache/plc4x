@@ -124,24 +124,28 @@ func RouteTypeByValue(value byte) RouteType {
 	return 0
 }
 
-func RouteTypeByName(value string) RouteType {
+func RouteTypeByName(value string) (enum RouteType, ok bool) {
+	ok = true
 	switch value {
 	case "NoBridgeAtAll":
-		return RouteType_NoBridgeAtAll
+		enum = RouteType_NoBridgeAtAll
 	case "NoAdditionalBridge":
-		return RouteType_NoAdditionalBridge
+		enum = RouteType_NoAdditionalBridge
 	case "OneAdditionalBridge":
-		return RouteType_OneAdditionalBridge
+		enum = RouteType_OneAdditionalBridge
 	case "TwoAdditionalBridge":
-		return RouteType_TwoAdditionalBridge
+		enum = RouteType_TwoAdditionalBridge
 	case "ThreeAdditionalBridge":
-		return RouteType_ThreeAdditionalBridge
+		enum = RouteType_ThreeAdditionalBridge
 	case "FourAdditionalBridge":
-		return RouteType_FourAdditionalBridge
+		enum = RouteType_FourAdditionalBridge
 	case "FiveAdditionalBridge":
-		return RouteType_FiveAdditionalBridge
+		enum = RouteType_FiveAdditionalBridge
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func RouteTypeKnows(value byte) bool {
@@ -180,10 +184,11 @@ func RouteTypeParse(readBuffer utils.ReadBuffer) (RouteType, error) {
 }
 
 func (e RouteType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteByte("RouteType", byte(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteByte("RouteType", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e RouteType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e RouteType) PLC4XEnumName() string {
 	switch e {
 	case RouteType_NoBridgeAtAll:
 		return "NoBridgeAtAll"
@@ -204,5 +209,5 @@ func (e RouteType) name() string {
 }
 
 func (e RouteType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

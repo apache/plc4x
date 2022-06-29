@@ -134,52 +134,56 @@ func BACnetEventTypeByValue(value uint16) BACnetEventType {
 	return 0
 }
 
-func BACnetEventTypeByName(value string) BACnetEventType {
+func BACnetEventTypeByName(value string) (enum BACnetEventType, ok bool) {
+	ok = true
 	switch value {
 	case "CHANGE_OF_BITSTRING":
-		return BACnetEventType_CHANGE_OF_BITSTRING
+		enum = BACnetEventType_CHANGE_OF_BITSTRING
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEventType_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetEventType_VENDOR_PROPRIETARY_VALUE
 	case "CHANGE_OF_STATE":
-		return BACnetEventType_CHANGE_OF_STATE
+		enum = BACnetEventType_CHANGE_OF_STATE
 	case "BUFFER_READY":
-		return BACnetEventType_BUFFER_READY
+		enum = BACnetEventType_BUFFER_READY
 	case "UNSIGNED_RANGE":
-		return BACnetEventType_UNSIGNED_RANGE
+		enum = BACnetEventType_UNSIGNED_RANGE
 	case "ACCESS_EVENT":
-		return BACnetEventType_ACCESS_EVENT
+		enum = BACnetEventType_ACCESS_EVENT
 	case "DOUBLE_OUT_OF_RANGE":
-		return BACnetEventType_DOUBLE_OUT_OF_RANGE
+		enum = BACnetEventType_DOUBLE_OUT_OF_RANGE
 	case "SIGNED_OUT_OF_RANGE":
-		return BACnetEventType_SIGNED_OUT_OF_RANGE
+		enum = BACnetEventType_SIGNED_OUT_OF_RANGE
 	case "UNSIGNED_OUT_OF_RANGE":
-		return BACnetEventType_UNSIGNED_OUT_OF_RANGE
+		enum = BACnetEventType_UNSIGNED_OUT_OF_RANGE
 	case "CHANGE_OF_CHARACTERSTRING":
-		return BACnetEventType_CHANGE_OF_CHARACTERSTRING
+		enum = BACnetEventType_CHANGE_OF_CHARACTERSTRING
 	case "CHANGE_OF_STATUS_FLAGS":
-		return BACnetEventType_CHANGE_OF_STATUS_FLAGS
+		enum = BACnetEventType_CHANGE_OF_STATUS_FLAGS
 	case "CHANGE_OF_RELIABILITY":
-		return BACnetEventType_CHANGE_OF_RELIABILITY
+		enum = BACnetEventType_CHANGE_OF_RELIABILITY
 	case "CHANGE_OF_VALUE":
-		return BACnetEventType_CHANGE_OF_VALUE
+		enum = BACnetEventType_CHANGE_OF_VALUE
 	case "NONE":
-		return BACnetEventType_NONE
+		enum = BACnetEventType_NONE
 	case "CHANGE_OF_DISCRETE_VALUE":
-		return BACnetEventType_CHANGE_OF_DISCRETE_VALUE
+		enum = BACnetEventType_CHANGE_OF_DISCRETE_VALUE
 	case "CHANGE_OF_TIMER":
-		return BACnetEventType_CHANGE_OF_TIMER
+		enum = BACnetEventType_CHANGE_OF_TIMER
 	case "COMMAND_FAILURE":
-		return BACnetEventType_COMMAND_FAILURE
+		enum = BACnetEventType_COMMAND_FAILURE
 	case "FLOATING_LIMIT":
-		return BACnetEventType_FLOATING_LIMIT
+		enum = BACnetEventType_FLOATING_LIMIT
 	case "OUT_OF_RANGE":
-		return BACnetEventType_OUT_OF_RANGE
+		enum = BACnetEventType_OUT_OF_RANGE
 	case "CHANGE_OF_LIFE_SAFETY":
-		return BACnetEventType_CHANGE_OF_LIFE_SAFETY
+		enum = BACnetEventType_CHANGE_OF_LIFE_SAFETY
 	case "EXTENDED":
-		return BACnetEventType_EXTENDED
+		enum = BACnetEventType_EXTENDED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetEventTypeKnows(value uint16) bool {
@@ -218,10 +222,11 @@ func BACnetEventTypeParse(readBuffer utils.ReadBuffer) (BACnetEventType, error) 
 }
 
 func (e BACnetEventType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEventType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetEventType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetEventType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEventType) PLC4XEnumName() string {
 	switch e {
 	case BACnetEventType_CHANGE_OF_BITSTRING:
 		return "CHANGE_OF_BITSTRING"
@@ -270,5 +275,5 @@ func (e BACnetEventType) name() string {
 }
 
 func (e BACnetEventType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

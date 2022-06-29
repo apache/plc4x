@@ -906,110 +906,114 @@ func KnxPropertyDataTypeByValue(value uint8) KnxPropertyDataType {
 	return 0
 }
 
-func KnxPropertyDataTypeByName(value string) KnxPropertyDataType {
+func KnxPropertyDataTypeByName(value string) (enum KnxPropertyDataType, ok bool) {
+	ok = true
 	switch value {
 	case "PDT_UNKNOWN":
-		return KnxPropertyDataType_PDT_UNKNOWN
+		enum = KnxPropertyDataType_PDT_UNKNOWN
 	case "PDT_CONTROL":
-		return KnxPropertyDataType_PDT_CONTROL
+		enum = KnxPropertyDataType_PDT_CONTROL
 	case "PDT_UNSIGNED_LONG":
-		return KnxPropertyDataType_PDT_UNSIGNED_LONG
+		enum = KnxPropertyDataType_PDT_UNSIGNED_LONG
 	case "PDT_FLOAT":
-		return KnxPropertyDataType_PDT_FLOAT
+		enum = KnxPropertyDataType_PDT_FLOAT
 	case "PDT_DOUBLE":
-		return KnxPropertyDataType_PDT_DOUBLE
+		enum = KnxPropertyDataType_PDT_DOUBLE
 	case "PDT_CHAR_BLOCK":
-		return KnxPropertyDataType_PDT_CHAR_BLOCK
+		enum = KnxPropertyDataType_PDT_CHAR_BLOCK
 	case "PDT_POLL_GROUP_SETTINGS":
-		return KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS
+		enum = KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS
 	case "PDT_SHORT_CHAR_BLOCK":
-		return KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK
+		enum = KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK
 	case "PDT_DATE_TIME":
-		return KnxPropertyDataType_PDT_DATE_TIME
+		enum = KnxPropertyDataType_PDT_DATE_TIME
 	case "PDT_VARIABLE_LENGTH":
-		return KnxPropertyDataType_PDT_VARIABLE_LENGTH
+		enum = KnxPropertyDataType_PDT_VARIABLE_LENGTH
 	case "PDT_GENERIC_01":
-		return KnxPropertyDataType_PDT_GENERIC_01
+		enum = KnxPropertyDataType_PDT_GENERIC_01
 	case "PDT_GENERIC_02":
-		return KnxPropertyDataType_PDT_GENERIC_02
+		enum = KnxPropertyDataType_PDT_GENERIC_02
 	case "PDT_CHAR":
-		return KnxPropertyDataType_PDT_CHAR
+		enum = KnxPropertyDataType_PDT_CHAR
 	case "PDT_GENERIC_03":
-		return KnxPropertyDataType_PDT_GENERIC_03
+		enum = KnxPropertyDataType_PDT_GENERIC_03
 	case "PDT_GENERIC_04":
-		return KnxPropertyDataType_PDT_GENERIC_04
+		enum = KnxPropertyDataType_PDT_GENERIC_04
 	case "PDT_GENERIC_05":
-		return KnxPropertyDataType_PDT_GENERIC_05
+		enum = KnxPropertyDataType_PDT_GENERIC_05
 	case "PDT_GENERIC_06":
-		return KnxPropertyDataType_PDT_GENERIC_06
+		enum = KnxPropertyDataType_PDT_GENERIC_06
 	case "PDT_GENERIC_07":
-		return KnxPropertyDataType_PDT_GENERIC_07
+		enum = KnxPropertyDataType_PDT_GENERIC_07
 	case "PDT_GENERIC_08":
-		return KnxPropertyDataType_PDT_GENERIC_08
+		enum = KnxPropertyDataType_PDT_GENERIC_08
 	case "PDT_GENERIC_09":
-		return KnxPropertyDataType_PDT_GENERIC_09
+		enum = KnxPropertyDataType_PDT_GENERIC_09
 	case "PDT_GENERIC_10":
-		return KnxPropertyDataType_PDT_GENERIC_10
+		enum = KnxPropertyDataType_PDT_GENERIC_10
 	case "PDT_GENERIC_11":
-		return KnxPropertyDataType_PDT_GENERIC_11
+		enum = KnxPropertyDataType_PDT_GENERIC_11
 	case "PDT_GENERIC_12":
-		return KnxPropertyDataType_PDT_GENERIC_12
+		enum = KnxPropertyDataType_PDT_GENERIC_12
 	case "PDT_UNSIGNED_CHAR":
-		return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+		enum = KnxPropertyDataType_PDT_UNSIGNED_CHAR
 	case "PDT_GENERIC_13":
-		return KnxPropertyDataType_PDT_GENERIC_13
+		enum = KnxPropertyDataType_PDT_GENERIC_13
 	case "PDT_GENERIC_14":
-		return KnxPropertyDataType_PDT_GENERIC_14
+		enum = KnxPropertyDataType_PDT_GENERIC_14
 	case "PDT_GENERIC_15":
-		return KnxPropertyDataType_PDT_GENERIC_15
+		enum = KnxPropertyDataType_PDT_GENERIC_15
 	case "PDT_GENERIC_16":
-		return KnxPropertyDataType_PDT_GENERIC_16
+		enum = KnxPropertyDataType_PDT_GENERIC_16
 	case "PDT_GENERIC_17":
-		return KnxPropertyDataType_PDT_GENERIC_17
+		enum = KnxPropertyDataType_PDT_GENERIC_17
 	case "PDT_GENERIC_18":
-		return KnxPropertyDataType_PDT_GENERIC_18
+		enum = KnxPropertyDataType_PDT_GENERIC_18
 	case "PDT_GENERIC_19":
-		return KnxPropertyDataType_PDT_GENERIC_19
+		enum = KnxPropertyDataType_PDT_GENERIC_19
 	case "PDT_GENERIC_20":
-		return KnxPropertyDataType_PDT_GENERIC_20
+		enum = KnxPropertyDataType_PDT_GENERIC_20
 	case "PDT_UTF_8":
-		return KnxPropertyDataType_PDT_UTF_8
+		enum = KnxPropertyDataType_PDT_UTF_8
 	case "PDT_VERSION":
-		return KnxPropertyDataType_PDT_VERSION
+		enum = KnxPropertyDataType_PDT_VERSION
 	case "PDT_INT":
-		return KnxPropertyDataType_PDT_INT
+		enum = KnxPropertyDataType_PDT_INT
 	case "PDT_ALARM_INFO":
-		return KnxPropertyDataType_PDT_ALARM_INFO
+		enum = KnxPropertyDataType_PDT_ALARM_INFO
 	case "PDT_BINARY_INFORMATION":
-		return KnxPropertyDataType_PDT_BINARY_INFORMATION
+		enum = KnxPropertyDataType_PDT_BINARY_INFORMATION
 	case "PDT_BITSET8":
-		return KnxPropertyDataType_PDT_BITSET8
+		enum = KnxPropertyDataType_PDT_BITSET8
 	case "PDT_BITSET16":
-		return KnxPropertyDataType_PDT_BITSET16
+		enum = KnxPropertyDataType_PDT_BITSET16
 	case "PDT_ENUM8":
-		return KnxPropertyDataType_PDT_ENUM8
+		enum = KnxPropertyDataType_PDT_ENUM8
 	case "PDT_SCALING":
-		return KnxPropertyDataType_PDT_SCALING
+		enum = KnxPropertyDataType_PDT_SCALING
 	case "PDT_NE_VL":
-		return KnxPropertyDataType_PDT_NE_VL
+		enum = KnxPropertyDataType_PDT_NE_VL
 	case "PDT_NE_FL":
-		return KnxPropertyDataType_PDT_NE_FL
+		enum = KnxPropertyDataType_PDT_NE_FL
 	case "PDT_FUNCTION":
-		return KnxPropertyDataType_PDT_FUNCTION
+		enum = KnxPropertyDataType_PDT_FUNCTION
 	case "PDT_ESCAPE":
-		return KnxPropertyDataType_PDT_ESCAPE
+		enum = KnxPropertyDataType_PDT_ESCAPE
 	case "PDT_UNSIGNED_INT":
-		return KnxPropertyDataType_PDT_UNSIGNED_INT
+		enum = KnxPropertyDataType_PDT_UNSIGNED_INT
 	case "PDT_KNX_FLOAT":
-		return KnxPropertyDataType_PDT_KNX_FLOAT
+		enum = KnxPropertyDataType_PDT_KNX_FLOAT
 	case "PDT_DATE":
-		return KnxPropertyDataType_PDT_DATE
+		enum = KnxPropertyDataType_PDT_DATE
 	case "PDT_TIME":
-		return KnxPropertyDataType_PDT_TIME
+		enum = KnxPropertyDataType_PDT_TIME
 	case "PDT_LONG":
-		return KnxPropertyDataType_PDT_LONG
+		enum = KnxPropertyDataType_PDT_LONG
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func KnxPropertyDataTypeKnows(value uint8) bool {
@@ -1048,10 +1052,11 @@ func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType,
 }
 
 func (e KnxPropertyDataType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("KnxPropertyDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("KnxPropertyDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e KnxPropertyDataType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxPropertyDataType) PLC4XEnumName() string {
 	switch e {
 	case KnxPropertyDataType_PDT_UNKNOWN:
 		return "PDT_UNKNOWN"
@@ -1158,5 +1163,5 @@ func (e KnxPropertyDataType) name() string {
 }
 
 func (e KnxPropertyDataType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

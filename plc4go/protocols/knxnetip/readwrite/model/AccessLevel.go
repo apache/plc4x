@@ -147,20 +147,24 @@ func AccessLevelByValue(value uint8) AccessLevel {
 	return 0
 }
 
-func AccessLevelByName(value string) AccessLevel {
+func AccessLevelByName(value string) (enum AccessLevel, ok bool) {
+	ok = true
 	switch value {
 	case "Level0":
-		return AccessLevel_Level0
+		enum = AccessLevel_Level0
 	case "Level1":
-		return AccessLevel_Level1
+		enum = AccessLevel_Level1
 	case "Level2":
-		return AccessLevel_Level2
+		enum = AccessLevel_Level2
 	case "Level3":
-		return AccessLevel_Level3
+		enum = AccessLevel_Level3
 	case "Level15":
-		return AccessLevel_Level15
+		enum = AccessLevel_Level15
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func AccessLevelKnows(value uint8) bool {
@@ -199,10 +203,11 @@ func AccessLevelParse(readBuffer utils.ReadBuffer) (AccessLevel, error) {
 }
 
 func (e AccessLevel) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("AccessLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("AccessLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e AccessLevel) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e AccessLevel) PLC4XEnumName() string {
 	switch e {
 	case AccessLevel_Level0:
 		return "Level0"
@@ -219,5 +224,5 @@ func (e AccessLevel) name() string {
 }
 
 func (e AccessLevel) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

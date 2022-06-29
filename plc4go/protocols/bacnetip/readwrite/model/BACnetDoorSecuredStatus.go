@@ -62,16 +62,20 @@ func BACnetDoorSecuredStatusByValue(value uint8) BACnetDoorSecuredStatus {
 	return 0
 }
 
-func BACnetDoorSecuredStatusByName(value string) BACnetDoorSecuredStatus {
+func BACnetDoorSecuredStatusByName(value string) (enum BACnetDoorSecuredStatus, ok bool) {
+	ok = true
 	switch value {
 	case "SECURED":
-		return BACnetDoorSecuredStatus_SECURED
+		enum = BACnetDoorSecuredStatus_SECURED
 	case "UNSECURED":
-		return BACnetDoorSecuredStatus_UNSECURED
+		enum = BACnetDoorSecuredStatus_UNSECURED
 	case "UNKNOWN":
-		return BACnetDoorSecuredStatus_UNKNOWN
+		enum = BACnetDoorSecuredStatus_UNKNOWN
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetDoorSecuredStatusKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetDoorSecuredStatusParse(readBuffer utils.ReadBuffer) (BACnetDoorSecure
 }
 
 func (e BACnetDoorSecuredStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDoorSecuredStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetDoorSecuredStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetDoorSecuredStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDoorSecuredStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetDoorSecuredStatus_SECURED:
 		return "SECURED"
@@ -126,5 +131,5 @@ func (e BACnetDoorSecuredStatus) name() string {
 }
 
 func (e BACnetDoorSecuredStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

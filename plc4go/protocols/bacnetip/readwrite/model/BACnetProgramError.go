@@ -74,22 +74,26 @@ func BACnetProgramErrorByValue(value uint16) BACnetProgramError {
 	return 0
 }
 
-func BACnetProgramErrorByName(value string) BACnetProgramError {
+func BACnetProgramErrorByName(value string) (enum BACnetProgramError, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetProgramError_NORMAL
+		enum = BACnetProgramError_NORMAL
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetProgramError_VENDOR_PROPRIETARY_VALUE
 	case "LOAD_FAILED":
-		return BACnetProgramError_LOAD_FAILED
+		enum = BACnetProgramError_LOAD_FAILED
 	case "INTERNAL":
-		return BACnetProgramError_INTERNAL
+		enum = BACnetProgramError_INTERNAL
 	case "PROGRAM":
-		return BACnetProgramError_PROGRAM
+		enum = BACnetProgramError_PROGRAM
 	case "OTHER":
-		return BACnetProgramError_OTHER
+		enum = BACnetProgramError_OTHER
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetProgramErrorKnows(value uint16) bool {
@@ -128,10 +132,11 @@ func BACnetProgramErrorParse(readBuffer utils.ReadBuffer) (BACnetProgramError, e
 }
 
 func (e BACnetProgramError) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetProgramError", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetProgramError", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetProgramError) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetProgramError) PLC4XEnumName() string {
 	switch e {
 	case BACnetProgramError_NORMAL:
 		return "NORMAL"
@@ -150,5 +155,5 @@ func (e BACnetProgramError) name() string {
 }
 
 func (e BACnetProgramError) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

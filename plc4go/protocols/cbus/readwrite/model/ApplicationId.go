@@ -130,50 +130,54 @@ func ApplicationIdByValue(value uint8) ApplicationId {
 	return 0
 }
 
-func ApplicationIdByName(value string) ApplicationId {
+func ApplicationIdByName(value string) (enum ApplicationId, ok bool) {
+	ok = true
 	switch value {
 	case "RESERVED":
-		return ApplicationId_RESERVED
+		enum = ApplicationId_RESERVED
 	case "FREE_USAGE":
-		return ApplicationId_FREE_USAGE
+		enum = ApplicationId_FREE_USAGE
 	case "TEMPERATURE_BROADCAST":
-		return ApplicationId_TEMPERATURE_BROADCAST
+		enum = ApplicationId_TEMPERATURE_BROADCAST
 	case "ROOM_CONTROL_SYSTEM":
-		return ApplicationId_ROOM_CONTROL_SYSTEM
+		enum = ApplicationId_ROOM_CONTROL_SYSTEM
 	case "LIGHTING":
-		return ApplicationId_LIGHTING
+		enum = ApplicationId_LIGHTING
 	case "VENTILATION":
-		return ApplicationId_VENTILATION
+		enum = ApplicationId_VENTILATION
 	case "IRRIGATION_CONTROL":
-		return ApplicationId_IRRIGATION_CONTROL
+		enum = ApplicationId_IRRIGATION_CONTROL
 	case "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL":
-		return ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL
+		enum = ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL
 	case "HEATING":
-		return ApplicationId_HEATING
+		enum = ApplicationId_HEATING
 	case "AIR_CONDITIONING":
-		return ApplicationId_AIR_CONDITIONING
+		enum = ApplicationId_AIR_CONDITIONING
 	case "TRIGGER_CONTROL":
-		return ApplicationId_TRIGGER_CONTROL
+		enum = ApplicationId_TRIGGER_CONTROL
 	case "ENABLE_CONTROL":
-		return ApplicationId_ENABLE_CONTROL
+		enum = ApplicationId_ENABLE_CONTROL
 	case "AUDIO_AND_VIDEO":
-		return ApplicationId_AUDIO_AND_VIDEO
+		enum = ApplicationId_AUDIO_AND_VIDEO
 	case "SECURITY":
-		return ApplicationId_SECURITY
+		enum = ApplicationId_SECURITY
 	case "METERING":
-		return ApplicationId_METERING
+		enum = ApplicationId_METERING
 	case "ACCESS_CONTROL":
-		return ApplicationId_ACCESS_CONTROL
+		enum = ApplicationId_ACCESS_CONTROL
 	case "CLOCK_AND_TIMEKEEPING":
-		return ApplicationId_CLOCK_AND_TIMEKEEPING
+		enum = ApplicationId_CLOCK_AND_TIMEKEEPING
 	case "TELEPHONY_STATUS_AND_CONTROL":
-		return ApplicationId_TELEPHONY_STATUS_AND_CONTROL
+		enum = ApplicationId_TELEPHONY_STATUS_AND_CONTROL
 	case "MEASUREMENT":
-		return ApplicationId_MEASUREMENT
+		enum = ApplicationId_MEASUREMENT
 	case "TESTING":
-		return ApplicationId_TESTING
+		enum = ApplicationId_TESTING
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ApplicationIdKnows(value uint8) bool {
@@ -212,10 +216,11 @@ func ApplicationIdParse(readBuffer utils.ReadBuffer) (ApplicationId, error) {
 }
 
 func (e ApplicationId) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ApplicationId", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ApplicationId", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ApplicationId) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ApplicationId) PLC4XEnumName() string {
 	switch e {
 	case ApplicationId_RESERVED:
 		return "RESERVED"
@@ -262,5 +267,5 @@ func (e ApplicationId) name() string {
 }
 
 func (e ApplicationId) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

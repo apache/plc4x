@@ -78,24 +78,28 @@ func BACnetDeviceStatusByValue(value uint16) BACnetDeviceStatus {
 	return 0
 }
 
-func BACnetDeviceStatusByName(value string) BACnetDeviceStatus {
+func BACnetDeviceStatusByName(value string) (enum BACnetDeviceStatus, ok bool) {
+	ok = true
 	switch value {
 	case "OPERATIONAL":
-		return BACnetDeviceStatus_OPERATIONAL
+		enum = BACnetDeviceStatus_OPERATIONAL
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
 	case "OPERATIONAL_READ_ONLY":
-		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY
+		enum = BACnetDeviceStatus_OPERATIONAL_READ_ONLY
 	case "DOWNLOAD_REQUIRED":
-		return BACnetDeviceStatus_DOWNLOAD_REQUIRED
+		enum = BACnetDeviceStatus_DOWNLOAD_REQUIRED
 	case "DOWNLOAD_IN_PROGRESS":
-		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
+		enum = BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
 	case "NON_OPERATIONAL":
-		return BACnetDeviceStatus_NON_OPERATIONAL
+		enum = BACnetDeviceStatus_NON_OPERATIONAL
 	case "BACKUP_IN_PROGRESS":
-		return BACnetDeviceStatus_BACKUP_IN_PROGRESS
+		enum = BACnetDeviceStatus_BACKUP_IN_PROGRESS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetDeviceStatusKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BACnetDeviceStatusParse(readBuffer utils.ReadBuffer) (BACnetDeviceStatus, e
 }
 
 func (e BACnetDeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetDeviceStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetDeviceStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetDeviceStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDeviceStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetDeviceStatus_OPERATIONAL:
 		return "OPERATIONAL"
@@ -158,5 +163,5 @@ func (e BACnetDeviceStatus) name() string {
 }
 
 func (e BACnetDeviceStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

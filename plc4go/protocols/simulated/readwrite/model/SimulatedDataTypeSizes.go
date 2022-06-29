@@ -284,64 +284,68 @@ func SimulatedDataTypeSizesByValue(value uint8) SimulatedDataTypeSizes {
 	return 0
 }
 
-func SimulatedDataTypeSizesByName(value string) SimulatedDataTypeSizes {
+func SimulatedDataTypeSizesByName(value string) (enum SimulatedDataTypeSizes, ok bool) {
+	ok = true
 	switch value {
 	case "BOOL":
-		return SimulatedDataTypeSizes_BOOL
+		enum = SimulatedDataTypeSizes_BOOL
 	case "USINT":
-		return SimulatedDataTypeSizes_USINT
+		enum = SimulatedDataTypeSizes_USINT
 	case "UINT":
-		return SimulatedDataTypeSizes_UINT
+		enum = SimulatedDataTypeSizes_UINT
 	case "UDINT":
-		return SimulatedDataTypeSizes_UDINT
+		enum = SimulatedDataTypeSizes_UDINT
 	case "ULINT":
-		return SimulatedDataTypeSizes_ULINT
+		enum = SimulatedDataTypeSizes_ULINT
 	case "REAL":
-		return SimulatedDataTypeSizes_REAL
+		enum = SimulatedDataTypeSizes_REAL
 	case "LREAL":
-		return SimulatedDataTypeSizes_LREAL
+		enum = SimulatedDataTypeSizes_LREAL
 	case "TIME":
-		return SimulatedDataTypeSizes_TIME
+		enum = SimulatedDataTypeSizes_TIME
 	case "LTIME":
-		return SimulatedDataTypeSizes_LTIME
+		enum = SimulatedDataTypeSizes_LTIME
 	case "DATE":
-		return SimulatedDataTypeSizes_DATE
+		enum = SimulatedDataTypeSizes_DATE
 	case "LDATE":
-		return SimulatedDataTypeSizes_LDATE
+		enum = SimulatedDataTypeSizes_LDATE
 	case "BYTE":
-		return SimulatedDataTypeSizes_BYTE
+		enum = SimulatedDataTypeSizes_BYTE
 	case "TIME_OF_DAY":
-		return SimulatedDataTypeSizes_TIME_OF_DAY
+		enum = SimulatedDataTypeSizes_TIME_OF_DAY
 	case "LTIME_OF_DAY":
-		return SimulatedDataTypeSizes_LTIME_OF_DAY
+		enum = SimulatedDataTypeSizes_LTIME_OF_DAY
 	case "DATE_AND_TIME":
-		return SimulatedDataTypeSizes_DATE_AND_TIME
+		enum = SimulatedDataTypeSizes_DATE_AND_TIME
 	case "LDATE_AND_TIME":
-		return SimulatedDataTypeSizes_LDATE_AND_TIME
+		enum = SimulatedDataTypeSizes_LDATE_AND_TIME
 	case "CHAR":
-		return SimulatedDataTypeSizes_CHAR
+		enum = SimulatedDataTypeSizes_CHAR
 	case "WCHAR":
-		return SimulatedDataTypeSizes_WCHAR
+		enum = SimulatedDataTypeSizes_WCHAR
 	case "STRING":
-		return SimulatedDataTypeSizes_STRING
+		enum = SimulatedDataTypeSizes_STRING
 	case "WSTRING":
-		return SimulatedDataTypeSizes_WSTRING
+		enum = SimulatedDataTypeSizes_WSTRING
 	case "WORD":
-		return SimulatedDataTypeSizes_WORD
+		enum = SimulatedDataTypeSizes_WORD
 	case "DWORD":
-		return SimulatedDataTypeSizes_DWORD
+		enum = SimulatedDataTypeSizes_DWORD
 	case "LWORD":
-		return SimulatedDataTypeSizes_LWORD
+		enum = SimulatedDataTypeSizes_LWORD
 	case "SINT":
-		return SimulatedDataTypeSizes_SINT
+		enum = SimulatedDataTypeSizes_SINT
 	case "INT":
-		return SimulatedDataTypeSizes_INT
+		enum = SimulatedDataTypeSizes_INT
 	case "DINT":
-		return SimulatedDataTypeSizes_DINT
+		enum = SimulatedDataTypeSizes_DINT
 	case "LINT":
-		return SimulatedDataTypeSizes_LINT
+		enum = SimulatedDataTypeSizes_LINT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func SimulatedDataTypeSizesKnows(value uint8) bool {
@@ -380,10 +384,11 @@ func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataType
 }
 
 func (e SimulatedDataTypeSizes) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SimulatedDataTypeSizes", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("SimulatedDataTypeSizes", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e SimulatedDataTypeSizes) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SimulatedDataTypeSizes) PLC4XEnumName() string {
 	switch e {
 	case SimulatedDataTypeSizes_BOOL:
 		return "BOOL"
@@ -444,5 +449,5 @@ func (e SimulatedDataTypeSizes) name() string {
 }
 
 func (e SimulatedDataTypeSizes) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -78,24 +78,28 @@ func BACnetLiftGroupModeByValue(value uint8) BACnetLiftGroupMode {
 	return 0
 }
 
-func BACnetLiftGroupModeByName(value string) BACnetLiftGroupMode {
+func BACnetLiftGroupModeByName(value string) (enum BACnetLiftGroupMode, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetLiftGroupMode_UNKNOWN
+		enum = BACnetLiftGroupMode_UNKNOWN
 	case "NORMAL":
-		return BACnetLiftGroupMode_NORMAL
+		enum = BACnetLiftGroupMode_NORMAL
 	case "DOWN_PEAK":
-		return BACnetLiftGroupMode_DOWN_PEAK
+		enum = BACnetLiftGroupMode_DOWN_PEAK
 	case "TWO_WAY":
-		return BACnetLiftGroupMode_TWO_WAY
+		enum = BACnetLiftGroupMode_TWO_WAY
 	case "FOUR_WAY":
-		return BACnetLiftGroupMode_FOUR_WAY
+		enum = BACnetLiftGroupMode_FOUR_WAY
 	case "EMERGENCY_POWER":
-		return BACnetLiftGroupMode_EMERGENCY_POWER
+		enum = BACnetLiftGroupMode_EMERGENCY_POWER
 	case "UP_PEAK":
-		return BACnetLiftGroupMode_UP_PEAK
+		enum = BACnetLiftGroupMode_UP_PEAK
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLiftGroupModeKnows(value uint8) bool {
@@ -134,10 +138,11 @@ func BACnetLiftGroupModeParse(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode,
 }
 
 func (e BACnetLiftGroupMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLiftGroupMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLiftGroupMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLiftGroupMode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLiftGroupMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetLiftGroupMode_UNKNOWN:
 		return "UNKNOWN"
@@ -158,5 +163,5 @@ func (e BACnetLiftGroupMode) name() string {
 }
 
 func (e BACnetLiftGroupMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

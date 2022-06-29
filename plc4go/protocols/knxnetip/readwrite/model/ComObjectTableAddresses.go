@@ -15076,3762 +15076,3766 @@ func ComObjectTableAddressesByValue(value uint16) ComObjectTableAddresses {
 	return 0
 }
 
-func ComObjectTableAddressesByName(value string) ComObjectTableAddresses {
+func ComObjectTableAddressesByName(value string) (enum ComObjectTableAddresses, ok bool) {
+	ok = true
 	switch value {
 	case "DEV0001914201":
-		return ComObjectTableAddresses_DEV0001914201
+		enum = ComObjectTableAddresses_DEV0001914201
 	case "DEV0064181910":
-		return ComObjectTableAddresses_DEV0064181910
+		enum = ComObjectTableAddresses_DEV0064181910
 	case "DEV007112221E":
-		return ComObjectTableAddresses_DEV007112221E
+		enum = ComObjectTableAddresses_DEV007112221E
 	case "DEV0019E30610":
-		return ComObjectTableAddresses_DEV0019E30610
+		enum = ComObjectTableAddresses_DEV0019E30610
 	case "DEV0019E30710":
-		return ComObjectTableAddresses_DEV0019E30710
+		enum = ComObjectTableAddresses_DEV0019E30710
 	case "DEV0019E30910":
-		return ComObjectTableAddresses_DEV0019E30910
+		enum = ComObjectTableAddresses_DEV0019E30910
 	case "DEV0019E30810":
-		return ComObjectTableAddresses_DEV0019E30810
+		enum = ComObjectTableAddresses_DEV0019E30810
 	case "DEV0019E25510":
-		return ComObjectTableAddresses_DEV0019E25510
+		enum = ComObjectTableAddresses_DEV0019E25510
 	case "DEV0019E20410":
-		return ComObjectTableAddresses_DEV0019E20410
+		enum = ComObjectTableAddresses_DEV0019E20410
 	case "DEV0019E20310":
-		return ComObjectTableAddresses_DEV0019E20310
+		enum = ComObjectTableAddresses_DEV0019E20310
 	case "DEV0019E25610":
-		return ComObjectTableAddresses_DEV0019E25610
+		enum = ComObjectTableAddresses_DEV0019E25610
 	case "DEV0019512010":
-		return ComObjectTableAddresses_DEV0019512010
+		enum = ComObjectTableAddresses_DEV0019512010
 	case "DEV0019520C10":
-		return ComObjectTableAddresses_DEV0019520C10
+		enum = ComObjectTableAddresses_DEV0019520C10
 	case "DEV0071122229":
-		return ComObjectTableAddresses_DEV0071122229
+		enum = ComObjectTableAddresses_DEV0071122229
 	case "DEV0019520710":
-		return ComObjectTableAddresses_DEV0019520710
+		enum = ComObjectTableAddresses_DEV0019520710
 	case "DEV0019520210":
-		return ComObjectTableAddresses_DEV0019520210
+		enum = ComObjectTableAddresses_DEV0019520210
 	case "DEV0019E25010":
-		return ComObjectTableAddresses_DEV0019E25010
+		enum = ComObjectTableAddresses_DEV0019E25010
 	case "DEV0019E25110":
-		return ComObjectTableAddresses_DEV0019E25110
+		enum = ComObjectTableAddresses_DEV0019E25110
 	case "DEV0019130710":
-		return ComObjectTableAddresses_DEV0019130710
+		enum = ComObjectTableAddresses_DEV0019130710
 	case "DEV0019272050":
-		return ComObjectTableAddresses_DEV0019272050
+		enum = ComObjectTableAddresses_DEV0019272050
 	case "DEV0019520910":
-		return ComObjectTableAddresses_DEV0019520910
+		enum = ComObjectTableAddresses_DEV0019520910
 	case "DEV0019520A10":
-		return ComObjectTableAddresses_DEV0019520A10
+		enum = ComObjectTableAddresses_DEV0019520A10
 	case "DEV0019520B10":
-		return ComObjectTableAddresses_DEV0019520B10
+		enum = ComObjectTableAddresses_DEV0019520B10
 	case "DEV0019520412":
-		return ComObjectTableAddresses_DEV0019520412
+		enum = ComObjectTableAddresses_DEV0019520412
 	case "DEV0071413314":
-		return ComObjectTableAddresses_DEV0071413314
+		enum = ComObjectTableAddresses_DEV0071413314
 	case "DEV0019520812":
-		return ComObjectTableAddresses_DEV0019520812
+		enum = ComObjectTableAddresses_DEV0019520812
 	case "DEV0019512510":
-		return ComObjectTableAddresses_DEV0019512510
+		enum = ComObjectTableAddresses_DEV0019512510
 	case "DEV0019512410":
-		return ComObjectTableAddresses_DEV0019512410
+		enum = ComObjectTableAddresses_DEV0019512410
 	case "DEV0019512610":
-		return ComObjectTableAddresses_DEV0019512610
+		enum = ComObjectTableAddresses_DEV0019512610
 	case "DEV0019511711":
-		return ComObjectTableAddresses_DEV0019511711
+		enum = ComObjectTableAddresses_DEV0019511711
 	case "DEV0019511811":
-		return ComObjectTableAddresses_DEV0019511811
+		enum = ComObjectTableAddresses_DEV0019511811
 	case "DEV0019522212":
-		return ComObjectTableAddresses_DEV0019522212
+		enum = ComObjectTableAddresses_DEV0019522212
 	case "DEV0019FF0716":
-		return ComObjectTableAddresses_DEV0019FF0716
+		enum = ComObjectTableAddresses_DEV0019FF0716
 	case "DEV0019FF1420":
-		return ComObjectTableAddresses_DEV0019FF1420
+		enum = ComObjectTableAddresses_DEV0019FF1420
 	case "DEV0019522112":
-		return ComObjectTableAddresses_DEV0019522112
+		enum = ComObjectTableAddresses_DEV0019522112
 	case "DEV0072300110":
-		return ComObjectTableAddresses_DEV0072300110
+		enum = ComObjectTableAddresses_DEV0072300110
 	case "DEV0019522011":
-		return ComObjectTableAddresses_DEV0019522011
+		enum = ComObjectTableAddresses_DEV0019522011
 	case "DEV0019522311":
-		return ComObjectTableAddresses_DEV0019522311
+		enum = ComObjectTableAddresses_DEV0019522311
 	case "DEV0019E12410":
-		return ComObjectTableAddresses_DEV0019E12410
+		enum = ComObjectTableAddresses_DEV0019E12410
 	case "DEV0019000311":
-		return ComObjectTableAddresses_DEV0019000311
+		enum = ComObjectTableAddresses_DEV0019000311
 	case "DEV0019000411":
-		return ComObjectTableAddresses_DEV0019000411
+		enum = ComObjectTableAddresses_DEV0019000411
 	case "DEV0019070210":
-		return ComObjectTableAddresses_DEV0019070210
+		enum = ComObjectTableAddresses_DEV0019070210
 	case "DEV0019070E11":
-		return ComObjectTableAddresses_DEV0019070E11
+		enum = ComObjectTableAddresses_DEV0019070E11
 	case "DEV0019724010":
-		return ComObjectTableAddresses_DEV0019724010
+		enum = ComObjectTableAddresses_DEV0019724010
 	case "DEV0019520610":
-		return ComObjectTableAddresses_DEV0019520610
+		enum = ComObjectTableAddresses_DEV0019520610
 	case "DEV0019520510":
-		return ComObjectTableAddresses_DEV0019520510
+		enum = ComObjectTableAddresses_DEV0019520510
 	case "DEV0076002101":
-		return ComObjectTableAddresses_DEV0076002101
+		enum = ComObjectTableAddresses_DEV0076002101
 	case "DEV0019E30B11":
-		return ComObjectTableAddresses_DEV0019E30B11
+		enum = ComObjectTableAddresses_DEV0019E30B11
 	case "DEV0019512710":
-		return ComObjectTableAddresses_DEV0019512710
+		enum = ComObjectTableAddresses_DEV0019512710
 	case "DEV0019512810":
-		return ComObjectTableAddresses_DEV0019512810
+		enum = ComObjectTableAddresses_DEV0019512810
 	case "DEV0019512910":
-		return ComObjectTableAddresses_DEV0019512910
+		enum = ComObjectTableAddresses_DEV0019512910
 	case "DEV0019E30D10":
-		return ComObjectTableAddresses_DEV0019E30D10
+		enum = ComObjectTableAddresses_DEV0019E30D10
 	case "DEV0019512313":
-		return ComObjectTableAddresses_DEV0019512313
+		enum = ComObjectTableAddresses_DEV0019512313
 	case "DEV0019512213":
-		return ComObjectTableAddresses_DEV0019512213
+		enum = ComObjectTableAddresses_DEV0019512213
 	case "DEV0019512112":
-		return ComObjectTableAddresses_DEV0019512112
+		enum = ComObjectTableAddresses_DEV0019512112
 	case "DEV0019512113":
-		return ComObjectTableAddresses_DEV0019512113
+		enum = ComObjectTableAddresses_DEV0019512113
 	case "DEV0019520D11":
-		return ComObjectTableAddresses_DEV0019520D11
+		enum = ComObjectTableAddresses_DEV0019520D11
 	case "DEV0076002001":
-		return ComObjectTableAddresses_DEV0076002001
+		enum = ComObjectTableAddresses_DEV0076002001
 	case "DEV0019E30B12":
-		return ComObjectTableAddresses_DEV0019E30B12
+		enum = ComObjectTableAddresses_DEV0019E30B12
 	case "DEV0019530812":
-		return ComObjectTableAddresses_DEV0019530812
+		enum = ComObjectTableAddresses_DEV0019530812
 	case "DEV0019530912":
-		return ComObjectTableAddresses_DEV0019530912
+		enum = ComObjectTableAddresses_DEV0019530912
 	case "DEV0019530612":
-		return ComObjectTableAddresses_DEV0019530612
+		enum = ComObjectTableAddresses_DEV0019530612
 	case "DEV0019530711":
-		return ComObjectTableAddresses_DEV0019530711
+		enum = ComObjectTableAddresses_DEV0019530711
 	case "DEV0019494712":
-		return ComObjectTableAddresses_DEV0019494712
+		enum = ComObjectTableAddresses_DEV0019494712
 	case "DEV0019E30A11":
-		return ComObjectTableAddresses_DEV0019E30A11
+		enum = ComObjectTableAddresses_DEV0019E30A11
 	case "DEV00FB101111":
-		return ComObjectTableAddresses_DEV00FB101111
+		enum = ComObjectTableAddresses_DEV00FB101111
 	case "DEV00FB103001":
-		return ComObjectTableAddresses_DEV00FB103001
+		enum = ComObjectTableAddresses_DEV00FB103001
 	case "DEV00FB104401":
-		return ComObjectTableAddresses_DEV00FB104401
+		enum = ComObjectTableAddresses_DEV00FB104401
 	case "DEV0076002A15":
-		return ComObjectTableAddresses_DEV0076002A15
+		enum = ComObjectTableAddresses_DEV0076002A15
 	case "DEV00FB124002":
-		return ComObjectTableAddresses_DEV00FB124002
+		enum = ComObjectTableAddresses_DEV00FB124002
 	case "DEV00FB104102":
-		return ComObjectTableAddresses_DEV00FB104102
+		enum = ComObjectTableAddresses_DEV00FB104102
 	case "DEV00FB104201":
-		return ComObjectTableAddresses_DEV00FB104201
+		enum = ComObjectTableAddresses_DEV00FB104201
 	case "DEV00FBF77603":
-		return ComObjectTableAddresses_DEV00FBF77603
+		enum = ComObjectTableAddresses_DEV00FBF77603
 	case "DEV00FB104301":
-		return ComObjectTableAddresses_DEV00FB104301
+		enum = ComObjectTableAddresses_DEV00FB104301
 	case "DEV00FB104601":
-		return ComObjectTableAddresses_DEV00FB104601
+		enum = ComObjectTableAddresses_DEV00FB104601
 	case "DEV00FB104701":
-		return ComObjectTableAddresses_DEV00FB104701
+		enum = ComObjectTableAddresses_DEV00FB104701
 	case "DEV00FB105101":
-		return ComObjectTableAddresses_DEV00FB105101
+		enum = ComObjectTableAddresses_DEV00FB105101
 	case "DEV00FC00C000":
-		return ComObjectTableAddresses_DEV00FC00C000
+		enum = ComObjectTableAddresses_DEV00FC00C000
 	case "DEV0103030110":
-		return ComObjectTableAddresses_DEV0103030110
+		enum = ComObjectTableAddresses_DEV0103030110
 	case "DEV0076002815":
-		return ComObjectTableAddresses_DEV0076002815
+		enum = ComObjectTableAddresses_DEV0076002815
 	case "DEV0103010113":
-		return ComObjectTableAddresses_DEV0103010113
+		enum = ComObjectTableAddresses_DEV0103010113
 	case "DEV0103090110":
-		return ComObjectTableAddresses_DEV0103090110
+		enum = ComObjectTableAddresses_DEV0103090110
 	case "DEV0103020111":
-		return ComObjectTableAddresses_DEV0103020111
+		enum = ComObjectTableAddresses_DEV0103020111
 	case "DEV0103020112":
-		return ComObjectTableAddresses_DEV0103020112
+		enum = ComObjectTableAddresses_DEV0103020112
 	case "DEV0103040110":
-		return ComObjectTableAddresses_DEV0103040110
+		enum = ComObjectTableAddresses_DEV0103040110
 	case "DEV0103050111":
-		return ComObjectTableAddresses_DEV0103050111
+		enum = ComObjectTableAddresses_DEV0103050111
 	case "DEV0107000301":
-		return ComObjectTableAddresses_DEV0107000301
+		enum = ComObjectTableAddresses_DEV0107000301
 	case "DEV0107000101":
-		return ComObjectTableAddresses_DEV0107000101
+		enum = ComObjectTableAddresses_DEV0107000101
 	case "DEV0107000201":
-		return ComObjectTableAddresses_DEV0107000201
+		enum = ComObjectTableAddresses_DEV0107000201
 	case "DEV0107020801":
-		return ComObjectTableAddresses_DEV0107020801
+		enum = ComObjectTableAddresses_DEV0107020801
 	case "DEV0076002215":
-		return ComObjectTableAddresses_DEV0076002215
+		enum = ComObjectTableAddresses_DEV0076002215
 	case "DEV0107020401":
-		return ComObjectTableAddresses_DEV0107020401
+		enum = ComObjectTableAddresses_DEV0107020401
 	case "DEV0107020001":
-		return ComObjectTableAddresses_DEV0107020001
+		enum = ComObjectTableAddresses_DEV0107020001
 	case "DEV010701F801":
-		return ComObjectTableAddresses_DEV010701F801
+		enum = ComObjectTableAddresses_DEV010701F801
 	case "DEV010701FC01":
-		return ComObjectTableAddresses_DEV010701FC01
+		enum = ComObjectTableAddresses_DEV010701FC01
 	case "DEV0107020C01":
-		return ComObjectTableAddresses_DEV0107020C01
+		enum = ComObjectTableAddresses_DEV0107020C01
 	case "DEV010F100801":
-		return ComObjectTableAddresses_DEV010F100801
+		enum = ComObjectTableAddresses_DEV010F100801
 	case "DEV010F100601":
-		return ComObjectTableAddresses_DEV010F100601
+		enum = ComObjectTableAddresses_DEV010F100601
 	case "DEV010F100401":
-		return ComObjectTableAddresses_DEV010F100401
+		enum = ComObjectTableAddresses_DEV010F100401
 	case "DEV010F030601":
-		return ComObjectTableAddresses_DEV010F030601
+		enum = ComObjectTableAddresses_DEV010F030601
 	case "DEV010F010301":
-		return ComObjectTableAddresses_DEV010F010301
+		enum = ComObjectTableAddresses_DEV010F010301
 	case "DEV0076002B15":
-		return ComObjectTableAddresses_DEV0076002B15
+		enum = ComObjectTableAddresses_DEV0076002B15
 	case "DEV010F010101":
-		return ComObjectTableAddresses_DEV010F010101
+		enum = ComObjectTableAddresses_DEV010F010101
 	case "DEV010F010201":
-		return ComObjectTableAddresses_DEV010F010201
+		enum = ComObjectTableAddresses_DEV010F010201
 	case "DEV010F000302":
-		return ComObjectTableAddresses_DEV010F000302
+		enum = ComObjectTableAddresses_DEV010F000302
 	case "DEV010F000402":
-		return ComObjectTableAddresses_DEV010F000402
+		enum = ComObjectTableAddresses_DEV010F000402
 	case "DEV010F000102":
-		return ComObjectTableAddresses_DEV010F000102
+		enum = ComObjectTableAddresses_DEV010F000102
 	case "DEV011A4B5201":
-		return ComObjectTableAddresses_DEV011A4B5201
+		enum = ComObjectTableAddresses_DEV011A4B5201
 	case "DEV011EBB8211":
-		return ComObjectTableAddresses_DEV011EBB8211
+		enum = ComObjectTableAddresses_DEV011EBB8211
 	case "DEV011E108111":
-		return ComObjectTableAddresses_DEV011E108111
+		enum = ComObjectTableAddresses_DEV011E108111
 	case "DEV011EBC3011":
-		return ComObjectTableAddresses_DEV011EBC3011
+		enum = ComObjectTableAddresses_DEV011EBC3011
 	case "DEV011EBC2E11":
-		return ComObjectTableAddresses_DEV011EBC2E11
+		enum = ComObjectTableAddresses_DEV011EBC2E11
 	case "DEV0064181810":
-		return ComObjectTableAddresses_DEV0064181810
+		enum = ComObjectTableAddresses_DEV0064181810
 	case "DEV0076002715":
-		return ComObjectTableAddresses_DEV0076002715
+		enum = ComObjectTableAddresses_DEV0076002715
 	case "DEV011EBC2F11":
-		return ComObjectTableAddresses_DEV011EBC2F11
+		enum = ComObjectTableAddresses_DEV011EBC2F11
 	case "DEV0123010010":
-		return ComObjectTableAddresses_DEV0123010010
+		enum = ComObjectTableAddresses_DEV0123010010
 	case "DEV012B010110":
-		return ComObjectTableAddresses_DEV012B010110
+		enum = ComObjectTableAddresses_DEV012B010110
 	case "DEV001E478010":
-		return ComObjectTableAddresses_DEV001E478010
+		enum = ComObjectTableAddresses_DEV001E478010
 	case "DEV001E706611":
-		return ComObjectTableAddresses_DEV001E706611
+		enum = ComObjectTableAddresses_DEV001E706611
 	case "DEV001E706811":
-		return ComObjectTableAddresses_DEV001E706811
+		enum = ComObjectTableAddresses_DEV001E706811
 	case "DEV001E473012":
-		return ComObjectTableAddresses_DEV001E473012
+		enum = ComObjectTableAddresses_DEV001E473012
 	case "DEV001E20A011":
-		return ComObjectTableAddresses_DEV001E20A011
+		enum = ComObjectTableAddresses_DEV001E20A011
 	case "DEV001E209011":
-		return ComObjectTableAddresses_DEV001E209011
+		enum = ComObjectTableAddresses_DEV001E209011
 	case "DEV001E209811":
-		return ComObjectTableAddresses_DEV001E209811
+		enum = ComObjectTableAddresses_DEV001E209811
 	case "DEV0076002315":
-		return ComObjectTableAddresses_DEV0076002315
+		enum = ComObjectTableAddresses_DEV0076002315
 	case "DEV001E208811":
-		return ComObjectTableAddresses_DEV001E208811
+		enum = ComObjectTableAddresses_DEV001E208811
 	case "DEV001E208011":
-		return ComObjectTableAddresses_DEV001E208011
+		enum = ComObjectTableAddresses_DEV001E208011
 	case "DEV001E207821":
-		return ComObjectTableAddresses_DEV001E207821
+		enum = ComObjectTableAddresses_DEV001E207821
 	case "DEV001E20CA12":
-		return ComObjectTableAddresses_DEV001E20CA12
+		enum = ComObjectTableAddresses_DEV001E20CA12
 	case "DEV001E20B312":
-		return ComObjectTableAddresses_DEV001E20B312
+		enum = ComObjectTableAddresses_DEV001E20B312
 	case "DEV001E20B012":
-		return ComObjectTableAddresses_DEV001E20B012
+		enum = ComObjectTableAddresses_DEV001E20B012
 	case "DEV001E302612":
-		return ComObjectTableAddresses_DEV001E302612
+		enum = ComObjectTableAddresses_DEV001E302612
 	case "DEV001E302312":
-		return ComObjectTableAddresses_DEV001E302312
+		enum = ComObjectTableAddresses_DEV001E302312
 	case "DEV001E302012":
-		return ComObjectTableAddresses_DEV001E302012
+		enum = ComObjectTableAddresses_DEV001E302012
 	case "DEV001E20A811":
-		return ComObjectTableAddresses_DEV001E20A811
+		enum = ComObjectTableAddresses_DEV001E20A811
 	case "DEV0076002415":
-		return ComObjectTableAddresses_DEV0076002415
+		enum = ComObjectTableAddresses_DEV0076002415
 	case "DEV001E20C412":
-		return ComObjectTableAddresses_DEV001E20C412
+		enum = ComObjectTableAddresses_DEV001E20C412
 	case "DEV001E20C712":
-		return ComObjectTableAddresses_DEV001E20C712
+		enum = ComObjectTableAddresses_DEV001E20C712
 	case "DEV001E20AD12":
-		return ComObjectTableAddresses_DEV001E20AD12
+		enum = ComObjectTableAddresses_DEV001E20AD12
 	case "DEV001E443720":
-		return ComObjectTableAddresses_DEV001E443720
+		enum = ComObjectTableAddresses_DEV001E443720
 	case "DEV001E441821":
-		return ComObjectTableAddresses_DEV001E441821
+		enum = ComObjectTableAddresses_DEV001E441821
 	case "DEV001E443810":
-		return ComObjectTableAddresses_DEV001E443810
+		enum = ComObjectTableAddresses_DEV001E443810
 	case "DEV001E140C12":
-		return ComObjectTableAddresses_DEV001E140C12
+		enum = ComObjectTableAddresses_DEV001E140C12
 	case "DEV001E471611":
-		return ComObjectTableAddresses_DEV001E471611
+		enum = ComObjectTableAddresses_DEV001E471611
 	case "DEV001E479024":
-		return ComObjectTableAddresses_DEV001E479024
+		enum = ComObjectTableAddresses_DEV001E479024
 	case "DEV001E471A11":
-		return ComObjectTableAddresses_DEV001E471A11
+		enum = ComObjectTableAddresses_DEV001E471A11
 	case "DEV0076002615":
-		return ComObjectTableAddresses_DEV0076002615
+		enum = ComObjectTableAddresses_DEV0076002615
 	case "DEV001E477A10":
-		return ComObjectTableAddresses_DEV001E477A10
+		enum = ComObjectTableAddresses_DEV001E477A10
 	case "DEV001E470A11":
-		return ComObjectTableAddresses_DEV001E470A11
+		enum = ComObjectTableAddresses_DEV001E470A11
 	case "DEV001E480B11":
-		return ComObjectTableAddresses_DEV001E480B11
+		enum = ComObjectTableAddresses_DEV001E480B11
 	case "DEV001E487B10":
-		return ComObjectTableAddresses_DEV001E487B10
+		enum = ComObjectTableAddresses_DEV001E487B10
 	case "DEV001E440411":
-		return ComObjectTableAddresses_DEV001E440411
+		enum = ComObjectTableAddresses_DEV001E440411
 	case "DEV001E447211":
-		return ComObjectTableAddresses_DEV001E447211
+		enum = ComObjectTableAddresses_DEV001E447211
 	case "DEV0142010011":
-		return ComObjectTableAddresses_DEV0142010011
+		enum = ComObjectTableAddresses_DEV0142010011
 	case "DEV0142010010":
-		return ComObjectTableAddresses_DEV0142010010
+		enum = ComObjectTableAddresses_DEV0142010010
 	case "DEV014F030112":
-		return ComObjectTableAddresses_DEV014F030112
+		enum = ComObjectTableAddresses_DEV014F030112
 	case "DEV014F030212":
-		return ComObjectTableAddresses_DEV014F030212
+		enum = ComObjectTableAddresses_DEV014F030212
 	case "DEV0076002515":
-		return ComObjectTableAddresses_DEV0076002515
+		enum = ComObjectTableAddresses_DEV0076002515
 	case "DEV014F030312":
-		return ComObjectTableAddresses_DEV014F030312
+		enum = ComObjectTableAddresses_DEV014F030312
 	case "DEV0158100122":
-		return ComObjectTableAddresses_DEV0158100122
+		enum = ComObjectTableAddresses_DEV0158100122
 	case "DEV017A130401":
-		return ComObjectTableAddresses_DEV017A130401
+		enum = ComObjectTableAddresses_DEV017A130401
 	case "DEV017A130201":
-		return ComObjectTableAddresses_DEV017A130201
+		enum = ComObjectTableAddresses_DEV017A130201
 	case "DEV017A130801":
-		return ComObjectTableAddresses_DEV017A130801
+		enum = ComObjectTableAddresses_DEV017A130801
 	case "DEV017A130601":
-		return ComObjectTableAddresses_DEV017A130601
+		enum = ComObjectTableAddresses_DEV017A130601
 	case "DEV017A300102":
-		return ComObjectTableAddresses_DEV017A300102
+		enum = ComObjectTableAddresses_DEV017A300102
 	case "DEV000410A411":
-		return ComObjectTableAddresses_DEV000410A411
+		enum = ComObjectTableAddresses_DEV000410A411
 	case "DEV0004109911":
-		return ComObjectTableAddresses_DEV0004109911
+		enum = ComObjectTableAddresses_DEV0004109911
 	case "DEV0004109912":
-		return ComObjectTableAddresses_DEV0004109912
+		enum = ComObjectTableAddresses_DEV0004109912
 	case "DEV0076000201":
-		return ComObjectTableAddresses_DEV0076000201
+		enum = ComObjectTableAddresses_DEV0076000201
 	case "DEV0004109913":
-		return ComObjectTableAddresses_DEV0004109913
+		enum = ComObjectTableAddresses_DEV0004109913
 	case "DEV0004109914":
-		return ComObjectTableAddresses_DEV0004109914
+		enum = ComObjectTableAddresses_DEV0004109914
 	case "DEV000410A211":
-		return ComObjectTableAddresses_DEV000410A211
+		enum = ComObjectTableAddresses_DEV000410A211
 	case "DEV000410FC12":
-		return ComObjectTableAddresses_DEV000410FC12
+		enum = ComObjectTableAddresses_DEV000410FC12
 	case "DEV000410FD12":
-		return ComObjectTableAddresses_DEV000410FD12
+		enum = ComObjectTableAddresses_DEV000410FD12
 	case "DEV000410B212":
-		return ComObjectTableAddresses_DEV000410B212
+		enum = ComObjectTableAddresses_DEV000410B212
 	case "DEV0004110B11":
-		return ComObjectTableAddresses_DEV0004110B11
+		enum = ComObjectTableAddresses_DEV0004110B11
 	case "DEV0004110711":
-		return ComObjectTableAddresses_DEV0004110711
+		enum = ComObjectTableAddresses_DEV0004110711
 	case "DEV000410B213":
-		return ComObjectTableAddresses_DEV000410B213
+		enum = ComObjectTableAddresses_DEV000410B213
 	case "DEV0004109811":
-		return ComObjectTableAddresses_DEV0004109811
+		enum = ComObjectTableAddresses_DEV0004109811
 	case "DEV0076000101":
-		return ComObjectTableAddresses_DEV0076000101
+		enum = ComObjectTableAddresses_DEV0076000101
 	case "DEV0004109812":
-		return ComObjectTableAddresses_DEV0004109812
+		enum = ComObjectTableAddresses_DEV0004109812
 	case "DEV0004109813":
-		return ComObjectTableAddresses_DEV0004109813
+		enum = ComObjectTableAddresses_DEV0004109813
 	case "DEV0004109814":
-		return ComObjectTableAddresses_DEV0004109814
+		enum = ComObjectTableAddresses_DEV0004109814
 	case "DEV000410A011":
-		return ComObjectTableAddresses_DEV000410A011
+		enum = ComObjectTableAddresses_DEV000410A011
 	case "DEV000410A111":
-		return ComObjectTableAddresses_DEV000410A111
+		enum = ComObjectTableAddresses_DEV000410A111
 	case "DEV000410FA12":
-		return ComObjectTableAddresses_DEV000410FA12
+		enum = ComObjectTableAddresses_DEV000410FA12
 	case "DEV000410FB12":
-		return ComObjectTableAddresses_DEV000410FB12
+		enum = ComObjectTableAddresses_DEV000410FB12
 	case "DEV000410B112":
-		return ComObjectTableAddresses_DEV000410B112
+		enum = ComObjectTableAddresses_DEV000410B112
 	case "DEV0004110A11":
-		return ComObjectTableAddresses_DEV0004110A11
+		enum = ComObjectTableAddresses_DEV0004110A11
 	case "DEV0004110611":
-		return ComObjectTableAddresses_DEV0004110611
+		enum = ComObjectTableAddresses_DEV0004110611
 	case "DEV0076000301":
-		return ComObjectTableAddresses_DEV0076000301
+		enum = ComObjectTableAddresses_DEV0076000301
 	case "DEV000410B113":
-		return ComObjectTableAddresses_DEV000410B113
+		enum = ComObjectTableAddresses_DEV000410B113
 	case "DEV0004109A11":
-		return ComObjectTableAddresses_DEV0004109A11
+		enum = ComObjectTableAddresses_DEV0004109A11
 	case "DEV0004109A12":
-		return ComObjectTableAddresses_DEV0004109A12
+		enum = ComObjectTableAddresses_DEV0004109A12
 	case "DEV0004109A13":
-		return ComObjectTableAddresses_DEV0004109A13
+		enum = ComObjectTableAddresses_DEV0004109A13
 	case "DEV0004109A14":
-		return ComObjectTableAddresses_DEV0004109A14
+		enum = ComObjectTableAddresses_DEV0004109A14
 	case "DEV000410A311":
-		return ComObjectTableAddresses_DEV000410A311
+		enum = ComObjectTableAddresses_DEV000410A311
 	case "DEV000410B312":
-		return ComObjectTableAddresses_DEV000410B312
+		enum = ComObjectTableAddresses_DEV000410B312
 	case "DEV0004110C11":
-		return ComObjectTableAddresses_DEV0004110C11
+		enum = ComObjectTableAddresses_DEV0004110C11
 	case "DEV0004110811":
-		return ComObjectTableAddresses_DEV0004110811
+		enum = ComObjectTableAddresses_DEV0004110811
 	case "DEV000410B313":
-		return ComObjectTableAddresses_DEV000410B313
+		enum = ComObjectTableAddresses_DEV000410B313
 	case "DEV0076000401":
-		return ComObjectTableAddresses_DEV0076000401
+		enum = ComObjectTableAddresses_DEV0076000401
 	case "DEV0004109B11":
-		return ComObjectTableAddresses_DEV0004109B11
+		enum = ComObjectTableAddresses_DEV0004109B11
 	case "DEV0004109B12":
-		return ComObjectTableAddresses_DEV0004109B12
+		enum = ComObjectTableAddresses_DEV0004109B12
 	case "DEV0004109B13":
-		return ComObjectTableAddresses_DEV0004109B13
+		enum = ComObjectTableAddresses_DEV0004109B13
 	case "DEV0004109B14":
-		return ComObjectTableAddresses_DEV0004109B14
+		enum = ComObjectTableAddresses_DEV0004109B14
 	case "DEV000410A511":
-		return ComObjectTableAddresses_DEV000410A511
+		enum = ComObjectTableAddresses_DEV000410A511
 	case "DEV000410B412":
-		return ComObjectTableAddresses_DEV000410B412
+		enum = ComObjectTableAddresses_DEV000410B412
 	case "DEV0004110D11":
-		return ComObjectTableAddresses_DEV0004110D11
+		enum = ComObjectTableAddresses_DEV0004110D11
 	case "DEV0004110911":
-		return ComObjectTableAddresses_DEV0004110911
+		enum = ComObjectTableAddresses_DEV0004110911
 	case "DEV000410B413":
-		return ComObjectTableAddresses_DEV000410B413
+		enum = ComObjectTableAddresses_DEV000410B413
 	case "DEV0004109C11":
-		return ComObjectTableAddresses_DEV0004109C11
+		enum = ComObjectTableAddresses_DEV0004109C11
 	case "DEV0076002903":
-		return ComObjectTableAddresses_DEV0076002903
+		enum = ComObjectTableAddresses_DEV0076002903
 	case "DEV0004109C12":
-		return ComObjectTableAddresses_DEV0004109C12
+		enum = ComObjectTableAddresses_DEV0004109C12
 	case "DEV0004109C13":
-		return ComObjectTableAddresses_DEV0004109C13
+		enum = ComObjectTableAddresses_DEV0004109C13
 	case "DEV0004109C14":
-		return ComObjectTableAddresses_DEV0004109C14
+		enum = ComObjectTableAddresses_DEV0004109C14
 	case "DEV000410A611":
-		return ComObjectTableAddresses_DEV000410A611
+		enum = ComObjectTableAddresses_DEV000410A611
 	case "DEV0004147211":
-		return ComObjectTableAddresses_DEV0004147211
+		enum = ComObjectTableAddresses_DEV0004147211
 	case "DEV000410FE12":
-		return ComObjectTableAddresses_DEV000410FE12
+		enum = ComObjectTableAddresses_DEV000410FE12
 	case "DEV0004209016":
-		return ComObjectTableAddresses_DEV0004209016
+		enum = ComObjectTableAddresses_DEV0004209016
 	case "DEV000420A011":
-		return ComObjectTableAddresses_DEV000420A011
+		enum = ComObjectTableAddresses_DEV000420A011
 	case "DEV0004209011":
-		return ComObjectTableAddresses_DEV0004209011
+		enum = ComObjectTableAddresses_DEV0004209011
 	case "DEV000420CA11":
-		return ComObjectTableAddresses_DEV000420CA11
+		enum = ComObjectTableAddresses_DEV000420CA11
 	case "DEV0064181710":
-		return ComObjectTableAddresses_DEV0064181710
+		enum = ComObjectTableAddresses_DEV0064181710
 	case "DEV0076002901":
-		return ComObjectTableAddresses_DEV0076002901
+		enum = ComObjectTableAddresses_DEV0076002901
 	case "DEV0004208012":
-		return ComObjectTableAddresses_DEV0004208012
+		enum = ComObjectTableAddresses_DEV0004208012
 	case "DEV0004207812":
-		return ComObjectTableAddresses_DEV0004207812
+		enum = ComObjectTableAddresses_DEV0004207812
 	case "DEV000420BA11":
-		return ComObjectTableAddresses_DEV000420BA11
+		enum = ComObjectTableAddresses_DEV000420BA11
 	case "DEV000420B311":
-		return ComObjectTableAddresses_DEV000420B311
+		enum = ComObjectTableAddresses_DEV000420B311
 	case "DEV0004209811":
-		return ComObjectTableAddresses_DEV0004209811
+		enum = ComObjectTableAddresses_DEV0004209811
 	case "DEV0004208811":
-		return ComObjectTableAddresses_DEV0004208811
+		enum = ComObjectTableAddresses_DEV0004208811
 	case "DEV0004B00812":
-		return ComObjectTableAddresses_DEV0004B00812
+		enum = ComObjectTableAddresses_DEV0004B00812
 	case "DEV0004302613":
-		return ComObjectTableAddresses_DEV0004302613
+		enum = ComObjectTableAddresses_DEV0004302613
 	case "DEV0004302313":
-		return ComObjectTableAddresses_DEV0004302313
+		enum = ComObjectTableAddresses_DEV0004302313
 	case "DEV0004302013":
-		return ComObjectTableAddresses_DEV0004302013
+		enum = ComObjectTableAddresses_DEV0004302013
 	case "DEV007600E503":
-		return ComObjectTableAddresses_DEV007600E503
+		enum = ComObjectTableAddresses_DEV007600E503
 	case "DEV0004302B12":
-		return ComObjectTableAddresses_DEV0004302B12
+		enum = ComObjectTableAddresses_DEV0004302B12
 	case "DEV0004705D11":
-		return ComObjectTableAddresses_DEV0004705D11
+		enum = ComObjectTableAddresses_DEV0004705D11
 	case "DEV0004705C11":
-		return ComObjectTableAddresses_DEV0004705C11
+		enum = ComObjectTableAddresses_DEV0004705C11
 	case "DEV0004B00713":
-		return ComObjectTableAddresses_DEV0004B00713
+		enum = ComObjectTableAddresses_DEV0004B00713
 	case "DEV0004B00A01":
-		return ComObjectTableAddresses_DEV0004B00A01
+		enum = ComObjectTableAddresses_DEV0004B00A01
 	case "DEV0004706611":
-		return ComObjectTableAddresses_DEV0004706611
+		enum = ComObjectTableAddresses_DEV0004706611
 	case "DEV0004C01410":
-		return ComObjectTableAddresses_DEV0004C01410
+		enum = ComObjectTableAddresses_DEV0004C01410
 	case "DEV0004C00102":
-		return ComObjectTableAddresses_DEV0004C00102
+		enum = ComObjectTableAddresses_DEV0004C00102
 	case "DEV0004705E11":
-		return ComObjectTableAddresses_DEV0004705E11
+		enum = ComObjectTableAddresses_DEV0004705E11
 	case "DEV0004706211":
-		return ComObjectTableAddresses_DEV0004706211
+		enum = ComObjectTableAddresses_DEV0004706211
 	case "DEV0076004002":
-		return ComObjectTableAddresses_DEV0076004002
+		enum = ComObjectTableAddresses_DEV0076004002
 	case "DEV0004706412":
-		return ComObjectTableAddresses_DEV0004706412
+		enum = ComObjectTableAddresses_DEV0004706412
 	case "DEV000420C011":
-		return ComObjectTableAddresses_DEV000420C011
+		enum = ComObjectTableAddresses_DEV000420C011
 	case "DEV000420B011":
-		return ComObjectTableAddresses_DEV000420B011
+		enum = ComObjectTableAddresses_DEV000420B011
 	case "DEV0004B00911":
-		return ComObjectTableAddresses_DEV0004B00911
+		enum = ComObjectTableAddresses_DEV0004B00911
 	case "DEV0004A01211":
-		return ComObjectTableAddresses_DEV0004A01211
+		enum = ComObjectTableAddresses_DEV0004A01211
 	case "DEV0004A01112":
-		return ComObjectTableAddresses_DEV0004A01112
+		enum = ComObjectTableAddresses_DEV0004A01112
 	case "DEV0004A01111":
-		return ComObjectTableAddresses_DEV0004A01111
+		enum = ComObjectTableAddresses_DEV0004A01111
 	case "DEV0004A01212":
-		return ComObjectTableAddresses_DEV0004A01212
+		enum = ComObjectTableAddresses_DEV0004A01212
 	case "DEV0004A03312":
-		return ComObjectTableAddresses_DEV0004A03312
+		enum = ComObjectTableAddresses_DEV0004A03312
 	case "DEV0004A03212":
-		return ComObjectTableAddresses_DEV0004A03212
+		enum = ComObjectTableAddresses_DEV0004A03212
 	case "DEV0076004003":
-		return ComObjectTableAddresses_DEV0076004003
+		enum = ComObjectTableAddresses_DEV0076004003
 	case "DEV0004A01113":
-		return ComObjectTableAddresses_DEV0004A01113
+		enum = ComObjectTableAddresses_DEV0004A01113
 	case "DEV0004A01711":
-		return ComObjectTableAddresses_DEV0004A01711
+		enum = ComObjectTableAddresses_DEV0004A01711
 	case "DEV000420C711":
-		return ComObjectTableAddresses_DEV000420C711
+		enum = ComObjectTableAddresses_DEV000420C711
 	case "DEV000420BD11":
-		return ComObjectTableAddresses_DEV000420BD11
+		enum = ComObjectTableAddresses_DEV000420BD11
 	case "DEV000420C411":
-		return ComObjectTableAddresses_DEV000420C411
+		enum = ComObjectTableAddresses_DEV000420C411
 	case "DEV000420A812":
-		return ComObjectTableAddresses_DEV000420A812
+		enum = ComObjectTableAddresses_DEV000420A812
 	case "DEV000420CD11":
-		return ComObjectTableAddresses_DEV000420CD11
+		enum = ComObjectTableAddresses_DEV000420CD11
 	case "DEV000420AD11":
-		return ComObjectTableAddresses_DEV000420AD11
+		enum = ComObjectTableAddresses_DEV000420AD11
 	case "DEV000420B611":
-		return ComObjectTableAddresses_DEV000420B611
+		enum = ComObjectTableAddresses_DEV000420B611
 	case "DEV000420A811":
-		return ComObjectTableAddresses_DEV000420A811
+		enum = ComObjectTableAddresses_DEV000420A811
 	case "DEV0076003402":
-		return ComObjectTableAddresses_DEV0076003402
+		enum = ComObjectTableAddresses_DEV0076003402
 	case "DEV0004501311":
-		return ComObjectTableAddresses_DEV0004501311
+		enum = ComObjectTableAddresses_DEV0004501311
 	case "DEV0004501411":
-		return ComObjectTableAddresses_DEV0004501411
+		enum = ComObjectTableAddresses_DEV0004501411
 	case "DEV0004B01002":
-		return ComObjectTableAddresses_DEV0004B01002
+		enum = ComObjectTableAddresses_DEV0004B01002
 	case "DEV0193323C11":
-		return ComObjectTableAddresses_DEV0193323C11
+		enum = ComObjectTableAddresses_DEV0193323C11
 	case "DEV0198101110":
-		return ComObjectTableAddresses_DEV0198101110
+		enum = ComObjectTableAddresses_DEV0198101110
 	case "DEV002C060210":
-		return ComObjectTableAddresses_DEV002C060210
+		enum = ComObjectTableAddresses_DEV002C060210
 	case "DEV002CA00213":
-		return ComObjectTableAddresses_DEV002CA00213
+		enum = ComObjectTableAddresses_DEV002CA00213
 	case "DEV002CA0A611":
-		return ComObjectTableAddresses_DEV002CA0A611
+		enum = ComObjectTableAddresses_DEV002CA0A611
 	case "DEV002CA0A616":
-		return ComObjectTableAddresses_DEV002CA0A616
+		enum = ComObjectTableAddresses_DEV002CA0A616
 	case "DEV002CA07B11":
-		return ComObjectTableAddresses_DEV002CA07B11
+		enum = ComObjectTableAddresses_DEV002CA07B11
 	case "DEV0076003401":
-		return ComObjectTableAddresses_DEV0076003401
+		enum = ComObjectTableAddresses_DEV0076003401
 	case "DEV002C063210":
-		return ComObjectTableAddresses_DEV002C063210
+		enum = ComObjectTableAddresses_DEV002C063210
 	case "DEV002C063110":
-		return ComObjectTableAddresses_DEV002C063110
+		enum = ComObjectTableAddresses_DEV002C063110
 	case "DEV002C062E10":
-		return ComObjectTableAddresses_DEV002C062E10
+		enum = ComObjectTableAddresses_DEV002C062E10
 	case "DEV002C062C10":
-		return ComObjectTableAddresses_DEV002C062C10
+		enum = ComObjectTableAddresses_DEV002C062C10
 	case "DEV002C062D10":
-		return ComObjectTableAddresses_DEV002C062D10
+		enum = ComObjectTableAddresses_DEV002C062D10
 	case "DEV002C063310":
-		return ComObjectTableAddresses_DEV002C063310
+		enum = ComObjectTableAddresses_DEV002C063310
 	case "DEV002C05EB10":
-		return ComObjectTableAddresses_DEV002C05EB10
+		enum = ComObjectTableAddresses_DEV002C05EB10
 	case "DEV002C05F110":
-		return ComObjectTableAddresses_DEV002C05F110
+		enum = ComObjectTableAddresses_DEV002C05F110
 	case "DEV002C060E11":
-		return ComObjectTableAddresses_DEV002C060E11
+		enum = ComObjectTableAddresses_DEV002C060E11
 	case "DEV002C0B8830":
-		return ComObjectTableAddresses_DEV002C0B8830
+		enum = ComObjectTableAddresses_DEV002C0B8830
 	case "DEV007600E908":
-		return ComObjectTableAddresses_DEV007600E908
+		enum = ComObjectTableAddresses_DEV007600E908
 	case "DEV002CA01811":
-		return ComObjectTableAddresses_DEV002CA01811
+		enum = ComObjectTableAddresses_DEV002CA01811
 	case "DEV002CA07033":
-		return ComObjectTableAddresses_DEV002CA07033
+		enum = ComObjectTableAddresses_DEV002CA07033
 	case "DEV002C555020":
-		return ComObjectTableAddresses_DEV002C555020
+		enum = ComObjectTableAddresses_DEV002C555020
 	case "DEV002C556421":
-		return ComObjectTableAddresses_DEV002C556421
+		enum = ComObjectTableAddresses_DEV002C556421
 	case "DEV002C05F211":
-		return ComObjectTableAddresses_DEV002C05F211
+		enum = ComObjectTableAddresses_DEV002C05F211
 	case "DEV002C05F411":
-		return ComObjectTableAddresses_DEV002C05F411
+		enum = ComObjectTableAddresses_DEV002C05F411
 	case "DEV002C05E613":
-		return ComObjectTableAddresses_DEV002C05E613
+		enum = ComObjectTableAddresses_DEV002C05E613
 	case "DEV002CA07914":
-		return ComObjectTableAddresses_DEV002CA07914
+		enum = ComObjectTableAddresses_DEV002CA07914
 	case "DEV002C060A13":
-		return ComObjectTableAddresses_DEV002C060A13
+		enum = ComObjectTableAddresses_DEV002C060A13
 	case "DEV002C3A0212":
-		return ComObjectTableAddresses_DEV002C3A0212
+		enum = ComObjectTableAddresses_DEV002C3A0212
 	case "DEV007600E907":
-		return ComObjectTableAddresses_DEV007600E907
+		enum = ComObjectTableAddresses_DEV007600E907
 	case "DEV01C4030110":
-		return ComObjectTableAddresses_DEV01C4030110
+		enum = ComObjectTableAddresses_DEV01C4030110
 	case "DEV01C4030210":
-		return ComObjectTableAddresses_DEV01C4030210
+		enum = ComObjectTableAddresses_DEV01C4030210
 	case "DEV01C4021210":
-		return ComObjectTableAddresses_DEV01C4021210
+		enum = ComObjectTableAddresses_DEV01C4021210
 	case "DEV01C4001010":
-		return ComObjectTableAddresses_DEV01C4001010
+		enum = ComObjectTableAddresses_DEV01C4001010
 	case "DEV01C4020610":
-		return ComObjectTableAddresses_DEV01C4020610
+		enum = ComObjectTableAddresses_DEV01C4020610
 	case "DEV01C4020910":
-		return ComObjectTableAddresses_DEV01C4020910
+		enum = ComObjectTableAddresses_DEV01C4020910
 	case "DEV01C4020810":
-		return ComObjectTableAddresses_DEV01C4020810
+		enum = ComObjectTableAddresses_DEV01C4020810
 	case "DEV01C4010710":
-		return ComObjectTableAddresses_DEV01C4010710
+		enum = ComObjectTableAddresses_DEV01C4010710
 	case "DEV01C4050210":
-		return ComObjectTableAddresses_DEV01C4050210
+		enum = ComObjectTableAddresses_DEV01C4050210
 	case "DEV01C4010810":
-		return ComObjectTableAddresses_DEV01C4010810
+		enum = ComObjectTableAddresses_DEV01C4010810
 	case "DEV000C181710":
-		return ComObjectTableAddresses_DEV000C181710
+		enum = ComObjectTableAddresses_DEV000C181710
 	case "DEV01C4020510":
-		return ComObjectTableAddresses_DEV01C4020510
+		enum = ComObjectTableAddresses_DEV01C4020510
 	case "DEV01C4040110":
-		return ComObjectTableAddresses_DEV01C4040110
+		enum = ComObjectTableAddresses_DEV01C4040110
 	case "DEV01C4040310":
-		return ComObjectTableAddresses_DEV01C4040310
+		enum = ComObjectTableAddresses_DEV01C4040310
 	case "DEV01C4040210":
-		return ComObjectTableAddresses_DEV01C4040210
+		enum = ComObjectTableAddresses_DEV01C4040210
 	case "DEV01C4101210":
-		return ComObjectTableAddresses_DEV01C4101210
+		enum = ComObjectTableAddresses_DEV01C4101210
 	case "DEV01C6093110":
-		return ComObjectTableAddresses_DEV01C6093110
+		enum = ComObjectTableAddresses_DEV01C6093110
 	case "DEV01C8003422":
-		return ComObjectTableAddresses_DEV01C8003422
+		enum = ComObjectTableAddresses_DEV01C8003422
 	case "DEV01DB000301":
-		return ComObjectTableAddresses_DEV01DB000301
+		enum = ComObjectTableAddresses_DEV01DB000301
 	case "DEV01DB000201":
-		return ComObjectTableAddresses_DEV01DB000201
+		enum = ComObjectTableAddresses_DEV01DB000201
 	case "DEV01DB000401":
-		return ComObjectTableAddresses_DEV01DB000401
+		enum = ComObjectTableAddresses_DEV01DB000401
 	case "DEV000C130510":
-		return ComObjectTableAddresses_DEV000C130510
+		enum = ComObjectTableAddresses_DEV000C130510
 	case "DEV01DB000801":
-		return ComObjectTableAddresses_DEV01DB000801
+		enum = ComObjectTableAddresses_DEV01DB000801
 	case "DEV01DB001201":
-		return ComObjectTableAddresses_DEV01DB001201
+		enum = ComObjectTableAddresses_DEV01DB001201
 	case "DEV01F6E0E110":
-		return ComObjectTableAddresses_DEV01F6E0E110
+		enum = ComObjectTableAddresses_DEV01F6E0E110
 	case "DEV0006D00610":
-		return ComObjectTableAddresses_DEV0006D00610
+		enum = ComObjectTableAddresses_DEV0006D00610
 	case "DEV0006D01510":
-		return ComObjectTableAddresses_DEV0006D01510
+		enum = ComObjectTableAddresses_DEV0006D01510
 	case "DEV0006D00110":
-		return ComObjectTableAddresses_DEV0006D00110
+		enum = ComObjectTableAddresses_DEV0006D00110
 	case "DEV0006D00310":
-		return ComObjectTableAddresses_DEV0006D00310
+		enum = ComObjectTableAddresses_DEV0006D00310
 	case "DEV0006D03210":
-		return ComObjectTableAddresses_DEV0006D03210
+		enum = ComObjectTableAddresses_DEV0006D03210
 	case "DEV0006D03310":
-		return ComObjectTableAddresses_DEV0006D03310
+		enum = ComObjectTableAddresses_DEV0006D03310
 	case "DEV0006D02E20":
-		return ComObjectTableAddresses_DEV0006D02E20
+		enum = ComObjectTableAddresses_DEV0006D02E20
 	case "DEV0064181610":
-		return ComObjectTableAddresses_DEV0064181610
+		enum = ComObjectTableAddresses_DEV0064181610
 	case "DEV000C130610":
-		return ComObjectTableAddresses_DEV000C130610
+		enum = ComObjectTableAddresses_DEV000C130610
 	case "DEV0006D02F20":
-		return ComObjectTableAddresses_DEV0006D02F20
+		enum = ComObjectTableAddresses_DEV0006D02F20
 	case "DEV0006D03020":
-		return ComObjectTableAddresses_DEV0006D03020
+		enum = ComObjectTableAddresses_DEV0006D03020
 	case "DEV0006D03120":
-		return ComObjectTableAddresses_DEV0006D03120
+		enum = ComObjectTableAddresses_DEV0006D03120
 	case "DEV0006D02110":
-		return ComObjectTableAddresses_DEV0006D02110
+		enum = ComObjectTableAddresses_DEV0006D02110
 	case "DEV0006D00010":
-		return ComObjectTableAddresses_DEV0006D00010
+		enum = ComObjectTableAddresses_DEV0006D00010
 	case "DEV0006D01810":
-		return ComObjectTableAddresses_DEV0006D01810
+		enum = ComObjectTableAddresses_DEV0006D01810
 	case "DEV0006D00910":
-		return ComObjectTableAddresses_DEV0006D00910
+		enum = ComObjectTableAddresses_DEV0006D00910
 	case "DEV0006D01110":
-		return ComObjectTableAddresses_DEV0006D01110
+		enum = ComObjectTableAddresses_DEV0006D01110
 	case "DEV0006D03510":
-		return ComObjectTableAddresses_DEV0006D03510
+		enum = ComObjectTableAddresses_DEV0006D03510
 	case "DEV0006D03410":
-		return ComObjectTableAddresses_DEV0006D03410
+		enum = ComObjectTableAddresses_DEV0006D03410
 	case "DEV000C133610":
-		return ComObjectTableAddresses_DEV000C133610
+		enum = ComObjectTableAddresses_DEV000C133610
 	case "DEV0006D02410":
-		return ComObjectTableAddresses_DEV0006D02410
+		enum = ComObjectTableAddresses_DEV0006D02410
 	case "DEV0006D02510":
-		return ComObjectTableAddresses_DEV0006D02510
+		enum = ComObjectTableAddresses_DEV0006D02510
 	case "DEV0006D00810":
-		return ComObjectTableAddresses_DEV0006D00810
+		enum = ComObjectTableAddresses_DEV0006D00810
 	case "DEV0006D00710":
-		return ComObjectTableAddresses_DEV0006D00710
+		enum = ComObjectTableAddresses_DEV0006D00710
 	case "DEV0006D01310":
-		return ComObjectTableAddresses_DEV0006D01310
+		enum = ComObjectTableAddresses_DEV0006D01310
 	case "DEV0006D01410":
-		return ComObjectTableAddresses_DEV0006D01410
+		enum = ComObjectTableAddresses_DEV0006D01410
 	case "DEV0006D00210":
-		return ComObjectTableAddresses_DEV0006D00210
+		enum = ComObjectTableAddresses_DEV0006D00210
 	case "DEV0006D00510":
-		return ComObjectTableAddresses_DEV0006D00510
+		enum = ComObjectTableAddresses_DEV0006D00510
 	case "DEV0006D00410":
-		return ComObjectTableAddresses_DEV0006D00410
+		enum = ComObjectTableAddresses_DEV0006D00410
 	case "DEV0006D02210":
-		return ComObjectTableAddresses_DEV0006D02210
+		enum = ComObjectTableAddresses_DEV0006D02210
 	case "DEV000C133410":
-		return ComObjectTableAddresses_DEV000C133410
+		enum = ComObjectTableAddresses_DEV000C133410
 	case "DEV0006D02310":
-		return ComObjectTableAddresses_DEV0006D02310
+		enum = ComObjectTableAddresses_DEV0006D02310
 	case "DEV0006D01710":
-		return ComObjectTableAddresses_DEV0006D01710
+		enum = ComObjectTableAddresses_DEV0006D01710
 	case "DEV0006D01610":
-		return ComObjectTableAddresses_DEV0006D01610
+		enum = ComObjectTableAddresses_DEV0006D01610
 	case "DEV0006D01010":
-		return ComObjectTableAddresses_DEV0006D01010
+		enum = ComObjectTableAddresses_DEV0006D01010
 	case "DEV0006D01210":
-		return ComObjectTableAddresses_DEV0006D01210
+		enum = ComObjectTableAddresses_DEV0006D01210
 	case "DEV0006D04820":
-		return ComObjectTableAddresses_DEV0006D04820
+		enum = ComObjectTableAddresses_DEV0006D04820
 	case "DEV0006D04C11":
-		return ComObjectTableAddresses_DEV0006D04C11
+		enum = ComObjectTableAddresses_DEV0006D04C11
 	case "DEV0006D05610":
-		return ComObjectTableAddresses_DEV0006D05610
+		enum = ComObjectTableAddresses_DEV0006D05610
 	case "DEV0006D02910":
-		return ComObjectTableAddresses_DEV0006D02910
+		enum = ComObjectTableAddresses_DEV0006D02910
 	case "DEV0006D02A10":
-		return ComObjectTableAddresses_DEV0006D02A10
+		enum = ComObjectTableAddresses_DEV0006D02A10
 	case "DEV000C133310":
-		return ComObjectTableAddresses_DEV000C133310
+		enum = ComObjectTableAddresses_DEV000C133310
 	case "DEV0006D02B10":
-		return ComObjectTableAddresses_DEV0006D02B10
+		enum = ComObjectTableAddresses_DEV0006D02B10
 	case "DEV0006D02C10":
-		return ComObjectTableAddresses_DEV0006D02C10
+		enum = ComObjectTableAddresses_DEV0006D02C10
 	case "DEV0006D02810":
-		return ComObjectTableAddresses_DEV0006D02810
+		enum = ComObjectTableAddresses_DEV0006D02810
 	case "DEV0006D02610":
-		return ComObjectTableAddresses_DEV0006D02610
+		enum = ComObjectTableAddresses_DEV0006D02610
 	case "DEV0006D02710":
-		return ComObjectTableAddresses_DEV0006D02710
+		enum = ComObjectTableAddresses_DEV0006D02710
 	case "DEV0006D03610":
-		return ComObjectTableAddresses_DEV0006D03610
+		enum = ComObjectTableAddresses_DEV0006D03610
 	case "DEV0006D03710":
-		return ComObjectTableAddresses_DEV0006D03710
+		enum = ComObjectTableAddresses_DEV0006D03710
 	case "DEV0006D02D11":
-		return ComObjectTableAddresses_DEV0006D02D11
+		enum = ComObjectTableAddresses_DEV0006D02D11
 	case "DEV0006D03C10":
-		return ComObjectTableAddresses_DEV0006D03C10
+		enum = ComObjectTableAddresses_DEV0006D03C10
 	case "DEV0006D03B10":
-		return ComObjectTableAddresses_DEV0006D03B10
+		enum = ComObjectTableAddresses_DEV0006D03B10
 	case "DEV000C133611":
-		return ComObjectTableAddresses_DEV000C133611
+		enum = ComObjectTableAddresses_DEV000C133611
 	case "DEV0006D03910":
-		return ComObjectTableAddresses_DEV0006D03910
+		enum = ComObjectTableAddresses_DEV0006D03910
 	case "DEV0006D03A10":
-		return ComObjectTableAddresses_DEV0006D03A10
+		enum = ComObjectTableAddresses_DEV0006D03A10
 	case "DEV0006D03D11":
-		return ComObjectTableAddresses_DEV0006D03D11
+		enum = ComObjectTableAddresses_DEV0006D03D11
 	case "DEV0006D03E10":
-		return ComObjectTableAddresses_DEV0006D03E10
+		enum = ComObjectTableAddresses_DEV0006D03E10
 	case "DEV0006C00102":
-		return ComObjectTableAddresses_DEV0006C00102
+		enum = ComObjectTableAddresses_DEV0006C00102
 	case "DEV0006E05611":
-		return ComObjectTableAddresses_DEV0006E05611
+		enum = ComObjectTableAddresses_DEV0006E05611
 	case "DEV0006E05212":
-		return ComObjectTableAddresses_DEV0006E05212
+		enum = ComObjectTableAddresses_DEV0006E05212
 	case "DEV000620B011":
-		return ComObjectTableAddresses_DEV000620B011
+		enum = ComObjectTableAddresses_DEV000620B011
 	case "DEV000620B311":
-		return ComObjectTableAddresses_DEV000620B311
+		enum = ComObjectTableAddresses_DEV000620B311
 	case "DEV000620C011":
-		return ComObjectTableAddresses_DEV000620C011
+		enum = ComObjectTableAddresses_DEV000620C011
 	case "DEV000C133510":
-		return ComObjectTableAddresses_DEV000C133510
+		enum = ComObjectTableAddresses_DEV000C133510
 	case "DEV000620BA11":
-		return ComObjectTableAddresses_DEV000620BA11
+		enum = ComObjectTableAddresses_DEV000620BA11
 	case "DEV0006705C11":
-		return ComObjectTableAddresses_DEV0006705C11
+		enum = ComObjectTableAddresses_DEV0006705C11
 	case "DEV0006705D11":
-		return ComObjectTableAddresses_DEV0006705D11
+		enum = ComObjectTableAddresses_DEV0006705D11
 	case "DEV0006E07710":
-		return ComObjectTableAddresses_DEV0006E07710
+		enum = ComObjectTableAddresses_DEV0006E07710
 	case "DEV0006E07712":
-		return ComObjectTableAddresses_DEV0006E07712
+		enum = ComObjectTableAddresses_DEV0006E07712
 	case "DEV0006706210":
-		return ComObjectTableAddresses_DEV0006706210
+		enum = ComObjectTableAddresses_DEV0006706210
 	case "DEV0006302611":
-		return ComObjectTableAddresses_DEV0006302611
+		enum = ComObjectTableAddresses_DEV0006302611
 	case "DEV0006302612":
-		return ComObjectTableAddresses_DEV0006302612
+		enum = ComObjectTableAddresses_DEV0006302612
 	case "DEV0006E00810":
-		return ComObjectTableAddresses_DEV0006E00810
+		enum = ComObjectTableAddresses_DEV0006E00810
 	case "DEV0006E01F01":
-		return ComObjectTableAddresses_DEV0006E01F01
+		enum = ComObjectTableAddresses_DEV0006E01F01
 	case "DEV000C130710":
-		return ComObjectTableAddresses_DEV000C130710
+		enum = ComObjectTableAddresses_DEV000C130710
 	case "DEV0006302311":
-		return ComObjectTableAddresses_DEV0006302311
+		enum = ComObjectTableAddresses_DEV0006302311
 	case "DEV0006302312":
-		return ComObjectTableAddresses_DEV0006302312
+		enum = ComObjectTableAddresses_DEV0006302312
 	case "DEV0006E00910":
-		return ComObjectTableAddresses_DEV0006E00910
+		enum = ComObjectTableAddresses_DEV0006E00910
 	case "DEV0006E02001":
-		return ComObjectTableAddresses_DEV0006E02001
+		enum = ComObjectTableAddresses_DEV0006E02001
 	case "DEV0006302011":
-		return ComObjectTableAddresses_DEV0006302011
+		enum = ComObjectTableAddresses_DEV0006302011
 	case "DEV0006302012":
-		return ComObjectTableAddresses_DEV0006302012
+		enum = ComObjectTableAddresses_DEV0006302012
 	case "DEV0006C00C13":
-		return ComObjectTableAddresses_DEV0006C00C13
+		enum = ComObjectTableAddresses_DEV0006C00C13
 	case "DEV0006E00811":
-		return ComObjectTableAddresses_DEV0006E00811
+		enum = ComObjectTableAddresses_DEV0006E00811
 	case "DEV0006E00911":
-		return ComObjectTableAddresses_DEV0006E00911
+		enum = ComObjectTableAddresses_DEV0006E00911
 	case "DEV0006E01F20":
-		return ComObjectTableAddresses_DEV0006E01F20
+		enum = ComObjectTableAddresses_DEV0006E01F20
 	case "DEV000C760210":
-		return ComObjectTableAddresses_DEV000C760210
+		enum = ComObjectTableAddresses_DEV000C760210
 	case "DEV0006E03410":
-		return ComObjectTableAddresses_DEV0006E03410
+		enum = ComObjectTableAddresses_DEV0006E03410
 	case "DEV0006E03110":
-		return ComObjectTableAddresses_DEV0006E03110
+		enum = ComObjectTableAddresses_DEV0006E03110
 	case "DEV0006E0A210":
-		return ComObjectTableAddresses_DEV0006E0A210
+		enum = ComObjectTableAddresses_DEV0006E0A210
 	case "DEV0006E0CE10":
-		return ComObjectTableAddresses_DEV0006E0CE10
+		enum = ComObjectTableAddresses_DEV0006E0CE10
 	case "DEV0006E0A111":
-		return ComObjectTableAddresses_DEV0006E0A111
+		enum = ComObjectTableAddresses_DEV0006E0A111
 	case "DEV0006E0CD11":
-		return ComObjectTableAddresses_DEV0006E0CD11
+		enum = ComObjectTableAddresses_DEV0006E0CD11
 	case "DEV0006E02020":
-		return ComObjectTableAddresses_DEV0006E02020
+		enum = ComObjectTableAddresses_DEV0006E02020
 	case "DEV0006E02D11":
-		return ComObjectTableAddresses_DEV0006E02D11
+		enum = ComObjectTableAddresses_DEV0006E02D11
 	case "DEV0006E03011":
-		return ComObjectTableAddresses_DEV0006E03011
+		enum = ComObjectTableAddresses_DEV0006E03011
 	case "DEV0006E0C110":
-		return ComObjectTableAddresses_DEV0006E0C110
+		enum = ComObjectTableAddresses_DEV0006E0C110
 	case "DEV000C1BD610":
-		return ComObjectTableAddresses_DEV000C1BD610
+		enum = ComObjectTableAddresses_DEV000C1BD610
 	case "DEV0006E0C510":
-		return ComObjectTableAddresses_DEV0006E0C510
+		enum = ComObjectTableAddresses_DEV0006E0C510
 	case "DEV0006B00A01":
-		return ComObjectTableAddresses_DEV0006B00A01
+		enum = ComObjectTableAddresses_DEV0006B00A01
 	case "DEV0006B00602":
-		return ComObjectTableAddresses_DEV0006B00602
+		enum = ComObjectTableAddresses_DEV0006B00602
 	case "DEV0006E0C410":
-		return ComObjectTableAddresses_DEV0006E0C410
+		enum = ComObjectTableAddresses_DEV0006E0C410
 	case "DEV0006E0C312":
-		return ComObjectTableAddresses_DEV0006E0C312
+		enum = ComObjectTableAddresses_DEV0006E0C312
 	case "DEV0006E0C210":
-		return ComObjectTableAddresses_DEV0006E0C210
+		enum = ComObjectTableAddresses_DEV0006E0C210
 	case "DEV0006209016":
-		return ComObjectTableAddresses_DEV0006209016
+		enum = ComObjectTableAddresses_DEV0006209016
 	case "DEV0006E01A01":
-		return ComObjectTableAddresses_DEV0006E01A01
+		enum = ComObjectTableAddresses_DEV0006E01A01
 	case "DEV0006E09910":
-		return ComObjectTableAddresses_DEV0006E09910
+		enum = ComObjectTableAddresses_DEV0006E09910
 	case "DEV0006E03710":
-		return ComObjectTableAddresses_DEV0006E03710
+		enum = ComObjectTableAddresses_DEV0006E03710
 	case "DEV000C181610":
-		return ComObjectTableAddresses_DEV000C181610
+		enum = ComObjectTableAddresses_DEV000C181610
 	case "DEV0006209011":
-		return ComObjectTableAddresses_DEV0006209011
+		enum = ComObjectTableAddresses_DEV0006209011
 	case "DEV000620A011":
-		return ComObjectTableAddresses_DEV000620A011
+		enum = ComObjectTableAddresses_DEV000620A011
 	case "DEV0006E02410":
-		return ComObjectTableAddresses_DEV0006E02410
+		enum = ComObjectTableAddresses_DEV0006E02410
 	case "DEV0006E02301":
-		return ComObjectTableAddresses_DEV0006E02301
+		enum = ComObjectTableAddresses_DEV0006E02301
 	case "DEV0006E02510":
-		return ComObjectTableAddresses_DEV0006E02510
+		enum = ComObjectTableAddresses_DEV0006E02510
 	case "DEV0006E01B01":
-		return ComObjectTableAddresses_DEV0006E01B01
+		enum = ComObjectTableAddresses_DEV0006E01B01
 	case "DEV0006E01C01":
-		return ComObjectTableAddresses_DEV0006E01C01
+		enum = ComObjectTableAddresses_DEV0006E01C01
 	case "DEV0006E01D01":
-		return ComObjectTableAddresses_DEV0006E01D01
+		enum = ComObjectTableAddresses_DEV0006E01D01
 	case "DEV0006E01E01":
-		return ComObjectTableAddresses_DEV0006E01E01
+		enum = ComObjectTableAddresses_DEV0006E01E01
 	case "DEV0006207812":
-		return ComObjectTableAddresses_DEV0006207812
+		enum = ComObjectTableAddresses_DEV0006207812
 	case "DEV006420C011":
-		return ComObjectTableAddresses_DEV006420C011
+		enum = ComObjectTableAddresses_DEV006420C011
 	case "DEV000C648B10":
-		return ComObjectTableAddresses_DEV000C648B10
+		enum = ComObjectTableAddresses_DEV000C648B10
 	case "DEV0006B00811":
-		return ComObjectTableAddresses_DEV0006B00811
+		enum = ComObjectTableAddresses_DEV0006B00811
 	case "DEV0006E01001":
-		return ComObjectTableAddresses_DEV0006E01001
+		enum = ComObjectTableAddresses_DEV0006E01001
 	case "DEV0006E03610":
-		return ComObjectTableAddresses_DEV0006E03610
+		enum = ComObjectTableAddresses_DEV0006E03610
 	case "DEV0006E09810":
-		return ComObjectTableAddresses_DEV0006E09810
+		enum = ComObjectTableAddresses_DEV0006E09810
 	case "DEV0006208811":
-		return ComObjectTableAddresses_DEV0006208811
+		enum = ComObjectTableAddresses_DEV0006208811
 	case "DEV0006209811":
-		return ComObjectTableAddresses_DEV0006209811
+		enum = ComObjectTableAddresses_DEV0006209811
 	case "DEV0006E02610":
-		return ComObjectTableAddresses_DEV0006E02610
+		enum = ComObjectTableAddresses_DEV0006E02610
 	case "DEV0006E02710":
-		return ComObjectTableAddresses_DEV0006E02710
+		enum = ComObjectTableAddresses_DEV0006E02710
 	case "DEV0006E02A10":
-		return ComObjectTableAddresses_DEV0006E02A10
+		enum = ComObjectTableAddresses_DEV0006E02A10
 	case "DEV0006E02B10":
-		return ComObjectTableAddresses_DEV0006E02B10
+		enum = ComObjectTableAddresses_DEV0006E02B10
 	case "DEV000C480611":
-		return ComObjectTableAddresses_DEV000C480611
+		enum = ComObjectTableAddresses_DEV000C480611
 	case "DEV0006E00C10":
-		return ComObjectTableAddresses_DEV0006E00C10
+		enum = ComObjectTableAddresses_DEV0006E00C10
 	case "DEV0006010110":
-		return ComObjectTableAddresses_DEV0006010110
+		enum = ComObjectTableAddresses_DEV0006010110
 	case "DEV0006010210":
-		return ComObjectTableAddresses_DEV0006010210
+		enum = ComObjectTableAddresses_DEV0006010210
 	case "DEV0006E00B10":
-		return ComObjectTableAddresses_DEV0006E00B10
+		enum = ComObjectTableAddresses_DEV0006E00B10
 	case "DEV0006E09C10":
-		return ComObjectTableAddresses_DEV0006E09C10
+		enum = ComObjectTableAddresses_DEV0006E09C10
 	case "DEV0006E09B10":
-		return ComObjectTableAddresses_DEV0006E09B10
+		enum = ComObjectTableAddresses_DEV0006E09B10
 	case "DEV0006E03510":
-		return ComObjectTableAddresses_DEV0006E03510
+		enum = ComObjectTableAddresses_DEV0006E03510
 	case "DEV0006FF1B11":
-		return ComObjectTableAddresses_DEV0006FF1B11
+		enum = ComObjectTableAddresses_DEV0006FF1B11
 	case "DEV0006E0CF10":
-		return ComObjectTableAddresses_DEV0006E0CF10
+		enum = ComObjectTableAddresses_DEV0006E0CF10
 	case "DEV000620A812":
-		return ComObjectTableAddresses_DEV000620A812
+		enum = ComObjectTableAddresses_DEV000620A812
 	case "DEV000C482011":
-		return ComObjectTableAddresses_DEV000C482011
+		enum = ComObjectTableAddresses_DEV000C482011
 	case "DEV000620CD11":
-		return ComObjectTableAddresses_DEV000620CD11
+		enum = ComObjectTableAddresses_DEV000620CD11
 	case "DEV0006E00E01":
-		return ComObjectTableAddresses_DEV0006E00E01
+		enum = ComObjectTableAddresses_DEV0006E00E01
 	case "DEV0006E02201":
-		return ComObjectTableAddresses_DEV0006E02201
+		enum = ComObjectTableAddresses_DEV0006E02201
 	case "DEV000620AD11":
-		return ComObjectTableAddresses_DEV000620AD11
+		enum = ComObjectTableAddresses_DEV000620AD11
 	case "DEV0006E00F01":
-		return ComObjectTableAddresses_DEV0006E00F01
+		enum = ComObjectTableAddresses_DEV0006E00F01
 	case "DEV0006E02101":
-		return ComObjectTableAddresses_DEV0006E02101
+		enum = ComObjectTableAddresses_DEV0006E02101
 	case "DEV000620BD11":
-		return ComObjectTableAddresses_DEV000620BD11
+		enum = ComObjectTableAddresses_DEV000620BD11
 	case "DEV0006E00D01":
-		return ComObjectTableAddresses_DEV0006E00D01
+		enum = ComObjectTableAddresses_DEV0006E00D01
 	case "DEV0006E03910":
-		return ComObjectTableAddresses_DEV0006E03910
+		enum = ComObjectTableAddresses_DEV0006E03910
 	case "DEV0006E02810":
-		return ComObjectTableAddresses_DEV0006E02810
+		enum = ComObjectTableAddresses_DEV0006E02810
 	case "DEV000C724010":
-		return ComObjectTableAddresses_DEV000C724010
+		enum = ComObjectTableAddresses_DEV000C724010
 	case "DEV0006E02910":
-		return ComObjectTableAddresses_DEV0006E02910
+		enum = ComObjectTableAddresses_DEV0006E02910
 	case "DEV0006E02C10":
-		return ComObjectTableAddresses_DEV0006E02C10
+		enum = ComObjectTableAddresses_DEV0006E02C10
 	case "DEV0006C00403":
-		return ComObjectTableAddresses_DEV0006C00403
+		enum = ComObjectTableAddresses_DEV0006C00403
 	case "DEV0006590101":
-		return ComObjectTableAddresses_DEV0006590101
+		enum = ComObjectTableAddresses_DEV0006590101
 	case "DEV0006E0CC11":
-		return ComObjectTableAddresses_DEV0006E0CC11
+		enum = ComObjectTableAddresses_DEV0006E0CC11
 	case "DEV0006E09A10":
-		return ComObjectTableAddresses_DEV0006E09A10
+		enum = ComObjectTableAddresses_DEV0006E09A10
 	case "DEV0006E03811":
-		return ComObjectTableAddresses_DEV0006E03811
+		enum = ComObjectTableAddresses_DEV0006E03811
 	case "DEV0006E0C710":
-		return ComObjectTableAddresses_DEV0006E0C710
+		enum = ComObjectTableAddresses_DEV0006E0C710
 	case "DEV0006E0C610":
-		return ComObjectTableAddresses_DEV0006E0C610
+		enum = ComObjectTableAddresses_DEV0006E0C610
 	case "DEV0006E05A10":
-		return ComObjectTableAddresses_DEV0006E05A10
+		enum = ComObjectTableAddresses_DEV0006E05A10
 	case "DEV000C570211":
-		return ComObjectTableAddresses_DEV000C570211
+		enum = ComObjectTableAddresses_DEV000C570211
 	case "DEV003D020109":
-		return ComObjectTableAddresses_DEV003D020109
+		enum = ComObjectTableAddresses_DEV003D020109
 	case "DEV026310BA10":
-		return ComObjectTableAddresses_DEV026310BA10
+		enum = ComObjectTableAddresses_DEV026310BA10
 	case "DEV026D010601":
-		return ComObjectTableAddresses_DEV026D010601
+		enum = ComObjectTableAddresses_DEV026D010601
 	case "DEV026D000402":
-		return ComObjectTableAddresses_DEV026D000402
+		enum = ComObjectTableAddresses_DEV026D000402
 	case "DEV026D000302":
-		return ComObjectTableAddresses_DEV026D000302
+		enum = ComObjectTableAddresses_DEV026D000302
 	case "DEV026D000102":
-		return ComObjectTableAddresses_DEV026D000102
+		enum = ComObjectTableAddresses_DEV026D000102
 	case "DEV026D030601":
-		return ComObjectTableAddresses_DEV026D030601
+		enum = ComObjectTableAddresses_DEV026D030601
 	case "DEV026D130401":
-		return ComObjectTableAddresses_DEV026D130401
+		enum = ComObjectTableAddresses_DEV026D130401
 	case "DEV026D130801":
-		return ComObjectTableAddresses_DEV026D130801
+		enum = ComObjectTableAddresses_DEV026D130801
 	case "DEV026D300102":
-		return ComObjectTableAddresses_DEV026D300102
+		enum = ComObjectTableAddresses_DEV026D300102
 	case "DEV000C570310":
-		return ComObjectTableAddresses_DEV000C570310
+		enum = ComObjectTableAddresses_DEV000C570310
 	case "DEV026D613813":
-		return ComObjectTableAddresses_DEV026D613813
+		enum = ComObjectTableAddresses_DEV026D613813
 	case "DEV0007613810":
-		return ComObjectTableAddresses_DEV0007613810
+		enum = ComObjectTableAddresses_DEV0007613810
 	case "DEV000720C011":
-		return ComObjectTableAddresses_DEV000720C011
+		enum = ComObjectTableAddresses_DEV000720C011
 	case "DEV0007A05210":
-		return ComObjectTableAddresses_DEV0007A05210
+		enum = ComObjectTableAddresses_DEV0007A05210
 	case "DEV0007A08B10":
-		return ComObjectTableAddresses_DEV0007A08B10
+		enum = ComObjectTableAddresses_DEV0007A08B10
 	case "DEV0007A05B32":
-		return ComObjectTableAddresses_DEV0007A05B32
+		enum = ComObjectTableAddresses_DEV0007A05B32
 	case "DEV0007A06932":
-		return ComObjectTableAddresses_DEV0007A06932
+		enum = ComObjectTableAddresses_DEV0007A06932
 	case "DEV0007A06D32":
-		return ComObjectTableAddresses_DEV0007A06D32
+		enum = ComObjectTableAddresses_DEV0007A06D32
 	case "DEV0007A08032":
-		return ComObjectTableAddresses_DEV0007A08032
+		enum = ComObjectTableAddresses_DEV0007A08032
 	case "DEV0007A09532":
-		return ComObjectTableAddresses_DEV0007A09532
+		enum = ComObjectTableAddresses_DEV0007A09532
 	case "DEV000C570411":
-		return ComObjectTableAddresses_DEV000C570411
+		enum = ComObjectTableAddresses_DEV000C570411
 	case "DEV0007A06C32":
-		return ComObjectTableAddresses_DEV0007A06C32
+		enum = ComObjectTableAddresses_DEV0007A06C32
 	case "DEV0007A05E32":
-		return ComObjectTableAddresses_DEV0007A05E32
+		enum = ComObjectTableAddresses_DEV0007A05E32
 	case "DEV0007A08A32":
-		return ComObjectTableAddresses_DEV0007A08A32
+		enum = ComObjectTableAddresses_DEV0007A08A32
 	case "DEV0007A07032":
-		return ComObjectTableAddresses_DEV0007A07032
+		enum = ComObjectTableAddresses_DEV0007A07032
 	case "DEV0007A08332":
-		return ComObjectTableAddresses_DEV0007A08332
+		enum = ComObjectTableAddresses_DEV0007A08332
 	case "DEV0007A09832":
-		return ComObjectTableAddresses_DEV0007A09832
+		enum = ComObjectTableAddresses_DEV0007A09832
 	case "DEV0007A05C32":
-		return ComObjectTableAddresses_DEV0007A05C32
+		enum = ComObjectTableAddresses_DEV0007A05C32
 	case "DEV0007A06A32":
-		return ComObjectTableAddresses_DEV0007A06A32
+		enum = ComObjectTableAddresses_DEV0007A06A32
 	case "DEV0007A08832":
-		return ComObjectTableAddresses_DEV0007A08832
+		enum = ComObjectTableAddresses_DEV0007A08832
 	case "DEV0007A06E32":
-		return ComObjectTableAddresses_DEV0007A06E32
+		enum = ComObjectTableAddresses_DEV0007A06E32
 	case "DEV000C570110":
-		return ComObjectTableAddresses_DEV000C570110
+		enum = ComObjectTableAddresses_DEV000C570110
 	case "DEV0007A08132":
-		return ComObjectTableAddresses_DEV0007A08132
+		enum = ComObjectTableAddresses_DEV0007A08132
 	case "DEV0007A09632":
-		return ComObjectTableAddresses_DEV0007A09632
+		enum = ComObjectTableAddresses_DEV0007A09632
 	case "DEV0007A05D32":
-		return ComObjectTableAddresses_DEV0007A05D32
+		enum = ComObjectTableAddresses_DEV0007A05D32
 	case "DEV0007A06B32":
-		return ComObjectTableAddresses_DEV0007A06B32
+		enum = ComObjectTableAddresses_DEV0007A06B32
 	case "DEV0007A08932":
-		return ComObjectTableAddresses_DEV0007A08932
+		enum = ComObjectTableAddresses_DEV0007A08932
 	case "DEV0007A06F32":
-		return ComObjectTableAddresses_DEV0007A06F32
+		enum = ComObjectTableAddresses_DEV0007A06F32
 	case "DEV0007A08232":
-		return ComObjectTableAddresses_DEV0007A08232
+		enum = ComObjectTableAddresses_DEV0007A08232
 	case "DEV0007A09732":
-		return ComObjectTableAddresses_DEV0007A09732
+		enum = ComObjectTableAddresses_DEV0007A09732
 	case "DEV0007A05713":
-		return ComObjectTableAddresses_DEV0007A05713
+		enum = ComObjectTableAddresses_DEV0007A05713
 	case "DEV0007A01911":
-		return ComObjectTableAddresses_DEV0007A01911
+		enum = ComObjectTableAddresses_DEV0007A01911
 	case "DEV000C570011":
-		return ComObjectTableAddresses_DEV000C570011
+		enum = ComObjectTableAddresses_DEV000C570011
 	case "DEV000720BD11":
-		return ComObjectTableAddresses_DEV000720BD11
+		enum = ComObjectTableAddresses_DEV000720BD11
 	case "DEV000720BA11":
-		return ComObjectTableAddresses_DEV000720BA11
+		enum = ComObjectTableAddresses_DEV000720BA11
 	case "DEV0007A03D11":
-		return ComObjectTableAddresses_DEV0007A03D11
+		enum = ComObjectTableAddresses_DEV0007A03D11
 	case "DEV0007FF1115":
-		return ComObjectTableAddresses_DEV0007FF1115
+		enum = ComObjectTableAddresses_DEV0007FF1115
 	case "DEV0007A01511":
-		return ComObjectTableAddresses_DEV0007A01511
+		enum = ComObjectTableAddresses_DEV0007A01511
 	case "DEV0007A08411":
-		return ComObjectTableAddresses_DEV0007A08411
+		enum = ComObjectTableAddresses_DEV0007A08411
 	case "DEV0007A08511":
-		return ComObjectTableAddresses_DEV0007A08511
+		enum = ComObjectTableAddresses_DEV0007A08511
 	case "DEV0007A03422":
-		return ComObjectTableAddresses_DEV0007A03422
+		enum = ComObjectTableAddresses_DEV0007A03422
 	case "DEV0007A07213":
-		return ComObjectTableAddresses_DEV0007A07213
+		enum = ComObjectTableAddresses_DEV0007A07213
 	case "DEV0007613812":
-		return ComObjectTableAddresses_DEV0007613812
+		enum = ComObjectTableAddresses_DEV0007613812
 	case "DEV000C20BD11":
-		return ComObjectTableAddresses_DEV000C20BD11
+		enum = ComObjectTableAddresses_DEV000C20BD11
 	case "DEV0007A07420":
-		return ComObjectTableAddresses_DEV0007A07420
+		enum = ComObjectTableAddresses_DEV0007A07420
 	case "DEV0007A07520":
-		return ComObjectTableAddresses_DEV0007A07520
+		enum = ComObjectTableAddresses_DEV0007A07520
 	case "DEV0007A07B12":
-		return ComObjectTableAddresses_DEV0007A07B12
+		enum = ComObjectTableAddresses_DEV0007A07B12
 	case "DEV0007A07C12":
-		return ComObjectTableAddresses_DEV0007A07C12
+		enum = ComObjectTableAddresses_DEV0007A07C12
 	case "DEV0007A07114":
-		return ComObjectTableAddresses_DEV0007A07114
+		enum = ComObjectTableAddresses_DEV0007A07114
 	case "DEV0007A09311":
-		return ComObjectTableAddresses_DEV0007A09311
+		enum = ComObjectTableAddresses_DEV0007A09311
 	case "DEV0007A09A12":
-		return ComObjectTableAddresses_DEV0007A09A12
+		enum = ComObjectTableAddresses_DEV0007A09A12
 	case "DEV0007A09211":
-		return ComObjectTableAddresses_DEV0007A09211
+		enum = ComObjectTableAddresses_DEV0007A09211
 	case "DEV0007A09111":
-		return ComObjectTableAddresses_DEV0007A09111
+		enum = ComObjectTableAddresses_DEV0007A09111
 	case "DEV0007632010":
-		return ComObjectTableAddresses_DEV0007632010
+		enum = ComObjectTableAddresses_DEV0007632010
 	case "DEV006420BA11":
-		return ComObjectTableAddresses_DEV006420BA11
+		enum = ComObjectTableAddresses_DEV006420BA11
 	case "DEV000C20BA11":
-		return ComObjectTableAddresses_DEV000C20BA11
+		enum = ComObjectTableAddresses_DEV000C20BA11
 	case "DEV0007632020":
-		return ComObjectTableAddresses_DEV0007632020
+		enum = ComObjectTableAddresses_DEV0007632020
 	case "DEV0007632170":
-		return ComObjectTableAddresses_DEV0007632170
+		enum = ComObjectTableAddresses_DEV0007632170
 	case "DEV0007632040":
-		return ComObjectTableAddresses_DEV0007632040
+		enum = ComObjectTableAddresses_DEV0007632040
 	case "DEV0007A09013":
-		return ComObjectTableAddresses_DEV0007A09013
+		enum = ComObjectTableAddresses_DEV0007A09013
 	case "DEV0007A08F13":
-		return ComObjectTableAddresses_DEV0007A08F13
+		enum = ComObjectTableAddresses_DEV0007A08F13
 	case "DEV0007A01811":
-		return ComObjectTableAddresses_DEV0007A01811
+		enum = ComObjectTableAddresses_DEV0007A01811
 	case "DEV0007A05814":
-		return ComObjectTableAddresses_DEV0007A05814
+		enum = ComObjectTableAddresses_DEV0007A05814
 	case "DEV0007A04912":
-		return ComObjectTableAddresses_DEV0007A04912
+		enum = ComObjectTableAddresses_DEV0007A04912
 	case "DEV0007A04312":
-		return ComObjectTableAddresses_DEV0007A04312
+		enum = ComObjectTableAddresses_DEV0007A04312
 	case "DEV0007A04412":
-		return ComObjectTableAddresses_DEV0007A04412
+		enum = ComObjectTableAddresses_DEV0007A04412
 	case "DEV000C760110":
-		return ComObjectTableAddresses_DEV000C760110
+		enum = ComObjectTableAddresses_DEV000C760110
 	case "DEV0007A04512":
-		return ComObjectTableAddresses_DEV0007A04512
+		enum = ComObjectTableAddresses_DEV0007A04512
 	case "DEV0007A07E10":
-		return ComObjectTableAddresses_DEV0007A07E10
+		enum = ComObjectTableAddresses_DEV0007A07E10
 	case "DEV0007A05510":
-		return ComObjectTableAddresses_DEV0007A05510
+		enum = ComObjectTableAddresses_DEV0007A05510
 	case "DEV0007A05910":
-		return ComObjectTableAddresses_DEV0007A05910
+		enum = ComObjectTableAddresses_DEV0007A05910
 	case "DEV0007A08711":
-		return ComObjectTableAddresses_DEV0007A08711
+		enum = ComObjectTableAddresses_DEV0007A08711
 	case "DEV0007A07914":
-		return ComObjectTableAddresses_DEV0007A07914
+		enum = ComObjectTableAddresses_DEV0007A07914
 	case "DEV0007A06114":
-		return ComObjectTableAddresses_DEV0007A06114
+		enum = ComObjectTableAddresses_DEV0007A06114
 	case "DEV0007A06714":
-		return ComObjectTableAddresses_DEV0007A06714
+		enum = ComObjectTableAddresses_DEV0007A06714
 	case "DEV0007A06214":
-		return ComObjectTableAddresses_DEV0007A06214
+		enum = ComObjectTableAddresses_DEV0007A06214
 	case "DEV0007A06514":
-		return ComObjectTableAddresses_DEV0007A06514
+		enum = ComObjectTableAddresses_DEV0007A06514
 	case "DEV000C705C01":
-		return ComObjectTableAddresses_DEV000C705C01
+		enum = ComObjectTableAddresses_DEV000C705C01
 	case "DEV0007A07714":
-		return ComObjectTableAddresses_DEV0007A07714
+		enum = ComObjectTableAddresses_DEV0007A07714
 	case "DEV0007A06014":
-		return ComObjectTableAddresses_DEV0007A06014
+		enum = ComObjectTableAddresses_DEV0007A06014
 	case "DEV0007A06614":
-		return ComObjectTableAddresses_DEV0007A06614
+		enum = ComObjectTableAddresses_DEV0007A06614
 	case "DEV0007A07814":
-		return ComObjectTableAddresses_DEV0007A07814
+		enum = ComObjectTableAddresses_DEV0007A07814
 	case "DEV0007A06414":
-		return ComObjectTableAddresses_DEV0007A06414
+		enum = ComObjectTableAddresses_DEV0007A06414
 	case "DEV0007A04B10":
-		return ComObjectTableAddresses_DEV0007A04B10
+		enum = ComObjectTableAddresses_DEV0007A04B10
 	case "DEV0007A09B12":
-		return ComObjectTableAddresses_DEV0007A09B12
+		enum = ComObjectTableAddresses_DEV0007A09B12
 	case "DEV0007A04F13":
-		return ComObjectTableAddresses_DEV0007A04F13
+		enum = ComObjectTableAddresses_DEV0007A04F13
 	case "DEV0007A04D13":
-		return ComObjectTableAddresses_DEV0007A04D13
+		enum = ComObjectTableAddresses_DEV0007A04D13
 	case "DEV0007A04C13":
-		return ComObjectTableAddresses_DEV0007A04C13
+		enum = ComObjectTableAddresses_DEV0007A04C13
 	case "DEV000CFF2112":
-		return ComObjectTableAddresses_DEV000CFF2112
+		enum = ComObjectTableAddresses_DEV000CFF2112
 	case "DEV0007A04E13":
-		return ComObjectTableAddresses_DEV0007A04E13
+		enum = ComObjectTableAddresses_DEV0007A04E13
 	case "DEV0007A00113":
-		return ComObjectTableAddresses_DEV0007A00113
+		enum = ComObjectTableAddresses_DEV0007A00113
 	case "DEV0007A00213":
-		return ComObjectTableAddresses_DEV0007A00213
+		enum = ComObjectTableAddresses_DEV0007A00213
 	case "DEV0007A03D12":
-		return ComObjectTableAddresses_DEV0007A03D12
+		enum = ComObjectTableAddresses_DEV0007A03D12
 	case "DEV0048493A1C":
-		return ComObjectTableAddresses_DEV0048493A1C
+		enum = ComObjectTableAddresses_DEV0048493A1C
 	case "DEV0048494712":
-		return ComObjectTableAddresses_DEV0048494712
+		enum = ComObjectTableAddresses_DEV0048494712
 	case "DEV0048494810":
-		return ComObjectTableAddresses_DEV0048494810
+		enum = ComObjectTableAddresses_DEV0048494810
 	case "DEV0048855A10":
-		return ComObjectTableAddresses_DEV0048855A10
+		enum = ComObjectTableAddresses_DEV0048855A10
 	case "DEV0048855B10":
-		return ComObjectTableAddresses_DEV0048855B10
+		enum = ComObjectTableAddresses_DEV0048855B10
 	case "DEV0048A05713":
-		return ComObjectTableAddresses_DEV0048A05713
+		enum = ComObjectTableAddresses_DEV0048A05713
 	case "DEV000C242313":
-		return ComObjectTableAddresses_DEV000C242313
+		enum = ComObjectTableAddresses_DEV000C242313
 	case "DEV0048494414":
-		return ComObjectTableAddresses_DEV0048494414
+		enum = ComObjectTableAddresses_DEV0048494414
 	case "DEV0048824A11":
-		return ComObjectTableAddresses_DEV0048824A11
+		enum = ComObjectTableAddresses_DEV0048824A11
 	case "DEV0048824A12":
-		return ComObjectTableAddresses_DEV0048824A12
+		enum = ComObjectTableAddresses_DEV0048824A12
 	case "DEV0048770A10":
-		return ComObjectTableAddresses_DEV0048770A10
+		enum = ComObjectTableAddresses_DEV0048770A10
 	case "DEV0048494311":
-		return ComObjectTableAddresses_DEV0048494311
+		enum = ComObjectTableAddresses_DEV0048494311
 	case "DEV0048494513":
-		return ComObjectTableAddresses_DEV0048494513
+		enum = ComObjectTableAddresses_DEV0048494513
 	case "DEV0048494012":
-		return ComObjectTableAddresses_DEV0048494012
+		enum = ComObjectTableAddresses_DEV0048494012
 	case "DEV0048494111":
-		return ComObjectTableAddresses_DEV0048494111
+		enum = ComObjectTableAddresses_DEV0048494111
 	case "DEV0048494210":
-		return ComObjectTableAddresses_DEV0048494210
+		enum = ComObjectTableAddresses_DEV0048494210
 	case "DEV0048494610":
-		return ComObjectTableAddresses_DEV0048494610
+		enum = ComObjectTableAddresses_DEV0048494610
 	case "DEV000CB00812":
-		return ComObjectTableAddresses_DEV000CB00812
+		enum = ComObjectTableAddresses_DEV000CB00812
 	case "DEV0048494910":
-		return ComObjectTableAddresses_DEV0048494910
+		enum = ComObjectTableAddresses_DEV0048494910
 	case "DEV0048134A10":
-		return ComObjectTableAddresses_DEV0048134A10
+		enum = ComObjectTableAddresses_DEV0048134A10
 	case "DEV0048107E12":
-		return ComObjectTableAddresses_DEV0048107E12
+		enum = ComObjectTableAddresses_DEV0048107E12
 	case "DEV0048FF2112":
-		return ComObjectTableAddresses_DEV0048FF2112
+		enum = ComObjectTableAddresses_DEV0048FF2112
 	case "DEV0048140A11":
-		return ComObjectTableAddresses_DEV0048140A11
+		enum = ComObjectTableAddresses_DEV0048140A11
 	case "DEV0048140B12":
-		return ComObjectTableAddresses_DEV0048140B12
+		enum = ComObjectTableAddresses_DEV0048140B12
 	case "DEV0048140C13":
-		return ComObjectTableAddresses_DEV0048140C13
+		enum = ComObjectTableAddresses_DEV0048140C13
 	case "DEV0048139A10":
-		return ComObjectTableAddresses_DEV0048139A10
+		enum = ComObjectTableAddresses_DEV0048139A10
 	case "DEV0048648B10":
-		return ComObjectTableAddresses_DEV0048648B10
+		enum = ComObjectTableAddresses_DEV0048648B10
 	case "DEV0048494013":
-		return ComObjectTableAddresses_DEV0048494013
+		enum = ComObjectTableAddresses_DEV0048494013
 	case "DEV000CB00713":
-		return ComObjectTableAddresses_DEV000CB00713
+		enum = ComObjectTableAddresses_DEV000CB00713
 	case "DEV0048494018":
-		return ComObjectTableAddresses_DEV0048494018
+		enum = ComObjectTableAddresses_DEV0048494018
 	case "DEV004E070031":
-		return ComObjectTableAddresses_DEV004E070031
+		enum = ComObjectTableAddresses_DEV004E070031
 	case "DEV004E030031":
-		return ComObjectTableAddresses_DEV004E030031
+		enum = ComObjectTableAddresses_DEV004E030031
 	case "DEV0008A01111":
-		return ComObjectTableAddresses_DEV0008A01111
+		enum = ComObjectTableAddresses_DEV0008A01111
 	case "DEV0008A01211":
-		return ComObjectTableAddresses_DEV0008A01211
+		enum = ComObjectTableAddresses_DEV0008A01211
 	case "DEV0008A01212":
-		return ComObjectTableAddresses_DEV0008A01212
+		enum = ComObjectTableAddresses_DEV0008A01212
 	case "DEV0008A01112":
-		return ComObjectTableAddresses_DEV0008A01112
+		enum = ComObjectTableAddresses_DEV0008A01112
 	case "DEV0008A03213":
-		return ComObjectTableAddresses_DEV0008A03213
+		enum = ComObjectTableAddresses_DEV0008A03213
 	case "DEV0008A03218":
-		return ComObjectTableAddresses_DEV0008A03218
+		enum = ComObjectTableAddresses_DEV0008A03218
 	case "DEV0008A03313":
-		return ComObjectTableAddresses_DEV0008A03313
+		enum = ComObjectTableAddresses_DEV0008A03313
 	case "DEV000C181910":
-		return ComObjectTableAddresses_DEV000C181910
+		enum = ComObjectTableAddresses_DEV000C181910
 	case "DEV0008A03318":
-		return ComObjectTableAddresses_DEV0008A03318
+		enum = ComObjectTableAddresses_DEV0008A03318
 	case "DEV0008A01113":
-		return ComObjectTableAddresses_DEV0008A01113
+		enum = ComObjectTableAddresses_DEV0008A01113
 	case "DEV0008A01711":
-		return ComObjectTableAddresses_DEV0008A01711
+		enum = ComObjectTableAddresses_DEV0008A01711
 	case "DEV0008B00911":
-		return ComObjectTableAddresses_DEV0008B00911
+		enum = ComObjectTableAddresses_DEV0008B00911
 	case "DEV0008C00102":
-		return ComObjectTableAddresses_DEV0008C00102
+		enum = ComObjectTableAddresses_DEV0008C00102
 	case "DEV0008C00101":
-		return ComObjectTableAddresses_DEV0008C00101
+		enum = ComObjectTableAddresses_DEV0008C00101
 	case "DEV0008901501":
-		return ComObjectTableAddresses_DEV0008901501
+		enum = ComObjectTableAddresses_DEV0008901501
 	case "DEV0008901310":
-		return ComObjectTableAddresses_DEV0008901310
+		enum = ComObjectTableAddresses_DEV0008901310
 	case "DEV000820B011":
-		return ComObjectTableAddresses_DEV000820B011
+		enum = ComObjectTableAddresses_DEV000820B011
 	case "DEV0008705C11":
-		return ComObjectTableAddresses_DEV0008705C11
+		enum = ComObjectTableAddresses_DEV0008705C11
 	case "DEV000C181810":
-		return ComObjectTableAddresses_DEV000C181810
+		enum = ComObjectTableAddresses_DEV000C181810
 	case "DEV0008705D11":
-		return ComObjectTableAddresses_DEV0008705D11
+		enum = ComObjectTableAddresses_DEV0008705D11
 	case "DEV0008706211":
-		return ComObjectTableAddresses_DEV0008706211
+		enum = ComObjectTableAddresses_DEV0008706211
 	case "DEV000820BA11":
-		return ComObjectTableAddresses_DEV000820BA11
+		enum = ComObjectTableAddresses_DEV000820BA11
 	case "DEV000820C011":
-		return ComObjectTableAddresses_DEV000820C011
+		enum = ComObjectTableAddresses_DEV000820C011
 	case "DEV000820B311":
-		return ComObjectTableAddresses_DEV000820B311
+		enum = ComObjectTableAddresses_DEV000820B311
 	case "DEV0008301A11":
-		return ComObjectTableAddresses_DEV0008301A11
+		enum = ComObjectTableAddresses_DEV0008301A11
 	case "DEV0008C00C13":
-		return ComObjectTableAddresses_DEV0008C00C13
+		enum = ComObjectTableAddresses_DEV0008C00C13
 	case "DEV0008302611":
-		return ComObjectTableAddresses_DEV0008302611
+		enum = ComObjectTableAddresses_DEV0008302611
 	case "DEV0008302311":
-		return ComObjectTableAddresses_DEV0008302311
+		enum = ComObjectTableAddresses_DEV0008302311
 	case "DEV0008302011":
-		return ComObjectTableAddresses_DEV0008302011
+		enum = ComObjectTableAddresses_DEV0008302011
 	case "DEV000C20C011":
-		return ComObjectTableAddresses_DEV000C20C011
+		enum = ComObjectTableAddresses_DEV000C20C011
 	case "DEV0008C00C11":
-		return ComObjectTableAddresses_DEV0008C00C11
+		enum = ComObjectTableAddresses_DEV0008C00C11
 	case "DEV0008302612":
-		return ComObjectTableAddresses_DEV0008302612
+		enum = ComObjectTableAddresses_DEV0008302612
 	case "DEV0008302312":
-		return ComObjectTableAddresses_DEV0008302312
+		enum = ComObjectTableAddresses_DEV0008302312
 	case "DEV0008302012":
-		return ComObjectTableAddresses_DEV0008302012
+		enum = ComObjectTableAddresses_DEV0008302012
 	case "DEV0008C00C15":
-		return ComObjectTableAddresses_DEV0008C00C15
+		enum = ComObjectTableAddresses_DEV0008C00C15
 	case "DEV0008C00C14":
-		return ComObjectTableAddresses_DEV0008C00C14
+		enum = ComObjectTableAddresses_DEV0008C00C14
 	case "DEV0008B00713":
-		return ComObjectTableAddresses_DEV0008B00713
+		enum = ComObjectTableAddresses_DEV0008B00713
 	case "DEV0008706611":
-		return ComObjectTableAddresses_DEV0008706611
+		enum = ComObjectTableAddresses_DEV0008706611
 	case "DEV0008706811":
-		return ComObjectTableAddresses_DEV0008706811
+		enum = ComObjectTableAddresses_DEV0008706811
 	case "DEV0008B00812":
-		return ComObjectTableAddresses_DEV0008B00812
+		enum = ComObjectTableAddresses_DEV0008B00812
 	case "DEV0064182010":
-		return ComObjectTableAddresses_DEV0064182010
+		enum = ComObjectTableAddresses_DEV0064182010
 	case "DEV0079002527":
-		return ComObjectTableAddresses_DEV0079002527
+		enum = ComObjectTableAddresses_DEV0079002527
 	case "DEV0008209016":
-		return ComObjectTableAddresses_DEV0008209016
+		enum = ComObjectTableAddresses_DEV0008209016
 	case "DEV0008209011":
-		return ComObjectTableAddresses_DEV0008209011
+		enum = ComObjectTableAddresses_DEV0008209011
 	case "DEV000820A011":
-		return ComObjectTableAddresses_DEV000820A011
+		enum = ComObjectTableAddresses_DEV000820A011
 	case "DEV0008208811":
-		return ComObjectTableAddresses_DEV0008208811
+		enum = ComObjectTableAddresses_DEV0008208811
 	case "DEV0008209811":
-		return ComObjectTableAddresses_DEV0008209811
+		enum = ComObjectTableAddresses_DEV0008209811
 	case "DEV000820CA11":
-		return ComObjectTableAddresses_DEV000820CA11
+		enum = ComObjectTableAddresses_DEV000820CA11
 	case "DEV0008208012":
-		return ComObjectTableAddresses_DEV0008208012
+		enum = ComObjectTableAddresses_DEV0008208012
 	case "DEV0008207812":
-		return ComObjectTableAddresses_DEV0008207812
+		enum = ComObjectTableAddresses_DEV0008207812
 	case "DEV0008207811":
-		return ComObjectTableAddresses_DEV0008207811
+		enum = ComObjectTableAddresses_DEV0008207811
 	case "DEV0008208011":
-		return ComObjectTableAddresses_DEV0008208011
+		enum = ComObjectTableAddresses_DEV0008208011
 	case "DEV0079004027":
-		return ComObjectTableAddresses_DEV0079004027
+		enum = ComObjectTableAddresses_DEV0079004027
 	case "DEV000810D111":
-		return ComObjectTableAddresses_DEV000810D111
+		enum = ComObjectTableAddresses_DEV000810D111
 	case "DEV000810D511":
-		return ComObjectTableAddresses_DEV000810D511
+		enum = ComObjectTableAddresses_DEV000810D511
 	case "DEV000810FA12":
-		return ComObjectTableAddresses_DEV000810FA12
+		enum = ComObjectTableAddresses_DEV000810FA12
 	case "DEV000810FB12":
-		return ComObjectTableAddresses_DEV000810FB12
+		enum = ComObjectTableAddresses_DEV000810FB12
 	case "DEV000810F211":
-		return ComObjectTableAddresses_DEV000810F211
+		enum = ComObjectTableAddresses_DEV000810F211
 	case "DEV000810D211":
-		return ComObjectTableAddresses_DEV000810D211
+		enum = ComObjectTableAddresses_DEV000810D211
 	case "DEV000810E211":
-		return ComObjectTableAddresses_DEV000810E211
+		enum = ComObjectTableAddresses_DEV000810E211
 	case "DEV000810D611":
-		return ComObjectTableAddresses_DEV000810D611
+		enum = ComObjectTableAddresses_DEV000810D611
 	case "DEV000810F212":
-		return ComObjectTableAddresses_DEV000810F212
+		enum = ComObjectTableAddresses_DEV000810F212
 	case "DEV000810E212":
-		return ComObjectTableAddresses_DEV000810E212
+		enum = ComObjectTableAddresses_DEV000810E212
 	case "DEV0079000223":
-		return ComObjectTableAddresses_DEV0079000223
+		enum = ComObjectTableAddresses_DEV0079000223
 	case "DEV000810FC13":
-		return ComObjectTableAddresses_DEV000810FC13
+		enum = ComObjectTableAddresses_DEV000810FC13
 	case "DEV000810FD13":
-		return ComObjectTableAddresses_DEV000810FD13
+		enum = ComObjectTableAddresses_DEV000810FD13
 	case "DEV000810F311":
-		return ComObjectTableAddresses_DEV000810F311
+		enum = ComObjectTableAddresses_DEV000810F311
 	case "DEV000810D311":
-		return ComObjectTableAddresses_DEV000810D311
+		enum = ComObjectTableAddresses_DEV000810D311
 	case "DEV000810D711":
-		return ComObjectTableAddresses_DEV000810D711
+		enum = ComObjectTableAddresses_DEV000810D711
 	case "DEV000810F312":
-		return ComObjectTableAddresses_DEV000810F312
+		enum = ComObjectTableAddresses_DEV000810F312
 	case "DEV000810D811":
-		return ComObjectTableAddresses_DEV000810D811
+		enum = ComObjectTableAddresses_DEV000810D811
 	case "DEV000810E511":
-		return ComObjectTableAddresses_DEV000810E511
+		enum = ComObjectTableAddresses_DEV000810E511
 	case "DEV000810E512":
-		return ComObjectTableAddresses_DEV000810E512
+		enum = ComObjectTableAddresses_DEV000810E512
 	case "DEV000810F611":
-		return ComObjectTableAddresses_DEV000810F611
+		enum = ComObjectTableAddresses_DEV000810F611
 	case "DEV0079000123":
-		return ComObjectTableAddresses_DEV0079000123
+		enum = ComObjectTableAddresses_DEV0079000123
 	case "DEV000810D911":
-		return ComObjectTableAddresses_DEV000810D911
+		enum = ComObjectTableAddresses_DEV000810D911
 	case "DEV000810F612":
-		return ComObjectTableAddresses_DEV000810F612
+		enum = ComObjectTableAddresses_DEV000810F612
 	case "DEV000820A812":
-		return ComObjectTableAddresses_DEV000820A812
+		enum = ComObjectTableAddresses_DEV000820A812
 	case "DEV000820AD11":
-		return ComObjectTableAddresses_DEV000820AD11
+		enum = ComObjectTableAddresses_DEV000820AD11
 	case "DEV000820BD11":
-		return ComObjectTableAddresses_DEV000820BD11
+		enum = ComObjectTableAddresses_DEV000820BD11
 	case "DEV000820C711":
-		return ComObjectTableAddresses_DEV000820C711
+		enum = ComObjectTableAddresses_DEV000820C711
 	case "DEV000820CD11":
-		return ComObjectTableAddresses_DEV000820CD11
+		enum = ComObjectTableAddresses_DEV000820CD11
 	case "DEV000820C411":
-		return ComObjectTableAddresses_DEV000820C411
+		enum = ComObjectTableAddresses_DEV000820C411
 	case "DEV000820A811":
-		return ComObjectTableAddresses_DEV000820A811
+		enum = ComObjectTableAddresses_DEV000820A811
 	case "DEV0008501411":
-		return ComObjectTableAddresses_DEV0008501411
+		enum = ComObjectTableAddresses_DEV0008501411
 	case "DEV0079001427":
-		return ComObjectTableAddresses_DEV0079001427
+		enum = ComObjectTableAddresses_DEV0079001427
 	case "DEV0008C01602":
-		return ComObjectTableAddresses_DEV0008C01602
+		enum = ComObjectTableAddresses_DEV0008C01602
 	case "DEV0008302613":
-		return ComObjectTableAddresses_DEV0008302613
+		enum = ComObjectTableAddresses_DEV0008302613
 	case "DEV0008302313":
-		return ComObjectTableAddresses_DEV0008302313
+		enum = ComObjectTableAddresses_DEV0008302313
 	case "DEV0008302013":
-		return ComObjectTableAddresses_DEV0008302013
+		enum = ComObjectTableAddresses_DEV0008302013
 	case "DEV0009E0ED10":
-		return ComObjectTableAddresses_DEV0009E0ED10
+		enum = ComObjectTableAddresses_DEV0009E0ED10
 	case "DEV0009207730":
-		return ComObjectTableAddresses_DEV0009207730
+		enum = ComObjectTableAddresses_DEV0009207730
 	case "DEV0009208F10":
-		return ComObjectTableAddresses_DEV0009208F10
+		enum = ComObjectTableAddresses_DEV0009208F10
 	case "DEV0009C00C13":
-		return ComObjectTableAddresses_DEV0009C00C13
+		enum = ComObjectTableAddresses_DEV0009C00C13
 	case "DEV0009209910":
-		return ComObjectTableAddresses_DEV0009209910
+		enum = ComObjectTableAddresses_DEV0009209910
 	case "DEV0009209A10":
-		return ComObjectTableAddresses_DEV0009209A10
+		enum = ComObjectTableAddresses_DEV0009209A10
 	case "DEV0079003027":
-		return ComObjectTableAddresses_DEV0079003027
+		enum = ComObjectTableAddresses_DEV0079003027
 	case "DEV0009207930":
-		return ComObjectTableAddresses_DEV0009207930
+		enum = ComObjectTableAddresses_DEV0009207930
 	case "DEV0009201720":
-		return ComObjectTableAddresses_DEV0009201720
+		enum = ComObjectTableAddresses_DEV0009201720
 	case "DEV0009500D01":
-		return ComObjectTableAddresses_DEV0009500D01
+		enum = ComObjectTableAddresses_DEV0009500D01
 	case "DEV0009500E01":
-		return ComObjectTableAddresses_DEV0009500E01
+		enum = ComObjectTableAddresses_DEV0009500E01
 	case "DEV0009209911":
-		return ComObjectTableAddresses_DEV0009209911
+		enum = ComObjectTableAddresses_DEV0009209911
 	case "DEV0009209A11":
-		return ComObjectTableAddresses_DEV0009209A11
+		enum = ComObjectTableAddresses_DEV0009209A11
 	case "DEV0009C00C12":
-		return ComObjectTableAddresses_DEV0009C00C12
+		enum = ComObjectTableAddresses_DEV0009C00C12
 	case "DEV0009C00C11":
-		return ComObjectTableAddresses_DEV0009C00C11
+		enum = ComObjectTableAddresses_DEV0009C00C11
 	case "DEV0009500D20":
-		return ComObjectTableAddresses_DEV0009500D20
+		enum = ComObjectTableAddresses_DEV0009500D20
 	case "DEV0009500E20":
-		return ComObjectTableAddresses_DEV0009500E20
+		enum = ComObjectTableAddresses_DEV0009500E20
 	case "DEV0079100C13":
-		return ComObjectTableAddresses_DEV0079100C13
+		enum = ComObjectTableAddresses_DEV0079100C13
 	case "DEV000920B910":
-		return ComObjectTableAddresses_DEV000920B910
+		enum = ComObjectTableAddresses_DEV000920B910
 	case "DEV0009E0CE10":
-		return ComObjectTableAddresses_DEV0009E0CE10
+		enum = ComObjectTableAddresses_DEV0009E0CE10
 	case "DEV0009E0A210":
-		return ComObjectTableAddresses_DEV0009E0A210
+		enum = ComObjectTableAddresses_DEV0009E0A210
 	case "DEV0009501410":
-		return ComObjectTableAddresses_DEV0009501410
+		enum = ComObjectTableAddresses_DEV0009501410
 	case "DEV0009207830":
-		return ComObjectTableAddresses_DEV0009207830
+		enum = ComObjectTableAddresses_DEV0009207830
 	case "DEV0009201620":
-		return ComObjectTableAddresses_DEV0009201620
+		enum = ComObjectTableAddresses_DEV0009201620
 	case "DEV0009E0A111":
-		return ComObjectTableAddresses_DEV0009E0A111
+		enum = ComObjectTableAddresses_DEV0009E0A111
 	case "DEV0009E0CD11":
-		return ComObjectTableAddresses_DEV0009E0CD11
+		enum = ComObjectTableAddresses_DEV0009E0CD11
 	case "DEV000920B811":
-		return ComObjectTableAddresses_DEV000920B811
+		enum = ComObjectTableAddresses_DEV000920B811
 	case "DEV000920B611":
-		return ComObjectTableAddresses_DEV000920B611
+		enum = ComObjectTableAddresses_DEV000920B611
 	case "DEV0079101C11":
-		return ComObjectTableAddresses_DEV0079101C11
+		enum = ComObjectTableAddresses_DEV0079101C11
 	case "DEV0009207E10":
-		return ComObjectTableAddresses_DEV0009207E10
+		enum = ComObjectTableAddresses_DEV0009207E10
 	case "DEV0009207630":
-		return ComObjectTableAddresses_DEV0009207630
+		enum = ComObjectTableAddresses_DEV0009207630
 	case "DEV0009205910":
-		return ComObjectTableAddresses_DEV0009205910
+		enum = ComObjectTableAddresses_DEV0009205910
 	case "DEV0009500B01":
-		return ComObjectTableAddresses_DEV0009500B01
+		enum = ComObjectTableAddresses_DEV0009500B01
 	case "DEV000920AC10":
-		return ComObjectTableAddresses_DEV000920AC10
+		enum = ComObjectTableAddresses_DEV000920AC10
 	case "DEV0009207430":
-		return ComObjectTableAddresses_DEV0009207430
+		enum = ComObjectTableAddresses_DEV0009207430
 	case "DEV0009204521":
-		return ComObjectTableAddresses_DEV0009204521
+		enum = ComObjectTableAddresses_DEV0009204521
 	case "DEV0009500A01":
-		return ComObjectTableAddresses_DEV0009500A01
+		enum = ComObjectTableAddresses_DEV0009500A01
 	case "DEV0009500001":
-		return ComObjectTableAddresses_DEV0009500001
+		enum = ComObjectTableAddresses_DEV0009500001
 	case "DEV000920AB10":
-		return ComObjectTableAddresses_DEV000920AB10
+		enum = ComObjectTableAddresses_DEV000920AB10
 	case "DEV0080707010":
-		return ComObjectTableAddresses_DEV0080707010
+		enum = ComObjectTableAddresses_DEV0080707010
 	case "DEV000920BF11":
-		return ComObjectTableAddresses_DEV000920BF11
+		enum = ComObjectTableAddresses_DEV000920BF11
 	case "DEV0009203510":
-		return ComObjectTableAddresses_DEV0009203510
+		enum = ComObjectTableAddresses_DEV0009203510
 	case "DEV0009207A30":
-		return ComObjectTableAddresses_DEV0009207A30
+		enum = ComObjectTableAddresses_DEV0009207A30
 	case "DEV0009500701":
-		return ComObjectTableAddresses_DEV0009500701
+		enum = ComObjectTableAddresses_DEV0009500701
 	case "DEV0009501710":
-		return ComObjectTableAddresses_DEV0009501710
+		enum = ComObjectTableAddresses_DEV0009501710
 	case "DEV000920B310":
-		return ComObjectTableAddresses_DEV000920B310
+		enum = ComObjectTableAddresses_DEV000920B310
 	case "DEV0009207530":
-		return ComObjectTableAddresses_DEV0009207530
+		enum = ComObjectTableAddresses_DEV0009207530
 	case "DEV0009203321":
-		return ComObjectTableAddresses_DEV0009203321
+		enum = ComObjectTableAddresses_DEV0009203321
 	case "DEV0009500C01":
-		return ComObjectTableAddresses_DEV0009500C01
+		enum = ComObjectTableAddresses_DEV0009500C01
 	case "DEV000920AD10":
-		return ComObjectTableAddresses_DEV000920AD10
+		enum = ComObjectTableAddresses_DEV000920AD10
 	case "DEV0080706010":
-		return ComObjectTableAddresses_DEV0080706010
+		enum = ComObjectTableAddresses_DEV0080706010
 	case "DEV0009207230":
-		return ComObjectTableAddresses_DEV0009207230
+		enum = ComObjectTableAddresses_DEV0009207230
 	case "DEV0009500801":
-		return ComObjectTableAddresses_DEV0009500801
+		enum = ComObjectTableAddresses_DEV0009500801
 	case "DEV0009501810":
-		return ComObjectTableAddresses_DEV0009501810
+		enum = ComObjectTableAddresses_DEV0009501810
 	case "DEV000920B410":
-		return ComObjectTableAddresses_DEV000920B410
+		enum = ComObjectTableAddresses_DEV000920B410
 	case "DEV0009207330":
-		return ComObjectTableAddresses_DEV0009207330
+		enum = ComObjectTableAddresses_DEV0009207330
 	case "DEV0009204421":
-		return ComObjectTableAddresses_DEV0009204421
+		enum = ComObjectTableAddresses_DEV0009204421
 	case "DEV0009500901":
-		return ComObjectTableAddresses_DEV0009500901
+		enum = ComObjectTableAddresses_DEV0009500901
 	case "DEV000920AA10":
-		return ComObjectTableAddresses_DEV000920AA10
+		enum = ComObjectTableAddresses_DEV000920AA10
 	case "DEV0009209D01":
-		return ComObjectTableAddresses_DEV0009209D01
+		enum = ComObjectTableAddresses_DEV0009209D01
 	case "DEV000920B010":
-		return ComObjectTableAddresses_DEV000920B010
+		enum = ComObjectTableAddresses_DEV000920B010
 	case "DEV0064182510":
-		return ComObjectTableAddresses_DEV0064182510
+		enum = ComObjectTableAddresses_DEV0064182510
 	case "DEV0080706810":
-		return ComObjectTableAddresses_DEV0080706810
+		enum = ComObjectTableAddresses_DEV0080706810
 	case "DEV0009E0BE01":
-		return ComObjectTableAddresses_DEV0009E0BE01
+		enum = ComObjectTableAddresses_DEV0009E0BE01
 	case "DEV000920B110":
-		return ComObjectTableAddresses_DEV000920B110
+		enum = ComObjectTableAddresses_DEV000920B110
 	case "DEV0009E0BD01":
-		return ComObjectTableAddresses_DEV0009E0BD01
+		enum = ComObjectTableAddresses_DEV0009E0BD01
 	case "DEV0009D03F10":
-		return ComObjectTableAddresses_DEV0009D03F10
+		enum = ComObjectTableAddresses_DEV0009D03F10
 	case "DEV0009305F10":
-		return ComObjectTableAddresses_DEV0009305F10
+		enum = ComObjectTableAddresses_DEV0009305F10
 	case "DEV0009305610":
-		return ComObjectTableAddresses_DEV0009305610
+		enum = ComObjectTableAddresses_DEV0009305610
 	case "DEV0009D03E10":
-		return ComObjectTableAddresses_DEV0009D03E10
+		enum = ComObjectTableAddresses_DEV0009D03E10
 	case "DEV0009306010":
-		return ComObjectTableAddresses_DEV0009306010
+		enum = ComObjectTableAddresses_DEV0009306010
 	case "DEV0009306110":
-		return ComObjectTableAddresses_DEV0009306110
+		enum = ComObjectTableAddresses_DEV0009306110
 	case "DEV0009306310":
-		return ComObjectTableAddresses_DEV0009306310
+		enum = ComObjectTableAddresses_DEV0009306310
 	case "DEV0080705010":
-		return ComObjectTableAddresses_DEV0080705010
+		enum = ComObjectTableAddresses_DEV0080705010
 	case "DEV0009D03B10":
-		return ComObjectTableAddresses_DEV0009D03B10
+		enum = ComObjectTableAddresses_DEV0009D03B10
 	case "DEV0009D03C10":
-		return ComObjectTableAddresses_DEV0009D03C10
+		enum = ComObjectTableAddresses_DEV0009D03C10
 	case "DEV0009D03910":
-		return ComObjectTableAddresses_DEV0009D03910
+		enum = ComObjectTableAddresses_DEV0009D03910
 	case "DEV0009D03A10":
-		return ComObjectTableAddresses_DEV0009D03A10
+		enum = ComObjectTableAddresses_DEV0009D03A10
 	case "DEV0009305411":
-		return ComObjectTableAddresses_DEV0009305411
+		enum = ComObjectTableAddresses_DEV0009305411
 	case "DEV0009D03D11":
-		return ComObjectTableAddresses_DEV0009D03D11
+		enum = ComObjectTableAddresses_DEV0009D03D11
 	case "DEV0009304B11":
-		return ComObjectTableAddresses_DEV0009304B11
+		enum = ComObjectTableAddresses_DEV0009304B11
 	case "DEV0009304C11":
-		return ComObjectTableAddresses_DEV0009304C11
+		enum = ComObjectTableAddresses_DEV0009304C11
 	case "DEV0009306220":
-		return ComObjectTableAddresses_DEV0009306220
+		enum = ComObjectTableAddresses_DEV0009306220
 	case "DEV0009302E10":
-		return ComObjectTableAddresses_DEV0009302E10
+		enum = ComObjectTableAddresses_DEV0009302E10
 	case "DEV0080703013":
-		return ComObjectTableAddresses_DEV0080703013
+		enum = ComObjectTableAddresses_DEV0080703013
 	case "DEV0009302F10":
-		return ComObjectTableAddresses_DEV0009302F10
+		enum = ComObjectTableAddresses_DEV0009302F10
 	case "DEV0009303010":
-		return ComObjectTableAddresses_DEV0009303010
+		enum = ComObjectTableAddresses_DEV0009303010
 	case "DEV0009303110":
-		return ComObjectTableAddresses_DEV0009303110
+		enum = ComObjectTableAddresses_DEV0009303110
 	case "DEV0009306510":
-		return ComObjectTableAddresses_DEV0009306510
+		enum = ComObjectTableAddresses_DEV0009306510
 	case "DEV0009306610":
-		return ComObjectTableAddresses_DEV0009306610
+		enum = ComObjectTableAddresses_DEV0009306610
 	case "DEV0009306410":
-		return ComObjectTableAddresses_DEV0009306410
+		enum = ComObjectTableAddresses_DEV0009306410
 	case "DEV0009401110":
-		return ComObjectTableAddresses_DEV0009401110
+		enum = ComObjectTableAddresses_DEV0009401110
 	case "DEV0009400610":
-		return ComObjectTableAddresses_DEV0009400610
+		enum = ComObjectTableAddresses_DEV0009400610
 	case "DEV0009401510":
-		return ComObjectTableAddresses_DEV0009401510
+		enum = ComObjectTableAddresses_DEV0009401510
 	case "DEV0009402110":
-		return ComObjectTableAddresses_DEV0009402110
+		enum = ComObjectTableAddresses_DEV0009402110
 	case "DEV0080704021":
-		return ComObjectTableAddresses_DEV0080704021
+		enum = ComObjectTableAddresses_DEV0080704021
 	case "DEV0009400110":
-		return ComObjectTableAddresses_DEV0009400110
+		enum = ComObjectTableAddresses_DEV0009400110
 	case "DEV0009400910":
-		return ComObjectTableAddresses_DEV0009400910
+		enum = ComObjectTableAddresses_DEV0009400910
 	case "DEV0009400010":
-		return ComObjectTableAddresses_DEV0009400010
+		enum = ComObjectTableAddresses_DEV0009400010
 	case "DEV0009401810":
-		return ComObjectTableAddresses_DEV0009401810
+		enum = ComObjectTableAddresses_DEV0009401810
 	case "DEV0009400310":
-		return ComObjectTableAddresses_DEV0009400310
+		enum = ComObjectTableAddresses_DEV0009400310
 	case "DEV0009301810":
-		return ComObjectTableAddresses_DEV0009301810
+		enum = ComObjectTableAddresses_DEV0009301810
 	case "DEV0009301910":
-		return ComObjectTableAddresses_DEV0009301910
+		enum = ComObjectTableAddresses_DEV0009301910
 	case "DEV0009301A10":
-		return ComObjectTableAddresses_DEV0009301A10
+		enum = ComObjectTableAddresses_DEV0009301A10
 	case "DEV0009401210":
-		return ComObjectTableAddresses_DEV0009401210
+		enum = ComObjectTableAddresses_DEV0009401210
 	case "DEV0009400810":
-		return ComObjectTableAddresses_DEV0009400810
+		enum = ComObjectTableAddresses_DEV0009400810
 	case "DEV0080704022":
-		return ComObjectTableAddresses_DEV0080704022
+		enum = ComObjectTableAddresses_DEV0080704022
 	case "DEV0009400710":
-		return ComObjectTableAddresses_DEV0009400710
+		enum = ComObjectTableAddresses_DEV0009400710
 	case "DEV0009401310":
-		return ComObjectTableAddresses_DEV0009401310
+		enum = ComObjectTableAddresses_DEV0009401310
 	case "DEV0009401410":
-		return ComObjectTableAddresses_DEV0009401410
+		enum = ComObjectTableAddresses_DEV0009401410
 	case "DEV0009402210":
-		return ComObjectTableAddresses_DEV0009402210
+		enum = ComObjectTableAddresses_DEV0009402210
 	case "DEV0009402310":
-		return ComObjectTableAddresses_DEV0009402310
+		enum = ComObjectTableAddresses_DEV0009402310
 	case "DEV0009401710":
-		return ComObjectTableAddresses_DEV0009401710
+		enum = ComObjectTableAddresses_DEV0009401710
 	case "DEV0009401610":
-		return ComObjectTableAddresses_DEV0009401610
+		enum = ComObjectTableAddresses_DEV0009401610
 	case "DEV0009400210":
-		return ComObjectTableAddresses_DEV0009400210
+		enum = ComObjectTableAddresses_DEV0009400210
 	case "DEV0009401010":
-		return ComObjectTableAddresses_DEV0009401010
+		enum = ComObjectTableAddresses_DEV0009401010
 	case "DEV0009400510":
-		return ComObjectTableAddresses_DEV0009400510
+		enum = ComObjectTableAddresses_DEV0009400510
 	case "DEV0080704020":
-		return ComObjectTableAddresses_DEV0080704020
+		enum = ComObjectTableAddresses_DEV0080704020
 	case "DEV0009400410":
-		return ComObjectTableAddresses_DEV0009400410
+		enum = ComObjectTableAddresses_DEV0009400410
 	case "DEV0009D04B20":
-		return ComObjectTableAddresses_DEV0009D04B20
+		enum = ComObjectTableAddresses_DEV0009D04B20
 	case "DEV0009D04920":
-		return ComObjectTableAddresses_DEV0009D04920
+		enum = ComObjectTableAddresses_DEV0009D04920
 	case "DEV0009D04A20":
-		return ComObjectTableAddresses_DEV0009D04A20
+		enum = ComObjectTableAddresses_DEV0009D04A20
 	case "DEV0009D04820":
-		return ComObjectTableAddresses_DEV0009D04820
+		enum = ComObjectTableAddresses_DEV0009D04820
 	case "DEV0009D04C11":
-		return ComObjectTableAddresses_DEV0009D04C11
+		enum = ComObjectTableAddresses_DEV0009D04C11
 	case "DEV0009D05610":
-		return ComObjectTableAddresses_DEV0009D05610
+		enum = ComObjectTableAddresses_DEV0009D05610
 	case "DEV0009305510":
-		return ComObjectTableAddresses_DEV0009305510
+		enum = ComObjectTableAddresses_DEV0009305510
 	case "DEV0009209810":
-		return ComObjectTableAddresses_DEV0009209810
+		enum = ComObjectTableAddresses_DEV0009209810
 	case "DEV0009202A10":
-		return ComObjectTableAddresses_DEV0009202A10
+		enum = ComObjectTableAddresses_DEV0009202A10
 	case "DEV0080701111":
-		return ComObjectTableAddresses_DEV0080701111
+		enum = ComObjectTableAddresses_DEV0080701111
 	case "DEV0009209510":
-		return ComObjectTableAddresses_DEV0009209510
+		enum = ComObjectTableAddresses_DEV0009209510
 	case "DEV0009501110":
-		return ComObjectTableAddresses_DEV0009501110
+		enum = ComObjectTableAddresses_DEV0009501110
 	case "DEV0009209310":
-		return ComObjectTableAddresses_DEV0009209310
+		enum = ComObjectTableAddresses_DEV0009209310
 	case "DEV0009209410":
-		return ComObjectTableAddresses_DEV0009209410
+		enum = ComObjectTableAddresses_DEV0009209410
 	case "DEV0009209210":
-		return ComObjectTableAddresses_DEV0009209210
+		enum = ComObjectTableAddresses_DEV0009209210
 	case "DEV0009501210":
-		return ComObjectTableAddresses_DEV0009501210
+		enum = ComObjectTableAddresses_DEV0009501210
 	case "DEV0009205411":
-		return ComObjectTableAddresses_DEV0009205411
+		enum = ComObjectTableAddresses_DEV0009205411
 	case "DEV000920A111":
-		return ComObjectTableAddresses_DEV000920A111
+		enum = ComObjectTableAddresses_DEV000920A111
 	case "DEV000920A311":
-		return ComObjectTableAddresses_DEV000920A311
+		enum = ComObjectTableAddresses_DEV000920A311
 	case "DEV0009205112":
-		return ComObjectTableAddresses_DEV0009205112
+		enum = ComObjectTableAddresses_DEV0009205112
 	case "DEV0080701811":
-		return ComObjectTableAddresses_DEV0080701811
+		enum = ComObjectTableAddresses_DEV0080701811
 	case "DEV0009204110":
-		return ComObjectTableAddresses_DEV0009204110
+		enum = ComObjectTableAddresses_DEV0009204110
 	case "DEV0009E07710":
-		return ComObjectTableAddresses_DEV0009E07710
+		enum = ComObjectTableAddresses_DEV0009E07710
 	case "DEV0009E07712":
-		return ComObjectTableAddresses_DEV0009E07712
+		enum = ComObjectTableAddresses_DEV0009E07712
 	case "DEV0009205212":
-		return ComObjectTableAddresses_DEV0009205212
+		enum = ComObjectTableAddresses_DEV0009205212
 	case "DEV0009205211":
-		return ComObjectTableAddresses_DEV0009205211
+		enum = ComObjectTableAddresses_DEV0009205211
 	case "DEV0009205311":
-		return ComObjectTableAddresses_DEV0009205311
+		enum = ComObjectTableAddresses_DEV0009205311
 	case "DEV0009206B10":
-		return ComObjectTableAddresses_DEV0009206B10
+		enum = ComObjectTableAddresses_DEV0009206B10
 	case "DEV0009208010":
-		return ComObjectTableAddresses_DEV0009208010
+		enum = ComObjectTableAddresses_DEV0009208010
 	case "DEV0009206A12":
-		return ComObjectTableAddresses_DEV0009206A12
+		enum = ComObjectTableAddresses_DEV0009206A12
 	case "DEV0009206810":
-		return ComObjectTableAddresses_DEV0009206810
+		enum = ComObjectTableAddresses_DEV0009206810
 	case "DEV008020A110":
-		return ComObjectTableAddresses_DEV008020A110
+		enum = ComObjectTableAddresses_DEV008020A110
 	case "DEV0009208110":
-		return ComObjectTableAddresses_DEV0009208110
+		enum = ComObjectTableAddresses_DEV0009208110
 	case "DEV0009205511":
-		return ComObjectTableAddresses_DEV0009205511
+		enum = ComObjectTableAddresses_DEV0009205511
 	case "DEV0009209F01":
-		return ComObjectTableAddresses_DEV0009209F01
+		enum = ComObjectTableAddresses_DEV0009209F01
 	case "DEV0009208C10":
-		return ComObjectTableAddresses_DEV0009208C10
+		enum = ComObjectTableAddresses_DEV0009208C10
 	case "DEV0009208E10":
-		return ComObjectTableAddresses_DEV0009208E10
+		enum = ComObjectTableAddresses_DEV0009208E10
 	case "DEV000920B511":
-		return ComObjectTableAddresses_DEV000920B511
+		enum = ComObjectTableAddresses_DEV000920B511
 	case "DEV0009501910":
-		return ComObjectTableAddresses_DEV0009501910
+		enum = ComObjectTableAddresses_DEV0009501910
 	case "DEV000920BE11":
-		return ComObjectTableAddresses_DEV000920BE11
+		enum = ComObjectTableAddresses_DEV000920BE11
 	case "DEV0009209710":
-		return ComObjectTableAddresses_DEV0009209710
+		enum = ComObjectTableAddresses_DEV0009209710
 	case "DEV0009208510":
-		return ComObjectTableAddresses_DEV0009208510
+		enum = ComObjectTableAddresses_DEV0009208510
 	case "DEV008020A210":
-		return ComObjectTableAddresses_DEV008020A210
+		enum = ComObjectTableAddresses_DEV008020A210
 	case "DEV0009208610":
-		return ComObjectTableAddresses_DEV0009208610
+		enum = ComObjectTableAddresses_DEV0009208610
 	case "DEV000920BD10":
-		return ComObjectTableAddresses_DEV000920BD10
+		enum = ComObjectTableAddresses_DEV000920BD10
 	case "DEV0009500210":
-		return ComObjectTableAddresses_DEV0009500210
+		enum = ComObjectTableAddresses_DEV0009500210
 	case "DEV0009500310":
-		return ComObjectTableAddresses_DEV0009500310
+		enum = ComObjectTableAddresses_DEV0009500310
 	case "DEV0009E0BF10":
-		return ComObjectTableAddresses_DEV0009E0BF10
+		enum = ComObjectTableAddresses_DEV0009E0BF10
 	case "DEV0009E0C010":
-		return ComObjectTableAddresses_DEV0009E0C010
+		enum = ComObjectTableAddresses_DEV0009E0C010
 	case "DEV0009500110":
-		return ComObjectTableAddresses_DEV0009500110
+		enum = ComObjectTableAddresses_DEV0009500110
 	case "DEV0009209B10":
-		return ComObjectTableAddresses_DEV0009209B10
+		enum = ComObjectTableAddresses_DEV0009209B10
 	case "DEV0009207D10":
-		return ComObjectTableAddresses_DEV0009207D10
+		enum = ComObjectTableAddresses_DEV0009207D10
 	case "DEV0009202F11":
-		return ComObjectTableAddresses_DEV0009202F11
+		enum = ComObjectTableAddresses_DEV0009202F11
 	case "DEV0064182610":
-		return ComObjectTableAddresses_DEV0064182610
+		enum = ComObjectTableAddresses_DEV0064182610
 	case "DEV008020A010":
-		return ComObjectTableAddresses_DEV008020A010
+		enum = ComObjectTableAddresses_DEV008020A010
 	case "DEV0009203011":
-		return ComObjectTableAddresses_DEV0009203011
+		enum = ComObjectTableAddresses_DEV0009203011
 	case "DEV0009207C10":
-		return ComObjectTableAddresses_DEV0009207C10
+		enum = ComObjectTableAddresses_DEV0009207C10
 	case "DEV0009207B10":
-		return ComObjectTableAddresses_DEV0009207B10
+		enum = ComObjectTableAddresses_DEV0009207B10
 	case "DEV0009208710":
-		return ComObjectTableAddresses_DEV0009208710
+		enum = ComObjectTableAddresses_DEV0009208710
 	case "DEV0009E06610":
-		return ComObjectTableAddresses_DEV0009E06610
+		enum = ComObjectTableAddresses_DEV0009E06610
 	case "DEV0009E06611":
-		return ComObjectTableAddresses_DEV0009E06611
+		enum = ComObjectTableAddresses_DEV0009E06611
 	case "DEV0009E06410":
-		return ComObjectTableAddresses_DEV0009E06410
+		enum = ComObjectTableAddresses_DEV0009E06410
 	case "DEV0009E06411":
-		return ComObjectTableAddresses_DEV0009E06411
+		enum = ComObjectTableAddresses_DEV0009E06411
 	case "DEV0009E06210":
-		return ComObjectTableAddresses_DEV0009E06210
+		enum = ComObjectTableAddresses_DEV0009E06210
 	case "DEV0009E0E910":
-		return ComObjectTableAddresses_DEV0009E0E910
+		enum = ComObjectTableAddresses_DEV0009E0E910
 	case "DEV0080207212":
-		return ComObjectTableAddresses_DEV0080207212
+		enum = ComObjectTableAddresses_DEV0080207212
 	case "DEV0009E0EB10":
-		return ComObjectTableAddresses_DEV0009E0EB10
+		enum = ComObjectTableAddresses_DEV0009E0EB10
 	case "DEV000920BB10":
-		return ComObjectTableAddresses_DEV000920BB10
+		enum = ComObjectTableAddresses_DEV000920BB10
 	case "DEV0009FF1B11":
-		return ComObjectTableAddresses_DEV0009FF1B11
+		enum = ComObjectTableAddresses_DEV0009FF1B11
 	case "DEV0009E0CF10":
-		return ComObjectTableAddresses_DEV0009E0CF10
+		enum = ComObjectTableAddresses_DEV0009E0CF10
 	case "DEV0009206C30":
-		return ComObjectTableAddresses_DEV0009206C30
+		enum = ComObjectTableAddresses_DEV0009206C30
 	case "DEV0009206D30":
-		return ComObjectTableAddresses_DEV0009206D30
+		enum = ComObjectTableAddresses_DEV0009206D30
 	case "DEV0009206E30":
-		return ComObjectTableAddresses_DEV0009206E30
+		enum = ComObjectTableAddresses_DEV0009206E30
 	case "DEV0009206F30":
-		return ComObjectTableAddresses_DEV0009206F30
+		enum = ComObjectTableAddresses_DEV0009206F30
 	case "DEV0009207130":
-		return ComObjectTableAddresses_DEV0009207130
+		enum = ComObjectTableAddresses_DEV0009207130
 	case "DEV0009204720":
-		return ComObjectTableAddresses_DEV0009204720
+		enum = ComObjectTableAddresses_DEV0009204720
 	case "DEV0080209111":
-		return ComObjectTableAddresses_DEV0080209111
+		enum = ComObjectTableAddresses_DEV0080209111
 	case "DEV0009204820":
-		return ComObjectTableAddresses_DEV0009204820
+		enum = ComObjectTableAddresses_DEV0009204820
 	case "DEV0009204920":
-		return ComObjectTableAddresses_DEV0009204920
+		enum = ComObjectTableAddresses_DEV0009204920
 	case "DEV0009204A20":
-		return ComObjectTableAddresses_DEV0009204A20
+		enum = ComObjectTableAddresses_DEV0009204A20
 	case "DEV0009205A10":
-		return ComObjectTableAddresses_DEV0009205A10
+		enum = ComObjectTableAddresses_DEV0009205A10
 	case "DEV0009207030":
-		return ComObjectTableAddresses_DEV0009207030
+		enum = ComObjectTableAddresses_DEV0009207030
 	case "DEV0009205B10":
-		return ComObjectTableAddresses_DEV0009205B10
+		enum = ComObjectTableAddresses_DEV0009205B10
 	case "DEV0009500501":
-		return ComObjectTableAddresses_DEV0009500501
+		enum = ComObjectTableAddresses_DEV0009500501
 	case "DEV0009501001":
-		return ComObjectTableAddresses_DEV0009501001
+		enum = ComObjectTableAddresses_DEV0009501001
 	case "DEV0009500601":
-		return ComObjectTableAddresses_DEV0009500601
+		enum = ComObjectTableAddresses_DEV0009500601
 	case "DEV0009500F01":
-		return ComObjectTableAddresses_DEV0009500F01
+		enum = ComObjectTableAddresses_DEV0009500F01
 	case "DEV0080204310":
-		return ComObjectTableAddresses_DEV0080204310
+		enum = ComObjectTableAddresses_DEV0080204310
 	case "DEV0009500401":
-		return ComObjectTableAddresses_DEV0009500401
+		enum = ComObjectTableAddresses_DEV0009500401
 	case "DEV000920B210":
-		return ComObjectTableAddresses_DEV000920B210
+		enum = ComObjectTableAddresses_DEV000920B210
 	case "DEV000920AE10":
-		return ComObjectTableAddresses_DEV000920AE10
+		enum = ComObjectTableAddresses_DEV000920AE10
 	case "DEV000920BC10":
-		return ComObjectTableAddresses_DEV000920BC10
+		enum = ComObjectTableAddresses_DEV000920BC10
 	case "DEV000920AF10":
-		return ComObjectTableAddresses_DEV000920AF10
+		enum = ComObjectTableAddresses_DEV000920AF10
 	case "DEV0009207F10":
-		return ComObjectTableAddresses_DEV0009207F10
+		enum = ComObjectTableAddresses_DEV0009207F10
 	case "DEV0009208910":
-		return ComObjectTableAddresses_DEV0009208910
+		enum = ComObjectTableAddresses_DEV0009208910
 	case "DEV0009205710":
-		return ComObjectTableAddresses_DEV0009205710
+		enum = ComObjectTableAddresses_DEV0009205710
 	case "DEV0009205810":
-		return ComObjectTableAddresses_DEV0009205810
+		enum = ComObjectTableAddresses_DEV0009205810
 	case "DEV0009203810":
-		return ComObjectTableAddresses_DEV0009203810
+		enum = ComObjectTableAddresses_DEV0009203810
 	case "DEV008020B612":
-		return ComObjectTableAddresses_DEV008020B612
+		enum = ComObjectTableAddresses_DEV008020B612
 	case "DEV0009203910":
-		return ComObjectTableAddresses_DEV0009203910
+		enum = ComObjectTableAddresses_DEV0009203910
 	case "DEV0009203E10":
-		return ComObjectTableAddresses_DEV0009203E10
+		enum = ComObjectTableAddresses_DEV0009203E10
 	case "DEV0009204B10":
-		return ComObjectTableAddresses_DEV0009204B10
+		enum = ComObjectTableAddresses_DEV0009204B10
 	case "DEV0009203F10":
-		return ComObjectTableAddresses_DEV0009203F10
+		enum = ComObjectTableAddresses_DEV0009203F10
 	case "DEV0009204C10":
-		return ComObjectTableAddresses_DEV0009204C10
+		enum = ComObjectTableAddresses_DEV0009204C10
 	case "DEV0009204010":
-		return ComObjectTableAddresses_DEV0009204010
+		enum = ComObjectTableAddresses_DEV0009204010
 	case "DEV0009206411":
-		return ComObjectTableAddresses_DEV0009206411
+		enum = ComObjectTableAddresses_DEV0009206411
 	case "DEV0009205E10":
-		return ComObjectTableAddresses_DEV0009205E10
+		enum = ComObjectTableAddresses_DEV0009205E10
 	case "DEV0009206711":
-		return ComObjectTableAddresses_DEV0009206711
+		enum = ComObjectTableAddresses_DEV0009206711
 	case "DEV000920A710":
-		return ComObjectTableAddresses_DEV000920A710
+		enum = ComObjectTableAddresses_DEV000920A710
 	case "DEV008020B412":
-		return ComObjectTableAddresses_DEV008020B412
+		enum = ComObjectTableAddresses_DEV008020B412
 	case "DEV000920A610":
-		return ComObjectTableAddresses_DEV000920A610
+		enum = ComObjectTableAddresses_DEV000920A610
 	case "DEV0009203A10":
-		return ComObjectTableAddresses_DEV0009203A10
+		enum = ComObjectTableAddresses_DEV0009203A10
 	case "DEV0009203B10":
-		return ComObjectTableAddresses_DEV0009203B10
+		enum = ComObjectTableAddresses_DEV0009203B10
 	case "DEV0009203C10":
-		return ComObjectTableAddresses_DEV0009203C10
+		enum = ComObjectTableAddresses_DEV0009203C10
 	case "DEV0009203D10":
-		return ComObjectTableAddresses_DEV0009203D10
+		enum = ComObjectTableAddresses_DEV0009203D10
 	case "DEV0009E05E12":
-		return ComObjectTableAddresses_DEV0009E05E12
+		enum = ComObjectTableAddresses_DEV0009E05E12
 	case "DEV0009E0B711":
-		return ComObjectTableAddresses_DEV0009E0B711
+		enum = ComObjectTableAddresses_DEV0009E0B711
 	case "DEV0009E06A12":
-		return ComObjectTableAddresses_DEV0009E06A12
+		enum = ComObjectTableAddresses_DEV0009E06A12
 	case "DEV0009E06E12":
-		return ComObjectTableAddresses_DEV0009E06E12
+		enum = ComObjectTableAddresses_DEV0009E06E12
 	case "DEV0009E0B720":
-		return ComObjectTableAddresses_DEV0009E0B720
+		enum = ComObjectTableAddresses_DEV0009E0B720
 	case "DEV008020B512":
-		return ComObjectTableAddresses_DEV008020B512
+		enum = ComObjectTableAddresses_DEV008020B512
 	case "DEV0009E0E611":
-		return ComObjectTableAddresses_DEV0009E0E611
+		enum = ComObjectTableAddresses_DEV0009E0E611
 	case "DEV0009E0B321":
-		return ComObjectTableAddresses_DEV0009E0B321
+		enum = ComObjectTableAddresses_DEV0009E0B321
 	case "DEV0009E0E512":
-		return ComObjectTableAddresses_DEV0009E0E512
+		enum = ComObjectTableAddresses_DEV0009E0E512
 	case "DEV0009204210":
-		return ComObjectTableAddresses_DEV0009204210
+		enum = ComObjectTableAddresses_DEV0009204210
 	case "DEV0009208210":
-		return ComObjectTableAddresses_DEV0009208210
+		enum = ComObjectTableAddresses_DEV0009208210
 	case "DEV0009E07211":
-		return ComObjectTableAddresses_DEV0009E07211
+		enum = ComObjectTableAddresses_DEV0009E07211
 	case "DEV0009E0CC11":
-		return ComObjectTableAddresses_DEV0009E0CC11
+		enum = ComObjectTableAddresses_DEV0009E0CC11
 	case "DEV0009110111":
-		return ComObjectTableAddresses_DEV0009110111
+		enum = ComObjectTableAddresses_DEV0009110111
 	case "DEV0009110211":
-		return ComObjectTableAddresses_DEV0009110211
+		enum = ComObjectTableAddresses_DEV0009110211
 	case "DEV000916B212":
-		return ComObjectTableAddresses_DEV000916B212
+		enum = ComObjectTableAddresses_DEV000916B212
 	case "DEV0080208310":
-		return ComObjectTableAddresses_DEV0080208310
+		enum = ComObjectTableAddresses_DEV0080208310
 	case "DEV0009110212":
-		return ComObjectTableAddresses_DEV0009110212
+		enum = ComObjectTableAddresses_DEV0009110212
 	case "DEV0009110311":
-		return ComObjectTableAddresses_DEV0009110311
+		enum = ComObjectTableAddresses_DEV0009110311
 	case "DEV000916B312":
-		return ComObjectTableAddresses_DEV000916B312
+		enum = ComObjectTableAddresses_DEV000916B312
 	case "DEV0009110312":
-		return ComObjectTableAddresses_DEV0009110312
+		enum = ComObjectTableAddresses_DEV0009110312
 	case "DEV0009110411":
-		return ComObjectTableAddresses_DEV0009110411
+		enum = ComObjectTableAddresses_DEV0009110411
 	case "DEV0009110412":
-		return ComObjectTableAddresses_DEV0009110412
+		enum = ComObjectTableAddresses_DEV0009110412
 	case "DEV0009501615":
-		return ComObjectTableAddresses_DEV0009501615
+		enum = ComObjectTableAddresses_DEV0009501615
 	case "DEV0080702111":
-		return ComObjectTableAddresses_DEV0080702111
+		enum = ComObjectTableAddresses_DEV0080702111
 	case "DEV0080709010":
-		return ComObjectTableAddresses_DEV0080709010
+		enum = ComObjectTableAddresses_DEV0080709010
 	case "DEV0064182910":
-		return ComObjectTableAddresses_DEV0064182910
+		enum = ComObjectTableAddresses_DEV0064182910
 	case "DEV0081FE0111":
-		return ComObjectTableAddresses_DEV0081FE0111
+		enum = ComObjectTableAddresses_DEV0081FE0111
 	case "DEV0081FF3131":
-		return ComObjectTableAddresses_DEV0081FF3131
+		enum = ComObjectTableAddresses_DEV0081FF3131
 	case "DEV0081F01313":
-		return ComObjectTableAddresses_DEV0081F01313
+		enum = ComObjectTableAddresses_DEV0081F01313
 	case "DEV0081FF1313":
-		return ComObjectTableAddresses_DEV0081FF1313
+		enum = ComObjectTableAddresses_DEV0081FF1313
 	case "DEV0083003020":
-		return ComObjectTableAddresses_DEV0083003020
+		enum = ComObjectTableAddresses_DEV0083003020
 	case "DEV0083003120":
-		return ComObjectTableAddresses_DEV0083003120
+		enum = ComObjectTableAddresses_DEV0083003120
 	case "DEV0083003220":
-		return ComObjectTableAddresses_DEV0083003220
+		enum = ComObjectTableAddresses_DEV0083003220
 	case "DEV0083002C16":
-		return ComObjectTableAddresses_DEV0083002C16
+		enum = ComObjectTableAddresses_DEV0083002C16
 	case "DEV0083002E16":
-		return ComObjectTableAddresses_DEV0083002E16
+		enum = ComObjectTableAddresses_DEV0083002E16
 	case "DEV0083002F16":
-		return ComObjectTableAddresses_DEV0083002F16
+		enum = ComObjectTableAddresses_DEV0083002F16
 	case "DEV0001140C13":
-		return ComObjectTableAddresses_DEV0001140C13
+		enum = ComObjectTableAddresses_DEV0001140C13
 	case "DEV0064130610":
-		return ComObjectTableAddresses_DEV0064130610
+		enum = ComObjectTableAddresses_DEV0064130610
 	case "DEV0083012F16":
-		return ComObjectTableAddresses_DEV0083012F16
+		enum = ComObjectTableAddresses_DEV0083012F16
 	case "DEV0083001D13":
-		return ComObjectTableAddresses_DEV0083001D13
+		enum = ComObjectTableAddresses_DEV0083001D13
 	case "DEV0083001E13":
-		return ComObjectTableAddresses_DEV0083001E13
+		enum = ComObjectTableAddresses_DEV0083001E13
 	case "DEV0083001B13":
-		return ComObjectTableAddresses_DEV0083001B13
+		enum = ComObjectTableAddresses_DEV0083001B13
 	case "DEV0083001C13":
-		return ComObjectTableAddresses_DEV0083001C13
+		enum = ComObjectTableAddresses_DEV0083001C13
 	case "DEV0083003C10":
-		return ComObjectTableAddresses_DEV0083003C10
+		enum = ComObjectTableAddresses_DEV0083003C10
 	case "DEV0083001C20":
-		return ComObjectTableAddresses_DEV0083001C20
+		enum = ComObjectTableAddresses_DEV0083001C20
 	case "DEV0083001B22":
-		return ComObjectTableAddresses_DEV0083001B22
+		enum = ComObjectTableAddresses_DEV0083001B22
 	case "DEV0083001B32":
-		return ComObjectTableAddresses_DEV0083001B32
+		enum = ComObjectTableAddresses_DEV0083001B32
 	case "DEV0083003B24":
-		return ComObjectTableAddresses_DEV0083003B24
+		enum = ComObjectTableAddresses_DEV0083003B24
 	case "DEV0064130710":
-		return ComObjectTableAddresses_DEV0064130710
+		enum = ComObjectTableAddresses_DEV0064130710
 	case "DEV0083003B32":
-		return ComObjectTableAddresses_DEV0083003B32
+		enum = ComObjectTableAddresses_DEV0083003B32
 	case "DEV0083003B33":
-		return ComObjectTableAddresses_DEV0083003B33
+		enum = ComObjectTableAddresses_DEV0083003B33
 	case "DEV0083003B34":
-		return ComObjectTableAddresses_DEV0083003B34
+		enum = ComObjectTableAddresses_DEV0083003B34
 	case "DEV0083003B35":
-		return ComObjectTableAddresses_DEV0083003B35
+		enum = ComObjectTableAddresses_DEV0083003B35
 	case "DEV0083003A24":
-		return ComObjectTableAddresses_DEV0083003A24
+		enum = ComObjectTableAddresses_DEV0083003A24
 	case "DEV0083003A32":
-		return ComObjectTableAddresses_DEV0083003A32
+		enum = ComObjectTableAddresses_DEV0083003A32
 	case "DEV0083003A33":
-		return ComObjectTableAddresses_DEV0083003A33
+		enum = ComObjectTableAddresses_DEV0083003A33
 	case "DEV0083003A34":
-		return ComObjectTableAddresses_DEV0083003A34
+		enum = ComObjectTableAddresses_DEV0083003A34
 	case "DEV0083003A35":
-		return ComObjectTableAddresses_DEV0083003A35
+		enum = ComObjectTableAddresses_DEV0083003A35
 	case "DEV0083005824":
-		return ComObjectTableAddresses_DEV0083005824
+		enum = ComObjectTableAddresses_DEV0083005824
 	case "DEV0064133510":
-		return ComObjectTableAddresses_DEV0064133510
+		enum = ComObjectTableAddresses_DEV0064133510
 	case "DEV0083005834":
-		return ComObjectTableAddresses_DEV0083005834
+		enum = ComObjectTableAddresses_DEV0083005834
 	case "DEV0083005835":
-		return ComObjectTableAddresses_DEV0083005835
+		enum = ComObjectTableAddresses_DEV0083005835
 	case "DEV0083002337":
-		return ComObjectTableAddresses_DEV0083002337
+		enum = ComObjectTableAddresses_DEV0083002337
 	case "DEV0083002351":
-		return ComObjectTableAddresses_DEV0083002351
+		enum = ComObjectTableAddresses_DEV0083002351
 	case "DEV0083002352":
-		return ComObjectTableAddresses_DEV0083002352
+		enum = ComObjectTableAddresses_DEV0083002352
 	case "DEV0083002353":
-		return ComObjectTableAddresses_DEV0083002353
+		enum = ComObjectTableAddresses_DEV0083002353
 	case "DEV0083002354":
-		return ComObjectTableAddresses_DEV0083002354
+		enum = ComObjectTableAddresses_DEV0083002354
 	case "DEV0083002838":
-		return ComObjectTableAddresses_DEV0083002838
+		enum = ComObjectTableAddresses_DEV0083002838
 	case "DEV0083002850":
-		return ComObjectTableAddresses_DEV0083002850
+		enum = ComObjectTableAddresses_DEV0083002850
 	case "DEV0083002852":
-		return ComObjectTableAddresses_DEV0083002852
+		enum = ComObjectTableAddresses_DEV0083002852
 	case "DEV0064133310":
-		return ComObjectTableAddresses_DEV0064133310
+		enum = ComObjectTableAddresses_DEV0064133310
 	case "DEV0083002853":
-		return ComObjectTableAddresses_DEV0083002853
+		enum = ComObjectTableAddresses_DEV0083002853
 	case "DEV0083002854":
-		return ComObjectTableAddresses_DEV0083002854
+		enum = ComObjectTableAddresses_DEV0083002854
 	case "DEV0083002855":
-		return ComObjectTableAddresses_DEV0083002855
+		enum = ComObjectTableAddresses_DEV0083002855
 	case "DEV0083002938":
-		return ComObjectTableAddresses_DEV0083002938
+		enum = ComObjectTableAddresses_DEV0083002938
 	case "DEV0083002950":
-		return ComObjectTableAddresses_DEV0083002950
+		enum = ComObjectTableAddresses_DEV0083002950
 	case "DEV0083002952":
-		return ComObjectTableAddresses_DEV0083002952
+		enum = ComObjectTableAddresses_DEV0083002952
 	case "DEV0083002953":
-		return ComObjectTableAddresses_DEV0083002953
+		enum = ComObjectTableAddresses_DEV0083002953
 	case "DEV0083002954":
-		return ComObjectTableAddresses_DEV0083002954
+		enum = ComObjectTableAddresses_DEV0083002954
 	case "DEV0083002955":
-		return ComObjectTableAddresses_DEV0083002955
+		enum = ComObjectTableAddresses_DEV0083002955
 	case "DEV0083002A38":
-		return ComObjectTableAddresses_DEV0083002A38
+		enum = ComObjectTableAddresses_DEV0083002A38
 	case "DEV0064133410":
-		return ComObjectTableAddresses_DEV0064133410
+		enum = ComObjectTableAddresses_DEV0064133410
 	case "DEV0083002A50":
-		return ComObjectTableAddresses_DEV0083002A50
+		enum = ComObjectTableAddresses_DEV0083002A50
 	case "DEV0083002A52":
-		return ComObjectTableAddresses_DEV0083002A52
+		enum = ComObjectTableAddresses_DEV0083002A52
 	case "DEV0083002A53":
-		return ComObjectTableAddresses_DEV0083002A53
+		enum = ComObjectTableAddresses_DEV0083002A53
 	case "DEV0083002A54":
-		return ComObjectTableAddresses_DEV0083002A54
+		enum = ComObjectTableAddresses_DEV0083002A54
 	case "DEV0083002A55":
-		return ComObjectTableAddresses_DEV0083002A55
+		enum = ComObjectTableAddresses_DEV0083002A55
 	case "DEV0083002B38":
-		return ComObjectTableAddresses_DEV0083002B38
+		enum = ComObjectTableAddresses_DEV0083002B38
 	case "DEV0083002B50":
-		return ComObjectTableAddresses_DEV0083002B50
+		enum = ComObjectTableAddresses_DEV0083002B50
 	case "DEV0083002B52":
-		return ComObjectTableAddresses_DEV0083002B52
+		enum = ComObjectTableAddresses_DEV0083002B52
 	case "DEV0083002B53":
-		return ComObjectTableAddresses_DEV0083002B53
+		enum = ComObjectTableAddresses_DEV0083002B53
 	case "DEV0083002B54":
-		return ComObjectTableAddresses_DEV0083002B54
+		enum = ComObjectTableAddresses_DEV0083002B54
 	case "DEV0064133610":
-		return ComObjectTableAddresses_DEV0064133610
+		enum = ComObjectTableAddresses_DEV0064133610
 	case "DEV0083002B55":
-		return ComObjectTableAddresses_DEV0083002B55
+		enum = ComObjectTableAddresses_DEV0083002B55
 	case "DEV0083002339":
-		return ComObjectTableAddresses_DEV0083002339
+		enum = ComObjectTableAddresses_DEV0083002339
 	case "DEV0083002355":
-		return ComObjectTableAddresses_DEV0083002355
+		enum = ComObjectTableAddresses_DEV0083002355
 	case "DEV0083001321":
-		return ComObjectTableAddresses_DEV0083001321
+		enum = ComObjectTableAddresses_DEV0083001321
 	case "DEV0083001332":
-		return ComObjectTableAddresses_DEV0083001332
+		enum = ComObjectTableAddresses_DEV0083001332
 	case "DEV0083001421":
-		return ComObjectTableAddresses_DEV0083001421
+		enum = ComObjectTableAddresses_DEV0083001421
 	case "DEV0083001521":
-		return ComObjectTableAddresses_DEV0083001521
+		enum = ComObjectTableAddresses_DEV0083001521
 	case "DEV0083001621":
-		return ComObjectTableAddresses_DEV0083001621
+		enum = ComObjectTableAddresses_DEV0083001621
 	case "DEV0083000921":
-		return ComObjectTableAddresses_DEV0083000921
+		enum = ComObjectTableAddresses_DEV0083000921
 	case "DEV0083000932":
-		return ComObjectTableAddresses_DEV0083000932
+		enum = ComObjectTableAddresses_DEV0083000932
 	case "DEV0064130510":
-		return ComObjectTableAddresses_DEV0064130510
+		enum = ComObjectTableAddresses_DEV0064130510
 	case "DEV0083000A21":
-		return ComObjectTableAddresses_DEV0083000A21
+		enum = ComObjectTableAddresses_DEV0083000A21
 	case "DEV0083000B21":
-		return ComObjectTableAddresses_DEV0083000B21
+		enum = ComObjectTableAddresses_DEV0083000B21
 	case "DEV0083000C21":
-		return ComObjectTableAddresses_DEV0083000C21
+		enum = ComObjectTableAddresses_DEV0083000C21
 	case "DEV0083000D21":
-		return ComObjectTableAddresses_DEV0083000D21
+		enum = ComObjectTableAddresses_DEV0083000D21
 	case "DEV0083000821":
-		return ComObjectTableAddresses_DEV0083000821
+		enum = ComObjectTableAddresses_DEV0083000821
 	case "DEV0083000E21":
-		return ComObjectTableAddresses_DEV0083000E21
+		enum = ComObjectTableAddresses_DEV0083000E21
 	case "DEV0083001921":
-		return ComObjectTableAddresses_DEV0083001921
+		enum = ComObjectTableAddresses_DEV0083001921
 	case "DEV0083001932":
-		return ComObjectTableAddresses_DEV0083001932
+		enum = ComObjectTableAddresses_DEV0083001932
 	case "DEV0083001721":
-		return ComObjectTableAddresses_DEV0083001721
+		enum = ComObjectTableAddresses_DEV0083001721
 	case "DEV0083001732":
-		return ComObjectTableAddresses_DEV0083001732
+		enum = ComObjectTableAddresses_DEV0083001732
 	case "DEV0064480611":
-		return ComObjectTableAddresses_DEV0064480611
+		enum = ComObjectTableAddresses_DEV0064480611
 	case "DEV0083001821":
-		return ComObjectTableAddresses_DEV0083001821
+		enum = ComObjectTableAddresses_DEV0083001821
 	case "DEV0083001832":
-		return ComObjectTableAddresses_DEV0083001832
+		enum = ComObjectTableAddresses_DEV0083001832
 	case "DEV0083001A20":
-		return ComObjectTableAddresses_DEV0083001A20
+		enum = ComObjectTableAddresses_DEV0083001A20
 	case "DEV0083002320":
-		return ComObjectTableAddresses_DEV0083002320
+		enum = ComObjectTableAddresses_DEV0083002320
 	case "DEV0083004024":
-		return ComObjectTableAddresses_DEV0083004024
+		enum = ComObjectTableAddresses_DEV0083004024
 	case "DEV0083004032":
-		return ComObjectTableAddresses_DEV0083004032
+		enum = ComObjectTableAddresses_DEV0083004032
 	case "DEV0083004033":
-		return ComObjectTableAddresses_DEV0083004033
+		enum = ComObjectTableAddresses_DEV0083004033
 	case "DEV0083004034":
-		return ComObjectTableAddresses_DEV0083004034
+		enum = ComObjectTableAddresses_DEV0083004034
 	case "DEV0083004035":
-		return ComObjectTableAddresses_DEV0083004035
+		enum = ComObjectTableAddresses_DEV0083004035
 	case "DEV0083003D24":
-		return ComObjectTableAddresses_DEV0083003D24
+		enum = ComObjectTableAddresses_DEV0083003D24
 	case "DEV0064482011":
-		return ComObjectTableAddresses_DEV0064482011
+		enum = ComObjectTableAddresses_DEV0064482011
 	case "DEV0083003D32":
-		return ComObjectTableAddresses_DEV0083003D32
+		enum = ComObjectTableAddresses_DEV0083003D32
 	case "DEV0083003D33":
-		return ComObjectTableAddresses_DEV0083003D33
+		enum = ComObjectTableAddresses_DEV0083003D33
 	case "DEV0083003D34":
-		return ComObjectTableAddresses_DEV0083003D34
+		enum = ComObjectTableAddresses_DEV0083003D34
 	case "DEV0083003E24":
-		return ComObjectTableAddresses_DEV0083003E24
+		enum = ComObjectTableAddresses_DEV0083003E24
 	case "DEV0083003E32":
-		return ComObjectTableAddresses_DEV0083003E32
+		enum = ComObjectTableAddresses_DEV0083003E32
 	case "DEV0083003E33":
-		return ComObjectTableAddresses_DEV0083003E33
+		enum = ComObjectTableAddresses_DEV0083003E33
 	case "DEV0083003E34":
-		return ComObjectTableAddresses_DEV0083003E34
+		enum = ComObjectTableAddresses_DEV0083003E34
 	case "DEV0083003F24":
-		return ComObjectTableAddresses_DEV0083003F24
+		enum = ComObjectTableAddresses_DEV0083003F24
 	case "DEV0083003F32":
-		return ComObjectTableAddresses_DEV0083003F32
+		enum = ComObjectTableAddresses_DEV0083003F32
 	case "DEV0083003F33":
-		return ComObjectTableAddresses_DEV0083003F33
+		enum = ComObjectTableAddresses_DEV0083003F33
 	case "DEV0064182210":
-		return ComObjectTableAddresses_DEV0064182210
+		enum = ComObjectTableAddresses_DEV0064182210
 	case "DEV0083003F34":
-		return ComObjectTableAddresses_DEV0083003F34
+		enum = ComObjectTableAddresses_DEV0083003F34
 	case "DEV0083004025":
-		return ComObjectTableAddresses_DEV0083004025
+		enum = ComObjectTableAddresses_DEV0083004025
 	case "DEV0083004036":
-		return ComObjectTableAddresses_DEV0083004036
+		enum = ComObjectTableAddresses_DEV0083004036
 	case "DEV0083003D25":
-		return ComObjectTableAddresses_DEV0083003D25
+		enum = ComObjectTableAddresses_DEV0083003D25
 	case "DEV0083003D36":
-		return ComObjectTableAddresses_DEV0083003D36
+		enum = ComObjectTableAddresses_DEV0083003D36
 	case "DEV0083003E25":
-		return ComObjectTableAddresses_DEV0083003E25
+		enum = ComObjectTableAddresses_DEV0083003E25
 	case "DEV0083003E36":
-		return ComObjectTableAddresses_DEV0083003E36
+		enum = ComObjectTableAddresses_DEV0083003E36
 	case "DEV0083003F25":
-		return ComObjectTableAddresses_DEV0083003F25
+		enum = ComObjectTableAddresses_DEV0083003F25
 	case "DEV0083003F36":
-		return ComObjectTableAddresses_DEV0083003F36
+		enum = ComObjectTableAddresses_DEV0083003F36
 	case "DEV0083001112":
-		return ComObjectTableAddresses_DEV0083001112
+		enum = ComObjectTableAddresses_DEV0083001112
 	case "DEV0001140B11":
-		return ComObjectTableAddresses_DEV0001140B11
+		enum = ComObjectTableAddresses_DEV0001140B11
 	case "DEV0064182710":
-		return ComObjectTableAddresses_DEV0064182710
+		enum = ComObjectTableAddresses_DEV0064182710
 	case "DEV0083001116":
-		return ComObjectTableAddresses_DEV0083001116
+		enum = ComObjectTableAddresses_DEV0083001116
 	case "DEV0083001117":
-		return ComObjectTableAddresses_DEV0083001117
+		enum = ComObjectTableAddresses_DEV0083001117
 	case "DEV0083001212":
-		return ComObjectTableAddresses_DEV0083001212
+		enum = ComObjectTableAddresses_DEV0083001212
 	case "DEV0083001216":
-		return ComObjectTableAddresses_DEV0083001216
+		enum = ComObjectTableAddresses_DEV0083001216
 	case "DEV0083001217":
-		return ComObjectTableAddresses_DEV0083001217
+		enum = ComObjectTableAddresses_DEV0083001217
 	case "DEV0083005B12":
-		return ComObjectTableAddresses_DEV0083005B12
+		enum = ComObjectTableAddresses_DEV0083005B12
 	case "DEV0083005B16":
-		return ComObjectTableAddresses_DEV0083005B16
+		enum = ComObjectTableAddresses_DEV0083005B16
 	case "DEV0083005B17":
-		return ComObjectTableAddresses_DEV0083005B17
+		enum = ComObjectTableAddresses_DEV0083005B17
 	case "DEV0083005A12":
-		return ComObjectTableAddresses_DEV0083005A12
+		enum = ComObjectTableAddresses_DEV0083005A12
 	case "DEV0083005A16":
-		return ComObjectTableAddresses_DEV0083005A16
+		enum = ComObjectTableAddresses_DEV0083005A16
 	case "DEV0064183010":
-		return ComObjectTableAddresses_DEV0064183010
+		enum = ComObjectTableAddresses_DEV0064183010
 	case "DEV0083005A17":
-		return ComObjectTableAddresses_DEV0083005A17
+		enum = ComObjectTableAddresses_DEV0083005A17
 	case "DEV0083008410":
-		return ComObjectTableAddresses_DEV0083008410
+		enum = ComObjectTableAddresses_DEV0083008410
 	case "DEV0083008510":
-		return ComObjectTableAddresses_DEV0083008510
+		enum = ComObjectTableAddresses_DEV0083008510
 	case "DEV0083008610":
-		return ComObjectTableAddresses_DEV0083008610
+		enum = ComObjectTableAddresses_DEV0083008610
 	case "DEV0083008710":
-		return ComObjectTableAddresses_DEV0083008710
+		enum = ComObjectTableAddresses_DEV0083008710
 	case "DEV0083002515":
-		return ComObjectTableAddresses_DEV0083002515
+		enum = ComObjectTableAddresses_DEV0083002515
 	case "DEV0083002115":
-		return ComObjectTableAddresses_DEV0083002115
+		enum = ComObjectTableAddresses_DEV0083002115
 	case "DEV0083002015":
-		return ComObjectTableAddresses_DEV0083002015
+		enum = ComObjectTableAddresses_DEV0083002015
 	case "DEV0083002415":
-		return ComObjectTableAddresses_DEV0083002415
+		enum = ComObjectTableAddresses_DEV0083002415
 	case "DEV0083002615":
-		return ComObjectTableAddresses_DEV0083002615
+		enum = ComObjectTableAddresses_DEV0083002615
 	case "DEV0064B00812":
-		return ComObjectTableAddresses_DEV0064B00812
+		enum = ComObjectTableAddresses_DEV0064B00812
 	case "DEV0083002215":
-		return ComObjectTableAddresses_DEV0083002215
+		enum = ComObjectTableAddresses_DEV0083002215
 	case "DEV0083002715":
-		return ComObjectTableAddresses_DEV0083002715
+		enum = ComObjectTableAddresses_DEV0083002715
 	case "DEV0083002315":
-		return ComObjectTableAddresses_DEV0083002315
+		enum = ComObjectTableAddresses_DEV0083002315
 	case "DEV0083008B28":
-		return ComObjectTableAddresses_DEV0083008B28
+		enum = ComObjectTableAddresses_DEV0083008B28
 	case "DEV0083008B32":
-		return ComObjectTableAddresses_DEV0083008B32
+		enum = ComObjectTableAddresses_DEV0083008B32
 	case "DEV0083008B33":
-		return ComObjectTableAddresses_DEV0083008B33
+		enum = ComObjectTableAddresses_DEV0083008B33
 	case "DEV0083008B34":
-		return ComObjectTableAddresses_DEV0083008B34
+		enum = ComObjectTableAddresses_DEV0083008B34
 	case "DEV0083008B36":
-		return ComObjectTableAddresses_DEV0083008B36
+		enum = ComObjectTableAddresses_DEV0083008B36
 	case "DEV0083008B37":
-		return ComObjectTableAddresses_DEV0083008B37
+		enum = ComObjectTableAddresses_DEV0083008B37
 	case "DEV0083008B39":
-		return ComObjectTableAddresses_DEV0083008B39
+		enum = ComObjectTableAddresses_DEV0083008B39
 	case "DEV0064B00A01":
-		return ComObjectTableAddresses_DEV0064B00A01
+		enum = ComObjectTableAddresses_DEV0064B00A01
 	case "DEV0083008A28":
-		return ComObjectTableAddresses_DEV0083008A28
+		enum = ComObjectTableAddresses_DEV0083008A28
 	case "DEV0083008A32":
-		return ComObjectTableAddresses_DEV0083008A32
+		enum = ComObjectTableAddresses_DEV0083008A32
 	case "DEV0083008A33":
-		return ComObjectTableAddresses_DEV0083008A33
+		enum = ComObjectTableAddresses_DEV0083008A33
 	case "DEV0083008A34":
-		return ComObjectTableAddresses_DEV0083008A34
+		enum = ComObjectTableAddresses_DEV0083008A34
 	case "DEV0083008A36":
-		return ComObjectTableAddresses_DEV0083008A36
+		enum = ComObjectTableAddresses_DEV0083008A36
 	case "DEV0083008A37":
-		return ComObjectTableAddresses_DEV0083008A37
+		enum = ComObjectTableAddresses_DEV0083008A37
 	case "DEV0083008A39":
-		return ComObjectTableAddresses_DEV0083008A39
+		enum = ComObjectTableAddresses_DEV0083008A39
 	case "DEV0083009013":
-		return ComObjectTableAddresses_DEV0083009013
+		enum = ComObjectTableAddresses_DEV0083009013
 	case "DEV0083009016":
-		return ComObjectTableAddresses_DEV0083009016
+		enum = ComObjectTableAddresses_DEV0083009016
 	case "DEV0083009017":
-		return ComObjectTableAddresses_DEV0083009017
+		enum = ComObjectTableAddresses_DEV0083009017
 	case "DEV0064760110":
-		return ComObjectTableAddresses_DEV0064760110
+		enum = ComObjectTableAddresses_DEV0064760110
 	case "DEV0083009018":
-		return ComObjectTableAddresses_DEV0083009018
+		enum = ComObjectTableAddresses_DEV0083009018
 	case "DEV0083009213":
-		return ComObjectTableAddresses_DEV0083009213
+		enum = ComObjectTableAddresses_DEV0083009213
 	case "DEV0083009216":
-		return ComObjectTableAddresses_DEV0083009216
+		enum = ComObjectTableAddresses_DEV0083009216
 	case "DEV0083009217":
-		return ComObjectTableAddresses_DEV0083009217
+		enum = ComObjectTableAddresses_DEV0083009217
 	case "DEV0083009218":
-		return ComObjectTableAddresses_DEV0083009218
+		enum = ComObjectTableAddresses_DEV0083009218
 	case "DEV0083009113":
-		return ComObjectTableAddresses_DEV0083009113
+		enum = ComObjectTableAddresses_DEV0083009113
 	case "DEV0083009116":
-		return ComObjectTableAddresses_DEV0083009116
+		enum = ComObjectTableAddresses_DEV0083009116
 	case "DEV0083009117":
-		return ComObjectTableAddresses_DEV0083009117
+		enum = ComObjectTableAddresses_DEV0083009117
 	case "DEV0083009118":
-		return ComObjectTableAddresses_DEV0083009118
+		enum = ComObjectTableAddresses_DEV0083009118
 	case "DEV0083009313":
-		return ComObjectTableAddresses_DEV0083009313
+		enum = ComObjectTableAddresses_DEV0083009313
 	case "DEV0064242313":
-		return ComObjectTableAddresses_DEV0064242313
+		enum = ComObjectTableAddresses_DEV0064242313
 	case "DEV0083009316":
-		return ComObjectTableAddresses_DEV0083009316
+		enum = ComObjectTableAddresses_DEV0083009316
 	case "DEV0083009317":
-		return ComObjectTableAddresses_DEV0083009317
+		enum = ComObjectTableAddresses_DEV0083009317
 	case "DEV0083009318":
-		return ComObjectTableAddresses_DEV0083009318
+		enum = ComObjectTableAddresses_DEV0083009318
 	case "DEV0083009413":
-		return ComObjectTableAddresses_DEV0083009413
+		enum = ComObjectTableAddresses_DEV0083009413
 	case "DEV0083009416":
-		return ComObjectTableAddresses_DEV0083009416
+		enum = ComObjectTableAddresses_DEV0083009416
 	case "DEV0083009417":
-		return ComObjectTableAddresses_DEV0083009417
+		enum = ComObjectTableAddresses_DEV0083009417
 	case "DEV0083009418":
-		return ComObjectTableAddresses_DEV0083009418
+		enum = ComObjectTableAddresses_DEV0083009418
 	case "DEV0083009513":
-		return ComObjectTableAddresses_DEV0083009513
+		enum = ComObjectTableAddresses_DEV0083009513
 	case "DEV0083009516":
-		return ComObjectTableAddresses_DEV0083009516
+		enum = ComObjectTableAddresses_DEV0083009516
 	case "DEV0083009517":
-		return ComObjectTableAddresses_DEV0083009517
+		enum = ComObjectTableAddresses_DEV0083009517
 	case "DEV0064FF2111":
-		return ComObjectTableAddresses_DEV0064FF2111
+		enum = ComObjectTableAddresses_DEV0064FF2111
 	case "DEV0083009518":
-		return ComObjectTableAddresses_DEV0083009518
+		enum = ComObjectTableAddresses_DEV0083009518
 	case "DEV0083009613":
-		return ComObjectTableAddresses_DEV0083009613
+		enum = ComObjectTableAddresses_DEV0083009613
 	case "DEV0083009616":
-		return ComObjectTableAddresses_DEV0083009616
+		enum = ComObjectTableAddresses_DEV0083009616
 	case "DEV0083009617":
-		return ComObjectTableAddresses_DEV0083009617
+		enum = ComObjectTableAddresses_DEV0083009617
 	case "DEV0083009618":
-		return ComObjectTableAddresses_DEV0083009618
+		enum = ComObjectTableAddresses_DEV0083009618
 	case "DEV0083009713":
-		return ComObjectTableAddresses_DEV0083009713
+		enum = ComObjectTableAddresses_DEV0083009713
 	case "DEV0083009716":
-		return ComObjectTableAddresses_DEV0083009716
+		enum = ComObjectTableAddresses_DEV0083009716
 	case "DEV0083009717":
-		return ComObjectTableAddresses_DEV0083009717
+		enum = ComObjectTableAddresses_DEV0083009717
 	case "DEV0083009718":
-		return ComObjectTableAddresses_DEV0083009718
+		enum = ComObjectTableAddresses_DEV0083009718
 	case "DEV0083009A13":
-		return ComObjectTableAddresses_DEV0083009A13
+		enum = ComObjectTableAddresses_DEV0083009A13
 	case "DEV0064FF2112":
-		return ComObjectTableAddresses_DEV0064FF2112
+		enum = ComObjectTableAddresses_DEV0064FF2112
 	case "DEV0083009A18":
-		return ComObjectTableAddresses_DEV0083009A18
+		enum = ComObjectTableAddresses_DEV0083009A18
 	case "DEV0083009B13":
-		return ComObjectTableAddresses_DEV0083009B13
+		enum = ComObjectTableAddresses_DEV0083009B13
 	case "DEV0083009B18":
-		return ComObjectTableAddresses_DEV0083009B18
+		enum = ComObjectTableAddresses_DEV0083009B18
 	case "DEV0083004B20":
-		return ComObjectTableAddresses_DEV0083004B20
+		enum = ComObjectTableAddresses_DEV0083004B20
 	case "DEV0083004B00":
-		return ComObjectTableAddresses_DEV0083004B00
+		enum = ComObjectTableAddresses_DEV0083004B00
 	case "DEV0083005514":
-		return ComObjectTableAddresses_DEV0083005514
+		enum = ComObjectTableAddresses_DEV0083005514
 	case "DEV0083006824":
-		return ComObjectTableAddresses_DEV0083006824
+		enum = ComObjectTableAddresses_DEV0083006824
 	case "DEV0083006734":
-		return ComObjectTableAddresses_DEV0083006734
+		enum = ComObjectTableAddresses_DEV0083006734
 	case "DEV0083006748":
-		return ComObjectTableAddresses_DEV0083006748
+		enum = ComObjectTableAddresses_DEV0083006748
 	case "DEV0083006749":
-		return ComObjectTableAddresses_DEV0083006749
+		enum = ComObjectTableAddresses_DEV0083006749
 	case "DEV0064648B10":
-		return ComObjectTableAddresses_DEV0064648B10
+		enum = ComObjectTableAddresses_DEV0064648B10
 	case "DEV0083006750":
-		return ComObjectTableAddresses_DEV0083006750
+		enum = ComObjectTableAddresses_DEV0083006750
 	case "DEV0083006751":
-		return ComObjectTableAddresses_DEV0083006751
+		enum = ComObjectTableAddresses_DEV0083006751
 	case "DEV0083006434":
-		return ComObjectTableAddresses_DEV0083006434
+		enum = ComObjectTableAddresses_DEV0083006434
 	case "DEV0083006448":
-		return ComObjectTableAddresses_DEV0083006448
+		enum = ComObjectTableAddresses_DEV0083006448
 	case "DEV0083006449":
-		return ComObjectTableAddresses_DEV0083006449
+		enum = ComObjectTableAddresses_DEV0083006449
 	case "DEV0083006450":
-		return ComObjectTableAddresses_DEV0083006450
+		enum = ComObjectTableAddresses_DEV0083006450
 	case "DEV0083006451":
-		return ComObjectTableAddresses_DEV0083006451
+		enum = ComObjectTableAddresses_DEV0083006451
 	case "DEV0083006634":
-		return ComObjectTableAddresses_DEV0083006634
+		enum = ComObjectTableAddresses_DEV0083006634
 	case "DEV0083006648":
-		return ComObjectTableAddresses_DEV0083006648
+		enum = ComObjectTableAddresses_DEV0083006648
 	case "DEV0083006649":
-		return ComObjectTableAddresses_DEV0083006649
+		enum = ComObjectTableAddresses_DEV0083006649
 	case "DEV0064724010":
-		return ComObjectTableAddresses_DEV0064724010
+		enum = ComObjectTableAddresses_DEV0064724010
 	case "DEV0083006650":
-		return ComObjectTableAddresses_DEV0083006650
+		enum = ComObjectTableAddresses_DEV0083006650
 	case "DEV0083006651":
-		return ComObjectTableAddresses_DEV0083006651
+		enum = ComObjectTableAddresses_DEV0083006651
 	case "DEV0083006534":
-		return ComObjectTableAddresses_DEV0083006534
+		enum = ComObjectTableAddresses_DEV0083006534
 	case "DEV0083006548":
-		return ComObjectTableAddresses_DEV0083006548
+		enum = ComObjectTableAddresses_DEV0083006548
 	case "DEV0083006549":
-		return ComObjectTableAddresses_DEV0083006549
+		enum = ComObjectTableAddresses_DEV0083006549
 	case "DEV0083006550":
-		return ComObjectTableAddresses_DEV0083006550
+		enum = ComObjectTableAddresses_DEV0083006550
 	case "DEV0083006551":
-		return ComObjectTableAddresses_DEV0083006551
+		enum = ComObjectTableAddresses_DEV0083006551
 	case "DEV0083006A34":
-		return ComObjectTableAddresses_DEV0083006A34
+		enum = ComObjectTableAddresses_DEV0083006A34
 	case "DEV0083006A48":
-		return ComObjectTableAddresses_DEV0083006A48
+		enum = ComObjectTableAddresses_DEV0083006A48
 	case "DEV0083006A49":
-		return ComObjectTableAddresses_DEV0083006A49
+		enum = ComObjectTableAddresses_DEV0083006A49
 	case "DEV0001803002":
-		return ComObjectTableAddresses_DEV0001803002
+		enum = ComObjectTableAddresses_DEV0001803002
 	case "DEV006420BD11":
-		return ComObjectTableAddresses_DEV006420BD11
+		enum = ComObjectTableAddresses_DEV006420BD11
 	case "DEV0083006A50":
-		return ComObjectTableAddresses_DEV0083006A50
+		enum = ComObjectTableAddresses_DEV0083006A50
 	case "DEV0083006A51":
-		return ComObjectTableAddresses_DEV0083006A51
+		enum = ComObjectTableAddresses_DEV0083006A51
 	case "DEV0083006B34":
-		return ComObjectTableAddresses_DEV0083006B34
+		enum = ComObjectTableAddresses_DEV0083006B34
 	case "DEV0083006B48":
-		return ComObjectTableAddresses_DEV0083006B48
+		enum = ComObjectTableAddresses_DEV0083006B48
 	case "DEV0083006B49":
-		return ComObjectTableAddresses_DEV0083006B49
+		enum = ComObjectTableAddresses_DEV0083006B49
 	case "DEV0083006B50":
-		return ComObjectTableAddresses_DEV0083006B50
+		enum = ComObjectTableAddresses_DEV0083006B50
 	case "DEV0083006B51":
-		return ComObjectTableAddresses_DEV0083006B51
+		enum = ComObjectTableAddresses_DEV0083006B51
 	case "DEV0083006934":
-		return ComObjectTableAddresses_DEV0083006934
+		enum = ComObjectTableAddresses_DEV0083006934
 	case "DEV0083006948":
-		return ComObjectTableAddresses_DEV0083006948
+		enum = ComObjectTableAddresses_DEV0083006948
 	case "DEV0083006949":
-		return ComObjectTableAddresses_DEV0083006949
+		enum = ComObjectTableAddresses_DEV0083006949
 	case "DEV0064570011":
-		return ComObjectTableAddresses_DEV0064570011
+		enum = ComObjectTableAddresses_DEV0064570011
 	case "DEV0083006950":
-		return ComObjectTableAddresses_DEV0083006950
+		enum = ComObjectTableAddresses_DEV0083006950
 	case "DEV0083006951":
-		return ComObjectTableAddresses_DEV0083006951
+		enum = ComObjectTableAddresses_DEV0083006951
 	case "DEV0083004F11":
-		return ComObjectTableAddresses_DEV0083004F11
+		enum = ComObjectTableAddresses_DEV0083004F11
 	case "DEV0083004D13":
-		return ComObjectTableAddresses_DEV0083004D13
+		enum = ComObjectTableAddresses_DEV0083004D13
 	case "DEV0083004414":
-		return ComObjectTableAddresses_DEV0083004414
+		enum = ComObjectTableAddresses_DEV0083004414
 	case "DEV0083004114":
-		return ComObjectTableAddresses_DEV0083004114
+		enum = ComObjectTableAddresses_DEV0083004114
 	case "DEV0083004514":
-		return ComObjectTableAddresses_DEV0083004514
+		enum = ComObjectTableAddresses_DEV0083004514
 	case "DEV0083004213":
-		return ComObjectTableAddresses_DEV0083004213
+		enum = ComObjectTableAddresses_DEV0083004213
 	case "DEV0083004313":
-		return ComObjectTableAddresses_DEV0083004313
+		enum = ComObjectTableAddresses_DEV0083004313
 	case "DEV0083004C11":
-		return ComObjectTableAddresses_DEV0083004C11
+		enum = ComObjectTableAddresses_DEV0083004C11
 	case "DEV0064570310":
-		return ComObjectTableAddresses_DEV0064570310
+		enum = ComObjectTableAddresses_DEV0064570310
 	case "DEV0083004913":
-		return ComObjectTableAddresses_DEV0083004913
+		enum = ComObjectTableAddresses_DEV0083004913
 	case "DEV0083004A13":
-		return ComObjectTableAddresses_DEV0083004A13
+		enum = ComObjectTableAddresses_DEV0083004A13
 	case "DEV0083004712":
-		return ComObjectTableAddresses_DEV0083004712
+		enum = ComObjectTableAddresses_DEV0083004712
 	case "DEV0083004610":
-		return ComObjectTableAddresses_DEV0083004610
+		enum = ComObjectTableAddresses_DEV0083004610
 	case "DEV0083008E12":
-		return ComObjectTableAddresses_DEV0083008E12
+		enum = ComObjectTableAddresses_DEV0083008E12
 	case "DEV0083004813":
-		return ComObjectTableAddresses_DEV0083004813
+		enum = ComObjectTableAddresses_DEV0083004813
 	case "DEV0083005611":
-		return ComObjectTableAddresses_DEV0083005611
+		enum = ComObjectTableAddresses_DEV0083005611
 	case "DEV0083005710":
-		return ComObjectTableAddresses_DEV0083005710
+		enum = ComObjectTableAddresses_DEV0083005710
 	case "DEV0083005010":
-		return ComObjectTableAddresses_DEV0083005010
+		enum = ComObjectTableAddresses_DEV0083005010
 	case "DEV0083001A10":
-		return ComObjectTableAddresses_DEV0083001A10
+		enum = ComObjectTableAddresses_DEV0083001A10
 	case "DEV0064570211":
-		return ComObjectTableAddresses_DEV0064570211
+		enum = ComObjectTableAddresses_DEV0064570211
 	case "DEV0083002918":
-		return ComObjectTableAddresses_DEV0083002918
+		enum = ComObjectTableAddresses_DEV0083002918
 	case "DEV0083002818":
-		return ComObjectTableAddresses_DEV0083002818
+		enum = ComObjectTableAddresses_DEV0083002818
 	case "DEV0083006724":
-		return ComObjectTableAddresses_DEV0083006724
+		enum = ComObjectTableAddresses_DEV0083006724
 	case "DEV0083006D42":
-		return ComObjectTableAddresses_DEV0083006D42
+		enum = ComObjectTableAddresses_DEV0083006D42
 	case "DEV0083006D64":
-		return ComObjectTableAddresses_DEV0083006D64
+		enum = ComObjectTableAddresses_DEV0083006D64
 	case "DEV0083006D65":
-		return ComObjectTableAddresses_DEV0083006D65
+		enum = ComObjectTableAddresses_DEV0083006D65
 	case "DEV0083006E42":
-		return ComObjectTableAddresses_DEV0083006E42
+		enum = ComObjectTableAddresses_DEV0083006E42
 	case "DEV0083006E64":
-		return ComObjectTableAddresses_DEV0083006E64
+		enum = ComObjectTableAddresses_DEV0083006E64
 	case "DEV0083006D44":
-		return ComObjectTableAddresses_DEV0083006D44
+		enum = ComObjectTableAddresses_DEV0083006D44
 	case "DEV0083006D66":
-		return ComObjectTableAddresses_DEV0083006D66
+		enum = ComObjectTableAddresses_DEV0083006D66
 	case "DEV0064570411":
-		return ComObjectTableAddresses_DEV0064570411
+		enum = ComObjectTableAddresses_DEV0064570411
 	case "DEV0083006D67":
-		return ComObjectTableAddresses_DEV0083006D67
+		enum = ComObjectTableAddresses_DEV0083006D67
 	case "DEV0083006E44":
-		return ComObjectTableAddresses_DEV0083006E44
+		enum = ComObjectTableAddresses_DEV0083006E44
 	case "DEV0083006E65":
-		return ComObjectTableAddresses_DEV0083006E65
+		enum = ComObjectTableAddresses_DEV0083006E65
 	case "DEV0083006E66":
-		return ComObjectTableAddresses_DEV0083006E66
+		enum = ComObjectTableAddresses_DEV0083006E66
 	case "DEV0083006E67":
-		return ComObjectTableAddresses_DEV0083006E67
+		enum = ComObjectTableAddresses_DEV0083006E67
 	case "DEV0083007342":
-		return ComObjectTableAddresses_DEV0083007342
+		enum = ComObjectTableAddresses_DEV0083007342
 	case "DEV0083007242":
-		return ComObjectTableAddresses_DEV0083007242
+		enum = ComObjectTableAddresses_DEV0083007242
 	case "DEV0083006C42":
-		return ComObjectTableAddresses_DEV0083006C42
+		enum = ComObjectTableAddresses_DEV0083006C42
 	case "DEV0083006C64":
-		return ComObjectTableAddresses_DEV0083006C64
+		enum = ComObjectTableAddresses_DEV0083006C64
 	case "DEV0083006C65":
-		return ComObjectTableAddresses_DEV0083006C65
+		enum = ComObjectTableAddresses_DEV0083006C65
 	case "DEV0064570110":
-		return ComObjectTableAddresses_DEV0064570110
+		enum = ComObjectTableAddresses_DEV0064570110
 	case "DEV0083007542":
-		return ComObjectTableAddresses_DEV0083007542
+		enum = ComObjectTableAddresses_DEV0083007542
 	case "DEV0083007442":
-		return ComObjectTableAddresses_DEV0083007442
+		enum = ComObjectTableAddresses_DEV0083007442
 	case "DEV0083007742":
-		return ComObjectTableAddresses_DEV0083007742
+		enum = ComObjectTableAddresses_DEV0083007742
 	case "DEV0083007642":
-		return ComObjectTableAddresses_DEV0083007642
+		enum = ComObjectTableAddresses_DEV0083007642
 	case "DEV0083007343":
-		return ComObjectTableAddresses_DEV0083007343
+		enum = ComObjectTableAddresses_DEV0083007343
 	case "DEV0083007366":
-		return ComObjectTableAddresses_DEV0083007366
+		enum = ComObjectTableAddresses_DEV0083007366
 	case "DEV0083007243":
-		return ComObjectTableAddresses_DEV0083007243
+		enum = ComObjectTableAddresses_DEV0083007243
 	case "DEV0083007266":
-		return ComObjectTableAddresses_DEV0083007266
+		enum = ComObjectTableAddresses_DEV0083007266
 	case "DEV0083006C43":
-		return ComObjectTableAddresses_DEV0083006C43
+		enum = ComObjectTableAddresses_DEV0083006C43
 	case "DEV0083006C66":
-		return ComObjectTableAddresses_DEV0083006C66
+		enum = ComObjectTableAddresses_DEV0083006C66
 	case "DEV0064615022":
-		return ComObjectTableAddresses_DEV0064615022
+		enum = ComObjectTableAddresses_DEV0064615022
 	case "DEV0083007543":
-		return ComObjectTableAddresses_DEV0083007543
+		enum = ComObjectTableAddresses_DEV0083007543
 	case "DEV0083007566":
-		return ComObjectTableAddresses_DEV0083007566
+		enum = ComObjectTableAddresses_DEV0083007566
 	case "DEV0083007443":
-		return ComObjectTableAddresses_DEV0083007443
+		enum = ComObjectTableAddresses_DEV0083007443
 	case "DEV0083007466":
-		return ComObjectTableAddresses_DEV0083007466
+		enum = ComObjectTableAddresses_DEV0083007466
 	case "DEV0083007743":
-		return ComObjectTableAddresses_DEV0083007743
+		enum = ComObjectTableAddresses_DEV0083007743
 	case "DEV0083007766":
-		return ComObjectTableAddresses_DEV0083007766
+		enum = ComObjectTableAddresses_DEV0083007766
 	case "DEV0083007643":
-		return ComObjectTableAddresses_DEV0083007643
+		enum = ComObjectTableAddresses_DEV0083007643
 	case "DEV0083007666":
-		return ComObjectTableAddresses_DEV0083007666
+		enum = ComObjectTableAddresses_DEV0083007666
 	case "DEV008300B031":
-		return ComObjectTableAddresses_DEV008300B031
+		enum = ComObjectTableAddresses_DEV008300B031
 	case "DEV008300B048":
-		return ComObjectTableAddresses_DEV008300B048
+		enum = ComObjectTableAddresses_DEV008300B048
 	case "DEV0064182810":
-		return ComObjectTableAddresses_DEV0064182810
+		enum = ComObjectTableAddresses_DEV0064182810
 	case "DEV008300B131":
-		return ComObjectTableAddresses_DEV008300B131
+		enum = ComObjectTableAddresses_DEV008300B131
 	case "DEV008300B148":
-		return ComObjectTableAddresses_DEV008300B148
+		enum = ComObjectTableAddresses_DEV008300B148
 	case "DEV008300B231":
-		return ComObjectTableAddresses_DEV008300B231
+		enum = ComObjectTableAddresses_DEV008300B231
 	case "DEV008300B248":
-		return ComObjectTableAddresses_DEV008300B248
+		enum = ComObjectTableAddresses_DEV008300B248
 	case "DEV008300B331":
-		return ComObjectTableAddresses_DEV008300B331
+		enum = ComObjectTableAddresses_DEV008300B331
 	case "DEV008300B348":
-		return ComObjectTableAddresses_DEV008300B348
+		enum = ComObjectTableAddresses_DEV008300B348
 	case "DEV008300B032":
-		return ComObjectTableAddresses_DEV008300B032
+		enum = ComObjectTableAddresses_DEV008300B032
 	case "DEV008300B049":
-		return ComObjectTableAddresses_DEV008300B049
+		enum = ComObjectTableAddresses_DEV008300B049
 	case "DEV008300B132":
-		return ComObjectTableAddresses_DEV008300B132
+		enum = ComObjectTableAddresses_DEV008300B132
 	case "DEV008300B149":
-		return ComObjectTableAddresses_DEV008300B149
+		enum = ComObjectTableAddresses_DEV008300B149
 	case "DEV0064183110":
-		return ComObjectTableAddresses_DEV0064183110
+		enum = ComObjectTableAddresses_DEV0064183110
 	case "DEV008300B232":
-		return ComObjectTableAddresses_DEV008300B232
+		enum = ComObjectTableAddresses_DEV008300B232
 	case "DEV008300B249":
-		return ComObjectTableAddresses_DEV008300B249
+		enum = ComObjectTableAddresses_DEV008300B249
 	case "DEV008300B332":
-		return ComObjectTableAddresses_DEV008300B332
+		enum = ComObjectTableAddresses_DEV008300B332
 	case "DEV008300B349":
-		return ComObjectTableAddresses_DEV008300B349
+		enum = ComObjectTableAddresses_DEV008300B349
 	case "DEV008300B431":
-		return ComObjectTableAddresses_DEV008300B431
+		enum = ComObjectTableAddresses_DEV008300B431
 	case "DEV008300B448":
-		return ComObjectTableAddresses_DEV008300B448
+		enum = ComObjectTableAddresses_DEV008300B448
 	case "DEV008300B531":
-		return ComObjectTableAddresses_DEV008300B531
+		enum = ComObjectTableAddresses_DEV008300B531
 	case "DEV008300B548":
-		return ComObjectTableAddresses_DEV008300B548
+		enum = ComObjectTableAddresses_DEV008300B548
 	case "DEV008300B631":
-		return ComObjectTableAddresses_DEV008300B631
+		enum = ComObjectTableAddresses_DEV008300B631
 	case "DEV008300B648":
-		return ComObjectTableAddresses_DEV008300B648
+		enum = ComObjectTableAddresses_DEV008300B648
 	case "DEV0064133611":
-		return ComObjectTableAddresses_DEV0064133611
+		enum = ComObjectTableAddresses_DEV0064133611
 	case "DEV008300B731":
-		return ComObjectTableAddresses_DEV008300B731
+		enum = ComObjectTableAddresses_DEV008300B731
 	case "DEV008300B748":
-		return ComObjectTableAddresses_DEV008300B748
+		enum = ComObjectTableAddresses_DEV008300B748
 	case "DEV008300B432":
-		return ComObjectTableAddresses_DEV008300B432
+		enum = ComObjectTableAddresses_DEV008300B432
 	case "DEV008300B449":
-		return ComObjectTableAddresses_DEV008300B449
+		enum = ComObjectTableAddresses_DEV008300B449
 	case "DEV008300B532":
-		return ComObjectTableAddresses_DEV008300B532
+		enum = ComObjectTableAddresses_DEV008300B532
 	case "DEV008300B549":
-		return ComObjectTableAddresses_DEV008300B549
+		enum = ComObjectTableAddresses_DEV008300B549
 	case "DEV008300B632":
-		return ComObjectTableAddresses_DEV008300B632
+		enum = ComObjectTableAddresses_DEV008300B632
 	case "DEV008300B649":
-		return ComObjectTableAddresses_DEV008300B649
+		enum = ComObjectTableAddresses_DEV008300B649
 	case "DEV008300B732":
-		return ComObjectTableAddresses_DEV008300B732
+		enum = ComObjectTableAddresses_DEV008300B732
 	case "DEV008300B749":
-		return ComObjectTableAddresses_DEV008300B749
+		enum = ComObjectTableAddresses_DEV008300B749
 	case "DEV00641BD610":
-		return ComObjectTableAddresses_DEV00641BD610
+		enum = ComObjectTableAddresses_DEV00641BD610
 	case "DEV006A000122":
-		return ComObjectTableAddresses_DEV006A000122
+		enum = ComObjectTableAddresses_DEV006A000122
 	case "DEV0083012843":
-		return ComObjectTableAddresses_DEV0083012843
+		enum = ComObjectTableAddresses_DEV0083012843
 	case "DEV0083012865":
-		return ComObjectTableAddresses_DEV0083012865
+		enum = ComObjectTableAddresses_DEV0083012865
 	case "DEV0083012943":
-		return ComObjectTableAddresses_DEV0083012943
+		enum = ComObjectTableAddresses_DEV0083012943
 	case "DEV0083012965":
-		return ComObjectTableAddresses_DEV0083012965
+		enum = ComObjectTableAddresses_DEV0083012965
 	case "DEV008300A421":
-		return ComObjectTableAddresses_DEV008300A421
+		enum = ComObjectTableAddresses_DEV008300A421
 	case "DEV008300A521":
-		return ComObjectTableAddresses_DEV008300A521
+		enum = ComObjectTableAddresses_DEV008300A521
 	case "DEV008300A621":
-		return ComObjectTableAddresses_DEV008300A621
+		enum = ComObjectTableAddresses_DEV008300A621
 	case "DEV0083001432":
-		return ComObjectTableAddresses_DEV0083001432
+		enum = ComObjectTableAddresses_DEV0083001432
 	case "DEV0083001448":
-		return ComObjectTableAddresses_DEV0083001448
+		enum = ComObjectTableAddresses_DEV0083001448
 	case "DEV0083001532":
-		return ComObjectTableAddresses_DEV0083001532
+		enum = ComObjectTableAddresses_DEV0083001532
 	case "DEV006A000222":
-		return ComObjectTableAddresses_DEV006A000222
+		enum = ComObjectTableAddresses_DEV006A000222
 	case "DEV0083001548":
-		return ComObjectTableAddresses_DEV0083001548
+		enum = ComObjectTableAddresses_DEV0083001548
 	case "DEV0083001632":
-		return ComObjectTableAddresses_DEV0083001632
+		enum = ComObjectTableAddresses_DEV0083001632
 	case "DEV0083001648":
-		return ComObjectTableAddresses_DEV0083001648
+		enum = ComObjectTableAddresses_DEV0083001648
 	case "DEV008300A432":
-		return ComObjectTableAddresses_DEV008300A432
+		enum = ComObjectTableAddresses_DEV008300A432
 	case "DEV008300A448":
-		return ComObjectTableAddresses_DEV008300A448
+		enum = ComObjectTableAddresses_DEV008300A448
 	case "DEV008300A449":
-		return ComObjectTableAddresses_DEV008300A449
+		enum = ComObjectTableAddresses_DEV008300A449
 	case "DEV008300A532":
-		return ComObjectTableAddresses_DEV008300A532
+		enum = ComObjectTableAddresses_DEV008300A532
 	case "DEV008300A548":
-		return ComObjectTableAddresses_DEV008300A548
+		enum = ComObjectTableAddresses_DEV008300A548
 	case "DEV008300A632":
-		return ComObjectTableAddresses_DEV008300A632
+		enum = ComObjectTableAddresses_DEV008300A632
 	case "DEV008300A648":
-		return ComObjectTableAddresses_DEV008300A648
+		enum = ComObjectTableAddresses_DEV008300A648
 	case "DEV006A070210":
-		return ComObjectTableAddresses_DEV006A070210
+		enum = ComObjectTableAddresses_DEV006A070210
 	case "DEV0083000F32":
-		return ComObjectTableAddresses_DEV0083000F32
+		enum = ComObjectTableAddresses_DEV0083000F32
 	case "DEV0083001032":
-		return ComObjectTableAddresses_DEV0083001032
+		enum = ComObjectTableAddresses_DEV0083001032
 	case "DEV0083000632":
-		return ComObjectTableAddresses_DEV0083000632
+		enum = ComObjectTableAddresses_DEV0083000632
 	case "DEV0083009811":
-		return ComObjectTableAddresses_DEV0083009811
+		enum = ComObjectTableAddresses_DEV0083009811
 	case "DEV0083009816":
-		return ComObjectTableAddresses_DEV0083009816
+		enum = ComObjectTableAddresses_DEV0083009816
 	case "DEV0083009911":
-		return ComObjectTableAddresses_DEV0083009911
+		enum = ComObjectTableAddresses_DEV0083009911
 	case "DEV0083009916":
-		return ComObjectTableAddresses_DEV0083009916
+		enum = ComObjectTableAddresses_DEV0083009916
 	case "DEV0083025520":
-		return ComObjectTableAddresses_DEV0083025520
+		enum = ComObjectTableAddresses_DEV0083025520
 	case "DEV0083024710":
-		return ComObjectTableAddresses_DEV0083024710
+		enum = ComObjectTableAddresses_DEV0083024710
 	case "DEV0083005C12":
-		return ComObjectTableAddresses_DEV0083005C12
+		enum = ComObjectTableAddresses_DEV0083005C12
 	case "DEV006B106D10":
-		return ComObjectTableAddresses_DEV006B106D10
+		enum = ComObjectTableAddresses_DEV006B106D10
 	case "DEV0083005C16":
-		return ComObjectTableAddresses_DEV0083005C16
+		enum = ComObjectTableAddresses_DEV0083005C16
 	case "DEV0083005C17":
-		return ComObjectTableAddresses_DEV0083005C17
+		enum = ComObjectTableAddresses_DEV0083005C17
 	case "DEV0083005D12":
-		return ComObjectTableAddresses_DEV0083005D12
+		enum = ComObjectTableAddresses_DEV0083005D12
 	case "DEV0083005D16":
-		return ComObjectTableAddresses_DEV0083005D16
+		enum = ComObjectTableAddresses_DEV0083005D16
 	case "DEV0083005D17":
-		return ComObjectTableAddresses_DEV0083005D17
+		enum = ComObjectTableAddresses_DEV0083005D17
 	case "DEV0083005E12":
-		return ComObjectTableAddresses_DEV0083005E12
+		enum = ComObjectTableAddresses_DEV0083005E12
 	case "DEV0083005E16":
-		return ComObjectTableAddresses_DEV0083005E16
+		enum = ComObjectTableAddresses_DEV0083005E16
 	case "DEV0083005E17":
-		return ComObjectTableAddresses_DEV0083005E17
+		enum = ComObjectTableAddresses_DEV0083005E17
 	case "DEV0083005F12":
-		return ComObjectTableAddresses_DEV0083005F12
+		enum = ComObjectTableAddresses_DEV0083005F12
 	case "DEV0083005F16":
-		return ComObjectTableAddresses_DEV0083005F16
+		enum = ComObjectTableAddresses_DEV0083005F16
 	case "DEV006BFFF713":
-		return ComObjectTableAddresses_DEV006BFFF713
+		enum = ComObjectTableAddresses_DEV006BFFF713
 	case "DEV0083005F17":
-		return ComObjectTableAddresses_DEV0083005F17
+		enum = ComObjectTableAddresses_DEV0083005F17
 	case "DEV0083005413":
-		return ComObjectTableAddresses_DEV0083005413
+		enum = ComObjectTableAddresses_DEV0083005413
 	case "DEV0083005416":
-		return ComObjectTableAddresses_DEV0083005416
+		enum = ComObjectTableAddresses_DEV0083005416
 	case "DEV0083005417":
-		return ComObjectTableAddresses_DEV0083005417
+		enum = ComObjectTableAddresses_DEV0083005417
 	case "DEV0085000520":
-		return ComObjectTableAddresses_DEV0085000520
+		enum = ComObjectTableAddresses_DEV0085000520
 	case "DEV0085000620":
-		return ComObjectTableAddresses_DEV0085000620
+		enum = ComObjectTableAddresses_DEV0085000620
 	case "DEV0085000720":
-		return ComObjectTableAddresses_DEV0085000720
+		enum = ComObjectTableAddresses_DEV0085000720
 	case "DEV0085012210":
-		return ComObjectTableAddresses_DEV0085012210
+		enum = ComObjectTableAddresses_DEV0085012210
 	case "DEV0085011210":
-		return ComObjectTableAddresses_DEV0085011210
+		enum = ComObjectTableAddresses_DEV0085011210
 	case "DEV0085013220":
-		return ComObjectTableAddresses_DEV0085013220
+		enum = ComObjectTableAddresses_DEV0085013220
 	case "DEV006BFF2111":
-		return ComObjectTableAddresses_DEV006BFF2111
+		enum = ComObjectTableAddresses_DEV006BFF2111
 	case "DEV0085010210":
-		return ComObjectTableAddresses_DEV0085010210
+		enum = ComObjectTableAddresses_DEV0085010210
 	case "DEV0085000A10":
-		return ComObjectTableAddresses_DEV0085000A10
+		enum = ComObjectTableAddresses_DEV0085000A10
 	case "DEV0085000B10":
-		return ComObjectTableAddresses_DEV0085000B10
+		enum = ComObjectTableAddresses_DEV0085000B10
 	case "DEV0085071010":
-		return ComObjectTableAddresses_DEV0085071010
+		enum = ComObjectTableAddresses_DEV0085071010
 	case "DEV008500FB10":
-		return ComObjectTableAddresses_DEV008500FB10
+		enum = ComObjectTableAddresses_DEV008500FB10
 	case "DEV0085060210":
-		return ComObjectTableAddresses_DEV0085060210
+		enum = ComObjectTableAddresses_DEV0085060210
 	case "DEV0085060110":
-		return ComObjectTableAddresses_DEV0085060110
+		enum = ComObjectTableAddresses_DEV0085060110
 	case "DEV0085000D20":
-		return ComObjectTableAddresses_DEV0085000D20
+		enum = ComObjectTableAddresses_DEV0085000D20
 	case "DEV008500C810":
-		return ComObjectTableAddresses_DEV008500C810
+		enum = ComObjectTableAddresses_DEV008500C810
 	case "DEV0085040111":
-		return ComObjectTableAddresses_DEV0085040111
+		enum = ComObjectTableAddresses_DEV0085040111
 	case "DEV006BFFF820":
-		return ComObjectTableAddresses_DEV006BFFF820
+		enum = ComObjectTableAddresses_DEV006BFFF820
 	case "DEV008500C910":
-		return ComObjectTableAddresses_DEV008500C910
+		enum = ComObjectTableAddresses_DEV008500C910
 	case "DEV0085045020":
-		return ComObjectTableAddresses_DEV0085045020
+		enum = ComObjectTableAddresses_DEV0085045020
 	case "DEV0085070210":
-		return ComObjectTableAddresses_DEV0085070210
+		enum = ComObjectTableAddresses_DEV0085070210
 	case "DEV0085070110":
-		return ComObjectTableAddresses_DEV0085070110
+		enum = ComObjectTableAddresses_DEV0085070110
 	case "DEV0085070310":
-		return ComObjectTableAddresses_DEV0085070310
+		enum = ComObjectTableAddresses_DEV0085070310
 	case "DEV0085000E20":
-		return ComObjectTableAddresses_DEV0085000E20
+		enum = ComObjectTableAddresses_DEV0085000E20
 	case "DEV0088100010":
-		return ComObjectTableAddresses_DEV0088100010
+		enum = ComObjectTableAddresses_DEV0088100010
 	case "DEV0088100210":
-		return ComObjectTableAddresses_DEV0088100210
+		enum = ComObjectTableAddresses_DEV0088100210
 	case "DEV0088100110":
-		return ComObjectTableAddresses_DEV0088100110
+		enum = ComObjectTableAddresses_DEV0088100110
 	case "DEV0088110010":
-		return ComObjectTableAddresses_DEV0088110010
+		enum = ComObjectTableAddresses_DEV0088110010
 	case "DEV006C070E11":
-		return ComObjectTableAddresses_DEV006C070E11
+		enum = ComObjectTableAddresses_DEV006C070E11
 	case "DEV0088120412":
-		return ComObjectTableAddresses_DEV0088120412
+		enum = ComObjectTableAddresses_DEV0088120412
 	case "DEV0088120113":
-		return ComObjectTableAddresses_DEV0088120113
+		enum = ComObjectTableAddresses_DEV0088120113
 	case "DEV008B020301":
-		return ComObjectTableAddresses_DEV008B020301
+		enum = ComObjectTableAddresses_DEV008B020301
 	case "DEV008B010610":
-		return ComObjectTableAddresses_DEV008B010610
+		enum = ComObjectTableAddresses_DEV008B010610
 	case "DEV008B030110":
-		return ComObjectTableAddresses_DEV008B030110
+		enum = ComObjectTableAddresses_DEV008B030110
 	case "DEV008B030310":
-		return ComObjectTableAddresses_DEV008B030310
+		enum = ComObjectTableAddresses_DEV008B030310
 	case "DEV008B030210":
-		return ComObjectTableAddresses_DEV008B030210
+		enum = ComObjectTableAddresses_DEV008B030210
 	case "DEV008B031512":
-		return ComObjectTableAddresses_DEV008B031512
+		enum = ComObjectTableAddresses_DEV008B031512
 	case "DEV008B031412":
-		return ComObjectTableAddresses_DEV008B031412
+		enum = ComObjectTableAddresses_DEV008B031412
 	case "DEV008B031312":
-		return ComObjectTableAddresses_DEV008B031312
+		enum = ComObjectTableAddresses_DEV008B031312
 	case "DEV006C011611":
-		return ComObjectTableAddresses_DEV006C011611
+		enum = ComObjectTableAddresses_DEV006C011611
 	case "DEV008B031212":
-		return ComObjectTableAddresses_DEV008B031212
+		enum = ComObjectTableAddresses_DEV008B031212
 	case "DEV008B031112":
-		return ComObjectTableAddresses_DEV008B031112
+		enum = ComObjectTableAddresses_DEV008B031112
 	case "DEV008B031012":
-		return ComObjectTableAddresses_DEV008B031012
+		enum = ComObjectTableAddresses_DEV008B031012
 	case "DEV008B030510":
-		return ComObjectTableAddresses_DEV008B030510
+		enum = ComObjectTableAddresses_DEV008B030510
 	case "DEV008B030410":
-		return ComObjectTableAddresses_DEV008B030410
+		enum = ComObjectTableAddresses_DEV008B030410
 	case "DEV008B020310":
-		return ComObjectTableAddresses_DEV008B020310
+		enum = ComObjectTableAddresses_DEV008B020310
 	case "DEV008B020210":
-		return ComObjectTableAddresses_DEV008B020210
+		enum = ComObjectTableAddresses_DEV008B020210
 	case "DEV008B020110":
-		return ComObjectTableAddresses_DEV008B020110
+		enum = ComObjectTableAddresses_DEV008B020110
 	case "DEV008B010110":
-		return ComObjectTableAddresses_DEV008B010110
+		enum = ComObjectTableAddresses_DEV008B010110
 	case "DEV008B010210":
-		return ComObjectTableAddresses_DEV008B010210
+		enum = ComObjectTableAddresses_DEV008B010210
 	case "DEV006C011511":
-		return ComObjectTableAddresses_DEV006C011511
+		enum = ComObjectTableAddresses_DEV006C011511
 	case "DEV008B010310":
-		return ComObjectTableAddresses_DEV008B010310
+		enum = ComObjectTableAddresses_DEV008B010310
 	case "DEV008B010410":
-		return ComObjectTableAddresses_DEV008B010410
+		enum = ComObjectTableAddresses_DEV008B010410
 	case "DEV008B040110":
-		return ComObjectTableAddresses_DEV008B040110
+		enum = ComObjectTableAddresses_DEV008B040110
 	case "DEV008B040210":
-		return ComObjectTableAddresses_DEV008B040210
+		enum = ComObjectTableAddresses_DEV008B040210
 	case "DEV008B010910":
-		return ComObjectTableAddresses_DEV008B010910
+		enum = ComObjectTableAddresses_DEV008B010910
 	case "DEV008B010710":
-		return ComObjectTableAddresses_DEV008B010710
+		enum = ComObjectTableAddresses_DEV008B010710
 	case "DEV008B010810":
-		return ComObjectTableAddresses_DEV008B010810
+		enum = ComObjectTableAddresses_DEV008B010810
 	case "DEV008B041111":
-		return ComObjectTableAddresses_DEV008B041111
+		enum = ComObjectTableAddresses_DEV008B041111
 	case "DEV008B041211":
-		return ComObjectTableAddresses_DEV008B041211
+		enum = ComObjectTableAddresses_DEV008B041211
 	case "DEV008B041311":
-		return ComObjectTableAddresses_DEV008B041311
+		enum = ComObjectTableAddresses_DEV008B041311
 	case "DEV0064760210":
-		return ComObjectTableAddresses_DEV0064760210
+		enum = ComObjectTableAddresses_DEV0064760210
 	case "DEV006C050002":
-		return ComObjectTableAddresses_DEV006C050002
+		enum = ComObjectTableAddresses_DEV006C050002
 	case "DEV008E596010":
-		return ComObjectTableAddresses_DEV008E596010
+		enum = ComObjectTableAddresses_DEV008E596010
 	case "DEV008E593710":
-		return ComObjectTableAddresses_DEV008E593710
+		enum = ComObjectTableAddresses_DEV008E593710
 	case "DEV008E597710":
-		return ComObjectTableAddresses_DEV008E597710
+		enum = ComObjectTableAddresses_DEV008E597710
 	case "DEV008E598310":
-		return ComObjectTableAddresses_DEV008E598310
+		enum = ComObjectTableAddresses_DEV008E598310
 	case "DEV008E598910":
-		return ComObjectTableAddresses_DEV008E598910
+		enum = ComObjectTableAddresses_DEV008E598910
 	case "DEV008E598920":
-		return ComObjectTableAddresses_DEV008E598920
+		enum = ComObjectTableAddresses_DEV008E598920
 	case "DEV008E598320":
-		return ComObjectTableAddresses_DEV008E598320
+		enum = ComObjectTableAddresses_DEV008E598320
 	case "DEV008E596021":
-		return ComObjectTableAddresses_DEV008E596021
+		enum = ComObjectTableAddresses_DEV008E596021
 	case "DEV008E597721":
-		return ComObjectTableAddresses_DEV008E597721
+		enum = ComObjectTableAddresses_DEV008E597721
 	case "DEV008E587320":
-		return ComObjectTableAddresses_DEV008E587320
+		enum = ComObjectTableAddresses_DEV008E587320
 	case "DEV006C011311":
-		return ComObjectTableAddresses_DEV006C011311
+		enum = ComObjectTableAddresses_DEV006C011311
 	case "DEV008E587020":
-		return ComObjectTableAddresses_DEV008E587020
+		enum = ComObjectTableAddresses_DEV008E587020
 	case "DEV008E587220":
-		return ComObjectTableAddresses_DEV008E587220
+		enum = ComObjectTableAddresses_DEV008E587220
 	case "DEV008E587120":
-		return ComObjectTableAddresses_DEV008E587120
+		enum = ComObjectTableAddresses_DEV008E587120
 	case "DEV008E679910":
-		return ComObjectTableAddresses_DEV008E679910
+		enum = ComObjectTableAddresses_DEV008E679910
 	case "DEV008E618310":
-		return ComObjectTableAddresses_DEV008E618310
+		enum = ComObjectTableAddresses_DEV008E618310
 	case "DEV008E707910":
-		return ComObjectTableAddresses_DEV008E707910
+		enum = ComObjectTableAddresses_DEV008E707910
 	case "DEV008E676610":
-		return ComObjectTableAddresses_DEV008E676610
+		enum = ComObjectTableAddresses_DEV008E676610
 	case "DEV008E794810":
-		return ComObjectTableAddresses_DEV008E794810
+		enum = ComObjectTableAddresses_DEV008E794810
 	case "DEV008E004010":
-		return ComObjectTableAddresses_DEV008E004010
+		enum = ComObjectTableAddresses_DEV008E004010
 	case "DEV008E570910":
-		return ComObjectTableAddresses_DEV008E570910
+		enum = ComObjectTableAddresses_DEV008E570910
 	case "DEV006C011411":
-		return ComObjectTableAddresses_DEV006C011411
+		enum = ComObjectTableAddresses_DEV006C011411
 	case "DEV008E558810":
-		return ComObjectTableAddresses_DEV008E558810
+		enum = ComObjectTableAddresses_DEV008E558810
 	case "DEV008E683410":
-		return ComObjectTableAddresses_DEV008E683410
+		enum = ComObjectTableAddresses_DEV008E683410
 	case "DEV008E707710":
-		return ComObjectTableAddresses_DEV008E707710
+		enum = ComObjectTableAddresses_DEV008E707710
 	case "DEV008E707810":
-		return ComObjectTableAddresses_DEV008E707810
+		enum = ComObjectTableAddresses_DEV008E707810
 	case "DEV008E787310":
-		return ComObjectTableAddresses_DEV008E787310
+		enum = ComObjectTableAddresses_DEV008E787310
 	case "DEV008E787410":
-		return ComObjectTableAddresses_DEV008E787410
+		enum = ComObjectTableAddresses_DEV008E787410
 	case "DEV0091100013":
-		return ComObjectTableAddresses_DEV0091100013
+		enum = ComObjectTableAddresses_DEV0091100013
 	case "DEV0091100110":
-		return ComObjectTableAddresses_DEV0091100110
+		enum = ComObjectTableAddresses_DEV0091100110
 	case "DEV009A200100":
-		return ComObjectTableAddresses_DEV009A200100
+		enum = ComObjectTableAddresses_DEV009A200100
 	case "DEV009A000400":
-		return ComObjectTableAddresses_DEV009A000400
+		enum = ComObjectTableAddresses_DEV009A000400
 	case "DEV000B0A8410":
-		return ComObjectTableAddresses_DEV000B0A8410
+		enum = ComObjectTableAddresses_DEV000B0A8410
 	case "DEV009A100400":
-		return ComObjectTableAddresses_DEV009A100400
+		enum = ComObjectTableAddresses_DEV009A100400
 	case "DEV009A200C00":
-		return ComObjectTableAddresses_DEV009A200C00
+		enum = ComObjectTableAddresses_DEV009A200C00
 	case "DEV009A200E00":
-		return ComObjectTableAddresses_DEV009A200E00
+		enum = ComObjectTableAddresses_DEV009A200E00
 	case "DEV009A000201":
-		return ComObjectTableAddresses_DEV009A000201
+		enum = ComObjectTableAddresses_DEV009A000201
 	case "DEV009A000300":
-		return ComObjectTableAddresses_DEV009A000300
+		enum = ComObjectTableAddresses_DEV009A000300
 	case "DEV009A00B000":
-		return ComObjectTableAddresses_DEV009A00B000
+		enum = ComObjectTableAddresses_DEV009A00B000
 	case "DEV009A00C002":
-		return ComObjectTableAddresses_DEV009A00C002
+		enum = ComObjectTableAddresses_DEV009A00C002
 	case "DEV009E670101":
-		return ComObjectTableAddresses_DEV009E670101
+		enum = ComObjectTableAddresses_DEV009E670101
 	case "DEV009E119311":
-		return ComObjectTableAddresses_DEV009E119311
+		enum = ComObjectTableAddresses_DEV009E119311
 	case "DEV00A0B07101":
-		return ComObjectTableAddresses_DEV00A0B07101
+		enum = ComObjectTableAddresses_DEV00A0B07101
 	case "DEV000B0A7E10":
-		return ComObjectTableAddresses_DEV000B0A7E10
+		enum = ComObjectTableAddresses_DEV000B0A7E10
 	case "DEV00A0B07001":
-		return ComObjectTableAddresses_DEV00A0B07001
+		enum = ComObjectTableAddresses_DEV00A0B07001
 	case "DEV00A0B07203":
-		return ComObjectTableAddresses_DEV00A0B07203
+		enum = ComObjectTableAddresses_DEV00A0B07203
 	case "DEV00A0B02101":
-		return ComObjectTableAddresses_DEV00A0B02101
+		enum = ComObjectTableAddresses_DEV00A0B02101
 	case "DEV00A0B02401":
-		return ComObjectTableAddresses_DEV00A0B02401
+		enum = ComObjectTableAddresses_DEV00A0B02401
 	case "DEV00A0B02301":
-		return ComObjectTableAddresses_DEV00A0B02301
+		enum = ComObjectTableAddresses_DEV00A0B02301
 	case "DEV00A0B02601":
-		return ComObjectTableAddresses_DEV00A0B02601
+		enum = ComObjectTableAddresses_DEV00A0B02601
 	case "DEV00A0B02201":
-		return ComObjectTableAddresses_DEV00A0B02201
+		enum = ComObjectTableAddresses_DEV00A0B02201
 	case "DEV00A0B01902":
-		return ComObjectTableAddresses_DEV00A0B01902
+		enum = ComObjectTableAddresses_DEV00A0B01902
 	case "DEV00A2100C13":
-		return ComObjectTableAddresses_DEV00A2100C13
+		enum = ComObjectTableAddresses_DEV00A2100C13
 	case "DEV00A2300110":
-		return ComObjectTableAddresses_DEV00A2300110
+		enum = ComObjectTableAddresses_DEV00A2300110
 	case "DEV000B0A7F10":
-		return ComObjectTableAddresses_DEV000B0A7F10
+		enum = ComObjectTableAddresses_DEV000B0A7F10
 	case "DEV00A2101C11":
-		return ComObjectTableAddresses_DEV00A2101C11
+		enum = ComObjectTableAddresses_DEV00A2101C11
 	case "DEV00A600020A":
-		return ComObjectTableAddresses_DEV00A600020A
+		enum = ComObjectTableAddresses_DEV00A600020A
 	case "DEV00A6000B10":
-		return ComObjectTableAddresses_DEV00A6000B10
+		enum = ComObjectTableAddresses_DEV00A6000B10
 	case "DEV00A6000B06":
-		return ComObjectTableAddresses_DEV00A6000B06
+		enum = ComObjectTableAddresses_DEV00A6000B06
 	case "DEV00A6000B16":
-		return ComObjectTableAddresses_DEV00A6000B16
+		enum = ComObjectTableAddresses_DEV00A6000B16
 	case "DEV00A6000300":
-		return ComObjectTableAddresses_DEV00A6000300
+		enum = ComObjectTableAddresses_DEV00A6000300
 	case "DEV00A6000705":
-		return ComObjectTableAddresses_DEV00A6000705
+		enum = ComObjectTableAddresses_DEV00A6000705
 	case "DEV00A6000605":
-		return ComObjectTableAddresses_DEV00A6000605
+		enum = ComObjectTableAddresses_DEV00A6000605
 	case "DEV00A6000500":
-		return ComObjectTableAddresses_DEV00A6000500
+		enum = ComObjectTableAddresses_DEV00A6000500
 	case "DEV00A6000C10":
-		return ComObjectTableAddresses_DEV00A6000C10
+		enum = ComObjectTableAddresses_DEV00A6000C10
 	case "DEV000B0A8010":
-		return ComObjectTableAddresses_DEV000B0A8010
+		enum = ComObjectTableAddresses_DEV000B0A8010
 	case "DEV00A6000C00":
-		return ComObjectTableAddresses_DEV00A6000C00
+		enum = ComObjectTableAddresses_DEV00A6000C00
 	case "DEV00B6455301":
-		return ComObjectTableAddresses_DEV00B6455301
+		enum = ComObjectTableAddresses_DEV00B6455301
 	case "DEV00B6464101":
-		return ComObjectTableAddresses_DEV00B6464101
+		enum = ComObjectTableAddresses_DEV00B6464101
 	case "DEV00B6464201":
-		return ComObjectTableAddresses_DEV00B6464201
+		enum = ComObjectTableAddresses_DEV00B6464201
 	case "DEV00B6464501":
-		return ComObjectTableAddresses_DEV00B6464501
+		enum = ComObjectTableAddresses_DEV00B6464501
 	case "DEV00B6434201":
-		return ComObjectTableAddresses_DEV00B6434201
+		enum = ComObjectTableAddresses_DEV00B6434201
 	case "DEV00B6434202":
-		return ComObjectTableAddresses_DEV00B6434202
+		enum = ComObjectTableAddresses_DEV00B6434202
 	case "DEV00B6454101":
-		return ComObjectTableAddresses_DEV00B6454101
+		enum = ComObjectTableAddresses_DEV00B6454101
 	case "DEV00B6454201":
-		return ComObjectTableAddresses_DEV00B6454201
+		enum = ComObjectTableAddresses_DEV00B6454201
 	case "DEV00B6455001":
-		return ComObjectTableAddresses_DEV00B6455001
+		enum = ComObjectTableAddresses_DEV00B6455001
 	case "DEV000BBF9111":
-		return ComObjectTableAddresses_DEV000BBF9111
+		enum = ComObjectTableAddresses_DEV000BBF9111
 	case "DEV00B6453101":
-		return ComObjectTableAddresses_DEV00B6453101
+		enum = ComObjectTableAddresses_DEV00B6453101
 	case "DEV00B6453102":
-		return ComObjectTableAddresses_DEV00B6453102
+		enum = ComObjectTableAddresses_DEV00B6453102
 	case "DEV00B6454102":
-		return ComObjectTableAddresses_DEV00B6454102
+		enum = ComObjectTableAddresses_DEV00B6454102
 	case "DEV00B6454401":
-		return ComObjectTableAddresses_DEV00B6454401
+		enum = ComObjectTableAddresses_DEV00B6454401
 	case "DEV00B6454402":
-		return ComObjectTableAddresses_DEV00B6454402
+		enum = ComObjectTableAddresses_DEV00B6454402
 	case "DEV00B6454202":
-		return ComObjectTableAddresses_DEV00B6454202
+		enum = ComObjectTableAddresses_DEV00B6454202
 	case "DEV00B6453103":
-		return ComObjectTableAddresses_DEV00B6453103
+		enum = ComObjectTableAddresses_DEV00B6453103
 	case "DEV00B6453201":
-		return ComObjectTableAddresses_DEV00B6453201
+		enum = ComObjectTableAddresses_DEV00B6453201
 	case "DEV00B6453301":
-		return ComObjectTableAddresses_DEV00B6453301
+		enum = ComObjectTableAddresses_DEV00B6453301
 	case "DEV00B6453104":
-		return ComObjectTableAddresses_DEV00B6453104
+		enum = ComObjectTableAddresses_DEV00B6453104
 	case "DEV000B0A7810":
-		return ComObjectTableAddresses_DEV000B0A7810
+		enum = ComObjectTableAddresses_DEV000B0A7810
 	case "DEV00B6454403":
-		return ComObjectTableAddresses_DEV00B6454403
+		enum = ComObjectTableAddresses_DEV00B6454403
 	case "DEV00B6454801":
-		return ComObjectTableAddresses_DEV00B6454801
+		enum = ComObjectTableAddresses_DEV00B6454801
 	case "DEV00B6414701":
-		return ComObjectTableAddresses_DEV00B6414701
+		enum = ComObjectTableAddresses_DEV00B6414701
 	case "DEV00B6414201":
-		return ComObjectTableAddresses_DEV00B6414201
+		enum = ComObjectTableAddresses_DEV00B6414201
 	case "DEV00B6474101":
-		return ComObjectTableAddresses_DEV00B6474101
+		enum = ComObjectTableAddresses_DEV00B6474101
 	case "DEV00B6474302":
-		return ComObjectTableAddresses_DEV00B6474302
+		enum = ComObjectTableAddresses_DEV00B6474302
 	case "DEV00B6474602":
-		return ComObjectTableAddresses_DEV00B6474602
+		enum = ComObjectTableAddresses_DEV00B6474602
 	case "DEV00B6534D01":
-		return ComObjectTableAddresses_DEV00B6534D01
+		enum = ComObjectTableAddresses_DEV00B6534D01
 	case "DEV00B6535001":
-		return ComObjectTableAddresses_DEV00B6535001
+		enum = ComObjectTableAddresses_DEV00B6535001
 	case "DEV00B6455002":
-		return ComObjectTableAddresses_DEV00B6455002
+		enum = ComObjectTableAddresses_DEV00B6455002
 	case "DEV000B0A7910":
-		return ComObjectTableAddresses_DEV000B0A7910
+		enum = ComObjectTableAddresses_DEV000B0A7910
 	case "DEV00B6453701":
-		return ComObjectTableAddresses_DEV00B6453701
+		enum = ComObjectTableAddresses_DEV00B6453701
 	case "DEV00B6484101":
-		return ComObjectTableAddresses_DEV00B6484101
+		enum = ComObjectTableAddresses_DEV00B6484101
 	case "DEV00B6484201":
-		return ComObjectTableAddresses_DEV00B6484201
+		enum = ComObjectTableAddresses_DEV00B6484201
 	case "DEV00B6484202":
-		return ComObjectTableAddresses_DEV00B6484202
+		enum = ComObjectTableAddresses_DEV00B6484202
 	case "DEV00B6484301":
-		return ComObjectTableAddresses_DEV00B6484301
+		enum = ComObjectTableAddresses_DEV00B6484301
 	case "DEV00B6484102":
-		return ComObjectTableAddresses_DEV00B6484102
+		enum = ComObjectTableAddresses_DEV00B6484102
 	case "DEV00B6455101":
-		return ComObjectTableAddresses_DEV00B6455101
+		enum = ComObjectTableAddresses_DEV00B6455101
 	case "DEV00B6455003":
-		return ComObjectTableAddresses_DEV00B6455003
+		enum = ComObjectTableAddresses_DEV00B6455003
 	case "DEV00B6455102":
-		return ComObjectTableAddresses_DEV00B6455102
+		enum = ComObjectTableAddresses_DEV00B6455102
 	case "DEV00B6453702":
-		return ComObjectTableAddresses_DEV00B6453702
+		enum = ComObjectTableAddresses_DEV00B6453702
 	case "DEV0064182410":
-		return ComObjectTableAddresses_DEV0064182410
+		enum = ComObjectTableAddresses_DEV0064182410
 	case "DEV000B0A7A10":
-		return ComObjectTableAddresses_DEV000B0A7A10
+		enum = ComObjectTableAddresses_DEV000B0A7A10
 	case "DEV00B6453703":
-		return ComObjectTableAddresses_DEV00B6453703
+		enum = ComObjectTableAddresses_DEV00B6453703
 	case "DEV00B6484302":
-		return ComObjectTableAddresses_DEV00B6484302
+		enum = ComObjectTableAddresses_DEV00B6484302
 	case "DEV00B6484801":
-		return ComObjectTableAddresses_DEV00B6484801
+		enum = ComObjectTableAddresses_DEV00B6484801
 	case "DEV00B6484501":
-		return ComObjectTableAddresses_DEV00B6484501
+		enum = ComObjectTableAddresses_DEV00B6484501
 	case "DEV00B6484203":
-		return ComObjectTableAddresses_DEV00B6484203
+		enum = ComObjectTableAddresses_DEV00B6484203
 	case "DEV00B6484103":
-		return ComObjectTableAddresses_DEV00B6484103
+		enum = ComObjectTableAddresses_DEV00B6484103
 	case "DEV00B6455004":
-		return ComObjectTableAddresses_DEV00B6455004
+		enum = ComObjectTableAddresses_DEV00B6455004
 	case "DEV00B6455103":
-		return ComObjectTableAddresses_DEV00B6455103
+		enum = ComObjectTableAddresses_DEV00B6455103
 	case "DEV00B6455401":
-		return ComObjectTableAddresses_DEV00B6455401
+		enum = ComObjectTableAddresses_DEV00B6455401
 	case "DEV00B6455201":
-		return ComObjectTableAddresses_DEV00B6455201
+		enum = ComObjectTableAddresses_DEV00B6455201
 	case "DEV000BA69915":
-		return ComObjectTableAddresses_DEV000BA69915
+		enum = ComObjectTableAddresses_DEV000BA69915
 	case "DEV00B6455402":
-		return ComObjectTableAddresses_DEV00B6455402
+		enum = ComObjectTableAddresses_DEV00B6455402
 	case "DEV00B6455403":
-		return ComObjectTableAddresses_DEV00B6455403
+		enum = ComObjectTableAddresses_DEV00B6455403
 	case "DEV00B6484802":
-		return ComObjectTableAddresses_DEV00B6484802
+		enum = ComObjectTableAddresses_DEV00B6484802
 	case "DEV00B603430A":
-		return ComObjectTableAddresses_DEV00B603430A
+		enum = ComObjectTableAddresses_DEV00B603430A
 	case "DEV00B600010A":
-		return ComObjectTableAddresses_DEV00B600010A
+		enum = ComObjectTableAddresses_DEV00B600010A
 	case "DEV00B6FF110A":
-		return ComObjectTableAddresses_DEV00B6FF110A
+		enum = ComObjectTableAddresses_DEV00B6FF110A
 	case "DEV00B6434601":
-		return ComObjectTableAddresses_DEV00B6434601
+		enum = ComObjectTableAddresses_DEV00B6434601
 	case "DEV00B6434602":
-		return ComObjectTableAddresses_DEV00B6434602
+		enum = ComObjectTableAddresses_DEV00B6434602
 	case "DEV00C5070610":
-		return ComObjectTableAddresses_DEV00C5070610
+		enum = ComObjectTableAddresses_DEV00C5070610
 	case "DEV00C5070410":
-		return ComObjectTableAddresses_DEV00C5070410
+		enum = ComObjectTableAddresses_DEV00C5070410
 	case "DEV000B0A8910":
-		return ComObjectTableAddresses_DEV000B0A8910
+		enum = ComObjectTableAddresses_DEV000B0A8910
 	case "DEV00C5070210":
-		return ComObjectTableAddresses_DEV00C5070210
+		enum = ComObjectTableAddresses_DEV00C5070210
 	case "DEV00C5070E11":
-		return ComObjectTableAddresses_DEV00C5070E11
+		enum = ComObjectTableAddresses_DEV00C5070E11
 	case "DEV00C5060240":
-		return ComObjectTableAddresses_DEV00C5060240
+		enum = ComObjectTableAddresses_DEV00C5060240
 	case "DEV00C5062010":
-		return ComObjectTableAddresses_DEV00C5062010
+		enum = ComObjectTableAddresses_DEV00C5062010
 	case "DEV00C5080230":
-		return ComObjectTableAddresses_DEV00C5080230
+		enum = ComObjectTableAddresses_DEV00C5080230
 	case "DEV00C5060310":
-		return ComObjectTableAddresses_DEV00C5060310
+		enum = ComObjectTableAddresses_DEV00C5060310
 	case "DEV0002A01511":
-		return ComObjectTableAddresses_DEV0002A01511
+		enum = ComObjectTableAddresses_DEV0002A01511
 	case "DEV0002A01112":
-		return ComObjectTableAddresses_DEV0002A01112
+		enum = ComObjectTableAddresses_DEV0002A01112
 	case "DEV0002FF1140":
-		return ComObjectTableAddresses_DEV0002FF1140
+		enum = ComObjectTableAddresses_DEV0002FF1140
 	case "DEV0002A07E10":
-		return ComObjectTableAddresses_DEV0002A07E10
+		enum = ComObjectTableAddresses_DEV0002A07E10
 	case "DEV000B0A8310":
-		return ComObjectTableAddresses_DEV000B0A8310
+		enum = ComObjectTableAddresses_DEV000B0A8310
 	case "DEV0002A07213":
-		return ComObjectTableAddresses_DEV0002A07213
+		enum = ComObjectTableAddresses_DEV0002A07213
 	case "DEV0002A04A35":
-		return ComObjectTableAddresses_DEV0002A04A35
+		enum = ComObjectTableAddresses_DEV0002A04A35
 	case "DEV0002613812":
-		return ComObjectTableAddresses_DEV0002613812
+		enum = ComObjectTableAddresses_DEV0002613812
 	case "DEV0002A07420":
-		return ComObjectTableAddresses_DEV0002A07420
+		enum = ComObjectTableAddresses_DEV0002A07420
 	case "DEV0002A07520":
-		return ComObjectTableAddresses_DEV0002A07520
+		enum = ComObjectTableAddresses_DEV0002A07520
 	case "DEV0002A07B12":
-		return ComObjectTableAddresses_DEV0002A07B12
+		enum = ComObjectTableAddresses_DEV0002A07B12
 	case "DEV0002A07C12":
-		return ComObjectTableAddresses_DEV0002A07C12
+		enum = ComObjectTableAddresses_DEV0002A07C12
 	case "DEV0002A04312":
-		return ComObjectTableAddresses_DEV0002A04312
+		enum = ComObjectTableAddresses_DEV0002A04312
 	case "DEV0002A04412":
-		return ComObjectTableAddresses_DEV0002A04412
+		enum = ComObjectTableAddresses_DEV0002A04412
 	case "DEV0002A04512":
-		return ComObjectTableAddresses_DEV0002A04512
+		enum = ComObjectTableAddresses_DEV0002A04512
 	case "DEV000B0A8510":
-		return ComObjectTableAddresses_DEV000B0A8510
+		enum = ComObjectTableAddresses_DEV000B0A8510
 	case "DEV0002A04912":
-		return ComObjectTableAddresses_DEV0002A04912
+		enum = ComObjectTableAddresses_DEV0002A04912
 	case "DEV0002A05012":
-		return ComObjectTableAddresses_DEV0002A05012
+		enum = ComObjectTableAddresses_DEV0002A05012
 	case "DEV0002A01811":
-		return ComObjectTableAddresses_DEV0002A01811
+		enum = ComObjectTableAddresses_DEV0002A01811
 	case "DEV0002A03E11":
-		return ComObjectTableAddresses_DEV0002A03E11
+		enum = ComObjectTableAddresses_DEV0002A03E11
 	case "DEV0002A08711":
-		return ComObjectTableAddresses_DEV0002A08711
+		enum = ComObjectTableAddresses_DEV0002A08711
 	case "DEV0002A09311":
-		return ComObjectTableAddresses_DEV0002A09311
+		enum = ComObjectTableAddresses_DEV0002A09311
 	case "DEV0002A01011":
-		return ComObjectTableAddresses_DEV0002A01011
+		enum = ComObjectTableAddresses_DEV0002A01011
 	case "DEV0002A01622":
-		return ComObjectTableAddresses_DEV0002A01622
+		enum = ComObjectTableAddresses_DEV0002A01622
 	case "DEV0002A04210":
-		return ComObjectTableAddresses_DEV0002A04210
+		enum = ComObjectTableAddresses_DEV0002A04210
 	case "DEV0002A0C310":
-		return ComObjectTableAddresses_DEV0002A0C310
+		enum = ComObjectTableAddresses_DEV0002A0C310
 	case "DEV000B0A6319":
-		return ComObjectTableAddresses_DEV000B0A6319
+		enum = ComObjectTableAddresses_DEV000B0A6319
 	case "DEV0002A0C316":
-		return ComObjectTableAddresses_DEV0002A0C316
+		enum = ComObjectTableAddresses_DEV0002A0C316
 	case "DEV0002A04B10":
-		return ComObjectTableAddresses_DEV0002A04B10
+		enum = ComObjectTableAddresses_DEV0002A04B10
 	case "DEV0002A09B12":
-		return ComObjectTableAddresses_DEV0002A09B12
+		enum = ComObjectTableAddresses_DEV0002A09B12
 	case "DEV0002A04F13":
-		return ComObjectTableAddresses_DEV0002A04F13
+		enum = ComObjectTableAddresses_DEV0002A04F13
 	case "DEV0002A04D13":
-		return ComObjectTableAddresses_DEV0002A04D13
+		enum = ComObjectTableAddresses_DEV0002A04D13
 	case "DEV0002A04C13":
-		return ComObjectTableAddresses_DEV0002A04C13
+		enum = ComObjectTableAddresses_DEV0002A04C13
 	case "DEV0002A04E13":
-		return ComObjectTableAddresses_DEV0002A04E13
+		enum = ComObjectTableAddresses_DEV0002A04E13
 	case "DEV0002A09C12":
-		return ComObjectTableAddresses_DEV0002A09C12
+		enum = ComObjectTableAddresses_DEV0002A09C12
 	case "DEV0002A03C10":
-		return ComObjectTableAddresses_DEV0002A03C10
+		enum = ComObjectTableAddresses_DEV0002A03C10
 	case "DEV0002A0A511":
-		return ComObjectTableAddresses_DEV0002A0A511
+		enum = ComObjectTableAddresses_DEV0002A0A511
 	case "DEV000BA6CC10":
-		return ComObjectTableAddresses_DEV000BA6CC10
+		enum = ComObjectTableAddresses_DEV000BA6CC10
 	case "DEV0002A0A516":
-		return ComObjectTableAddresses_DEV0002A0A516
+		enum = ComObjectTableAddresses_DEV0002A0A516
 	case "DEV0002A0A514":
-		return ComObjectTableAddresses_DEV0002A0A514
+		enum = ComObjectTableAddresses_DEV0002A0A514
 	case "DEV0002A0A513":
-		return ComObjectTableAddresses_DEV0002A0A513
+		enum = ComObjectTableAddresses_DEV0002A0A513
 	case "DEV0002A0A512":
-		return ComObjectTableAddresses_DEV0002A0A512
+		enum = ComObjectTableAddresses_DEV0002A0A512
 	case "DEV0002A0A611":
-		return ComObjectTableAddresses_DEV0002A0A611
+		enum = ComObjectTableAddresses_DEV0002A0A611
 	case "DEV0002A0A616":
-		return ComObjectTableAddresses_DEV0002A0A616
+		enum = ComObjectTableAddresses_DEV0002A0A616
 	case "DEV0002A09111":
-		return ComObjectTableAddresses_DEV0002A09111
+		enum = ComObjectTableAddresses_DEV0002A09111
 	case "DEV0002A09211":
-		return ComObjectTableAddresses_DEV0002A09211
+		enum = ComObjectTableAddresses_DEV0002A09211
 	case "DEV0002632010":
-		return ComObjectTableAddresses_DEV0002632010
+		enum = ComObjectTableAddresses_DEV0002632010
 	case "DEV0002632020":
-		return ComObjectTableAddresses_DEV0002632020
+		enum = ComObjectTableAddresses_DEV0002632020
 	case "DEV000BA6DD10":
-		return ComObjectTableAddresses_DEV000BA6DD10
+		enum = ComObjectTableAddresses_DEV000BA6DD10
 	case "DEV0002632170":
-		return ComObjectTableAddresses_DEV0002632170
+		enum = ComObjectTableAddresses_DEV0002632170
 	case "DEV0002632040":
-		return ComObjectTableAddresses_DEV0002632040
+		enum = ComObjectTableAddresses_DEV0002632040
 	case "DEV0002A05814":
-		return ComObjectTableAddresses_DEV0002A05814
+		enum = ComObjectTableAddresses_DEV0002A05814
 	case "DEV0002A07114":
-		return ComObjectTableAddresses_DEV0002A07114
+		enum = ComObjectTableAddresses_DEV0002A07114
 	case "DEV0002134A10":
-		return ComObjectTableAddresses_DEV0002134A10
+		enum = ComObjectTableAddresses_DEV0002134A10
 	case "DEV0002A03D12":
-		return ComObjectTableAddresses_DEV0002A03D12
+		enum = ComObjectTableAddresses_DEV0002A03D12
 	case "DEV0002A03422":
-		return ComObjectTableAddresses_DEV0002A03422
+		enum = ComObjectTableAddresses_DEV0002A03422
 	case "DEV0002A03321":
-		return ComObjectTableAddresses_DEV0002A03321
+		enum = ComObjectTableAddresses_DEV0002A03321
 	case "DEV0002648B10":
-		return ComObjectTableAddresses_DEV0002648B10
+		enum = ComObjectTableAddresses_DEV0002648B10
 	case "DEV0002A09013":
-		return ComObjectTableAddresses_DEV0002A09013
+		enum = ComObjectTableAddresses_DEV0002A09013
 	case "DEV000B509E11":
-		return ComObjectTableAddresses_DEV000B509E11
+		enum = ComObjectTableAddresses_DEV000B509E11
 	case "DEV0002A08F13":
-		return ComObjectTableAddresses_DEV0002A08F13
+		enum = ComObjectTableAddresses_DEV0002A08F13
 	case "DEV0002A05510":
-		return ComObjectTableAddresses_DEV0002A05510
+		enum = ComObjectTableAddresses_DEV0002A05510
 	case "DEV0002A05910":
-		return ComObjectTableAddresses_DEV0002A05910
+		enum = ComObjectTableAddresses_DEV0002A05910
 	case "DEV0002A05326":
-		return ComObjectTableAddresses_DEV0002A05326
+		enum = ComObjectTableAddresses_DEV0002A05326
 	case "DEV0002A05428":
-		return ComObjectTableAddresses_DEV0002A05428
+		enum = ComObjectTableAddresses_DEV0002A05428
 	case "DEV0002A08411":
-		return ComObjectTableAddresses_DEV0002A08411
+		enum = ComObjectTableAddresses_DEV0002A08411
 	case "DEV0002A08511":
-		return ComObjectTableAddresses_DEV0002A08511
+		enum = ComObjectTableAddresses_DEV0002A08511
 	case "DEV0002A00F11":
-		return ComObjectTableAddresses_DEV0002A00F11
+		enum = ComObjectTableAddresses_DEV0002A00F11
 	case "DEV0002A07310":
-		return ComObjectTableAddresses_DEV0002A07310
+		enum = ComObjectTableAddresses_DEV0002A07310
 	case "DEV0002A04110":
-		return ComObjectTableAddresses_DEV0002A04110
+		enum = ComObjectTableAddresses_DEV0002A04110
 	case "DEV000B709E11":
-		return ComObjectTableAddresses_DEV000B709E11
+		enum = ComObjectTableAddresses_DEV000B709E11
 	case "DEV0002A06414":
-		return ComObjectTableAddresses_DEV0002A06414
+		enum = ComObjectTableAddresses_DEV0002A06414
 	case "DEV0002A03813":
-		return ComObjectTableAddresses_DEV0002A03813
+		enum = ComObjectTableAddresses_DEV0002A03813
 	case "DEV0002A07F13":
-		return ComObjectTableAddresses_DEV0002A07F13
+		enum = ComObjectTableAddresses_DEV0002A07F13
 	case "DEV0002A01217":
-		return ComObjectTableAddresses_DEV0002A01217
+		enum = ComObjectTableAddresses_DEV0002A01217
 	case "DEV0002A07914":
-		return ComObjectTableAddresses_DEV0002A07914
+		enum = ComObjectTableAddresses_DEV0002A07914
 	case "DEV0002A06114":
-		return ComObjectTableAddresses_DEV0002A06114
+		enum = ComObjectTableAddresses_DEV0002A06114
 	case "DEV0002A06714":
-		return ComObjectTableAddresses_DEV0002A06714
+		enum = ComObjectTableAddresses_DEV0002A06714
 	case "DEV0002A06214":
-		return ComObjectTableAddresses_DEV0002A06214
+		enum = ComObjectTableAddresses_DEV0002A06214
 	case "DEV0002A06514":
-		return ComObjectTableAddresses_DEV0002A06514
+		enum = ComObjectTableAddresses_DEV0002A06514
 	case "DEV0002A07714":
-		return ComObjectTableAddresses_DEV0002A07714
+		enum = ComObjectTableAddresses_DEV0002A07714
 	case "DEV0064182310":
-		return ComObjectTableAddresses_DEV0064182310
+		enum = ComObjectTableAddresses_DEV0064182310
 	case "DEV000B10DE11":
-		return ComObjectTableAddresses_DEV000B10DE11
+		enum = ComObjectTableAddresses_DEV000B10DE11
 	case "DEV0002A06014":
-		return ComObjectTableAddresses_DEV0002A06014
+		enum = ComObjectTableAddresses_DEV0002A06014
 	case "DEV0002A06614":
-		return ComObjectTableAddresses_DEV0002A06614
+		enum = ComObjectTableAddresses_DEV0002A06614
 	case "DEV0002A07814":
-		return ComObjectTableAddresses_DEV0002A07814
+		enum = ComObjectTableAddresses_DEV0002A07814
 	case "DEV0002A09A13":
-		return ComObjectTableAddresses_DEV0002A09A13
+		enum = ComObjectTableAddresses_DEV0002A09A13
 	case "DEV0002A00213":
-		return ComObjectTableAddresses_DEV0002A00213
+		enum = ComObjectTableAddresses_DEV0002A00213
 	case "DEV0002A00113":
-		return ComObjectTableAddresses_DEV0002A00113
+		enum = ComObjectTableAddresses_DEV0002A00113
 	case "DEV00C8272040":
-		return ComObjectTableAddresses_DEV00C8272040
+		enum = ComObjectTableAddresses_DEV00C8272040
 	case "DEV00C8272260":
-		return ComObjectTableAddresses_DEV00C8272260
+		enum = ComObjectTableAddresses_DEV00C8272260
 	case "DEV00C8272060":
-		return ComObjectTableAddresses_DEV00C8272060
+		enum = ComObjectTableAddresses_DEV00C8272060
 	case "DEV00C8272160":
-		return ComObjectTableAddresses_DEV00C8272160
+		enum = ComObjectTableAddresses_DEV00C8272160
 	case "DEV000B109E11":
-		return ComObjectTableAddresses_DEV000B109E11
+		enum = ComObjectTableAddresses_DEV000B109E11
 	case "DEV00C8272050":
-		return ComObjectTableAddresses_DEV00C8272050
+		enum = ComObjectTableAddresses_DEV00C8272050
 	case "DEV00C910BA10":
-		return ComObjectTableAddresses_DEV00C910BA10
+		enum = ComObjectTableAddresses_DEV00C910BA10
 	case "DEV00C9106D10":
-		return ComObjectTableAddresses_DEV00C9106D10
+		enum = ComObjectTableAddresses_DEV00C9106D10
 	case "DEV00C9107C20":
-		return ComObjectTableAddresses_DEV00C9107C20
+		enum = ComObjectTableAddresses_DEV00C9107C20
 	case "DEV00C9108511":
-		return ComObjectTableAddresses_DEV00C9108511
+		enum = ComObjectTableAddresses_DEV00C9108511
 	case "DEV00C9108500":
-		return ComObjectTableAddresses_DEV00C9108500
+		enum = ComObjectTableAddresses_DEV00C9108500
 	case "DEV00C9106210":
-		return ComObjectTableAddresses_DEV00C9106210
+		enum = ComObjectTableAddresses_DEV00C9106210
 	case "DEV00C9109310":
-		return ComObjectTableAddresses_DEV00C9109310
+		enum = ComObjectTableAddresses_DEV00C9109310
 	case "DEV00C9109300":
-		return ComObjectTableAddresses_DEV00C9109300
+		enum = ComObjectTableAddresses_DEV00C9109300
 	case "DEV00C9109210":
-		return ComObjectTableAddresses_DEV00C9109210
+		enum = ComObjectTableAddresses_DEV00C9109210
 	case "DEV000BB76611":
-		return ComObjectTableAddresses_DEV000BB76611
+		enum = ComObjectTableAddresses_DEV000BB76611
 	case "DEV00C9109200":
-		return ComObjectTableAddresses_DEV00C9109200
+		enum = ComObjectTableAddresses_DEV00C9109200
 	case "DEV00C9109810":
-		return ComObjectTableAddresses_DEV00C9109810
+		enum = ComObjectTableAddresses_DEV00C9109810
 	case "DEV00C9109A10":
-		return ComObjectTableAddresses_DEV00C9109A10
+		enum = ComObjectTableAddresses_DEV00C9109A10
 	case "DEV00C9109A00":
-		return ComObjectTableAddresses_DEV00C9109A00
+		enum = ComObjectTableAddresses_DEV00C9109A00
 	case "DEV00C910A420":
-		return ComObjectTableAddresses_DEV00C910A420
+		enum = ComObjectTableAddresses_DEV00C910A420
 	case "DEV00C910A110":
-		return ComObjectTableAddresses_DEV00C910A110
+		enum = ComObjectTableAddresses_DEV00C910A110
 	case "DEV00C910A100":
-		return ComObjectTableAddresses_DEV00C910A100
+		enum = ComObjectTableAddresses_DEV00C910A100
 	case "DEV00C910A010":
-		return ComObjectTableAddresses_DEV00C910A010
+		enum = ComObjectTableAddresses_DEV00C910A010
 	case "DEV00C910A000":
-		return ComObjectTableAddresses_DEV00C910A000
+		enum = ComObjectTableAddresses_DEV00C910A000
 	case "DEV00C910A310":
-		return ComObjectTableAddresses_DEV00C910A310
+		enum = ComObjectTableAddresses_DEV00C910A310
 	case "DEV000B10DA11":
-		return ComObjectTableAddresses_DEV000B10DA11
+		enum = ComObjectTableAddresses_DEV000B10DA11
 	case "DEV00C910A300":
-		return ComObjectTableAddresses_DEV00C910A300
+		enum = ComObjectTableAddresses_DEV00C910A300
 	case "DEV00C910A210":
-		return ComObjectTableAddresses_DEV00C910A210
+		enum = ComObjectTableAddresses_DEV00C910A210
 	case "DEV00C910A200":
-		return ComObjectTableAddresses_DEV00C910A200
+		enum = ComObjectTableAddresses_DEV00C910A200
 	case "DEV00C9109B10":
-		return ComObjectTableAddresses_DEV00C9109B10
+		enum = ComObjectTableAddresses_DEV00C9109B10
 	case "DEV00C9109B00":
-		return ComObjectTableAddresses_DEV00C9109B00
+		enum = ComObjectTableAddresses_DEV00C9109B00
 	case "DEV00C9106110":
-		return ComObjectTableAddresses_DEV00C9106110
+		enum = ComObjectTableAddresses_DEV00C9106110
 	case "DEV00C9109110":
-		return ComObjectTableAddresses_DEV00C9109110
+		enum = ComObjectTableAddresses_DEV00C9109110
 	case "DEV00C9109100":
-		return ComObjectTableAddresses_DEV00C9109100
+		enum = ComObjectTableAddresses_DEV00C9109100
 	case "DEV00C9109610":
-		return ComObjectTableAddresses_DEV00C9109610
+		enum = ComObjectTableAddresses_DEV00C9109610
 	case "DEV00C9109600":
-		return ComObjectTableAddresses_DEV00C9109600
+		enum = ComObjectTableAddresses_DEV00C9109600
 	case "DEV000BA76111":
-		return ComObjectTableAddresses_DEV000BA76111
+		enum = ComObjectTableAddresses_DEV000BA76111
 	case "DEV00C9109710":
-		return ComObjectTableAddresses_DEV00C9109710
+		enum = ComObjectTableAddresses_DEV00C9109710
 	case "DEV00C9109700":
-		return ComObjectTableAddresses_DEV00C9109700
+		enum = ComObjectTableAddresses_DEV00C9109700
 	case "DEV00C9109510":
-		return ComObjectTableAddresses_DEV00C9109510
+		enum = ComObjectTableAddresses_DEV00C9109510
 	case "DEV00C9109500":
-		return ComObjectTableAddresses_DEV00C9109500
+		enum = ComObjectTableAddresses_DEV00C9109500
 	case "DEV00C9109910":
-		return ComObjectTableAddresses_DEV00C9109910
+		enum = ComObjectTableAddresses_DEV00C9109910
 	case "DEV00C9109900":
-		return ComObjectTableAddresses_DEV00C9109900
+		enum = ComObjectTableAddresses_DEV00C9109900
 	case "DEV00C9109C10":
-		return ComObjectTableAddresses_DEV00C9109C10
+		enum = ComObjectTableAddresses_DEV00C9109C10
 	case "DEV00C9109C00":
-		return ComObjectTableAddresses_DEV00C9109C00
+		enum = ComObjectTableAddresses_DEV00C9109C00
 	case "DEV00C910AB10":
-		return ComObjectTableAddresses_DEV00C910AB10
+		enum = ComObjectTableAddresses_DEV00C910AB10
 	case "DEV00C910AB00":
-		return ComObjectTableAddresses_DEV00C910AB00
+		enum = ComObjectTableAddresses_DEV00C910AB00
 	case "DEV000BAA5611":
-		return ComObjectTableAddresses_DEV000BAA5611
+		enum = ComObjectTableAddresses_DEV000BAA5611
 	case "DEV00C910AC10":
-		return ComObjectTableAddresses_DEV00C910AC10
+		enum = ComObjectTableAddresses_DEV00C910AC10
 	case "DEV00C910AC00":
-		return ComObjectTableAddresses_DEV00C910AC00
+		enum = ComObjectTableAddresses_DEV00C910AC00
 	case "DEV00C910AD10":
-		return ComObjectTableAddresses_DEV00C910AD10
+		enum = ComObjectTableAddresses_DEV00C910AD10
 	case "DEV00C910AD00":
-		return ComObjectTableAddresses_DEV00C910AD00
+		enum = ComObjectTableAddresses_DEV00C910AD00
 	case "DEV00C910A810":
-		return ComObjectTableAddresses_DEV00C910A810
+		enum = ComObjectTableAddresses_DEV00C910A810
 	case "DEV00C910B010":
-		return ComObjectTableAddresses_DEV00C910B010
+		enum = ComObjectTableAddresses_DEV00C910B010
 	case "DEV00C910B310":
-		return ComObjectTableAddresses_DEV00C910B310
+		enum = ComObjectTableAddresses_DEV00C910B310
 	case "DEV00C9106311":
-		return ComObjectTableAddresses_DEV00C9106311
+		enum = ComObjectTableAddresses_DEV00C9106311
 	case "DEV00C9106111":
-		return ComObjectTableAddresses_DEV00C9106111
+		enum = ComObjectTableAddresses_DEV00C9106111
 	case "DEV00C9106510":
-		return ComObjectTableAddresses_DEV00C9106510
+		enum = ComObjectTableAddresses_DEV00C9106510
 	case "DEV000BBF9222":
-		return ComObjectTableAddresses_DEV000BBF9222
+		enum = ComObjectTableAddresses_DEV000BBF9222
 	case "DEV00C910A710":
-		return ComObjectTableAddresses_DEV00C910A710
+		enum = ComObjectTableAddresses_DEV00C910A710
 	case "DEV00C9107610":
-		return ComObjectTableAddresses_DEV00C9107610
+		enum = ComObjectTableAddresses_DEV00C9107610
 	case "DEV00C910AF10":
-		return ComObjectTableAddresses_DEV00C910AF10
+		enum = ComObjectTableAddresses_DEV00C910AF10
 	case "DEV00C910B510":
-		return ComObjectTableAddresses_DEV00C910B510
+		enum = ComObjectTableAddresses_DEV00C910B510
 	case "DEV00C910890A":
-		return ComObjectTableAddresses_DEV00C910890A
+		enum = ComObjectTableAddresses_DEV00C910890A
 	case "DEV00C9FF1012":
-		return ComObjectTableAddresses_DEV00C9FF1012
+		enum = ComObjectTableAddresses_DEV00C9FF1012
 	case "DEV00C9FF0913":
-		return ComObjectTableAddresses_DEV00C9FF0913
+		enum = ComObjectTableAddresses_DEV00C9FF0913
 	case "DEV00C9FF1112":
-		return ComObjectTableAddresses_DEV00C9FF1112
+		enum = ComObjectTableAddresses_DEV00C9FF1112
 	case "DEV00C9100310":
-		return ComObjectTableAddresses_DEV00C9100310
+		enum = ComObjectTableAddresses_DEV00C9100310
 	case "DEV00C9101110":
-		return ComObjectTableAddresses_DEV00C9101110
+		enum = ComObjectTableAddresses_DEV00C9101110
 	case "DEV0071123130":
-		return ComObjectTableAddresses_DEV0071123130
+		enum = ComObjectTableAddresses_DEV0071123130
 	case "DEV00C9101010":
-		return ComObjectTableAddresses_DEV00C9101010
+		enum = ComObjectTableAddresses_DEV00C9101010
 	case "DEV00C9103710":
-		return ComObjectTableAddresses_DEV00C9103710
+		enum = ComObjectTableAddresses_DEV00C9103710
 	case "DEV00C9101310":
-		return ComObjectTableAddresses_DEV00C9101310
+		enum = ComObjectTableAddresses_DEV00C9101310
 	case "DEV00C9FF0D12":
-		return ComObjectTableAddresses_DEV00C9FF0D12
+		enum = ComObjectTableAddresses_DEV00C9FF0D12
 	case "DEV00C9100E10":
-		return ComObjectTableAddresses_DEV00C9100E10
+		enum = ComObjectTableAddresses_DEV00C9100E10
 	case "DEV00C9100610":
-		return ComObjectTableAddresses_DEV00C9100610
+		enum = ComObjectTableAddresses_DEV00C9100610
 	case "DEV00C9100510":
-		return ComObjectTableAddresses_DEV00C9100510
+		enum = ComObjectTableAddresses_DEV00C9100510
 	case "DEV00C9100710":
-		return ComObjectTableAddresses_DEV00C9100710
+		enum = ComObjectTableAddresses_DEV00C9100710
 	case "DEV00C9FF1D20":
-		return ComObjectTableAddresses_DEV00C9FF1D20
+		enum = ComObjectTableAddresses_DEV00C9FF1D20
 	case "DEV00C9FF1C10":
-		return ComObjectTableAddresses_DEV00C9FF1C10
+		enum = ComObjectTableAddresses_DEV00C9FF1C10
 	case "DEV0071413133":
-		return ComObjectTableAddresses_DEV0071413133
+		enum = ComObjectTableAddresses_DEV0071413133
 	case "DEV00C9100810":
-		return ComObjectTableAddresses_DEV00C9100810
+		enum = ComObjectTableAddresses_DEV00C9100810
 	case "DEV00C9FF1420":
-		return ComObjectTableAddresses_DEV00C9FF1420
+		enum = ComObjectTableAddresses_DEV00C9FF1420
 	case "DEV00C9100D10":
-		return ComObjectTableAddresses_DEV00C9100D10
+		enum = ComObjectTableAddresses_DEV00C9100D10
 	case "DEV00C9101220":
-		return ComObjectTableAddresses_DEV00C9101220
+		enum = ComObjectTableAddresses_DEV00C9101220
 	case "DEV00C9102330":
-		return ComObjectTableAddresses_DEV00C9102330
+		enum = ComObjectTableAddresses_DEV00C9102330
 	case "DEV00C9102130":
-		return ComObjectTableAddresses_DEV00C9102130
+		enum = ComObjectTableAddresses_DEV00C9102130
 	case "DEV00C9102430":
-		return ComObjectTableAddresses_DEV00C9102430
+		enum = ComObjectTableAddresses_DEV00C9102430
 	case "DEV00C9100831":
-		return ComObjectTableAddresses_DEV00C9100831
+		enum = ComObjectTableAddresses_DEV00C9100831
 	case "DEV00C9102530":
-		return ComObjectTableAddresses_DEV00C9102530
+		enum = ComObjectTableAddresses_DEV00C9102530
 	case "DEV00C9100531":
-		return ComObjectTableAddresses_DEV00C9100531
+		enum = ComObjectTableAddresses_DEV00C9100531
 	case "DEV0071114019":
-		return ComObjectTableAddresses_DEV0071114019
+		enum = ComObjectTableAddresses_DEV0071114019
 	case "DEV00C9102030":
-		return ComObjectTableAddresses_DEV00C9102030
+		enum = ComObjectTableAddresses_DEV00C9102030
 	case "DEV00C9100731":
-		return ComObjectTableAddresses_DEV00C9100731
+		enum = ComObjectTableAddresses_DEV00C9100731
 	case "DEV00C9100631":
-		return ComObjectTableAddresses_DEV00C9100631
+		enum = ComObjectTableAddresses_DEV00C9100631
 	case "DEV00C9102230":
-		return ComObjectTableAddresses_DEV00C9102230
+		enum = ComObjectTableAddresses_DEV00C9102230
 	case "DEV00C9100632":
-		return ComObjectTableAddresses_DEV00C9100632
+		enum = ComObjectTableAddresses_DEV00C9100632
 	case "DEV00C9100532":
-		return ComObjectTableAddresses_DEV00C9100532
+		enum = ComObjectTableAddresses_DEV00C9100532
 	case "DEV00C9100732":
-		return ComObjectTableAddresses_DEV00C9100732
+		enum = ComObjectTableAddresses_DEV00C9100732
 	case "DEV00C9100832":
-		return ComObjectTableAddresses_DEV00C9100832
+		enum = ComObjectTableAddresses_DEV00C9100832
 	case "DEV00C9102532":
-		return ComObjectTableAddresses_DEV00C9102532
+		enum = ComObjectTableAddresses_DEV00C9102532
 	case "DEV00C9102132":
-		return ComObjectTableAddresses_DEV00C9102132
+		enum = ComObjectTableAddresses_DEV00C9102132
 	case "DEV0064705C01":
-		return ComObjectTableAddresses_DEV0064705C01
+		enum = ComObjectTableAddresses_DEV0064705C01
 	case "DEV007111306C":
-		return ComObjectTableAddresses_DEV007111306C
+		enum = ComObjectTableAddresses_DEV007111306C
 	case "DEV00C9102332":
-		return ComObjectTableAddresses_DEV00C9102332
+		enum = ComObjectTableAddresses_DEV00C9102332
 	case "DEV00C9102432":
-		return ComObjectTableAddresses_DEV00C9102432
+		enum = ComObjectTableAddresses_DEV00C9102432
 	case "DEV00C9102032":
-		return ComObjectTableAddresses_DEV00C9102032
+		enum = ComObjectTableAddresses_DEV00C9102032
 	case "DEV00C9102232":
-		return ComObjectTableAddresses_DEV00C9102232
+		enum = ComObjectTableAddresses_DEV00C9102232
 	case "DEV00C9104432":
-		return ComObjectTableAddresses_DEV00C9104432
+		enum = ComObjectTableAddresses_DEV00C9104432
 	case "DEV00C9100D11":
-		return ComObjectTableAddresses_DEV00C9100D11
+		enum = ComObjectTableAddresses_DEV00C9100D11
 	case "DEV00C9100633":
-		return ComObjectTableAddresses_DEV00C9100633
+		enum = ComObjectTableAddresses_DEV00C9100633
 	case "DEV00C9100533":
-		return ComObjectTableAddresses_DEV00C9100533
+		enum = ComObjectTableAddresses_DEV00C9100533
 	case "DEV00C9100733":
-		return ComObjectTableAddresses_DEV00C9100733
+		enum = ComObjectTableAddresses_DEV00C9100733
 	case "DEV00C9100833":
-		return ComObjectTableAddresses_DEV00C9100833
+		enum = ComObjectTableAddresses_DEV00C9100833
 	case "DEV0071231112":
-		return ComObjectTableAddresses_DEV0071231112
+		enum = ComObjectTableAddresses_DEV0071231112
 	case "DEV00C9102533":
-		return ComObjectTableAddresses_DEV00C9102533
+		enum = ComObjectTableAddresses_DEV00C9102533
 	case "DEV00C9102133":
-		return ComObjectTableAddresses_DEV00C9102133
+		enum = ComObjectTableAddresses_DEV00C9102133
 	case "DEV00C9102333":
-		return ComObjectTableAddresses_DEV00C9102333
+		enum = ComObjectTableAddresses_DEV00C9102333
 	case "DEV00C9102433":
-		return ComObjectTableAddresses_DEV00C9102433
+		enum = ComObjectTableAddresses_DEV00C9102433
 	case "DEV00C9102033":
-		return ComObjectTableAddresses_DEV00C9102033
+		enum = ComObjectTableAddresses_DEV00C9102033
 	case "DEV00C9102233":
-		return ComObjectTableAddresses_DEV00C9102233
+		enum = ComObjectTableAddresses_DEV00C9102233
 	case "DEV00C9104810":
-		return ComObjectTableAddresses_DEV00C9104810
+		enum = ComObjectTableAddresses_DEV00C9104810
 	case "DEV00C9FF1A11":
-		return ComObjectTableAddresses_DEV00C9FF1A11
+		enum = ComObjectTableAddresses_DEV00C9FF1A11
 	case "DEV00C9100212":
-		return ComObjectTableAddresses_DEV00C9100212
+		enum = ComObjectTableAddresses_DEV00C9100212
 	case "DEV00C9FF0A11":
-		return ComObjectTableAddresses_DEV00C9FF0A11
+		enum = ComObjectTableAddresses_DEV00C9FF0A11
 	case "DEV0071113080":
-		return ComObjectTableAddresses_DEV0071113080
+		enum = ComObjectTableAddresses_DEV0071113080
 	case "DEV00C9FF0C12":
-		return ComObjectTableAddresses_DEV00C9FF0C12
+		enum = ComObjectTableAddresses_DEV00C9FF0C12
 	case "DEV00C9100112":
-		return ComObjectTableAddresses_DEV00C9100112
+		enum = ComObjectTableAddresses_DEV00C9100112
 	case "DEV00C9FF1911":
-		return ComObjectTableAddresses_DEV00C9FF1911
+		enum = ComObjectTableAddresses_DEV00C9FF1911
 	case "DEV00C9FF0B12":
-		return ComObjectTableAddresses_DEV00C9FF0B12
+		enum = ComObjectTableAddresses_DEV00C9FF0B12
 	case "DEV00C9FF0715":
-		return ComObjectTableAddresses_DEV00C9FF0715
+		enum = ComObjectTableAddresses_DEV00C9FF0715
 	case "DEV00C9FF1B10":
-		return ComObjectTableAddresses_DEV00C9FF1B10
+		enum = ComObjectTableAddresses_DEV00C9FF1B10
 	case "DEV00C9101610":
-		return ComObjectTableAddresses_DEV00C9101610
+		enum = ComObjectTableAddresses_DEV00C9101610
 	case "DEV00C9FF1B11":
-		return ComObjectTableAddresses_DEV00C9FF1B11
+		enum = ComObjectTableAddresses_DEV00C9FF1B11
 	case "DEV00C9101611":
-		return ComObjectTableAddresses_DEV00C9101611
+		enum = ComObjectTableAddresses_DEV00C9101611
 	case "DEV00C9101612":
-		return ComObjectTableAddresses_DEV00C9101612
+		enum = ComObjectTableAddresses_DEV00C9101612
 	case "DEV0071321212":
-		return ComObjectTableAddresses_DEV0071321212
+		enum = ComObjectTableAddresses_DEV0071321212
 	case "DEV00C9FF0F11":
-		return ComObjectTableAddresses_DEV00C9FF0F11
+		enum = ComObjectTableAddresses_DEV00C9FF0F11
 	case "DEV00C910B710":
-		return ComObjectTableAddresses_DEV00C910B710
+		enum = ComObjectTableAddresses_DEV00C910B710
 	case "DEV00C9FF1E30":
-		return ComObjectTableAddresses_DEV00C9FF1E30
+		enum = ComObjectTableAddresses_DEV00C9FF1E30
 	case "DEV00C9100410":
-		return ComObjectTableAddresses_DEV00C9100410
+		enum = ComObjectTableAddresses_DEV00C9100410
 	case "DEV00C9106410":
-		return ComObjectTableAddresses_DEV00C9106410
+		enum = ComObjectTableAddresses_DEV00C9106410
 	case "DEV00C9106710":
-		return ComObjectTableAddresses_DEV00C9106710
+		enum = ComObjectTableAddresses_DEV00C9106710
 	case "DEV00C9106700":
-		return ComObjectTableAddresses_DEV00C9106700
+		enum = ComObjectTableAddresses_DEV00C9106700
 	case "DEV00C9106810":
-		return ComObjectTableAddresses_DEV00C9106810
+		enum = ComObjectTableAddresses_DEV00C9106810
 	case "DEV00C9106800":
-		return ComObjectTableAddresses_DEV00C9106800
+		enum = ComObjectTableAddresses_DEV00C9106800
 	case "DEV00C9106010":
-		return ComObjectTableAddresses_DEV00C9106010
+		enum = ComObjectTableAddresses_DEV00C9106010
 	case "DEV0071321113":
-		return ComObjectTableAddresses_DEV0071321113
+		enum = ComObjectTableAddresses_DEV0071321113
 	case "DEV00C9106000":
-		return ComObjectTableAddresses_DEV00C9106000
+		enum = ComObjectTableAddresses_DEV00C9106000
 	case "DEV00C9106310":
-		return ComObjectTableAddresses_DEV00C9106310
+		enum = ComObjectTableAddresses_DEV00C9106310
 	case "DEV00C9107110":
-		return ComObjectTableAddresses_DEV00C9107110
+		enum = ComObjectTableAddresses_DEV00C9107110
 	case "DEV00C9107100":
-		return ComObjectTableAddresses_DEV00C9107100
+		enum = ComObjectTableAddresses_DEV00C9107100
 	case "DEV00C9107210":
-		return ComObjectTableAddresses_DEV00C9107210
+		enum = ComObjectTableAddresses_DEV00C9107210
 	case "DEV00C9107200":
-		return ComObjectTableAddresses_DEV00C9107200
+		enum = ComObjectTableAddresses_DEV00C9107200
 	case "DEV00C9107310":
-		return ComObjectTableAddresses_DEV00C9107310
+		enum = ComObjectTableAddresses_DEV00C9107310
 	case "DEV00C9107300":
-		return ComObjectTableAddresses_DEV00C9107300
+		enum = ComObjectTableAddresses_DEV00C9107300
 	case "DEV00C9107010":
-		return ComObjectTableAddresses_DEV00C9107010
+		enum = ComObjectTableAddresses_DEV00C9107010
 	case "DEV00C9107000":
-		return ComObjectTableAddresses_DEV00C9107000
+		enum = ComObjectTableAddresses_DEV00C9107000
 	case "DEV0071322212":
-		return ComObjectTableAddresses_DEV0071322212
+		enum = ComObjectTableAddresses_DEV0071322212
 	case "DEV00C9107A20":
-		return ComObjectTableAddresses_DEV00C9107A20
+		enum = ComObjectTableAddresses_DEV00C9107A20
 	case "DEV00C9107A00":
-		return ComObjectTableAddresses_DEV00C9107A00
+		enum = ComObjectTableAddresses_DEV00C9107A00
 	case "DEV00C9107B20":
-		return ComObjectTableAddresses_DEV00C9107B20
+		enum = ComObjectTableAddresses_DEV00C9107B20
 	case "DEV00C9107B00":
-		return ComObjectTableAddresses_DEV00C9107B00
+		enum = ComObjectTableAddresses_DEV00C9107B00
 	case "DEV00C9107820":
-		return ComObjectTableAddresses_DEV00C9107820
+		enum = ComObjectTableAddresses_DEV00C9107820
 	case "DEV00C9107800":
-		return ComObjectTableAddresses_DEV00C9107800
+		enum = ComObjectTableAddresses_DEV00C9107800
 	case "DEV00C9107920":
-		return ComObjectTableAddresses_DEV00C9107920
+		enum = ComObjectTableAddresses_DEV00C9107920
 	case "DEV00C9107900":
-		return ComObjectTableAddresses_DEV00C9107900
+		enum = ComObjectTableAddresses_DEV00C9107900
 	case "DEV00C9104433":
-		return ComObjectTableAddresses_DEV00C9104433
+		enum = ComObjectTableAddresses_DEV00C9104433
 	case "DEV00C9107C11":
-		return ComObjectTableAddresses_DEV00C9107C11
+		enum = ComObjectTableAddresses_DEV00C9107C11
 	case "DEV0071322112":
-		return ComObjectTableAddresses_DEV0071322112
+		enum = ComObjectTableAddresses_DEV0071322112
 	case "DEV00C9106E10":
-		return ComObjectTableAddresses_DEV00C9106E10
+		enum = ComObjectTableAddresses_DEV00C9106E10
 	case "DEV00C9107711":
-		return ComObjectTableAddresses_DEV00C9107711
+		enum = ComObjectTableAddresses_DEV00C9107711
 	case "DEV00C9108310":
-		return ComObjectTableAddresses_DEV00C9108310
+		enum = ComObjectTableAddresses_DEV00C9108310
 	case "DEV00C9108210":
-		return ComObjectTableAddresses_DEV00C9108210
+		enum = ComObjectTableAddresses_DEV00C9108210
 	case "DEV00C9108610":
-		return ComObjectTableAddresses_DEV00C9108610
+		enum = ComObjectTableAddresses_DEV00C9108610
 	case "DEV00C9107D10":
-		return ComObjectTableAddresses_DEV00C9107D10
+		enum = ComObjectTableAddresses_DEV00C9107D10
 	case "DEV00CE648B10":
-		return ComObjectTableAddresses_DEV00CE648B10
+		enum = ComObjectTableAddresses_DEV00CE648B10
 	case "DEV00CE494513":
-		return ComObjectTableAddresses_DEV00CE494513
+		enum = ComObjectTableAddresses_DEV00CE494513
 	case "DEV00CE494311":
-		return ComObjectTableAddresses_DEV00CE494311
+		enum = ComObjectTableAddresses_DEV00CE494311
 	case "DEV00CE494810":
-		return ComObjectTableAddresses_DEV00CE494810
+		enum = ComObjectTableAddresses_DEV00CE494810
 	case "DEV0071322312":
-		return ComObjectTableAddresses_DEV0071322312
+		enum = ComObjectTableAddresses_DEV0071322312
 	case "DEV00CE494712":
-		return ComObjectTableAddresses_DEV00CE494712
+		enum = ComObjectTableAddresses_DEV00CE494712
 	case "DEV00CE494012":
-		return ComObjectTableAddresses_DEV00CE494012
+		enum = ComObjectTableAddresses_DEV00CE494012
 	case "DEV00CE494111":
-		return ComObjectTableAddresses_DEV00CE494111
+		enum = ComObjectTableAddresses_DEV00CE494111
 	case "DEV00CE494210":
-		return ComObjectTableAddresses_DEV00CE494210
+		enum = ComObjectTableAddresses_DEV00CE494210
 	case "DEV00CE494610":
-		return ComObjectTableAddresses_DEV00CE494610
+		enum = ComObjectTableAddresses_DEV00CE494610
 	case "DEV00CE494412":
-		return ComObjectTableAddresses_DEV00CE494412
+		enum = ComObjectTableAddresses_DEV00CE494412
 	case "DEV00D0660212":
-		return ComObjectTableAddresses_DEV00D0660212
+		enum = ComObjectTableAddresses_DEV00D0660212
 	case "DEV00E8000A10":
-		return ComObjectTableAddresses_DEV00E8000A10
+		enum = ComObjectTableAddresses_DEV00E8000A10
 	case "DEV00E8000B10":
-		return ComObjectTableAddresses_DEV00E8000B10
+		enum = ComObjectTableAddresses_DEV00E8000B10
 	case "DEV00E8000910":
-		return ComObjectTableAddresses_DEV00E8000910
+		enum = ComObjectTableAddresses_DEV00E8000910
 	case "DEV0071122124":
-		return ComObjectTableAddresses_DEV0071122124
+		enum = ComObjectTableAddresses_DEV0071122124
 	case "DEV00E8001112":
-		return ComObjectTableAddresses_DEV00E8001112
+		enum = ComObjectTableAddresses_DEV00E8001112
 	case "DEV00E8000C14":
-		return ComObjectTableAddresses_DEV00E8000C14
+		enum = ComObjectTableAddresses_DEV00E8000C14
 	case "DEV00E8000D13":
-		return ComObjectTableAddresses_DEV00E8000D13
+		enum = ComObjectTableAddresses_DEV00E8000D13
 	case "DEV00E8000E12":
-		return ComObjectTableAddresses_DEV00E8000E12
+		enum = ComObjectTableAddresses_DEV00E8000E12
 	case "DEV00E8001310":
-		return ComObjectTableAddresses_DEV00E8001310
+		enum = ComObjectTableAddresses_DEV00E8001310
 	case "DEV00E8001410":
-		return ComObjectTableAddresses_DEV00E8001410
+		enum = ComObjectTableAddresses_DEV00E8001410
 	case "DEV00E8001510":
-		return ComObjectTableAddresses_DEV00E8001510
+		enum = ComObjectTableAddresses_DEV00E8001510
 	case "DEV00E8000F10":
-		return ComObjectTableAddresses_DEV00E8000F10
+		enum = ComObjectTableAddresses_DEV00E8000F10
 	case "DEV00E8001010":
-		return ComObjectTableAddresses_DEV00E8001010
+		enum = ComObjectTableAddresses_DEV00E8001010
 	case "DEV00E8000612":
-		return ComObjectTableAddresses_DEV00E8000612
+		enum = ComObjectTableAddresses_DEV00E8000612
 	case "DEV0071122135":
-		return ComObjectTableAddresses_DEV0071122135
+		enum = ComObjectTableAddresses_DEV0071122135
 	case "DEV00E8000812":
-		return ComObjectTableAddresses_DEV00E8000812
+		enum = ComObjectTableAddresses_DEV00E8000812
 	case "DEV00E8000712":
-		return ComObjectTableAddresses_DEV00E8000712
+		enum = ComObjectTableAddresses_DEV00E8000712
 	case "DEV00EE7FFF10":
-		return ComObjectTableAddresses_DEV00EE7FFF10
+		enum = ComObjectTableAddresses_DEV00EE7FFF10
 	case "DEV00F4501311":
-		return ComObjectTableAddresses_DEV00F4501311
+		enum = ComObjectTableAddresses_DEV00F4501311
 	case "DEV00F4B00911":
-		return ComObjectTableAddresses_DEV00F4B00911
+		enum = ComObjectTableAddresses_DEV00F4B00911
 	case "DEV0019E20111":
-		return ComObjectTableAddresses_DEV0019E20111
+		enum = ComObjectTableAddresses_DEV0019E20111
 	case "DEV0019E20210":
-		return ComObjectTableAddresses_DEV0019E20210
+		enum = ComObjectTableAddresses_DEV0019E20210
 	case "DEV0019E30C11":
-		return ComObjectTableAddresses_DEV0019E30C11
+		enum = ComObjectTableAddresses_DEV0019E30C11
 	case "DEV0019E11310":
-		return ComObjectTableAddresses_DEV0019E11310
+		enum = ComObjectTableAddresses_DEV0019E11310
 	case "DEV0019E11210":
-		return ComObjectTableAddresses_DEV0019E11210
+		enum = ComObjectTableAddresses_DEV0019E11210
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ComObjectTableAddressesKnows(value uint16) bool {
@@ -18870,10 +18874,11 @@ func ComObjectTableAddressesParse(readBuffer utils.ReadBuffer) (ComObjectTableAd
 }
 
 func (e ComObjectTableAddresses) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("ComObjectTableAddresses", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("ComObjectTableAddresses", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ComObjectTableAddresses) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ComObjectTableAddresses) PLC4XEnumName() string {
 	switch e {
 	case ComObjectTableAddresses_DEV0001914201:
 		return "DEV0001914201"
@@ -22632,5 +22637,5 @@ func (e ComObjectTableAddresses) name() string {
 }
 
 func (e ComObjectTableAddresses) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -90,30 +90,34 @@ func CommandIdByValue(value uint16) CommandId {
 	return 0
 }
 
-func CommandIdByName(value string) CommandId {
+func CommandIdByName(value string) (enum CommandId, ok bool) {
+	ok = true
 	switch value {
 	case "INVALID":
-		return CommandId_INVALID
+		enum = CommandId_INVALID
 	case "ADS_READ_DEVICE_INFO":
-		return CommandId_ADS_READ_DEVICE_INFO
+		enum = CommandId_ADS_READ_DEVICE_INFO
 	case "ADS_READ":
-		return CommandId_ADS_READ
+		enum = CommandId_ADS_READ
 	case "ADS_WRITE":
-		return CommandId_ADS_WRITE
+		enum = CommandId_ADS_WRITE
 	case "ADS_READ_STATE":
-		return CommandId_ADS_READ_STATE
+		enum = CommandId_ADS_READ_STATE
 	case "ADS_WRITE_CONTROL":
-		return CommandId_ADS_WRITE_CONTROL
+		enum = CommandId_ADS_WRITE_CONTROL
 	case "ADS_ADD_DEVICE_NOTIFICATION":
-		return CommandId_ADS_ADD_DEVICE_NOTIFICATION
+		enum = CommandId_ADS_ADD_DEVICE_NOTIFICATION
 	case "ADS_DELETE_DEVICE_NOTIFICATION":
-		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+		enum = CommandId_ADS_DELETE_DEVICE_NOTIFICATION
 	case "ADS_DEVICE_NOTIFICATION":
-		return CommandId_ADS_DEVICE_NOTIFICATION
+		enum = CommandId_ADS_DEVICE_NOTIFICATION
 	case "ADS_READ_WRITE":
-		return CommandId_ADS_READ_WRITE
+		enum = CommandId_ADS_READ_WRITE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func CommandIdKnows(value uint16) bool {
@@ -152,10 +156,11 @@ func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {
 }
 
 func (e CommandId) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("CommandId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("CommandId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e CommandId) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CommandId) PLC4XEnumName() string {
 	switch e {
 	case CommandId_INVALID:
 		return "INVALID"
@@ -182,5 +187,5 @@ func (e CommandId) name() string {
 }
 
 func (e CommandId) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

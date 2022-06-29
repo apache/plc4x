@@ -435,68 +435,72 @@ func DeviceDescriptorByValue(value uint16) DeviceDescriptor {
 	return 0
 }
 
-func DeviceDescriptorByName(value string) DeviceDescriptor {
+func DeviceDescriptorByName(value string) (enum DeviceDescriptor, ok bool) {
+	ok = true
 	switch value {
 	case "TP1_BCU_1_SYSTEM_1_0":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0
+		enum = DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0
 	case "TP1_BCU_1_SYSTEM_1_1":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1
+		enum = DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1
 	case "TP1_BCU_1_SYSTEM_1_2":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2
+		enum = DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2
 	case "TP1_BCU_1_SYSTEM_1_3":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3
+		enum = DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3
 	case "TP1_BCU_2_SYSTEM_2_0":
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0
+		enum = DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0
 	case "TP1_BCU_2_SYSTEM_2_1":
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1
+		enum = DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1
 	case "TP1_BCU_2_SYSTEM_2_5":
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5
+		enum = DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5
 	case "TP1_SYSTEM_300":
-		return DeviceDescriptor_TP1_SYSTEM_300
+		enum = DeviceDescriptor_TP1_SYSTEM_300
 	case "TP1_BIM_M112_0":
-		return DeviceDescriptor_TP1_BIM_M112_0
+		enum = DeviceDescriptor_TP1_BIM_M112_0
 	case "TP1_BIM_M112_1":
-		return DeviceDescriptor_TP1_BIM_M112_1
+		enum = DeviceDescriptor_TP1_BIM_M112_1
 	case "TP1_BIM_M112_5":
-		return DeviceDescriptor_TP1_BIM_M112_5
+		enum = DeviceDescriptor_TP1_BIM_M112_5
 	case "TP1_SYSTEM_B":
-		return DeviceDescriptor_TP1_SYSTEM_B
+		enum = DeviceDescriptor_TP1_SYSTEM_B
 	case "TP1_IR_DECODER_0":
-		return DeviceDescriptor_TP1_IR_DECODER_0
+		enum = DeviceDescriptor_TP1_IR_DECODER_0
 	case "TP1_IR_DECODER_1":
-		return DeviceDescriptor_TP1_IR_DECODER_1
+		enum = DeviceDescriptor_TP1_IR_DECODER_1
 	case "TP1_COUPLER_0":
-		return DeviceDescriptor_TP1_COUPLER_0
+		enum = DeviceDescriptor_TP1_COUPLER_0
 	case "TP1_COUPLER_1":
-		return DeviceDescriptor_TP1_COUPLER_1
+		enum = DeviceDescriptor_TP1_COUPLER_1
 	case "TP1_COUPLER_2":
-		return DeviceDescriptor_TP1_COUPLER_2
+		enum = DeviceDescriptor_TP1_COUPLER_2
 	case "TP1_KNXNETIP_ROUTER":
-		return DeviceDescriptor_TP1_KNXNETIP_ROUTER
+		enum = DeviceDescriptor_TP1_KNXNETIP_ROUTER
 	case "TP1_NONE_D":
-		return DeviceDescriptor_TP1_NONE_D
+		enum = DeviceDescriptor_TP1_NONE_D
 	case "TP1_NONE_E":
-		return DeviceDescriptor_TP1_NONE_E
+		enum = DeviceDescriptor_TP1_NONE_E
 	case "PL110_BCU_1_2":
-		return DeviceDescriptor_PL110_BCU_1_2
+		enum = DeviceDescriptor_PL110_BCU_1_2
 	case "PL110_BCU_1_3":
-		return DeviceDescriptor_PL110_BCU_1_3
+		enum = DeviceDescriptor_PL110_BCU_1_3
 	case "PL110_SYSTEM_B":
-		return DeviceDescriptor_PL110_SYSTEM_B
+		enum = DeviceDescriptor_PL110_SYSTEM_B
 	case "PL110_MEDIA_COUPLER_PL_TP":
-		return DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP
+		enum = DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP
 	case "RF_BI_DIRECTIONAL_DEVICES":
-		return DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES
+		enum = DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES
 	case "RF_UNI_DIRECTIONAL_DEVICES":
-		return DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES
+		enum = DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES
 	case "TP0_BCU_1":
-		return DeviceDescriptor_TP0_BCU_1
+		enum = DeviceDescriptor_TP0_BCU_1
 	case "PL132_BCU_1":
-		return DeviceDescriptor_PL132_BCU_1
+		enum = DeviceDescriptor_PL132_BCU_1
 	case "KNX_IP_SYSTEM7":
-		return DeviceDescriptor_KNX_IP_SYSTEM7
+		enum = DeviceDescriptor_KNX_IP_SYSTEM7
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func DeviceDescriptorKnows(value uint16) bool {
@@ -535,10 +539,11 @@ func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error
 }
 
 func (e DeviceDescriptor) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e DeviceDescriptor) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DeviceDescriptor) PLC4XEnumName() string {
 	switch e {
 	case DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0:
 		return "TP1_BCU_1_SYSTEM_1_0"
@@ -603,5 +608,5 @@ func (e DeviceDescriptor) name() string {
 }
 
 func (e DeviceDescriptor) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

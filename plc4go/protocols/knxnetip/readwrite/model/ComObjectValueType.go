@@ -188,40 +188,44 @@ func ComObjectValueTypeByValue(value uint8) ComObjectValueType {
 	return 0
 }
 
-func ComObjectValueTypeByName(value string) ComObjectValueType {
+func ComObjectValueTypeByName(value string) (enum ComObjectValueType, ok bool) {
+	ok = true
 	switch value {
 	case "BIT1":
-		return ComObjectValueType_BIT1
+		enum = ComObjectValueType_BIT1
 	case "BIT2":
-		return ComObjectValueType_BIT2
+		enum = ComObjectValueType_BIT2
 	case "BIT3":
-		return ComObjectValueType_BIT3
+		enum = ComObjectValueType_BIT3
 	case "BIT4":
-		return ComObjectValueType_BIT4
+		enum = ComObjectValueType_BIT4
 	case "BIT5":
-		return ComObjectValueType_BIT5
+		enum = ComObjectValueType_BIT5
 	case "BIT6":
-		return ComObjectValueType_BIT6
+		enum = ComObjectValueType_BIT6
 	case "BIT7":
-		return ComObjectValueType_BIT7
+		enum = ComObjectValueType_BIT7
 	case "BYTE1":
-		return ComObjectValueType_BYTE1
+		enum = ComObjectValueType_BYTE1
 	case "BYTE2":
-		return ComObjectValueType_BYTE2
+		enum = ComObjectValueType_BYTE2
 	case "BYTE3":
-		return ComObjectValueType_BYTE3
+		enum = ComObjectValueType_BYTE3
 	case "BYTE4":
-		return ComObjectValueType_BYTE4
+		enum = ComObjectValueType_BYTE4
 	case "BYTE6":
-		return ComObjectValueType_BYTE6
+		enum = ComObjectValueType_BYTE6
 	case "BYTE8":
-		return ComObjectValueType_BYTE8
+		enum = ComObjectValueType_BYTE8
 	case "BYTE10":
-		return ComObjectValueType_BYTE10
+		enum = ComObjectValueType_BYTE10
 	case "BYTE14":
-		return ComObjectValueType_BYTE14
+		enum = ComObjectValueType_BYTE14
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ComObjectValueTypeKnows(value uint8) bool {
@@ -260,10 +264,11 @@ func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, e
 }
 
 func (e ComObjectValueType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ComObjectValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ComObjectValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ComObjectValueType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ComObjectValueType) PLC4XEnumName() string {
 	switch e {
 	case ComObjectValueType_BIT1:
 		return "BIT1"
@@ -300,5 +305,5 @@ func (e ComObjectValueType) name() string {
 }
 
 func (e ComObjectValueType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

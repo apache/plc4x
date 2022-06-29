@@ -66,18 +66,22 @@ func BACnetProtocolLevelByValue(value uint8) BACnetProtocolLevel {
 	return 0
 }
 
-func BACnetProtocolLevelByName(value string) BACnetProtocolLevel {
+func BACnetProtocolLevelByName(value string) (enum BACnetProtocolLevel, ok bool) {
+	ok = true
 	switch value {
 	case "PHYSICAL":
-		return BACnetProtocolLevel_PHYSICAL
+		enum = BACnetProtocolLevel_PHYSICAL
 	case "PROTOCOL":
-		return BACnetProtocolLevel_PROTOCOL
+		enum = BACnetProtocolLevel_PROTOCOL
 	case "BACNET_APPLICATION":
-		return BACnetProtocolLevel_BACNET_APPLICATION
+		enum = BACnetProtocolLevel_BACNET_APPLICATION
 	case "NON_BACNET_APPLICATION":
-		return BACnetProtocolLevel_NON_BACNET_APPLICATION
+		enum = BACnetProtocolLevel_NON_BACNET_APPLICATION
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetProtocolLevelKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetProtocolLevelParse(readBuffer utils.ReadBuffer) (BACnetProtocolLevel,
 }
 
 func (e BACnetProtocolLevel) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetProtocolLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetProtocolLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetProtocolLevel) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetProtocolLevel) PLC4XEnumName() string {
 	switch e {
 	case BACnetProtocolLevel_PHYSICAL:
 		return "PHYSICAL"
@@ -134,5 +139,5 @@ func (e BACnetProtocolLevel) name() string {
 }
 
 func (e BACnetProtocolLevel) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

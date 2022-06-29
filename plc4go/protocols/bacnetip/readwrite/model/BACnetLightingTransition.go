@@ -66,18 +66,22 @@ func BACnetLightingTransitionByValue(value uint8) BACnetLightingTransition {
 	return 0
 }
 
-func BACnetLightingTransitionByName(value string) BACnetLightingTransition {
+func BACnetLightingTransitionByName(value string) (enum BACnetLightingTransition, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetLightingTransition_NONE
+		enum = BACnetLightingTransition_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
 	case "FADE":
-		return BACnetLightingTransition_FADE
+		enum = BACnetLightingTransition_FADE
 	case "RAMP":
-		return BACnetLightingTransition_RAMP
+		enum = BACnetLightingTransition_RAMP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLightingTransitionKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetLightingTransitionParse(readBuffer utils.ReadBuffer) (BACnetLightingT
 }
 
 func (e BACnetLightingTransition) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLightingTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLightingTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLightingTransition) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLightingTransition) PLC4XEnumName() string {
 	switch e {
 	case BACnetLightingTransition_NONE:
 		return "NONE"
@@ -134,5 +139,5 @@ func (e BACnetLightingTransition) name() string {
 }
 
 func (e BACnetLightingTransition) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -62,16 +62,20 @@ func DestinationAddressTypeByValue(value uint8) DestinationAddressType {
 	return 0
 }
 
-func DestinationAddressTypeByName(value string) DestinationAddressType {
+func DestinationAddressTypeByName(value string) (enum DestinationAddressType, ok bool) {
+	ok = true
 	switch value {
 	case "PointToPointToMultiPoint":
-		return DestinationAddressType_PointToPointToMultiPoint
+		enum = DestinationAddressType_PointToPointToMultiPoint
 	case "PointToMultiPoint":
-		return DestinationAddressType_PointToMultiPoint
+		enum = DestinationAddressType_PointToMultiPoint
 	case "PointToPoint":
-		return DestinationAddressType_PointToPoint
+		enum = DestinationAddressType_PointToPoint
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func DestinationAddressTypeKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func DestinationAddressTypeParse(readBuffer utils.ReadBuffer) (DestinationAddres
 }
 
 func (e DestinationAddressType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DestinationAddressType", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("DestinationAddressType", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e DestinationAddressType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DestinationAddressType) PLC4XEnumName() string {
 	switch e {
 	case DestinationAddressType_PointToPointToMultiPoint:
 		return "PointToPointToMultiPoint"
@@ -126,5 +131,5 @@ func (e DestinationAddressType) name() string {
 }
 
 func (e DestinationAddressType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

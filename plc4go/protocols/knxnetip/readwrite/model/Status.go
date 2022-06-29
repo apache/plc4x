@@ -98,34 +98,38 @@ func StatusByValue(value uint8) Status {
 	return 0
 }
 
-func StatusByName(value string) Status {
+func StatusByName(value string) (enum Status, ok bool) {
+	ok = true
 	switch value {
 	case "NO_ERROR":
-		return Status_NO_ERROR
+		enum = Status_NO_ERROR
 	case "PROTOCOL_TYPE_NOT_SUPPORTED":
-		return Status_PROTOCOL_TYPE_NOT_SUPPORTED
+		enum = Status_PROTOCOL_TYPE_NOT_SUPPORTED
 	case "UNSUPPORTED_PROTOCOL_VERSION":
-		return Status_UNSUPPORTED_PROTOCOL_VERSION
+		enum = Status_UNSUPPORTED_PROTOCOL_VERSION
 	case "OUT_OF_ORDER_SEQUENCE_NUMBER":
-		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER
+		enum = Status_OUT_OF_ORDER_SEQUENCE_NUMBER
 	case "INVALID_CONNECTION_ID":
-		return Status_INVALID_CONNECTION_ID
+		enum = Status_INVALID_CONNECTION_ID
 	case "CONNECTION_TYPE_NOT_SUPPORTED":
-		return Status_CONNECTION_TYPE_NOT_SUPPORTED
+		enum = Status_CONNECTION_TYPE_NOT_SUPPORTED
 	case "CONNECTION_OPTION_NOT_SUPPORTED":
-		return Status_CONNECTION_OPTION_NOT_SUPPORTED
+		enum = Status_CONNECTION_OPTION_NOT_SUPPORTED
 	case "NO_MORE_CONNECTIONS":
-		return Status_NO_MORE_CONNECTIONS
+		enum = Status_NO_MORE_CONNECTIONS
 	case "NO_MORE_UNIQUE_CONNECTIONS":
-		return Status_NO_MORE_UNIQUE_CONNECTIONS
+		enum = Status_NO_MORE_UNIQUE_CONNECTIONS
 	case "DATA_CONNECTION":
-		return Status_DATA_CONNECTION
+		enum = Status_DATA_CONNECTION
 	case "KNX_CONNECTION":
-		return Status_KNX_CONNECTION
+		enum = Status_KNX_CONNECTION
 	case "TUNNELLING_LAYER_NOT_SUPPORTED":
-		return Status_TUNNELLING_LAYER_NOT_SUPPORTED
+		enum = Status_TUNNELLING_LAYER_NOT_SUPPORTED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func StatusKnows(value uint8) bool {
@@ -164,10 +168,11 @@ func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {
 }
 
 func (e Status) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("Status", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("Status", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e Status) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e Status) PLC4XEnumName() string {
 	switch e {
 	case Status_NO_ERROR:
 		return "NO_ERROR"
@@ -198,5 +203,5 @@ func (e Status) name() string {
 }
 
 func (e Status) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

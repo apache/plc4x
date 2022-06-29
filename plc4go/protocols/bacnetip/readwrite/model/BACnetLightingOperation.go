@@ -98,34 +98,38 @@ func BACnetLightingOperationByValue(value uint16) BACnetLightingOperation {
 	return 0
 }
 
-func BACnetLightingOperationByName(value string) BACnetLightingOperation {
+func BACnetLightingOperationByName(value string) (enum BACnetLightingOperation, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetLightingOperation_NONE
+		enum = BACnetLightingOperation_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
 	case "FADE_TO":
-		return BACnetLightingOperation_FADE_TO
+		enum = BACnetLightingOperation_FADE_TO
 	case "STOP":
-		return BACnetLightingOperation_STOP
+		enum = BACnetLightingOperation_STOP
 	case "RAMP_TO":
-		return BACnetLightingOperation_RAMP_TO
+		enum = BACnetLightingOperation_RAMP_TO
 	case "STEP_UP":
-		return BACnetLightingOperation_STEP_UP
+		enum = BACnetLightingOperation_STEP_UP
 	case "STEP_DOWN":
-		return BACnetLightingOperation_STEP_DOWN
+		enum = BACnetLightingOperation_STEP_DOWN
 	case "STEP_ON":
-		return BACnetLightingOperation_STEP_ON
+		enum = BACnetLightingOperation_STEP_ON
 	case "STEP_OFF":
-		return BACnetLightingOperation_STEP_OFF
+		enum = BACnetLightingOperation_STEP_OFF
 	case "WARN":
-		return BACnetLightingOperation_WARN
+		enum = BACnetLightingOperation_WARN
 	case "WARN_OFF":
-		return BACnetLightingOperation_WARN_OFF
+		enum = BACnetLightingOperation_WARN_OFF
 	case "WARN_RELINQUISH":
-		return BACnetLightingOperation_WARN_RELINQUISH
+		enum = BACnetLightingOperation_WARN_RELINQUISH
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLightingOperationKnows(value uint16) bool {
@@ -164,10 +168,11 @@ func BACnetLightingOperationParse(readBuffer utils.ReadBuffer) (BACnetLightingOp
 }
 
 func (e BACnetLightingOperation) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLightingOperation) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLightingOperation) PLC4XEnumName() string {
 	switch e {
 	case BACnetLightingOperation_NONE:
 		return "NONE"
@@ -198,5 +203,5 @@ func (e BACnetLightingOperation) name() string {
 }
 
 func (e BACnetLightingOperation) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

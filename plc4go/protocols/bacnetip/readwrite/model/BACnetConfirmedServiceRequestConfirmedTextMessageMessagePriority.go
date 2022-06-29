@@ -58,14 +58,18 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(val
 	return 0
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByName(value string) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByName(value string) (enum BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL
+		enum = BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL
 	case "URGENT":
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT
+		enum = BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(readB
 }
 
 func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL:
 		return "NORMAL"
@@ -118,5 +123,5 @@ func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) name()
 }
 
 func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

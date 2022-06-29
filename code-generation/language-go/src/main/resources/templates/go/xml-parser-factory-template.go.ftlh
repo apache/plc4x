@@ -76,7 +76,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
             <#list 0..typeDefinition.parserArguments.orElseThrow()?size-1 as i>
                 <#assign parserArgument=typeDefinition.parserArguments.orElseThrow()[i]>
                 <#if parserArgument.type.isEnumTypeReference()>
-            ${parserArgument.name} := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(parserArguments[${i}])
+            ${parserArgument.name}, _ := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(parserArguments[${i}])
                 <#else>
                     <#switch helper.getLanguageTypeNameForTypeReference(parserArgument.type)>
                         <#case "bool">

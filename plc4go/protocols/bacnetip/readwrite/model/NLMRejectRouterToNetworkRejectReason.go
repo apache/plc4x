@@ -78,24 +78,28 @@ func NLMRejectRouterToNetworkRejectReasonByValue(value uint8) NLMRejectRouterToN
 	return 0
 }
 
-func NLMRejectRouterToNetworkRejectReasonByName(value string) NLMRejectRouterToNetworkRejectReason {
+func NLMRejectRouterToNetworkRejectReasonByName(value string) (enum NLMRejectRouterToNetworkRejectReason, ok bool) {
+	ok = true
 	switch value {
 	case "OTHER":
-		return NLMRejectRouterToNetworkRejectReason_OTHER
+		enum = NLMRejectRouterToNetworkRejectReason_OTHER
 	case "NOT_DIRECTLY_CONNECTED":
-		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED
+		enum = NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED
 	case "BUSY":
-		return NLMRejectRouterToNetworkRejectReason_BUSY
+		enum = NLMRejectRouterToNetworkRejectReason_BUSY
 	case "UNKNOWN_NLMT":
-		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT
+		enum = NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT
 	case "TOO_LONG":
-		return NLMRejectRouterToNetworkRejectReason_TOO_LONG
+		enum = NLMRejectRouterToNetworkRejectReason_TOO_LONG
 	case "SECURITY_ERROR":
-		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR
+		enum = NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR
 	case "ADDRESSING_ERROR":
-		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR
+		enum = NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func NLMRejectRouterToNetworkRejectReasonKnows(value uint8) bool {
@@ -134,10 +138,11 @@ func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLM
 }
 
 func (e NLMRejectRouterToNetworkRejectReason) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e NLMRejectRouterToNetworkRejectReason) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e NLMRejectRouterToNetworkRejectReason) PLC4XEnumName() string {
 	switch e {
 	case NLMRejectRouterToNetworkRejectReason_OTHER:
 		return "OTHER"
@@ -158,5 +163,5 @@ func (e NLMRejectRouterToNetworkRejectReason) name() string {
 }
 
 func (e NLMRejectRouterToNetworkRejectReason) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -98,34 +98,38 @@ func BACnetNetworkTypeByValue(value uint8) BACnetNetworkType {
 	return 0
 }
 
-func BACnetNetworkTypeByName(value string) BACnetNetworkType {
+func BACnetNetworkTypeByName(value string) (enum BACnetNetworkType, ok bool) {
+	ok = true
 	switch value {
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetNetworkType_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetNetworkType_VENDOR_PROPRIETARY_VALUE
 	case "ETHERNET":
-		return BACnetNetworkType_ETHERNET
+		enum = BACnetNetworkType_ETHERNET
 	case "ARCNET":
-		return BACnetNetworkType_ARCNET
+		enum = BACnetNetworkType_ARCNET
 	case "MSTP":
-		return BACnetNetworkType_MSTP
+		enum = BACnetNetworkType_MSTP
 	case "PTP":
-		return BACnetNetworkType_PTP
+		enum = BACnetNetworkType_PTP
 	case "LONTALK":
-		return BACnetNetworkType_LONTALK
+		enum = BACnetNetworkType_LONTALK
 	case "IPV4":
-		return BACnetNetworkType_IPV4
+		enum = BACnetNetworkType_IPV4
 	case "ZIGBEE":
-		return BACnetNetworkType_ZIGBEE
+		enum = BACnetNetworkType_ZIGBEE
 	case "VIRTUAL":
-		return BACnetNetworkType_VIRTUAL
+		enum = BACnetNetworkType_VIRTUAL
 	case "REMOVED_NON_BACNET":
-		return BACnetNetworkType_REMOVED_NON_BACNET
+		enum = BACnetNetworkType_REMOVED_NON_BACNET
 	case "IPV6":
-		return BACnetNetworkType_IPV6
+		enum = BACnetNetworkType_IPV6
 	case "SERIAL":
-		return BACnetNetworkType_SERIAL
+		enum = BACnetNetworkType_SERIAL
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetNetworkTypeKnows(value uint8) bool {
@@ -164,10 +168,11 @@ func BACnetNetworkTypeParse(readBuffer utils.ReadBuffer) (BACnetNetworkType, err
 }
 
 func (e BACnetNetworkType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNetworkType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetNetworkType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetNetworkType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNetworkType) PLC4XEnumName() string {
 	switch e {
 	case BACnetNetworkType_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
@@ -198,5 +203,5 @@ func (e BACnetNetworkType) name() string {
 }
 
 func (e BACnetNetworkType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

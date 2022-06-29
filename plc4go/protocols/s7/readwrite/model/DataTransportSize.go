@@ -124,24 +124,28 @@ func DataTransportSizeByValue(value uint8) DataTransportSize {
 	return 0
 }
 
-func DataTransportSizeByName(value string) DataTransportSize {
+func DataTransportSizeByName(value string) (enum DataTransportSize, ok bool) {
+	ok = true
 	switch value {
 	case "NULL":
-		return DataTransportSize_NULL
+		enum = DataTransportSize_NULL
 	case "BIT":
-		return DataTransportSize_BIT
+		enum = DataTransportSize_BIT
 	case "BYTE_WORD_DWORD":
-		return DataTransportSize_BYTE_WORD_DWORD
+		enum = DataTransportSize_BYTE_WORD_DWORD
 	case "INTEGER":
-		return DataTransportSize_INTEGER
+		enum = DataTransportSize_INTEGER
 	case "DINTEGER":
-		return DataTransportSize_DINTEGER
+		enum = DataTransportSize_DINTEGER
 	case "REAL":
-		return DataTransportSize_REAL
+		enum = DataTransportSize_REAL
 	case "OCTET_STRING":
-		return DataTransportSize_OCTET_STRING
+		enum = DataTransportSize_OCTET_STRING
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func DataTransportSizeKnows(value uint8) bool {
@@ -180,10 +184,11 @@ func DataTransportSizeParse(readBuffer utils.ReadBuffer) (DataTransportSize, err
 }
 
 func (e DataTransportSize) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DataTransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("DataTransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e DataTransportSize) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DataTransportSize) PLC4XEnumName() string {
 	switch e {
 	case DataTransportSize_NULL:
 		return "NULL"
@@ -204,5 +209,5 @@ func (e DataTransportSize) name() string {
 }
 
 func (e DataTransportSize) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

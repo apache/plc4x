@@ -66,18 +66,22 @@ func PriorityClassByValue(value uint8) PriorityClass {
 	return 0
 }
 
-func PriorityClassByName(value string) PriorityClass {
+func PriorityClassByName(value string) (enum PriorityClass, ok bool) {
+	ok = true
 	switch value {
 	case "Class4":
-		return PriorityClass_Class4
+		enum = PriorityClass_Class4
 	case "Class3":
-		return PriorityClass_Class3
+		enum = PriorityClass_Class3
 	case "Class2":
-		return PriorityClass_Class2
+		enum = PriorityClass_Class2
 	case "Class1":
-		return PriorityClass_Class1
+		enum = PriorityClass_Class1
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func PriorityClassKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func PriorityClassParse(readBuffer utils.ReadBuffer) (PriorityClass, error) {
 }
 
 func (e PriorityClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("PriorityClass", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("PriorityClass", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e PriorityClass) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e PriorityClass) PLC4XEnumName() string {
 	switch e {
 	case PriorityClass_Class4:
 		return "Class4"
@@ -134,5 +139,5 @@ func (e PriorityClass) name() string {
 }
 
 func (e PriorityClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

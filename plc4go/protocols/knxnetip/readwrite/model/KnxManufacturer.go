@@ -7215,1198 +7215,1202 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	return 0
 }
 
-func KnxManufacturerByName(value string) KnxManufacturer {
+func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
+	ok = true
 	switch value {
 	case "M_UNKNOWN":
-		return KnxManufacturer_M_UNKNOWN
+		enum = KnxManufacturer_M_UNKNOWN
 	case "M_SIEMENS":
-		return KnxManufacturer_M_SIEMENS
+		enum = KnxManufacturer_M_SIEMENS
 	case "M_LEGRAND_APPAREILLAGE_ELECTRIQUE":
-		return KnxManufacturer_M_LEGRAND_APPAREILLAGE_ELECTRIQUE
+		enum = KnxManufacturer_M_LEGRAND_APPAREILLAGE_ELECTRIQUE
 	case "M_PULSE_TECHNOLOGIES":
-		return KnxManufacturer_M_PULSE_TECHNOLOGIES
+		enum = KnxManufacturer_M_PULSE_TECHNOLOGIES
 	case "M_CRESTRON":
-		return KnxManufacturer_M_CRESTRON
+		enum = KnxManufacturer_M_CRESTRON
 	case "M_STEINEL_PROFESSIONAL":
-		return KnxManufacturer_M_STEINEL_PROFESSIONAL
+		enum = KnxManufacturer_M_STEINEL_PROFESSIONAL
 	case "M_BILTON_LED_LIGHTING":
-		return KnxManufacturer_M_BILTON_LED_LIGHTING
+		enum = KnxManufacturer_M_BILTON_LED_LIGHTING
 	case "M_DENRO_AG":
-		return KnxManufacturer_M_DENRO_AG
+		enum = KnxManufacturer_M_DENRO_AG
 	case "M_GEPRO":
-		return KnxManufacturer_M_GEPRO
+		enum = KnxManufacturer_M_GEPRO
 	case "M_PREUSSEN_AUTOMATION":
-		return KnxManufacturer_M_PREUSSEN_AUTOMATION
+		enum = KnxManufacturer_M_PREUSSEN_AUTOMATION
 	case "M_ZOPPAS_INDUSTRIES":
-		return KnxManufacturer_M_ZOPPAS_INDUSTRIES
+		enum = KnxManufacturer_M_ZOPPAS_INDUSTRIES
 	case "M_MACTECH":
-		return KnxManufacturer_M_MACTECH
+		enum = KnxManufacturer_M_MACTECH
 	case "M_TECHNO_TREND":
-		return KnxManufacturer_M_TECHNO_TREND
+		enum = KnxManufacturer_M_TECHNO_TREND
 	case "M_MERTEN":
-		return KnxManufacturer_M_MERTEN
+		enum = KnxManufacturer_M_MERTEN
 	case "M_FS_CABLES":
-		return KnxManufacturer_M_FS_CABLES
+		enum = KnxManufacturer_M_FS_CABLES
 	case "M_DELTA_DORE":
-		return KnxManufacturer_M_DELTA_DORE
+		enum = KnxManufacturer_M_DELTA_DORE
 	case "M_EISSOUND":
-		return KnxManufacturer_M_EISSOUND
+		enum = KnxManufacturer_M_EISSOUND
 	case "M_CISCO":
-		return KnxManufacturer_M_CISCO
+		enum = KnxManufacturer_M_CISCO
 	case "M_DINUY":
-		return KnxManufacturer_M_DINUY
+		enum = KnxManufacturer_M_DINUY
 	case "M_IKNIX":
-		return KnxManufacturer_M_IKNIX
+		enum = KnxManufacturer_M_IKNIX
 	case "M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH":
-		return KnxManufacturer_M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH
+		enum = KnxManufacturer_M_RADEMACHER_GERAETE_ELEKTRONIK_GMBH
 	case "M_EGI_ELECTROACUSTICA_GENERAL_IBERICA":
-		return KnxManufacturer_M_EGI_ELECTROACUSTICA_GENERAL_IBERICA
+		enum = KnxManufacturer_M_EGI_ELECTROACUSTICA_GENERAL_IBERICA
 	case "M_BES___INGENIUM":
-		return KnxManufacturer_M_BES___INGENIUM
+		enum = KnxManufacturer_M_BES___INGENIUM
 	case "M_ELABNET":
-		return KnxManufacturer_M_ELABNET
+		enum = KnxManufacturer_M_ELABNET
 	case "M_ABB_SPA_SACE_DIVISION":
-		return KnxManufacturer_M_ABB_SPA_SACE_DIVISION
+		enum = KnxManufacturer_M_ABB_SPA_SACE_DIVISION
 	case "M_BLUMOTIX":
-		return KnxManufacturer_M_BLUMOTIX
+		enum = KnxManufacturer_M_BLUMOTIX
 	case "M_HUNTER_DOUGLAS":
-		return KnxManufacturer_M_HUNTER_DOUGLAS
+		enum = KnxManufacturer_M_HUNTER_DOUGLAS
 	case "M_APRICUM":
-		return KnxManufacturer_M_APRICUM
+		enum = KnxManufacturer_M_APRICUM
 	case "M_TIANSU_AUTOMATION":
-		return KnxManufacturer_M_TIANSU_AUTOMATION
+		enum = KnxManufacturer_M_TIANSU_AUTOMATION
 	case "M_BUBENDORFF":
-		return KnxManufacturer_M_BUBENDORFF
+		enum = KnxManufacturer_M_BUBENDORFF
 	case "M_MBS_GMBH":
-		return KnxManufacturer_M_MBS_GMBH
+		enum = KnxManufacturer_M_MBS_GMBH
 	case "M_ENERTEX_BAYERN_GMBH":
-		return KnxManufacturer_M_ENERTEX_BAYERN_GMBH
+		enum = KnxManufacturer_M_ENERTEX_BAYERN_GMBH
 	case "M_BMS":
-		return KnxManufacturer_M_BMS
+		enum = KnxManufacturer_M_BMS
 	case "M_SINAPSI":
-		return KnxManufacturer_M_SINAPSI
+		enum = KnxManufacturer_M_SINAPSI
 	case "M_EMBEDDED_SYSTEMS_SIA":
-		return KnxManufacturer_M_EMBEDDED_SYSTEMS_SIA
+		enum = KnxManufacturer_M_EMBEDDED_SYSTEMS_SIA
 	case "M_SIEDLE_AND_SOEHNE":
-		return KnxManufacturer_M_SIEDLE_AND_SOEHNE
+		enum = KnxManufacturer_M_SIEDLE_AND_SOEHNE
 	case "M_KNX1":
-		return KnxManufacturer_M_KNX1
+		enum = KnxManufacturer_M_KNX1
 	case "M_TOKKA":
-		return KnxManufacturer_M_TOKKA
+		enum = KnxManufacturer_M_TOKKA
 	case "M_NANOSENSE":
-		return KnxManufacturer_M_NANOSENSE
+		enum = KnxManufacturer_M_NANOSENSE
 	case "M_PEAR_AUTOMATION_GMBH":
-		return KnxManufacturer_M_PEAR_AUTOMATION_GMBH
+		enum = KnxManufacturer_M_PEAR_AUTOMATION_GMBH
 	case "M_DGA":
-		return KnxManufacturer_M_DGA
+		enum = KnxManufacturer_M_DGA
 	case "M_LUTRON":
-		return KnxManufacturer_M_LUTRON
+		enum = KnxManufacturer_M_LUTRON
 	case "M_AIRZONE___ALTRA":
-		return KnxManufacturer_M_AIRZONE___ALTRA
+		enum = KnxManufacturer_M_AIRZONE___ALTRA
 	case "M_LITHOSS_DESIGN_SWITCHES":
-		return KnxManufacturer_M_LITHOSS_DESIGN_SWITCHES
+		enum = KnxManufacturer_M_LITHOSS_DESIGN_SWITCHES
 	case "M_THREEATEL":
-		return KnxManufacturer_M_THREEATEL
+		enum = KnxManufacturer_M_THREEATEL
 	case "M_PHILIPS_CONTROLS":
-		return KnxManufacturer_M_PHILIPS_CONTROLS
+		enum = KnxManufacturer_M_PHILIPS_CONTROLS
 	case "M_EBERLE":
-		return KnxManufacturer_M_EBERLE
+		enum = KnxManufacturer_M_EBERLE
 	case "M_VELUX_AS":
-		return KnxManufacturer_M_VELUX_AS
+		enum = KnxManufacturer_M_VELUX_AS
 	case "M_LOYTEC":
-		return KnxManufacturer_M_LOYTEC
+		enum = KnxManufacturer_M_LOYTEC
 	case "M_EKINEX_S_P_A_":
-		return KnxManufacturer_M_EKINEX_S_P_A_
+		enum = KnxManufacturer_M_EKINEX_S_P_A_
 	case "M_SIRLAN_TECHNOLOGIES":
-		return KnxManufacturer_M_SIRLAN_TECHNOLOGIES
+		enum = KnxManufacturer_M_SIRLAN_TECHNOLOGIES
 	case "M_PROKNX_SAS":
-		return KnxManufacturer_M_PROKNX_SAS
+		enum = KnxManufacturer_M_PROKNX_SAS
 	case "M_IT_GMBH":
-		return KnxManufacturer_M_IT_GMBH
+		enum = KnxManufacturer_M_IT_GMBH
 	case "M_RENSON":
-		return KnxManufacturer_M_RENSON
+		enum = KnxManufacturer_M_RENSON
 	case "M_HEP_GROUP":
-		return KnxManufacturer_M_HEP_GROUP
+		enum = KnxManufacturer_M_HEP_GROUP
 	case "M_BALMART":
-		return KnxManufacturer_M_BALMART
+		enum = KnxManufacturer_M_BALMART
 	case "M_GFS_GMBH":
-		return KnxManufacturer_M_GFS_GMBH
+		enum = KnxManufacturer_M_GFS_GMBH
 	case "M_GEWISS":
-		return KnxManufacturer_M_GEWISS
+		enum = KnxManufacturer_M_GEWISS
 	case "M_SCHENKER_STOREN_AG":
-		return KnxManufacturer_M_SCHENKER_STOREN_AG
+		enum = KnxManufacturer_M_SCHENKER_STOREN_AG
 	case "M_ALGODUE_ELETTRONICA_S_R_L_":
-		return KnxManufacturer_M_ALGODUE_ELETTRONICA_S_R_L_
+		enum = KnxManufacturer_M_ALGODUE_ELETTRONICA_S_R_L_
 	case "M_ABB_FRANCE":
-		return KnxManufacturer_M_ABB_FRANCE
+		enum = KnxManufacturer_M_ABB_FRANCE
 	case "M_MAINTRONIC":
-		return KnxManufacturer_M_MAINTRONIC
+		enum = KnxManufacturer_M_MAINTRONIC
 	case "M_VANTAGE":
-		return KnxManufacturer_M_VANTAGE
+		enum = KnxManufacturer_M_VANTAGE
 	case "M_FORESIS":
-		return KnxManufacturer_M_FORESIS
+		enum = KnxManufacturer_M_FORESIS
 	case "M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM":
-		return KnxManufacturer_M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM
+		enum = KnxManufacturer_M_RESEARCH_AND_PRODUCTION_ASSOCIATION_SEM
 	case "M_WEINZIERL_ENGINEERING_GMBH":
-		return KnxManufacturer_M_WEINZIERL_ENGINEERING_GMBH
+		enum = KnxManufacturer_M_WEINZIERL_ENGINEERING_GMBH
 	case "M_MOEHLENHOFF_WAERMETECHNIK_GMBH":
-		return KnxManufacturer_M_MOEHLENHOFF_WAERMETECHNIK_GMBH
+		enum = KnxManufacturer_M_MOEHLENHOFF_WAERMETECHNIK_GMBH
 	case "M_PKC_GROUP_OYJ":
-		return KnxManufacturer_M_PKC_GROUP_OYJ
+		enum = KnxManufacturer_M_PKC_GROUP_OYJ
 	case "M_ALBERT_ACKERMANN":
-		return KnxManufacturer_M_ALBERT_ACKERMANN
+		enum = KnxManufacturer_M_ALBERT_ACKERMANN
 	case "M_B_E_G_":
-		return KnxManufacturer_M_B_E_G_
+		enum = KnxManufacturer_M_B_E_G_
 	case "M_ELSNER_ELEKTRONIK_GMBH":
-		return KnxManufacturer_M_ELSNER_ELEKTRONIK_GMBH
+		enum = KnxManufacturer_M_ELSNER_ELEKTRONIK_GMBH
 	case "M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_":
-		return KnxManufacturer_M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_
+		enum = KnxManufacturer_M_SIEMENS_BUILDING_TECHNOLOGIES_HKCHINA_LTD_
 	case "M_EUTRAC":
-		return KnxManufacturer_M_EUTRAC
+		enum = KnxManufacturer_M_EUTRAC
 	case "M_GUSTAV_HENSEL_GMBH_AND_CO__KG":
-		return KnxManufacturer_M_GUSTAV_HENSEL_GMBH_AND_CO__KG
+		enum = KnxManufacturer_M_GUSTAV_HENSEL_GMBH_AND_CO__KG
 	case "M_GARO_AB":
-		return KnxManufacturer_M_GARO_AB
+		enum = KnxManufacturer_M_GARO_AB
 	case "M_WALDMANN_LICHTTECHNIK":
-		return KnxManufacturer_M_WALDMANN_LICHTTECHNIK
+		enum = KnxManufacturer_M_WALDMANN_LICHTTECHNIK
 	case "M_SCHUECO":
-		return KnxManufacturer_M_SCHUECO
+		enum = KnxManufacturer_M_SCHUECO
 	case "M_EMU":
-		return KnxManufacturer_M_EMU
+		enum = KnxManufacturer_M_EMU
 	case "M_JNET_SYSTEMS_AG":
-		return KnxManufacturer_M_JNET_SYSTEMS_AG
+		enum = KnxManufacturer_M_JNET_SYSTEMS_AG
 	case "M_SCHUPA_GMBH":
-		return KnxManufacturer_M_SCHUPA_GMBH
+		enum = KnxManufacturer_M_SCHUPA_GMBH
 	case "M_TOTAL_SOLUTION_GMBH":
-		return KnxManufacturer_M_TOTAL_SOLUTION_GMBH
+		enum = KnxManufacturer_M_TOTAL_SOLUTION_GMBH
 	case "M_O_Y_L__ELECTRONICS":
-		return KnxManufacturer_M_O_Y_L__ELECTRONICS
+		enum = KnxManufacturer_M_O_Y_L__ELECTRONICS
 	case "M_GALAX_SYSTEM":
-		return KnxManufacturer_M_GALAX_SYSTEM
+		enum = KnxManufacturer_M_GALAX_SYSTEM
 	case "M_DISCH":
-		return KnxManufacturer_M_DISCH
+		enum = KnxManufacturer_M_DISCH
 	case "M_AUCOTEAM":
-		return KnxManufacturer_M_AUCOTEAM
+		enum = KnxManufacturer_M_AUCOTEAM
 	case "M_LUXMATE_CONTROLS":
-		return KnxManufacturer_M_LUXMATE_CONTROLS
+		enum = KnxManufacturer_M_LUXMATE_CONTROLS
 	case "M_DANFOSS":
-		return KnxManufacturer_M_DANFOSS
+		enum = KnxManufacturer_M_DANFOSS
 	case "M_AST_GMBH":
-		return KnxManufacturer_M_AST_GMBH
+		enum = KnxManufacturer_M_AST_GMBH
 	case "M_WILA_LEUCHTEN":
-		return KnxManufacturer_M_WILA_LEUCHTEN
+		enum = KnxManufacturer_M_WILA_LEUCHTEN
 	case "M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK":
-		return KnxManufacturer_M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK
+		enum = KnxManufacturer_M_BPlusB_AUTOMATIONS__UND_STEUERUNGSTECHNIK
 	case "M_ABB_SCHWEIZ":
-		return KnxManufacturer_M_ABB_SCHWEIZ
+		enum = KnxManufacturer_M_ABB_SCHWEIZ
 	case "M_LINGG_AND_JANKE":
-		return KnxManufacturer_M_LINGG_AND_JANKE
+		enum = KnxManufacturer_M_LINGG_AND_JANKE
 	case "M_SAUTER":
-		return KnxManufacturer_M_SAUTER
+		enum = KnxManufacturer_M_SAUTER
 	case "M_SIMU":
-		return KnxManufacturer_M_SIMU
+		enum = KnxManufacturer_M_SIMU
 	case "M_THEBEN_HTS_AG":
-		return KnxManufacturer_M_THEBEN_HTS_AG
+		enum = KnxManufacturer_M_THEBEN_HTS_AG
 	case "M_AMANN_GMBH":
-		return KnxManufacturer_M_AMANN_GMBH
+		enum = KnxManufacturer_M_AMANN_GMBH
 	case "M_BERG_ENERGIEKONTROLLSYSTEME_GMBH":
-		return KnxManufacturer_M_BERG_ENERGIEKONTROLLSYSTEME_GMBH
+		enum = KnxManufacturer_M_BERG_ENERGIEKONTROLLSYSTEME_GMBH
 	case "M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH":
-		return KnxManufacturer_M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH
+		enum = KnxManufacturer_M_HUEPPE_FORM_SONNENSCHUTZSYSTEME_GMBH
 	case "M_OVENTROP_KG":
-		return KnxManufacturer_M_OVENTROP_KG
+		enum = KnxManufacturer_M_OVENTROP_KG
 	case "M_GRIESSER_AG":
-		return KnxManufacturer_M_GRIESSER_AG
+		enum = KnxManufacturer_M_GRIESSER_AG
 	case "M_IPAS_GMBH":
-		return KnxManufacturer_M_IPAS_GMBH
+		enum = KnxManufacturer_M_IPAS_GMBH
 	case "M_FELLER":
-		return KnxManufacturer_M_FELLER
+		enum = KnxManufacturer_M_FELLER
 	case "M_ELERO_GMBH":
-		return KnxManufacturer_M_ELERO_GMBH
+		enum = KnxManufacturer_M_ELERO_GMBH
 	case "M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_":
-		return KnxManufacturer_M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_
+		enum = KnxManufacturer_M_ARDAN_PRODUCTION_AND_INDUSTRIAL_CONTROLS_LTD_
 	case "M_METEC_MESSTECHNIK_GMBH":
-		return KnxManufacturer_M_METEC_MESSTECHNIK_GMBH
+		enum = KnxManufacturer_M_METEC_MESSTECHNIK_GMBH
 	case "M_ELKA_ELEKTRONIK_GMBH":
-		return KnxManufacturer_M_ELKA_ELEKTRONIK_GMBH
+		enum = KnxManufacturer_M_ELKA_ELEKTRONIK_GMBH
 	case "M_ELEKTROANLAGEN_D__NAGEL":
-		return KnxManufacturer_M_ELEKTROANLAGEN_D__NAGEL
+		enum = KnxManufacturer_M_ELEKTROANLAGEN_D__NAGEL
 	case "M_TRIDONIC_BAUELEMENTE_GMBH":
-		return KnxManufacturer_M_TRIDONIC_BAUELEMENTE_GMBH
+		enum = KnxManufacturer_M_TRIDONIC_BAUELEMENTE_GMBH
 	case "M_STENGLER_GESELLSCHAFT":
-		return KnxManufacturer_M_STENGLER_GESELLSCHAFT
+		enum = KnxManufacturer_M_STENGLER_GESELLSCHAFT
 	case "M_SCHNEIDER_ELECTRIC_MG":
-		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_MG
+		enum = KnxManufacturer_M_SCHNEIDER_ELECTRIC_MG
 	case "M_KNX_ASSOCIATION":
-		return KnxManufacturer_M_KNX_ASSOCIATION
+		enum = KnxManufacturer_M_KNX_ASSOCIATION
 	case "M_VIVO":
-		return KnxManufacturer_M_VIVO
+		enum = KnxManufacturer_M_VIVO
 	case "M_ABB":
-		return KnxManufacturer_M_ABB
+		enum = KnxManufacturer_M_ABB
 	case "M_GLAMOX_AS":
-		return KnxManufacturer_M_GLAMOX_AS
+		enum = KnxManufacturer_M_GLAMOX_AS
 	case "M_HUGO_MUELLER_GMBH_AND_CO_KG":
-		return KnxManufacturer_M_HUGO_MUELLER_GMBH_AND_CO_KG
+		enum = KnxManufacturer_M_HUGO_MUELLER_GMBH_AND_CO_KG
 	case "M_SIEMENS_HVAC":
-		return KnxManufacturer_M_SIEMENS_HVAC
+		enum = KnxManufacturer_M_SIEMENS_HVAC
 	case "M_APT":
-		return KnxManufacturer_M_APT
+		enum = KnxManufacturer_M_APT
 	case "M_HIGHDOM":
-		return KnxManufacturer_M_HIGHDOM
+		enum = KnxManufacturer_M_HIGHDOM
 	case "M_TOP_SERVICES":
-		return KnxManufacturer_M_TOP_SERVICES
+		enum = KnxManufacturer_M_TOP_SERVICES
 	case "M_AMBIHOME":
-		return KnxManufacturer_M_AMBIHOME
+		enum = KnxManufacturer_M_AMBIHOME
 	case "M_DATEC_ELECTRONIC_AG":
-		return KnxManufacturer_M_DATEC_ELECTRONIC_AG
+		enum = KnxManufacturer_M_DATEC_ELECTRONIC_AG
 	case "M_ABUS_SECURITY_CENTER":
-		return KnxManufacturer_M_ABUS_SECURITY_CENTER
+		enum = KnxManufacturer_M_ABUS_SECURITY_CENTER
 	case "M_LITE_PUTER":
-		return KnxManufacturer_M_LITE_PUTER
+		enum = KnxManufacturer_M_LITE_PUTER
 	case "M_TANTRON_ELECTRONIC":
-		return KnxManufacturer_M_TANTRON_ELECTRONIC
+		enum = KnxManufacturer_M_TANTRON_ELECTRONIC
 	case "M_DEHN_AND_SOEHNE":
-		return KnxManufacturer_M_DEHN_AND_SOEHNE
+		enum = KnxManufacturer_M_DEHN_AND_SOEHNE
 	case "M_INTERRA":
-		return KnxManufacturer_M_INTERRA
+		enum = KnxManufacturer_M_INTERRA
 	case "M_DKX_TECH":
-		return KnxManufacturer_M_DKX_TECH
+		enum = KnxManufacturer_M_DKX_TECH
 	case "M_VIATRON":
-		return KnxManufacturer_M_VIATRON
+		enum = KnxManufacturer_M_VIATRON
 	case "M_NAUTIBUS":
-		return KnxManufacturer_M_NAUTIBUS
+		enum = KnxManufacturer_M_NAUTIBUS
 	case "M_ON_SEMICONDUCTOR":
-		return KnxManufacturer_M_ON_SEMICONDUCTOR
+		enum = KnxManufacturer_M_ON_SEMICONDUCTOR
 	case "M_LONGCHUANG":
-		return KnxManufacturer_M_LONGCHUANG
+		enum = KnxManufacturer_M_LONGCHUANG
 	case "M_AIR_ON_AG":
-		return KnxManufacturer_M_AIR_ON_AG
+		enum = KnxManufacturer_M_AIR_ON_AG
 	case "M_IB_COMPANY_GMBH":
-		return KnxManufacturer_M_IB_COMPANY_GMBH
+		enum = KnxManufacturer_M_IB_COMPANY_GMBH
 	case "M_SATION_FACTORY":
-		return KnxManufacturer_M_SATION_FACTORY
+		enum = KnxManufacturer_M_SATION_FACTORY
 	case "M_AGENTILO_GMBH":
-		return KnxManufacturer_M_AGENTILO_GMBH
+		enum = KnxManufacturer_M_AGENTILO_GMBH
 	case "M_CRABTREE":
-		return KnxManufacturer_M_CRABTREE
+		enum = KnxManufacturer_M_CRABTREE
 	case "M_MAKEL_ELEKTRIK":
-		return KnxManufacturer_M_MAKEL_ELEKTRIK
+		enum = KnxManufacturer_M_MAKEL_ELEKTRIK
 	case "M_HELIOS_VENTILATOREN":
-		return KnxManufacturer_M_HELIOS_VENTILATOREN
+		enum = KnxManufacturer_M_HELIOS_VENTILATOREN
 	case "M_OTTO_SOLUTIONS_PTE_LTD":
-		return KnxManufacturer_M_OTTO_SOLUTIONS_PTE_LTD
+		enum = KnxManufacturer_M_OTTO_SOLUTIONS_PTE_LTD
 	case "M_AIRMASTER":
-		return KnxManufacturer_M_AIRMASTER
+		enum = KnxManufacturer_M_AIRMASTER
 	case "M_VALLOX_GMBH":
-		return KnxManufacturer_M_VALLOX_GMBH
+		enum = KnxManufacturer_M_VALLOX_GMBH
 	case "M_DALITEK":
-		return KnxManufacturer_M_DALITEK
+		enum = KnxManufacturer_M_DALITEK
 	case "M_ASIN":
-		return KnxManufacturer_M_ASIN
+		enum = KnxManufacturer_M_ASIN
 	case "M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_":
-		return KnxManufacturer_M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_
+		enum = KnxManufacturer_M_BRIDGES_INTELLIGENCE_TECHNOLOGY_INC_
 	case "M_ARBONIA":
-		return KnxManufacturer_M_ARBONIA
+		enum = KnxManufacturer_M_ARBONIA
 	case "M_KERMI":
-		return KnxManufacturer_M_KERMI
+		enum = KnxManufacturer_M_KERMI
 	case "M_EVOKNX":
-		return KnxManufacturer_M_EVOKNX
+		enum = KnxManufacturer_M_EVOKNX
 	case "M_PROLUX":
-		return KnxManufacturer_M_PROLUX
+		enum = KnxManufacturer_M_PROLUX
 	case "M_CLICHOME":
-		return KnxManufacturer_M_CLICHOME
+		enum = KnxManufacturer_M_CLICHOME
 	case "M_COMMAX":
-		return KnxManufacturer_M_COMMAX
+		enum = KnxManufacturer_M_COMMAX
 	case "M_EAE":
-		return KnxManufacturer_M_EAE
+		enum = KnxManufacturer_M_EAE
 	case "M_TENSE":
-		return KnxManufacturer_M_TENSE
+		enum = KnxManufacturer_M_TENSE
 	case "M_SEYOUNG_ELECTRONICS":
-		return KnxManufacturer_M_SEYOUNG_ELECTRONICS
+		enum = KnxManufacturer_M_SEYOUNG_ELECTRONICS
 	case "M_LIFEDOMUS":
-		return KnxManufacturer_M_LIFEDOMUS
+		enum = KnxManufacturer_M_LIFEDOMUS
 	case "M_EUROTRONIC_TECHNOLOGY_GMBH":
-		return KnxManufacturer_M_EUROTRONIC_TECHNOLOGY_GMBH
+		enum = KnxManufacturer_M_EUROTRONIC_TECHNOLOGY_GMBH
 	case "M_TCI":
-		return KnxManufacturer_M_TCI
+		enum = KnxManufacturer_M_TCI
 	case "M_RISHUN_ELECTRONIC":
-		return KnxManufacturer_M_RISHUN_ELECTRONIC
+		enum = KnxManufacturer_M_RISHUN_ELECTRONIC
 	case "M_PAUL_HOCHKOEPPER":
-		return KnxManufacturer_M_PAUL_HOCHKOEPPER
+		enum = KnxManufacturer_M_PAUL_HOCHKOEPPER
 	case "M_ZIPATO":
-		return KnxManufacturer_M_ZIPATO
+		enum = KnxManufacturer_M_ZIPATO
 	case "M_CM_SECURITY_GMBH_AND_CO_KG":
-		return KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG
+		enum = KnxManufacturer_M_CM_SECURITY_GMBH_AND_CO_KG
 	case "M_QING_CABLES":
-		return KnxManufacturer_M_QING_CABLES
+		enum = KnxManufacturer_M_QING_CABLES
 	case "M_LABIO":
-		return KnxManufacturer_M_LABIO
+		enum = KnxManufacturer_M_LABIO
 	case "M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_":
-		return KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_
+		enum = KnxManufacturer_M_COSTER_TECNOLOGIE_ELETTRONICHE_S_P_A_
 	case "M_E_G_E":
-		return KnxManufacturer_M_E_G_E
+		enum = KnxManufacturer_M_E_G_E
 	case "M_NETXAUTOMATION":
-		return KnxManufacturer_M_NETXAUTOMATION
+		enum = KnxManufacturer_M_NETXAUTOMATION
 	case "M_TECALOR":
-		return KnxManufacturer_M_TECALOR
+		enum = KnxManufacturer_M_TECALOR
 	case "M_URMET_ELECTRONICS_HUIZHOU_LTD_":
-		return KnxManufacturer_M_URMET_ELECTRONICS_HUIZHOU_LTD_
+		enum = KnxManufacturer_M_URMET_ELECTRONICS_HUIZHOU_LTD_
 	case "M_PEIYING_BUILDING_CONTROL":
-		return KnxManufacturer_M_PEIYING_BUILDING_CONTROL
+		enum = KnxManufacturer_M_PEIYING_BUILDING_CONTROL
 	case "M_ALTENBURGER_ELECTRONIC":
-		return KnxManufacturer_M_ALTENBURGER_ELECTRONIC
+		enum = KnxManufacturer_M_ALTENBURGER_ELECTRONIC
 	case "M_BPT_S_P_A__A_SOCIO_UNICO":
-		return KnxManufacturer_M_BPT_S_P_A__A_SOCIO_UNICO
+		enum = KnxManufacturer_M_BPT_S_P_A__A_SOCIO_UNICO
 	case "M_KANONTEC___KANONBUS":
-		return KnxManufacturer_M_KANONTEC___KANONBUS
+		enum = KnxManufacturer_M_KANONTEC___KANONBUS
 	case "M_ISER_TECH":
-		return KnxManufacturer_M_ISER_TECH
+		enum = KnxManufacturer_M_ISER_TECH
 	case "M_FINELINE":
-		return KnxManufacturer_M_FINELINE
+		enum = KnxManufacturer_M_FINELINE
 	case "M_CP_ELECTRONICS_LTD":
-		return KnxManufacturer_M_CP_ELECTRONICS_LTD
+		enum = KnxManufacturer_M_CP_ELECTRONICS_LTD
 	case "M_NIKO_SERVODAN_AS":
-		return KnxManufacturer_M_NIKO_SERVODAN_AS
+		enum = KnxManufacturer_M_NIKO_SERVODAN_AS
 	case "M_SIMON_309":
-		return KnxManufacturer_M_SIMON_309
+		enum = KnxManufacturer_M_SIMON_309
 	case "M_GM_MODULAR_PVT__LTD_":
-		return KnxManufacturer_M_GM_MODULAR_PVT__LTD_
+		enum = KnxManufacturer_M_GM_MODULAR_PVT__LTD_
 	case "M_FU_CHENG_INTELLIGENCE":
-		return KnxManufacturer_M_FU_CHENG_INTELLIGENCE
+		enum = KnxManufacturer_M_FU_CHENG_INTELLIGENCE
 	case "M_NEXKON":
-		return KnxManufacturer_M_NEXKON
+		enum = KnxManufacturer_M_NEXKON
 	case "M_GRAESSLIN":
-		return KnxManufacturer_M_GRAESSLIN
+		enum = KnxManufacturer_M_GRAESSLIN
 	case "M_FEEL_S_R_L":
-		return KnxManufacturer_M_FEEL_S_R_L
+		enum = KnxManufacturer_M_FEEL_S_R_L
 	case "M_NOT_ASSIGNED_314":
-		return KnxManufacturer_M_NOT_ASSIGNED_314
+		enum = KnxManufacturer_M_NOT_ASSIGNED_314
 	case "M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_":
-		return KnxManufacturer_M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_
+		enum = KnxManufacturer_M_SHENZHEN_FANHAI_SANJIANG_ELECTRONICS_CO___LTD_
 	case "M_JIUZHOU_GREEBLE":
-		return KnxManufacturer_M_JIUZHOU_GREEBLE
+		enum = KnxManufacturer_M_JIUZHOU_GREEBLE
 	case "M_AUMUELLER_AUMATIC_GMBH":
-		return KnxManufacturer_M_AUMUELLER_AUMATIC_GMBH
+		enum = KnxManufacturer_M_AUMUELLER_AUMATIC_GMBH
 	case "M_ETMAN_ELECTRIC":
-		return KnxManufacturer_M_ETMAN_ELECTRIC
+		enum = KnxManufacturer_M_ETMAN_ELECTRIC
 	case "M_BLACK_NOVA":
-		return KnxManufacturer_M_BLACK_NOVA
+		enum = KnxManufacturer_M_BLACK_NOVA
 	case "M_ZIDATECH_AG":
-		return KnxManufacturer_M_ZIDATECH_AG
+		enum = KnxManufacturer_M_ZIDATECH_AG
 	case "M_IDGS_BVBA":
-		return KnxManufacturer_M_IDGS_BVBA
+		enum = KnxManufacturer_M_IDGS_BVBA
 	case "M_DAKANIMO":
-		return KnxManufacturer_M_DAKANIMO
+		enum = KnxManufacturer_M_DAKANIMO
 	case "M_SIMON_42":
-		return KnxManufacturer_M_SIMON_42
+		enum = KnxManufacturer_M_SIMON_42
 	case "M_TREBOR_AUTOMATION_AB":
-		return KnxManufacturer_M_TREBOR_AUTOMATION_AB
+		enum = KnxManufacturer_M_TREBOR_AUTOMATION_AB
 	case "M_SATEL_SP__Z_O_O_":
-		return KnxManufacturer_M_SATEL_SP__Z_O_O_
+		enum = KnxManufacturer_M_SATEL_SP__Z_O_O_
 	case "M_RUSSOUND__INC_":
-		return KnxManufacturer_M_RUSSOUND__INC_
+		enum = KnxManufacturer_M_RUSSOUND__INC_
 	case "M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD":
-		return KnxManufacturer_M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD
+		enum = KnxManufacturer_M_MIDEA_HEATING_AND_VENTILATING_EQUIPMENT_CO_LTD
 	case "M_CONSORZIO_TERRANUOVA":
-		return KnxManufacturer_M_CONSORZIO_TERRANUOVA
+		enum = KnxManufacturer_M_CONSORZIO_TERRANUOVA
 	case "M_WOLF_HEIZTECHNIK_GMBH":
-		return KnxManufacturer_M_WOLF_HEIZTECHNIK_GMBH
+		enum = KnxManufacturer_M_WOLF_HEIZTECHNIK_GMBH
 	case "M_SONTEC":
-		return KnxManufacturer_M_SONTEC
+		enum = KnxManufacturer_M_SONTEC
 	case "M_BELCOM_CABLES_LTD_":
-		return KnxManufacturer_M_BELCOM_CABLES_LTD_
+		enum = KnxManufacturer_M_BELCOM_CABLES_LTD_
 	case "M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_":
-		return KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_
+		enum = KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_
 	case "M_ACREL":
-		return KnxManufacturer_M_ACREL
+		enum = KnxManufacturer_M_ACREL
 	case "M_VIMAR":
-		return KnxManufacturer_M_VIMAR
+		enum = KnxManufacturer_M_VIMAR
 	case "M_FRANKE_AQUAROTTER_GMBH":
-		return KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH
+		enum = KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH
 	case "M_ORION_SYSTEMS":
-		return KnxManufacturer_M_ORION_SYSTEMS
+		enum = KnxManufacturer_M_ORION_SYSTEMS
 	case "M_SCHRACK_TECHNIK_GMBH":
-		return KnxManufacturer_M_SCHRACK_TECHNIK_GMBH
+		enum = KnxManufacturer_M_SCHRACK_TECHNIK_GMBH
 	case "M_INSPRID":
-		return KnxManufacturer_M_INSPRID
+		enum = KnxManufacturer_M_INSPRID
 	case "M_SUNRICHER":
-		return KnxManufacturer_M_SUNRICHER
+		enum = KnxManufacturer_M_SUNRICHER
 	case "M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_":
-		return KnxManufacturer_M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_
+		enum = KnxManufacturer_M_MENRED_AUTOMATION_SYSTEMSHANGHAI_CO__LTD_
 	case "M_AUREX":
-		return KnxManufacturer_M_AUREX
+		enum = KnxManufacturer_M_AUREX
 	case "M_JOSEF_BARTHELME_GMBH_AND_CO__KG":
-		return KnxManufacturer_M_JOSEF_BARTHELME_GMBH_AND_CO__KG
+		enum = KnxManufacturer_M_JOSEF_BARTHELME_GMBH_AND_CO__KG
 	case "M_ARCHITECTURE_NUMERIQUE":
-		return KnxManufacturer_M_ARCHITECTURE_NUMERIQUE
+		enum = KnxManufacturer_M_ARCHITECTURE_NUMERIQUE
 	case "M_UP_GROUP":
-		return KnxManufacturer_M_UP_GROUP
+		enum = KnxManufacturer_M_UP_GROUP
 	case "M_MOELLER_GEBAEUDEAUTOMATION_KG":
-		return KnxManufacturer_M_MOELLER_GEBAEUDEAUTOMATION_KG
+		enum = KnxManufacturer_M_MOELLER_GEBAEUDEAUTOMATION_KG
 	case "M_TEKNOS_AVINNO":
-		return KnxManufacturer_M_TEKNOS_AVINNO
+		enum = KnxManufacturer_M_TEKNOS_AVINNO
 	case "M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY":
-		return KnxManufacturer_M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY
+		enum = KnxManufacturer_M_NINGBO_DOOYA_MECHANIC_AND_ELECTRONIC_TECHNOLOGY
 	case "M_THERMOKON_SENSORTECHNIK_GMBH":
-		return KnxManufacturer_M_THERMOKON_SENSORTECHNIK_GMBH
+		enum = KnxManufacturer_M_THERMOKON_SENSORTECHNIK_GMBH
 	case "M_BELIMO_AUTOMATION_AG":
-		return KnxManufacturer_M_BELIMO_AUTOMATION_AG
+		enum = KnxManufacturer_M_BELIMO_AUTOMATION_AG
 	case "M_ZEHNDER_GROUP_INTERNATIONAL_AG":
-		return KnxManufacturer_M_ZEHNDER_GROUP_INTERNATIONAL_AG
+		enum = KnxManufacturer_M_ZEHNDER_GROUP_INTERNATIONAL_AG
 	case "M_SKS_KINKEL_ELEKTRONIK":
-		return KnxManufacturer_M_SKS_KINKEL_ELEKTRONIK
+		enum = KnxManufacturer_M_SKS_KINKEL_ELEKTRONIK
 	case "M_ECE_WURMITZER_GMBH":
-		return KnxManufacturer_M_ECE_WURMITZER_GMBH
+		enum = KnxManufacturer_M_ECE_WURMITZER_GMBH
 	case "M_LARS":
-		return KnxManufacturer_M_LARS
+		enum = KnxManufacturer_M_LARS
 	case "M_URC":
-		return KnxManufacturer_M_URC
+		enum = KnxManufacturer_M_URC
 	case "M_LIGHTCONTROL":
-		return KnxManufacturer_M_LIGHTCONTROL
+		enum = KnxManufacturer_M_LIGHTCONTROL
 	case "M_ALBRECHT_JUNG":
-		return KnxManufacturer_M_ALBRECHT_JUNG
+		enum = KnxManufacturer_M_ALBRECHT_JUNG
 	case "M_ELTAKO":
-		return KnxManufacturer_M_ELTAKO
+		enum = KnxManufacturer_M_ELTAKO
 	case "M_SHENZHEN_YM":
-		return KnxManufacturer_M_SHENZHEN_YM
+		enum = KnxManufacturer_M_SHENZHEN_YM
 	case "M_MEAN_WELL_ENTERPRISES_CO__LTD_":
-		return KnxManufacturer_M_MEAN_WELL_ENTERPRISES_CO__LTD_
+		enum = KnxManufacturer_M_MEAN_WELL_ENTERPRISES_CO__LTD_
 	case "M_OSIX":
-		return KnxManufacturer_M_OSIX
+		enum = KnxManufacturer_M_OSIX
 	case "M_AYPRO_TECHNOLOGY":
-		return KnxManufacturer_M_AYPRO_TECHNOLOGY
+		enum = KnxManufacturer_M_AYPRO_TECHNOLOGY
 	case "M_HEFEI_ECOLITE_SOFTWARE":
-		return KnxManufacturer_M_HEFEI_ECOLITE_SOFTWARE
+		enum = KnxManufacturer_M_HEFEI_ECOLITE_SOFTWARE
 	case "M_ENNO":
-		return KnxManufacturer_M_ENNO
+		enum = KnxManufacturer_M_ENNO
 	case "M_OHOSURE":
-		return KnxManufacturer_M_OHOSURE
+		enum = KnxManufacturer_M_OHOSURE
 	case "M_GAREFOWL":
-		return KnxManufacturer_M_GAREFOWL
+		enum = KnxManufacturer_M_GAREFOWL
 	case "M_GEZE":
-		return KnxManufacturer_M_GEZE
+		enum = KnxManufacturer_M_GEZE
 	case "M_LG_ELECTRONICS_INC_":
-		return KnxManufacturer_M_LG_ELECTRONICS_INC_
+		enum = KnxManufacturer_M_LG_ELECTRONICS_INC_
 	case "M_BOSCH_SIEMENS_HAUSHALTSGERAETE":
-		return KnxManufacturer_M_BOSCH_SIEMENS_HAUSHALTSGERAETE
+		enum = KnxManufacturer_M_BOSCH_SIEMENS_HAUSHALTSGERAETE
 	case "M_SMC_INTERIORS":
-		return KnxManufacturer_M_SMC_INTERIORS
+		enum = KnxManufacturer_M_SMC_INTERIORS
 	case "M_NOT_ASSIGNED_364":
-		return KnxManufacturer_M_NOT_ASSIGNED_364
+		enum = KnxManufacturer_M_NOT_ASSIGNED_364
 	case "M_SCS_CABLE":
-		return KnxManufacturer_M_SCS_CABLE
+		enum = KnxManufacturer_M_SCS_CABLE
 	case "M_HOVAL":
-		return KnxManufacturer_M_HOVAL
+		enum = KnxManufacturer_M_HOVAL
 	case "M_CANST":
-		return KnxManufacturer_M_CANST
+		enum = KnxManufacturer_M_CANST
 	case "M_HANGZHOU_BERLIN":
-		return KnxManufacturer_M_HANGZHOU_BERLIN
+		enum = KnxManufacturer_M_HANGZHOU_BERLIN
 	case "M_EVN_LICHTTECHNIK":
-		return KnxManufacturer_M_EVN_LICHTTECHNIK
+		enum = KnxManufacturer_M_EVN_LICHTTECHNIK
 	case "M_RUTEC":
-		return KnxManufacturer_M_RUTEC
+		enum = KnxManufacturer_M_RUTEC
 	case "M_FINDER":
-		return KnxManufacturer_M_FINDER
+		enum = KnxManufacturer_M_FINDER
 	case "M_FUJITSU_GENERAL_LIMITED":
-		return KnxManufacturer_M_FUJITSU_GENERAL_LIMITED
+		enum = KnxManufacturer_M_FUJITSU_GENERAL_LIMITED
 	case "M_RITTO_GMBHANDCO_KG":
-		return KnxManufacturer_M_RITTO_GMBHANDCO_KG
+		enum = KnxManufacturer_M_RITTO_GMBHANDCO_KG
 	case "M_ZF_FRIEDRICHSHAFEN_AG":
-		return KnxManufacturer_M_ZF_FRIEDRICHSHAFEN_AG
+		enum = KnxManufacturer_M_ZF_FRIEDRICHSHAFEN_AG
 	case "M_CREALED":
-		return KnxManufacturer_M_CREALED
+		enum = KnxManufacturer_M_CREALED
 	case "M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED":
-		return KnxManufacturer_M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED
+		enum = KnxManufacturer_M_MILES_MAGIC_AUTOMATION_PRIVATE_LIMITED
 	case "M_EPlus":
-		return KnxManufacturer_M_EPlus
+		enum = KnxManufacturer_M_EPlus
 	case "M_ITALCOND":
-		return KnxManufacturer_M_ITALCOND
+		enum = KnxManufacturer_M_ITALCOND
 	case "M_SATION":
-		return KnxManufacturer_M_SATION
+		enum = KnxManufacturer_M_SATION
 	case "M_NEWBEST":
-		return KnxManufacturer_M_NEWBEST
+		enum = KnxManufacturer_M_NEWBEST
 	case "M_GDS_DIGITAL_SYSTEMS":
-		return KnxManufacturer_M_GDS_DIGITAL_SYSTEMS
+		enum = KnxManufacturer_M_GDS_DIGITAL_SYSTEMS
 	case "M_IDDERO":
-		return KnxManufacturer_M_IDDERO
+		enum = KnxManufacturer_M_IDDERO
 	case "M_MBNLED":
-		return KnxManufacturer_M_MBNLED
+		enum = KnxManufacturer_M_MBNLED
 	case "M_POWER_CONTROLS":
-		return KnxManufacturer_M_POWER_CONTROLS
+		enum = KnxManufacturer_M_POWER_CONTROLS
 	case "M_VITRUM":
-		return KnxManufacturer_M_VITRUM
+		enum = KnxManufacturer_M_VITRUM
 	case "M_EKEY_BIOMETRIC_SYSTEMS_GMBH":
-		return KnxManufacturer_M_EKEY_BIOMETRIC_SYSTEMS_GMBH
+		enum = KnxManufacturer_M_EKEY_BIOMETRIC_SYSTEMS_GMBH
 	case "M_AMC":
-		return KnxManufacturer_M_AMC
+		enum = KnxManufacturer_M_AMC
 	case "M_TRILUX_GMBH_AND_CO__KG":
-		return KnxManufacturer_M_TRILUX_GMBH_AND_CO__KG
+		enum = KnxManufacturer_M_TRILUX_GMBH_AND_CO__KG
 	case "M_WEXCEDO":
-		return KnxManufacturer_M_WEXCEDO
+		enum = KnxManufacturer_M_WEXCEDO
 	case "M_VEMER_SPA":
-		return KnxManufacturer_M_VEMER_SPA
+		enum = KnxManufacturer_M_VEMER_SPA
 	case "M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG":
-		return KnxManufacturer_M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG
+		enum = KnxManufacturer_M_ALEXANDER_BUERKLE_GMBH_AND_CO_KG
 	case "M_CITRON":
-		return KnxManufacturer_M_CITRON
+		enum = KnxManufacturer_M_CITRON
 	case "M_SHENZHEN_HEGUANG":
-		return KnxManufacturer_M_SHENZHEN_HEGUANG
+		enum = KnxManufacturer_M_SHENZHEN_HEGUANG
 	case "M_NOT_ASSIGNED_392":
-		return KnxManufacturer_M_NOT_ASSIGNED_392
+		enum = KnxManufacturer_M_NOT_ASSIGNED_392
 	case "M_ZUMTOBEL":
-		return KnxManufacturer_M_ZUMTOBEL
+		enum = KnxManufacturer_M_ZUMTOBEL
 	case "M_TRANE_B_V_B_A":
-		return KnxManufacturer_M_TRANE_B_V_B_A
+		enum = KnxManufacturer_M_TRANE_B_V_B_A
 	case "M_CAREL":
-		return KnxManufacturer_M_CAREL
+		enum = KnxManufacturer_M_CAREL
 	case "M_PROLITE_CONTROLS":
-		return KnxManufacturer_M_PROLITE_CONTROLS
+		enum = KnxManufacturer_M_PROLITE_CONTROLS
 	case "M_BOSMER":
-		return KnxManufacturer_M_BOSMER
+		enum = KnxManufacturer_M_BOSMER
 	case "M_EUCHIPS":
-		return KnxManufacturer_M_EUCHIPS
+		enum = KnxManufacturer_M_EUCHIPS
 	case "M_CONNECT_THINKA_CONNECT":
-		return KnxManufacturer_M_CONNECT_THINKA_CONNECT
+		enum = KnxManufacturer_M_CONNECT_THINKA_CONNECT
 	case "M_PEAKNX_A_DOGAWIST_COMPANY":
-		return KnxManufacturer_M_PEAKNX_A_DOGAWIST_COMPANY
+		enum = KnxManufacturer_M_PEAKNX_A_DOGAWIST_COMPANY
 	case "M_ACEMATIC":
-		return KnxManufacturer_M_ACEMATIC
+		enum = KnxManufacturer_M_ACEMATIC
 	case "M_ELAUSYS":
-		return KnxManufacturer_M_ELAUSYS
+		enum = KnxManufacturer_M_ELAUSYS
 	case "M_ITK_ENGINEERING_AG":
-		return KnxManufacturer_M_ITK_ENGINEERING_AG
+		enum = KnxManufacturer_M_ITK_ENGINEERING_AG
 	case "M_PHOENIX_CONTACT":
-		return KnxManufacturer_M_PHOENIX_CONTACT
+		enum = KnxManufacturer_M_PHOENIX_CONTACT
 	case "M_INTEGRA_METERING_AG":
-		return KnxManufacturer_M_INTEGRA_METERING_AG
+		enum = KnxManufacturer_M_INTEGRA_METERING_AG
 	case "M_FMS_HOSPITALITY_PTE_LTD":
-		return KnxManufacturer_M_FMS_HOSPITALITY_PTE_LTD
+		enum = KnxManufacturer_M_FMS_HOSPITALITY_PTE_LTD
 	case "M_NUVO":
-		return KnxManufacturer_M_NUVO
+		enum = KnxManufacturer_M_NUVO
 	case "M_U__LUX_GMBH":
-		return KnxManufacturer_M_U__LUX_GMBH
+		enum = KnxManufacturer_M_U__LUX_GMBH
 	case "M_BRUMBERG_LEUCHTEN":
-		return KnxManufacturer_M_BRUMBERG_LEUCHTEN
+		enum = KnxManufacturer_M_BRUMBERG_LEUCHTEN
 	case "M_LIME":
-		return KnxManufacturer_M_LIME
+		enum = KnxManufacturer_M_LIME
 	case "M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_":
-		return KnxManufacturer_M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_
+		enum = KnxManufacturer_M_GREAT_EMPIRE_INTERNATIONAL_GROUP_CO___LTD_
 	case "M_KAVOSHPISHRO_ASIA":
-		return KnxManufacturer_M_KAVOSHPISHRO_ASIA
+		enum = KnxManufacturer_M_KAVOSHPISHRO_ASIA
 	case "M_V2_SPA":
-		return KnxManufacturer_M_V2_SPA
+		enum = KnxManufacturer_M_V2_SPA
 	case "M_JOHNSON_CONTROLS":
-		return KnxManufacturer_M_JOHNSON_CONTROLS
+		enum = KnxManufacturer_M_JOHNSON_CONTROLS
 	case "M_WAGO_KONTAKTTECHNIK":
-		return KnxManufacturer_M_WAGO_KONTAKTTECHNIK
+		enum = KnxManufacturer_M_WAGO_KONTAKTTECHNIK
 	case "M_ARKUD":
-		return KnxManufacturer_M_ARKUD
+		enum = KnxManufacturer_M_ARKUD
 	case "M_IRIDIUM_LTD_":
-		return KnxManufacturer_M_IRIDIUM_LTD_
+		enum = KnxManufacturer_M_IRIDIUM_LTD_
 	case "M_BSMART":
-		return KnxManufacturer_M_BSMART
+		enum = KnxManufacturer_M_BSMART
 	case "M_BAB_TECHNOLOGIE_GMBH":
-		return KnxManufacturer_M_BAB_TECHNOLOGIE_GMBH
+		enum = KnxManufacturer_M_BAB_TECHNOLOGIE_GMBH
 	case "M_NICE_SPA":
-		return KnxManufacturer_M_NICE_SPA
+		enum = KnxManufacturer_M_NICE_SPA
 	case "M_REDFISH_GROUP_PTY_LTD":
-		return KnxManufacturer_M_REDFISH_GROUP_PTY_LTD
+		enum = KnxManufacturer_M_REDFISH_GROUP_PTY_LTD
 	case "M_SABIANA_SPA":
-		return KnxManufacturer_M_SABIANA_SPA
+		enum = KnxManufacturer_M_SABIANA_SPA
 	case "M_UBEE_INTERACTIVE_EUROPE":
-		return KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE
+		enum = KnxManufacturer_M_UBEE_INTERACTIVE_EUROPE
 	case "M_REXEL":
-		return KnxManufacturer_M_REXEL
+		enum = KnxManufacturer_M_REXEL
 	case "M_GES_TEKNIK_A_S_":
-		return KnxManufacturer_M_GES_TEKNIK_A_S_
+		enum = KnxManufacturer_M_GES_TEKNIK_A_S_
 	case "M_KNXPRESSO":
-		return KnxManufacturer_M_KNXPRESSO
+		enum = KnxManufacturer_M_KNXPRESSO
 	case "M_AVE_S_P_A_":
-		return KnxManufacturer_M_AVE_S_P_A_
+		enum = KnxManufacturer_M_AVE_S_P_A_
 	case "M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_":
-		return KnxManufacturer_M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_
+		enum = KnxManufacturer_M_ZHUHAI_LTECH_TECHNOLOGY_CO___LTD_
 	case "M_ARCOM":
-		return KnxManufacturer_M_ARCOM
+		enum = KnxManufacturer_M_ARCOM
 	case "M_VIA_TECHNOLOGIES__INC_":
-		return KnxManufacturer_M_VIA_TECHNOLOGIES__INC_
+		enum = KnxManufacturer_M_VIA_TECHNOLOGIES__INC_
 	case "M_FEELSMART_":
-		return KnxManufacturer_M_FEELSMART_
+		enum = KnxManufacturer_M_FEELSMART_
 	case "M_SUPCON":
-		return KnxManufacturer_M_SUPCON
+		enum = KnxManufacturer_M_SUPCON
 	case "M_MANIC":
-		return KnxManufacturer_M_MANIC
+		enum = KnxManufacturer_M_MANIC
 	case "M_TDE_GMBH":
-		return KnxManufacturer_M_TDE_GMBH
+		enum = KnxManufacturer_M_TDE_GMBH
 	case "M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_":
-		return KnxManufacturer_M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_
+		enum = KnxManufacturer_M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_
 	case "M_EWTECH":
-		return KnxManufacturer_M_EWTECH
+		enum = KnxManufacturer_M_EWTECH
 	case "M_WIELAND_ELECTRIC":
-		return KnxManufacturer_M_WIELAND_ELECTRIC
+		enum = KnxManufacturer_M_WIELAND_ELECTRIC
 	case "M_KLUGER_AUTOMATION_GMBH":
-		return KnxManufacturer_M_KLUGER_AUTOMATION_GMBH
+		enum = KnxManufacturer_M_KLUGER_AUTOMATION_GMBH
 	case "M_JOONGANG_CONTROL":
-		return KnxManufacturer_M_JOONGANG_CONTROL
+		enum = KnxManufacturer_M_JOONGANG_CONTROL
 	case "M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_":
-		return KnxManufacturer_M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_
+		enum = KnxManufacturer_M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_
 	case "M_IME_S_P_A_":
-		return KnxManufacturer_M_IME_S_P_A_
+		enum = KnxManufacturer_M_IME_S_P_A_
 	case "M_SICHUAN_HAODING":
-		return KnxManufacturer_M_SICHUAN_HAODING
+		enum = KnxManufacturer_M_SICHUAN_HAODING
 	case "M_MINDJAGA_LTD_":
-		return KnxManufacturer_M_MINDJAGA_LTD_
+		enum = KnxManufacturer_M_MINDJAGA_LTD_
 	case "M_RUILI_SMART_CONTROL":
-		return KnxManufacturer_M_RUILI_SMART_CONTROL
+		enum = KnxManufacturer_M_RUILI_SMART_CONTROL
 	case "M_CODESYS_GMBH":
-		return KnxManufacturer_M_CODESYS_GMBH
+		enum = KnxManufacturer_M_CODESYS_GMBH
 	case "M_MOORGEN_DEUTSCHLAND_GMBH":
-		return KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH
+		enum = KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH
 	case "M_CULLMANN_TECH":
-		return KnxManufacturer_M_CULLMANN_TECH
+		enum = KnxManufacturer_M_CULLMANN_TECH
 	case "M_HERMANN_KLEINHUIS":
-		return KnxManufacturer_M_HERMANN_KLEINHUIS
+		enum = KnxManufacturer_M_HERMANN_KLEINHUIS
 	case "M_MERCK_WINDOW_TECHNOLOGIES_B_V_":
-		return KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_
+		enum = KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_
 	case "M_ABEGO":
-		return KnxManufacturer_M_ABEGO
+		enum = KnxManufacturer_M_ABEGO
 	case "M_MYGEKKO":
-		return KnxManufacturer_M_MYGEKKO
+		enum = KnxManufacturer_M_MYGEKKO
 	case "M_ERGO3_SARL":
-		return KnxManufacturer_M_ERGO3_SARL
+		enum = KnxManufacturer_M_ERGO3_SARL
 	case "M_STMICROELECTRONICS_INTERNATIONAL_N_V_":
-		return KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_
+		enum = KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_
 	case "M_CJC_SYSTEMS":
-		return KnxManufacturer_M_CJC_SYSTEMS
+		enum = KnxManufacturer_M_CJC_SYSTEMS
 	case "M_SUDOKU":
-		return KnxManufacturer_M_SUDOKU
+		enum = KnxManufacturer_M_SUDOKU
 	case "M_AZ_E_LITE_PTE_LTD":
-		return KnxManufacturer_M_AZ_E_LITE_PTE_LTD
+		enum = KnxManufacturer_M_AZ_E_LITE_PTE_LTD
 	case "M_ARLIGHT":
-		return KnxManufacturer_M_ARLIGHT
+		enum = KnxManufacturer_M_ARLIGHT
 	case "M_GRUENBECK_WASSERAUFBEREITUNG_GMBH":
-		return KnxManufacturer_M_GRUENBECK_WASSERAUFBEREITUNG_GMBH
+		enum = KnxManufacturer_M_GRUENBECK_WASSERAUFBEREITUNG_GMBH
 	case "M_BTICINO":
-		return KnxManufacturer_M_BTICINO
+		enum = KnxManufacturer_M_BTICINO
 	case "M_STIEBEL_ELTRON":
-		return KnxManufacturer_M_STIEBEL_ELTRON
+		enum = KnxManufacturer_M_STIEBEL_ELTRON
 	case "M_MODULE_ELECTRONIC":
-		return KnxManufacturer_M_MODULE_ELECTRONIC
+		enum = KnxManufacturer_M_MODULE_ELECTRONIC
 	case "M_KOPLAT":
-		return KnxManufacturer_M_KOPLAT
+		enum = KnxManufacturer_M_KOPLAT
 	case "M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD":
-		return KnxManufacturer_M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD
+		enum = KnxManufacturer_M_GUANGZHOU_LETOUR_LIFE_TECHNOLOGY_CO___LTD
 	case "M_ILEVIA":
-		return KnxManufacturer_M_ILEVIA
+		enum = KnxManufacturer_M_ILEVIA
 	case "M_LN_SYSTEMTEQ":
-		return KnxManufacturer_M_LN_SYSTEMTEQ
+		enum = KnxManufacturer_M_LN_SYSTEMTEQ
 	case "M_HISENSE_SMARTHOME":
-		return KnxManufacturer_M_HISENSE_SMARTHOME
+		enum = KnxManufacturer_M_HISENSE_SMARTHOME
 	case "M_FLINK_AUTOMATION_SYSTEM":
-		return KnxManufacturer_M_FLINK_AUTOMATION_SYSTEM
+		enum = KnxManufacturer_M_FLINK_AUTOMATION_SYSTEM
 	case "M_XXTER_BV":
-		return KnxManufacturer_M_XXTER_BV
+		enum = KnxManufacturer_M_XXTER_BV
 	case "M_LYNXUS_TECHNOLOGY":
-		return KnxManufacturer_M_LYNXUS_TECHNOLOGY
+		enum = KnxManufacturer_M_LYNXUS_TECHNOLOGY
 	case "M_ROBOT_S_A_":
-		return KnxManufacturer_M_ROBOT_S_A_
+		enum = KnxManufacturer_M_ROBOT_S_A_
 	case "M_TEHALIT":
-		return KnxManufacturer_M_TEHALIT
+		enum = KnxManufacturer_M_TEHALIT
 	case "M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_":
-		return KnxManufacturer_M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_
+		enum = KnxManufacturer_M_SHENZHEN_ATTE_SMART_LIFE_CO__LTD_
 	case "M_NOBLESSE":
-		return KnxManufacturer_M_NOBLESSE
+		enum = KnxManufacturer_M_NOBLESSE
 	case "M_ADVANCED_DEVICES":
-		return KnxManufacturer_M_ADVANCED_DEVICES
+		enum = KnxManufacturer_M_ADVANCED_DEVICES
 	case "M_ATRINA_BUILDING_AUTOMATION_CO__LTD":
-		return KnxManufacturer_M_ATRINA_BUILDING_AUTOMATION_CO__LTD
+		enum = KnxManufacturer_M_ATRINA_BUILDING_AUTOMATION_CO__LTD
 	case "M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_":
-		return KnxManufacturer_M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_
+		enum = KnxManufacturer_M_GUANGDONG_DAMING_LAFFEY_ELECTRIC_CO___LTD_
 	case "M_WESTERSTRAND_URFABRIK_AB":
-		return KnxManufacturer_M_WESTERSTRAND_URFABRIK_AB
+		enum = KnxManufacturer_M_WESTERSTRAND_URFABRIK_AB
 	case "M_CONTROL4_CORPORATE":
-		return KnxManufacturer_M_CONTROL4_CORPORATE
+		enum = KnxManufacturer_M_CONTROL4_CORPORATE
 	case "M_ONTROL":
-		return KnxManufacturer_M_ONTROL
+		enum = KnxManufacturer_M_ONTROL
 	case "M_STARNET":
-		return KnxManufacturer_M_STARNET
+		enum = KnxManufacturer_M_STARNET
 	case "M_BETA_CAVI":
-		return KnxManufacturer_M_BETA_CAVI
+		enum = KnxManufacturer_M_BETA_CAVI
 	case "M_THEBEN_AG":
-		return KnxManufacturer_M_THEBEN_AG
+		enum = KnxManufacturer_M_THEBEN_AG
 	case "M_EASEMORE":
-		return KnxManufacturer_M_EASEMORE
+		enum = KnxManufacturer_M_EASEMORE
 	case "M_VIVALDI_SRL":
-		return KnxManufacturer_M_VIVALDI_SRL
+		enum = KnxManufacturer_M_VIVALDI_SRL
 	case "M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI":
-		return KnxManufacturer_M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI
+		enum = KnxManufacturer_M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI
 	case "M_HWISCON":
-		return KnxManufacturer_M_HWISCON
+		enum = KnxManufacturer_M_HWISCON
 	case "M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_":
-		return KnxManufacturer_M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_
+		enum = KnxManufacturer_M_SHANGHAI_ELECON_INTELLIGENT_TECHNOLOGY_CO___LTD_
 	case "M_KAMPMANN":
-		return KnxManufacturer_M_KAMPMANN
+		enum = KnxManufacturer_M_KAMPMANN
 	case "M_IMPOLUX_GMBH_LEDIMAX":
-		return KnxManufacturer_M_IMPOLUX_GMBH_LEDIMAX
+		enum = KnxManufacturer_M_IMPOLUX_GMBH_LEDIMAX
 	case "M_EVAUX":
-		return KnxManufacturer_M_EVAUX
+		enum = KnxManufacturer_M_EVAUX
 	case "M_WEBRO_CABLES_AND_CONNECTORS_LIMITED":
-		return KnxManufacturer_M_WEBRO_CABLES_AND_CONNECTORS_LIMITED
+		enum = KnxManufacturer_M_WEBRO_CABLES_AND_CONNECTORS_LIMITED
 	case "M_SHANGHAI_E_TECH_SOLUTION":
-		return KnxManufacturer_M_SHANGHAI_E_TECH_SOLUTION
+		enum = KnxManufacturer_M_SHANGHAI_E_TECH_SOLUTION
 	case "M_WILHELM_RUTENBECK":
-		return KnxManufacturer_M_WILHELM_RUTENBECK
+		enum = KnxManufacturer_M_WILHELM_RUTENBECK
 	case "M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_":
-		return KnxManufacturer_M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_
+		enum = KnxManufacturer_M_GUANGZHOU_HOKO_ELECTRIC_CO__LTD_
 	case "M_LAMMIN_HIGH_TECH_CO__LTD":
-		return KnxManufacturer_M_LAMMIN_HIGH_TECH_CO__LTD
+		enum = KnxManufacturer_M_LAMMIN_HIGH_TECH_CO__LTD
 	case "M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD":
-		return KnxManufacturer_M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD
+		enum = KnxManufacturer_M_SHENZHEN_MERRYTEK_TECHNOLOGY_CO___LTD
 	case "M_I_LUXUS":
-		return KnxManufacturer_M_I_LUXUS
+		enum = KnxManufacturer_M_I_LUXUS
 	case "M_ELMOS_SEMICONDUCTOR_AG":
-		return KnxManufacturer_M_ELMOS_SEMICONDUCTOR_AG
+		enum = KnxManufacturer_M_ELMOS_SEMICONDUCTOR_AG
 	case "M_EMCOM_TECHNOLOGY_INC":
-		return KnxManufacturer_M_EMCOM_TECHNOLOGY_INC
+		enum = KnxManufacturer_M_EMCOM_TECHNOLOGY_INC
 	case "M_PROJECT_INNOVATIONS_GMBH":
-		return KnxManufacturer_M_PROJECT_INNOVATIONS_GMBH
+		enum = KnxManufacturer_M_PROJECT_INNOVATIONS_GMBH
 	case "M_ITC":
-		return KnxManufacturer_M_ITC
+		enum = KnxManufacturer_M_ITC
 	case "M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING":
-		return KnxManufacturer_M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING
+		enum = KnxManufacturer_M_ABB_LV_INSTALLATION_MATERIALS_COMPANY_LTD__BEIJING
 	case "M_MAICO":
-		return KnxManufacturer_M_MAICO
+		enum = KnxManufacturer_M_MAICO
 	case "M_WINKHAUS":
-		return KnxManufacturer_M_WINKHAUS
+		enum = KnxManufacturer_M_WINKHAUS
 	case "M_ELAN_SRL":
-		return KnxManufacturer_M_ELAN_SRL
+		enum = KnxManufacturer_M_ELAN_SRL
 	case "M_MINHHA_TECHNOLOGY_CO__LTD":
-		return KnxManufacturer_M_MINHHA_TECHNOLOGY_CO__LTD
+		enum = KnxManufacturer_M_MINHHA_TECHNOLOGY_CO__LTD
 	case "M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_":
-		return KnxManufacturer_M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_
+		enum = KnxManufacturer_M_ZHEJIANG_TIANJIE_INDUSTRIAL_CORP_
 	case "M_IAUTOMATION_PTY_LIMITED":
-		return KnxManufacturer_M_IAUTOMATION_PTY_LIMITED
+		enum = KnxManufacturer_M_IAUTOMATION_PTY_LIMITED
 	case "M_EXTRON":
-		return KnxManufacturer_M_EXTRON
+		enum = KnxManufacturer_M_EXTRON
 	case "M_FREEDOMPRO":
-		return KnxManufacturer_M_FREEDOMPRO
+		enum = KnxManufacturer_M_FREEDOMPRO
 	case "M_ONEHOME":
-		return KnxManufacturer_M_ONEHOME
+		enum = KnxManufacturer_M_ONEHOME
 	case "M_EOS_SAUNATECHNIK_GMBH":
-		return KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH
+		enum = KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH
 	case "M_KUSATEK_GMBH":
-		return KnxManufacturer_M_KUSATEK_GMBH
+		enum = KnxManufacturer_M_KUSATEK_GMBH
 	case "M_EISBAER_SCADA":
-		return KnxManufacturer_M_EISBAER_SCADA
+		enum = KnxManufacturer_M_EISBAER_SCADA
 	case "M_ROBERT_BOSCH":
-		return KnxManufacturer_M_ROBERT_BOSCH
+		enum = KnxManufacturer_M_ROBERT_BOSCH
 	case "M_AUTOMATISMI_BENINCA_S_P_A_":
-		return KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_
+		enum = KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_
 	case "M_BLENDOM":
-		return KnxManufacturer_M_BLENDOM
+		enum = KnxManufacturer_M_BLENDOM
 	case "M_MADEL_AIR_TECHNICAL_DIFFUSION":
-		return KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION
+		enum = KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION
 	case "M_NIKO":
-		return KnxManufacturer_M_NIKO
+		enum = KnxManufacturer_M_NIKO
 	case "M_BOSCH_REXROTH_AG":
-		return KnxManufacturer_M_BOSCH_REXROTH_AG
+		enum = KnxManufacturer_M_BOSCH_REXROTH_AG
 	case "M_CANDM_PRODUCTS":
-		return KnxManufacturer_M_CANDM_PRODUCTS
+		enum = KnxManufacturer_M_CANDM_PRODUCTS
 	case "M_HOERMANN_KG_VERKAUFSGESELLSCHAFT":
-		return KnxManufacturer_M_HOERMANN_KG_VERKAUFSGESELLSCHAFT
+		enum = KnxManufacturer_M_HOERMANN_KG_VERKAUFSGESELLSCHAFT
 	case "M_SHANGHAI_RAJAYASA_CO__LTD":
-		return KnxManufacturer_M_SHANGHAI_RAJAYASA_CO__LTD
+		enum = KnxManufacturer_M_SHANGHAI_RAJAYASA_CO__LTD
 	case "M_SUZUKI":
-		return KnxManufacturer_M_SUZUKI
+		enum = KnxManufacturer_M_SUZUKI
 	case "M_SILENT_GLISS_INTERNATIONAL_LTD_":
-		return KnxManufacturer_M_SILENT_GLISS_INTERNATIONAL_LTD_
+		enum = KnxManufacturer_M_SILENT_GLISS_INTERNATIONAL_LTD_
 	case "M_SOMFY":
-		return KnxManufacturer_M_SOMFY
+		enum = KnxManufacturer_M_SOMFY
 	case "M_BEE_CONTROLS_ADGSC_GROUP":
-		return KnxManufacturer_M_BEE_CONTROLS_ADGSC_GROUP
+		enum = KnxManufacturer_M_BEE_CONTROLS_ADGSC_GROUP
 	case "M_XDTECGMBH":
-		return KnxManufacturer_M_XDTECGMBH
+		enum = KnxManufacturer_M_XDTECGMBH
 	case "M_OSRAM":
-		return KnxManufacturer_M_OSRAM
+		enum = KnxManufacturer_M_OSRAM
 	case "M_LEBENOR":
-		return KnxManufacturer_M_LEBENOR
+		enum = KnxManufacturer_M_LEBENOR
 	case "M_AUTOMANENG":
-		return KnxManufacturer_M_AUTOMANENG
+		enum = KnxManufacturer_M_AUTOMANENG
 	case "M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA":
-		return KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA
+		enum = KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA
 	case "M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD":
-		return KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD
+		enum = KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD
 	case "M_ETA_HEIZTECHNIK":
-		return KnxManufacturer_M_ETA_HEIZTECHNIK
+		enum = KnxManufacturer_M_ETA_HEIZTECHNIK
 	case "M_DIVUS_GMBH":
-		return KnxManufacturer_M_DIVUS_GMBH
+		enum = KnxManufacturer_M_DIVUS_GMBH
 	case "M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_":
-		return KnxManufacturer_M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_
+		enum = KnxManufacturer_M_NANJING_TAIJIESAI_INTELLIGENT_TECHNOLOGY_CO__LTD_
 	case "M_WOERTZ":
-		return KnxManufacturer_M_WOERTZ
+		enum = KnxManufacturer_M_WOERTZ
 	case "M_LUNATONE":
-		return KnxManufacturer_M_LUNATONE
+		enum = KnxManufacturer_M_LUNATONE
 	case "M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT":
-		return KnxManufacturer_M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT
+		enum = KnxManufacturer_M_ZHEJIANG_SCTECH_BUILDING_INTELLIGENT
 	case "M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_":
-		return KnxManufacturer_M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_
+		enum = KnxManufacturer_M_FOSHAN_QITE_TECHNOLOGY_CO___LTD_
 	case "M_NOKE":
-		return KnxManufacturer_M_NOKE
+		enum = KnxManufacturer_M_NOKE
 	case "M_LANDCOM":
-		return KnxManufacturer_M_LANDCOM
+		enum = KnxManufacturer_M_LANDCOM
 	case "M_STORK_AS":
-		return KnxManufacturer_M_STORK_AS
+		enum = KnxManufacturer_M_STORK_AS
 	case "M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_":
-		return KnxManufacturer_M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_
+		enum = KnxManufacturer_M_HANGZHOU_SHENDU_TECHNOLOGY_CO___LTD_
 	case "M_COOLAUTOMATION":
-		return KnxManufacturer_M_COOLAUTOMATION
+		enum = KnxManufacturer_M_COOLAUTOMATION
 	case "M_APRSTERN":
-		return KnxManufacturer_M_APRSTERN
+		enum = KnxManufacturer_M_APRSTERN
 	case "M_SONNEN":
-		return KnxManufacturer_M_SONNEN
+		enum = KnxManufacturer_M_SONNEN
 	case "M_VIESSMANN_WERKE":
-		return KnxManufacturer_M_VIESSMANN_WERKE
+		enum = KnxManufacturer_M_VIESSMANN_WERKE
 	case "M_DNAKE":
-		return KnxManufacturer_M_DNAKE
+		enum = KnxManufacturer_M_DNAKE
 	case "M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH":
-		return KnxManufacturer_M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH
+		enum = KnxManufacturer_M_NEUBERGER_GEBAEUDEAUTOMATION_GMBH
 	case "M_STILIGER":
-		return KnxManufacturer_M_STILIGER
+		enum = KnxManufacturer_M_STILIGER
 	case "M_BERGHOF_AUTOMATION_GMBH":
-		return KnxManufacturer_M_BERGHOF_AUTOMATION_GMBH
+		enum = KnxManufacturer_M_BERGHOF_AUTOMATION_GMBH
 	case "M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH":
-		return KnxManufacturer_M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH
+		enum = KnxManufacturer_M_TOTAL_AUTOMATION_AND_CONTROLS_GMBH
 	case "M_DOVIT":
-		return KnxManufacturer_M_DOVIT
+		enum = KnxManufacturer_M_DOVIT
 	case "M_INSTALIGHTING_GMBH":
-		return KnxManufacturer_M_INSTALIGHTING_GMBH
+		enum = KnxManufacturer_M_INSTALIGHTING_GMBH
 	case "M_UNI_TEC":
-		return KnxManufacturer_M_UNI_TEC
+		enum = KnxManufacturer_M_UNI_TEC
 	case "M_CASATUNES":
-		return KnxManufacturer_M_CASATUNES
+		enum = KnxManufacturer_M_CASATUNES
 	case "M_EMT":
-		return KnxManufacturer_M_EMT
+		enum = KnxManufacturer_M_EMT
 	case "M_IMI_HYDRONIC_ENGINEERING":
-		return KnxManufacturer_M_IMI_HYDRONIC_ENGINEERING
+		enum = KnxManufacturer_M_IMI_HYDRONIC_ENGINEERING
 	case "M_SENFFICIENT":
-		return KnxManufacturer_M_SENFFICIENT
+		enum = KnxManufacturer_M_SENFFICIENT
 	case "M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED":
-		return KnxManufacturer_M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED
+		enum = KnxManufacturer_M_AUROLITE_ELECTRICAL_PANYU_GUANGZHOU_LIMITED
 	case "M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_":
-		return KnxManufacturer_M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_
+		enum = KnxManufacturer_M_ABB_XIAMEN_SMART_TECHNOLOGY_CO___LTD_
 	case "M_SAMSON_ELECTRIC_WIRE":
-		return KnxManufacturer_M_SAMSON_ELECTRIC_WIRE
+		enum = KnxManufacturer_M_SAMSON_ELECTRIC_WIRE
 	case "M_T_TOUCHING":
-		return KnxManufacturer_M_T_TOUCHING
+		enum = KnxManufacturer_M_T_TOUCHING
 	case "M_CORE_SMART_HOME":
-		return KnxManufacturer_M_CORE_SMART_HOME
+		enum = KnxManufacturer_M_CORE_SMART_HOME
 	case "M_GREENCONNECT_SOLUTIONS_SA":
-		return KnxManufacturer_M_GREENCONNECT_SOLUTIONS_SA
+		enum = KnxManufacturer_M_GREENCONNECT_SOLUTIONS_SA
 	case "M_ELETTRONICA_CONDUTTORI":
-		return KnxManufacturer_M_ELETTRONICA_CONDUTTORI
+		enum = KnxManufacturer_M_ELETTRONICA_CONDUTTORI
 	case "M_MKFC":
-		return KnxManufacturer_M_MKFC
+		enum = KnxManufacturer_M_MKFC
 	case "M_AUTOMATIONPlus":
-		return KnxManufacturer_M_AUTOMATIONPlus
+		enum = KnxManufacturer_M_AUTOMATIONPlus
 	case "M_BERKER":
-		return KnxManufacturer_M_BERKER
+		enum = KnxManufacturer_M_BERKER
 	case "M_JOH__VAILLANT":
-		return KnxManufacturer_M_JOH__VAILLANT
+		enum = KnxManufacturer_M_JOH__VAILLANT
 	case "M_BLUE_AND_RED":
-		return KnxManufacturer_M_BLUE_AND_RED
+		enum = KnxManufacturer_M_BLUE_AND_RED
 	case "M_FROGBLUE":
-		return KnxManufacturer_M_FROGBLUE
+		enum = KnxManufacturer_M_FROGBLUE
 	case "M_SAVESOR":
-		return KnxManufacturer_M_SAVESOR
+		enum = KnxManufacturer_M_SAVESOR
 	case "M_APP_TECH":
-		return KnxManufacturer_M_APP_TECH
+		enum = KnxManufacturer_M_APP_TECH
 	case "M_SENSORTEC_AG":
-		return KnxManufacturer_M_SENSORTEC_AG
+		enum = KnxManufacturer_M_SENSORTEC_AG
 	case "M_NYSA_TECHNOLOGY_AND_SOLUTIONS":
-		return KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS
+		enum = KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS
 	case "M_FARADITE":
-		return KnxManufacturer_M_FARADITE
+		enum = KnxManufacturer_M_FARADITE
 	case "M_OPTIMUS":
-		return KnxManufacturer_M_OPTIMUS
+		enum = KnxManufacturer_M_OPTIMUS
 	case "M_KTS_S_R_L_":
-		return KnxManufacturer_M_KTS_S_R_L_
+		enum = KnxManufacturer_M_KTS_S_R_L_
 	case "M_RAMCRO_SPA":
-		return KnxManufacturer_M_RAMCRO_SPA
+		enum = KnxManufacturer_M_RAMCRO_SPA
 	case "M_AMP_DEUTSCHLAND":
-		return KnxManufacturer_M_AMP_DEUTSCHLAND
+		enum = KnxManufacturer_M_AMP_DEUTSCHLAND
 	case "M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD":
-		return KnxManufacturer_M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD
+		enum = KnxManufacturer_M_WUHAN_WISECREATE_UNIVERSE_TECHNOLOGY_CO___LTD
 	case "M_BEMI_SMART_HOME_LTD":
-		return KnxManufacturer_M_BEMI_SMART_HOME_LTD
+		enum = KnxManufacturer_M_BEMI_SMART_HOME_LTD
 	case "M_ARDOMUS":
-		return KnxManufacturer_M_ARDOMUS
+		enum = KnxManufacturer_M_ARDOMUS
 	case "M_CHANGXING":
-		return KnxManufacturer_M_CHANGXING
+		enum = KnxManufacturer_M_CHANGXING
 	case "M_E_CONTROLS":
-		return KnxManufacturer_M_E_CONTROLS
+		enum = KnxManufacturer_M_E_CONTROLS
 	case "M_AIB_TECHNOLOGY":
-		return KnxManufacturer_M_AIB_TECHNOLOGY
+		enum = KnxManufacturer_M_AIB_TECHNOLOGY
 	case "M_NVC":
-		return KnxManufacturer_M_NVC
+		enum = KnxManufacturer_M_NVC
 	case "M_KBOX":
-		return KnxManufacturer_M_KBOX
+		enum = KnxManufacturer_M_KBOX
 	case "M_CNS":
-		return KnxManufacturer_M_CNS
+		enum = KnxManufacturer_M_CNS
 	case "M_TYBA":
-		return KnxManufacturer_M_TYBA
+		enum = KnxManufacturer_M_TYBA
 	case "M_BOSCH_THERMOTECHNIK_GMBH":
-		return KnxManufacturer_M_BOSCH_THERMOTECHNIK_GMBH
+		enum = KnxManufacturer_M_BOSCH_THERMOTECHNIK_GMBH
 	case "M_ATREL":
-		return KnxManufacturer_M_ATREL
+		enum = KnxManufacturer_M_ATREL
 	case "M_SIMON_ELECTRIC_CHINA_CO___LTD":
-		return KnxManufacturer_M_SIMON_ELECTRIC_CHINA_CO___LTD
+		enum = KnxManufacturer_M_SIMON_ELECTRIC_CHINA_CO___LTD
 	case "M_KORDZ_GROUP":
-		return KnxManufacturer_M_KORDZ_GROUP
+		enum = KnxManufacturer_M_KORDZ_GROUP
 	case "M_ND_ELECTRIC":
-		return KnxManufacturer_M_ND_ELECTRIC
+		enum = KnxManufacturer_M_ND_ELECTRIC
 	case "M_CONTROLIUM":
-		return KnxManufacturer_M_CONTROLIUM
+		enum = KnxManufacturer_M_CONTROLIUM
 	case "M_FAMO_GMBH_AND_CO__KG":
-		return KnxManufacturer_M_FAMO_GMBH_AND_CO__KG
+		enum = KnxManufacturer_M_FAMO_GMBH_AND_CO__KG
 	case "M_CDN_SMART":
-		return KnxManufacturer_M_CDN_SMART
+		enum = KnxManufacturer_M_CDN_SMART
 	case "M_HESTON":
-		return KnxManufacturer_M_HESTON
+		enum = KnxManufacturer_M_HESTON
 	case "M_ESLA_CONEXIONES_S_L_":
-		return KnxManufacturer_M_ESLA_CONEXIONES_S_L_
+		enum = KnxManufacturer_M_ESLA_CONEXIONES_S_L_
 	case "M_WEISHAUPT":
-		return KnxManufacturer_M_WEISHAUPT
+		enum = KnxManufacturer_M_WEISHAUPT
 	case "M_SEF___ECOTEC":
-		return KnxManufacturer_M_SEF___ECOTEC
+		enum = KnxManufacturer_M_SEF___ECOTEC
 	case "M_ASTRUM_TECHNOLOGY":
-		return KnxManufacturer_M_ASTRUM_TECHNOLOGY
+		enum = KnxManufacturer_M_ASTRUM_TECHNOLOGY
 	case "M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_":
-		return KnxManufacturer_M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_
+		enum = KnxManufacturer_M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_
 	case "M_NANOTECO_CORPORATION":
-		return KnxManufacturer_M_NANOTECO_CORPORATION
+		enum = KnxManufacturer_M_NANOTECO_CORPORATION
 	case "M_NIETIAN":
-		return KnxManufacturer_M_NIETIAN
+		enum = KnxManufacturer_M_NIETIAN
 	case "M_SUMSIR":
-		return KnxManufacturer_M_SUMSIR
+		enum = KnxManufacturer_M_SUMSIR
 	case "M_ORBIS_TECNOLOGIA_ELECTRICA_SA":
-		return KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA
+		enum = KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA
 	case "M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_":
-		return KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_
+		enum = KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_
 	case "M_ANLIPS":
-		return KnxManufacturer_M_ANLIPS
+		enum = KnxManufacturer_M_ANLIPS
 	case "M_GUANGDONG_PAK_CORPORATION_CO___LTD":
-		return KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD
+		enum = KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD
 	case "M_BVK_TECHNOLOGY":
-		return KnxManufacturer_M_BVK_TECHNOLOGY
+		enum = KnxManufacturer_M_BVK_TECHNOLOGY
 	case "M_DORMA_GMBH_Plus_CO__KG":
-		return KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG
+		enum = KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG
 	case "M_SOLOMIO_SRL":
-		return KnxManufacturer_M_SOLOMIO_SRL
+		enum = KnxManufacturer_M_SOLOMIO_SRL
 	case "M_DOMOTICA_LABS":
-		return KnxManufacturer_M_DOMOTICA_LABS
+		enum = KnxManufacturer_M_DOMOTICA_LABS
 	case "M_NVC_INTERNATIONAL":
-		return KnxManufacturer_M_NVC_INTERNATIONAL
+		enum = KnxManufacturer_M_NVC_INTERNATIONAL
 	case "M_BA":
-		return KnxManufacturer_M_BA
+		enum = KnxManufacturer_M_BA
 	case "M_IRIS_CERAMICA_GROUP":
-		return KnxManufacturer_M_IRIS_CERAMICA_GROUP
+		enum = KnxManufacturer_M_IRIS_CERAMICA_GROUP
 	case "M_WIREEO":
-		return KnxManufacturer_M_WIREEO
+		enum = KnxManufacturer_M_WIREEO
 	case "M_NVCLIGHTING":
-		return KnxManufacturer_M_NVCLIGHTING
+		enum = KnxManufacturer_M_NVCLIGHTING
 	case "M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_":
-		return KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_
+		enum = KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_
 	case "M_ARMITI_TRADING":
-		return KnxManufacturer_M_ARMITI_TRADING
+		enum = KnxManufacturer_M_ARMITI_TRADING
 	case "M_ELEK":
-		return KnxManufacturer_M_ELEK
+		enum = KnxManufacturer_M_ELEK
 	case "M_WINDOWMASTER_AS":
-		return KnxManufacturer_M_WINDOWMASTER_AS
+		enum = KnxManufacturer_M_WINDOWMASTER_AS
 	case "M_ACCORDIA_SA":
-		return KnxManufacturer_M_ACCORDIA_SA
+		enum = KnxManufacturer_M_ACCORDIA_SA
 	case "M_OURICAN":
-		return KnxManufacturer_M_OURICAN
+		enum = KnxManufacturer_M_OURICAN
 	case "M_INLIWOSE":
-		return KnxManufacturer_M_INLIWOSE
+		enum = KnxManufacturer_M_INLIWOSE
 	case "M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_":
-		return KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_
+		enum = KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_
 	case "M_SHK_KNX":
-		return KnxManufacturer_M_SHK_KNX
+		enum = KnxManufacturer_M_SHK_KNX
 	case "M_AMPIO":
-		return KnxManufacturer_M_AMPIO
+		enum = KnxManufacturer_M_AMPIO
 	case "M_MINGXING_WISDOM":
-		return KnxManufacturer_M_MINGXING_WISDOM
+		enum = KnxManufacturer_M_MINGXING_WISDOM
 	case "M_ALTEN_SW_GMBH":
-		return KnxManufacturer_M_ALTEN_SW_GMBH
+		enum = KnxManufacturer_M_ALTEN_SW_GMBH
 	case "M_V_Y_C_SRL":
-		return KnxManufacturer_M_V_Y_C_SRL
+		enum = KnxManufacturer_M_V_Y_C_SRL
 	case "M_TERMINUS_GROUP":
-		return KnxManufacturer_M_TERMINUS_GROUP
+		enum = KnxManufacturer_M_TERMINUS_GROUP
 	case "M_WALTHER_WERKE":
-		return KnxManufacturer_M_WALTHER_WERKE
+		enum = KnxManufacturer_M_WALTHER_WERKE
 	case "M_WONDERFUL_CITY_TECHNOLOGY":
-		return KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY
+		enum = KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY
 	case "M_QBICTECHNOLOGY":
-		return KnxManufacturer_M_QBICTECHNOLOGY
+		enum = KnxManufacturer_M_QBICTECHNOLOGY
 	case "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED":
-		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED
+		enum = KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED
 	case "M_ONEWORK":
-		return KnxManufacturer_M_ONEWORK
+		enum = KnxManufacturer_M_ONEWORK
 	case "M_PL_LINK":
-		return KnxManufacturer_M_PL_LINK
+		enum = KnxManufacturer_M_PL_LINK
 	case "M_FASEL_GMBH_ELEKTRONIK":
-		return KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK
+		enum = KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK
 	case "M_GOLDENHOME_SMART":
-		return KnxManufacturer_M_GOLDENHOME_SMART
+		enum = KnxManufacturer_M_GOLDENHOME_SMART
 	case "M_GOLDMEDAL":
-		return KnxManufacturer_M_GOLDMEDAL
+		enum = KnxManufacturer_M_GOLDMEDAL
 	case "M_CannX":
-		return KnxManufacturer_M_CannX
+		enum = KnxManufacturer_M_CannX
 	case "M_EGI___EARTH_GOODNESS":
-		return KnxManufacturer_M_EGI___EARTH_GOODNESS
+		enum = KnxManufacturer_M_EGI___EARTH_GOODNESS
 	case "M_ORAS":
-		return KnxManufacturer_M_ORAS
+		enum = KnxManufacturer_M_ORAS
 	case "M_VIEGA_GMBH_AND_CO__KG":
-		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
+		enum = KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
 	case "M_FREDON_DIGITAL_BUILDINGS":
-		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
+		enum = KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
 	case "M_HELUKABEL_THAILAND_CO__LTD_":
-		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
+		enum = KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
 	case "M_ACE_TECHNOLOGY":
-		return KnxManufacturer_M_ACE_TECHNOLOGY
+		enum = KnxManufacturer_M_ACE_TECHNOLOGY
 	case "M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD":
-		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD
+		enum = KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD
 	case "M_SUMAMO":
-		return KnxManufacturer_M_SUMAMO
+		enum = KnxManufacturer_M_SUMAMO
 	case "M_SVIT":
-		return KnxManufacturer_M_SVIT
+		enum = KnxManufacturer_M_SVIT
 	case "M_TECGET":
-		return KnxManufacturer_M_TECGET
+		enum = KnxManufacturer_M_TECGET
 	case "M_XEROPOINT":
-		return KnxManufacturer_M_XEROPOINT
+		enum = KnxManufacturer_M_XEROPOINT
 	case "M_HONEYWELL_BUILDING_TECHNOLOGIES":
-		return KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES
+		enum = KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES
 	case "M_DAETWYLER":
-		return KnxManufacturer_M_DAETWYLER
+		enum = KnxManufacturer_M_DAETWYLER
 	case "M_COMFORTCLICK":
-		return KnxManufacturer_M_COMFORTCLICK
+		enum = KnxManufacturer_M_COMFORTCLICK
 	case "M_DORBAS_ELECTRIC":
-		return KnxManufacturer_M_DORBAS_ELECTRIC
+		enum = KnxManufacturer_M_DORBAS_ELECTRIC
 	case "M_REMKO_GMBH_AND_CO__KG":
-		return KnxManufacturer_M_REMKO_GMBH_AND_CO__KG
+		enum = KnxManufacturer_M_REMKO_GMBH_AND_CO__KG
 	case "M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD":
-		return KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD
+		enum = KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD
 	case "M_ANDAS":
-		return KnxManufacturer_M_ANDAS
+		enum = KnxManufacturer_M_ANDAS
 	case "M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD":
-		return KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD
+		enum = KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD
 	case "M_LARFE":
-		return KnxManufacturer_M_LARFE
+		enum = KnxManufacturer_M_LARFE
 	case "M_DONGGUAN_MUHCCI_ELECTRICAL":
-		return KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL
+		enum = KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL
 	case "M_STEC":
-		return KnxManufacturer_M_STEC
+		enum = KnxManufacturer_M_STEC
 	case "M_ARIGO_SOFTWARE_GMBH":
-		return KnxManufacturer_M_ARIGO_SOFTWARE_GMBH
+		enum = KnxManufacturer_M_ARIGO_SOFTWARE_GMBH
 	case "M_ELECTRAK":
-		return KnxManufacturer_M_ELECTRAK
+		enum = KnxManufacturer_M_ELECTRAK
 	case "M_FEISHELEC":
-		return KnxManufacturer_M_FEISHELEC
+		enum = KnxManufacturer_M_FEISHELEC
 	case "M_GORDIC":
-		return KnxManufacturer_M_GORDIC
+		enum = KnxManufacturer_M_GORDIC
 	case "M_ABB___RESERVED":
-		return KnxManufacturer_M_ABB___RESERVED
+		enum = KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
+		enum = KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO
+		enum = KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO
 	case "M_TECHEM":
-		return KnxManufacturer_M_TECHEM
+		enum = KnxManufacturer_M_TECHEM
 	case "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS":
-		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS
+		enum = KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS
 	case "M_WHD_WILHELM_HUBER_Plus_SOEHNE":
-		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE
+		enum = KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE
 	case "M_BISCHOFF_ELEKTRONIK":
-		return KnxManufacturer_M_BISCHOFF_ELEKTRONIK
+		enum = KnxManufacturer_M_BISCHOFF_ELEKTRONIK
 	case "M_JEPAZ":
-		return KnxManufacturer_M_JEPAZ
+		enum = KnxManufacturer_M_JEPAZ
 	case "M_RTS_AUTOMATION":
-		return KnxManufacturer_M_RTS_AUTOMATION
+		enum = KnxManufacturer_M_RTS_AUTOMATION
 	case "M_EIBMARKT_GMBH":
-		return KnxManufacturer_M_EIBMARKT_GMBH
+		enum = KnxManufacturer_M_EIBMARKT_GMBH
 	case "M_WAREMA_RENKHOFF_SE":
-		return KnxManufacturer_M_WAREMA_RENKHOFF_SE
+		enum = KnxManufacturer_M_WAREMA_RENKHOFF_SE
 	case "M_EELECTRON":
-		return KnxManufacturer_M_EELECTRON
+		enum = KnxManufacturer_M_EELECTRON
 	case "M_BELDEN_WIRE_AND_CABLE_B_V_":
-		return KnxManufacturer_M_BELDEN_WIRE_AND_CABLE_B_V_
+		enum = KnxManufacturer_M_BELDEN_WIRE_AND_CABLE_B_V_
 	case "M_GIRA_GIERSIEPEN":
-		return KnxManufacturer_M_GIRA_GIERSIEPEN
+		enum = KnxManufacturer_M_GIRA_GIERSIEPEN
 	case "M_BECKER_ANTRIEBE_GMBH":
-		return KnxManufacturer_M_BECKER_ANTRIEBE_GMBH
+		enum = KnxManufacturer_M_BECKER_ANTRIEBE_GMBH
 	case "M_J_STEHLEPlusSOEHNE_GMBH":
-		return KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH
+		enum = KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH
 	case "M_AGFEO":
-		return KnxManufacturer_M_AGFEO
+		enum = KnxManufacturer_M_AGFEO
 	case "M_ZENNIO":
-		return KnxManufacturer_M_ZENNIO
+		enum = KnxManufacturer_M_ZENNIO
 	case "M_TAPKO_TECHNOLOGIES":
-		return KnxManufacturer_M_TAPKO_TECHNOLOGIES
+		enum = KnxManufacturer_M_TAPKO_TECHNOLOGIES
 	case "M_HDL":
-		return KnxManufacturer_M_HDL
+		enum = KnxManufacturer_M_HDL
 	case "M_UPONOR":
-		return KnxManufacturer_M_UPONOR
+		enum = KnxManufacturer_M_UPONOR
 	case "M_SE_LIGHTMANAGEMENT_AG":
-		return KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG
+		enum = KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG
 	case "M_ARCUS_EDS":
-		return KnxManufacturer_M_ARCUS_EDS
+		enum = KnxManufacturer_M_ARCUS_EDS
 	case "M_INTESIS":
-		return KnxManufacturer_M_INTESIS
+		enum = KnxManufacturer_M_INTESIS
 	case "M_HAGER_ELECTRO":
-		return KnxManufacturer_M_HAGER_ELECTRO
+		enum = KnxManufacturer_M_HAGER_ELECTRO
 	case "M_HERHOLDT_CONTROLS_SRL":
-		return KnxManufacturer_M_HERHOLDT_CONTROLS_SRL
+		enum = KnxManufacturer_M_HERHOLDT_CONTROLS_SRL
 	case "M_NIKO_ZUBLIN":
-		return KnxManufacturer_M_NIKO_ZUBLIN
+		enum = KnxManufacturer_M_NIKO_ZUBLIN
 	case "M_DURABLE_TECHNOLOGIES":
-		return KnxManufacturer_M_DURABLE_TECHNOLOGIES
+		enum = KnxManufacturer_M_DURABLE_TECHNOLOGIES
 	case "M_INNOTEAM":
-		return KnxManufacturer_M_INNOTEAM
+		enum = KnxManufacturer_M_INNOTEAM
 	case "M_ISE_GMBH":
-		return KnxManufacturer_M_ISE_GMBH
+		enum = KnxManufacturer_M_ISE_GMBH
 	case "M_TEAM_FOR_TRONICS":
-		return KnxManufacturer_M_TEAM_FOR_TRONICS
+		enum = KnxManufacturer_M_TEAM_FOR_TRONICS
 	case "M_CIAT":
-		return KnxManufacturer_M_CIAT
+		enum = KnxManufacturer_M_CIAT
 	case "M_REMEHA_BV":
-		return KnxManufacturer_M_REMEHA_BV
+		enum = KnxManufacturer_M_REMEHA_BV
 	case "M_ESYLUX":
-		return KnxManufacturer_M_ESYLUX
+		enum = KnxManufacturer_M_ESYLUX
 	case "M_BASALTE":
-		return KnxManufacturer_M_BASALTE
+		enum = KnxManufacturer_M_BASALTE
 	case "M_INSTA_GMBH":
-		return KnxManufacturer_M_INSTA_GMBH
+		enum = KnxManufacturer_M_INSTA_GMBH
 	case "M_VESTAMATIC":
-		return KnxManufacturer_M_VESTAMATIC
+		enum = KnxManufacturer_M_VESTAMATIC
 	case "M_MDT_TECHNOLOGIES":
-		return KnxManufacturer_M_MDT_TECHNOLOGIES
+		enum = KnxManufacturer_M_MDT_TECHNOLOGIES
 	case "M_WARENDORFER_KUECHEN_GMBH":
-		return KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH
+		enum = KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH
 	case "M_VIDEO_STAR":
-		return KnxManufacturer_M_VIDEO_STAR
+		enum = KnxManufacturer_M_VIDEO_STAR
 	case "M_SITEK":
-		return KnxManufacturer_M_SITEK
+		enum = KnxManufacturer_M_SITEK
 	case "M_CONTROLTRONIC":
-		return KnxManufacturer_M_CONTROLTRONIC
+		enum = KnxManufacturer_M_CONTROLTRONIC
 	case "M_FUNCTION_TECHNOLOGY":
-		return KnxManufacturer_M_FUNCTION_TECHNOLOGY
+		enum = KnxManufacturer_M_FUNCTION_TECHNOLOGY
 	case "M_AMX":
-		return KnxManufacturer_M_AMX
+		enum = KnxManufacturer_M_AMX
 	case "M_ELDAT":
-		return KnxManufacturer_M_ELDAT
+		enum = KnxManufacturer_M_ELDAT
 	case "M_PANASONIC":
-		return KnxManufacturer_M_PANASONIC
+		enum = KnxManufacturer_M_PANASONIC
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func KnxManufacturerKnows(value uint16) bool {
@@ -8445,10 +8449,11 @@ func KnxManufacturerParse(readBuffer utils.ReadBuffer) (KnxManufacturer, error) 
 }
 
 func (e KnxManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e KnxManufacturer) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxManufacturer) PLC4XEnumName() string {
 	switch e {
 	case KnxManufacturer_M_UNKNOWN:
 		return "M_UNKNOWN"
@@ -9643,5 +9648,5 @@ func (e KnxManufacturer) name() string {
 }
 
 func (e KnxManufacturer) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

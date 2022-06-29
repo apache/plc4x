@@ -70,20 +70,24 @@ func BACnetLightingInProgressByValue(value uint8) BACnetLightingInProgress {
 	return 0
 }
 
-func BACnetLightingInProgressByName(value string) BACnetLightingInProgress {
+func BACnetLightingInProgressByName(value string) (enum BACnetLightingInProgress, ok bool) {
+	ok = true
 	switch value {
 	case "IDLE":
-		return BACnetLightingInProgress_IDLE
+		enum = BACnetLightingInProgress_IDLE
 	case "FADE_ACTIVE":
-		return BACnetLightingInProgress_FADE_ACTIVE
+		enum = BACnetLightingInProgress_FADE_ACTIVE
 	case "RAMP_ACTIVE":
-		return BACnetLightingInProgress_RAMP_ACTIVE
+		enum = BACnetLightingInProgress_RAMP_ACTIVE
 	case "NOT_CONTROLLED":
-		return BACnetLightingInProgress_NOT_CONTROLLED
+		enum = BACnetLightingInProgress_NOT_CONTROLLED
 	case "OTHER":
-		return BACnetLightingInProgress_OTHER
+		enum = BACnetLightingInProgress_OTHER
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLightingInProgressKnows(value uint8) bool {
@@ -122,10 +126,11 @@ func BACnetLightingInProgressParse(readBuffer utils.ReadBuffer) (BACnetLightingI
 }
 
 func (e BACnetLightingInProgress) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLightingInProgress", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLightingInProgress", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLightingInProgress) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLightingInProgress) PLC4XEnumName() string {
 	switch e {
 	case BACnetLightingInProgress_IDLE:
 		return "IDLE"
@@ -142,5 +147,5 @@ func (e BACnetLightingInProgress) name() string {
 }
 
 func (e BACnetLightingInProgress) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

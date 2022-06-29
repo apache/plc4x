@@ -174,72 +174,76 @@ func BACnetRelationshipByValue(value uint16) BACnetRelationship {
 	return 0
 }
 
-func BACnetRelationshipByName(value string) BACnetRelationship {
+func BACnetRelationshipByName(value string) (enum BACnetRelationship, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetRelationship_UNKNOWN
+		enum = BACnetRelationship_UNKNOWN
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetRelationship_VENDOR_PROPRIETARY_VALUE
 	case "DEFAULT":
-		return BACnetRelationship_DEFAULT
+		enum = BACnetRelationship_DEFAULT
 	case "INGRESS":
-		return BACnetRelationship_INGRESS
+		enum = BACnetRelationship_INGRESS
 	case "EGRESS":
-		return BACnetRelationship_EGRESS
+		enum = BACnetRelationship_EGRESS
 	case "SUPPLIES_AIR":
-		return BACnetRelationship_SUPPLIES_AIR
+		enum = BACnetRelationship_SUPPLIES_AIR
 	case "RECEIVES_AIR":
-		return BACnetRelationship_RECEIVES_AIR
+		enum = BACnetRelationship_RECEIVES_AIR
 	case "SUPPLIES_HOT_AIR":
-		return BACnetRelationship_SUPPLIES_HOT_AIR
+		enum = BACnetRelationship_SUPPLIES_HOT_AIR
 	case "RECEIVES_HOT_AIR":
-		return BACnetRelationship_RECEIVES_HOT_AIR
+		enum = BACnetRelationship_RECEIVES_HOT_AIR
 	case "SUPPLIES_COOL_AIR":
-		return BACnetRelationship_SUPPLIES_COOL_AIR
+		enum = BACnetRelationship_SUPPLIES_COOL_AIR
 	case "RECEIVES_COOL_AIR":
-		return BACnetRelationship_RECEIVES_COOL_AIR
+		enum = BACnetRelationship_RECEIVES_COOL_AIR
 	case "SUPPLIES_POWER":
-		return BACnetRelationship_SUPPLIES_POWER
+		enum = BACnetRelationship_SUPPLIES_POWER
 	case "RECEIVES_POWER":
-		return BACnetRelationship_RECEIVES_POWER
+		enum = BACnetRelationship_RECEIVES_POWER
 	case "CONTAINS":
-		return BACnetRelationship_CONTAINS
+		enum = BACnetRelationship_CONTAINS
 	case "SUPPLIES_GAS":
-		return BACnetRelationship_SUPPLIES_GAS
+		enum = BACnetRelationship_SUPPLIES_GAS
 	case "RECEIVES_GAS":
-		return BACnetRelationship_RECEIVES_GAS
+		enum = BACnetRelationship_RECEIVES_GAS
 	case "SUPPLIES_WATER":
-		return BACnetRelationship_SUPPLIES_WATER
+		enum = BACnetRelationship_SUPPLIES_WATER
 	case "RECEIVES_WATER":
-		return BACnetRelationship_RECEIVES_WATER
+		enum = BACnetRelationship_RECEIVES_WATER
 	case "SUPPLIES_HOT_WATER":
-		return BACnetRelationship_SUPPLIES_HOT_WATER
+		enum = BACnetRelationship_SUPPLIES_HOT_WATER
 	case "RECEIVES_HOT_WATER":
-		return BACnetRelationship_RECEIVES_HOT_WATER
+		enum = BACnetRelationship_RECEIVES_HOT_WATER
 	case "SUPPLIES_COOL_WATER":
-		return BACnetRelationship_SUPPLIES_COOL_WATER
+		enum = BACnetRelationship_SUPPLIES_COOL_WATER
 	case "RECEIVES_COOL_WATER":
-		return BACnetRelationship_RECEIVES_COOL_WATER
+		enum = BACnetRelationship_RECEIVES_COOL_WATER
 	case "SUPPLIES_STEAM":
-		return BACnetRelationship_SUPPLIES_STEAM
+		enum = BACnetRelationship_SUPPLIES_STEAM
 	case "RECEIVES_STEAM":
-		return BACnetRelationship_RECEIVES_STEAM
+		enum = BACnetRelationship_RECEIVES_STEAM
 	case "CONTAINED_BY":
-		return BACnetRelationship_CONTAINED_BY
+		enum = BACnetRelationship_CONTAINED_BY
 	case "USES":
-		return BACnetRelationship_USES
+		enum = BACnetRelationship_USES
 	case "USED_BY":
-		return BACnetRelationship_USED_BY
+		enum = BACnetRelationship_USED_BY
 	case "COMMANDS":
-		return BACnetRelationship_COMMANDS
+		enum = BACnetRelationship_COMMANDS
 	case "COMMANDED_BY":
-		return BACnetRelationship_COMMANDED_BY
+		enum = BACnetRelationship_COMMANDED_BY
 	case "ADJUSTS":
-		return BACnetRelationship_ADJUSTS
+		enum = BACnetRelationship_ADJUSTS
 	case "ADJUSTED_BY":
-		return BACnetRelationship_ADJUSTED_BY
+		enum = BACnetRelationship_ADJUSTED_BY
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetRelationshipKnows(value uint16) bool {
@@ -278,10 +282,11 @@ func BACnetRelationshipParse(readBuffer utils.ReadBuffer) (BACnetRelationship, e
 }
 
 func (e BACnetRelationship) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetRelationship", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetRelationship", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetRelationship) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetRelationship) PLC4XEnumName() string {
 	switch e {
 	case BACnetRelationship_UNKNOWN:
 		return "UNKNOWN"
@@ -350,5 +355,5 @@ func (e BACnetRelationship) name() string {
 }
 
 func (e BACnetRelationship) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

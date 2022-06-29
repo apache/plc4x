@@ -106,38 +106,42 @@ func BACnetDataTypeByValue(value uint8) BACnetDataType {
 	return 0
 }
 
-func BACnetDataTypeByName(value string) BACnetDataType {
+func BACnetDataTypeByName(value string) (enum BACnetDataType, ok bool) {
+	ok = true
 	switch value {
 	case "NULL":
-		return BACnetDataType_NULL
+		enum = BACnetDataType_NULL
 	case "BOOLEAN":
-		return BACnetDataType_BOOLEAN
+		enum = BACnetDataType_BOOLEAN
 	case "DATE":
-		return BACnetDataType_DATE
+		enum = BACnetDataType_DATE
 	case "TIME":
-		return BACnetDataType_TIME
+		enum = BACnetDataType_TIME
 	case "BACNET_OBJECT_IDENTIFIER":
-		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
+		enum = BACnetDataType_BACNET_OBJECT_IDENTIFIER
 	case "UNSIGNED_INTEGER":
-		return BACnetDataType_UNSIGNED_INTEGER
+		enum = BACnetDataType_UNSIGNED_INTEGER
 	case "SIGNED_INTEGER":
-		return BACnetDataType_SIGNED_INTEGER
+		enum = BACnetDataType_SIGNED_INTEGER
 	case "UNKNOWN":
-		return BACnetDataType_UNKNOWN
+		enum = BACnetDataType_UNKNOWN
 	case "REAL":
-		return BACnetDataType_REAL
+		enum = BACnetDataType_REAL
 	case "DOUBLE":
-		return BACnetDataType_DOUBLE
+		enum = BACnetDataType_DOUBLE
 	case "OCTET_STRING":
-		return BACnetDataType_OCTET_STRING
+		enum = BACnetDataType_OCTET_STRING
 	case "CHARACTER_STRING":
-		return BACnetDataType_CHARACTER_STRING
+		enum = BACnetDataType_CHARACTER_STRING
 	case "BIT_STRING":
-		return BACnetDataType_BIT_STRING
+		enum = BACnetDataType_BIT_STRING
 	case "ENUMERATED":
-		return BACnetDataType_ENUMERATED
+		enum = BACnetDataType_ENUMERATED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetDataTypeKnows(value uint8) bool {
@@ -176,10 +180,11 @@ func BACnetDataTypeParse(readBuffer utils.ReadBuffer) (BACnetDataType, error) {
 }
 
 func (e BACnetDataType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetDataType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDataType) PLC4XEnumName() string {
 	switch e {
 	case BACnetDataType_NULL:
 		return "NULL"
@@ -214,5 +219,5 @@ func (e BACnetDataType) name() string {
 }
 
 func (e BACnetDataType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -63,7 +63,7 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsData":
-		commandId := model.CommandIdByName(parserArguments[0])
+		commandId, _ := model.CommandIdByName(parserArguments[0])
 		response := parserArguments[1] == "true"
 		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), commandId, response)
 	case "AmsNetId":

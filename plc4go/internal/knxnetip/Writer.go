@@ -59,7 +59,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewWriteBufferByteBased()
-		fieldType := readWriteModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
+		fieldType, _ := readWriteModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
 		if err := readWriteModel.KnxDatapointSerialize(io, value, fieldType); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,

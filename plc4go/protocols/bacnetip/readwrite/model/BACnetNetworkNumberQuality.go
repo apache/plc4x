@@ -66,18 +66,22 @@ func BACnetNetworkNumberQualityByValue(value uint8) BACnetNetworkNumberQuality {
 	return 0
 }
 
-func BACnetNetworkNumberQualityByName(value string) BACnetNetworkNumberQuality {
+func BACnetNetworkNumberQualityByName(value string) (enum BACnetNetworkNumberQuality, ok bool) {
+	ok = true
 	switch value {
 	case "UNKNOWN":
-		return BACnetNetworkNumberQuality_UNKNOWN
+		enum = BACnetNetworkNumberQuality_UNKNOWN
 	case "LEARNED":
-		return BACnetNetworkNumberQuality_LEARNED
+		enum = BACnetNetworkNumberQuality_LEARNED
 	case "LEARNED_CONFIGURED":
-		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED
+		enum = BACnetNetworkNumberQuality_LEARNED_CONFIGURED
 	case "CONFIGURED":
-		return BACnetNetworkNumberQuality_CONFIGURED
+		enum = BACnetNetworkNumberQuality_CONFIGURED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetNetworkNumberQualityKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetNetworkNumberQualityParse(readBuffer utils.ReadBuffer) (BACnetNetwork
 }
 
 func (e BACnetNetworkNumberQuality) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNetworkNumberQuality", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetNetworkNumberQuality", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetNetworkNumberQuality) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNetworkNumberQuality) PLC4XEnumName() string {
 	switch e {
 	case BACnetNetworkNumberQuality_UNKNOWN:
 		return "UNKNOWN"
@@ -134,5 +139,5 @@ func (e BACnetNetworkNumberQuality) name() string {
 }
 
 func (e BACnetNetworkNumberQuality) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -294,132 +294,136 @@ func BACnetObjectTypeByValue(value uint16) BACnetObjectType {
 	return 0
 }
 
-func BACnetObjectTypeByName(value string) BACnetObjectType {
+func BACnetObjectTypeByName(value string) (enum BACnetObjectType, ok bool) {
+	ok = true
 	switch value {
 	case "ANALOG_INPUT":
-		return BACnetObjectType_ANALOG_INPUT
+		enum = BACnetObjectType_ANALOG_INPUT
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
 	case "ANALOG_OUTPUT":
-		return BACnetObjectType_ANALOG_OUTPUT
+		enum = BACnetObjectType_ANALOG_OUTPUT
 	case "FILE":
-		return BACnetObjectType_FILE
+		enum = BACnetObjectType_FILE
 	case "GROUP":
-		return BACnetObjectType_GROUP
+		enum = BACnetObjectType_GROUP
 	case "LOOP":
-		return BACnetObjectType_LOOP
+		enum = BACnetObjectType_LOOP
 	case "MULTI_STATE_INPUT":
-		return BACnetObjectType_MULTI_STATE_INPUT
+		enum = BACnetObjectType_MULTI_STATE_INPUT
 	case "MULTI_STATE_OUTPUT":
-		return BACnetObjectType_MULTI_STATE_OUTPUT
+		enum = BACnetObjectType_MULTI_STATE_OUTPUT
 	case "NOTIFICATION_CLASS":
-		return BACnetObjectType_NOTIFICATION_CLASS
+		enum = BACnetObjectType_NOTIFICATION_CLASS
 	case "PROGRAM":
-		return BACnetObjectType_PROGRAM
+		enum = BACnetObjectType_PROGRAM
 	case "SCHEDULE":
-		return BACnetObjectType_SCHEDULE
+		enum = BACnetObjectType_SCHEDULE
 	case "AVERAGING":
-		return BACnetObjectType_AVERAGING
+		enum = BACnetObjectType_AVERAGING
 	case "MULTI_STATE_VALUE":
-		return BACnetObjectType_MULTI_STATE_VALUE
+		enum = BACnetObjectType_MULTI_STATE_VALUE
 	case "ANALOG_VALUE":
-		return BACnetObjectType_ANALOG_VALUE
+		enum = BACnetObjectType_ANALOG_VALUE
 	case "TREND_LOG":
-		return BACnetObjectType_TREND_LOG
+		enum = BACnetObjectType_TREND_LOG
 	case "LIFE_SAFETY_POINT":
-		return BACnetObjectType_LIFE_SAFETY_POINT
+		enum = BACnetObjectType_LIFE_SAFETY_POINT
 	case "LIFE_SAFETY_ZONE":
-		return BACnetObjectType_LIFE_SAFETY_ZONE
+		enum = BACnetObjectType_LIFE_SAFETY_ZONE
 	case "ACCUMULATOR":
-		return BACnetObjectType_ACCUMULATOR
+		enum = BACnetObjectType_ACCUMULATOR
 	case "PULSE_CONVERTER":
-		return BACnetObjectType_PULSE_CONVERTER
+		enum = BACnetObjectType_PULSE_CONVERTER
 	case "EVENT_LOG":
-		return BACnetObjectType_EVENT_LOG
+		enum = BACnetObjectType_EVENT_LOG
 	case "GLOBAL_GROUP":
-		return BACnetObjectType_GLOBAL_GROUP
+		enum = BACnetObjectType_GLOBAL_GROUP
 	case "TREND_LOG_MULTIPLE":
-		return BACnetObjectType_TREND_LOG_MULTIPLE
+		enum = BACnetObjectType_TREND_LOG_MULTIPLE
 	case "LOAD_CONTROL":
-		return BACnetObjectType_LOAD_CONTROL
+		enum = BACnetObjectType_LOAD_CONTROL
 	case "STRUCTURED_VIEW":
-		return BACnetObjectType_STRUCTURED_VIEW
+		enum = BACnetObjectType_STRUCTURED_VIEW
 	case "BINARY_INPUT":
-		return BACnetObjectType_BINARY_INPUT
+		enum = BACnetObjectType_BINARY_INPUT
 	case "ACCESS_DOOR":
-		return BACnetObjectType_ACCESS_DOOR
+		enum = BACnetObjectType_ACCESS_DOOR
 	case "TIMER":
-		return BACnetObjectType_TIMER
+		enum = BACnetObjectType_TIMER
 	case "ACCESS_CREDENTIAL":
-		return BACnetObjectType_ACCESS_CREDENTIAL
+		enum = BACnetObjectType_ACCESS_CREDENTIAL
 	case "ACCESS_POINT":
-		return BACnetObjectType_ACCESS_POINT
+		enum = BACnetObjectType_ACCESS_POINT
 	case "ACCESS_RIGHTS":
-		return BACnetObjectType_ACCESS_RIGHTS
+		enum = BACnetObjectType_ACCESS_RIGHTS
 	case "ACCESS_USER":
-		return BACnetObjectType_ACCESS_USER
+		enum = BACnetObjectType_ACCESS_USER
 	case "ACCESS_ZONE":
-		return BACnetObjectType_ACCESS_ZONE
+		enum = BACnetObjectType_ACCESS_ZONE
 	case "CREDENTIAL_DATA_INPUT":
-		return BACnetObjectType_CREDENTIAL_DATA_INPUT
+		enum = BACnetObjectType_CREDENTIAL_DATA_INPUT
 	case "NETWORK_SECURITY":
-		return BACnetObjectType_NETWORK_SECURITY
+		enum = BACnetObjectType_NETWORK_SECURITY
 	case "BITSTRING_VALUE":
-		return BACnetObjectType_BITSTRING_VALUE
+		enum = BACnetObjectType_BITSTRING_VALUE
 	case "BINARY_OUTPUT":
-		return BACnetObjectType_BINARY_OUTPUT
+		enum = BACnetObjectType_BINARY_OUTPUT
 	case "CHARACTERSTRING_VALUE":
-		return BACnetObjectType_CHARACTERSTRING_VALUE
+		enum = BACnetObjectType_CHARACTERSTRING_VALUE
 	case "DATEPATTERN_VALUE":
-		return BACnetObjectType_DATEPATTERN_VALUE
+		enum = BACnetObjectType_DATEPATTERN_VALUE
 	case "DATE_VALUE":
-		return BACnetObjectType_DATE_VALUE
+		enum = BACnetObjectType_DATE_VALUE
 	case "DATETIMEPATTERN_VALUE":
-		return BACnetObjectType_DATETIMEPATTERN_VALUE
+		enum = BACnetObjectType_DATETIMEPATTERN_VALUE
 	case "DATETIME_VALUE":
-		return BACnetObjectType_DATETIME_VALUE
+		enum = BACnetObjectType_DATETIME_VALUE
 	case "INTEGER_VALUE":
-		return BACnetObjectType_INTEGER_VALUE
+		enum = BACnetObjectType_INTEGER_VALUE
 	case "LARGE_ANALOG_VALUE":
-		return BACnetObjectType_LARGE_ANALOG_VALUE
+		enum = BACnetObjectType_LARGE_ANALOG_VALUE
 	case "OCTETSTRING_VALUE":
-		return BACnetObjectType_OCTETSTRING_VALUE
+		enum = BACnetObjectType_OCTETSTRING_VALUE
 	case "POSITIVE_INTEGER_VALUE":
-		return BACnetObjectType_POSITIVE_INTEGER_VALUE
+		enum = BACnetObjectType_POSITIVE_INTEGER_VALUE
 	case "TIMEPATTERN_VALUE":
-		return BACnetObjectType_TIMEPATTERN_VALUE
+		enum = BACnetObjectType_TIMEPATTERN_VALUE
 	case "BINARY_VALUE":
-		return BACnetObjectType_BINARY_VALUE
+		enum = BACnetObjectType_BINARY_VALUE
 	case "TIME_VALUE":
-		return BACnetObjectType_TIME_VALUE
+		enum = BACnetObjectType_TIME_VALUE
 	case "NOTIFICATION_FORWARDER":
-		return BACnetObjectType_NOTIFICATION_FORWARDER
+		enum = BACnetObjectType_NOTIFICATION_FORWARDER
 	case "ALERT_ENROLLMENT":
-		return BACnetObjectType_ALERT_ENROLLMENT
+		enum = BACnetObjectType_ALERT_ENROLLMENT
 	case "CHANNEL":
-		return BACnetObjectType_CHANNEL
+		enum = BACnetObjectType_CHANNEL
 	case "LIGHTING_OUTPUT":
-		return BACnetObjectType_LIGHTING_OUTPUT
+		enum = BACnetObjectType_LIGHTING_OUTPUT
 	case "BINARY_LIGHTING_OUTPUT":
-		return BACnetObjectType_BINARY_LIGHTING_OUTPUT
+		enum = BACnetObjectType_BINARY_LIGHTING_OUTPUT
 	case "NETWORK_PORT":
-		return BACnetObjectType_NETWORK_PORT
+		enum = BACnetObjectType_NETWORK_PORT
 	case "ELEVATOR_GROUP":
-		return BACnetObjectType_ELEVATOR_GROUP
+		enum = BACnetObjectType_ELEVATOR_GROUP
 	case "ESCALATOR":
-		return BACnetObjectType_ESCALATOR
+		enum = BACnetObjectType_ESCALATOR
 	case "LIFT":
-		return BACnetObjectType_LIFT
+		enum = BACnetObjectType_LIFT
 	case "CALENDAR":
-		return BACnetObjectType_CALENDAR
+		enum = BACnetObjectType_CALENDAR
 	case "COMMAND":
-		return BACnetObjectType_COMMAND
+		enum = BACnetObjectType_COMMAND
 	case "DEVICE":
-		return BACnetObjectType_DEVICE
+		enum = BACnetObjectType_DEVICE
 	case "EVENT_ENROLLMENT":
-		return BACnetObjectType_EVENT_ENROLLMENT
+		enum = BACnetObjectType_EVENT_ENROLLMENT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetObjectTypeKnows(value uint16) bool {
@@ -458,10 +462,11 @@ func BACnetObjectTypeParse(readBuffer utils.ReadBuffer) (BACnetObjectType, error
 }
 
 func (e BACnetObjectType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetObjectType", 10, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetObjectType", 10, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetObjectType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetObjectType) PLC4XEnumName() string {
 	switch e {
 	case BACnetObjectType_ANALOG_INPUT:
 		return "ANALOG_INPUT"
@@ -590,5 +595,5 @@ func (e BACnetObjectType) name() string {
 }
 
 func (e BACnetObjectType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

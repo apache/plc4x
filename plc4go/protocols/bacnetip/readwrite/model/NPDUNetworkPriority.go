@@ -66,18 +66,22 @@ func NPDUNetworkPriorityByValue(value uint8) NPDUNetworkPriority {
 	return 0
 }
 
-func NPDUNetworkPriorityByName(value string) NPDUNetworkPriority {
+func NPDUNetworkPriorityByName(value string) (enum NPDUNetworkPriority, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL_MESSAGE":
-		return NPDUNetworkPriority_NORMAL_MESSAGE
+		enum = NPDUNetworkPriority_NORMAL_MESSAGE
 	case "URGENT_MESSAGE":
-		return NPDUNetworkPriority_URGENT_MESSAGE
+		enum = NPDUNetworkPriority_URGENT_MESSAGE
 	case "CRITICAL_EQUIPMENT_MESSAGE":
-		return NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE
+		enum = NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE
 	case "LIFE_SAVETY_MESSAGE":
-		return NPDUNetworkPriority_LIFE_SAVETY_MESSAGE
+		enum = NPDUNetworkPriority_LIFE_SAVETY_MESSAGE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func NPDUNetworkPriorityKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func NPDUNetworkPriorityParse(readBuffer utils.ReadBuffer) (NPDUNetworkPriority,
 }
 
 func (e NPDUNetworkPriority) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("NPDUNetworkPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("NPDUNetworkPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e NPDUNetworkPriority) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e NPDUNetworkPriority) PLC4XEnumName() string {
 	switch e {
 	case NPDUNetworkPriority_NORMAL_MESSAGE:
 		return "NORMAL_MESSAGE"
@@ -134,5 +139,5 @@ func (e NPDUNetworkPriority) name() string {
 }
 
 func (e NPDUNetworkPriority) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

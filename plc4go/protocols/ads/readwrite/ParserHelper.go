@@ -53,7 +53,7 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(io)
 	case "AdsData":
-		commandId := model.CommandIdByName(arguments[0])
+		commandId, _ := model.CommandIdByName(arguments[0])
 		response, err := utils.StrToBool(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")

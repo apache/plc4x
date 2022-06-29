@@ -82,26 +82,30 @@ func BACnetTimerTransitionByValue(value uint8) BACnetTimerTransition {
 	return 0
 }
 
-func BACnetTimerTransitionByName(value string) BACnetTimerTransition {
+func BACnetTimerTransitionByName(value string) (enum BACnetTimerTransition, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetTimerTransition_NONE
+		enum = BACnetTimerTransition_NONE
 	case "IDLE_TO_RUNNING":
-		return BACnetTimerTransition_IDLE_TO_RUNNING
+		enum = BACnetTimerTransition_IDLE_TO_RUNNING
 	case "RUNNING_TO_IDLE":
-		return BACnetTimerTransition_RUNNING_TO_IDLE
+		enum = BACnetTimerTransition_RUNNING_TO_IDLE
 	case "RUNNING_TO_RUNNING":
-		return BACnetTimerTransition_RUNNING_TO_RUNNING
+		enum = BACnetTimerTransition_RUNNING_TO_RUNNING
 	case "RUNNING_TO_EXPIRED":
-		return BACnetTimerTransition_RUNNING_TO_EXPIRED
+		enum = BACnetTimerTransition_RUNNING_TO_EXPIRED
 	case "FORCED_TO_EXPIRED":
-		return BACnetTimerTransition_FORCED_TO_EXPIRED
+		enum = BACnetTimerTransition_FORCED_TO_EXPIRED
 	case "EXPIRED_TO_IDLE":
-		return BACnetTimerTransition_EXPIRED_TO_IDLE
+		enum = BACnetTimerTransition_EXPIRED_TO_IDLE
 	case "EXPIRED_TO_RUNNING":
-		return BACnetTimerTransition_EXPIRED_TO_RUNNING
+		enum = BACnetTimerTransition_EXPIRED_TO_RUNNING
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetTimerTransitionKnows(value uint8) bool {
@@ -140,10 +144,11 @@ func BACnetTimerTransitionParse(readBuffer utils.ReadBuffer) (BACnetTimerTransit
 }
 
 func (e BACnetTimerTransition) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetTimerTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetTimerTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetTimerTransition) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetTimerTransition) PLC4XEnumName() string {
 	switch e {
 	case BACnetTimerTransition_NONE:
 		return "NONE"
@@ -166,5 +171,5 @@ func (e BACnetTimerTransition) name() string {
 }
 
 func (e BACnetTimerTransition) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

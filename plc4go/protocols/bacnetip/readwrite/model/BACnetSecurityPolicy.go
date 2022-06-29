@@ -66,18 +66,22 @@ func BACnetSecurityPolicyByValue(value uint8) BACnetSecurityPolicy {
 	return 0
 }
 
-func BACnetSecurityPolicyByName(value string) BACnetSecurityPolicy {
+func BACnetSecurityPolicyByName(value string) (enum BACnetSecurityPolicy, ok bool) {
+	ok = true
 	switch value {
 	case "PLAIN_NON_TRUSTED":
-		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED
+		enum = BACnetSecurityPolicy_PLAIN_NON_TRUSTED
 	case "PLAIN_TRUSTED":
-		return BACnetSecurityPolicy_PLAIN_TRUSTED
+		enum = BACnetSecurityPolicy_PLAIN_TRUSTED
 	case "SIGNED_TRUSTED":
-		return BACnetSecurityPolicy_SIGNED_TRUSTED
+		enum = BACnetSecurityPolicy_SIGNED_TRUSTED
 	case "ENCRYPTED_TRUSTED":
-		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED
+		enum = BACnetSecurityPolicy_ENCRYPTED_TRUSTED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetSecurityPolicyKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetSecurityPolic
 }
 
 func (e BACnetSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetSecurityPolicy", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetSecurityPolicy", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetSecurityPolicy) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetSecurityPolicy) PLC4XEnumName() string {
 	switch e {
 	case BACnetSecurityPolicy_PLAIN_NON_TRUSTED:
 		return "PLAIN_NON_TRUSTED"
@@ -134,5 +139,5 @@ func (e BACnetSecurityPolicy) name() string {
 }
 
 func (e BACnetSecurityPolicy) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

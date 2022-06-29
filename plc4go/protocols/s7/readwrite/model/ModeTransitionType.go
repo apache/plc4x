@@ -86,28 +86,32 @@ func ModeTransitionTypeByValue(value uint8) ModeTransitionType {
 	return 0
 }
 
-func ModeTransitionTypeByName(value string) ModeTransitionType {
+func ModeTransitionTypeByName(value string) (enum ModeTransitionType, ok bool) {
+	ok = true
 	switch value {
 	case "STOP":
-		return ModeTransitionType_STOP
+		enum = ModeTransitionType_STOP
 	case "WARM_RESTART":
-		return ModeTransitionType_WARM_RESTART
+		enum = ModeTransitionType_WARM_RESTART
 	case "RUN":
-		return ModeTransitionType_RUN
+		enum = ModeTransitionType_RUN
 	case "HOT_RESTART":
-		return ModeTransitionType_HOT_RESTART
+		enum = ModeTransitionType_HOT_RESTART
 	case "HOLD":
-		return ModeTransitionType_HOLD
+		enum = ModeTransitionType_HOLD
 	case "COLD_RESTART":
-		return ModeTransitionType_COLD_RESTART
+		enum = ModeTransitionType_COLD_RESTART
 	case "RUN_R":
-		return ModeTransitionType_RUN_R
+		enum = ModeTransitionType_RUN_R
 	case "LINK_UP":
-		return ModeTransitionType_LINK_UP
+		enum = ModeTransitionType_LINK_UP
 	case "UPDATE":
-		return ModeTransitionType_UPDATE
+		enum = ModeTransitionType_UPDATE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ModeTransitionTypeKnows(value uint8) bool {
@@ -146,10 +150,11 @@ func ModeTransitionTypeParse(readBuffer utils.ReadBuffer) (ModeTransitionType, e
 }
 
 func (e ModeTransitionType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModeTransitionType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ModeTransitionType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ModeTransitionType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModeTransitionType) PLC4XEnumName() string {
 	switch e {
 	case ModeTransitionType_STOP:
 		return "STOP"
@@ -174,5 +179,5 @@ func (e ModeTransitionType) name() string {
 }
 
 func (e ModeTransitionType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -78,22 +78,26 @@ func CALCommandTypeByValue(value uint8) CALCommandType {
 	return 0
 }
 
-func CALCommandTypeByName(value string) CALCommandType {
+func CALCommandTypeByName(value string) (enum CALCommandType, ok bool) {
+	ok = true
 	switch value {
 	case "RESET":
-		return CALCommandType_RESET
+		enum = CALCommandType_RESET
 	case "IDENTIFY":
-		return CALCommandType_IDENTIFY
+		enum = CALCommandType_IDENTIFY
 	case "GET_STATUS":
-		return CALCommandType_GET_STATUS
+		enum = CALCommandType_GET_STATUS
 	case "REPLY":
-		return CALCommandType_REPLY
+		enum = CALCommandType_REPLY
 	case "ACKNOWLEDGE":
-		return CALCommandType_ACKNOWLEDGE
+		enum = CALCommandType_ACKNOWLEDGE
 	case "STATUS":
-		return CALCommandType_STATUS
+		enum = CALCommandType_STATUS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func CALCommandTypeKnows(value uint8) bool {
@@ -132,10 +136,11 @@ func CALCommandTypeParse(readBuffer utils.ReadBuffer) (CALCommandType, error) {
 }
 
 func (e CALCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("CALCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("CALCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e CALCommandType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CALCommandType) PLC4XEnumName() string {
 	switch e {
 	case CALCommandType_RESET:
 		return "RESET"
@@ -154,5 +159,5 @@ func (e CALCommandType) name() string {
 }
 
 func (e CALCommandType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

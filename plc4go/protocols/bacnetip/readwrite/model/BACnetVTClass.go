@@ -82,26 +82,30 @@ func BACnetVTClassByValue(value uint16) BACnetVTClass {
 	return 0
 }
 
-func BACnetVTClassByName(value string) BACnetVTClass {
+func BACnetVTClassByName(value string) (enum BACnetVTClass, ok bool) {
+	ok = true
 	switch value {
 	case "DEFAULT_TERMINAL":
-		return BACnetVTClass_DEFAULT_TERMINAL
+		enum = BACnetVTClass_DEFAULT_TERMINAL
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetVTClass_VENDOR_PROPRIETARY_VALUE
 	case "ANSI_X3_64":
-		return BACnetVTClass_ANSI_X3_64
+		enum = BACnetVTClass_ANSI_X3_64
 	case "DEC_VT52":
-		return BACnetVTClass_DEC_VT52
+		enum = BACnetVTClass_DEC_VT52
 	case "DEC_VT100":
-		return BACnetVTClass_DEC_VT100
+		enum = BACnetVTClass_DEC_VT100
 	case "DEC_VT220":
-		return BACnetVTClass_DEC_VT220
+		enum = BACnetVTClass_DEC_VT220
 	case "HP_700_94":
-		return BACnetVTClass_HP_700_94
+		enum = BACnetVTClass_HP_700_94
 	case "IBM_3130":
-		return BACnetVTClass_IBM_3130
+		enum = BACnetVTClass_IBM_3130
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetVTClassKnows(value uint16) bool {
@@ -140,10 +144,11 @@ func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 }
 
 func (e BACnetVTClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetVTClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetVTClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetVTClass) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetVTClass) PLC4XEnumName() string {
 	switch e {
 	case BACnetVTClass_DEFAULT_TERMINAL:
 		return "DEFAULT_TERMINAL"
@@ -166,5 +171,5 @@ func (e BACnetVTClass) name() string {
 }
 
 func (e BACnetVTClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

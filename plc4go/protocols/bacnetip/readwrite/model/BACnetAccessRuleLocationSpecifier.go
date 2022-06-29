@@ -58,14 +58,18 @@ func BACnetAccessRuleLocationSpecifierByValue(value uint8) BACnetAccessRuleLocat
 	return 0
 }
 
-func BACnetAccessRuleLocationSpecifierByName(value string) BACnetAccessRuleLocationSpecifier {
+func BACnetAccessRuleLocationSpecifierByName(value string) (enum BACnetAccessRuleLocationSpecifier, ok bool) {
+	ok = true
 	switch value {
 	case "SPECIFIED":
-		return BACnetAccessRuleLocationSpecifier_SPECIFIED
+		enum = BACnetAccessRuleLocationSpecifier_SPECIFIED
 	case "ALL":
-		return BACnetAccessRuleLocationSpecifier_ALL
+		enum = BACnetAccessRuleLocationSpecifier_ALL
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccessRuleLocationSpecifierKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetAccessRuleLocationSpecifierParse(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (e BACnetAccessRuleLocationSpecifier) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAccessRuleLocationSpecifier", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAccessRuleLocationSpecifier", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccessRuleLocationSpecifier) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessRuleLocationSpecifier) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessRuleLocationSpecifier_SPECIFIED:
 		return "SPECIFIED"
@@ -118,5 +123,5 @@ func (e BACnetAccessRuleLocationSpecifier) name() string {
 }
 
 func (e BACnetAccessRuleLocationSpecifier) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

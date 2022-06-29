@@ -90,30 +90,34 @@ func BACnetEscalatorFaultByValue(value uint16) BACnetEscalatorFault {
 	return 0
 }
 
-func BACnetEscalatorFaultByName(value string) BACnetEscalatorFault {
+func BACnetEscalatorFaultByName(value string) (enum BACnetEscalatorFault, ok bool) {
+	ok = true
 	switch value {
 	case "CONTROLLER_FAULT":
-		return BACnetEscalatorFault_CONTROLLER_FAULT
+		enum = BACnetEscalatorFault_CONTROLLER_FAULT
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
 	case "DRIVE_AND_MOTOR_FAULT":
-		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
+		enum = BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
 	case "MECHANICAL_COMPONENT_FAULT":
-		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
+		enum = BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
 	case "OVERSPEED_FAULT":
-		return BACnetEscalatorFault_OVERSPEED_FAULT
+		enum = BACnetEscalatorFault_OVERSPEED_FAULT
 	case "POWER_SUPPLY_FAULT":
-		return BACnetEscalatorFault_POWER_SUPPLY_FAULT
+		enum = BACnetEscalatorFault_POWER_SUPPLY_FAULT
 	case "SAFETY_DEVICE_FAULT":
-		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT
+		enum = BACnetEscalatorFault_SAFETY_DEVICE_FAULT
 	case "CONTROLLER_SUPPLY_FAULT":
-		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
+		enum = BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
 	case "DRIVE_TEMPERATURE_EXCEEDED":
-		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
+		enum = BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
 	case "COMB_PLATE_FAULT":
-		return BACnetEscalatorFault_COMB_PLATE_FAULT
+		enum = BACnetEscalatorFault_COMB_PLATE_FAULT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetEscalatorFaultKnows(value uint16) bool {
@@ -152,10 +156,11 @@ func BACnetEscalatorFaultParse(readBuffer utils.ReadBuffer) (BACnetEscalatorFaul
 }
 
 func (e BACnetEscalatorFault) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEscalatorFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetEscalatorFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetEscalatorFault) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEscalatorFault) PLC4XEnumName() string {
 	switch e {
 	case BACnetEscalatorFault_CONTROLLER_FAULT:
 		return "CONTROLLER_FAULT"
@@ -182,5 +187,5 @@ func (e BACnetEscalatorFault) name() string {
 }
 
 func (e BACnetEscalatorFault) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

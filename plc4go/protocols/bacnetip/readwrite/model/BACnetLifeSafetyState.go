@@ -150,60 +150,64 @@ func BACnetLifeSafetyStateByValue(value uint16) BACnetLifeSafetyState {
 	return 0
 }
 
-func BACnetLifeSafetyStateByName(value string) BACnetLifeSafetyState {
+func BACnetLifeSafetyStateByName(value string) (enum BACnetLifeSafetyState, ok bool) {
+	ok = true
 	switch value {
 	case "QUIET":
-		return BACnetLifeSafetyState_QUIET
+		enum = BACnetLifeSafetyState_QUIET
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE
 	case "PRE_ALARM":
-		return BACnetLifeSafetyState_PRE_ALARM
+		enum = BACnetLifeSafetyState_PRE_ALARM
 	case "TEST_ACTIVE":
-		return BACnetLifeSafetyState_TEST_ACTIVE
+		enum = BACnetLifeSafetyState_TEST_ACTIVE
 	case "TEST_FAULT":
-		return BACnetLifeSafetyState_TEST_FAULT
+		enum = BACnetLifeSafetyState_TEST_FAULT
 	case "TEST_FAULT_ALARM":
-		return BACnetLifeSafetyState_TEST_FAULT_ALARM
+		enum = BACnetLifeSafetyState_TEST_FAULT_ALARM
 	case "HOLDUP":
-		return BACnetLifeSafetyState_HOLDUP
+		enum = BACnetLifeSafetyState_HOLDUP
 	case "DURESS":
-		return BACnetLifeSafetyState_DURESS
+		enum = BACnetLifeSafetyState_DURESS
 	case "TAMPER_ALARM":
-		return BACnetLifeSafetyState_TAMPER_ALARM
+		enum = BACnetLifeSafetyState_TAMPER_ALARM
 	case "ABNORMAL":
-		return BACnetLifeSafetyState_ABNORMAL
+		enum = BACnetLifeSafetyState_ABNORMAL
 	case "EMERGENCY_POWER":
-		return BACnetLifeSafetyState_EMERGENCY_POWER
+		enum = BACnetLifeSafetyState_EMERGENCY_POWER
 	case "DELAYED":
-		return BACnetLifeSafetyState_DELAYED
+		enum = BACnetLifeSafetyState_DELAYED
 	case "BLOCKED":
-		return BACnetLifeSafetyState_BLOCKED
+		enum = BACnetLifeSafetyState_BLOCKED
 	case "ALARM":
-		return BACnetLifeSafetyState_ALARM
+		enum = BACnetLifeSafetyState_ALARM
 	case "LOCAL_ALARM":
-		return BACnetLifeSafetyState_LOCAL_ALARM
+		enum = BACnetLifeSafetyState_LOCAL_ALARM
 	case "GENERAL_ALARM":
-		return BACnetLifeSafetyState_GENERAL_ALARM
+		enum = BACnetLifeSafetyState_GENERAL_ALARM
 	case "SUPERVISORY":
-		return BACnetLifeSafetyState_SUPERVISORY
+		enum = BACnetLifeSafetyState_SUPERVISORY
 	case "TEST_SUPERVISORY":
-		return BACnetLifeSafetyState_TEST_SUPERVISORY
+		enum = BACnetLifeSafetyState_TEST_SUPERVISORY
 	case "FAULT":
-		return BACnetLifeSafetyState_FAULT
+		enum = BACnetLifeSafetyState_FAULT
 	case "FAULT_PRE_ALARM":
-		return BACnetLifeSafetyState_FAULT_PRE_ALARM
+		enum = BACnetLifeSafetyState_FAULT_PRE_ALARM
 	case "FAULT_ALARM":
-		return BACnetLifeSafetyState_FAULT_ALARM
+		enum = BACnetLifeSafetyState_FAULT_ALARM
 	case "NOT_READY":
-		return BACnetLifeSafetyState_NOT_READY
+		enum = BACnetLifeSafetyState_NOT_READY
 	case "ACTIVE":
-		return BACnetLifeSafetyState_ACTIVE
+		enum = BACnetLifeSafetyState_ACTIVE
 	case "TAMPER":
-		return BACnetLifeSafetyState_TAMPER
+		enum = BACnetLifeSafetyState_TAMPER
 	case "TEST_ALARM":
-		return BACnetLifeSafetyState_TEST_ALARM
+		enum = BACnetLifeSafetyState_TEST_ALARM
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLifeSafetyStateKnows(value uint16) bool {
@@ -242,10 +246,11 @@ func BACnetLifeSafetyStateParse(readBuffer utils.ReadBuffer) (BACnetLifeSafetySt
 }
 
 func (e BACnetLifeSafetyState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLifeSafetyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetLifeSafetyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLifeSafetyState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLifeSafetyState) PLC4XEnumName() string {
 	switch e {
 	case BACnetLifeSafetyState_QUIET:
 		return "QUIET"
@@ -302,5 +307,5 @@ func (e BACnetLifeSafetyState) name() string {
 }
 
 func (e BACnetLifeSafetyState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

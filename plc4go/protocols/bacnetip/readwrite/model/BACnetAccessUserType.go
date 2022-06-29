@@ -66,18 +66,22 @@ func BACnetAccessUserTypeByValue(value uint16) BACnetAccessUserType {
 	return 0
 }
 
-func BACnetAccessUserTypeByName(value string) BACnetAccessUserType {
+func BACnetAccessUserTypeByName(value string) (enum BACnetAccessUserType, ok bool) {
+	ok = true
 	switch value {
 	case "ASSET":
-		return BACnetAccessUserType_ASSET
+		enum = BACnetAccessUserType_ASSET
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
 	case "GROUP":
-		return BACnetAccessUserType_GROUP
+		enum = BACnetAccessUserType_GROUP
 	case "PERSON":
-		return BACnetAccessUserType_PERSON
+		enum = BACnetAccessUserType_PERSON
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccessUserTypeKnows(value uint16) bool {
@@ -116,10 +120,11 @@ func BACnetAccessUserTypeParse(readBuffer utils.ReadBuffer) (BACnetAccessUserTyp
 }
 
 func (e BACnetAccessUserType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessUserType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetAccessUserType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccessUserType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessUserType) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessUserType_ASSET:
 		return "ASSET"
@@ -134,5 +139,5 @@ func (e BACnetAccessUserType) name() string {
 }
 
 func (e BACnetAccessUserType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

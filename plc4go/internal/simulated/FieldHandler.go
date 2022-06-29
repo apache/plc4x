@@ -81,7 +81,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		fieldDataTypeName, ok := match["dataType"]
 		var fieldDataType model.SimulatedDataTypeSizes
 		if ok {
-			fieldDataType = model.SimulatedDataTypeSizesByName(fieldDataTypeName)
+			fieldDataType, _ = model.SimulatedDataTypeSizesByName(fieldDataTypeName)
 			if fieldDataType == 0 {
 				return nil, errors.New("unknown field data-type '" + fieldDataTypeName + "'")
 			}

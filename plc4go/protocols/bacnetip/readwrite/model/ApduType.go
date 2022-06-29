@@ -114,42 +114,46 @@ func ApduTypeByValue(value uint8) ApduType {
 	return 0
 }
 
-func ApduTypeByName(value string) ApduType {
+func ApduTypeByName(value string) (enum ApduType, ok bool) {
+	ok = true
 	switch value {
 	case "CONFIRMED_REQUEST_PDU":
-		return ApduType_CONFIRMED_REQUEST_PDU
+		enum = ApduType_CONFIRMED_REQUEST_PDU
 	case "UNCONFIRMED_REQUEST_PDU":
-		return ApduType_UNCONFIRMED_REQUEST_PDU
+		enum = ApduType_UNCONFIRMED_REQUEST_PDU
 	case "SIMPLE_ACK_PDU":
-		return ApduType_SIMPLE_ACK_PDU
+		enum = ApduType_SIMPLE_ACK_PDU
 	case "COMPLEX_ACK_PDU":
-		return ApduType_COMPLEX_ACK_PDU
+		enum = ApduType_COMPLEX_ACK_PDU
 	case "SEGMENT_ACK_PDU":
-		return ApduType_SEGMENT_ACK_PDU
+		enum = ApduType_SEGMENT_ACK_PDU
 	case "ERROR_PDU":
-		return ApduType_ERROR_PDU
+		enum = ApduType_ERROR_PDU
 	case "REJECT_PDU":
-		return ApduType_REJECT_PDU
+		enum = ApduType_REJECT_PDU
 	case "ABORT_PDU":
-		return ApduType_ABORT_PDU
+		enum = ApduType_ABORT_PDU
 	case "APDU_UNKNOWN_8":
-		return ApduType_APDU_UNKNOWN_8
+		enum = ApduType_APDU_UNKNOWN_8
 	case "APDU_UNKNOWN_9":
-		return ApduType_APDU_UNKNOWN_9
+		enum = ApduType_APDU_UNKNOWN_9
 	case "APDU_UNKNOWN_A":
-		return ApduType_APDU_UNKNOWN_A
+		enum = ApduType_APDU_UNKNOWN_A
 	case "APDU_UNKNOWN_B":
-		return ApduType_APDU_UNKNOWN_B
+		enum = ApduType_APDU_UNKNOWN_B
 	case "APDU_UNKNOWN_C":
-		return ApduType_APDU_UNKNOWN_C
+		enum = ApduType_APDU_UNKNOWN_C
 	case "APDU_UNKNOWN_D":
-		return ApduType_APDU_UNKNOWN_D
+		enum = ApduType_APDU_UNKNOWN_D
 	case "APDU_UNKNOWN_E":
-		return ApduType_APDU_UNKNOWN_E
+		enum = ApduType_APDU_UNKNOWN_E
 	case "APDU_UNKNOWN_F":
-		return ApduType_APDU_UNKNOWN_F
+		enum = ApduType_APDU_UNKNOWN_F
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ApduTypeKnows(value uint8) bool {
@@ -188,10 +192,11 @@ func ApduTypeParse(readBuffer utils.ReadBuffer) (ApduType, error) {
 }
 
 func (e ApduType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ApduType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ApduType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ApduType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ApduType) PLC4XEnumName() string {
 	switch e {
 	case ApduType_CONFIRMED_REQUEST_PDU:
 		return "CONFIRMED_REQUEST_PDU"
@@ -230,5 +235,5 @@ func (e ApduType) name() string {
 }
 
 func (e ApduType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

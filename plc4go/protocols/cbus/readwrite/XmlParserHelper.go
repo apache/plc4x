@@ -64,7 +64,7 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		srchk := parserArguments[0] == "true"
 		return model.CBusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
 	case "IdentifyReplyCommand":
-		attribute := model.AttributeByName(parserArguments[0])
+		attribute, _ := model.AttributeByName(parserArguments[0])
 		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute)
 	case "BridgeCount":
 		return model.BridgeCountParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

@@ -82,26 +82,30 @@ func MaxSegmentsAcceptedByValue(value uint8) MaxSegmentsAccepted {
 	return 0
 }
 
-func MaxSegmentsAcceptedByName(value string) MaxSegmentsAccepted {
+func MaxSegmentsAcceptedByName(value string) (enum MaxSegmentsAccepted, ok bool) {
+	ok = true
 	switch value {
 	case "UNSPECIFIED":
-		return MaxSegmentsAccepted_UNSPECIFIED
+		enum = MaxSegmentsAccepted_UNSPECIFIED
 	case "NUM_SEGMENTS_02":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_02
+		enum = MaxSegmentsAccepted_NUM_SEGMENTS_02
 	case "NUM_SEGMENTS_04":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_04
+		enum = MaxSegmentsAccepted_NUM_SEGMENTS_04
 	case "NUM_SEGMENTS_08":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_08
+		enum = MaxSegmentsAccepted_NUM_SEGMENTS_08
 	case "NUM_SEGMENTS_16":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_16
+		enum = MaxSegmentsAccepted_NUM_SEGMENTS_16
 	case "NUM_SEGMENTS_32":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_32
+		enum = MaxSegmentsAccepted_NUM_SEGMENTS_32
 	case "NUM_SEGMENTS_64":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_64
+		enum = MaxSegmentsAccepted_NUM_SEGMENTS_64
 	case "MORE_THAN_64_SEGMENTS":
-		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS
+		enum = MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func MaxSegmentsAcceptedKnows(value uint8) bool {
@@ -140,10 +144,11 @@ func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted,
 }
 
 func (e MaxSegmentsAccepted) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("MaxSegmentsAccepted", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("MaxSegmentsAccepted", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e MaxSegmentsAccepted) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e MaxSegmentsAccepted) PLC4XEnumName() string {
 	switch e {
 	case MaxSegmentsAccepted_UNSPECIFIED:
 		return "UNSPECIFIED"
@@ -166,5 +171,5 @@ func (e MaxSegmentsAccepted) name() string {
 }
 
 func (e MaxSegmentsAccepted) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

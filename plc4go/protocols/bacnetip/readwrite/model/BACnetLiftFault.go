@@ -122,46 +122,50 @@ func BACnetLiftFaultByValue(value uint16) BACnetLiftFault {
 	return 0
 }
 
-func BACnetLiftFaultByName(value string) BACnetLiftFault {
+func BACnetLiftFaultByName(value string) (enum BACnetLiftFault, ok bool) {
+	ok = true
 	switch value {
 	case "CONTROLLER_FAULT":
-		return BACnetLiftFault_CONTROLLER_FAULT
+		enum = BACnetLiftFault_CONTROLLER_FAULT
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLiftFault_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLiftFault_VENDOR_PROPRIETARY_VALUE
 	case "DRIVE_AND_MOTOR_FAULT":
-		return BACnetLiftFault_DRIVE_AND_MOTOR_FAULT
+		enum = BACnetLiftFault_DRIVE_AND_MOTOR_FAULT
 	case "START_FAILURE":
-		return BACnetLiftFault_START_FAILURE
+		enum = BACnetLiftFault_START_FAILURE
 	case "CONTROLLER_SUPPLY_FAULT":
-		return BACnetLiftFault_CONTROLLER_SUPPLY_FAULT
+		enum = BACnetLiftFault_CONTROLLER_SUPPLY_FAULT
 	case "SELF_TEST_FAILURE":
-		return BACnetLiftFault_SELF_TEST_FAILURE
+		enum = BACnetLiftFault_SELF_TEST_FAILURE
 	case "RUNTIME_LIMIT_EXCEEDED":
-		return BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED
+		enum = BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED
 	case "POSITION_LOST":
-		return BACnetLiftFault_POSITION_LOST
+		enum = BACnetLiftFault_POSITION_LOST
 	case "DRIVE_TEMPERATURE_EXCEEDED":
-		return BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED
+		enum = BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED
 	case "LOAD_MEASUREMENT_FAULT":
-		return BACnetLiftFault_LOAD_MEASUREMENT_FAULT
+		enum = BACnetLiftFault_LOAD_MEASUREMENT_FAULT
 	case "GOVERNOR_AND_SAFETY_GEAR_FAULT":
-		return BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT
+		enum = BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT
 	case "LIFT_SHAFT_DEVICE_FAULT":
-		return BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT
+		enum = BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT
 	case "POWER_SUPPLY_FAULT":
-		return BACnetLiftFault_POWER_SUPPLY_FAULT
+		enum = BACnetLiftFault_POWER_SUPPLY_FAULT
 	case "SAFETY_INTERLOCK_FAULT":
-		return BACnetLiftFault_SAFETY_INTERLOCK_FAULT
+		enum = BACnetLiftFault_SAFETY_INTERLOCK_FAULT
 	case "DOOR_CLOSING_FAULT":
-		return BACnetLiftFault_DOOR_CLOSING_FAULT
+		enum = BACnetLiftFault_DOOR_CLOSING_FAULT
 	case "DOOR_OPENING_FAULT":
-		return BACnetLiftFault_DOOR_OPENING_FAULT
+		enum = BACnetLiftFault_DOOR_OPENING_FAULT
 	case "CAR_STOPPED_OUTSIDE_LANDING_ZONE":
-		return BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE
+		enum = BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE
 	case "CALL_BUTTON_STUCK":
-		return BACnetLiftFault_CALL_BUTTON_STUCK
+		enum = BACnetLiftFault_CALL_BUTTON_STUCK
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLiftFaultKnows(value uint16) bool {
@@ -200,10 +204,11 @@ func BACnetLiftFaultParse(readBuffer utils.ReadBuffer) (BACnetLiftFault, error) 
 }
 
 func (e BACnetLiftFault) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLiftFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetLiftFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLiftFault) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLiftFault) PLC4XEnumName() string {
 	switch e {
 	case BACnetLiftFault_CONTROLLER_FAULT:
 		return "CONTROLLER_FAULT"
@@ -246,5 +251,5 @@ func (e BACnetLiftFault) name() string {
 }
 
 func (e BACnetLiftFault) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

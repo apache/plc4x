@@ -136,14 +136,18 @@ func ${type.name}ByValue(value <#if type.type.isPresent()>${helper.getLanguageTy
 	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 }
 
-func ${type.name}ByName(value string) ${type.name} {
+func ${type.name}ByName(value string) (enum ${type.name}, ok bool) {
+	ok = true
 	switch value {
 	<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 	case "${enumValue.name}":
-		return ${type.name}_${enumValue.name}
+		enum = ${type.name}_${enumValue.name}
 	</#list>
+	default:
+		enum = <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
+		ok = false
 	}
-	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
+	return
 }
 
 func ${type.name}Knows(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>)  bool {
@@ -186,12 +190,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 }
 
 func (e ${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
-	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.name())")}
+	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.PLC4XEnumName())")}
 }
 	</#if>
 </#if>
 
-func (e ${type.name}) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ${type.name}) PLC4XEnumName() string {
 	switch e {
 	<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 	case ${type.name}_${enumValue.name}:
@@ -202,7 +207,7 @@ func (e ${type.name}) name() string {
 }
 
 func (e ${type.name}) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }
 
 </#outputformat>

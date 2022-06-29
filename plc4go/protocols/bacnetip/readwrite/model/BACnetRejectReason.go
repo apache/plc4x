@@ -94,32 +94,36 @@ func BACnetRejectReasonByValue(value uint8) BACnetRejectReason {
 	return 0
 }
 
-func BACnetRejectReasonByName(value string) BACnetRejectReason {
+func BACnetRejectReasonByName(value string) (enum BACnetRejectReason, ok bool) {
+	ok = true
 	switch value {
 	case "OTHER":
-		return BACnetRejectReason_OTHER
+		enum = BACnetRejectReason_OTHER
 	case "BUFFER_OVERFLOW":
-		return BACnetRejectReason_BUFFER_OVERFLOW
+		enum = BACnetRejectReason_BUFFER_OVERFLOW
 	case "INCONSISTENT_PARAMETERS":
-		return BACnetRejectReason_INCONSISTENT_PARAMETERS
+		enum = BACnetRejectReason_INCONSISTENT_PARAMETERS
 	case "INVALID_PARAMETER_DATA_TYPE":
-		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE
+		enum = BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE
 	case "INVALID_TAG":
-		return BACnetRejectReason_INVALID_TAG
+		enum = BACnetRejectReason_INVALID_TAG
 	case "MISSING_REQUIRED_PARAMETER":
-		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER
+		enum = BACnetRejectReason_MISSING_REQUIRED_PARAMETER
 	case "PARAMETER_OUT_OF_RANGE":
-		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE
+		enum = BACnetRejectReason_PARAMETER_OUT_OF_RANGE
 	case "TOO_MANY_ARGUMENTS":
-		return BACnetRejectReason_TOO_MANY_ARGUMENTS
+		enum = BACnetRejectReason_TOO_MANY_ARGUMENTS
 	case "UNDEFINED_ENUMERATION":
-		return BACnetRejectReason_UNDEFINED_ENUMERATION
+		enum = BACnetRejectReason_UNDEFINED_ENUMERATION
 	case "UNRECOGNIZED_SERVICE":
-		return BACnetRejectReason_UNRECOGNIZED_SERVICE
+		enum = BACnetRejectReason_UNRECOGNIZED_SERVICE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetRejectReason_VENDOR_PROPRIETARY_VALUE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetRejectReasonKnows(value uint8) bool {
@@ -158,10 +162,11 @@ func BACnetRejectReasonParse(readBuffer utils.ReadBuffer) (BACnetRejectReason, e
 }
 
 func (e BACnetRejectReason) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetRejectReason) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetRejectReason) PLC4XEnumName() string {
 	switch e {
 	case BACnetRejectReason_OTHER:
 		return "OTHER"
@@ -190,5 +195,5 @@ func (e BACnetRejectReason) name() string {
 }
 
 func (e BACnetRejectReason) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

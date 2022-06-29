@@ -124,24 +124,28 @@ func COTPTpduSizeByValue(value uint8) COTPTpduSize {
 	return 0
 }
 
-func COTPTpduSizeByName(value string) COTPTpduSize {
+func COTPTpduSizeByName(value string) (enum COTPTpduSize, ok bool) {
+	ok = true
 	switch value {
 	case "SIZE_128":
-		return COTPTpduSize_SIZE_128
+		enum = COTPTpduSize_SIZE_128
 	case "SIZE_256":
-		return COTPTpduSize_SIZE_256
+		enum = COTPTpduSize_SIZE_256
 	case "SIZE_512":
-		return COTPTpduSize_SIZE_512
+		enum = COTPTpduSize_SIZE_512
 	case "SIZE_1024":
-		return COTPTpduSize_SIZE_1024
+		enum = COTPTpduSize_SIZE_1024
 	case "SIZE_2048":
-		return COTPTpduSize_SIZE_2048
+		enum = COTPTpduSize_SIZE_2048
 	case "SIZE_4096":
-		return COTPTpduSize_SIZE_4096
+		enum = COTPTpduSize_SIZE_4096
 	case "SIZE_8192":
-		return COTPTpduSize_SIZE_8192
+		enum = COTPTpduSize_SIZE_8192
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func COTPTpduSizeKnows(value uint8) bool {
@@ -180,10 +184,11 @@ func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
 }
 
 func (e COTPTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("COTPTpduSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("COTPTpduSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e COTPTpduSize) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e COTPTpduSize) PLC4XEnumName() string {
 	switch e {
 	case COTPTpduSize_SIZE_128:
 		return "SIZE_128"
@@ -204,5 +209,5 @@ func (e COTPTpduSize) name() string {
 }
 
 func (e COTPTpduSize) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

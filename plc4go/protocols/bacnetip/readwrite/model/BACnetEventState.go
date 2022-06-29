@@ -78,24 +78,28 @@ func BACnetEventStateByValue(value uint16) BACnetEventState {
 	return 0
 }
 
-func BACnetEventStateByName(value string) BACnetEventState {
+func BACnetEventStateByName(value string) (enum BACnetEventState, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetEventState_NORMAL
+		enum = BACnetEventState_NORMAL
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEventState_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetEventState_VENDOR_PROPRIETARY_VALUE
 	case "FAULT":
-		return BACnetEventState_FAULT
+		enum = BACnetEventState_FAULT
 	case "OFFNORMAL":
-		return BACnetEventState_OFFNORMAL
+		enum = BACnetEventState_OFFNORMAL
 	case "HIGH_LIMIT":
-		return BACnetEventState_HIGH_LIMIT
+		enum = BACnetEventState_HIGH_LIMIT
 	case "LOW_LIMIT":
-		return BACnetEventState_LOW_LIMIT
+		enum = BACnetEventState_LOW_LIMIT
 	case "LIFE_SAVETY_ALARM":
-		return BACnetEventState_LIFE_SAVETY_ALARM
+		enum = BACnetEventState_LIFE_SAVETY_ALARM
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetEventStateKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BACnetEventStateParse(readBuffer utils.ReadBuffer) (BACnetEventState, error
 }
 
 func (e BACnetEventState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEventState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetEventState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetEventState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEventState) PLC4XEnumName() string {
 	switch e {
 	case BACnetEventState_NORMAL:
 		return "NORMAL"
@@ -158,5 +163,5 @@ func (e BACnetEventState) name() string {
 }
 
 func (e BACnetEventState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

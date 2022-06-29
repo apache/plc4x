@@ -74,22 +74,26 @@ func BACnetProgramRequestByValue(value uint8) BACnetProgramRequest {
 	return 0
 }
 
-func BACnetProgramRequestByName(value string) BACnetProgramRequest {
+func BACnetProgramRequestByName(value string) (enum BACnetProgramRequest, ok bool) {
+	ok = true
 	switch value {
 	case "READY":
-		return BACnetProgramRequest_READY
+		enum = BACnetProgramRequest_READY
 	case "LOAD":
-		return BACnetProgramRequest_LOAD
+		enum = BACnetProgramRequest_LOAD
 	case "RUN":
-		return BACnetProgramRequest_RUN
+		enum = BACnetProgramRequest_RUN
 	case "HALT":
-		return BACnetProgramRequest_HALT
+		enum = BACnetProgramRequest_HALT
 	case "RESTART":
-		return BACnetProgramRequest_RESTART
+		enum = BACnetProgramRequest_RESTART
 	case "UNLOAD":
-		return BACnetProgramRequest_UNLOAD
+		enum = BACnetProgramRequest_UNLOAD
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetProgramRequestKnows(value uint8) bool {
@@ -128,10 +132,11 @@ func BACnetProgramRequestParse(readBuffer utils.ReadBuffer) (BACnetProgramReques
 }
 
 func (e BACnetProgramRequest) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetProgramRequest", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetProgramRequest", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetProgramRequest) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetProgramRequest) PLC4XEnumName() string {
 	switch e {
 	case BACnetProgramRequest_READY:
 		return "READY"
@@ -150,5 +155,5 @@ func (e BACnetProgramRequest) name() string {
 }
 
 func (e BACnetProgramRequest) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

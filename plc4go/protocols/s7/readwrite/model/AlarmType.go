@@ -62,16 +62,20 @@ func AlarmTypeByValue(value uint8) AlarmType {
 	return 0
 }
 
-func AlarmTypeByName(value string) AlarmType {
+func AlarmTypeByName(value string) (enum AlarmType, ok bool) {
+	ok = true
 	switch value {
 	case "SCAN":
-		return AlarmType_SCAN
+		enum = AlarmType_SCAN
 	case "ALARM_8":
-		return AlarmType_ALARM_8
+		enum = AlarmType_ALARM_8
 	case "ALARM_S":
-		return AlarmType_ALARM_S
+		enum = AlarmType_ALARM_S
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func AlarmTypeKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func AlarmTypeParse(readBuffer utils.ReadBuffer) (AlarmType, error) {
 }
 
 func (e AlarmType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("AlarmType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("AlarmType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e AlarmType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e AlarmType) PLC4XEnumName() string {
 	switch e {
 	case AlarmType_SCAN:
 		return "SCAN"
@@ -126,5 +131,5 @@ func (e AlarmType) name() string {
 }
 
 func (e AlarmType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

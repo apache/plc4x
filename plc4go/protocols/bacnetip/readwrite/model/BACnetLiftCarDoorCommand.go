@@ -62,16 +62,20 @@ func BACnetLiftCarDoorCommandByValue(value uint8) BACnetLiftCarDoorCommand {
 	return 0
 }
 
-func BACnetLiftCarDoorCommandByName(value string) BACnetLiftCarDoorCommand {
+func BACnetLiftCarDoorCommandByName(value string) (enum BACnetLiftCarDoorCommand, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetLiftCarDoorCommand_NONE
+		enum = BACnetLiftCarDoorCommand_NONE
 	case "OPEN":
-		return BACnetLiftCarDoorCommand_OPEN
+		enum = BACnetLiftCarDoorCommand_OPEN
 	case "CLOSE":
-		return BACnetLiftCarDoorCommand_CLOSE
+		enum = BACnetLiftCarDoorCommand_CLOSE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLiftCarDoorCommandKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetLiftCarDoorCommandParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDo
 }
 
 func (e BACnetLiftCarDoorCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLiftCarDoorCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLiftCarDoorCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLiftCarDoorCommand) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLiftCarDoorCommand) PLC4XEnumName() string {
 	switch e {
 	case BACnetLiftCarDoorCommand_NONE:
 		return "NONE"
@@ -126,5 +131,5 @@ func (e BACnetLiftCarDoorCommand) name() string {
 }
 
 func (e BACnetLiftCarDoorCommand) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

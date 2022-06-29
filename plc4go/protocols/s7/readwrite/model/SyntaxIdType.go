@@ -102,36 +102,40 @@ func SyntaxIdTypeByValue(value uint8) SyntaxIdType {
 	return 0
 }
 
-func SyntaxIdTypeByName(value string) SyntaxIdType {
+func SyntaxIdTypeByName(value string) (enum SyntaxIdType, ok bool) {
+	ok = true
 	switch value {
 	case "S7ANY":
-		return SyntaxIdType_S7ANY
+		enum = SyntaxIdType_S7ANY
 	case "PBC_ID":
-		return SyntaxIdType_PBC_ID
+		enum = SyntaxIdType_PBC_ID
 	case "ALARM_LOCKFREESET":
-		return SyntaxIdType_ALARM_LOCKFREESET
+		enum = SyntaxIdType_ALARM_LOCKFREESET
 	case "ALARM_INDSET":
-		return SyntaxIdType_ALARM_INDSET
+		enum = SyntaxIdType_ALARM_INDSET
 	case "ALARM_ACKSET":
-		return SyntaxIdType_ALARM_ACKSET
+		enum = SyntaxIdType_ALARM_ACKSET
 	case "ALARM_QUERYREQSET":
-		return SyntaxIdType_ALARM_QUERYREQSET
+		enum = SyntaxIdType_ALARM_QUERYREQSET
 	case "NOTIFY_INDSET":
-		return SyntaxIdType_NOTIFY_INDSET
+		enum = SyntaxIdType_NOTIFY_INDSET
 	case "NCK":
-		return SyntaxIdType_NCK
+		enum = SyntaxIdType_NCK
 	case "NCK_METRIC":
-		return SyntaxIdType_NCK_METRIC
+		enum = SyntaxIdType_NCK_METRIC
 	case "NCK_INCH":
-		return SyntaxIdType_NCK_INCH
+		enum = SyntaxIdType_NCK_INCH
 	case "DRIVEESANY":
-		return SyntaxIdType_DRIVEESANY
+		enum = SyntaxIdType_DRIVEESANY
 	case "DBREAD":
-		return SyntaxIdType_DBREAD
+		enum = SyntaxIdType_DBREAD
 	case "SYM1200":
-		return SyntaxIdType_SYM1200
+		enum = SyntaxIdType_SYM1200
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func SyntaxIdTypeKnows(value uint8) bool {
@@ -170,10 +174,11 @@ func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 }
 
 func (e SyntaxIdType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e SyntaxIdType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SyntaxIdType) PLC4XEnumName() string {
 	switch e {
 	case SyntaxIdType_S7ANY:
 		return "S7ANY"
@@ -206,5 +211,5 @@ func (e SyntaxIdType) name() string {
 }
 
 func (e SyntaxIdType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

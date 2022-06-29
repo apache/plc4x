@@ -136,26 +136,30 @@ func CIPDataTypeCodeByValue(value uint16) CIPDataTypeCode {
 	return 0
 }
 
-func CIPDataTypeCodeByName(value string) CIPDataTypeCode {
+func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
+	ok = true
 	switch value {
 	case "BOOL":
-		return CIPDataTypeCode_BOOL
+		enum = CIPDataTypeCode_BOOL
 	case "SINT":
-		return CIPDataTypeCode_SINT
+		enum = CIPDataTypeCode_SINT
 	case "INT":
-		return CIPDataTypeCode_INT
+		enum = CIPDataTypeCode_INT
 	case "DINT":
-		return CIPDataTypeCode_DINT
+		enum = CIPDataTypeCode_DINT
 	case "LINT":
-		return CIPDataTypeCode_LINT
+		enum = CIPDataTypeCode_LINT
 	case "REAL":
-		return CIPDataTypeCode_REAL
+		enum = CIPDataTypeCode_REAL
 	case "DWORD":
-		return CIPDataTypeCode_DWORD
+		enum = CIPDataTypeCode_DWORD
 	case "STRUCTURED":
-		return CIPDataTypeCode_STRUCTURED
+		enum = CIPDataTypeCode_STRUCTURED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func CIPDataTypeCodeKnows(value uint16) bool {
@@ -194,10 +198,11 @@ func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) 
 }
 
 func (e CIPDataTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e CIPDataTypeCode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CIPDataTypeCode) PLC4XEnumName() string {
 	switch e {
 	case CIPDataTypeCode_BOOL:
 		return "BOOL"
@@ -220,5 +225,5 @@ func (e CIPDataTypeCode) name() string {
 }
 
 func (e CIPDataTypeCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

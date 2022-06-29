@@ -58,14 +58,18 @@ func BACnetLimitEnableByValue(value uint8) BACnetLimitEnable {
 	return 0
 }
 
-func BACnetLimitEnableByName(value string) BACnetLimitEnable {
+func BACnetLimitEnableByName(value string) (enum BACnetLimitEnable, ok bool) {
+	ok = true
 	switch value {
 	case "LOW_LIMIT_ENABLE":
-		return BACnetLimitEnable_LOW_LIMIT_ENABLE
+		enum = BACnetLimitEnable_LOW_LIMIT_ENABLE
 	case "HIGH_LIMIT_ENABLE":
-		return BACnetLimitEnable_HIGH_LIMIT_ENABLE
+		enum = BACnetLimitEnable_HIGH_LIMIT_ENABLE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLimitEnableKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetLimitEnableParse(readBuffer utils.ReadBuffer) (BACnetLimitEnable, err
 }
 
 func (e BACnetLimitEnable) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLimitEnable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLimitEnable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLimitEnable) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLimitEnable) PLC4XEnumName() string {
 	switch e {
 	case BACnetLimitEnable_LOW_LIMIT_ENABLE:
 		return "LOW_LIMIT_ENABLE"
@@ -118,5 +123,5 @@ func (e BACnetLimitEnable) name() string {
 }
 
 func (e BACnetLimitEnable) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

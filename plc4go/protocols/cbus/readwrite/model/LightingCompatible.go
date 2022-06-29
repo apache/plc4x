@@ -66,18 +66,22 @@ func LightingCompatibleByValue(value uint8) LightingCompatible {
 	return 0
 }
 
-func LightingCompatibleByName(value string) LightingCompatible {
+func LightingCompatibleByName(value string) (enum LightingCompatible, ok bool) {
+	ok = true
 	switch value {
 	case "NO":
-		return LightingCompatible_NO
+		enum = LightingCompatible_NO
 	case "YES":
-		return LightingCompatible_YES
+		enum = LightingCompatible_YES
 	case "YES_BUT_RESTRICTIONS":
-		return LightingCompatible_YES_BUT_RESTRICTIONS
+		enum = LightingCompatible_YES_BUT_RESTRICTIONS
 	case "NA":
-		return LightingCompatible_NA
+		enum = LightingCompatible_NA
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func LightingCompatibleKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func LightingCompatibleParse(readBuffer utils.ReadBuffer) (LightingCompatible, e
 }
 
 func (e LightingCompatible) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("LightingCompatible", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("LightingCompatible", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e LightingCompatible) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e LightingCompatible) PLC4XEnumName() string {
 	switch e {
 	case LightingCompatible_NO:
 		return "NO"
@@ -134,5 +139,5 @@ func (e LightingCompatible) name() string {
 }
 
 func (e LightingCompatible) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

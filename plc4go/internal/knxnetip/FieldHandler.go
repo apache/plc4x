@@ -21,10 +21,10 @@ package knxnetip
 
 import (
 	"encoding/hex"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/pkg/errors"
 	"regexp"
 	"strconv"
 )
@@ -57,21 +57,30 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		fieldTypeName, ok := match["datatype"]
 		var fieldType driverModel.KnxDatapointType
 		if ok {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType, ok = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			if !ok {
+				return nil, errors.Errorf("Unknown type %s", fieldTypeName)
+			}
 		}
 		return NewGroupAddress1LevelPlcField(match["mainGroup"], &fieldType), nil
 	} else if match := utils.GetSubgroupMatches(m.groupAddress2Level, query); match != nil {
 		fieldTypeName, ok := match["datatype"]
 		var fieldType driverModel.KnxDatapointType
 		if ok {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType, ok = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			if !ok {
+				return nil, errors.Errorf("Unknown type %s", fieldTypeName)
+			}
 		}
 		return NewGroupAddress2LevelPlcField(match["mainGroup"], match["subGroup"], &fieldType), nil
 	} else if match := utils.GetSubgroupMatches(m.groupAddress3Level, query); match != nil {
 		fieldTypeName, ok := match["datatype"]
 		var fieldType driverModel.KnxDatapointType
 		if ok {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType, ok = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			if !ok {
+				return nil, errors.Errorf("Unknown type %s", fieldTypeName)
+			}
 		}
 		return NewGroupAddress3LevelPlcField(match["mainGroup"], match["middleGroup"], match["subGroup"], &fieldType), nil
 	} else if match := utils.GetSubgroupMatches(m.deviceQuery, query); match != nil {
@@ -101,7 +110,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		// This is a 0-255 valued 1-byte value.
 		fieldType := driverModel.KnxDatapointType_DPT_DecimalFactor
 		if ok && len(fieldTypeName) > 0 {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType, _ = driverModel.KnxDatapointTypeByName(fieldTypeName)
 		}
 		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
 		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)

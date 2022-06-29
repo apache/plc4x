@@ -58,14 +58,18 @@ func BACnetBinaryPVByValue(value uint8) BACnetBinaryPV {
 	return 0
 }
 
-func BACnetBinaryPVByName(value string) BACnetBinaryPV {
+func BACnetBinaryPVByName(value string) (enum BACnetBinaryPV, ok bool) {
+	ok = true
 	switch value {
 	case "INACTIVE":
-		return BACnetBinaryPV_INACTIVE
+		enum = BACnetBinaryPV_INACTIVE
 	case "ACTIVE":
-		return BACnetBinaryPV_ACTIVE
+		enum = BACnetBinaryPV_ACTIVE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetBinaryPVKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
 }
 
 func (e BACnetBinaryPV) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetBinaryPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetBinaryPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetBinaryPV) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetBinaryPV) PLC4XEnumName() string {
 	switch e {
 	case BACnetBinaryPV_INACTIVE:
 		return "INACTIVE"
@@ -118,5 +123,5 @@ func (e BACnetBinaryPV) name() string {
 }
 
 func (e BACnetBinaryPV) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

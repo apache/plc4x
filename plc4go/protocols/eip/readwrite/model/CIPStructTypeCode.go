@@ -54,12 +54,16 @@ func CIPStructTypeCodeByValue(value uint16) CIPStructTypeCode {
 	return 0
 }
 
-func CIPStructTypeCodeByName(value string) CIPStructTypeCode {
+func CIPStructTypeCodeByName(value string) (enum CIPStructTypeCode, ok bool) {
+	ok = true
 	switch value {
 	case "STRING":
-		return CIPStructTypeCode_STRING
+		enum = CIPStructTypeCode_STRING
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func CIPStructTypeCodeKnows(value uint16) bool {
@@ -98,10 +102,11 @@ func CIPStructTypeCodeParse(readBuffer utils.ReadBuffer) (CIPStructTypeCode, err
 }
 
 func (e CIPStructTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("CIPStructTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("CIPStructTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e CIPStructTypeCode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CIPStructTypeCode) PLC4XEnumName() string {
 	switch e {
 	case CIPStructTypeCode_STRING:
 		return "STRING"
@@ -110,5 +115,5 @@ func (e CIPStructTypeCode) name() string {
 }
 
 func (e CIPStructTypeCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

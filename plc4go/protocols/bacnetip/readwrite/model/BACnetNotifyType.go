@@ -62,16 +62,20 @@ func BACnetNotifyTypeByValue(value uint8) BACnetNotifyType {
 	return 0
 }
 
-func BACnetNotifyTypeByName(value string) BACnetNotifyType {
+func BACnetNotifyTypeByName(value string) (enum BACnetNotifyType, ok bool) {
+	ok = true
 	switch value {
 	case "ALARM":
-		return BACnetNotifyType_ALARM
+		enum = BACnetNotifyType_ALARM
 	case "EVENT":
-		return BACnetNotifyType_EVENT
+		enum = BACnetNotifyType_EVENT
 	case "ACK_NOTIFICATION":
-		return BACnetNotifyType_ACK_NOTIFICATION
+		enum = BACnetNotifyType_ACK_NOTIFICATION
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetNotifyTypeKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error
 }
 
 func (e BACnetNotifyType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNotifyType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetNotifyType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetNotifyType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNotifyType) PLC4XEnumName() string {
 	switch e {
 	case BACnetNotifyType_ALARM:
 		return "ALARM"
@@ -126,5 +131,5 @@ func (e BACnetNotifyType) name() string {
 }
 
 func (e BACnetNotifyType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

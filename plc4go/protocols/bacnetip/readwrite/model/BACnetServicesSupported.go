@@ -214,92 +214,96 @@ func BACnetServicesSupportedByValue(value uint8) BACnetServicesSupported {
 	return 0
 }
 
-func BACnetServicesSupportedByName(value string) BACnetServicesSupported {
+func BACnetServicesSupportedByName(value string) (enum BACnetServicesSupported, ok bool) {
+	ok = true
 	switch value {
 	case "ACKNOWLEDGE_ALARM":
-		return BACnetServicesSupported_ACKNOWLEDGE_ALARM
+		enum = BACnetServicesSupported_ACKNOWLEDGE_ALARM
 	case "CONFIRMED_COV_NOTIFICATION":
-		return BACnetServicesSupported_CONFIRMED_COV_NOTIFICATION
+		enum = BACnetServicesSupported_CONFIRMED_COV_NOTIFICATION
 	case "CREATE_OBJECT":
-		return BACnetServicesSupported_CREATE_OBJECT
+		enum = BACnetServicesSupported_CREATE_OBJECT
 	case "DELETE_OBJECT":
-		return BACnetServicesSupported_DELETE_OBJECT
+		enum = BACnetServicesSupported_DELETE_OBJECT
 	case "READ_PROPERTY":
-		return BACnetServicesSupported_READ_PROPERTY
+		enum = BACnetServicesSupported_READ_PROPERTY
 	case "READ_PROPERTY_MULTIPLE":
-		return BACnetServicesSupported_READ_PROPERTY_MULTIPLE
+		enum = BACnetServicesSupported_READ_PROPERTY_MULTIPLE
 	case "WRITE_PROPERTY":
-		return BACnetServicesSupported_WRITE_PROPERTY
+		enum = BACnetServicesSupported_WRITE_PROPERTY
 	case "WRITE_PROPERTY_MULTIPLE":
-		return BACnetServicesSupported_WRITE_PROPERTY_MULTIPLE
+		enum = BACnetServicesSupported_WRITE_PROPERTY_MULTIPLE
 	case "DEVICE_COMMUNICATION_CONTROL":
-		return BACnetServicesSupported_DEVICE_COMMUNICATION_CONTROL
+		enum = BACnetServicesSupported_DEVICE_COMMUNICATION_CONTROL
 	case "CONFIRMED_PRIVATE_TRANSFER":
-		return BACnetServicesSupported_CONFIRMED_PRIVATE_TRANSFER
+		enum = BACnetServicesSupported_CONFIRMED_PRIVATE_TRANSFER
 	case "CONFIRMED_TEXT_MESSAGE":
-		return BACnetServicesSupported_CONFIRMED_TEXT_MESSAGE
+		enum = BACnetServicesSupported_CONFIRMED_TEXT_MESSAGE
 	case "CONFIRMED_EVENT_NOTIFICATION":
-		return BACnetServicesSupported_CONFIRMED_EVENT_NOTIFICATION
+		enum = BACnetServicesSupported_CONFIRMED_EVENT_NOTIFICATION
 	case "REINITIALIZE_DEVICE":
-		return BACnetServicesSupported_REINITIALIZE_DEVICE
+		enum = BACnetServicesSupported_REINITIALIZE_DEVICE
 	case "VT_OPEN":
-		return BACnetServicesSupported_VT_OPEN
+		enum = BACnetServicesSupported_VT_OPEN
 	case "VT_CLOSE":
-		return BACnetServicesSupported_VT_CLOSE
+		enum = BACnetServicesSupported_VT_CLOSE
 	case "VT_DATA":
-		return BACnetServicesSupported_VT_DATA
+		enum = BACnetServicesSupported_VT_DATA
 	case "I_AM":
-		return BACnetServicesSupported_I_AM
+		enum = BACnetServicesSupported_I_AM
 	case "I_HAVE":
-		return BACnetServicesSupported_I_HAVE
+		enum = BACnetServicesSupported_I_HAVE
 	case "UNCONFIRMED_COV_NOTIFICATION":
-		return BACnetServicesSupported_UNCONFIRMED_COV_NOTIFICATION
+		enum = BACnetServicesSupported_UNCONFIRMED_COV_NOTIFICATION
 	case "UNCONFIRMED_EVENT_NOTIFICATION":
-		return BACnetServicesSupported_UNCONFIRMED_EVENT_NOTIFICATION
+		enum = BACnetServicesSupported_UNCONFIRMED_EVENT_NOTIFICATION
 	case "GET_ALARM_SUMMARY":
-		return BACnetServicesSupported_GET_ALARM_SUMMARY
+		enum = BACnetServicesSupported_GET_ALARM_SUMMARY
 	case "UNCONFIRMED_PRIVATE_TRANSFER":
-		return BACnetServicesSupported_UNCONFIRMED_PRIVATE_TRANSFER
+		enum = BACnetServicesSupported_UNCONFIRMED_PRIVATE_TRANSFER
 	case "UNCONFIRMED_TEXT_MESSAGE":
-		return BACnetServicesSupported_UNCONFIRMED_TEXT_MESSAGE
+		enum = BACnetServicesSupported_UNCONFIRMED_TEXT_MESSAGE
 	case "TIME_SYNCHRONIZATION":
-		return BACnetServicesSupported_TIME_SYNCHRONIZATION
+		enum = BACnetServicesSupported_TIME_SYNCHRONIZATION
 	case "WHO_HAS":
-		return BACnetServicesSupported_WHO_HAS
+		enum = BACnetServicesSupported_WHO_HAS
 	case "WHO_IS":
-		return BACnetServicesSupported_WHO_IS
+		enum = BACnetServicesSupported_WHO_IS
 	case "READ_RANGE":
-		return BACnetServicesSupported_READ_RANGE
+		enum = BACnetServicesSupported_READ_RANGE
 	case "UTC_TIME_SYNCHRONIZATION":
-		return BACnetServicesSupported_UTC_TIME_SYNCHRONIZATION
+		enum = BACnetServicesSupported_UTC_TIME_SYNCHRONIZATION
 	case "LIFE_SAFETY_OPERATION":
-		return BACnetServicesSupported_LIFE_SAFETY_OPERATION
+		enum = BACnetServicesSupported_LIFE_SAFETY_OPERATION
 	case "SUBSCRIBE_COV_PROPERTY":
-		return BACnetServicesSupported_SUBSCRIBE_COV_PROPERTY
+		enum = BACnetServicesSupported_SUBSCRIBE_COV_PROPERTY
 	case "GET_EVENT_INFORMATION":
-		return BACnetServicesSupported_GET_EVENT_INFORMATION
+		enum = BACnetServicesSupported_GET_EVENT_INFORMATION
 	case "GET_ENROLLMENT_SUMMARY":
-		return BACnetServicesSupported_GET_ENROLLMENT_SUMMARY
+		enum = BACnetServicesSupported_GET_ENROLLMENT_SUMMARY
 	case "WRITE_GROUP":
-		return BACnetServicesSupported_WRITE_GROUP
+		enum = BACnetServicesSupported_WRITE_GROUP
 	case "SUBSCRIBE_COV_PROPERTY_MULTIPLE":
-		return BACnetServicesSupported_SUBSCRIBE_COV_PROPERTY_MULTIPLE
+		enum = BACnetServicesSupported_SUBSCRIBE_COV_PROPERTY_MULTIPLE
 	case "CONFIRMED_COV_NOTIFICATION_MULTIPLE":
-		return BACnetServicesSupported_CONFIRMED_COV_NOTIFICATION_MULTIPLE
+		enum = BACnetServicesSupported_CONFIRMED_COV_NOTIFICATION_MULTIPLE
 	case "UNCONFIRMED_COV_NOTIFICATION_MULTIPLE":
-		return BACnetServicesSupported_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE
+		enum = BACnetServicesSupported_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE
 	case "SUBSCRIBE_COV":
-		return BACnetServicesSupported_SUBSCRIBE_COV
+		enum = BACnetServicesSupported_SUBSCRIBE_COV
 	case "ATOMIC_READ_FILE":
-		return BACnetServicesSupported_ATOMIC_READ_FILE
+		enum = BACnetServicesSupported_ATOMIC_READ_FILE
 	case "ATOMIC_WRITE_FILE":
-		return BACnetServicesSupported_ATOMIC_WRITE_FILE
+		enum = BACnetServicesSupported_ATOMIC_WRITE_FILE
 	case "ADD_LIST_ELEMENT":
-		return BACnetServicesSupported_ADD_LIST_ELEMENT
+		enum = BACnetServicesSupported_ADD_LIST_ELEMENT
 	case "REMOVE_LIST_ELEMENT":
-		return BACnetServicesSupported_REMOVE_LIST_ELEMENT
+		enum = BACnetServicesSupported_REMOVE_LIST_ELEMENT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetServicesSupportedKnows(value uint8) bool {
@@ -338,10 +342,11 @@ func BACnetServicesSupportedParse(readBuffer utils.ReadBuffer) (BACnetServicesSu
 }
 
 func (e BACnetServicesSupported) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetServicesSupported", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetServicesSupported", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetServicesSupported) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetServicesSupported) PLC4XEnumName() string {
 	switch e {
 	case BACnetServicesSupported_ACKNOWLEDGE_ALARM:
 		return "ACKNOWLEDGE_ALARM"
@@ -430,5 +435,5 @@ func (e BACnetServicesSupported) name() string {
 }
 
 func (e BACnetServicesSupported) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

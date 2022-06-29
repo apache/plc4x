@@ -82,26 +82,30 @@ func BACnetFaultTypeByValue(value uint8) BACnetFaultType {
 	return 0
 }
 
-func BACnetFaultTypeByName(value string) BACnetFaultType {
+func BACnetFaultTypeByName(value string) (enum BACnetFaultType, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetFaultType_NONE
+		enum = BACnetFaultType_NONE
 	case "FAULT_CHARACTERSTRING":
-		return BACnetFaultType_FAULT_CHARACTERSTRING
+		enum = BACnetFaultType_FAULT_CHARACTERSTRING
 	case "FAULT_EXTENDED":
-		return BACnetFaultType_FAULT_EXTENDED
+		enum = BACnetFaultType_FAULT_EXTENDED
 	case "FAULT_LIFE_SAFETY":
-		return BACnetFaultType_FAULT_LIFE_SAFETY
+		enum = BACnetFaultType_FAULT_LIFE_SAFETY
 	case "FAULT_STATE":
-		return BACnetFaultType_FAULT_STATE
+		enum = BACnetFaultType_FAULT_STATE
 	case "FAULT_STATUS_FLAGS":
-		return BACnetFaultType_FAULT_STATUS_FLAGS
+		enum = BACnetFaultType_FAULT_STATUS_FLAGS
 	case "FAULT_OUT_OF_RANGE":
-		return BACnetFaultType_FAULT_OUT_OF_RANGE
+		enum = BACnetFaultType_FAULT_OUT_OF_RANGE
 	case "FAULT_LISTED":
-		return BACnetFaultType_FAULT_LISTED
+		enum = BACnetFaultType_FAULT_LISTED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetFaultTypeKnows(value uint8) bool {
@@ -140,10 +144,11 @@ func BACnetFaultTypeParse(readBuffer utils.ReadBuffer) (BACnetFaultType, error) 
 }
 
 func (e BACnetFaultType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetFaultType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetFaultType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetFaultType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetFaultType) PLC4XEnumName() string {
 	switch e {
 	case BACnetFaultType_NONE:
 		return "NONE"
@@ -166,5 +171,5 @@ func (e BACnetFaultType) name() string {
 }
 
 func (e BACnetFaultType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -45,7 +45,7 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataItem":
-		dataType := model.ModbusDataTypeByName(parserArguments[0])
+		dataType, _ := model.ModbusDataTypeByName(parserArguments[0])
 		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
 		if err != nil {
 			return nil, err
@@ -66,7 +66,7 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 	case "ModbusPDUReadFileRecordRequestItem":
 		return model.ModbusPDUReadFileRecordRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusADU":
-		driverType := model.DriverTypeByName(parserArguments[0])
+		driverType, _ := model.DriverTypeByName(parserArguments[0])
 		response := parserArguments[1] == "true"
 		return model.ModbusADUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), driverType, response)
 	}

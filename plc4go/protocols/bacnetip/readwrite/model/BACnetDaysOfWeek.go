@@ -78,24 +78,28 @@ func BACnetDaysOfWeekByValue(value uint8) BACnetDaysOfWeek {
 	return 0
 }
 
-func BACnetDaysOfWeekByName(value string) BACnetDaysOfWeek {
+func BACnetDaysOfWeekByName(value string) (enum BACnetDaysOfWeek, ok bool) {
+	ok = true
 	switch value {
 	case "MONDAY":
-		return BACnetDaysOfWeek_MONDAY
+		enum = BACnetDaysOfWeek_MONDAY
 	case "TUESDAY":
-		return BACnetDaysOfWeek_TUESDAY
+		enum = BACnetDaysOfWeek_TUESDAY
 	case "WEDNESDAY":
-		return BACnetDaysOfWeek_WEDNESDAY
+		enum = BACnetDaysOfWeek_WEDNESDAY
 	case "THURSDAY":
-		return BACnetDaysOfWeek_THURSDAY
+		enum = BACnetDaysOfWeek_THURSDAY
 	case "FRIDAY":
-		return BACnetDaysOfWeek_FRIDAY
+		enum = BACnetDaysOfWeek_FRIDAY
 	case "SATURDAY":
-		return BACnetDaysOfWeek_SATURDAY
+		enum = BACnetDaysOfWeek_SATURDAY
 	case "SUNDAY":
-		return BACnetDaysOfWeek_SUNDAY
+		enum = BACnetDaysOfWeek_SUNDAY
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetDaysOfWeekKnows(value uint8) bool {
@@ -134,10 +138,11 @@ func BACnetDaysOfWeekParse(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error
 }
 
 func (e BACnetDaysOfWeek) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDaysOfWeek", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetDaysOfWeek", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetDaysOfWeek) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDaysOfWeek) PLC4XEnumName() string {
 	switch e {
 	case BACnetDaysOfWeek_MONDAY:
 		return "MONDAY"
@@ -158,5 +163,5 @@ func (e BACnetDaysOfWeek) name() string {
 }
 
 func (e BACnetDaysOfWeek) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

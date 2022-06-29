@@ -78,24 +78,28 @@ func BVLCResultCodeByValue(value uint16) BVLCResultCode {
 	return 0
 }
 
-func BVLCResultCodeByName(value string) BVLCResultCode {
+func BVLCResultCodeByName(value string) (enum BVLCResultCode, ok bool) {
+	ok = true
 	switch value {
 	case "SUCCESSFUL_COMPLETION":
-		return BVLCResultCode_SUCCESSFUL_COMPLETION
+		enum = BVLCResultCode_SUCCESSFUL_COMPLETION
 	case "WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK":
-		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK
+		enum = BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK
 	case "READ_BROADCAST_DISTRIBUTION_TABLE_NAK":
-		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK
+		enum = BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK
 	case "REGISTER_FOREIGN_DEVICE_NAK":
-		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK
+		enum = BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK
 	case "READ_FOREIGN_DEVICE_TABLE_NAK":
-		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK
+		enum = BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK
 	case "DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK":
-		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK
+		enum = BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK
 	case "DISTRIBUTE_BROADCAST_TO_NETWORK_NAK":
-		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK
+		enum = BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BVLCResultCodeKnows(value uint16) bool {
@@ -134,10 +138,11 @@ func BVLCResultCodeParse(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
 }
 
 func (e BVLCResultCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BVLCResultCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BVLCResultCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BVLCResultCode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BVLCResultCode) PLC4XEnumName() string {
 	switch e {
 	case BVLCResultCode_SUCCESSFUL_COMPLETION:
 		return "SUCCESSFUL_COMPLETION"
@@ -158,5 +163,5 @@ func (e BVLCResultCode) name() string {
 }
 
 func (e BVLCResultCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

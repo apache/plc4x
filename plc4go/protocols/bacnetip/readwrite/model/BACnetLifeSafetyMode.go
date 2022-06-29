@@ -114,42 +114,46 @@ func BACnetLifeSafetyModeByValue(value uint16) BACnetLifeSafetyMode {
 	return 0
 }
 
-func BACnetLifeSafetyModeByName(value string) BACnetLifeSafetyMode {
+func BACnetLifeSafetyModeByName(value string) (enum BACnetLifeSafetyMode, ok bool) {
+	ok = true
 	switch value {
 	case "OFF":
-		return BACnetLifeSafetyMode_OFF
+		enum = BACnetLifeSafetyMode_OFF
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLifeSafetyMode_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLifeSafetyMode_VENDOR_PROPRIETARY_VALUE
 	case "ON":
-		return BACnetLifeSafetyMode_ON
+		enum = BACnetLifeSafetyMode_ON
 	case "DISCONNECTED":
-		return BACnetLifeSafetyMode_DISCONNECTED
+		enum = BACnetLifeSafetyMode_DISCONNECTED
 	case "ENABLED":
-		return BACnetLifeSafetyMode_ENABLED
+		enum = BACnetLifeSafetyMode_ENABLED
 	case "DISABLED":
-		return BACnetLifeSafetyMode_DISABLED
+		enum = BACnetLifeSafetyMode_DISABLED
 	case "AUTOMATIC_RELEASE_DISABLED":
-		return BACnetLifeSafetyMode_AUTOMATIC_RELEASE_DISABLED
+		enum = BACnetLifeSafetyMode_AUTOMATIC_RELEASE_DISABLED
 	case "DEFAULT":
-		return BACnetLifeSafetyMode_DEFAULT
+		enum = BACnetLifeSafetyMode_DEFAULT
 	case "TEST":
-		return BACnetLifeSafetyMode_TEST
+		enum = BACnetLifeSafetyMode_TEST
 	case "MANNED":
-		return BACnetLifeSafetyMode_MANNED
+		enum = BACnetLifeSafetyMode_MANNED
 	case "UNMANNED":
-		return BACnetLifeSafetyMode_UNMANNED
+		enum = BACnetLifeSafetyMode_UNMANNED
 	case "ARMED":
-		return BACnetLifeSafetyMode_ARMED
+		enum = BACnetLifeSafetyMode_ARMED
 	case "DISARMED":
-		return BACnetLifeSafetyMode_DISARMED
+		enum = BACnetLifeSafetyMode_DISARMED
 	case "PREARMED":
-		return BACnetLifeSafetyMode_PREARMED
+		enum = BACnetLifeSafetyMode_PREARMED
 	case "SLOW":
-		return BACnetLifeSafetyMode_SLOW
+		enum = BACnetLifeSafetyMode_SLOW
 	case "FAST":
-		return BACnetLifeSafetyMode_FAST
+		enum = BACnetLifeSafetyMode_FAST
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLifeSafetyModeKnows(value uint16) bool {
@@ -188,10 +192,11 @@ func BACnetLifeSafetyModeParse(readBuffer utils.ReadBuffer) (BACnetLifeSafetyMod
 }
 
 func (e BACnetLifeSafetyMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLifeSafetyMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetLifeSafetyMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLifeSafetyMode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLifeSafetyMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetLifeSafetyMode_OFF:
 		return "OFF"
@@ -230,5 +235,5 @@ func (e BACnetLifeSafetyMode) name() string {
 }
 
 func (e BACnetLifeSafetyMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

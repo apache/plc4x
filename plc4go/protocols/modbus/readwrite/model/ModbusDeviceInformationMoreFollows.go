@@ -58,14 +58,18 @@ func ModbusDeviceInformationMoreFollowsByValue(value uint8) ModbusDeviceInformat
 	return 0
 }
 
-func ModbusDeviceInformationMoreFollowsByName(value string) ModbusDeviceInformationMoreFollows {
+func ModbusDeviceInformationMoreFollowsByName(value string) (enum ModbusDeviceInformationMoreFollows, ok bool) {
+	ok = true
 	switch value {
 	case "NO_MORE_OBJECTS_AVAILABLE":
-		return ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE
+		enum = ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE
 	case "MORE_OBJECTS_AVAILABLE":
-		return ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE
+		enum = ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ModbusDeviceInformationMoreFollowsKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func ModbusDeviceInformationMoreFollowsParse(readBuffer utils.ReadBuffer) (Modbu
 }
 
 func (e ModbusDeviceInformationMoreFollows) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModbusDeviceInformationMoreFollows", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ModbusDeviceInformationMoreFollows", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ModbusDeviceInformationMoreFollows) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModbusDeviceInformationMoreFollows) PLC4XEnumName() string {
 	switch e {
 	case ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE:
 		return "NO_MORE_OBJECTS_AVAILABLE"
@@ -118,5 +123,5 @@ func (e ModbusDeviceInformationMoreFollows) name() string {
 }
 
 func (e ModbusDeviceInformationMoreFollows) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

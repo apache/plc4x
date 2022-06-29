@@ -1506,62 +1506,66 @@ func TransportSizeByValue(value uint8) TransportSize {
 	return 0
 }
 
-func TransportSizeByName(value string) TransportSize {
+func TransportSizeByName(value string) (enum TransportSize, ok bool) {
+	ok = true
 	switch value {
 	case "BOOL":
-		return TransportSize_BOOL
+		enum = TransportSize_BOOL
 	case "BYTE":
-		return TransportSize_BYTE
+		enum = TransportSize_BYTE
 	case "WORD":
-		return TransportSize_WORD
+		enum = TransportSize_WORD
 	case "DWORD":
-		return TransportSize_DWORD
+		enum = TransportSize_DWORD
 	case "LWORD":
-		return TransportSize_LWORD
+		enum = TransportSize_LWORD
 	case "INT":
-		return TransportSize_INT
+		enum = TransportSize_INT
 	case "UINT":
-		return TransportSize_UINT
+		enum = TransportSize_UINT
 	case "SINT":
-		return TransportSize_SINT
+		enum = TransportSize_SINT
 	case "USINT":
-		return TransportSize_USINT
+		enum = TransportSize_USINT
 	case "DINT":
-		return TransportSize_DINT
+		enum = TransportSize_DINT
 	case "UDINT":
-		return TransportSize_UDINT
+		enum = TransportSize_UDINT
 	case "LINT":
-		return TransportSize_LINT
+		enum = TransportSize_LINT
 	case "ULINT":
-		return TransportSize_ULINT
+		enum = TransportSize_ULINT
 	case "REAL":
-		return TransportSize_REAL
+		enum = TransportSize_REAL
 	case "LREAL":
-		return TransportSize_LREAL
+		enum = TransportSize_LREAL
 	case "CHAR":
-		return TransportSize_CHAR
+		enum = TransportSize_CHAR
 	case "WCHAR":
-		return TransportSize_WCHAR
+		enum = TransportSize_WCHAR
 	case "STRING":
-		return TransportSize_STRING
+		enum = TransportSize_STRING
 	case "WSTRING":
-		return TransportSize_WSTRING
+		enum = TransportSize_WSTRING
 	case "TIME":
-		return TransportSize_TIME
+		enum = TransportSize_TIME
 	case "LTIME":
-		return TransportSize_LTIME
+		enum = TransportSize_LTIME
 	case "DATE":
-		return TransportSize_DATE
+		enum = TransportSize_DATE
 	case "TIME_OF_DAY":
-		return TransportSize_TIME_OF_DAY
+		enum = TransportSize_TIME_OF_DAY
 	case "TOD":
-		return TransportSize_TOD
+		enum = TransportSize_TOD
 	case "DATE_AND_TIME":
-		return TransportSize_DATE_AND_TIME
+		enum = TransportSize_DATE_AND_TIME
 	case "DT":
-		return TransportSize_DT
+		enum = TransportSize_DT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func TransportSizeKnows(value uint8) bool {
@@ -1600,10 +1604,11 @@ func TransportSizeParse(readBuffer utils.ReadBuffer) (TransportSize, error) {
 }
 
 func (e TransportSize) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("TransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("TransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e TransportSize) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e TransportSize) PLC4XEnumName() string {
 	switch e {
 	case TransportSize_BOOL:
 		return "BOOL"
@@ -1662,5 +1667,5 @@ func (e TransportSize) name() string {
 }
 
 func (e TransportSize) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

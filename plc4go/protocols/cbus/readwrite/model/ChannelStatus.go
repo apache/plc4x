@@ -62,16 +62,20 @@ func ChannelStatusByValue(value uint8) ChannelStatus {
 	return 0
 }
 
-func ChannelStatusByName(value string) ChannelStatus {
+func ChannelStatusByName(value string) (enum ChannelStatus, ok bool) {
+	ok = true
 	switch value {
 	case "OK":
-		return ChannelStatus_OK
+		enum = ChannelStatus_OK
 	case "LAMP_FAULT":
-		return ChannelStatus_LAMP_FAULT
+		enum = ChannelStatus_LAMP_FAULT
 	case "CURRENT_LIMIT_OR_SHORT":
-		return ChannelStatus_CURRENT_LIMIT_OR_SHORT
+		enum = ChannelStatus_CURRENT_LIMIT_OR_SHORT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ChannelStatusKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func ChannelStatusParse(readBuffer utils.ReadBuffer) (ChannelStatus, error) {
 }
 
 func (e ChannelStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ChannelStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ChannelStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ChannelStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ChannelStatus) PLC4XEnumName() string {
 	switch e {
 	case ChannelStatus_OK:
 		return "OK"
@@ -126,5 +131,5 @@ func (e ChannelStatus) name() string {
 }
 
 func (e ChannelStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

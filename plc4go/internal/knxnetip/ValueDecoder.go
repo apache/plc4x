@@ -36,7 +36,7 @@ func NewValueDecoder(rb utils.ReadBuffer) ValueDecoder {
 }
 
 func (m ValueDecoder) Decode(typeName string) api.PlcValue {
-	datatype := driverModel.KnxDatapointTypeByName(typeName)
+	datatype, _ := driverModel.KnxDatapointTypeByName(typeName)
 	plcValue, err := driverModel.KnxDatapointParse(m.rb, datatype)
 	if err != nil {
 		return nil

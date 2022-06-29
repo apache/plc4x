@@ -58,14 +58,18 @@ func BACnetFileAccessMethodByValue(value uint8) BACnetFileAccessMethod {
 	return 0
 }
 
-func BACnetFileAccessMethodByName(value string) BACnetFileAccessMethod {
+func BACnetFileAccessMethodByName(value string) (enum BACnetFileAccessMethod, ok bool) {
+	ok = true
 	switch value {
 	case "RECORD_ACCESS":
-		return BACnetFileAccessMethod_RECORD_ACCESS
+		enum = BACnetFileAccessMethod_RECORD_ACCESS
 	case "STREAM_ACCESS":
-		return BACnetFileAccessMethod_STREAM_ACCESS
+		enum = BACnetFileAccessMethod_STREAM_ACCESS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetFileAccessMethodKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetFileAccessMethodParse(readBuffer utils.ReadBuffer) (BACnetFileAccessM
 }
 
 func (e BACnetFileAccessMethod) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetFileAccessMethod", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetFileAccessMethod", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetFileAccessMethod) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetFileAccessMethod) PLC4XEnumName() string {
 	switch e {
 	case BACnetFileAccessMethod_RECORD_ACCESS:
 		return "RECORD_ACCESS"
@@ -118,5 +123,5 @@ func (e BACnetFileAccessMethod) name() string {
 }
 
 func (e BACnetFileAccessMethod) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

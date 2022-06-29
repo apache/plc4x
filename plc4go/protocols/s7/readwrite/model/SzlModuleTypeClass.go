@@ -66,18 +66,22 @@ func SzlModuleTypeClassByValue(value uint8) SzlModuleTypeClass {
 	return 0
 }
 
-func SzlModuleTypeClassByName(value string) SzlModuleTypeClass {
+func SzlModuleTypeClassByName(value string) (enum SzlModuleTypeClass, ok bool) {
+	ok = true
 	switch value {
 	case "CPU":
-		return SzlModuleTypeClass_CPU
+		enum = SzlModuleTypeClass_CPU
 	case "IM":
-		return SzlModuleTypeClass_IM
+		enum = SzlModuleTypeClass_IM
 	case "FM":
-		return SzlModuleTypeClass_FM
+		enum = SzlModuleTypeClass_FM
 	case "CP":
-		return SzlModuleTypeClass_CP
+		enum = SzlModuleTypeClass_CP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func SzlModuleTypeClassKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, e
 }
 
 func (e SzlModuleTypeClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e SzlModuleTypeClass) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SzlModuleTypeClass) PLC4XEnumName() string {
 	switch e {
 	case SzlModuleTypeClass_CPU:
 		return "CPU"
@@ -134,5 +139,5 @@ func (e SzlModuleTypeClass) name() string {
 }
 
 func (e SzlModuleTypeClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

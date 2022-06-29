@@ -1629,7 +1629,7 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
                         <#if constField.fieldName?has_content>
                             <#assign enumValueFieldAccessor=type.name+"_"+constField.name?upper_case>
 	// Const field (${constField.name})
-	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField, constField.type.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName), enumValueFieldAccessor, constField, "utils.WithAdditionalStringRepresentation(${type.name}_${constField.name?upper_case}.name())")}
+	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField, constField.type.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName), enumValueFieldAccessor, constField, "utils.WithAdditionalStringRepresentation(${type.name}_${constField.name?upper_case}.PLC4XEnumName())")}
 	if _${constField.name}Err != nil {
 		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1680,7 +1680,7 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 							<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
 	// Enum field (${enumField.name})
-	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.type.asNonSimpleTypeReference().orElseThrow().name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField, "utils.WithAdditionalStringRepresentation(m.Get${enumField.name?cap_first}().name())")}
+	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.type.asNonSimpleTypeReference().orElseThrow().name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField, "utils.WithAdditionalStringRepresentation(m.Get${enumField.name?cap_first}().PLC4XEnumName())")}
 	if _${enumField.name}Err != nil {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1793,7 +1793,7 @@ func (m *_${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 						<#assign simpleFieldLogicalName><#if simpleField.type.isSimpleTypeReference() && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
 	${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.Get${simpleField.name?cap_first}())
 						<#if helper.isEnumField(field)>
-	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField, "utils.WithAdditionalStringRepresentation(m.Get${simpleField.name?cap_first}().name())")}
+	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField, "utils.WithAdditionalStringRepresentation(m.Get${simpleField.name?cap_first}().PLC4XEnumName())")}
 						<#else>
 	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
 						</#if>

@@ -144,7 +144,7 @@ func (m *TransportInstance) Connect() error {
 	// "connect" to the remote
 	var err error
 	if m.RemoteAddress != nil {
-		if m.udpConn, err = net.DialUDP("upd", m.LocalAddress, m.RemoteAddress); err != nil {
+		if m.udpConn, err = net.DialUDP("udp", m.LocalAddress, m.RemoteAddress); err != nil {
 			return errors.Wrap(err, "error connecting to remote address")
 		}
 	} else if m.SoReUse {

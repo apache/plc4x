@@ -66,18 +66,22 @@ func BACnetSegmentationByValue(value uint8) BACnetSegmentation {
 	return 0
 }
 
-func BACnetSegmentationByName(value string) BACnetSegmentation {
+func BACnetSegmentationByName(value string) (enum BACnetSegmentation, ok bool) {
+	ok = true
 	switch value {
 	case "SEGMENTED_BOTH":
-		return BACnetSegmentation_SEGMENTED_BOTH
+		enum = BACnetSegmentation_SEGMENTED_BOTH
 	case "SEGMENTED_TRANSMIT":
-		return BACnetSegmentation_SEGMENTED_TRANSMIT
+		enum = BACnetSegmentation_SEGMENTED_TRANSMIT
 	case "SEGMENTED_RECEIVE":
-		return BACnetSegmentation_SEGMENTED_RECEIVE
+		enum = BACnetSegmentation_SEGMENTED_RECEIVE
 	case "NO_SEGMENTATION":
-		return BACnetSegmentation_NO_SEGMENTATION
+		enum = BACnetSegmentation_NO_SEGMENTATION
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetSegmentationKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (BACnetSegmentation, e
 }
 
 func (e BACnetSegmentation) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetSegmentation", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetSegmentation", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetSegmentation) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetSegmentation) PLC4XEnumName() string {
 	switch e {
 	case BACnetSegmentation_SEGMENTED_BOTH:
 		return "SEGMENTED_BOTH"
@@ -134,5 +139,5 @@ func (e BACnetSegmentation) name() string {
 }
 
 func (e BACnetSegmentation) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

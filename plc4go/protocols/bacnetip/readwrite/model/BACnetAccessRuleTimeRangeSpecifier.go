@@ -58,14 +58,18 @@ func BACnetAccessRuleTimeRangeSpecifierByValue(value uint8) BACnetAccessRuleTime
 	return 0
 }
 
-func BACnetAccessRuleTimeRangeSpecifierByName(value string) BACnetAccessRuleTimeRangeSpecifier {
+func BACnetAccessRuleTimeRangeSpecifierByName(value string) (enum BACnetAccessRuleTimeRangeSpecifier, ok bool) {
+	ok = true
 	switch value {
 	case "SPECIFIED":
-		return BACnetAccessRuleTimeRangeSpecifier_SPECIFIED
+		enum = BACnetAccessRuleTimeRangeSpecifier_SPECIFIED
 	case "ALWAYS":
-		return BACnetAccessRuleTimeRangeSpecifier_ALWAYS
+		enum = BACnetAccessRuleTimeRangeSpecifier_ALWAYS
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccessRuleTimeRangeSpecifierKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetAccessRuleTimeRangeSpecifierParse(readBuffer utils.ReadBuffer) (BACne
 }
 
 func (e BACnetAccessRuleTimeRangeSpecifier) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAccessRuleTimeRangeSpecifier", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAccessRuleTimeRangeSpecifier", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccessRuleTimeRangeSpecifier) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessRuleTimeRangeSpecifier) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessRuleTimeRangeSpecifier_SPECIFIED:
 		return "SPECIFIED"
@@ -118,5 +123,5 @@ func (e BACnetAccessRuleTimeRangeSpecifier) name() string {
 }
 
 func (e BACnetAccessRuleTimeRangeSpecifier) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

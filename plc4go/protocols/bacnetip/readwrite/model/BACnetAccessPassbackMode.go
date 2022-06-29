@@ -62,16 +62,20 @@ func BACnetAccessPassbackModeByValue(value uint8) BACnetAccessPassbackMode {
 	return 0
 }
 
-func BACnetAccessPassbackModeByName(value string) BACnetAccessPassbackMode {
+func BACnetAccessPassbackModeByName(value string) (enum BACnetAccessPassbackMode, ok bool) {
+	ok = true
 	switch value {
 	case "PASSBACK_OFF":
-		return BACnetAccessPassbackMode_PASSBACK_OFF
+		enum = BACnetAccessPassbackMode_PASSBACK_OFF
 	case "HARD_PASSBACK":
-		return BACnetAccessPassbackMode_HARD_PASSBACK
+		enum = BACnetAccessPassbackMode_HARD_PASSBACK
 	case "SOFT_PASSBACK":
-		return BACnetAccessPassbackMode_SOFT_PASSBACK
+		enum = BACnetAccessPassbackMode_SOFT_PASSBACK
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccessPassbackModeKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetAccessPassbackModeParse(readBuffer utils.ReadBuffer) (BACnetAccessPas
 }
 
 func (e BACnetAccessPassbackMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAccessPassbackMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAccessPassbackMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccessPassbackMode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessPassbackMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessPassbackMode_PASSBACK_OFF:
 		return "PASSBACK_OFF"
@@ -126,5 +131,5 @@ func (e BACnetAccessPassbackMode) name() string {
 }
 
 func (e BACnetAccessPassbackMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

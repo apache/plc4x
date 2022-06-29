@@ -43,7 +43,7 @@ func init() {
 func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "KnxProperty":
-		propertyType := model.KnxPropertyDataTypeByName(parserArguments[0])
+		propertyType, _ := model.KnxPropertyDataTypeByName(parserArguments[0])
 		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 8)
 		if err != nil {
 			return nil, err
@@ -59,7 +59,7 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "ChannelInformation":
 		return model.ChannelInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "KnxDatapoint":
-		datapointType := model.KnxDatapointTypeByName(parserArguments[0])
+		datapointType, _ := model.KnxDatapointTypeByName(parserArguments[0])
 		return model.KnxDatapointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), datapointType)
 	case "DeviceConfigurationAckDataBlock":
 		return model.DeviceConfigurationAckDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -100,7 +100,7 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "CEMIAdditionalInformation":
 		return model.CEMIAdditionalInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ComObjectTable":
-		firmwareType := model.FirmwareTypeByName(parserArguments[0])
+		firmwareType, _ := model.FirmwareTypeByName(parserArguments[0])
 		return model.ComObjectTableParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

@@ -70,20 +70,24 @@ func BACnetLockStatusByValue(value uint8) BACnetLockStatus {
 	return 0
 }
 
-func BACnetLockStatusByName(value string) BACnetLockStatus {
+func BACnetLockStatusByName(value string) (enum BACnetLockStatus, ok bool) {
+	ok = true
 	switch value {
 	case "LOCKED":
-		return BACnetLockStatus_LOCKED
+		enum = BACnetLockStatus_LOCKED
 	case "UNLOCKED":
-		return BACnetLockStatus_UNLOCKED
+		enum = BACnetLockStatus_UNLOCKED
 	case "LOCK_FAULT":
-		return BACnetLockStatus_LOCK_FAULT
+		enum = BACnetLockStatus_LOCK_FAULT
 	case "UNUSED":
-		return BACnetLockStatus_UNUSED
+		enum = BACnetLockStatus_UNUSED
 	case "UNKNOWN":
-		return BACnetLockStatus_UNKNOWN
+		enum = BACnetLockStatus_UNKNOWN
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLockStatusKnows(value uint8) bool {
@@ -122,10 +126,11 @@ func BACnetLockStatusParse(readBuffer utils.ReadBuffer) (BACnetLockStatus, error
 }
 
 func (e BACnetLockStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLockStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLockStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLockStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLockStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetLockStatus_LOCKED:
 		return "LOCKED"
@@ -142,5 +147,5 @@ func (e BACnetLockStatus) name() string {
 }
 
 func (e BACnetLockStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

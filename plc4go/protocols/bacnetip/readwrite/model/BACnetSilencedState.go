@@ -70,20 +70,24 @@ func BACnetSilencedStateByValue(value uint16) BACnetSilencedState {
 	return 0
 }
 
-func BACnetSilencedStateByName(value string) BACnetSilencedState {
+func BACnetSilencedStateByName(value string) (enum BACnetSilencedState, ok bool) {
+	ok = true
 	switch value {
 	case "UNSILENCED":
-		return BACnetSilencedState_UNSILENCED
+		enum = BACnetSilencedState_UNSILENCED
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
 	case "AUDIBLE_SILENCED":
-		return BACnetSilencedState_AUDIBLE_SILENCED
+		enum = BACnetSilencedState_AUDIBLE_SILENCED
 	case "VISIBLE_SILENCED":
-		return BACnetSilencedState_VISIBLE_SILENCED
+		enum = BACnetSilencedState_VISIBLE_SILENCED
 	case "ALL_SILENCED":
-		return BACnetSilencedState_ALL_SILENCED
+		enum = BACnetSilencedState_ALL_SILENCED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetSilencedStateKnows(value uint16) bool {
@@ -122,10 +126,11 @@ func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState,
 }
 
 func (e BACnetSilencedState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetSilencedState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetSilencedState) PLC4XEnumName() string {
 	switch e {
 	case BACnetSilencedState_UNSILENCED:
 		return "UNSILENCED"
@@ -142,5 +147,5 @@ func (e BACnetSilencedState) name() string {
 }
 
 func (e BACnetSilencedState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

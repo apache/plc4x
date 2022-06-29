@@ -82,26 +82,30 @@ func BACnetAuthorizationExemptionByValue(value uint8) BACnetAuthorizationExempti
 	return 0
 }
 
-func BACnetAuthorizationExemptionByName(value string) BACnetAuthorizationExemption {
+func BACnetAuthorizationExemptionByName(value string) (enum BACnetAuthorizationExemption, ok bool) {
+	ok = true
 	switch value {
 	case "PASSBACK":
-		return BACnetAuthorizationExemption_PASSBACK
+		enum = BACnetAuthorizationExemption_PASSBACK
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
 	case "OCCUPANCY_CHECK":
-		return BACnetAuthorizationExemption_OCCUPANCY_CHECK
+		enum = BACnetAuthorizationExemption_OCCUPANCY_CHECK
 	case "ACCESS_RIGHTS":
-		return BACnetAuthorizationExemption_ACCESS_RIGHTS
+		enum = BACnetAuthorizationExemption_ACCESS_RIGHTS
 	case "LOCKOUT":
-		return BACnetAuthorizationExemption_LOCKOUT
+		enum = BACnetAuthorizationExemption_LOCKOUT
 	case "DENY":
-		return BACnetAuthorizationExemption_DENY
+		enum = BACnetAuthorizationExemption_DENY
 	case "VERIFICATION":
-		return BACnetAuthorizationExemption_VERIFICATION
+		enum = BACnetAuthorizationExemption_VERIFICATION
 	case "AUTHORIZATION_DELAY":
-		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY
+		enum = BACnetAuthorizationExemption_AUTHORIZATION_DELAY
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAuthorizationExemptionKnows(value uint8) bool {
@@ -140,10 +144,11 @@ func BACnetAuthorizationExemptionParse(readBuffer utils.ReadBuffer) (BACnetAutho
 }
 
 func (e BACnetAuthorizationExemption) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAuthorizationExemption", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAuthorizationExemption", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAuthorizationExemption) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAuthorizationExemption) PLC4XEnumName() string {
 	switch e {
 	case BACnetAuthorizationExemption_PASSBACK:
 		return "PASSBACK"
@@ -166,5 +171,5 @@ func (e BACnetAuthorizationExemption) name() string {
 }
 
 func (e BACnetAuthorizationExemption) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

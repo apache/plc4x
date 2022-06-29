@@ -86,28 +86,32 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceBy
 	return 0
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceByName(value string) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
+func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceByName(value string) (enum BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, ok bool) {
+	ok = true
 	switch value {
 	case "COLDSTART":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART
 	case "WARMSTART":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_WARMSTART
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_WARMSTART
 	case "ACTIVATE_CHANGES":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ACTIVATE_CHANGES
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ACTIVATE_CHANGES
 	case "STARTBACKUP":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTBACKUP
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTBACKUP
 	case "ENDBACKUP":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDBACKUP
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDBACKUP
 	case "STARTRESTORE":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTRESTORE
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTRESTORE
 	case "ENDRESTORE":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDRESTORE
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDRESTORE
 	case "ABORTRESTORE":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ABORTRESTORE
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ABORTRESTORE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceKnows(value uint8) bool {
@@ -146,10 +150,11 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevicePa
 }
 
 func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART:
 		return "COLDSTART"
@@ -174,5 +179,5 @@ func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevic
 }
 
 func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

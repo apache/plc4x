@@ -78,24 +78,28 @@ func BACnetBinaryLightingPVByValue(value uint8) BACnetBinaryLightingPV {
 	return 0
 }
 
-func BACnetBinaryLightingPVByName(value string) BACnetBinaryLightingPV {
+func BACnetBinaryLightingPVByName(value string) (enum BACnetBinaryLightingPV, ok bool) {
+	ok = true
 	switch value {
 	case "OFF":
-		return BACnetBinaryLightingPV_OFF
+		enum = BACnetBinaryLightingPV_OFF
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
 	case "ON":
-		return BACnetBinaryLightingPV_ON
+		enum = BACnetBinaryLightingPV_ON
 	case "WARN":
-		return BACnetBinaryLightingPV_WARN
+		enum = BACnetBinaryLightingPV_WARN
 	case "WARN_OFF":
-		return BACnetBinaryLightingPV_WARN_OFF
+		enum = BACnetBinaryLightingPV_WARN_OFF
 	case "WARN_RELINQUISH":
-		return BACnetBinaryLightingPV_WARN_RELINQUISH
+		enum = BACnetBinaryLightingPV_WARN_RELINQUISH
 	case "STOP":
-		return BACnetBinaryLightingPV_STOP
+		enum = BACnetBinaryLightingPV_STOP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetBinaryLightingPVKnows(value uint8) bool {
@@ -134,10 +138,11 @@ func BACnetBinaryLightingPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryLight
 }
 
 func (e BACnetBinaryLightingPV) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetBinaryLightingPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetBinaryLightingPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetBinaryLightingPV) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetBinaryLightingPV) PLC4XEnumName() string {
 	switch e {
 	case BACnetBinaryLightingPV_OFF:
 		return "OFF"
@@ -158,5 +163,5 @@ func (e BACnetBinaryLightingPV) name() string {
 }
 
 func (e BACnetBinaryLightingPV) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

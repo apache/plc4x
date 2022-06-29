@@ -66,18 +66,22 @@ func BACnetLoggingTypeByValue(value uint8) BACnetLoggingType {
 	return 0
 }
 
-func BACnetLoggingTypeByName(value string) BACnetLoggingType {
+func BACnetLoggingTypeByName(value string) (enum BACnetLoggingType, ok bool) {
+	ok = true
 	switch value {
 	case "POLLED":
-		return BACnetLoggingType_POLLED
+		enum = BACnetLoggingType_POLLED
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLoggingType_VENDOR_PROPRIETARY_VALUE
 	case "COV":
-		return BACnetLoggingType_COV
+		enum = BACnetLoggingType_COV
 	case "TRIGGERED":
-		return BACnetLoggingType_TRIGGERED
+		enum = BACnetLoggingType_TRIGGERED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLoggingTypeKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetLoggingTypeParse(readBuffer utils.ReadBuffer) (BACnetLoggingType, err
 }
 
 func (e BACnetLoggingType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLoggingType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetLoggingType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLoggingType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLoggingType) PLC4XEnumName() string {
 	switch e {
 	case BACnetLoggingType_POLLED:
 		return "POLLED"
@@ -134,5 +139,5 @@ func (e BACnetLoggingType) name() string {
 }
 
 func (e BACnetLoggingType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

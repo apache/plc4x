@@ -62,16 +62,20 @@ func BACnetTimerStateByValue(value uint8) BACnetTimerState {
 	return 0
 }
 
-func BACnetTimerStateByName(value string) BACnetTimerState {
+func BACnetTimerStateByName(value string) (enum BACnetTimerState, ok bool) {
+	ok = true
 	switch value {
 	case "IDLE":
-		return BACnetTimerState_IDLE
+		enum = BACnetTimerState_IDLE
 	case "RUNNING":
-		return BACnetTimerState_RUNNING
+		enum = BACnetTimerState_RUNNING
 	case "EXPIRED":
-		return BACnetTimerState_EXPIRED
+		enum = BACnetTimerState_EXPIRED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetTimerStateKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetTimerStateParse(readBuffer utils.ReadBuffer) (BACnetTimerState, error
 }
 
 func (e BACnetTimerState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetTimerState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetTimerState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetTimerState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetTimerState) PLC4XEnumName() string {
 	switch e {
 	case BACnetTimerState_IDLE:
 		return "IDLE"
@@ -126,5 +131,5 @@ func (e BACnetTimerState) name() string {
 }
 
 func (e BACnetTimerState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

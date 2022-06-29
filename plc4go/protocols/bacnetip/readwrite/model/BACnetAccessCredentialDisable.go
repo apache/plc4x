@@ -70,20 +70,24 @@ func BACnetAccessCredentialDisableByValue(value uint16) BACnetAccessCredentialDi
 	return 0
 }
 
-func BACnetAccessCredentialDisableByName(value string) BACnetAccessCredentialDisable {
+func BACnetAccessCredentialDisableByName(value string) (enum BACnetAccessCredentialDisable, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetAccessCredentialDisable_NONE
+		enum = BACnetAccessCredentialDisable_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
 	case "DISABLE":
-		return BACnetAccessCredentialDisable_DISABLE
+		enum = BACnetAccessCredentialDisable_DISABLE
 	case "DISABLE_MANUAL":
-		return BACnetAccessCredentialDisable_DISABLE_MANUAL
+		enum = BACnetAccessCredentialDisable_DISABLE_MANUAL
 	case "DISABLE_LOCKOUT":
-		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT
+		enum = BACnetAccessCredentialDisable_DISABLE_LOCKOUT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccessCredentialDisableKnows(value uint16) bool {
@@ -122,10 +126,11 @@ func BACnetAccessCredentialDisableParse(readBuffer utils.ReadBuffer) (BACnetAcce
 }
 
 func (e BACnetAccessCredentialDisable) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessCredentialDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetAccessCredentialDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccessCredentialDisable) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessCredentialDisable) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessCredentialDisable_NONE:
 		return "NONE"
@@ -142,5 +147,5 @@ func (e BACnetAccessCredentialDisable) name() string {
 }
 
 func (e BACnetAccessCredentialDisable) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

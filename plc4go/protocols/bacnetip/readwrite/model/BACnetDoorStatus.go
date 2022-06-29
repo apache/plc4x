@@ -94,32 +94,36 @@ func BACnetDoorStatusByValue(value uint16) BACnetDoorStatus {
 	return 0
 }
 
-func BACnetDoorStatusByName(value string) BACnetDoorStatus {
+func BACnetDoorStatusByName(value string) (enum BACnetDoorStatus, ok bool) {
+	ok = true
 	switch value {
 	case "CLOSED":
-		return BACnetDoorStatus_CLOSED
+		enum = BACnetDoorStatus_CLOSED
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE
 	case "OPENED":
-		return BACnetDoorStatus_OPENED
+		enum = BACnetDoorStatus_OPENED
 	case "UNKNOWN":
-		return BACnetDoorStatus_UNKNOWN
+		enum = BACnetDoorStatus_UNKNOWN
 	case "DOOR_FAULT":
-		return BACnetDoorStatus_DOOR_FAULT
+		enum = BACnetDoorStatus_DOOR_FAULT
 	case "UNUSED":
-		return BACnetDoorStatus_UNUSED
+		enum = BACnetDoorStatus_UNUSED
 	case "NONE":
-		return BACnetDoorStatus_NONE
+		enum = BACnetDoorStatus_NONE
 	case "CLOSING":
-		return BACnetDoorStatus_CLOSING
+		enum = BACnetDoorStatus_CLOSING
 	case "OPENING":
-		return BACnetDoorStatus_OPENING
+		enum = BACnetDoorStatus_OPENING
 	case "SAFETY_LOCKED":
-		return BACnetDoorStatus_SAFETY_LOCKED
+		enum = BACnetDoorStatus_SAFETY_LOCKED
 	case "LIMITED_OPENED":
-		return BACnetDoorStatus_LIMITED_OPENED
+		enum = BACnetDoorStatus_LIMITED_OPENED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetDoorStatusKnows(value uint16) bool {
@@ -158,10 +162,11 @@ func BACnetDoorStatusParse(readBuffer utils.ReadBuffer) (BACnetDoorStatus, error
 }
 
 func (e BACnetDoorStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetDoorStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetDoorStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetDoorStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDoorStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetDoorStatus_CLOSED:
 		return "CLOSED"
@@ -190,5 +195,5 @@ func (e BACnetDoorStatus) name() string {
 }
 
 func (e BACnetDoorStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

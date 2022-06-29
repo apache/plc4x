@@ -74,22 +74,26 @@ func KnxMediumByValue(value uint8) KnxMedium {
 	return 0
 }
 
-func KnxMediumByName(value string) KnxMedium {
+func KnxMediumByName(value string) (enum KnxMedium, ok bool) {
+	ok = true
 	switch value {
 	case "MEDIUM_RESERVED_1":
-		return KnxMedium_MEDIUM_RESERVED_1
+		enum = KnxMedium_MEDIUM_RESERVED_1
 	case "MEDIUM_TP1":
-		return KnxMedium_MEDIUM_TP1
+		enum = KnxMedium_MEDIUM_TP1
 	case "MEDIUM_PL110":
-		return KnxMedium_MEDIUM_PL110
+		enum = KnxMedium_MEDIUM_PL110
 	case "MEDIUM_RESERVED_2":
-		return KnxMedium_MEDIUM_RESERVED_2
+		enum = KnxMedium_MEDIUM_RESERVED_2
 	case "MEDIUM_RF":
-		return KnxMedium_MEDIUM_RF
+		enum = KnxMedium_MEDIUM_RF
 	case "MEDIUM_KNX_IP":
-		return KnxMedium_MEDIUM_KNX_IP
+		enum = KnxMedium_MEDIUM_KNX_IP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func KnxMediumKnows(value uint8) bool {
@@ -128,10 +132,11 @@ func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 }
 
 func (e KnxMedium) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e KnxMedium) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxMedium) PLC4XEnumName() string {
 	switch e {
 	case KnxMedium_MEDIUM_RESERVED_1:
 		return "MEDIUM_RESERVED_1"
@@ -150,5 +155,5 @@ func (e KnxMedium) name() string {
 }
 
 func (e KnxMedium) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

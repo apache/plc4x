@@ -98,34 +98,38 @@ func PinModeByValue(value uint8) PinMode {
 	return 0
 }
 
-func PinModeByName(value string) PinMode {
+func PinModeByName(value string) (enum PinMode, ok bool) {
+	ok = true
 	switch value {
 	case "PinModeInput":
-		return PinMode_PinModeInput
+		enum = PinMode_PinModeInput
 	case "PinModeOutput":
-		return PinMode_PinModeOutput
+		enum = PinMode_PinModeOutput
 	case "PinModeAnalog":
-		return PinMode_PinModeAnalog
+		enum = PinMode_PinModeAnalog
 	case "PinModePwm":
-		return PinMode_PinModePwm
+		enum = PinMode_PinModePwm
 	case "PinModeServo":
-		return PinMode_PinModeServo
+		enum = PinMode_PinModeServo
 	case "PinModeShift":
-		return PinMode_PinModeShift
+		enum = PinMode_PinModeShift
 	case "PinModeI2C":
-		return PinMode_PinModeI2C
+		enum = PinMode_PinModeI2C
 	case "PinModeOneWire":
-		return PinMode_PinModeOneWire
+		enum = PinMode_PinModeOneWire
 	case "PinModeStepper":
-		return PinMode_PinModeStepper
+		enum = PinMode_PinModeStepper
 	case "PinModeEncoder":
-		return PinMode_PinModeEncoder
+		enum = PinMode_PinModeEncoder
 	case "PinModeSerial":
-		return PinMode_PinModeSerial
+		enum = PinMode_PinModeSerial
 	case "PinModePullup":
-		return PinMode_PinModePullup
+		enum = PinMode_PinModePullup
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func PinModeKnows(value uint8) bool {
@@ -164,10 +168,11 @@ func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {
 }
 
 func (e PinMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("PinMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("PinMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e PinMode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e PinMode) PLC4XEnumName() string {
 	switch e {
 	case PinMode_PinModeInput:
 		return "PinModeInput"
@@ -198,5 +203,5 @@ func (e PinMode) name() string {
 }
 
 func (e PinMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

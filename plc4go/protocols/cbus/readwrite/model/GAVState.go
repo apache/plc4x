@@ -66,18 +66,22 @@ func GAVStateByValue(value uint8) GAVState {
 	return 0
 }
 
-func GAVStateByName(value string) GAVState {
+func GAVStateByName(value string) (enum GAVState, ok bool) {
+	ok = true
 	switch value {
 	case "DOES_NOT_EXIST":
-		return GAVState_DOES_NOT_EXIST
+		enum = GAVState_DOES_NOT_EXIST
 	case "ON":
-		return GAVState_ON
+		enum = GAVState_ON
 	case "OFF":
-		return GAVState_OFF
+		enum = GAVState_OFF
 	case "ERROR":
-		return GAVState_ERROR
+		enum = GAVState_ERROR
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func GAVStateKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func GAVStateParse(readBuffer utils.ReadBuffer) (GAVState, error) {
 }
 
 func (e GAVState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("GAVState", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("GAVState", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e GAVState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e GAVState) PLC4XEnumName() string {
 	switch e {
 	case GAVState_DOES_NOT_EXIST:
 		return "DOES_NOT_EXIST"
@@ -134,5 +139,5 @@ func (e GAVState) name() string {
 }
 
 func (e GAVState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

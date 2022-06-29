@@ -150,60 +150,64 @@ func BACnetReliabilityByValue(value uint16) BACnetReliability {
 	return 0
 }
 
-func BACnetReliabilityByName(value string) BACnetReliability {
+func BACnetReliabilityByName(value string) (enum BACnetReliability, ok bool) {
+	ok = true
 	switch value {
 	case "NO_FAULT_DETECTED":
-		return BACnetReliability_NO_FAULT_DETECTED
+		enum = BACnetReliability_NO_FAULT_DETECTED
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetReliability_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetReliability_VENDOR_PROPRIETARY_VALUE
 	case "NO_SENSOR":
-		return BACnetReliability_NO_SENSOR
+		enum = BACnetReliability_NO_SENSOR
 	case "CONFIGURATION_ERROR":
-		return BACnetReliability_CONFIGURATION_ERROR
+		enum = BACnetReliability_CONFIGURATION_ERROR
 	case "COMMUNICATION_FAILURE":
-		return BACnetReliability_COMMUNICATION_FAILURE
+		enum = BACnetReliability_COMMUNICATION_FAILURE
 	case "MEMBER_FAULT":
-		return BACnetReliability_MEMBER_FAULT
+		enum = BACnetReliability_MEMBER_FAULT
 	case "MONITORED_OBJECT_FAULT":
-		return BACnetReliability_MONITORED_OBJECT_FAULT
+		enum = BACnetReliability_MONITORED_OBJECT_FAULT
 	case "TRIPPED":
-		return BACnetReliability_TRIPPED
+		enum = BACnetReliability_TRIPPED
 	case "LAMP_FAILURE":
-		return BACnetReliability_LAMP_FAILURE
+		enum = BACnetReliability_LAMP_FAILURE
 	case "ACTIVATION_FAILURE":
-		return BACnetReliability_ACTIVATION_FAILURE
+		enum = BACnetReliability_ACTIVATION_FAILURE
 	case "RENEW_DHCP_FAILURE":
-		return BACnetReliability_RENEW_DHCP_FAILURE
+		enum = BACnetReliability_RENEW_DHCP_FAILURE
 	case "RENEW_FD_REGISTRATION_FAILURE":
-		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE
+		enum = BACnetReliability_RENEW_FD_REGISTRATION_FAILURE
 	case "OVER_RANGE":
-		return BACnetReliability_OVER_RANGE
+		enum = BACnetReliability_OVER_RANGE
 	case "RESTART_AUTO_NEGOTIATION_FAILURE":
-		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE
+		enum = BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE
 	case "RESTART_FAILURE":
-		return BACnetReliability_RESTART_FAILURE
+		enum = BACnetReliability_RESTART_FAILURE
 	case "PROPRIETARY_COMMAND_FAILURE":
-		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE
+		enum = BACnetReliability_PROPRIETARY_COMMAND_FAILURE
 	case "FAULTS_LISTED":
-		return BACnetReliability_FAULTS_LISTED
+		enum = BACnetReliability_FAULTS_LISTED
 	case "REFERENCED_OBJECT_FAULT":
-		return BACnetReliability_REFERENCED_OBJECT_FAULT
+		enum = BACnetReliability_REFERENCED_OBJECT_FAULT
 	case "UNDER_RANGE":
-		return BACnetReliability_UNDER_RANGE
+		enum = BACnetReliability_UNDER_RANGE
 	case "OPEN_LOOP":
-		return BACnetReliability_OPEN_LOOP
+		enum = BACnetReliability_OPEN_LOOP
 	case "SHORTED_LOOP":
-		return BACnetReliability_SHORTED_LOOP
+		enum = BACnetReliability_SHORTED_LOOP
 	case "NO_OUTPUT":
-		return BACnetReliability_NO_OUTPUT
+		enum = BACnetReliability_NO_OUTPUT
 	case "UNRELIABLE_OTHER":
-		return BACnetReliability_UNRELIABLE_OTHER
+		enum = BACnetReliability_UNRELIABLE_OTHER
 	case "PROCESS_ERROR":
-		return BACnetReliability_PROCESS_ERROR
+		enum = BACnetReliability_PROCESS_ERROR
 	case "MULTI_STATE_FAULT":
-		return BACnetReliability_MULTI_STATE_FAULT
+		enum = BACnetReliability_MULTI_STATE_FAULT
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetReliabilityKnows(value uint16) bool {
@@ -242,10 +246,11 @@ func BACnetReliabilityParse(readBuffer utils.ReadBuffer) (BACnetReliability, err
 }
 
 func (e BACnetReliability) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetReliability", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetReliability", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetReliability) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetReliability) PLC4XEnumName() string {
 	switch e {
 	case BACnetReliability_NO_FAULT_DETECTED:
 		return "NO_FAULT_DETECTED"
@@ -302,5 +307,5 @@ func (e BACnetReliability) name() string {
 }
 
 func (e BACnetReliability) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

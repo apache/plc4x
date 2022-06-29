@@ -58,14 +58,18 @@ func BACnetPolarityByValue(value uint8) BACnetPolarity {
 	return 0
 }
 
-func BACnetPolarityByName(value string) BACnetPolarity {
+func BACnetPolarityByName(value string) (enum BACnetPolarity, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetPolarity_NORMAL
+		enum = BACnetPolarity_NORMAL
 	case "REVERSE":
-		return BACnetPolarity_REVERSE
+		enum = BACnetPolarity_REVERSE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetPolarityKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetPolarityParse(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 }
 
 func (e BACnetPolarity) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetPolarity", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetPolarity", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetPolarity) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetPolarity) PLC4XEnumName() string {
 	switch e {
 	case BACnetPolarity_NORMAL:
 		return "NORMAL"
@@ -118,5 +123,5 @@ func (e BACnetPolarity) name() string {
 }
 
 func (e BACnetPolarity) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -339,52 +339,56 @@ func SupportedPhysicalMediaByValue(value uint8) SupportedPhysicalMedia {
 	return 0
 }
 
-func SupportedPhysicalMediaByName(value string) SupportedPhysicalMedia {
+func SupportedPhysicalMediaByName(value string) (enum SupportedPhysicalMedia, ok bool) {
+	ok = true
 	switch value {
 	case "OTHER":
-		return SupportedPhysicalMedia_OTHER
+		enum = SupportedPhysicalMedia_OTHER
 	case "OIL_METER":
-		return SupportedPhysicalMedia_OIL_METER
+		enum = SupportedPhysicalMedia_OIL_METER
 	case "ELECTRICITY_METER":
-		return SupportedPhysicalMedia_ELECTRICITY_METER
+		enum = SupportedPhysicalMedia_ELECTRICITY_METER
 	case "GAS_METER":
-		return SupportedPhysicalMedia_GAS_METER
+		enum = SupportedPhysicalMedia_GAS_METER
 	case "HEAT_METER":
-		return SupportedPhysicalMedia_HEAT_METER
+		enum = SupportedPhysicalMedia_HEAT_METER
 	case "STEAM_METER":
-		return SupportedPhysicalMedia_STEAM_METER
+		enum = SupportedPhysicalMedia_STEAM_METER
 	case "WARM_WATER_METER":
-		return SupportedPhysicalMedia_WARM_WATER_METER
+		enum = SupportedPhysicalMedia_WARM_WATER_METER
 	case "WATER_METER":
-		return SupportedPhysicalMedia_WATER_METER
+		enum = SupportedPhysicalMedia_WATER_METER
 	case "HEAT_COST_ALLOCATOR":
-		return SupportedPhysicalMedia_HEAT_COST_ALLOCATOR
+		enum = SupportedPhysicalMedia_HEAT_COST_ALLOCATOR
 	case "COMPRESSED_AIR":
-		return SupportedPhysicalMedia_COMPRESSED_AIR
+		enum = SupportedPhysicalMedia_COMPRESSED_AIR
 	case "COOLING_LOAD_METER_INLET":
-		return SupportedPhysicalMedia_COOLING_LOAD_METER_INLET
+		enum = SupportedPhysicalMedia_COOLING_LOAD_METER_INLET
 	case "COOLING_LOAD_METER_OUTLET":
-		return SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET
+		enum = SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET
 	case "HEAT_INLET":
-		return SupportedPhysicalMedia_HEAT_INLET
+		enum = SupportedPhysicalMedia_HEAT_INLET
 	case "HEAT_AND_COOL":
-		return SupportedPhysicalMedia_HEAT_AND_COOL
+		enum = SupportedPhysicalMedia_HEAT_AND_COOL
 	case "BUS_OR_SYSTEM":
-		return SupportedPhysicalMedia_BUS_OR_SYSTEM
+		enum = SupportedPhysicalMedia_BUS_OR_SYSTEM
 	case "UNKNOWN_DEVICE_TYPE":
-		return SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE
+		enum = SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE
 	case "BREAKER":
-		return SupportedPhysicalMedia_BREAKER
+		enum = SupportedPhysicalMedia_BREAKER
 	case "VALVE":
-		return SupportedPhysicalMedia_VALVE
+		enum = SupportedPhysicalMedia_VALVE
 	case "WASTE_WATER_METER":
-		return SupportedPhysicalMedia_WASTE_WATER_METER
+		enum = SupportedPhysicalMedia_WASTE_WATER_METER
 	case "GARBAGE":
-		return SupportedPhysicalMedia_GARBAGE
+		enum = SupportedPhysicalMedia_GARBAGE
 	case "RADIO_CONVERTER":
-		return SupportedPhysicalMedia_RADIO_CONVERTER
+		enum = SupportedPhysicalMedia_RADIO_CONVERTER
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func SupportedPhysicalMediaKnows(value uint8) bool {
@@ -423,10 +427,11 @@ func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysical
 }
 
 func (e SupportedPhysicalMedia) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SupportedPhysicalMedia", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("SupportedPhysicalMedia", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e SupportedPhysicalMedia) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SupportedPhysicalMedia) PLC4XEnumName() string {
 	switch e {
 	case SupportedPhysicalMedia_OTHER:
 		return "OTHER"
@@ -475,5 +480,5 @@ func (e SupportedPhysicalMedia) name() string {
 }
 
 func (e SupportedPhysicalMedia) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

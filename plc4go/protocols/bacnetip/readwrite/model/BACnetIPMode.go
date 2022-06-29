@@ -62,16 +62,20 @@ func BACnetIPModeByValue(value uint8) BACnetIPMode {
 	return 0
 }
 
-func BACnetIPModeByName(value string) BACnetIPMode {
+func BACnetIPModeByName(value string) (enum BACnetIPMode, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetIPMode_NORMAL
+		enum = BACnetIPMode_NORMAL
 	case "FOREIGN":
-		return BACnetIPMode_FOREIGN
+		enum = BACnetIPMode_FOREIGN
 	case "BBMD":
-		return BACnetIPMode_BBMD
+		enum = BACnetIPMode_BBMD
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetIPModeKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetIPModeParse(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
 }
 
 func (e BACnetIPMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetIPMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetIPMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetIPMode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetIPMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetIPMode_NORMAL:
 		return "NORMAL"
@@ -126,5 +131,5 @@ func (e BACnetIPMode) name() string {
 }
 
 func (e BACnetIPMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

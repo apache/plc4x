@@ -70,20 +70,24 @@ func BACnetAccumulatorRecordAccumulatorStatusByValue(value uint8) BACnetAccumula
 	return 0
 }
 
-func BACnetAccumulatorRecordAccumulatorStatusByName(value string) BACnetAccumulatorRecordAccumulatorStatus {
+func BACnetAccumulatorRecordAccumulatorStatusByName(value string) (enum BACnetAccumulatorRecordAccumulatorStatus, ok bool) {
+	ok = true
 	switch value {
 	case "NORMAL":
-		return BACnetAccumulatorRecordAccumulatorStatus_NORMAL
+		enum = BACnetAccumulatorRecordAccumulatorStatus_NORMAL
 	case "STARTING":
-		return BACnetAccumulatorRecordAccumulatorStatus_STARTING
+		enum = BACnetAccumulatorRecordAccumulatorStatus_STARTING
 	case "RECOVERED":
-		return BACnetAccumulatorRecordAccumulatorStatus_RECOVERED
+		enum = BACnetAccumulatorRecordAccumulatorStatus_RECOVERED
 	case "ABNORMAL":
-		return BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL
+		enum = BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL
 	case "FAILED":
-		return BACnetAccumulatorRecordAccumulatorStatus_FAILED
+		enum = BACnetAccumulatorRecordAccumulatorStatus_FAILED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetAccumulatorRecordAccumulatorStatusKnows(value uint8) bool {
@@ -122,10 +126,11 @@ func BACnetAccumulatorRecordAccumulatorStatusParse(readBuffer utils.ReadBuffer) 
 }
 
 func (e BACnetAccumulatorRecordAccumulatorStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAccumulatorRecordAccumulatorStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAccumulatorRecordAccumulatorStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAccumulatorRecordAccumulatorStatus) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccumulatorRecordAccumulatorStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccumulatorRecordAccumulatorStatus_NORMAL:
 		return "NORMAL"
@@ -142,5 +147,5 @@ func (e BACnetAccumulatorRecordAccumulatorStatus) name() string {
 }
 
 func (e BACnetAccumulatorRecordAccumulatorStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

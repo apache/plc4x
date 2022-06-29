@@ -58,14 +58,18 @@ func HostProtocolCodeByValue(value uint8) HostProtocolCode {
 	return 0
 }
 
-func HostProtocolCodeByName(value string) HostProtocolCode {
+func HostProtocolCodeByName(value string) (enum HostProtocolCode, ok bool) {
+	ok = true
 	switch value {
 	case "IPV4_UDP":
-		return HostProtocolCode_IPV4_UDP
+		enum = HostProtocolCode_IPV4_UDP
 	case "IPV4_TCP":
-		return HostProtocolCode_IPV4_TCP
+		enum = HostProtocolCode_IPV4_TCP
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func HostProtocolCodeKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func HostProtocolCodeParse(readBuffer utils.ReadBuffer) (HostProtocolCode, error
 }
 
 func (e HostProtocolCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("HostProtocolCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("HostProtocolCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e HostProtocolCode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e HostProtocolCode) PLC4XEnumName() string {
 	switch e {
 	case HostProtocolCode_IPV4_UDP:
 		return "IPV4_UDP"
@@ -118,5 +123,5 @@ func (e HostProtocolCode) name() string {
 }
 
 func (e HostProtocolCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

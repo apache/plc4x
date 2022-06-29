@@ -66,18 +66,22 @@ func StatusCodingByValue(value byte) StatusCoding {
 	return 0
 }
 
-func StatusCodingByName(value string) StatusCoding {
+func StatusCodingByName(value string) (enum StatusCoding, ok bool) {
+	ok = true
 	switch value {
 	case "BINARY_BY_THIS_SERIAL_INTERFACE":
-		return StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE
+		enum = StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE
 	case "LEVEL_BY_THIS_SERIAL_INTERFACE":
-		return StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE
+		enum = StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE
 	case "BINARY_BY_ELSEWHERE":
-		return StatusCoding_BINARY_BY_ELSEWHERE
+		enum = StatusCoding_BINARY_BY_ELSEWHERE
 	case "LEVEL_BY_ELSEWHERE":
-		return StatusCoding_LEVEL_BY_ELSEWHERE
+		enum = StatusCoding_LEVEL_BY_ELSEWHERE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func StatusCodingKnows(value byte) bool {
@@ -116,10 +120,11 @@ func StatusCodingParse(readBuffer utils.ReadBuffer) (StatusCoding, error) {
 }
 
 func (e StatusCoding) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteByte("StatusCoding", byte(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteByte("StatusCoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e StatusCoding) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e StatusCoding) PLC4XEnumName() string {
 	switch e {
 	case StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
 		return "BINARY_BY_THIS_SERIAL_INTERFACE"
@@ -134,5 +139,5 @@ func (e StatusCoding) name() string {
 }
 
 func (e StatusCoding) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

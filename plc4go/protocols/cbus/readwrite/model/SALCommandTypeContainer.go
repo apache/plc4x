@@ -220,48 +220,52 @@ func SALCommandTypeContainerByValue(value uint8) SALCommandTypeContainer {
 	return 0
 }
 
-func SALCommandTypeContainerByName(value string) SALCommandTypeContainer {
+func SALCommandTypeContainerByName(value string) (enum SALCommandTypeContainer, ok bool) {
+	ok = true
 	switch value {
 	case "SALCommandOff":
-		return SALCommandTypeContainer_SALCommandOff
+		enum = SALCommandTypeContainer_SALCommandOff
 	case "SALCommandRampToLevel_Instantaneous":
-		return SALCommandTypeContainer_SALCommandRampToLevel_Instantaneous
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_Instantaneous
 	case "SALCommandTerminateRamp":
-		return SALCommandTypeContainer_SALCommandTerminateRamp
+		enum = SALCommandTypeContainer_SALCommandTerminateRamp
 	case "SALCommandRampToLevel_4Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_4Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_4Second
 	case "SALCommandRampToLevel_8Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_8Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_8Second
 	case "SALCommandRampToLevel_12Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_12Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_12Second
 	case "SALCommandRampToLevel_20Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_20Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_20Second
 	case "SALCommandRampToLevel_30Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_30Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_30Second
 	case "SALCommandRampToLevel_40Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_40Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_40Second
 	case "SALCommandRampToLevel_60Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_60Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_60Second
 	case "SALCommandRampToLevel_90Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_90Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_90Second
 	case "SALCommandRampToLevel_120Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_120Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_120Second
 	case "SALCommandRampToLevel_180Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_180Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_180Second
 	case "SALCommandRampToLevel_300Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_300Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_300Second
 	case "SALCommandRampToLevel_420Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_420Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_420Second
 	case "SALCommandRampToLevel_600Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_600Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_600Second
 	case "SALCommandRampToLevel_900Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_900Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_900Second
 	case "SALCommandOn":
-		return SALCommandTypeContainer_SALCommandOn
+		enum = SALCommandTypeContainer_SALCommandOn
 	case "SALCommandRampToLevel_1020Second":
-		return SALCommandTypeContainer_SALCommandRampToLevel_1020Second
+		enum = SALCommandTypeContainer_SALCommandRampToLevel_1020Second
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func SALCommandTypeContainerKnows(value uint8) bool {
@@ -300,10 +304,11 @@ func SALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (SALCommandTypeCo
 }
 
 func (e SALCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SALCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("SALCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e SALCommandTypeContainer) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SALCommandTypeContainer) PLC4XEnumName() string {
 	switch e {
 	case SALCommandTypeContainer_SALCommandOff:
 		return "SALCommandOff"
@@ -348,5 +353,5 @@ func (e SALCommandTypeContainer) name() string {
 }
 
 func (e SALCommandTypeContainer) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

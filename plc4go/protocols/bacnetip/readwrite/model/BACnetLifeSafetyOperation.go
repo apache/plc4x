@@ -94,32 +94,36 @@ func BACnetLifeSafetyOperationByValue(value uint16) BACnetLifeSafetyOperation {
 	return 0
 }
 
-func BACnetLifeSafetyOperationByName(value string) BACnetLifeSafetyOperation {
+func BACnetLifeSafetyOperationByName(value string) (enum BACnetLifeSafetyOperation, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetLifeSafetyOperation_NONE
+		enum = BACnetLifeSafetyOperation_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE
 	case "SILENCE":
-		return BACnetLifeSafetyOperation_SILENCE
+		enum = BACnetLifeSafetyOperation_SILENCE
 	case "SILENCE_AUDIBLE":
-		return BACnetLifeSafetyOperation_SILENCE_AUDIBLE
+		enum = BACnetLifeSafetyOperation_SILENCE_AUDIBLE
 	case "SILENCE_VISUAL":
-		return BACnetLifeSafetyOperation_SILENCE_VISUAL
+		enum = BACnetLifeSafetyOperation_SILENCE_VISUAL
 	case "RESET":
-		return BACnetLifeSafetyOperation_RESET
+		enum = BACnetLifeSafetyOperation_RESET
 	case "RESET_ALARM":
-		return BACnetLifeSafetyOperation_RESET_ALARM
+		enum = BACnetLifeSafetyOperation_RESET_ALARM
 	case "RESET_FAULT":
-		return BACnetLifeSafetyOperation_RESET_FAULT
+		enum = BACnetLifeSafetyOperation_RESET_FAULT
 	case "UNSILENCE":
-		return BACnetLifeSafetyOperation_UNSILENCE
+		enum = BACnetLifeSafetyOperation_UNSILENCE
 	case "UNSILENCE_AUDIBLE":
-		return BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE
+		enum = BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE
 	case "UNSILENCE_VISUAL":
-		return BACnetLifeSafetyOperation_UNSILENCE_VISUAL
+		enum = BACnetLifeSafetyOperation_UNSILENCE_VISUAL
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetLifeSafetyOperationKnows(value uint16) bool {
@@ -158,10 +162,11 @@ func BACnetLifeSafetyOperationParse(readBuffer utils.ReadBuffer) (BACnetLifeSafe
 }
 
 func (e BACnetLifeSafetyOperation) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLifeSafetyOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("BACnetLifeSafetyOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetLifeSafetyOperation) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLifeSafetyOperation) PLC4XEnumName() string {
 	switch e {
 	case BACnetLifeSafetyOperation_NONE:
 		return "NONE"
@@ -190,5 +195,5 @@ func (e BACnetLifeSafetyOperation) name() string {
 }
 
 func (e BACnetLifeSafetyOperation) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

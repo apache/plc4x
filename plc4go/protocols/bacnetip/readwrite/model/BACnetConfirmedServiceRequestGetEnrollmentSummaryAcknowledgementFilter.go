@@ -62,16 +62,20 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByVal
 	return 0
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByName(value string) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByName(value string) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, ok bool) {
+	ok = true
 	switch value {
 	case "ALL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL
 	case "ACKED":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED
 	case "NOT_ACKED":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL:
 		return "ALL"
@@ -126,5 +131,5 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

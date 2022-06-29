@@ -62,16 +62,20 @@ func QueryTypeByValue(value uint8) QueryType {
 	return 0
 }
 
-func QueryTypeByName(value string) QueryType {
+func QueryTypeByName(value string) (enum QueryType, ok bool) {
+	ok = true
 	switch value {
 	case "BYALARMTYPE":
-		return QueryType_BYALARMTYPE
+		enum = QueryType_BYALARMTYPE
 	case "ALARM_8":
-		return QueryType_ALARM_8
+		enum = QueryType_ALARM_8
 	case "ALARM_S":
-		return QueryType_ALARM_S
+		enum = QueryType_ALARM_S
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func QueryTypeKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
 }
 
 func (e QueryType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("QueryType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("QueryType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e QueryType) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e QueryType) PLC4XEnumName() string {
 	switch e {
 	case QueryType_BYALARMTYPE:
 		return "BYALARMTYPE"
@@ -126,5 +131,5 @@ func (e QueryType) name() string {
 }
 
 func (e QueryType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

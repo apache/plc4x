@@ -90,30 +90,34 @@ func ModbusErrorCodeByValue(value uint8) ModbusErrorCode {
 	return 0
 }
 
-func ModbusErrorCodeByName(value string) ModbusErrorCode {
+func ModbusErrorCodeByName(value string) (enum ModbusErrorCode, ok bool) {
+	ok = true
 	switch value {
 	case "ILLEGAL_FUNCTION":
-		return ModbusErrorCode_ILLEGAL_FUNCTION
+		enum = ModbusErrorCode_ILLEGAL_FUNCTION
 	case "GATEWAY_PATH_UNAVAILABLE":
-		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
+		enum = ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
 	case "GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND":
-		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
+		enum = ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
 	case "ILLEGAL_DATA_ADDRESS":
-		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS
+		enum = ModbusErrorCode_ILLEGAL_DATA_ADDRESS
 	case "ILLEGAL_DATA_VALUE":
-		return ModbusErrorCode_ILLEGAL_DATA_VALUE
+		enum = ModbusErrorCode_ILLEGAL_DATA_VALUE
 	case "SLAVE_DEVICE_FAILURE":
-		return ModbusErrorCode_SLAVE_DEVICE_FAILURE
+		enum = ModbusErrorCode_SLAVE_DEVICE_FAILURE
 	case "ACKNOWLEDGE":
-		return ModbusErrorCode_ACKNOWLEDGE
+		enum = ModbusErrorCode_ACKNOWLEDGE
 	case "SLAVE_DEVICE_BUSY":
-		return ModbusErrorCode_SLAVE_DEVICE_BUSY
+		enum = ModbusErrorCode_SLAVE_DEVICE_BUSY
 	case "NEGATIVE_ACKNOWLEDGE":
-		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
+		enum = ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
 	case "MEMORY_PARITY_ERROR":
-		return ModbusErrorCode_MEMORY_PARITY_ERROR
+		enum = ModbusErrorCode_MEMORY_PARITY_ERROR
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ModbusErrorCodeKnows(value uint8) bool {
@@ -152,10 +156,11 @@ func ModbusErrorCodeParse(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) 
 }
 
 func (e ModbusErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModbusErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ModbusErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ModbusErrorCode) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModbusErrorCode) PLC4XEnumName() string {
 	switch e {
 	case ModbusErrorCode_ILLEGAL_FUNCTION:
 		return "ILLEGAL_FUNCTION"
@@ -182,5 +187,5 @@ func (e ModbusErrorCode) name() string {
 }
 
 func (e ModbusErrorCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

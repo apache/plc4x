@@ -78,24 +78,28 @@ func BACnetBackupStateByValue(value uint8) BACnetBackupState {
 	return 0
 }
 
-func BACnetBackupStateByName(value string) BACnetBackupState {
+func BACnetBackupStateByName(value string) (enum BACnetBackupState, ok bool) {
+	ok = true
 	switch value {
 	case "IDLE":
-		return BACnetBackupState_IDLE
+		enum = BACnetBackupState_IDLE
 	case "PREPARING_FOR_BACKUP":
-		return BACnetBackupState_PREPARING_FOR_BACKUP
+		enum = BACnetBackupState_PREPARING_FOR_BACKUP
 	case "PREPARING_FOR_RESTORE":
-		return BACnetBackupState_PREPARING_FOR_RESTORE
+		enum = BACnetBackupState_PREPARING_FOR_RESTORE
 	case "PERFORMING_A_BACKUP":
-		return BACnetBackupState_PERFORMING_A_BACKUP
+		enum = BACnetBackupState_PERFORMING_A_BACKUP
 	case "PERFORMING_A_RESTORE":
-		return BACnetBackupState_PERFORMING_A_RESTORE
+		enum = BACnetBackupState_PERFORMING_A_RESTORE
 	case "BACKUP_FAILURE":
-		return BACnetBackupState_BACKUP_FAILURE
+		enum = BACnetBackupState_BACKUP_FAILURE
 	case "RESTORE_FAILURE":
-		return BACnetBackupState_RESTORE_FAILURE
+		enum = BACnetBackupState_RESTORE_FAILURE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetBackupStateKnows(value uint8) bool {
@@ -134,10 +138,11 @@ func BACnetBackupStateParse(readBuffer utils.ReadBuffer) (BACnetBackupState, err
 }
 
 func (e BACnetBackupState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetBackupState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetBackupState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetBackupState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetBackupState) PLC4XEnumName() string {
 	switch e {
 	case BACnetBackupState_IDLE:
 		return "IDLE"
@@ -158,5 +163,5 @@ func (e BACnetBackupState) name() string {
 }
 
 func (e BACnetBackupState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -3159,522 +3159,526 @@ func ApplicationIdContainerByValue(value uint8) ApplicationIdContainer {
 	return 0
 }
 
-func ApplicationIdContainerByName(value string) ApplicationIdContainer {
+func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok bool) {
+	ok = true
 	switch value {
 	case "RESERVED_00":
-		return ApplicationIdContainer_RESERVED_00
+		enum = ApplicationIdContainer_RESERVED_00
 	case "FREE_USAGE_01":
-		return ApplicationIdContainer_FREE_USAGE_01
+		enum = ApplicationIdContainer_FREE_USAGE_01
 	case "FREE_USAGE_02":
-		return ApplicationIdContainer_FREE_USAGE_02
+		enum = ApplicationIdContainer_FREE_USAGE_02
 	case "FREE_USAGE_03":
-		return ApplicationIdContainer_FREE_USAGE_03
+		enum = ApplicationIdContainer_FREE_USAGE_03
 	case "FREE_USAGE_04":
-		return ApplicationIdContainer_FREE_USAGE_04
+		enum = ApplicationIdContainer_FREE_USAGE_04
 	case "FREE_USAGE_05":
-		return ApplicationIdContainer_FREE_USAGE_05
+		enum = ApplicationIdContainer_FREE_USAGE_05
 	case "FREE_USAGE_06":
-		return ApplicationIdContainer_FREE_USAGE_06
+		enum = ApplicationIdContainer_FREE_USAGE_06
 	case "FREE_USAGE_07":
-		return ApplicationIdContainer_FREE_USAGE_07
+		enum = ApplicationIdContainer_FREE_USAGE_07
 	case "FREE_USAGE_08":
-		return ApplicationIdContainer_FREE_USAGE_08
+		enum = ApplicationIdContainer_FREE_USAGE_08
 	case "FREE_USAGE_09":
-		return ApplicationIdContainer_FREE_USAGE_09
+		enum = ApplicationIdContainer_FREE_USAGE_09
 	case "FREE_USAGE_0A":
-		return ApplicationIdContainer_FREE_USAGE_0A
+		enum = ApplicationIdContainer_FREE_USAGE_0A
 	case "FREE_USAGE_0B":
-		return ApplicationIdContainer_FREE_USAGE_0B
+		enum = ApplicationIdContainer_FREE_USAGE_0B
 	case "FREE_USAGE_0C":
-		return ApplicationIdContainer_FREE_USAGE_0C
+		enum = ApplicationIdContainer_FREE_USAGE_0C
 	case "FREE_USAGE_0D":
-		return ApplicationIdContainer_FREE_USAGE_0D
+		enum = ApplicationIdContainer_FREE_USAGE_0D
 	case "FREE_USAGE_0E":
-		return ApplicationIdContainer_FREE_USAGE_0E
+		enum = ApplicationIdContainer_FREE_USAGE_0E
 	case "FREE_USAGE_0F":
-		return ApplicationIdContainer_FREE_USAGE_0F
+		enum = ApplicationIdContainer_FREE_USAGE_0F
 	case "RESERVED_10":
-		return ApplicationIdContainer_RESERVED_10
+		enum = ApplicationIdContainer_RESERVED_10
 	case "RESERVED_11":
-		return ApplicationIdContainer_RESERVED_11
+		enum = ApplicationIdContainer_RESERVED_11
 	case "RESERVED_12":
-		return ApplicationIdContainer_RESERVED_12
+		enum = ApplicationIdContainer_RESERVED_12
 	case "RESERVED_13":
-		return ApplicationIdContainer_RESERVED_13
+		enum = ApplicationIdContainer_RESERVED_13
 	case "RESERVED_14":
-		return ApplicationIdContainer_RESERVED_14
+		enum = ApplicationIdContainer_RESERVED_14
 	case "RESERVED_15":
-		return ApplicationIdContainer_RESERVED_15
+		enum = ApplicationIdContainer_RESERVED_15
 	case "RESERVED_16":
-		return ApplicationIdContainer_RESERVED_16
+		enum = ApplicationIdContainer_RESERVED_16
 	case "RESERVED_17":
-		return ApplicationIdContainer_RESERVED_17
+		enum = ApplicationIdContainer_RESERVED_17
 	case "RESERVED_18":
-		return ApplicationIdContainer_RESERVED_18
+		enum = ApplicationIdContainer_RESERVED_18
 	case "TEMPERATURE_BROADCAST_19":
-		return ApplicationIdContainer_TEMPERATURE_BROADCAST_19
+		enum = ApplicationIdContainer_TEMPERATURE_BROADCAST_19
 	case "RESERVED_1A":
-		return ApplicationIdContainer_RESERVED_1A
+		enum = ApplicationIdContainer_RESERVED_1A
 	case "RESERVED_1B":
-		return ApplicationIdContainer_RESERVED_1B
+		enum = ApplicationIdContainer_RESERVED_1B
 	case "RESERVED_1C":
-		return ApplicationIdContainer_RESERVED_1C
+		enum = ApplicationIdContainer_RESERVED_1C
 	case "RESERVED_1D":
-		return ApplicationIdContainer_RESERVED_1D
+		enum = ApplicationIdContainer_RESERVED_1D
 	case "RESERVED_1E":
-		return ApplicationIdContainer_RESERVED_1E
+		enum = ApplicationIdContainer_RESERVED_1E
 	case "RESERVED_1F":
-		return ApplicationIdContainer_RESERVED_1F
+		enum = ApplicationIdContainer_RESERVED_1F
 	case "RESERVED_20":
-		return ApplicationIdContainer_RESERVED_20
+		enum = ApplicationIdContainer_RESERVED_20
 	case "RESERVED_21":
-		return ApplicationIdContainer_RESERVED_21
+		enum = ApplicationIdContainer_RESERVED_21
 	case "RESERVED_22":
-		return ApplicationIdContainer_RESERVED_22
+		enum = ApplicationIdContainer_RESERVED_22
 	case "RESERVED_23":
-		return ApplicationIdContainer_RESERVED_23
+		enum = ApplicationIdContainer_RESERVED_23
 	case "RESERVED_24":
-		return ApplicationIdContainer_RESERVED_24
+		enum = ApplicationIdContainer_RESERVED_24
 	case "RESERVED_25":
-		return ApplicationIdContainer_RESERVED_25
+		enum = ApplicationIdContainer_RESERVED_25
 	case "ROOM_CONTROL_SYSTEM_26":
-		return ApplicationIdContainer_ROOM_CONTROL_SYSTEM_26
+		enum = ApplicationIdContainer_ROOM_CONTROL_SYSTEM_26
 	case "RESERVED_27":
-		return ApplicationIdContainer_RESERVED_27
+		enum = ApplicationIdContainer_RESERVED_27
 	case "RESERVED_28":
-		return ApplicationIdContainer_RESERVED_28
+		enum = ApplicationIdContainer_RESERVED_28
 	case "RESERVED_29":
-		return ApplicationIdContainer_RESERVED_29
+		enum = ApplicationIdContainer_RESERVED_29
 	case "RESERVED_2A":
-		return ApplicationIdContainer_RESERVED_2A
+		enum = ApplicationIdContainer_RESERVED_2A
 	case "RESERVED_2B":
-		return ApplicationIdContainer_RESERVED_2B
+		enum = ApplicationIdContainer_RESERVED_2B
 	case "RESERVED_2C":
-		return ApplicationIdContainer_RESERVED_2C
+		enum = ApplicationIdContainer_RESERVED_2C
 	case "RESERVED_2D":
-		return ApplicationIdContainer_RESERVED_2D
+		enum = ApplicationIdContainer_RESERVED_2D
 	case "RESERVED_2E":
-		return ApplicationIdContainer_RESERVED_2E
+		enum = ApplicationIdContainer_RESERVED_2E
 	case "RESERVED_2F":
-		return ApplicationIdContainer_RESERVED_2F
+		enum = ApplicationIdContainer_RESERVED_2F
 	case "LIGHTING_30":
-		return ApplicationIdContainer_LIGHTING_30
+		enum = ApplicationIdContainer_LIGHTING_30
 	case "LIGHTING_31":
-		return ApplicationIdContainer_LIGHTING_31
+		enum = ApplicationIdContainer_LIGHTING_31
 	case "LIGHTING_32":
-		return ApplicationIdContainer_LIGHTING_32
+		enum = ApplicationIdContainer_LIGHTING_32
 	case "LIGHTING_33":
-		return ApplicationIdContainer_LIGHTING_33
+		enum = ApplicationIdContainer_LIGHTING_33
 	case "LIGHTING_34":
-		return ApplicationIdContainer_LIGHTING_34
+		enum = ApplicationIdContainer_LIGHTING_34
 	case "LIGHTING_35":
-		return ApplicationIdContainer_LIGHTING_35
+		enum = ApplicationIdContainer_LIGHTING_35
 	case "LIGHTING_36":
-		return ApplicationIdContainer_LIGHTING_36
+		enum = ApplicationIdContainer_LIGHTING_36
 	case "LIGHTING_37":
-		return ApplicationIdContainer_LIGHTING_37
+		enum = ApplicationIdContainer_LIGHTING_37
 	case "LIGHTING_38":
-		return ApplicationIdContainer_LIGHTING_38
+		enum = ApplicationIdContainer_LIGHTING_38
 	case "LIGHTING_39":
-		return ApplicationIdContainer_LIGHTING_39
+		enum = ApplicationIdContainer_LIGHTING_39
 	case "LIGHTING_3A":
-		return ApplicationIdContainer_LIGHTING_3A
+		enum = ApplicationIdContainer_LIGHTING_3A
 	case "LIGHTING_3B":
-		return ApplicationIdContainer_LIGHTING_3B
+		enum = ApplicationIdContainer_LIGHTING_3B
 	case "LIGHTING_3C":
-		return ApplicationIdContainer_LIGHTING_3C
+		enum = ApplicationIdContainer_LIGHTING_3C
 	case "LIGHTING_3D":
-		return ApplicationIdContainer_LIGHTING_3D
+		enum = ApplicationIdContainer_LIGHTING_3D
 	case "LIGHTING_3E":
-		return ApplicationIdContainer_LIGHTING_3E
+		enum = ApplicationIdContainer_LIGHTING_3E
 	case "LIGHTING_3F":
-		return ApplicationIdContainer_LIGHTING_3F
+		enum = ApplicationIdContainer_LIGHTING_3F
 	case "LIGHTING_40":
-		return ApplicationIdContainer_LIGHTING_40
+		enum = ApplicationIdContainer_LIGHTING_40
 	case "LIGHTING_41":
-		return ApplicationIdContainer_LIGHTING_41
+		enum = ApplicationIdContainer_LIGHTING_41
 	case "LIGHTING_42":
-		return ApplicationIdContainer_LIGHTING_42
+		enum = ApplicationIdContainer_LIGHTING_42
 	case "LIGHTING_43":
-		return ApplicationIdContainer_LIGHTING_43
+		enum = ApplicationIdContainer_LIGHTING_43
 	case "LIGHTING_44":
-		return ApplicationIdContainer_LIGHTING_44
+		enum = ApplicationIdContainer_LIGHTING_44
 	case "LIGHTING_45":
-		return ApplicationIdContainer_LIGHTING_45
+		enum = ApplicationIdContainer_LIGHTING_45
 	case "LIGHTING_46":
-		return ApplicationIdContainer_LIGHTING_46
+		enum = ApplicationIdContainer_LIGHTING_46
 	case "LIGHTING_47":
-		return ApplicationIdContainer_LIGHTING_47
+		enum = ApplicationIdContainer_LIGHTING_47
 	case "LIGHTING_48":
-		return ApplicationIdContainer_LIGHTING_48
+		enum = ApplicationIdContainer_LIGHTING_48
 	case "LIGHTING_49":
-		return ApplicationIdContainer_LIGHTING_49
+		enum = ApplicationIdContainer_LIGHTING_49
 	case "LIGHTING_4A":
-		return ApplicationIdContainer_LIGHTING_4A
+		enum = ApplicationIdContainer_LIGHTING_4A
 	case "LIGHTING_4B":
-		return ApplicationIdContainer_LIGHTING_4B
+		enum = ApplicationIdContainer_LIGHTING_4B
 	case "LIGHTING_4C":
-		return ApplicationIdContainer_LIGHTING_4C
+		enum = ApplicationIdContainer_LIGHTING_4C
 	case "LIGHTING_4D":
-		return ApplicationIdContainer_LIGHTING_4D
+		enum = ApplicationIdContainer_LIGHTING_4D
 	case "LIGHTING_4E":
-		return ApplicationIdContainer_LIGHTING_4E
+		enum = ApplicationIdContainer_LIGHTING_4E
 	case "LIGHTING_4F":
-		return ApplicationIdContainer_LIGHTING_4F
+		enum = ApplicationIdContainer_LIGHTING_4F
 	case "LIGHTING_50":
-		return ApplicationIdContainer_LIGHTING_50
+		enum = ApplicationIdContainer_LIGHTING_50
 	case "LIGHTING_51":
-		return ApplicationIdContainer_LIGHTING_51
+		enum = ApplicationIdContainer_LIGHTING_51
 	case "LIGHTING_52":
-		return ApplicationIdContainer_LIGHTING_52
+		enum = ApplicationIdContainer_LIGHTING_52
 	case "LIGHTING_53":
-		return ApplicationIdContainer_LIGHTING_53
+		enum = ApplicationIdContainer_LIGHTING_53
 	case "LIGHTING_54":
-		return ApplicationIdContainer_LIGHTING_54
+		enum = ApplicationIdContainer_LIGHTING_54
 	case "LIGHTING_55":
-		return ApplicationIdContainer_LIGHTING_55
+		enum = ApplicationIdContainer_LIGHTING_55
 	case "LIGHTING_56":
-		return ApplicationIdContainer_LIGHTING_56
+		enum = ApplicationIdContainer_LIGHTING_56
 	case "LIGHTING_57":
-		return ApplicationIdContainer_LIGHTING_57
+		enum = ApplicationIdContainer_LIGHTING_57
 	case "LIGHTING_58":
-		return ApplicationIdContainer_LIGHTING_58
+		enum = ApplicationIdContainer_LIGHTING_58
 	case "LIGHTING_59":
-		return ApplicationIdContainer_LIGHTING_59
+		enum = ApplicationIdContainer_LIGHTING_59
 	case "LIGHTING_5A":
-		return ApplicationIdContainer_LIGHTING_5A
+		enum = ApplicationIdContainer_LIGHTING_5A
 	case "LIGHTING_5B":
-		return ApplicationIdContainer_LIGHTING_5B
+		enum = ApplicationIdContainer_LIGHTING_5B
 	case "LIGHTING_5C":
-		return ApplicationIdContainer_LIGHTING_5C
+		enum = ApplicationIdContainer_LIGHTING_5C
 	case "LIGHTING_5D":
-		return ApplicationIdContainer_LIGHTING_5D
+		enum = ApplicationIdContainer_LIGHTING_5D
 	case "LIGHTING_5E":
-		return ApplicationIdContainer_LIGHTING_5E
+		enum = ApplicationIdContainer_LIGHTING_5E
 	case "LIGHTING_5F":
-		return ApplicationIdContainer_LIGHTING_5F
+		enum = ApplicationIdContainer_LIGHTING_5F
 	case "RESERVED_60":
-		return ApplicationIdContainer_RESERVED_60
+		enum = ApplicationIdContainer_RESERVED_60
 	case "RESERVED_61":
-		return ApplicationIdContainer_RESERVED_61
+		enum = ApplicationIdContainer_RESERVED_61
 	case "RESERVED_62":
-		return ApplicationIdContainer_RESERVED_62
+		enum = ApplicationIdContainer_RESERVED_62
 	case "RESERVED_63":
-		return ApplicationIdContainer_RESERVED_63
+		enum = ApplicationIdContainer_RESERVED_63
 	case "RESERVED_64":
-		return ApplicationIdContainer_RESERVED_64
+		enum = ApplicationIdContainer_RESERVED_64
 	case "RESERVED_65":
-		return ApplicationIdContainer_RESERVED_65
+		enum = ApplicationIdContainer_RESERVED_65
 	case "RESERVED_66":
-		return ApplicationIdContainer_RESERVED_66
+		enum = ApplicationIdContainer_RESERVED_66
 	case "RESERVED_67":
-		return ApplicationIdContainer_RESERVED_67
+		enum = ApplicationIdContainer_RESERVED_67
 	case "RESERVED_68":
-		return ApplicationIdContainer_RESERVED_68
+		enum = ApplicationIdContainer_RESERVED_68
 	case "RESERVED_69":
-		return ApplicationIdContainer_RESERVED_69
+		enum = ApplicationIdContainer_RESERVED_69
 	case "RESERVED_6A":
-		return ApplicationIdContainer_RESERVED_6A
+		enum = ApplicationIdContainer_RESERVED_6A
 	case "RESERVED_6B":
-		return ApplicationIdContainer_RESERVED_6B
+		enum = ApplicationIdContainer_RESERVED_6B
 	case "RESERVED_6C":
-		return ApplicationIdContainer_RESERVED_6C
+		enum = ApplicationIdContainer_RESERVED_6C
 	case "RESERVED_6D":
-		return ApplicationIdContainer_RESERVED_6D
+		enum = ApplicationIdContainer_RESERVED_6D
 	case "RESERVED_6E":
-		return ApplicationIdContainer_RESERVED_6E
+		enum = ApplicationIdContainer_RESERVED_6E
 	case "RESERVED_6F":
-		return ApplicationIdContainer_RESERVED_6F
+		enum = ApplicationIdContainer_RESERVED_6F
 	case "VENTILATION_70":
-		return ApplicationIdContainer_VENTILATION_70
+		enum = ApplicationIdContainer_VENTILATION_70
 	case "IRRIGATION_CONTROL_71":
-		return ApplicationIdContainer_IRRIGATION_CONTROL_71
+		enum = ApplicationIdContainer_IRRIGATION_CONTROL_71
 	case "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72":
-		return ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72
+		enum = ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72
 	case "RESERVED_73":
-		return ApplicationIdContainer_RESERVED_73
+		enum = ApplicationIdContainer_RESERVED_73
 	case "RESERVED_74":
-		return ApplicationIdContainer_RESERVED_74
+		enum = ApplicationIdContainer_RESERVED_74
 	case "RESERVED_75":
-		return ApplicationIdContainer_RESERVED_75
+		enum = ApplicationIdContainer_RESERVED_75
 	case "RESERVED_76":
-		return ApplicationIdContainer_RESERVED_76
+		enum = ApplicationIdContainer_RESERVED_76
 	case "RESERVED_77":
-		return ApplicationIdContainer_RESERVED_77
+		enum = ApplicationIdContainer_RESERVED_77
 	case "RESERVED_78":
-		return ApplicationIdContainer_RESERVED_78
+		enum = ApplicationIdContainer_RESERVED_78
 	case "RESERVED_79":
-		return ApplicationIdContainer_RESERVED_79
+		enum = ApplicationIdContainer_RESERVED_79
 	case "RESERVED_7A":
-		return ApplicationIdContainer_RESERVED_7A
+		enum = ApplicationIdContainer_RESERVED_7A
 	case "RESERVED_7B":
-		return ApplicationIdContainer_RESERVED_7B
+		enum = ApplicationIdContainer_RESERVED_7B
 	case "RESERVED_7C":
-		return ApplicationIdContainer_RESERVED_7C
+		enum = ApplicationIdContainer_RESERVED_7C
 	case "RESERVED_7D":
-		return ApplicationIdContainer_RESERVED_7D
+		enum = ApplicationIdContainer_RESERVED_7D
 	case "RESERVED_7E":
-		return ApplicationIdContainer_RESERVED_7E
+		enum = ApplicationIdContainer_RESERVED_7E
 	case "RESERVED_7F":
-		return ApplicationIdContainer_RESERVED_7F
+		enum = ApplicationIdContainer_RESERVED_7F
 	case "RESERVED_80":
-		return ApplicationIdContainer_RESERVED_80
+		enum = ApplicationIdContainer_RESERVED_80
 	case "RESERVED_81":
-		return ApplicationIdContainer_RESERVED_81
+		enum = ApplicationIdContainer_RESERVED_81
 	case "RESERVED_82":
-		return ApplicationIdContainer_RESERVED_82
+		enum = ApplicationIdContainer_RESERVED_82
 	case "RESERVED_83":
-		return ApplicationIdContainer_RESERVED_83
+		enum = ApplicationIdContainer_RESERVED_83
 	case "RESERVED_84":
-		return ApplicationIdContainer_RESERVED_84
+		enum = ApplicationIdContainer_RESERVED_84
 	case "RESERVED_85":
-		return ApplicationIdContainer_RESERVED_85
+		enum = ApplicationIdContainer_RESERVED_85
 	case "RESERVED_86":
-		return ApplicationIdContainer_RESERVED_86
+		enum = ApplicationIdContainer_RESERVED_86
 	case "RESERVED_87":
-		return ApplicationIdContainer_RESERVED_87
+		enum = ApplicationIdContainer_RESERVED_87
 	case "HEATING_88":
-		return ApplicationIdContainer_HEATING_88
+		enum = ApplicationIdContainer_HEATING_88
 	case "RESERVED_89":
-		return ApplicationIdContainer_RESERVED_89
+		enum = ApplicationIdContainer_RESERVED_89
 	case "RESERVED_8A":
-		return ApplicationIdContainer_RESERVED_8A
+		enum = ApplicationIdContainer_RESERVED_8A
 	case "RESERVED_8B":
-		return ApplicationIdContainer_RESERVED_8B
+		enum = ApplicationIdContainer_RESERVED_8B
 	case "RESERVED_8C":
-		return ApplicationIdContainer_RESERVED_8C
+		enum = ApplicationIdContainer_RESERVED_8C
 	case "RESERVED_8D":
-		return ApplicationIdContainer_RESERVED_8D
+		enum = ApplicationIdContainer_RESERVED_8D
 	case "RESERVED_8E":
-		return ApplicationIdContainer_RESERVED_8E
+		enum = ApplicationIdContainer_RESERVED_8E
 	case "RESERVED_8F":
-		return ApplicationIdContainer_RESERVED_8F
+		enum = ApplicationIdContainer_RESERVED_8F
 	case "RESERVED_90":
-		return ApplicationIdContainer_RESERVED_90
+		enum = ApplicationIdContainer_RESERVED_90
 	case "RESERVED_91":
-		return ApplicationIdContainer_RESERVED_91
+		enum = ApplicationIdContainer_RESERVED_91
 	case "RESERVED_92":
-		return ApplicationIdContainer_RESERVED_92
+		enum = ApplicationIdContainer_RESERVED_92
 	case "RESERVED_93":
-		return ApplicationIdContainer_RESERVED_93
+		enum = ApplicationIdContainer_RESERVED_93
 	case "RESERVED_94":
-		return ApplicationIdContainer_RESERVED_94
+		enum = ApplicationIdContainer_RESERVED_94
 	case "RESERVED_95":
-		return ApplicationIdContainer_RESERVED_95
+		enum = ApplicationIdContainer_RESERVED_95
 	case "RESERVED_96":
-		return ApplicationIdContainer_RESERVED_96
+		enum = ApplicationIdContainer_RESERVED_96
 	case "RESERVED_97":
-		return ApplicationIdContainer_RESERVED_97
+		enum = ApplicationIdContainer_RESERVED_97
 	case "RESERVED_98":
-		return ApplicationIdContainer_RESERVED_98
+		enum = ApplicationIdContainer_RESERVED_98
 	case "RESERVED_99":
-		return ApplicationIdContainer_RESERVED_99
+		enum = ApplicationIdContainer_RESERVED_99
 	case "RESERVED_9A":
-		return ApplicationIdContainer_RESERVED_9A
+		enum = ApplicationIdContainer_RESERVED_9A
 	case "RESERVED_9B":
-		return ApplicationIdContainer_RESERVED_9B
+		enum = ApplicationIdContainer_RESERVED_9B
 	case "RESERVED_9C":
-		return ApplicationIdContainer_RESERVED_9C
+		enum = ApplicationIdContainer_RESERVED_9C
 	case "RESERVED_9D":
-		return ApplicationIdContainer_RESERVED_9D
+		enum = ApplicationIdContainer_RESERVED_9D
 	case "RESERVED_9E":
-		return ApplicationIdContainer_RESERVED_9E
+		enum = ApplicationIdContainer_RESERVED_9E
 	case "RESERVED_9F":
-		return ApplicationIdContainer_RESERVED_9F
+		enum = ApplicationIdContainer_RESERVED_9F
 	case "RESERVED_A0":
-		return ApplicationIdContainer_RESERVED_A0
+		enum = ApplicationIdContainer_RESERVED_A0
 	case "RESERVED_A1":
-		return ApplicationIdContainer_RESERVED_A1
+		enum = ApplicationIdContainer_RESERVED_A1
 	case "RESERVED_A2":
-		return ApplicationIdContainer_RESERVED_A2
+		enum = ApplicationIdContainer_RESERVED_A2
 	case "RESERVED_A3":
-		return ApplicationIdContainer_RESERVED_A3
+		enum = ApplicationIdContainer_RESERVED_A3
 	case "RESERVED_A4":
-		return ApplicationIdContainer_RESERVED_A4
+		enum = ApplicationIdContainer_RESERVED_A4
 	case "RESERVED_A5":
-		return ApplicationIdContainer_RESERVED_A5
+		enum = ApplicationIdContainer_RESERVED_A5
 	case "RESERVED_A6":
-		return ApplicationIdContainer_RESERVED_A6
+		enum = ApplicationIdContainer_RESERVED_A6
 	case "RESERVED_A7":
-		return ApplicationIdContainer_RESERVED_A7
+		enum = ApplicationIdContainer_RESERVED_A7
 	case "RESERVED_A8":
-		return ApplicationIdContainer_RESERVED_A8
+		enum = ApplicationIdContainer_RESERVED_A8
 	case "RESERVED_A9":
-		return ApplicationIdContainer_RESERVED_A9
+		enum = ApplicationIdContainer_RESERVED_A9
 	case "RESERVED_AA":
-		return ApplicationIdContainer_RESERVED_AA
+		enum = ApplicationIdContainer_RESERVED_AA
 	case "RESERVED_AB":
-		return ApplicationIdContainer_RESERVED_AB
+		enum = ApplicationIdContainer_RESERVED_AB
 	case "AIR_CONDITIONING_AC":
-		return ApplicationIdContainer_AIR_CONDITIONING_AC
+		enum = ApplicationIdContainer_AIR_CONDITIONING_AC
 	case "RESERVED_AD":
-		return ApplicationIdContainer_RESERVED_AD
+		enum = ApplicationIdContainer_RESERVED_AD
 	case "RESERVED_AE":
-		return ApplicationIdContainer_RESERVED_AE
+		enum = ApplicationIdContainer_RESERVED_AE
 	case "RESERVED_AF":
-		return ApplicationIdContainer_RESERVED_AF
+		enum = ApplicationIdContainer_RESERVED_AF
 	case "RESERVED_B0":
-		return ApplicationIdContainer_RESERVED_B0
+		enum = ApplicationIdContainer_RESERVED_B0
 	case "RESERVED_B1":
-		return ApplicationIdContainer_RESERVED_B1
+		enum = ApplicationIdContainer_RESERVED_B1
 	case "RESERVED_B2":
-		return ApplicationIdContainer_RESERVED_B2
+		enum = ApplicationIdContainer_RESERVED_B2
 	case "RESERVED_B3":
-		return ApplicationIdContainer_RESERVED_B3
+		enum = ApplicationIdContainer_RESERVED_B3
 	case "RESERVED_B4":
-		return ApplicationIdContainer_RESERVED_B4
+		enum = ApplicationIdContainer_RESERVED_B4
 	case "RESERVED_B5":
-		return ApplicationIdContainer_RESERVED_B5
+		enum = ApplicationIdContainer_RESERVED_B5
 	case "RESERVED_B6":
-		return ApplicationIdContainer_RESERVED_B6
+		enum = ApplicationIdContainer_RESERVED_B6
 	case "RESERVED_B7":
-		return ApplicationIdContainer_RESERVED_B7
+		enum = ApplicationIdContainer_RESERVED_B7
 	case "RESERVED_B8":
-		return ApplicationIdContainer_RESERVED_B8
+		enum = ApplicationIdContainer_RESERVED_B8
 	case "RESERVED_B9":
-		return ApplicationIdContainer_RESERVED_B9
+		enum = ApplicationIdContainer_RESERVED_B9
 	case "RESERVED_BA":
-		return ApplicationIdContainer_RESERVED_BA
+		enum = ApplicationIdContainer_RESERVED_BA
 	case "RESERVED_BB":
-		return ApplicationIdContainer_RESERVED_BB
+		enum = ApplicationIdContainer_RESERVED_BB
 	case "RESERVED_BC":
-		return ApplicationIdContainer_RESERVED_BC
+		enum = ApplicationIdContainer_RESERVED_BC
 	case "RESERVED_BD":
-		return ApplicationIdContainer_RESERVED_BD
+		enum = ApplicationIdContainer_RESERVED_BD
 	case "RESERVED_BE":
-		return ApplicationIdContainer_RESERVED_BE
+		enum = ApplicationIdContainer_RESERVED_BE
 	case "RESERVED_BF":
-		return ApplicationIdContainer_RESERVED_BF
+		enum = ApplicationIdContainer_RESERVED_BF
 	case "RESERVED_C0":
-		return ApplicationIdContainer_RESERVED_C0
+		enum = ApplicationIdContainer_RESERVED_C0
 	case "RESERVED_C1":
-		return ApplicationIdContainer_RESERVED_C1
+		enum = ApplicationIdContainer_RESERVED_C1
 	case "RESERVED_C2":
-		return ApplicationIdContainer_RESERVED_C2
+		enum = ApplicationIdContainer_RESERVED_C2
 	case "RESERVED_C3":
-		return ApplicationIdContainer_RESERVED_C3
+		enum = ApplicationIdContainer_RESERVED_C3
 	case "RESERVED_C4":
-		return ApplicationIdContainer_RESERVED_C4
+		enum = ApplicationIdContainer_RESERVED_C4
 	case "RESERVED_C5":
-		return ApplicationIdContainer_RESERVED_C5
+		enum = ApplicationIdContainer_RESERVED_C5
 	case "RESERVED_C6":
-		return ApplicationIdContainer_RESERVED_C6
+		enum = ApplicationIdContainer_RESERVED_C6
 	case "RESERVED_C7":
-		return ApplicationIdContainer_RESERVED_C7
+		enum = ApplicationIdContainer_RESERVED_C7
 	case "RESERVED_C8":
-		return ApplicationIdContainer_RESERVED_C8
+		enum = ApplicationIdContainer_RESERVED_C8
 	case "RESERVED_C9":
-		return ApplicationIdContainer_RESERVED_C9
+		enum = ApplicationIdContainer_RESERVED_C9
 	case "TRIGGER_CONTROL_CA":
-		return ApplicationIdContainer_TRIGGER_CONTROL_CA
+		enum = ApplicationIdContainer_TRIGGER_CONTROL_CA
 	case "ENABLE_CONTROL_CB":
-		return ApplicationIdContainer_ENABLE_CONTROL_CB
+		enum = ApplicationIdContainer_ENABLE_CONTROL_CB
 	case "I_HAVE_NO_IDEA_CC":
-		return ApplicationIdContainer_I_HAVE_NO_IDEA_CC
+		enum = ApplicationIdContainer_I_HAVE_NO_IDEA_CC
 	case "AUDIO_AND_VIDEO_CD":
-		return ApplicationIdContainer_AUDIO_AND_VIDEO_CD
+		enum = ApplicationIdContainer_AUDIO_AND_VIDEO_CD
 	case "RESERVED_CE":
-		return ApplicationIdContainer_RESERVED_CE
+		enum = ApplicationIdContainer_RESERVED_CE
 	case "RESERVED_CF":
-		return ApplicationIdContainer_RESERVED_CF
+		enum = ApplicationIdContainer_RESERVED_CF
 	case "SECURITY_D0":
-		return ApplicationIdContainer_SECURITY_D0
+		enum = ApplicationIdContainer_SECURITY_D0
 	case "METERING_D1":
-		return ApplicationIdContainer_METERING_D1
+		enum = ApplicationIdContainer_METERING_D1
 	case "RESERVED_D2":
-		return ApplicationIdContainer_RESERVED_D2
+		enum = ApplicationIdContainer_RESERVED_D2
 	case "RESERVED_D3":
-		return ApplicationIdContainer_RESERVED_D3
+		enum = ApplicationIdContainer_RESERVED_D3
 	case "RESERVED_D4":
-		return ApplicationIdContainer_RESERVED_D4
+		enum = ApplicationIdContainer_RESERVED_D4
 	case "ACCESS_CONTROL_D5":
-		return ApplicationIdContainer_ACCESS_CONTROL_D5
+		enum = ApplicationIdContainer_ACCESS_CONTROL_D5
 	case "RESERVED_D6":
-		return ApplicationIdContainer_RESERVED_D6
+		enum = ApplicationIdContainer_RESERVED_D6
 	case "RESERVED_D7":
-		return ApplicationIdContainer_RESERVED_D7
+		enum = ApplicationIdContainer_RESERVED_D7
 	case "RESERVED_D8":
-		return ApplicationIdContainer_RESERVED_D8
+		enum = ApplicationIdContainer_RESERVED_D8
 	case "RESERVED_D9":
-		return ApplicationIdContainer_RESERVED_D9
+		enum = ApplicationIdContainer_RESERVED_D9
 	case "RESERVED_DA":
-		return ApplicationIdContainer_RESERVED_DA
+		enum = ApplicationIdContainer_RESERVED_DA
 	case "RESERVED_DB":
-		return ApplicationIdContainer_RESERVED_DB
+		enum = ApplicationIdContainer_RESERVED_DB
 	case "RESERVED_DC":
-		return ApplicationIdContainer_RESERVED_DC
+		enum = ApplicationIdContainer_RESERVED_DC
 	case "RESERVED_DD":
-		return ApplicationIdContainer_RESERVED_DD
+		enum = ApplicationIdContainer_RESERVED_DD
 	case "RESERVED_DE":
-		return ApplicationIdContainer_RESERVED_DE
+		enum = ApplicationIdContainer_RESERVED_DE
 	case "CLOCK_AND_TIMEKEEPING_DF":
-		return ApplicationIdContainer_CLOCK_AND_TIMEKEEPING_DF
+		enum = ApplicationIdContainer_CLOCK_AND_TIMEKEEPING_DF
 	case "TELEPHONY_STATUS_AND_CONTROL_E0":
-		return ApplicationIdContainer_TELEPHONY_STATUS_AND_CONTROL_E0
+		enum = ApplicationIdContainer_TELEPHONY_STATUS_AND_CONTROL_E0
 	case "RESERVED_E1":
-		return ApplicationIdContainer_RESERVED_E1
+		enum = ApplicationIdContainer_RESERVED_E1
 	case "RESERVED_E2":
-		return ApplicationIdContainer_RESERVED_E2
+		enum = ApplicationIdContainer_RESERVED_E2
 	case "RESERVED_E3":
-		return ApplicationIdContainer_RESERVED_E3
+		enum = ApplicationIdContainer_RESERVED_E3
 	case "MEASUREMENT_E4":
-		return ApplicationIdContainer_MEASUREMENT_E4
+		enum = ApplicationIdContainer_MEASUREMENT_E4
 	case "RESERVED_E5":
-		return ApplicationIdContainer_RESERVED_E5
+		enum = ApplicationIdContainer_RESERVED_E5
 	case "RESERVED_E6":
-		return ApplicationIdContainer_RESERVED_E6
+		enum = ApplicationIdContainer_RESERVED_E6
 	case "RESERVED_E7":
-		return ApplicationIdContainer_RESERVED_E7
+		enum = ApplicationIdContainer_RESERVED_E7
 	case "RESERVED_E8":
-		return ApplicationIdContainer_RESERVED_E8
+		enum = ApplicationIdContainer_RESERVED_E8
 	case "RESERVED_E9":
-		return ApplicationIdContainer_RESERVED_E9
+		enum = ApplicationIdContainer_RESERVED_E9
 	case "RESERVED_EA":
-		return ApplicationIdContainer_RESERVED_EA
+		enum = ApplicationIdContainer_RESERVED_EA
 	case "RESERVED_EB":
-		return ApplicationIdContainer_RESERVED_EB
+		enum = ApplicationIdContainer_RESERVED_EB
 	case "RESERVED_EC":
-		return ApplicationIdContainer_RESERVED_EC
+		enum = ApplicationIdContainer_RESERVED_EC
 	case "RESERVED_ED":
-		return ApplicationIdContainer_RESERVED_ED
+		enum = ApplicationIdContainer_RESERVED_ED
 	case "RESERVED_EE":
-		return ApplicationIdContainer_RESERVED_EE
+		enum = ApplicationIdContainer_RESERVED_EE
 	case "RESERVED_EF":
-		return ApplicationIdContainer_RESERVED_EF
+		enum = ApplicationIdContainer_RESERVED_EF
 	case "RESERVED_F0":
-		return ApplicationIdContainer_RESERVED_F0
+		enum = ApplicationIdContainer_RESERVED_F0
 	case "RESERVED_F1":
-		return ApplicationIdContainer_RESERVED_F1
+		enum = ApplicationIdContainer_RESERVED_F1
 	case "RESERVED_F2":
-		return ApplicationIdContainer_RESERVED_F2
+		enum = ApplicationIdContainer_RESERVED_F2
 	case "RESERVED_F3":
-		return ApplicationIdContainer_RESERVED_F3
+		enum = ApplicationIdContainer_RESERVED_F3
 	case "RESERVED_F4":
-		return ApplicationIdContainer_RESERVED_F4
+		enum = ApplicationIdContainer_RESERVED_F4
 	case "RESERVED_F5":
-		return ApplicationIdContainer_RESERVED_F5
+		enum = ApplicationIdContainer_RESERVED_F5
 	case "RESERVED_F6":
-		return ApplicationIdContainer_RESERVED_F6
+		enum = ApplicationIdContainer_RESERVED_F6
 	case "RESERVED_F7":
-		return ApplicationIdContainer_RESERVED_F7
+		enum = ApplicationIdContainer_RESERVED_F7
 	case "RESERVED_F8":
-		return ApplicationIdContainer_RESERVED_F8
+		enum = ApplicationIdContainer_RESERVED_F8
 	case "RESERVED_F9":
-		return ApplicationIdContainer_RESERVED_F9
+		enum = ApplicationIdContainer_RESERVED_F9
 	case "TESTING_FA":
-		return ApplicationIdContainer_TESTING_FA
+		enum = ApplicationIdContainer_TESTING_FA
 	case "RESERVED_FB":
-		return ApplicationIdContainer_RESERVED_FB
+		enum = ApplicationIdContainer_RESERVED_FB
 	case "RESERVED_FC":
-		return ApplicationIdContainer_RESERVED_FC
+		enum = ApplicationIdContainer_RESERVED_FC
 	case "RESERVED_FD":
-		return ApplicationIdContainer_RESERVED_FD
+		enum = ApplicationIdContainer_RESERVED_FD
 	case "RESERVED_FE":
-		return ApplicationIdContainer_RESERVED_FE
+		enum = ApplicationIdContainer_RESERVED_FE
 	case "RESERVED_FF":
-		return ApplicationIdContainer_RESERVED_FF
+		enum = ApplicationIdContainer_RESERVED_FF
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ApplicationIdContainerKnows(value uint8) bool {
@@ -3713,10 +3717,11 @@ func ApplicationIdContainerParse(readBuffer utils.ReadBuffer) (ApplicationIdCont
 }
 
 func (e ApplicationIdContainer) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ApplicationIdContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("ApplicationIdContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ApplicationIdContainer) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ApplicationIdContainer) PLC4XEnumName() string {
 	switch e {
 	case ApplicationIdContainer_RESERVED_00:
 		return "RESERVED_00"
@@ -4235,5 +4240,5 @@ func (e ApplicationIdContainer) name() string {
 }
 
 func (e ApplicationIdContainer) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

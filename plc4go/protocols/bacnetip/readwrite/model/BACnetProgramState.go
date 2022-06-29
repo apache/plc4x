@@ -74,22 +74,26 @@ func BACnetProgramStateByValue(value uint8) BACnetProgramState {
 	return 0
 }
 
-func BACnetProgramStateByName(value string) BACnetProgramState {
+func BACnetProgramStateByName(value string) (enum BACnetProgramState, ok bool) {
+	ok = true
 	switch value {
 	case "IDLE":
-		return BACnetProgramState_IDLE
+		enum = BACnetProgramState_IDLE
 	case "LOADING":
-		return BACnetProgramState_LOADING
+		enum = BACnetProgramState_LOADING
 	case "RUNNING":
-		return BACnetProgramState_RUNNING
+		enum = BACnetProgramState_RUNNING
 	case "WAITING":
-		return BACnetProgramState_WAITING
+		enum = BACnetProgramState_WAITING
 	case "HALTED":
-		return BACnetProgramState_HALTED
+		enum = BACnetProgramState_HALTED
 	case "UNLOADING":
-		return BACnetProgramState_UNLOADING
+		enum = BACnetProgramState_UNLOADING
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetProgramStateKnows(value uint8) bool {
@@ -128,10 +132,11 @@ func BACnetProgramStateParse(readBuffer utils.ReadBuffer) (BACnetProgramState, e
 }
 
 func (e BACnetProgramState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetProgramState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetProgramState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetProgramState) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetProgramState) PLC4XEnumName() string {
 	switch e {
 	case BACnetProgramState_IDLE:
 		return "IDLE"
@@ -150,5 +155,5 @@ func (e BACnetProgramState) name() string {
 }
 
 func (e BACnetProgramState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

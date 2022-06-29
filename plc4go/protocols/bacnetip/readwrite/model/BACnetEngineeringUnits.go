@@ -1058,514 +1058,518 @@ func BACnetEngineeringUnitsByValue(value uint32) BACnetEngineeringUnits {
 	return 0
 }
 
-func BACnetEngineeringUnitsByName(value string) BACnetEngineeringUnits {
+func BACnetEngineeringUnitsByName(value string) (enum BACnetEngineeringUnits, ok bool) {
+	ok = true
 	switch value {
 	case "SQUARE_METERS":
-		return BACnetEngineeringUnits_SQUARE_METERS
+		enum = BACnetEngineeringUnits_SQUARE_METERS
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEngineeringUnits_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetEngineeringUnits_VENDOR_PROPRIETARY_VALUE
 	case "SQUARE_FEET":
-		return BACnetEngineeringUnits_SQUARE_FEET
+		enum = BACnetEngineeringUnits_SQUARE_FEET
 	case "MEGAVOLT_AMPERES":
-		return BACnetEngineeringUnits_MEGAVOLT_AMPERES
+		enum = BACnetEngineeringUnits_MEGAVOLT_AMPERES
 	case "PER_MINUTE":
-		return BACnetEngineeringUnits_PER_MINUTE
+		enum = BACnetEngineeringUnits_PER_MINUTE
 	case "PER_SECOND":
-		return BACnetEngineeringUnits_PER_SECOND
+		enum = BACnetEngineeringUnits_PER_SECOND
 	case "PSI_PER_DEGREE_FAHRENHEIT":
-		return BACnetEngineeringUnits_PSI_PER_DEGREE_FAHRENHEIT
+		enum = BACnetEngineeringUnits_PSI_PER_DEGREE_FAHRENHEIT
 	case "RADIANS":
-		return BACnetEngineeringUnits_RADIANS
+		enum = BACnetEngineeringUnits_RADIANS
 	case "REVOLUTIONS_PER_MINUTE":
-		return BACnetEngineeringUnits_REVOLUTIONS_PER_MINUTE
+		enum = BACnetEngineeringUnits_REVOLUTIONS_PER_MINUTE
 	case "CURRENCY1":
-		return BACnetEngineeringUnits_CURRENCY1
+		enum = BACnetEngineeringUnits_CURRENCY1
 	case "CURRENCY2":
-		return BACnetEngineeringUnits_CURRENCY2
+		enum = BACnetEngineeringUnits_CURRENCY2
 	case "CURRENCY3":
-		return BACnetEngineeringUnits_CURRENCY3
+		enum = BACnetEngineeringUnits_CURRENCY3
 	case "CURRENCY4":
-		return BACnetEngineeringUnits_CURRENCY4
+		enum = BACnetEngineeringUnits_CURRENCY4
 	case "CURRENCY5":
-		return BACnetEngineeringUnits_CURRENCY5
+		enum = BACnetEngineeringUnits_CURRENCY5
 	case "VOLT_AMPERES_REACTIVE":
-		return BACnetEngineeringUnits_VOLT_AMPERES_REACTIVE
+		enum = BACnetEngineeringUnits_VOLT_AMPERES_REACTIVE
 	case "CURRENCY6":
-		return BACnetEngineeringUnits_CURRENCY6
+		enum = BACnetEngineeringUnits_CURRENCY6
 	case "CURRENCY7":
-		return BACnetEngineeringUnits_CURRENCY7
+		enum = BACnetEngineeringUnits_CURRENCY7
 	case "CURRENCY8":
-		return BACnetEngineeringUnits_CURRENCY8
+		enum = BACnetEngineeringUnits_CURRENCY8
 	case "CURRENCY9":
-		return BACnetEngineeringUnits_CURRENCY9
+		enum = BACnetEngineeringUnits_CURRENCY9
 	case "CURRENCY10":
-		return BACnetEngineeringUnits_CURRENCY10
+		enum = BACnetEngineeringUnits_CURRENCY10
 	case "SQUARE_INCHES":
-		return BACnetEngineeringUnits_SQUARE_INCHES
+		enum = BACnetEngineeringUnits_SQUARE_INCHES
 	case "SQUARE_CENTIMETERS":
-		return BACnetEngineeringUnits_SQUARE_CENTIMETERS
+		enum = BACnetEngineeringUnits_SQUARE_CENTIMETERS
 	case "BTUS_PER_POUND":
-		return BACnetEngineeringUnits_BTUS_PER_POUND
+		enum = BACnetEngineeringUnits_BTUS_PER_POUND
 	case "CENTIMETERS":
-		return BACnetEngineeringUnits_CENTIMETERS
+		enum = BACnetEngineeringUnits_CENTIMETERS
 	case "POUNDS_MASS_PER_SECOND":
-		return BACnetEngineeringUnits_POUNDS_MASS_PER_SECOND
+		enum = BACnetEngineeringUnits_POUNDS_MASS_PER_SECOND
 	case "KILOVOLT_AMPERES_REACTIVE":
-		return BACnetEngineeringUnits_KILOVOLT_AMPERES_REACTIVE
+		enum = BACnetEngineeringUnits_KILOVOLT_AMPERES_REACTIVE
 	case "DELTA_DEGREES_FAHRENHEIT":
-		return BACnetEngineeringUnits_DELTA_DEGREES_FAHRENHEIT
+		enum = BACnetEngineeringUnits_DELTA_DEGREES_FAHRENHEIT
 	case "DELTA_DEGREES_KELVIN":
-		return BACnetEngineeringUnits_DELTA_DEGREES_KELVIN
+		enum = BACnetEngineeringUnits_DELTA_DEGREES_KELVIN
 	case "KILOHMS":
-		return BACnetEngineeringUnits_KILOHMS
+		enum = BACnetEngineeringUnits_KILOHMS
 	case "MEGOHMS":
-		return BACnetEngineeringUnits_MEGOHMS
+		enum = BACnetEngineeringUnits_MEGOHMS
 	case "MILLIVOLTS":
-		return BACnetEngineeringUnits_MILLIVOLTS
+		enum = BACnetEngineeringUnits_MILLIVOLTS
 	case "KILOJOULES_PER_KILOGRAM":
-		return BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM
+		enum = BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM
 	case "MEGAJOULES":
-		return BACnetEngineeringUnits_MEGAJOULES
+		enum = BACnetEngineeringUnits_MEGAJOULES
 	case "MEGAVOLT_AMPERES_REACTIVE":
-		return BACnetEngineeringUnits_MEGAVOLT_AMPERES_REACTIVE
+		enum = BACnetEngineeringUnits_MEGAVOLT_AMPERES_REACTIVE
 	case "IWATTS":
-		return BACnetEngineeringUnits_IWATTS
+		enum = BACnetEngineeringUnits_IWATTS
 	case "HECTOPASCALS":
-		return BACnetEngineeringUnits_HECTOPASCALS
+		enum = BACnetEngineeringUnits_HECTOPASCALS
 	case "MILLIBARS":
-		return BACnetEngineeringUnits_MILLIBARS
+		enum = BACnetEngineeringUnits_MILLIBARS
 	case "CUBIC_METERS_PER_HOUR":
-		return BACnetEngineeringUnits_CUBIC_METERS_PER_HOUR
+		enum = BACnetEngineeringUnits_CUBIC_METERS_PER_HOUR
 	case "LITERS_PER_HOUR":
-		return BACnetEngineeringUnits_LITERS_PER_HOUR
+		enum = BACnetEngineeringUnits_LITERS_PER_HOUR
 	case "KILOWATT_HOURS_PER_SQUARE_METER":
-		return BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_METER
+		enum = BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_METER
 	case "KILOWATT_HOURS_PER_SQUARE_FOOT":
-		return BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_FOOT
+		enum = BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_FOOT
 	case "MEGAJOULES_PER_SQUARE_METER":
-		return BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_METER
+		enum = BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_METER
 	case "DEGREES_PHASE":
-		return BACnetEngineeringUnits_DEGREES_PHASE
+		enum = BACnetEngineeringUnits_DEGREES_PHASE
 	case "MEGAJOULES_PER_SQUARE_FOOT":
-		return BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_FOOT
+		enum = BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_FOOT
 	case "WATTS_PER_SQUARE_METER_DEGREE_KELVIN":
-		return BACnetEngineeringUnits_WATTS_PER_SQUARE_METER_DEGREE_KELVIN
+		enum = BACnetEngineeringUnits_WATTS_PER_SQUARE_METER_DEGREE_KELVIN
 	case "CUBIC_FEET_PER_SECOND":
-		return BACnetEngineeringUnits_CUBIC_FEET_PER_SECOND
+		enum = BACnetEngineeringUnits_CUBIC_FEET_PER_SECOND
 	case "PERCENT_OBSCURATION_PER_FOOT":
-		return BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_FOOT
+		enum = BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_FOOT
 	case "PERCENT_OBSCURATION_PER_METER":
-		return BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_METER
+		enum = BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_METER
 	case "MILLIOHMS":
-		return BACnetEngineeringUnits_MILLIOHMS
+		enum = BACnetEngineeringUnits_MILLIOHMS
 	case "MEGAWATT_HOURS":
-		return BACnetEngineeringUnits_MEGAWATT_HOURS
+		enum = BACnetEngineeringUnits_MEGAWATT_HOURS
 	case "KILO_BTUS":
-		return BACnetEngineeringUnits_KILO_BTUS
+		enum = BACnetEngineeringUnits_KILO_BTUS
 	case "MEGA_BTUS":
-		return BACnetEngineeringUnits_MEGA_BTUS
+		enum = BACnetEngineeringUnits_MEGA_BTUS
 	case "KILOJOULES_PER_KILOGRAM_DRY_AIR":
-		return BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM_DRY_AIR
+		enum = BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM_DRY_AIR
 	case "POWER_FACTOR":
-		return BACnetEngineeringUnits_POWER_FACTOR
+		enum = BACnetEngineeringUnits_POWER_FACTOR
 	case "MEGAJOULES_PER_KILOGRAM_DRY_AIR":
-		return BACnetEngineeringUnits_MEGAJOULES_PER_KILOGRAM_DRY_AIR
+		enum = BACnetEngineeringUnits_MEGAJOULES_PER_KILOGRAM_DRY_AIR
 	case "GRAMS_PER_SECOND":
-		return BACnetEngineeringUnits_GRAMS_PER_SECOND
+		enum = BACnetEngineeringUnits_GRAMS_PER_SECOND
 	case "GRAMS_PER_MINUTE":
-		return BACnetEngineeringUnits_GRAMS_PER_MINUTE
+		enum = BACnetEngineeringUnits_GRAMS_PER_MINUTE
 	case "TONS_PER_HOUR":
-		return BACnetEngineeringUnits_TONS_PER_HOUR
+		enum = BACnetEngineeringUnits_TONS_PER_HOUR
 	case "KILO_BTUS_PER_HOUR":
-		return BACnetEngineeringUnits_KILO_BTUS_PER_HOUR
+		enum = BACnetEngineeringUnits_KILO_BTUS_PER_HOUR
 	case "HUNDREDTHS_SECONDS":
-		return BACnetEngineeringUnits_HUNDREDTHS_SECONDS
+		enum = BACnetEngineeringUnits_HUNDREDTHS_SECONDS
 	case "MILLISECONDS":
-		return BACnetEngineeringUnits_MILLISECONDS
+		enum = BACnetEngineeringUnits_MILLISECONDS
 	case "JOULES":
-		return BACnetEngineeringUnits_JOULES
+		enum = BACnetEngineeringUnits_JOULES
 	case "NEWTON_METERS":
-		return BACnetEngineeringUnits_NEWTON_METERS
+		enum = BACnetEngineeringUnits_NEWTON_METERS
 	case "MILLIMETERS_PER_SECOND":
-		return BACnetEngineeringUnits_MILLIMETERS_PER_SECOND
+		enum = BACnetEngineeringUnits_MILLIMETERS_PER_SECOND
 	case "MILLIMETERS_PER_MINUTE":
-		return BACnetEngineeringUnits_MILLIMETERS_PER_MINUTE
+		enum = BACnetEngineeringUnits_MILLIMETERS_PER_MINUTE
 	case "METERS_PER_MINUTE":
-		return BACnetEngineeringUnits_METERS_PER_MINUTE
+		enum = BACnetEngineeringUnits_METERS_PER_MINUTE
 	case "METERS_PER_HOUR":
-		return BACnetEngineeringUnits_METERS_PER_HOUR
+		enum = BACnetEngineeringUnits_METERS_PER_HOUR
 	case "CUBIC_METERS_PER_MINUTE":
-		return BACnetEngineeringUnits_CUBIC_METERS_PER_MINUTE
+		enum = BACnetEngineeringUnits_CUBIC_METERS_PER_MINUTE
 	case "METERS_PER_SECOND_PER_SECOND":
-		return BACnetEngineeringUnits_METERS_PER_SECOND_PER_SECOND
+		enum = BACnetEngineeringUnits_METERS_PER_SECOND_PER_SECOND
 	case "AMPERES_PER_METER":
-		return BACnetEngineeringUnits_AMPERES_PER_METER
+		enum = BACnetEngineeringUnits_AMPERES_PER_METER
 	case "AMPERES_PER_SQUARE_METER":
-		return BACnetEngineeringUnits_AMPERES_PER_SQUARE_METER
+		enum = BACnetEngineeringUnits_AMPERES_PER_SQUARE_METER
 	case "AMPERE_SQUARE_METERS":
-		return BACnetEngineeringUnits_AMPERE_SQUARE_METERS
+		enum = BACnetEngineeringUnits_AMPERE_SQUARE_METERS
 	case "KILOJOULES":
-		return BACnetEngineeringUnits_KILOJOULES
+		enum = BACnetEngineeringUnits_KILOJOULES
 	case "FARADS":
-		return BACnetEngineeringUnits_FARADS
+		enum = BACnetEngineeringUnits_FARADS
 	case "HENRYS":
-		return BACnetEngineeringUnits_HENRYS
+		enum = BACnetEngineeringUnits_HENRYS
 	case "OHM_METERS":
-		return BACnetEngineeringUnits_OHM_METERS
+		enum = BACnetEngineeringUnits_OHM_METERS
 	case "SIEMENS":
-		return BACnetEngineeringUnits_SIEMENS
+		enum = BACnetEngineeringUnits_SIEMENS
 	case "SIEMENS_PER_METER":
-		return BACnetEngineeringUnits_SIEMENS_PER_METER
+		enum = BACnetEngineeringUnits_SIEMENS_PER_METER
 	case "TESLAS":
-		return BACnetEngineeringUnits_TESLAS
+		enum = BACnetEngineeringUnits_TESLAS
 	case "VOLTS_PER_DEGREE_KELVIN":
-		return BACnetEngineeringUnits_VOLTS_PER_DEGREE_KELVIN
+		enum = BACnetEngineeringUnits_VOLTS_PER_DEGREE_KELVIN
 	case "VOLTS_PER_METER":
-		return BACnetEngineeringUnits_VOLTS_PER_METER
+		enum = BACnetEngineeringUnits_VOLTS_PER_METER
 	case "WEBERS":
-		return BACnetEngineeringUnits_WEBERS
+		enum = BACnetEngineeringUnits_WEBERS
 	case "CANDELAS":
-		return BACnetEngineeringUnits_CANDELAS
+		enum = BACnetEngineeringUnits_CANDELAS
 	case "WATT_HOURS":
-		return BACnetEngineeringUnits_WATT_HOURS
+		enum = BACnetEngineeringUnits_WATT_HOURS
 	case "CANDELAS_PER_SQUARE_METER":
-		return BACnetEngineeringUnits_CANDELAS_PER_SQUARE_METER
+		enum = BACnetEngineeringUnits_CANDELAS_PER_SQUARE_METER
 	case "DEGREES_KELVIN_PER_HOUR":
-		return BACnetEngineeringUnits_DEGREES_KELVIN_PER_HOUR
+		enum = BACnetEngineeringUnits_DEGREES_KELVIN_PER_HOUR
 	case "DEGREES_KELVIN_PER_MINUTE":
-		return BACnetEngineeringUnits_DEGREES_KELVIN_PER_MINUTE
+		enum = BACnetEngineeringUnits_DEGREES_KELVIN_PER_MINUTE
 	case "JOULE_SECONDS":
-		return BACnetEngineeringUnits_JOULE_SECONDS
+		enum = BACnetEngineeringUnits_JOULE_SECONDS
 	case "RADIANS_PER_SECOND":
-		return BACnetEngineeringUnits_RADIANS_PER_SECOND
+		enum = BACnetEngineeringUnits_RADIANS_PER_SECOND
 	case "SQUARE_METERS_PER_NEWTON":
-		return BACnetEngineeringUnits_SQUARE_METERS_PER_NEWTON
+		enum = BACnetEngineeringUnits_SQUARE_METERS_PER_NEWTON
 	case "KILOGRAMS_PER_CUBIC_METER":
-		return BACnetEngineeringUnits_KILOGRAMS_PER_CUBIC_METER
+		enum = BACnetEngineeringUnits_KILOGRAMS_PER_CUBIC_METER
 	case "NEWTON_SECONDS":
-		return BACnetEngineeringUnits_NEWTON_SECONDS
+		enum = BACnetEngineeringUnits_NEWTON_SECONDS
 	case "NEWTONS_PER_METER":
-		return BACnetEngineeringUnits_NEWTONS_PER_METER
+		enum = BACnetEngineeringUnits_NEWTONS_PER_METER
 	case "WATTS_PER_METER_PER_DEGREE_KELVIN":
-		return BACnetEngineeringUnits_WATTS_PER_METER_PER_DEGREE_KELVIN
+		enum = BACnetEngineeringUnits_WATTS_PER_METER_PER_DEGREE_KELVIN
 	case "KILOWATT_HOURS":
-		return BACnetEngineeringUnits_KILOWATT_HOURS
+		enum = BACnetEngineeringUnits_KILOWATT_HOURS
 	case "MICROSIEMENS":
-		return BACnetEngineeringUnits_MICROSIEMENS
+		enum = BACnetEngineeringUnits_MICROSIEMENS
 	case "CUBIC_FEET_PER_HOUR":
-		return BACnetEngineeringUnits_CUBIC_FEET_PER_HOUR
+		enum = BACnetEngineeringUnits_CUBIC_FEET_PER_HOUR
 	case "US_GALLONS_PER_HOUR":
-		return BACnetEngineeringUnits_US_GALLONS_PER_HOUR
+		enum = BACnetEngineeringUnits_US_GALLONS_PER_HOUR
 	case "KILOMETERS":
-		return BACnetEngineeringUnits_KILOMETERS
+		enum = BACnetEngineeringUnits_KILOMETERS
 	case "MICROMETERS":
-		return BACnetEngineeringUnits_MICROMETERS
+		enum = BACnetEngineeringUnits_MICROMETERS
 	case "GRAMS":
-		return BACnetEngineeringUnits_GRAMS
+		enum = BACnetEngineeringUnits_GRAMS
 	case "MILLIGRAMS":
-		return BACnetEngineeringUnits_MILLIGRAMS
+		enum = BACnetEngineeringUnits_MILLIGRAMS
 	case "MILLILITERS":
-		return BACnetEngineeringUnits_MILLILITERS
+		enum = BACnetEngineeringUnits_MILLILITERS
 	case "MILLILITERS_PER_SECOND":
-		return BACnetEngineeringUnits_MILLILITERS_PER_SECOND
+		enum = BACnetEngineeringUnits_MILLILITERS_PER_SECOND
 	case "DECIBELS":
-		return BACnetEngineeringUnits_DECIBELS
+		enum = BACnetEngineeringUnits_DECIBELS
 	case "MILLIAMPERES":
-		return BACnetEngineeringUnits_MILLIAMPERES
+		enum = BACnetEngineeringUnits_MILLIAMPERES
 	case "BTUS":
-		return BACnetEngineeringUnits_BTUS
+		enum = BACnetEngineeringUnits_BTUS
 	case "DECIBELS_MILLIVOLT":
-		return BACnetEngineeringUnits_DECIBELS_MILLIVOLT
+		enum = BACnetEngineeringUnits_DECIBELS_MILLIVOLT
 	case "DECIBELS_VOLT":
-		return BACnetEngineeringUnits_DECIBELS_VOLT
+		enum = BACnetEngineeringUnits_DECIBELS_VOLT
 	case "MILLISIEMENS":
-		return BACnetEngineeringUnits_MILLISIEMENS
+		enum = BACnetEngineeringUnits_MILLISIEMENS
 	case "WATT_HOURS_REACTIVE":
-		return BACnetEngineeringUnits_WATT_HOURS_REACTIVE
+		enum = BACnetEngineeringUnits_WATT_HOURS_REACTIVE
 	case "KILOWATT_HOURS_REACTIVE":
-		return BACnetEngineeringUnits_KILOWATT_HOURS_REACTIVE
+		enum = BACnetEngineeringUnits_KILOWATT_HOURS_REACTIVE
 	case "MEGAWATT_HOURS_REACTIVE":
-		return BACnetEngineeringUnits_MEGAWATT_HOURS_REACTIVE
+		enum = BACnetEngineeringUnits_MEGAWATT_HOURS_REACTIVE
 	case "MILLIMETERS_OF_WATER":
-		return BACnetEngineeringUnits_MILLIMETERS_OF_WATER
+		enum = BACnetEngineeringUnits_MILLIMETERS_OF_WATER
 	case "PER_MILLE":
-		return BACnetEngineeringUnits_PER_MILLE
+		enum = BACnetEngineeringUnits_PER_MILLE
 	case "GRAMS_PER_GRAM":
-		return BACnetEngineeringUnits_GRAMS_PER_GRAM
+		enum = BACnetEngineeringUnits_GRAMS_PER_GRAM
 	case "KILOGRAMS_PER_KILOGRAM":
-		return BACnetEngineeringUnits_KILOGRAMS_PER_KILOGRAM
+		enum = BACnetEngineeringUnits_KILOGRAMS_PER_KILOGRAM
 	case "THERMS":
-		return BACnetEngineeringUnits_THERMS
+		enum = BACnetEngineeringUnits_THERMS
 	case "GRAMS_PER_KILOGRAM":
-		return BACnetEngineeringUnits_GRAMS_PER_KILOGRAM
+		enum = BACnetEngineeringUnits_GRAMS_PER_KILOGRAM
 	case "MILLIGRAMS_PER_GRAM":
-		return BACnetEngineeringUnits_MILLIGRAMS_PER_GRAM
+		enum = BACnetEngineeringUnits_MILLIGRAMS_PER_GRAM
 	case "MILLIGRAMS_PER_KILOGRAM":
-		return BACnetEngineeringUnits_MILLIGRAMS_PER_KILOGRAM
+		enum = BACnetEngineeringUnits_MILLIGRAMS_PER_KILOGRAM
 	case "GRAMS_PER_MILLILITER":
-		return BACnetEngineeringUnits_GRAMS_PER_MILLILITER
+		enum = BACnetEngineeringUnits_GRAMS_PER_MILLILITER
 	case "GRAMS_PER_LITER":
-		return BACnetEngineeringUnits_GRAMS_PER_LITER
+		enum = BACnetEngineeringUnits_GRAMS_PER_LITER
 	case "MILLIGRAMS_PER_LITER":
-		return BACnetEngineeringUnits_MILLIGRAMS_PER_LITER
+		enum = BACnetEngineeringUnits_MILLIGRAMS_PER_LITER
 	case "MICROGRAMS_PER_LITER":
-		return BACnetEngineeringUnits_MICROGRAMS_PER_LITER
+		enum = BACnetEngineeringUnits_MICROGRAMS_PER_LITER
 	case "GRAMS_PER_CUBIC_METER":
-		return BACnetEngineeringUnits_GRAMS_PER_CUBIC_METER
+		enum = BACnetEngineeringUnits_GRAMS_PER_CUBIC_METER
 	case "MILLIGRAMS_PER_CUBIC_METER":
-		return BACnetEngineeringUnits_MILLIGRAMS_PER_CUBIC_METER
+		enum = BACnetEngineeringUnits_MILLIGRAMS_PER_CUBIC_METER
 	case "MICROGRAMS_PER_CUBIC_METER":
-		return BACnetEngineeringUnits_MICROGRAMS_PER_CUBIC_METER
+		enum = BACnetEngineeringUnits_MICROGRAMS_PER_CUBIC_METER
 	case "TON_HOURS":
-		return BACnetEngineeringUnits_TON_HOURS
+		enum = BACnetEngineeringUnits_TON_HOURS
 	case "NANOGRAMS_PER_CUBIC_METER":
-		return BACnetEngineeringUnits_NANOGRAMS_PER_CUBIC_METER
+		enum = BACnetEngineeringUnits_NANOGRAMS_PER_CUBIC_METER
 	case "GRAMS_PER_CUBIC_CENTIMETER":
-		return BACnetEngineeringUnits_GRAMS_PER_CUBIC_CENTIMETER
+		enum = BACnetEngineeringUnits_GRAMS_PER_CUBIC_CENTIMETER
 	case "BECQUERELS":
-		return BACnetEngineeringUnits_BECQUERELS
+		enum = BACnetEngineeringUnits_BECQUERELS
 	case "KILOBECQUERELS":
-		return BACnetEngineeringUnits_KILOBECQUERELS
+		enum = BACnetEngineeringUnits_KILOBECQUERELS
 	case "MEGABECQUERELS":
-		return BACnetEngineeringUnits_MEGABECQUERELS
+		enum = BACnetEngineeringUnits_MEGABECQUERELS
 	case "GRAY":
-		return BACnetEngineeringUnits_GRAY
+		enum = BACnetEngineeringUnits_GRAY
 	case "MILLIGRAY":
-		return BACnetEngineeringUnits_MILLIGRAY
+		enum = BACnetEngineeringUnits_MILLIGRAY
 	case "MICROGRAY":
-		return BACnetEngineeringUnits_MICROGRAY
+		enum = BACnetEngineeringUnits_MICROGRAY
 	case "SIEVERTS":
-		return BACnetEngineeringUnits_SIEVERTS
+		enum = BACnetEngineeringUnits_SIEVERTS
 	case "MILLISIEVERTS":
-		return BACnetEngineeringUnits_MILLISIEVERTS
+		enum = BACnetEngineeringUnits_MILLISIEVERTS
 	case "JOULES_PER_KILOGRAM_DRY_AIR":
-		return BACnetEngineeringUnits_JOULES_PER_KILOGRAM_DRY_AIR
+		enum = BACnetEngineeringUnits_JOULES_PER_KILOGRAM_DRY_AIR
 	case "MICROSIEVERTS":
-		return BACnetEngineeringUnits_MICROSIEVERTS
+		enum = BACnetEngineeringUnits_MICROSIEVERTS
 	case "MICROSIEVERTS_PER_HOUR":
-		return BACnetEngineeringUnits_MICROSIEVERTS_PER_HOUR
+		enum = BACnetEngineeringUnits_MICROSIEVERTS_PER_HOUR
 	case "DECIBELS_A":
-		return BACnetEngineeringUnits_DECIBELS_A
+		enum = BACnetEngineeringUnits_DECIBELS_A
 	case "NEPHELOMETRIC_TURBIDITY_UNIT":
-		return BACnetEngineeringUnits_NEPHELOMETRIC_TURBIDITY_UNIT
+		enum = BACnetEngineeringUnits_NEPHELOMETRIC_TURBIDITY_UNIT
 	case "P_H":
-		return BACnetEngineeringUnits_P_H
+		enum = BACnetEngineeringUnits_P_H
 	case "GRAMS_PER_SQUARE_METER":
-		return BACnetEngineeringUnits_GRAMS_PER_SQUARE_METER
+		enum = BACnetEngineeringUnits_GRAMS_PER_SQUARE_METER
 	case "MINUTES_PER_DEGREE_KELVIN":
-		return BACnetEngineeringUnits_MINUTES_PER_DEGREE_KELVIN
+		enum = BACnetEngineeringUnits_MINUTES_PER_DEGREE_KELVIN
 	case "OHM_METER_SQUARED_PER_METER":
-		return BACnetEngineeringUnits_OHM_METER_SQUARED_PER_METER
+		enum = BACnetEngineeringUnits_OHM_METER_SQUARED_PER_METER
 	case "AMPERE_SECONDS":
-		return BACnetEngineeringUnits_AMPERE_SECONDS
+		enum = BACnetEngineeringUnits_AMPERE_SECONDS
 	case "VOLT_AMPERE_HOURS":
-		return BACnetEngineeringUnits_VOLT_AMPERE_HOURS
+		enum = BACnetEngineeringUnits_VOLT_AMPERE_HOURS
 	case "BTUS_PER_POUND_DRY_AIR":
-		return BACnetEngineeringUnits_BTUS_PER_POUND_DRY_AIR
+		enum = BACnetEngineeringUnits_BTUS_PER_POUND_DRY_AIR
 	case "KILOVOLT_AMPERE_HOURS":
-		return BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS
+		enum = BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS
 	case "MEGAVOLT_AMPERE_HOURS":
-		return BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS
+		enum = BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS
 	case "VOLT_AMPERE_HOURS_REACTIVE":
-		return BACnetEngineeringUnits_VOLT_AMPERE_HOURS_REACTIVE
+		enum = BACnetEngineeringUnits_VOLT_AMPERE_HOURS_REACTIVE
 	case "KILOVOLT_AMPERE_HOURS_REACTIVE":
-		return BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS_REACTIVE
+		enum = BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS_REACTIVE
 	case "MEGAVOLT_AMPERE_HOURS_REACTIVE":
-		return BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS_REACTIVE
+		enum = BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS_REACTIVE
 	case "VOLT_SQUARE_HOURS":
-		return BACnetEngineeringUnits_VOLT_SQUARE_HOURS
+		enum = BACnetEngineeringUnits_VOLT_SQUARE_HOURS
 	case "AMPERE_SQUARE_HOURS":
-		return BACnetEngineeringUnits_AMPERE_SQUARE_HOURS
+		enum = BACnetEngineeringUnits_AMPERE_SQUARE_HOURS
 	case "JOULE_PER_HOURS":
-		return BACnetEngineeringUnits_JOULE_PER_HOURS
+		enum = BACnetEngineeringUnits_JOULE_PER_HOURS
 	case "CUBIC_FEET_PER_DAY":
-		return BACnetEngineeringUnits_CUBIC_FEET_PER_DAY
+		enum = BACnetEngineeringUnits_CUBIC_FEET_PER_DAY
 	case "CUBIC_METERS_PER_DAY":
-		return BACnetEngineeringUnits_CUBIC_METERS_PER_DAY
+		enum = BACnetEngineeringUnits_CUBIC_METERS_PER_DAY
 	case "WATT_HOURS_PER_CUBIC_METER":
-		return BACnetEngineeringUnits_WATT_HOURS_PER_CUBIC_METER
+		enum = BACnetEngineeringUnits_WATT_HOURS_PER_CUBIC_METER
 	case "JOULES_PER_CUBIC_METER":
-		return BACnetEngineeringUnits_JOULES_PER_CUBIC_METER
+		enum = BACnetEngineeringUnits_JOULES_PER_CUBIC_METER
 	case "MOLE_PERCENT":
-		return BACnetEngineeringUnits_MOLE_PERCENT
+		enum = BACnetEngineeringUnits_MOLE_PERCENT
 	case "PASCAL_SECONDS":
-		return BACnetEngineeringUnits_PASCAL_SECONDS
+		enum = BACnetEngineeringUnits_PASCAL_SECONDS
 	case "MILLION_STANDARD_CUBIC_FEET_PER_MINUTE":
-		return BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_MINUTE
+		enum = BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_MINUTE
 	case "GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR":
-		return BACnetEngineeringUnits_GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR
+		enum = BACnetEngineeringUnits_GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR
 	case "PERCENT_RELATIVE_HUMIDITY":
-		return BACnetEngineeringUnits_PERCENT_RELATIVE_HUMIDITY
+		enum = BACnetEngineeringUnits_PERCENT_RELATIVE_HUMIDITY
 	case "AMPERES":
-		return BACnetEngineeringUnits_AMPERES
+		enum = BACnetEngineeringUnits_AMPERES
 	case "MILLIMETERS":
-		return BACnetEngineeringUnits_MILLIMETERS
+		enum = BACnetEngineeringUnits_MILLIMETERS
 	case "METERS":
-		return BACnetEngineeringUnits_METERS
+		enum = BACnetEngineeringUnits_METERS
 	case "INCHES":
-		return BACnetEngineeringUnits_INCHES
+		enum = BACnetEngineeringUnits_INCHES
 	case "FEET":
-		return BACnetEngineeringUnits_FEET
+		enum = BACnetEngineeringUnits_FEET
 	case "WATTS_PER_SQUARE_FOOT":
-		return BACnetEngineeringUnits_WATTS_PER_SQUARE_FOOT
+		enum = BACnetEngineeringUnits_WATTS_PER_SQUARE_FOOT
 	case "WATTS_PER_SQUARE_METER":
-		return BACnetEngineeringUnits_WATTS_PER_SQUARE_METER
+		enum = BACnetEngineeringUnits_WATTS_PER_SQUARE_METER
 	case "LUMENS":
-		return BACnetEngineeringUnits_LUMENS
+		enum = BACnetEngineeringUnits_LUMENS
 	case "LUXES":
-		return BACnetEngineeringUnits_LUXES
+		enum = BACnetEngineeringUnits_LUXES
 	case "FOOT_CANDLES":
-		return BACnetEngineeringUnits_FOOT_CANDLES
+		enum = BACnetEngineeringUnits_FOOT_CANDLES
 	case "KILOGRAMS":
-		return BACnetEngineeringUnits_KILOGRAMS
+		enum = BACnetEngineeringUnits_KILOGRAMS
 	case "OHMS":
-		return BACnetEngineeringUnits_OHMS
+		enum = BACnetEngineeringUnits_OHMS
 	case "POUNDS_MASS":
-		return BACnetEngineeringUnits_POUNDS_MASS
+		enum = BACnetEngineeringUnits_POUNDS_MASS
 	case "TONS":
-		return BACnetEngineeringUnits_TONS
+		enum = BACnetEngineeringUnits_TONS
 	case "KILOGRAMS_PER_SECOND":
-		return BACnetEngineeringUnits_KILOGRAMS_PER_SECOND
+		enum = BACnetEngineeringUnits_KILOGRAMS_PER_SECOND
 	case "KILOGRAMS_PER_MINUTE":
-		return BACnetEngineeringUnits_KILOGRAMS_PER_MINUTE
+		enum = BACnetEngineeringUnits_KILOGRAMS_PER_MINUTE
 	case "KILOGRAMS_PER_HOUR":
-		return BACnetEngineeringUnits_KILOGRAMS_PER_HOUR
+		enum = BACnetEngineeringUnits_KILOGRAMS_PER_HOUR
 	case "POUNDS_MASS_PER_MINUTE":
-		return BACnetEngineeringUnits_POUNDS_MASS_PER_MINUTE
+		enum = BACnetEngineeringUnits_POUNDS_MASS_PER_MINUTE
 	case "POUNDS_MASS_PER_HOUR":
-		return BACnetEngineeringUnits_POUNDS_MASS_PER_HOUR
+		enum = BACnetEngineeringUnits_POUNDS_MASS_PER_HOUR
 	case "WATTS":
-		return BACnetEngineeringUnits_WATTS
+		enum = BACnetEngineeringUnits_WATTS
 	case "STANDARD_CUBIC_FEET_PER_DAY":
-		return BACnetEngineeringUnits_STANDARD_CUBIC_FEET_PER_DAY
+		enum = BACnetEngineeringUnits_STANDARD_CUBIC_FEET_PER_DAY
 	case "MILLION_STANDARD_CUBIC_FEET_PER_DAY":
-		return BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_DAY
+		enum = BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_DAY
 	case "THOUSAND_CUBIC_FEET_PER_DAY":
-		return BACnetEngineeringUnits_THOUSAND_CUBIC_FEET_PER_DAY
+		enum = BACnetEngineeringUnits_THOUSAND_CUBIC_FEET_PER_DAY
 	case "THOUSAND_STANDARD_CUBIC_FEET_PER_DAY":
-		return BACnetEngineeringUnits_THOUSAND_STANDARD_CUBIC_FEET_PER_DAY
+		enum = BACnetEngineeringUnits_THOUSAND_STANDARD_CUBIC_FEET_PER_DAY
 	case "POUNDS_MASS_PER_DAY":
-		return BACnetEngineeringUnits_POUNDS_MASS_PER_DAY
+		enum = BACnetEngineeringUnits_POUNDS_MASS_PER_DAY
 	case "MILLIREMS":
-		return BACnetEngineeringUnits_MILLIREMS
+		enum = BACnetEngineeringUnits_MILLIREMS
 	case "MILLIREMS_PER_HOUR":
-		return BACnetEngineeringUnits_MILLIREMS_PER_HOUR
+		enum = BACnetEngineeringUnits_MILLIREMS_PER_HOUR
 	case "KILOWATTS":
-		return BACnetEngineeringUnits_KILOWATTS
+		enum = BACnetEngineeringUnits_KILOWATTS
 	case "MEGAWATTS":
-		return BACnetEngineeringUnits_MEGAWATTS
+		enum = BACnetEngineeringUnits_MEGAWATTS
 	case "VOLTS":
-		return BACnetEngineeringUnits_VOLTS
+		enum = BACnetEngineeringUnits_VOLTS
 	case "BTUS_PER_HOUR":
-		return BACnetEngineeringUnits_BTUS_PER_HOUR
+		enum = BACnetEngineeringUnits_BTUS_PER_HOUR
 	case "HORSEPOWER":
-		return BACnetEngineeringUnits_HORSEPOWER
+		enum = BACnetEngineeringUnits_HORSEPOWER
 	case "TONS_REFRIGERATION":
-		return BACnetEngineeringUnits_TONS_REFRIGERATION
+		enum = BACnetEngineeringUnits_TONS_REFRIGERATION
 	case "PASCALS":
-		return BACnetEngineeringUnits_PASCALS
+		enum = BACnetEngineeringUnits_PASCALS
 	case "KILOPASCALS":
-		return BACnetEngineeringUnits_KILOPASCALS
+		enum = BACnetEngineeringUnits_KILOPASCALS
 	case "BARS":
-		return BACnetEngineeringUnits_BARS
+		enum = BACnetEngineeringUnits_BARS
 	case "POUNDS_FORCE_PER_SQUARE_INCH":
-		return BACnetEngineeringUnits_POUNDS_FORCE_PER_SQUARE_INCH
+		enum = BACnetEngineeringUnits_POUNDS_FORCE_PER_SQUARE_INCH
 	case "CENTIMETERS_OF_WATER":
-		return BACnetEngineeringUnits_CENTIMETERS_OF_WATER
+		enum = BACnetEngineeringUnits_CENTIMETERS_OF_WATER
 	case "INCHES_OF_WATER":
-		return BACnetEngineeringUnits_INCHES_OF_WATER
+		enum = BACnetEngineeringUnits_INCHES_OF_WATER
 	case "MILLIMETERS_OF_MERCURY":
-		return BACnetEngineeringUnits_MILLIMETERS_OF_MERCURY
+		enum = BACnetEngineeringUnits_MILLIMETERS_OF_MERCURY
 	case "KILOVOLTS":
-		return BACnetEngineeringUnits_KILOVOLTS
+		enum = BACnetEngineeringUnits_KILOVOLTS
 	case "CENTIMETERS_OF_MERCURY":
-		return BACnetEngineeringUnits_CENTIMETERS_OF_MERCURY
+		enum = BACnetEngineeringUnits_CENTIMETERS_OF_MERCURY
 	case "INCHES_OF_MERCURY":
-		return BACnetEngineeringUnits_INCHES_OF_MERCURY
+		enum = BACnetEngineeringUnits_INCHES_OF_MERCURY
 	case "DEGREES_CELSIUS":
-		return BACnetEngineeringUnits_DEGREES_CELSIUS
+		enum = BACnetEngineeringUnits_DEGREES_CELSIUS
 	case "DEGREES_KELVIN":
-		return BACnetEngineeringUnits_DEGREES_KELVIN
+		enum = BACnetEngineeringUnits_DEGREES_KELVIN
 	case "DEGREES_FAHRENHEIT":
-		return BACnetEngineeringUnits_DEGREES_FAHRENHEIT
+		enum = BACnetEngineeringUnits_DEGREES_FAHRENHEIT
 	case "DEGREE_DAYS_CELSIUS":
-		return BACnetEngineeringUnits_DEGREE_DAYS_CELSIUS
+		enum = BACnetEngineeringUnits_DEGREE_DAYS_CELSIUS
 	case "DEGREE_DAYS_FAHRENHEIT":
-		return BACnetEngineeringUnits_DEGREE_DAYS_FAHRENHEIT
+		enum = BACnetEngineeringUnits_DEGREE_DAYS_FAHRENHEIT
 	case "YEARS":
-		return BACnetEngineeringUnits_YEARS
+		enum = BACnetEngineeringUnits_YEARS
 	case "MONTHS":
-		return BACnetEngineeringUnits_MONTHS
+		enum = BACnetEngineeringUnits_MONTHS
 	case "WEEKS":
-		return BACnetEngineeringUnits_WEEKS
+		enum = BACnetEngineeringUnits_WEEKS
 	case "MEGAVOLTS":
-		return BACnetEngineeringUnits_MEGAVOLTS
+		enum = BACnetEngineeringUnits_MEGAVOLTS
 	case "DAYS":
-		return BACnetEngineeringUnits_DAYS
+		enum = BACnetEngineeringUnits_DAYS
 	case "HOURS":
-		return BACnetEngineeringUnits_HOURS
+		enum = BACnetEngineeringUnits_HOURS
 	case "MINUTES":
-		return BACnetEngineeringUnits_MINUTES
+		enum = BACnetEngineeringUnits_MINUTES
 	case "SECONDS":
-		return BACnetEngineeringUnits_SECONDS
+		enum = BACnetEngineeringUnits_SECONDS
 	case "METERS_PER_SECOND":
-		return BACnetEngineeringUnits_METERS_PER_SECOND
+		enum = BACnetEngineeringUnits_METERS_PER_SECOND
 	case "KILOMETERS_PER_HOUR":
-		return BACnetEngineeringUnits_KILOMETERS_PER_HOUR
+		enum = BACnetEngineeringUnits_KILOMETERS_PER_HOUR
 	case "FEET_PER_SECOND":
-		return BACnetEngineeringUnits_FEET_PER_SECOND
+		enum = BACnetEngineeringUnits_FEET_PER_SECOND
 	case "FEET_PER_MINUTE":
-		return BACnetEngineeringUnits_FEET_PER_MINUTE
+		enum = BACnetEngineeringUnits_FEET_PER_MINUTE
 	case "MILES_PER_HOUR":
-		return BACnetEngineeringUnits_MILES_PER_HOUR
+		enum = BACnetEngineeringUnits_MILES_PER_HOUR
 	case "CUBIC_FEET":
-		return BACnetEngineeringUnits_CUBIC_FEET
+		enum = BACnetEngineeringUnits_CUBIC_FEET
 	case "VOLT_AMPERES":
-		return BACnetEngineeringUnits_VOLT_AMPERES
+		enum = BACnetEngineeringUnits_VOLT_AMPERES
 	case "CUBIC_METERS":
-		return BACnetEngineeringUnits_CUBIC_METERS
+		enum = BACnetEngineeringUnits_CUBIC_METERS
 	case "IMPERIAL_GALLONS":
-		return BACnetEngineeringUnits_IMPERIAL_GALLONS
+		enum = BACnetEngineeringUnits_IMPERIAL_GALLONS
 	case "LITERS":
-		return BACnetEngineeringUnits_LITERS
+		enum = BACnetEngineeringUnits_LITERS
 	case "US_GALLONS":
-		return BACnetEngineeringUnits_US_GALLONS
+		enum = BACnetEngineeringUnits_US_GALLONS
 	case "CUBIC_FEET_PER_MINUTE":
-		return BACnetEngineeringUnits_CUBIC_FEET_PER_MINUTE
+		enum = BACnetEngineeringUnits_CUBIC_FEET_PER_MINUTE
 	case "CUBIC_METERS_PER_SECOND":
-		return BACnetEngineeringUnits_CUBIC_METERS_PER_SECOND
+		enum = BACnetEngineeringUnits_CUBIC_METERS_PER_SECOND
 	case "IMPERIAL_GALLONS_PER_MINUTE":
-		return BACnetEngineeringUnits_IMPERIAL_GALLONS_PER_MINUTE
+		enum = BACnetEngineeringUnits_IMPERIAL_GALLONS_PER_MINUTE
 	case "LITERS_PER_SECOND":
-		return BACnetEngineeringUnits_LITERS_PER_SECOND
+		enum = BACnetEngineeringUnits_LITERS_PER_SECOND
 	case "LITERS_PER_MINUTE":
-		return BACnetEngineeringUnits_LITERS_PER_MINUTE
+		enum = BACnetEngineeringUnits_LITERS_PER_MINUTE
 	case "US_GALLONS_PER_MINUTE":
-		return BACnetEngineeringUnits_US_GALLONS_PER_MINUTE
+		enum = BACnetEngineeringUnits_US_GALLONS_PER_MINUTE
 	case "KILOVOLT_AMPERES":
-		return BACnetEngineeringUnits_KILOVOLT_AMPERES
+		enum = BACnetEngineeringUnits_KILOVOLT_AMPERES
 	case "DEGREES_ANGULAR":
-		return BACnetEngineeringUnits_DEGREES_ANGULAR
+		enum = BACnetEngineeringUnits_DEGREES_ANGULAR
 	case "DEGREES_CELSIUS_PER_HOUR":
-		return BACnetEngineeringUnits_DEGREES_CELSIUS_PER_HOUR
+		enum = BACnetEngineeringUnits_DEGREES_CELSIUS_PER_HOUR
 	case "DEGREES_CELSIUS_PER_MINUTE":
-		return BACnetEngineeringUnits_DEGREES_CELSIUS_PER_MINUTE
+		enum = BACnetEngineeringUnits_DEGREES_CELSIUS_PER_MINUTE
 	case "DEGREES_FAHRENHEIT_PER_HOUR":
-		return BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_HOUR
+		enum = BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_HOUR
 	case "DEGREES_FAHRENHEIT_PER_MINUTE":
-		return BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_MINUTE
+		enum = BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_MINUTE
 	case "NO_UNITS":
-		return BACnetEngineeringUnits_NO_UNITS
+		enum = BACnetEngineeringUnits_NO_UNITS
 	case "PARTS_PER_MILLION":
-		return BACnetEngineeringUnits_PARTS_PER_MILLION
+		enum = BACnetEngineeringUnits_PARTS_PER_MILLION
 	case "PARTS_PER_BILLION":
-		return BACnetEngineeringUnits_PARTS_PER_BILLION
+		enum = BACnetEngineeringUnits_PARTS_PER_BILLION
 	case "PERCENT":
-		return BACnetEngineeringUnits_PERCENT
+		enum = BACnetEngineeringUnits_PERCENT
 	case "PERCENT_PER_SECOND":
-		return BACnetEngineeringUnits_PERCENT_PER_SECOND
+		enum = BACnetEngineeringUnits_PERCENT_PER_SECOND
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetEngineeringUnitsKnows(value uint32) bool {
@@ -1604,10 +1608,11 @@ func BACnetEngineeringUnitsParse(readBuffer utils.ReadBuffer) (BACnetEngineering
 }
 
 func (e BACnetEngineeringUnits) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint32("BACnetEngineeringUnits", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint32("BACnetEngineeringUnits", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetEngineeringUnits) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEngineeringUnits) PLC4XEnumName() string {
 	switch e {
 	case BACnetEngineeringUnits_SQUARE_METERS:
 		return "SQUARE_METERS"
@@ -2118,5 +2123,5 @@ func (e BACnetEngineeringUnits) name() string {
 }
 
 func (e BACnetEngineeringUnits) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

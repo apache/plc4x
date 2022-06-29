@@ -86,28 +86,32 @@ func ErrorClassByValue(value uint16) ErrorClass {
 	return 0
 }
 
-func ErrorClassByName(value string) ErrorClass {
+func ErrorClassByName(value string) (enum ErrorClass, ok bool) {
+	ok = true
 	switch value {
 	case "VENDOR_PROPRIETARY_VALUE":
-		return ErrorClass_VENDOR_PROPRIETARY_VALUE
+		enum = ErrorClass_VENDOR_PROPRIETARY_VALUE
 	case "DEVICE":
-		return ErrorClass_DEVICE
+		enum = ErrorClass_DEVICE
 	case "OBJECT":
-		return ErrorClass_OBJECT
+		enum = ErrorClass_OBJECT
 	case "PROPERTY":
-		return ErrorClass_PROPERTY
+		enum = ErrorClass_PROPERTY
 	case "RESOURCES":
-		return ErrorClass_RESOURCES
+		enum = ErrorClass_RESOURCES
 	case "SECURITY":
-		return ErrorClass_SECURITY
+		enum = ErrorClass_SECURITY
 	case "SERVICES":
-		return ErrorClass_SERVICES
+		enum = ErrorClass_SERVICES
 	case "VT":
-		return ErrorClass_VT
+		enum = ErrorClass_VT
 	case "COMMUNICATION":
-		return ErrorClass_COMMUNICATION
+		enum = ErrorClass_COMMUNICATION
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func ErrorClassKnows(value uint16) bool {
@@ -146,10 +150,11 @@ func ErrorClassParse(readBuffer utils.ReadBuffer) (ErrorClass, error) {
 }
 
 func (e ErrorClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("ErrorClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint16("ErrorClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e ErrorClass) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ErrorClass) PLC4XEnumName() string {
 	switch e {
 	case ErrorClass_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
@@ -174,5 +179,5 @@ func (e ErrorClass) name() string {
 }
 
 func (e ErrorClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

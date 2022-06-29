@@ -70,20 +70,24 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(va
 	return 0
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByName(value string) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByName(value string) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, ok bool) {
+	ok = true
 	switch value {
 	case "OFFNORMAL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL
 	case "FAULT":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT
 	case "NORMAL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL
 	case "ALL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL
 	case "ACTIVE":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE
+		enum = BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterKnows(value uint8) bool {
@@ -122,10 +126,11 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(read
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL:
 		return "OFFNORMAL"
@@ -142,5 +147,5 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) name(
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

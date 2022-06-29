@@ -62,16 +62,20 @@ func BACnetEventTransitionBitsByValue(value uint8) BACnetEventTransitionBits {
 	return 0
 }
 
-func BACnetEventTransitionBitsByName(value string) BACnetEventTransitionBits {
+func BACnetEventTransitionBitsByName(value string) (enum BACnetEventTransitionBits, ok bool) {
+	ok = true
 	switch value {
 	case "TO_OFFNORMAL":
-		return BACnetEventTransitionBits_TO_OFFNORMAL
+		enum = BACnetEventTransitionBits_TO_OFFNORMAL
 	case "TO_FAULT":
-		return BACnetEventTransitionBits_TO_FAULT
+		enum = BACnetEventTransitionBits_TO_FAULT
 	case "TO_NORMAL":
-		return BACnetEventTransitionBits_TO_NORMAL
+		enum = BACnetEventTransitionBits_TO_NORMAL
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetEventTransitionBitsKnows(value uint8) bool {
@@ -110,10 +114,11 @@ func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer) (BACnetEventTra
 }
 
 func (e BACnetEventTransitionBits) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetEventTransitionBits", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetEventTransitionBits", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetEventTransitionBits) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEventTransitionBits) PLC4XEnumName() string {
 	switch e {
 	case BACnetEventTransitionBits_TO_OFFNORMAL:
 		return "TO_OFFNORMAL"
@@ -126,5 +131,5 @@ func (e BACnetEventTransitionBits) name() string {
 }
 
 func (e BACnetEventTransitionBits) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

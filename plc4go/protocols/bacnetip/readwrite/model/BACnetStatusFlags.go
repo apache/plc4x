@@ -66,18 +66,22 @@ func BACnetStatusFlagsByValue(value uint8) BACnetStatusFlags {
 	return 0
 }
 
-func BACnetStatusFlagsByName(value string) BACnetStatusFlags {
+func BACnetStatusFlagsByName(value string) (enum BACnetStatusFlags, ok bool) {
+	ok = true
 	switch value {
 	case "IN_ALARM":
-		return BACnetStatusFlags_IN_ALARM
+		enum = BACnetStatusFlags_IN_ALARM
 	case "FAULT":
-		return BACnetStatusFlags_FAULT
+		enum = BACnetStatusFlags_FAULT
 	case "OVERRIDDEN":
-		return BACnetStatusFlags_OVERRIDDEN
+		enum = BACnetStatusFlags_OVERRIDDEN
 	case "OUT_OF_SERVICE":
-		return BACnetStatusFlags_OUT_OF_SERVICE
+		enum = BACnetStatusFlags_OUT_OF_SERVICE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetStatusFlagsKnows(value uint8) bool {
@@ -116,10 +120,11 @@ func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer) (BACnetStatusFlags, err
 }
 
 func (e BACnetStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetStatusFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetStatusFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetStatusFlags) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetStatusFlags) PLC4XEnumName() string {
 	switch e {
 	case BACnetStatusFlags_IN_ALARM:
 		return "IN_ALARM"
@@ -134,5 +139,5 @@ func (e BACnetStatusFlags) name() string {
 }
 
 func (e BACnetStatusFlags) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

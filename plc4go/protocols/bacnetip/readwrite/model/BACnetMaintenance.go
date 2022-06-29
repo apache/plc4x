@@ -70,20 +70,24 @@ func BACnetMaintenanceByValue(value uint8) BACnetMaintenance {
 	return 0
 }
 
-func BACnetMaintenanceByName(value string) BACnetMaintenance {
+func BACnetMaintenanceByName(value string) (enum BACnetMaintenance, ok bool) {
+	ok = true
 	switch value {
 	case "NONE":
-		return BACnetMaintenance_NONE
+		enum = BACnetMaintenance_NONE
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
+		enum = BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
 	case "PERIODIC_TEST":
-		return BACnetMaintenance_PERIODIC_TEST
+		enum = BACnetMaintenance_PERIODIC_TEST
 	case "NEED_SERVICE_OPERATIONAL":
-		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL
+		enum = BACnetMaintenance_NEED_SERVICE_OPERATIONAL
 	case "NEED_SERVICE_INOPERATIVE":
-		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE
+		enum = BACnetMaintenance_NEED_SERVICE_INOPERATIVE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetMaintenanceKnows(value uint8) bool {
@@ -122,10 +126,11 @@ func BACnetMaintenanceParse(readBuffer utils.ReadBuffer) (BACnetMaintenance, err
 }
 
 func (e BACnetMaintenance) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetMaintenance", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetMaintenance", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetMaintenance) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetMaintenance) PLC4XEnumName() string {
 	switch e {
 	case BACnetMaintenance_NONE:
 		return "NONE"
@@ -142,5 +147,5 @@ func (e BACnetMaintenance) name() string {
 }
 
 func (e BACnetMaintenance) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -119,8 +119,8 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 			var object driverModel.BACnetUnconfirmedServiceRequestWhoHasObject
 			if identifier := whoHasOptions.object.identifier; identifier != nil {
 				var objectType uint16
-				objectTypeByName := driverModel.BACnetObjectTypeByName(identifier.type_)
-				if objectTypeByName.String() == "" {
+				objectTypeByName, ok := driverModel.BACnetObjectTypeByName(identifier.type_)
+				if ok {
 					parseUint, err := strconv.ParseUint(identifier.type_, 10, 16)
 					if err != nil {
 						return nil, err

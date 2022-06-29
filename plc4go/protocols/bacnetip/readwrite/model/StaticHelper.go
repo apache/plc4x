@@ -592,7 +592,7 @@ func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) erro
 	if value == BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
-	return writeBuffer.WriteUint16("objectType", 10, uint16(value), utils.WithAdditionalStringRepresentation(value.name()))
+	return writeBuffer.WriteUint16("objectType", 10, uint16(value), utils.WithAdditionalStringRepresentation(value.PLC4XEnumName()))
 }
 
 // Deprecated: use generic above
@@ -600,7 +600,7 @@ func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType 
 	if baCnetObjectType != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
-	return writeBuffer.WriteUint16("proprietaryObjectType", 10, value, utils.WithAdditionalStringRepresentation(BACnetObjectType_VENDOR_PROPRIETARY_VALUE.name()))
+	return writeBuffer.WriteUint16("proprietaryObjectType", 10, value, utils.WithAdditionalStringRepresentation(BACnetObjectType_VENDOR_PROPRIETARY_VALUE.PLC4XEnumName()))
 }
 
 // Deprecated: use generic above

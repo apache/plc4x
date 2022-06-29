@@ -58,14 +58,18 @@ func BACnetActionByValue(value uint8) BACnetAction {
 	return 0
 }
 
-func BACnetActionByName(value string) BACnetAction {
+func BACnetActionByName(value string) (enum BACnetAction, ok bool) {
+	ok = true
 	switch value {
 	case "DIRECT":
-		return BACnetAction_DIRECT
+		enum = BACnetAction_DIRECT
 	case "REVERSE":
-		return BACnetAction_REVERSE
+		enum = BACnetAction_REVERSE
+	default:
+		enum = 0
+		ok = false
 	}
-	return 0
+	return
 }
 
 func BACnetActionKnows(value uint8) bool {
@@ -104,10 +108,11 @@ func BACnetActionParse(readBuffer utils.ReadBuffer) (BACnetAction, error) {
 }
 
 func (e BACnetAction) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAction", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetAction", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
-func (e BACnetAction) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAction) PLC4XEnumName() string {
 	switch e {
 	case BACnetAction_DIRECT:
 		return "DIRECT"
@@ -118,5 +123,5 @@ func (e BACnetAction) name() string {
 }
 
 func (e BACnetAction) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }
