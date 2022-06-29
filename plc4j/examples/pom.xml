@@ -46,7 +46,7 @@
     <module>hello-influx-data-collection</module>
     <module>hello-integration-edgent</module>
     <module>hello-integration-iotdb</module>
-    <module>hello-nats</module>
+    <!--module>hello-nats</module-->
     <module>hello-opm</module>
     <module>hello-webservice</module>
     <module>hello-world-kotlin</module>
