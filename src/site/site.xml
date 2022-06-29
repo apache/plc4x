@@ -72,6 +72,7 @@
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
         <item name="Modbus" href="users/protocols/modbus.html"/>
         <item name="OPC UA" href="users/protocols/opc-ua.html"/>
+        <item name="PLC4X (Proxy)" href="users/protocols/plc4x.html"/>
         <item name="S7 (Step7)" href="users/protocols/s7.html"/>
         <item name="Simulated" href="users/protocols/simulated.html"/>
       </item>

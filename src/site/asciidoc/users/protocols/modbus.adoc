@@ -26,7 +26,7 @@
 |Name |Value |Description
 
 |Code
-2+|`modbus`
+2+|`modbus-tcp`, `modbus-adu`, `modbus-ascii`
 
 |Name
 2+|Modbus
@@ -47,16 +47,15 @@
 |Compatible Transports:
 2+| - `tcp` (Default Port: 502)
 - `udp` (Default Port: 502)
+- `serial`
 
 3+|Supported Operations
 
 |
-| `read`
-| Only supported with `tcp` transport.
+2+| `read`
 
 |
-| `write`
-| Only supported with `tcp` transport.
+2+| `write`
 
 3+|Options
 
