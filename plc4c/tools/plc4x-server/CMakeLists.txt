@@ -17,8 +17,8 @@
   under the License.
 ]]
 
-SET(generatedSources ${PLC4C_ROOT_DIR}/generated-sources/plc4x/src/plc4x_constants.c)
-SET(generatedHeaders ${PLC4C_ROOT_DIR}/generated-sources/plc4x/include/plc4x_constants.h)
+file(GLOB generatedSources "${PLC4C_ROOT_DIR}/generated-sources/plc4x/src/*.c")
+file(GLOB generatedHeaders "${PLC4C_ROOT_DIR}/generated-sources/plc4x/include/*.h")
 
 # Add the sources
 add_executable(plc4c-tools-plc4x-server
