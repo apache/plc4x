@@ -25,21 +25,27 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/rs/zerolog/log"
+	"sync"
 )
 
 type Connection struct {
 	_default.DefaultConnection
-	messageCodec spi.MessageCodec
-	subscribers  []*Subscriber
+	invokeIdGenerator InvokeIdGenerator
+	messageCodec      spi.MessageCodec
+	subscribers       []*Subscriber
+	tm                *spi.RequestTransactionManager
+
 	connectionId string
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandler, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
-		messageCodec: messageCodec,
+		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
+		messageCodec:      messageCodec,
+		tm:                tm,
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -95,7 +101,11 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
+func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcFieldHandler(), NewReader(&m.invokeIdGenerator, m.messageCodec, m.tm))
+}
+
+func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
 }
 
@@ -111,4 +121,21 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 
 func (c *Connection) String() string {
 	return fmt.Sprintf("bacnetip.Connection")
+}
+
+type InvokeIdGenerator struct {
+	currentInvokeId uint8
+	lock            sync.Mutex
+}
+
+func (t *InvokeIdGenerator) getAndIncrement() uint8 {
+	t.lock.Lock()
+	defer t.lock.Unlock()
+	// If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+	if t.currentInvokeId > 0xFF {
+		t.currentInvokeId = 0
+	}
+	result := t.currentInvokeId
+	t.currentInvokeId += 1
+	return result
 }

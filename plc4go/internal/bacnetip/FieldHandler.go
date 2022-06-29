@@ -22,80 +22,85 @@ package bacnetip
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type FieldHandler struct {
-	addressPattern *regexp.Regexp
+	addressPattern       *regexp.Regexp
+	propertyFieldPattern *regexp.Regexp
 }
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
-		addressPattern: regexp.MustCompile(`^(?P<deviceIdentifier>(\d|\*))/(?P<objectType>(\d|\*))/(?P<objectInstance>(\d|\*))/(?P<propertyIdentifier>(\d|\*))`),
+		addressPattern:       regexp.MustCompile(`^(?P<objectType>[\d\w]+),(?P<objectInstance>\d+)/(?P<propertyIdentifiers>[\d\w]+(?:\[\d+])?(?:&[\d\w]+(?:\[\d+])?)*)`),
+		propertyFieldPattern: regexp.MustCompile(`^(?P<propertyIdentifier>[\d\w]+)(?:\[(?P<arrayIndex>\d+)])?$`),
 	}
 }
 
 const (
-	DEVICE_IDENTIFIER   = "deviceIdentifier"
-	OBJECT_TYPE         = "objectType"
-	OBJECT_INSTANCE     = "objectInstance"
-	PROPERTY_IDENTIFIER = "propertyIdentifier"
+	OBJECT_TYPE          = "objectType"
+	OBJECT_INSTANCE      = "objectInstance"
+	PROPERTY_IDENTIFIERS = "propertyIdentifiers"
+	PROPERTY_IDENTIFIER  = "propertyIdentifier"
+	ARRAY_INDEX          = "arrayIndex"
 )
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
-		deviceIdentifierString := match[DEVICE_IDENTIFIER]
-		var deviceIdentifier uint32
-		if deviceIdentifierString == "*" {
-			// TODO: find a way to express a wildcard. -1 not an option here
-			deviceIdentifier = 0
-		} else {
-			if parsedDeviceIdentifier, err := strconv.ParseUint(deviceIdentifierString, 10, 32); err != nil {
-				return nil, err
+	if addressMatch := utils.GetSubgroupMatches(m.addressPattern, query); addressMatch != nil {
+		var result plcField
+		{
+			objectTypeMatch := addressMatch[OBJECT_TYPE]
+			if parsedObjectType, parseUintErr := strconv.ParseUint(objectTypeMatch, 10, 16); parseUintErr != nil {
+				if objectType, ok := readWriteModel.BACnetObjectTypeByName(objectTypeMatch); !ok {
+					return nil, errors.Errorf("Unknown object type %s", objectTypeMatch)
+				} else {
+					result.ObjectId.ObjectIdType = &objectType
+				}
 			} else {
-				deviceIdentifier = uint32(parsedDeviceIdentifier)
+				proprietaryType := uint16(parsedObjectType)
+				result.ObjectId.ObjectIdTypeProprietary = &proprietaryType
 			}
 		}
-		objectTypeString := match[OBJECT_TYPE]
-		var objectType uint16
-		if objectTypeString == "*" {
-			// TODO: find a way to express a wildcard. -1 not an option here
-			deviceIdentifier = 0
+		if parsedObjectInstance, err := strconv.ParseUint(addressMatch[OBJECT_INSTANCE], 10, 32); err != nil {
+			return nil, errors.Wrap(err, "Error parsing object instance")
 		} else {
-			if parsedObjectType, err := strconv.ParseUint(objectTypeString, 10, 16); err != nil {
-				return nil, err
-			} else {
-				objectType = uint16(parsedObjectType)
-			}
-		}
-		objectInstanceString := match[OBJECT_INSTANCE]
-		var objectInstance uint32
-		if objectInstanceString == "*" {
-			// TODO: find a way to express a wildcard. -1 not an option here
-			objectInstance = 0
-		} else {
-			if parsedObjectInstance, err := strconv.ParseUint(objectInstanceString, 10, 32); err != nil {
-				return nil, err
-			} else {
-				objectInstance = uint32(parsedObjectInstance)
-			}
+			result.ObjectId.ObjectIdInstance = uint32(parsedObjectInstance)
 		}
 
-		propertyIdentifierString := match[PROPERTY_IDENTIFIER]
-		var propertyIdentifier uint32
-		if propertyIdentifierString == "*" {
-			propertyIdentifier = 0
-		} else {
-			if parsedPropertyIdentifier, err := strconv.ParseUint(propertyIdentifierString, 10, 32); err != nil {
-				return nil, err
-			} else {
-				propertyIdentifier = uint32(parsedPropertyIdentifier)
+		for _, propertyString := range strings.Split(addressMatch[PROPERTY_IDENTIFIERS], "&") {
+			var _property struct {
+				PropertyIdentifier            *readWriteModel.BACnetPropertyIdentifier
+				PropertyIdentifierProprietary *uint32
+				ArrayIndex                    *uint
 			}
-		}
+			propertyMatch := utils.GetSubgroupMatches(m.propertyFieldPattern, propertyString)
+			propertyIdentifierMatch := propertyMatch[PROPERTY_IDENTIFIER]
+			if parsedPropertyType, parseUintErr := strconv.ParseUint(propertyIdentifierMatch, 10, 32); parseUintErr != nil {
+				if propertyIdentifier, ok := readWriteModel.BACnetPropertyIdentifierByName(propertyIdentifierMatch); !ok {
+					return nil, errors.Errorf("Unknown property type %s", propertyIdentifierMatch)
+				} else {
+					_property.PropertyIdentifier = &propertyIdentifier
+				}
+			} else {
+				proprietaryType := uint32(parsedPropertyType)
+				_property.PropertyIdentifierProprietary = &proprietaryType
+			}
+			if arrayIndexMatch := propertyMatch[ARRAY_INDEX]; arrayIndexMatch != "" {
+				if parsedArrayIndex, err := strconv.ParseUint(arrayIndexMatch, 10, 32); err != nil {
+					return nil, errors.Wrap(err, "Error parsing array index")
+				} else {
+					arrayIndex := uint(parsedArrayIndex)
+					_property.ArrayIndex = &arrayIndex
+				}
+			}
 
-		return NewField(deviceIdentifier, objectType, objectInstance, propertyIdentifier), nil
+			result.Properties = append(result.Properties, _property)
+		}
+		return result, nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)
 }

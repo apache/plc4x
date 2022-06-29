@@ -28,7 +28,7 @@ import (
 	"testing"
 )
 
-func TestManualS7(t *testing.T) {
+func TestManualS7Driver(t *testing.T) {
 	t.Skip()
 
 	/*

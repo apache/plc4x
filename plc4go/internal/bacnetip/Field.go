@@ -20,79 +20,124 @@
 package bacnetip
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"strconv"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"strings"
 )
 
 type BacNetPlcField interface {
-	GetDeviceIdentifier() uint32
-	GetObjectType() uint16
-	GetObjectInstance() uint32
-	GetPropertyIdentifier() uint32
+	GetObjectId() objectId
+	GetProperties() []property
 }
 
-type PlcField struct {
-	DeviceIdentifier   uint32
-	ObjectType         uint16
-	ObjectInstance     uint32
-	PropertyIdentifier uint32
+type plcField struct {
+	ObjectId objectId
+	// Properties 1..N identifiers
+	Properties []property
 }
 
-func (m PlcField) GetAddressString() string {
-	return strconv.Itoa(int(m.DeviceIdentifier))
+type objectId struct {
+	// ObjectIdType defines the object type. If not defined ObjectIdTypeProprietary must be defined
+	ObjectIdType *readWriteModel.BACnetObjectType
+	// ObjectIdTypeProprietary is only defined if ObjectIdType is not defined
+	ObjectIdTypeProprietary *uint16
+	// ObjectIdInstance is the instance of this object
+	ObjectIdInstance uint32
 }
 
-func (m PlcField) GetTypeName() string {
-	return strconv.Itoa(int(m.ObjectType))
-}
-
-func (m PlcField) GetQuantity() uint16 {
-	return 1
-}
-
-func NewField(deviceIdentifier uint32, objectType uint16, objectInstance uint32, propertyIdentifier uint32) PlcField {
-	return PlcField{
-		DeviceIdentifier:   deviceIdentifier,
-		ObjectType:         objectType,
-		ObjectInstance:     objectInstance,
-		PropertyIdentifier: propertyIdentifier,
+func (o objectId) getId() uint16 {
+	if o.ObjectIdType != nil {
+		return uint16(*o.ObjectIdType)
+	} else {
+		return *o.ObjectIdTypeProprietary
 	}
 }
 
-func (m PlcField) GetDeviceIdentifier() uint32 {
-	return m.DeviceIdentifier
+func (o objectId) String() string {
+	var result string
+	if o.ObjectIdType != nil {
+		result += fmt.Sprint(*o.ObjectIdType)
+	} else {
+		result += fmt.Sprint(*o.ObjectIdTypeProprietary)
+	}
+	result += fmt.Sprintf(":%d", o.ObjectIdInstance)
+	return result
 }
 
-func (m PlcField) GetObjectType() uint16 {
-	return m.ObjectType
+type property struct {
+	// PropertyIdentifier defines the property type. If not defined PropertyIdentifierProprietary must be defined
+	PropertyIdentifier *readWriteModel.BACnetPropertyIdentifier
+	// PropertyIdentifierProprietary is only defined if PropertyIdentifier is not defined
+	PropertyIdentifierProprietary *uint32
+	// ArrayIndex Optional index of property
+	ArrayIndex *uint
 }
 
-func (m PlcField) GetObjectInstance() uint32 {
-	return m.ObjectInstance
+func (p property) getId() uint32 {
+	if p.PropertyIdentifier != nil {
+		return uint32(*p.PropertyIdentifier)
+	} else {
+		return *p.PropertyIdentifierProprietary
+	}
 }
 
-func (m PlcField) GetPropertyIdentifier() uint32 {
-	return m.PropertyIdentifier
+func (p property) String() string {
+	var result string
+	if p.PropertyIdentifier != nil {
+		result += fmt.Sprint(*p.PropertyIdentifier)
+	} else {
+		result += fmt.Sprint(*p.PropertyIdentifierProprietary)
+	}
+	if p.ArrayIndex != nil {
+		result += fmt.Sprintf(":[%d]", p.ArrayIndex)
+	}
+	return result
 }
 
-func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m plcField) GetAddressString() string {
+	var properties []string
+	for _, p := range m.Properties {
+		properties = append(properties, fmt.Sprint(p))
+	}
+	propertiesString := strings.Join(properties, "&")
+	return fmt.Sprintf("%v/%s", m.ObjectId, propertiesString)
+}
+
+func (m plcField) GetTypeName() string {
+	return m.ObjectId.String()
+}
+
+func (m plcField) GetQuantity() uint16 {
+	return uint16(len(m.Properties))
+}
+
+func (m plcField) GetObjectId() objectId {
+	return m.ObjectId
+}
+
+func (m plcField) GetProperties() []property {
+	return m.Properties
+}
+
+func (m plcField) Serialize(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("BacNetPlcField"); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint32("deviceIdentifier", 32, m.DeviceIdentifier); err != nil {
+	if err := writeBuffer.WriteString("objectId", uint32(len([]rune(m.ObjectId.String()))*8), "UTF-8", m.ObjectId.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint16("objectType", 16, m.ObjectType); err != nil {
+	if err := writeBuffer.PushContext("properties"); err != nil {
 		return err
 	}
-
-	if err := writeBuffer.WriteUint32("objectInstance", 32, m.ObjectInstance); err != nil {
-		return err
+	for _, p := range m.Properties {
+		if err := writeBuffer.WriteString("property", uint32(len([]rune(p.String()))*8), "UTF-8", p.String()); err != nil {
+			return err
+		}
 	}
-
-	if err := writeBuffer.WriteUint32("propertyIdentifier", 32, m.PropertyIdentifier); err != nil {
+	if err := writeBuffer.PopContext("properties"); err != nil {
 		return err
 	}
 

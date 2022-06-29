@@ -20,18 +20,25 @@
 package bacnetip
 
 import (
+	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/spi"
 	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/spi/transports"
+	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"math"
+	"net"
 	"net/url"
+	"strconv"
 )
 
 type Driver struct {
 	_default.DefaultDriver
+	tm                      spi.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 }
@@ -39,6 +46,7 @@ type Driver struct {
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
 		DefaultDriver:           _default.NewDefaultDriver("bacnet-ip", "BACnet/IP", "udp", NewFieldHandler()),
+		tm:                      spi.NewRequestTransactionManager(math.MaxInt),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}
@@ -62,13 +70,52 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	if _, ok := options["so-reuse"]; !ok {
 		options["so-reuse"] = []string{"true"}
 	}
+	var udpTransport *udp.Transport
+	switch transport := transport.(type) {
+	case *udp.Transport:
+		udpTransport = transport
+	default:
+		log.Error().Stringer("transportUrl", &transportUrl).Msg("Only udp supported at the moment")
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		go func() {
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+		}()
+		return ch
+	}
+
+	var localAddr *net.UDPAddr
+	{
+		host := transportUrl.Host
+		port := transportUrl.Port()
+		if transportUrl.Port() == "" {
+			port = options["defaultUdpPort"][0]
+		}
+		var remoteAddr *net.UDPAddr
+		if resolvedRemoteAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%s", host, port)); err != nil {
+			panic(err)
+		} else {
+			remoteAddr = resolvedRemoteAddr
+		}
+		if dial, err := net.DialUDP("udp", nil, remoteAddr); err != nil {
+			log.Error().Stringer("transportUrl", &transportUrl).Msg("host unreachable")
+			ch := make(chan plc4go.PlcConnectionConnectResult)
+			go func() {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't dial to host %#v", transportUrl.Host))
+			}()
+			return ch
+		} else {
+			localAddr = dial.LocalAddr().(*net.UDPAddr)
+			localAddr.Port, _ = strconv.Atoi(port)
+			_ = dial.Close()
+		}
+	}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
+	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddr)
 	if err != nil {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultUdpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't initialize transport configuration for given transport url %v", transportUrl))
 		}()
 		return ch
 	}
@@ -77,7 +124,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
-	connection := NewConnection(codec, m.GetPlcFieldHandler(), options)
+	connection := NewConnection(codec, m.GetPlcFieldHandler(), &m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
 }
