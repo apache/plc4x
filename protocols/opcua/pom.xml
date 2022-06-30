@@ -46,7 +46,8 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.Types.bsd</url>
+              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
+              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.Types.bsd</url>
               <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
               <outputFileName>Opc.Ua.Types.bsd</outputFileName>
@@ -88,7 +89,8 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.NodeIds.Services.csv</url>
+              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
+              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.NodeIds.csv</url>
               <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
               <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
