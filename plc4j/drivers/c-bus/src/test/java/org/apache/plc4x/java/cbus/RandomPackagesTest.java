@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RandomPackagesTest {
 
-    static final String BACKSLASH = "5C";
+    static final String BACKSLASH = "";//""5C";
     static final String CR = "0D";
     static final String LF = "0A";
 

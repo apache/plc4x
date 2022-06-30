@@ -17,8 +17,12 @@
  * under the License.
  */
 
+ [type CBusConstants
+     [const          uint 16     cbusTcpDefaultPort 10001]
+ ]
+
 [discriminatedType CBusCommand(bit srchk)
-    [const  byte       initiator 0x5C   ] // 0x5C == "/"
+    //[const  byte       initiator 0x5C   ] // 0x5C == "/"
     [simple CBusHeader header           ]
     // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
     [virtual DestinationAddressType destinationAddressType 'header.destinationAddressType']
@@ -49,8 +53,8 @@
 
 [type CBusHeader
     [simple   PriorityClass          priorityClass         ]
-    [reserved bit                    'false'               ] // Reserved for internal C-Bus management purposes
-    [reserved uint 2                 '0'                   ] // Reserved for internal C-Bus management purposes
+    [simple   bit                    dpReservedManagement  ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
+    [simple   uint 2                 rcReservedManagement  ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
     [simple   DestinationAddressType destinationAddressType]
 ]
 
@@ -84,18 +88,29 @@
 ]
 
 [type NetworkRoute
+    [reserved uint 2      '0x00'                                                       ]
+    [simple RouteType     reverseRouteType                                             ]
     [simple RouteType     routeType                                                    ]
     [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
 ]
 
-[enum byte RouteType(uint 3 additionalBridges)
-    ['0x00' NoBridgeAtAll         ['0']]
-    ['0x09' NoAdditionalBridge    ['0']]
-    ['0x12' OneAdditionalBridge   ['1']]
-    ['0x1B' TwoAdditionalBridge   ['2']]
-    ['0x24' ThreeAdditionalBridge ['3']]
-    ['0x2D' FourAdditionalBridge  ['4']]
-    ['0x36' FiveAdditionalBridge  ['5']]
+// The last 3 bits are the total number of bridges ... subtracting 1 results in the number of additional bridges.
+// It also seems as if these are generally 2 empty bits and then twice the number of bridges as 3-bit numbers.
+// The block of 3 in bit's 3..5 seem to be the reverse route.
+//
+// Observations on failing packets:
+// - In the first case the first two bits are not empty, but 01 ... the first block of bridges is then increased by one.
+// - In another packet the first two bits are 0, but the first group ist set to 111 and the number of bridges is set to 000.
+// - In another packet the first two bits are 0, the first group is set to 001 and the second to 101
+[enum uint 3 RouteType(uint 3 additionalBridges)
+    ['0x0' NoBridgeAtAll         ['0']]
+    ['0x1' NoAdditionalBridge    ['0']]
+    ['0x2' OneAdditionalBridge   ['1']]
+    ['0x3' TwoAdditionalBridge   ['2']]
+    ['0x4' ThreeAdditionalBridge ['3']]
+    ['0x5' FourAdditionalBridge  ['4']]
+    ['0x6' FiveAdditionalBridge  ['5']]
+    ['0x7' SixAdditionalBridge   ['6']]
 ]
 
 [discriminatedType CBusPointToPointCommand(bit srchk)
@@ -117,6 +132,7 @@
     [peek     byte          peekAlpha                                                           ]
     [optional Alpha         alpha    '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'               ] // Read if the peeked byte is between 'g' and 'z'
     [const    byte          cr       0xD                                                        ] // 0xD == "<cr>"
+    [const    byte          lf       0xA                                                        ] // 0xA == "<lf>"
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)
@@ -394,7 +410,7 @@
     ['0xBD' RESERVED_BD                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBE' RESERVED_BE                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBF' RESERVED_BF                           ['RESERVED'                          , 'NA'                  ]]
-    ['0xC0' RESERVED_C0                           ['RESERVED'                          , 'NA'                  ]] // MEDIA_TRANSPORT
+    ['0xC0' MEDIA_TRANSPORT_C0                    ['RESERVED'                          , 'NA'                  ]] // MEDIA_TRANSPORT
     ['0xC1' RESERVED_C1                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC2' RESERVED_C2                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC3' RESERVED_C3                           ['RESERVED'                          , 'NA'                  ]]
@@ -408,7 +424,7 @@
     ['0xCB' ENABLE_CONTROL_CB                     ['ENABLE_CONTROL'                    , 'YES_BUT_RESTRICTIONS']]
     ['0xCC' I_HAVE_NO_IDEA_CC                     ['RESERVED'                          , 'NA'                  ]] // This is the only value actually not defined in the spec.
     ['0xCD' AUDIO_AND_VIDEO_CD                    ['AUDIO_AND_VIDEO'                   , 'YES_BUT_RESTRICTIONS']]
-    ['0xCE' RESERVED_CE                           ['RESERVED'                          , 'NA'                  ]] // ERROR_REPORTING
+    ['0xCE' ERROR_REPORTING_CE                    ['RESERVED'                          , 'NA'                  ]] // ERROR_REPORTING
     ['0xCF' RESERVED_CF                           ['RESERVED'                          , 'NA'                  ]]
     ['0xD0' SECURITY_D0                           ['SECURITY'                          , 'NO'                  ]]
     ['0xD1' METERING_D1                           ['METERING'                          , 'NO'                  ]]
@@ -626,6 +642,9 @@
     ['2'    NO_RESPONSE             ]
 ]
 
+// 1------: Long Form Command (Length is in the 5 least significant bits)
+// 0------: Short Form Command (Length is in the 3 least significant bits)
+// The invalid packets are receiving a value of 13 / 0x0D -> Short form command: length = 5 (no idea what the bit number 4 means, which is set)
 [enum uint 8 CALCommandTypeContainer(CALCommandType commandType, uint 5 numBytes)
     ['0x08' CALCommandReset                  ['RESET',            '0']]
     ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
