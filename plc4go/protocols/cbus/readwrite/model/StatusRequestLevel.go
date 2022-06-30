@@ -159,7 +159,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 			log.Info().Fields(map[string]interface{}{
 				"expected value": byte(0x73),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 
@@ -173,7 +173,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (StatusRequestLevel, e
 			log.Info().Fields(map[string]interface{}{
 				"expected value": byte(0x07),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 

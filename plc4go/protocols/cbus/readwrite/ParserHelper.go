@@ -46,6 +46,16 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.NetworkNumberParse(io)
 	case "StandardFormatStatusReply":
 		return model.StandardFormatStatusReplyParse(io)
+	case "CBusMessage":
+		response, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		srchk, err := utils.StrToBool(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.CBusMessageParse(io, response, srchk)
 	case "CBusOptions":
 		return model.CBusOptionsParse(io)
 	case "SALData":
@@ -59,6 +69,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(arguments[0])
 		return model.IdentifyReplyCommandParse(io, attribute)
+	case "CBusConstants":
+		return model.CBusConstantsParse(io)
 	case "BridgeCount":
 		return model.BridgeCountParse(io)
 	case "PowerUp":

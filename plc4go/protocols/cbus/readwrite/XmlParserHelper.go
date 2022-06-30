@@ -56,6 +56,10 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StandardFormatStatusReply":
 		return model.StandardFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CBusMessage":
+		response := parserArguments[0] == "true"
+		srchk := parserArguments[1] == "true"
+		return model.CBusMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response, srchk)
 	case "CBusOptions":
 		return model.CBusOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SALData":
@@ -66,6 +70,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(parserArguments[0])
 		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute)
+	case "CBusConstants":
+		return model.CBusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BridgeCount":
 		return model.BridgeCountParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PowerUp":

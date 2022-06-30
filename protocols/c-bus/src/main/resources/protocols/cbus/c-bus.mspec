@@ -17,9 +17,21 @@
  * under the License.
  */
 
- [type CBusConstants
-     [const          uint 16     cbusTcpDefaultPort 10001]
- ]
+[type CBusConstants
+    [const          uint 16     cbusTcpDefaultPort 10001]
+]
+
+[type CBusMessage(bit response, bit srchk)
+    // TODO: we need to peek here too
+    [typeSwitch response
+       ['false' *ToServer
+            [simple   CBusCommand('srchk')    command]
+       ]
+       ['true' *ToClient
+            [simple   Confirmation          confirmation]
+       ]
+    ]
+]
 
 [discriminatedType CBusCommand(bit srchk)
     //[const  byte       initiator 0x5C   ] // 0x5C == "/"
@@ -132,7 +144,6 @@
     [peek     byte          peekAlpha                                                           ]
     [optional Alpha         alpha    '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'               ] // Read if the peeked byte is between 'g' and 'z'
     [const    byte          cr       0xD                                                        ] // 0xD == "<cr>"
-    [const    byte          lf       0xA                                                        ] // 0xA == "<lf>"
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)

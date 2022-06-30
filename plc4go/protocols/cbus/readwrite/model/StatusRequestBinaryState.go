@@ -148,7 +148,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 			log.Info().Fields(map[string]interface{}{
 				"expected value": byte(0x7A),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 
@@ -169,7 +169,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (StatusRequestBi
 			log.Info().Fields(map[string]interface{}{
 				"expected value": byte(0x00),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 

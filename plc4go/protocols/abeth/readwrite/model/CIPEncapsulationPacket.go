@@ -234,7 +234,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 			log.Info().Fields(map[string]interface{}{
 				"expected value": uint32(0x00000000),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 

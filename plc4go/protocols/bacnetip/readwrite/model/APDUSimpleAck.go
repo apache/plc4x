@@ -158,7 +158,7 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 			log.Info().Fields(map[string]interface{}{
 				"expected value": uint8(0),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 

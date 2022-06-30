@@ -102,7 +102,7 @@ func (m *_ReplyNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (routeType)
-	lengthInBits += 8
+	lengthInBits += 3
 
 	// Array field
 	if len(m.AdditionalBridgeAddresses) > 0 {

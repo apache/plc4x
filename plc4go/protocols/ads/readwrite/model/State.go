@@ -263,7 +263,7 @@ func StateParse(readBuffer utils.ReadBuffer) (State, error) {
 			log.Info().Fields(map[string]interface{}{
 				"expected value": int8(0x0),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 

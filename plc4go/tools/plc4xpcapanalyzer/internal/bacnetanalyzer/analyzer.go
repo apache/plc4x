@@ -22,11 +22,12 @@ package bacnetanalyzer
 import (
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
-func PackageParse(packetInformation string, payload []byte) (interface{}, error) {
+func PackageParse(packetInformation common.PacketInformation, payload []byte) (interface{}, error) {
 	log.Debug().Msgf("Parsing %s", packetInformation)
 	parse, err := model.BVLCParse(utils.NewReadBufferByteBased(payload))
 	if err != nil {

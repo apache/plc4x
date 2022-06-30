@@ -232,7 +232,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (CALReplyLong, error) {
 			log.Info().Fields(map[string]interface{}{
 				"expected value": byte(0x86),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 

@@ -208,7 +208,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 			log.Info().Fields(map[string]interface{}{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 

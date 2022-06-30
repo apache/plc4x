@@ -228,7 +228,7 @@ const (
 	ApplicationIdContainer_RESERVED_BD                           ApplicationIdContainer = 0xBD
 	ApplicationIdContainer_RESERVED_BE                           ApplicationIdContainer = 0xBE
 	ApplicationIdContainer_RESERVED_BF                           ApplicationIdContainer = 0xBF
-	ApplicationIdContainer_RESERVED_C0                           ApplicationIdContainer = 0xC0
+	ApplicationIdContainer_MEDIA_TRANSPORT_C0                    ApplicationIdContainer = 0xC0
 	ApplicationIdContainer_RESERVED_C1                           ApplicationIdContainer = 0xC1
 	ApplicationIdContainer_RESERVED_C2                           ApplicationIdContainer = 0xC2
 	ApplicationIdContainer_RESERVED_C3                           ApplicationIdContainer = 0xC3
@@ -242,7 +242,7 @@ const (
 	ApplicationIdContainer_ENABLE_CONTROL_CB                     ApplicationIdContainer = 0xCB
 	ApplicationIdContainer_I_HAVE_NO_IDEA_CC                     ApplicationIdContainer = 0xCC
 	ApplicationIdContainer_AUDIO_AND_VIDEO_CD                    ApplicationIdContainer = 0xCD
-	ApplicationIdContainer_RESERVED_CE                           ApplicationIdContainer = 0xCE
+	ApplicationIdContainer_ERROR_REPORTING_CE                    ApplicationIdContainer = 0xCE
 	ApplicationIdContainer_RESERVED_CF                           ApplicationIdContainer = 0xCF
 	ApplicationIdContainer_SECURITY_D0                           ApplicationIdContainer = 0xD0
 	ApplicationIdContainer_METERING_D1                           ApplicationIdContainer = 0xD1
@@ -491,7 +491,7 @@ func init() {
 		ApplicationIdContainer_RESERVED_BD,
 		ApplicationIdContainer_RESERVED_BE,
 		ApplicationIdContainer_RESERVED_BF,
-		ApplicationIdContainer_RESERVED_C0,
+		ApplicationIdContainer_MEDIA_TRANSPORT_C0,
 		ApplicationIdContainer_RESERVED_C1,
 		ApplicationIdContainer_RESERVED_C2,
 		ApplicationIdContainer_RESERVED_C3,
@@ -505,7 +505,7 @@ func init() {
 		ApplicationIdContainer_ENABLE_CONTROL_CB,
 		ApplicationIdContainer_I_HAVE_NO_IDEA_CC,
 		ApplicationIdContainer_AUDIO_AND_VIDEO_CD,
-		ApplicationIdContainer_RESERVED_CE,
+		ApplicationIdContainer_ERROR_REPORTING_CE,
 		ApplicationIdContainer_RESERVED_CF,
 		ApplicationIdContainer_SECURITY_D0,
 		ApplicationIdContainer_METERING_D1,
@@ -3028,7 +3028,7 @@ func ApplicationIdContainerByValue(value uint8) ApplicationIdContainer {
 	case 0xBF:
 		return ApplicationIdContainer_RESERVED_BF
 	case 0xC0:
-		return ApplicationIdContainer_RESERVED_C0
+		return ApplicationIdContainer_MEDIA_TRANSPORT_C0
 	case 0xC1:
 		return ApplicationIdContainer_RESERVED_C1
 	case 0xC2:
@@ -3056,7 +3056,7 @@ func ApplicationIdContainerByValue(value uint8) ApplicationIdContainer {
 	case 0xCD:
 		return ApplicationIdContainer_AUDIO_AND_VIDEO_CD
 	case 0xCE:
-		return ApplicationIdContainer_RESERVED_CE
+		return ApplicationIdContainer_ERROR_REPORTING_CE
 	case 0xCF:
 		return ApplicationIdContainer_RESERVED_CF
 	case 0xD0:
@@ -3546,8 +3546,8 @@ func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok
 		enum = ApplicationIdContainer_RESERVED_BE
 	case "RESERVED_BF":
 		enum = ApplicationIdContainer_RESERVED_BF
-	case "RESERVED_C0":
-		enum = ApplicationIdContainer_RESERVED_C0
+	case "MEDIA_TRANSPORT_C0":
+		enum = ApplicationIdContainer_MEDIA_TRANSPORT_C0
 	case "RESERVED_C1":
 		enum = ApplicationIdContainer_RESERVED_C1
 	case "RESERVED_C2":
@@ -3574,8 +3574,8 @@ func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok
 		enum = ApplicationIdContainer_I_HAVE_NO_IDEA_CC
 	case "AUDIO_AND_VIDEO_CD":
 		enum = ApplicationIdContainer_AUDIO_AND_VIDEO_CD
-	case "RESERVED_CE":
-		enum = ApplicationIdContainer_RESERVED_CE
+	case "ERROR_REPORTING_CE":
+		enum = ApplicationIdContainer_ERROR_REPORTING_CE
 	case "RESERVED_CF":
 		enum = ApplicationIdContainer_RESERVED_CF
 	case "SECURITY_D0":
@@ -4107,8 +4107,8 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 		return "RESERVED_BE"
 	case ApplicationIdContainer_RESERVED_BF:
 		return "RESERVED_BF"
-	case ApplicationIdContainer_RESERVED_C0:
-		return "RESERVED_C0"
+	case ApplicationIdContainer_MEDIA_TRANSPORT_C0:
+		return "MEDIA_TRANSPORT_C0"
 	case ApplicationIdContainer_RESERVED_C1:
 		return "RESERVED_C1"
 	case ApplicationIdContainer_RESERVED_C2:
@@ -4135,8 +4135,8 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 		return "I_HAVE_NO_IDEA_CC"
 	case ApplicationIdContainer_AUDIO_AND_VIDEO_CD:
 		return "AUDIO_AND_VIDEO_CD"
-	case ApplicationIdContainer_RESERVED_CE:
-		return "RESERVED_CE"
+	case ApplicationIdContainer_ERROR_REPORTING_CE:
+		return "ERROR_REPORTING_CE"
 	case ApplicationIdContainer_RESERVED_CF:
 		return "RESERVED_CF"
 	case ApplicationIdContainer_SECURITY_D0:
