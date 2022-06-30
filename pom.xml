@@ -178,9 +178,6 @@
 
     <!-- Build the Java part of plc4x -->
     <module>plc4j</module>
-
-    <!-- Tools needed throughout the build -->
-    <module>tools</module>
   </modules>
 
   <dependencyManagement>
