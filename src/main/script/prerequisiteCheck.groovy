@@ -130,7 +130,7 @@ def checkGo() {
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.18.0")
         if (!result) {
             allConditionsMet = false
         }
