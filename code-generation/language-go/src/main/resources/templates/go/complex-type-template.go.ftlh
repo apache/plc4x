@@ -1276,7 +1276,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			log.Info().Fields(map[string]interface{}{<@emitImport import="github.com/rs/zerolog/log" />
 				"expected value": ${helper.getReservedValue(reservedField)},
 				"got value": reserved,
-			}).Msg("Got unexpected response.")
+			}).Msg("Got unexpected response for reserved field.")
 		}
 	}
 				<#break>
