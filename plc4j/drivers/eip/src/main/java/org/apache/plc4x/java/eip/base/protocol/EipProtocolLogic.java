@@ -644,7 +644,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             typeIds.add(new ConnectedDataItem(this.sequenceCount, requests.get(0), this.configuration.getByteOrder()));
         } else {
             List<Integer> offsets = new ArrayList<>(requests.size());
-            offsets.add(8);
+            offsets.add(2 + 2 * request.getNumberOfFields());
             for (CipService cipRequest : requests) {
                 if (requests.indexOf(cipRequest) != (requests.size() - 1)) {
                     offsets.add(offsets.get(requests.indexOf(cipRequest)) + cipRequest.getLengthInBytes());
@@ -778,7 +778,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, offset + length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
-                    service = CipService.staticParse(read, length);
+                    service = CipService.staticParse(read, false, length, this.configuration.getByteOrder());
                     arr.add(service);
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
@@ -1334,7 +1334,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
-                    service = CipService.staticParse(read, length);
+                    service = CipService.staticParse(read, false, length, this.configuration.getByteOrder());
                     arr.add(service);
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
