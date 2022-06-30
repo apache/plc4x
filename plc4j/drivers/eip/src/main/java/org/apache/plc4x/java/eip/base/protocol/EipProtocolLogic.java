@@ -102,10 +102,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                             case "2":
                                 int ethernetPortId = Integer.parseInt(splitConnectionPath[i]);
                                 String ipAddress = splitConnectionPath[i+1];
+                                int lengthString = ipAddress.length();
+
                                 if ((ipAddress.length() % 2) != 0) {
-                                    ipAddress += " ";
+                                    ipAddress += "\0";
                                 }
-                                routingAddress.add(new PortSegment(new PortSegmentExtended((byte) ethernetPortId, (short) ipAddress.length(), ipAddress, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+
+                                routingAddress.add(new PortSegment(new PortSegmentExtended((byte) ethernetPortId, (short) lengthString, ipAddress, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
                                 break;
                             default:
                                 logger.error("Only backplane or Ethernet module routing is supported");

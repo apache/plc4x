@@ -251,7 +251,8 @@
         ['true'     PortSegmentExtended
             [simple     uint    4   port]
             [simple   uint    8   linkAddressSize]
-            [simple   vstring  'linkAddressSize * 8'    address]
+            [virtual  uint 8    paddingByte 'linkAddressSize % 2'
+            [simple   vstring  '(linkAddressSize * 8) + (paddingByte * 8)'    address]
         ]
     ]
 ]
