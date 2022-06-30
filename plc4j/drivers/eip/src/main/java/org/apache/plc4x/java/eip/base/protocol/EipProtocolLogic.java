@@ -48,10 +48,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,6 +79,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private List<PathSegment> routingAddress = new ArrayList<>();
     short connectionPathSize = 0;
+    private final int connectionSerialNumber = ThreadLocalRandom.current().nextInt();
 
     @Override
     public void setConfiguration(EIPConfiguration configuration) {
@@ -226,7 +224,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             this.configuration.getByteOrder()
         );
 
-
         context.sendRequest(eipWrapper)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
             .check(p -> p instanceof CipRRData)
@@ -306,7 +303,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 (short) 14,
                 536870914L,
                 33944L,
-                8592,
+                this.connectionSerialNumber,
                 4919,
                 42L,
                 (short) 3,
@@ -391,7 +388,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     (byte) 0,
                     (byte) 10,
                     (short) 14,
-                    8592,
+                    this.connectionSerialNumber,
                     4919,
                     42L,
                     this.connectionPathSize,
@@ -638,8 +635,10 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             }
         }
 
+        ConnectedAddressItem addressItem = new ConnectedAddressItem(this.connectionId, this.configuration.getByteOrder());
+
         List<TypeId> typeIds =new ArrayList<>(2);
-        typeIds.add(nullAddressItem);
+        typeIds.add(addressItem);
 
         if (requests.size() == 1) {
             typeIds.add(new ConnectedDataItem(this.sequenceCount, requests.get(0), this.configuration.getByteOrder()));
@@ -1193,9 +1192,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 this.configuration.getByteOrder()
             );
 
+            ConnectedAddressItem addressItem = new ConnectedAddressItem(this.connectionId, this.configuration.getByteOrder());
+
             List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
-                    add(nullAddressItem);
+                    add(addressItem);
                     add(exchange);
                 }
             };
