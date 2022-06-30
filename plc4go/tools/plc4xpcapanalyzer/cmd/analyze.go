@@ -30,6 +30,7 @@ import (
 
 var validProtocolType = map[string]interface{}{
 	"bacnet": nil,
+	"c-bus":  nil,
 }
 
 // flags here

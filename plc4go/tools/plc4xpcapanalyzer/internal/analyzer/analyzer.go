@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/bacnetanalyzer"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/cbusanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/pcaphandler"
 	"github.com/k0kubun/go-ansi"
 	"github.com/rs/zerolog/log"
@@ -43,6 +44,9 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 	case "bacnet":
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
+	case "c-bus":
+		packageParse = cbusanalyzer.PackageParse
+		serializePackage = cbusanalyzer.SerializePackage
 	}
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
 		progressbar.OptionEnableColorCodes(true),
