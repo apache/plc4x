@@ -40,13 +40,20 @@ public class RequirePcapNgCondition implements ExecutionCondition {
         // Linux:
         // Windows: NPcap version 1.6.0
         try {
+            // On Mac we need to force the usage of the updated libpcap
+            if(System.getProperty( "os.name" ).startsWith( "Mac" )) {
+                // TODO: Possibly find the highest version ...
+                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
+            }
+
             String libVersion = Pcaps.libVersion();
             Pattern pattern = Pattern.compile("^.*libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
             Matcher matcher = pattern.matcher(libVersion);
             if (matcher.matches()) {
                 String versionString = matcher.group("version");
                 DefaultArtifactVersion curVersion = new DefaultArtifactVersion(versionString);
-                DefaultArtifactVersion minVersion = new DefaultArtifactVersion("1.1.0");
+                // Macs ship with version 1.9.1, which causes exceptions.
+                DefaultArtifactVersion minVersion = new DefaultArtifactVersion("1.10.1");
                 if (curVersion.compareTo(minVersion) >= 0) {
                     return ConditionEvaluationResult.enabled("Found libpcap version " + versionString);
                 } else if (SystemUtils.IS_OS_WINDOWS) {
